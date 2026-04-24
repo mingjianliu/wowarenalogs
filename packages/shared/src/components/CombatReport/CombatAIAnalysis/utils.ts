@@ -1289,6 +1289,8 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       ccTrinketSummaries,
       enemyCDTimeline,
       playerIdMap,
+      enemies,
+      matchStartMs,
     });
   }
 
