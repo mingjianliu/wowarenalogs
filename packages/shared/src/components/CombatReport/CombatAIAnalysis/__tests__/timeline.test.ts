@@ -1,13 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CombatUnitSpec, ICombatUnit } from '@wowarenalogs/parser';
+import { CombatUnitSpec, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
-import { makeAdvancedAction, makeSpellCastEvent, makeUnit } from '../../../../utils/__tests__/testHelpers';
+import {
+  makeAdvancedAction,
+  makeAuraEvent,
+  makeSpellCastEvent,
+  makeUnit,
+} from '../../../../utils/__tests__/testHelpers';
 import { ICCInstance, IPlayerCCTrinketSummary } from '../../../../utils/ccTrinketAnalysis';
 import { IDamageBucket, IMajorCooldownInfo } from '../../../../utils/cooldowns';
 import { IDispelSummary } from '../../../../utils/dispelAnalysis';
 import { IEnemyCDTimeline } from '../../../../utils/enemyCDs';
 import { IHealingGap } from '../../../../utils/healingGaps';
-import { buildMatchTimeline, BuildMatchTimelineParams, buildPlayerLoadout } from '../utils';
+import { buildMatchTimeline, BuildMatchTimelineParams, buildPlayerLoadout, buildResourceSnapshot } from '../utils';
 
 // ── Factories ─────────────────────────────────────────────────────────────────
 
@@ -1200,5 +1205,73 @@ describe('buildMatchTimeline — F64 enemy HP in [HP] ticks', () => {
     // Specifically, t=52 and t=53 are NOT 3s multiples — they should appear only because of the dense window
     expect(inDenseWindow).toContain(52);
     expect(inDenseWindow).toContain(53);
+  });
+});
+
+// ── buildResourceSnapshot — [ENEMY BUFFS] ────────────────────────────────────
+
+describe('buildResourceSnapshot — [ENEMY BUFFS]', () => {
+  const MATCH_START_MS = 1_000_000;
+
+  function makeParams(enemyAuraEvents: ReturnType<typeof makeAuraEvent>[], timeSeconds: number) {
+    const enemy = makeUnit('enemy-1', {
+      name: 'Natjkis',
+      auraEvents: enemyAuraEvents as any,
+    });
+    return {
+      timeSeconds,
+      ownerCDs: [],
+      ownerName: 'Feramonk',
+      ownerSpec: 'Discipline Priest',
+      teammateCDs: [],
+      ccTrinketSummaries: [],
+      enemyCDTimeline: { alignedBurstWindows: [], players: [] },
+      enemies: [enemy],
+      matchStartMs: MATCH_START_MS,
+    };
+  }
+
+  it('emits [ENEMY BUFFS] line when PI is active at snapshot time', () => {
+    // PI applied at T=20s, not removed → still active at T=30s
+    const lines = buildResourceSnapshot(
+      makeParams([makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '10060', MATCH_START_MS + 20_000)], 30),
+    );
+    const buffsLine = lines.find((l) => l.includes('[ENEMY BUFFS]'));
+    expect(buffsLine).toBeDefined();
+    expect(buffsLine).toContain('Power Infusion');
+    expect(buffsLine).toContain('[purgeable]');
+    expect(buffsLine).toContain('Natjkis');
+  });
+
+  it('does not emit [ENEMY BUFFS] line when PI was removed before snapshot time', () => {
+    // PI applied at T=20s, removed at T=25s → gone by T=30s
+    const lines = buildResourceSnapshot(
+      makeParams(
+        [
+          makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '10060', MATCH_START_MS + 20_000),
+          makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '10060', MATCH_START_MS + 25_000),
+        ],
+        30,
+      ),
+    );
+    expect(lines.some((l) => l.includes('[ENEMY BUFFS]'))).toBe(false);
+  });
+
+  it('emits [ENEMY BUFFS] without [purgeable] for Bloodlust', () => {
+    const lines = buildResourceSnapshot(
+      makeParams([makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '2825', MATCH_START_MS + 10_000)], 20),
+    );
+    const buffsLine = lines.find((l) => l.includes('[ENEMY BUFFS]'));
+    expect(buffsLine).toBeDefined();
+    expect(buffsLine).toContain('Bloodlust');
+    expect(buffsLine).not.toContain('[purgeable]');
+  });
+
+  it('does not emit [ENEMY BUFFS] line when no tracked buffs are active', () => {
+    // Untracked spell ID 99999 — should not trigger [ENEMY BUFFS]
+    const lines = buildResourceSnapshot(
+      makeParams([makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '99999', MATCH_START_MS + 5_000)], 30),
+    );
+    expect(lines.some((l) => l.includes('[ENEMY BUFFS]'))).toBe(false);
   });
 });
