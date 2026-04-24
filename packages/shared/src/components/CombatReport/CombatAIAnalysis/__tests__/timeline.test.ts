@@ -1274,4 +1274,14 @@ describe('buildResourceSnapshot — [ENEMY BUFFS]', () => {
     );
     expect(lines.some((l) => l.includes('[ENEMY BUFFS]'))).toBe(false);
   });
+
+  it('treats SPELL_AURA_REFRESH as buff still active', () => {
+    // Refresh event only (no prior APPLIED) — buff should be considered active
+    const lines = buildResourceSnapshot(
+      makeParams([makeAuraEvent(LogEvent.SPELL_AURA_REFRESH, '10060', MATCH_START_MS + 15_000)], 30),
+    );
+    const buffsLine = lines.find((l) => l.includes('[ENEMY BUFFS]'));
+    expect(buffsLine).toBeDefined();
+    expect(buffsLine).toContain('Power Infusion');
+  });
 });

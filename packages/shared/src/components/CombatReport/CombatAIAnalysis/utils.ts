@@ -105,7 +105,7 @@ function getActiveEnemyBuffsAtMs(enemies: ICombatUnit[], checkMs: number): Activ
       if (!e.spellId || !trackedIds.has(e.spellId)) continue;
       if (e.logLine.timestamp > checkMs) continue;
       const ev = e.logLine.event;
-      if (ev === LogEvent.SPELL_AURA_APPLIED) {
+      if (ev === LogEvent.SPELL_AURA_APPLIED || ev === LogEvent.SPELL_AURA_REFRESH) {
         activeCount.set(e.spellId, (activeCount.get(e.spellId) ?? 0) + 1);
       } else if (ev === LogEvent.SPELL_AURA_REMOVED) {
         const n = (activeCount.get(e.spellId) ?? 0) - 1;
@@ -1057,7 +1057,7 @@ export interface ResourceSnapshotParams {
   playerIdMap?: Map<string, number>;
   /** Enemy player units for [ENEMY BUFFS] tracking. */
   enemies?: ICombatUnit[];
-  /** Match start timestamp (ms) — required to convert timeSeconds → absolute ms for aura lookups. */
+  /** Match start timestamp (ms). If omitted, [ENEMY BUFFS] output is suppressed. */
   matchStartMs?: number;
 }
 
