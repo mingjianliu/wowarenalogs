@@ -64,6 +64,63 @@ const HEALER_CAST_SPELL_ID_TO_NAME: Record<string, string> = {
 /** Minimum total damage for a pressure window to be treated as a [DMG SPIKE] event. */
 export const DMG_SPIKE_THRESHOLD = 300_000;
 
+/** Major buffs on enemy players worth tracking for purge/trade-equity analysis. */
+const MAJOR_ENEMY_BUFF_IDS: Record<string, { name: string; purgeable: boolean }> = {
+  // Haste/damage amplifiers
+  '2825': { name: 'Bloodlust', purgeable: false },
+  '32182': { name: 'Heroism', purgeable: false },
+  '80353': { name: 'Time Warp', purgeable: false },
+  '90355': { name: 'Ancient Hysteria', purgeable: false },
+  '264667': { name: 'Primal Rage', purgeable: false },
+  // External DPS/healing amplifier
+  '10060': { name: 'Power Infusion', purgeable: true },
+  // Defensive externals from enemy healers
+  '33206': { name: 'Pain Suppression', purgeable: true },
+  '47788': { name: 'Guardian Spirit', purgeable: true },
+  '6940': { name: 'Blessing of Sacrifice', purgeable: true },
+  '1022': { name: 'Blessing of Protection', purgeable: true },
+  '116849': { name: 'Life Cocoon', purgeable: true },
+  // Personal immunities
+  '642': { name: 'Divine Shield', purgeable: false },
+  '45438': { name: 'Ice Block', purgeable: false },
+};
+
+interface ActiveEnemyBuff {
+  playerName: string;
+  buffName: string;
+  purgeable: boolean;
+}
+
+/**
+ * Returns major tracked buffs that are active on the given enemy units at `checkMs`.
+ * Processes auraEvents chronologically and tracks APPLIED/REMOVED pairs.
+ */
+function getActiveEnemyBuffsAtMs(enemies: ICombatUnit[], checkMs: number): ActiveEnemyBuff[] {
+  const result: ActiveEnemyBuff[] = [];
+  const trackedIds = new Set(Object.keys(MAJOR_ENEMY_BUFF_IDS));
+
+  for (const enemy of enemies) {
+    const activeCount = new Map<string, number>(); // spellId → stack count
+    for (const e of enemy.auraEvents) {
+      if (!e.spellId || !trackedIds.has(e.spellId)) continue;
+      if (e.logLine.timestamp > checkMs) continue;
+      const ev = e.logLine.event;
+      if (ev === LogEvent.SPELL_AURA_APPLIED) {
+        activeCount.set(e.spellId, (activeCount.get(e.spellId) ?? 0) + 1);
+      } else if (ev === LogEvent.SPELL_AURA_REMOVED) {
+        const n = (activeCount.get(e.spellId) ?? 0) - 1;
+        if (n <= 0) activeCount.delete(e.spellId);
+        else activeCount.set(e.spellId, n);
+      }
+    }
+    for (const spellId of activeCount.keys()) {
+      const buff = MAJOR_ENEMY_BUFF_IDS[spellId];
+      result.push({ playerName: enemy.name, buffName: buff.name, purgeable: buff.purgeable });
+    }
+  }
+  return result;
+}
+
 /**
  * Extracts the top-N damage sources that hit `unit` within the `windowMs` window
  * ending at `deathMs`. Returns an array of formatted "source — spell (Xk)" strings.
@@ -998,6 +1055,10 @@ export interface ResourceSnapshotParams {
   ccTrinketSummaries: IPlayerCCTrinketSummary[];
   enemyCDTimeline: IEnemyCDTimeline;
   playerIdMap?: Map<string, number>;
+  /** Enemy player units for [ENEMY BUFFS] tracking. */
+  enemies?: ICombatUnit[];
+  /** Match start timestamp (ms) — required to convert timeSeconds → absolute ms for aura lookups. */
+  matchStartMs?: number;
 }
 
 export function buildResourceSnapshot({
@@ -1009,6 +1070,8 @@ export function buildResourceSnapshot({
   ccTrinketSummaries,
   enemyCDTimeline,
   playerIdMap,
+  enemies,
+  matchStartMs,
 }: ResourceSnapshotParams): string[] {
   function pid(name: string): string {
     if (!playerIdMap) return name;
@@ -1103,7 +1166,22 @@ export function buildResourceSnapshot({
 
   const ccLine = `                   CC state: ${ccParts.join(' | ')}`;
 
-  return [friendlyLine, enemyLine, ccLine];
+  // ── Line 4: Active major buffs on enemy players ───────────────────────────
+  const lines: string[] = [friendlyLine, enemyLine, ccLine];
+
+  if (enemies && enemies.length > 0 && matchStartMs !== undefined) {
+    const checkMs = matchStartMs + timeSeconds * 1000;
+    const activeBuffs = getActiveEnemyBuffsAtMs(enemies, checkMs);
+    if (activeBuffs.length > 0) {
+      const buffParts = activeBuffs.map((b) => {
+        const purgeTag = b.purgeable ? ' [purgeable]' : '';
+        return `${b.playerName}: ${b.buffName}${purgeTag}`;
+      });
+      lines.push(`                   [ENEMY BUFFS] ${buffParts.join(', ')}`);
+    }
+  }
+
+  return lines;
 }
 
 // ── buildMatchTimeline ─────────────────────────────────────────────────────
