@@ -88,6 +88,28 @@ describe('extractEnemyMajorBuffIntervals — pre-cast seeding', () => {
     const result = extractEnemyMajorBuffIntervals([enemy], matchStartMs, matchEndMs);
     expect(result.get('Dzinked')).toBeUndefined();
   });
+
+  it('seeds a buff that was applied, removed, then re-applied before matchStartMs', () => {
+    const matchStartMs = 1_000_000;
+    const matchEndMs = matchStartMs + 60_000;
+
+    const enemy = makeUnit('enemy-1', {
+      name: 'Dzinked',
+      reaction: CombatUnitReaction.Hostile,
+      auraEvents: [
+        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '10060', matchStartMs - 20_000, 'healer-1', 'enemy-1'),
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '10060', matchStartMs - 15_000, 'healer-1', 'enemy-1'),
+        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '10060', matchStartMs - 5_000, 'healer-1', 'enemy-1'),
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '10060', matchStartMs + 10_000, 'healer-1', 'enemy-1'),
+      ],
+    });
+
+    const result = extractEnemyMajorBuffIntervals([enemy], matchStartMs, matchEndMs);
+    const intervals = result.get('Dzinked') ?? [];
+    expect(intervals.length).toBeGreaterThan(0);
+    expect(intervals[0].startSeconds).toBe(0);
+    expect(intervals[0].endSeconds).toBeCloseTo(10, 1);
+  });
 });
 
 // ── buildPlayerLoadout ────────────────────────────────────────────────────────

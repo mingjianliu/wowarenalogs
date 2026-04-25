@@ -96,8 +96,7 @@ export function extractEnemyMajorBuffIntervals(
     const openBuffs = new Map<string, number>();
 
     // Pre-match scan: seed buffs applied before match start that were not removed before start
-    const preApplied = new Set<string>();
-    const preRemoved = new Set<string>();
+    const preNetActive = new Map<string, boolean>();
     for (const event of enemy.auraEvents) {
       const ts: number = event.logLine.timestamp;
       if (ts >= matchStartMs) break; // auraEvents are chronological; stop at match start
@@ -105,15 +104,13 @@ export function extractEnemyMajorBuffIntervals(
       if (!ENEMY_MAJOR_BUFF_SPELL_IDS[spellId]) continue;
       const stateKey = `${spellId}:${event.srcUnitId}`;
       if (event.logLine.event === LogEvent.SPELL_AURA_APPLIED) {
-        preApplied.add(stateKey);
+        preNetActive.set(stateKey, true);
       } else if (event.logLine.event === LogEvent.SPELL_AURA_REMOVED) {
-        preRemoved.add(stateKey);
+        preNetActive.set(stateKey, false);
       }
     }
-    for (const stateKey of preApplied) {
-      if (!preRemoved.has(stateKey)) {
-        openBuffs.set(stateKey, matchStartMs);
-      }
+    for (const [stateKey, active] of preNetActive) {
+      if (active) openBuffs.set(stateKey, matchStartMs);
     }
 
     // Main pass: process events during the match
