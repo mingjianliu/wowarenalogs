@@ -427,14 +427,15 @@ describe('extractAoeCCEvents', () => {
     expect(result).toHaveLength(2);
   });
 
-  it('does NOT emit an event when only one enemy was hit (single-target CC)', () => {
+  it('emits an event even when only one enemy was hit (whitelisted AoE spell hit 1 target)', () => {
     const chains = [
       makeChain('Enemy1', [
         { atSeconds: 21, spellId: '8122', spellName: 'Psychic Scream', casterName: 'Caster', durationSeconds: 8 },
       ]),
     ];
     const result = extractAoeCCEvents(chains);
-    expect(result).toHaveLength(0);
+    expect(result).toHaveLength(1);
+    expect(result[0].targets).toHaveLength(1);
   });
 
   it('returns events sorted by atSeconds', () => {
@@ -466,22 +467,6 @@ describe('extractAoeCCEvents', () => {
     const result = extractAoeCCEvents(chains);
     expect(result[0].targets.find((t) => t.name === 'Enemy1')?.durationSeconds).toBe(8);
     expect(result[0].targets.find((t) => t.name === 'Enemy2')?.durationSeconds).toBe(4);
-  });
-
-  it('emits an event for an unknown spell ID when it hits ≥2 distinct enemies', () => {
-    // Any spell that hits 2+ targets is AoE — no hardcoded whitelist needed
-    const chains = [
-      makeChain('Enemy1', [
-        { atSeconds: 10, spellId: '99999', spellName: 'Mystery Fear', casterName: 'Caster', durationSeconds: 6 },
-      ]),
-      makeChain('Enemy2', [
-        { atSeconds: 10, spellId: '99999', spellName: 'Mystery Fear', casterName: 'Caster', durationSeconds: 6 },
-      ]),
-    ];
-    const result = extractAoeCCEvents(chains);
-    expect(result).toHaveLength(1);
-    expect(result[0].spellId).toBe('99999');
-    expect(result[0].targets).toHaveLength(2);
   });
 
   it('treats two rapid same-caster casts 0.6s apart as two separate events (not merged)', () => {

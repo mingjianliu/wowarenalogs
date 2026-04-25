@@ -113,6 +113,21 @@ export const DR_CATEGORY_MAP: Record<string, string> = {
  * Spell IDs whose single cast can apply CC to multiple enemy targets simultaneously.
  * Used to group SPELL_AURA_APPLIED events from analyzeOutgoingCCChains into per-cast AoE events.
  */
+export const AOE_CC_SPELL_IDS = new Set<string>([
+  '8122', // Psychic Scream (Priest)
+  '5246', // Intimidating Shout (Warrior)
+  '316593', // Intimidating Shout (rank 2)
+  '316595', // Intimidating Shout (rank 3)
+  '5484', // Howl of Terror (Warlock)
+  '77505', // Shockwave (Warrior)
+  '119381', // Leg Sweep (Monk)
+  '20549', // War Stomp (Tauren racial)
+  '99', // Incapacitating Roar (Druid Bear)
+  '30283', // Shadowfury (Warlock) — small AoE on impact
+  '255941', // Bursting Shot (Hunter) — disorients group
+  '204399', // Sigil of Misery (Vengeance DH) — AoE incapacitate
+]);
+
 export interface IAoeCCEvent {
   casterName: string;
   spellId: string;
@@ -428,12 +443,12 @@ function immuneAppsNote(count: number): string {
 /**
  * Groups CC applications from outgoing CC chains into per-cast AoE events.
  *
- * AoE-ness is determined at runtime: any (spellId, casterName) pair that hits
- * ≥2 distinct enemy targets within a 0.5s window is treated as an AoE cast.
- * No hardcoded spell ID list — unknown spells are handled automatically.
+ * Only spells in AOE_CC_SPELL_IDS are included. Applications from the same
+ * (spellId, casterName) are split into separate casts whenever the gap from
+ * the most recently started event exceeds 0.5s (F66b grouping fix).
  *
- * Applications from the same (spellId, casterName) are split into separate casts
- * whenever the gap from the group's first application exceeds 0.5s.
+ * Single-target applications of whitelisted spells are emitted — they carry
+ * tactical signal ("player used AoE fear, caught only 1 enemy").
  */
 export function extractAoeCCEvents(chains: IOutgoingCCChain[]): IAoeCCEvent[] {
   const flat: Array<{
@@ -447,6 +462,7 @@ export function extractAoeCCEvents(chains: IOutgoingCCChain[]): IAoeCCEvent[] {
 
   for (const chain of chains) {
     for (const app of chain.applications) {
+      if (!AOE_CC_SPELL_IDS.has(app.spellId)) continue;
       flat.push({
         casterName: app.casterName,
         spellId: app.spellId,
@@ -484,8 +500,5 @@ export function extractAoeCCEvents(chains: IOutgoingCCChain[]): IAoeCCEvent[] {
     }
   }
 
-  // Only emit events that hit ≥2 distinct enemy targets (data-driven AoE detection)
-  return events
-    .filter((e) => new Set(e.targets.map((t) => t.name)).size >= 2)
-    .sort((a, b) => a.atSeconds - b.atSeconds);
+  return events.sort((a, b) => a.atSeconds - b.atSeconds);
 }
