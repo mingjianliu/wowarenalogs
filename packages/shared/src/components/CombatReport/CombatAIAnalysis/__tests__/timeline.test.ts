@@ -1497,8 +1497,9 @@ describe('buildMatchTimeline — F67 [ENEMY BUFFS]', () => {
     expect(result).not.toContain('[ENEMY BUFFS]');
   });
 
-  it('does NOT emit [ENEMY BUFFS] when no tracked buff is active at snapshot time', () => {
+  it('emits [ENEMY BUFF] and [ENEMY BUFF END] even when buff expires before snapshot CD time', () => {
     // PI active 20–40s, owner CD at 50s (after PI expired)
+    // Events-based format shows both start and end regardless of snapshot timing
     const enemy = makeEnemyWithAura('enemy-1', 'Natjkis', '10060', 20_000, 40_000);
     const result = buildMatchTimeline(
       makeBaseParams({
@@ -1520,6 +1521,8 @@ describe('buildMatchTimeline — F67 [ENEMY BUFFS]', () => {
       }),
     );
     expect(result).not.toContain('[ENEMY BUFFS]');
+    expect(result).toContain('[ENEMY BUFF]');
+    expect(result).toContain('[ENEMY BUFF END]');
   });
 
   it('does NOT emit [ENEMY BUFFS] when enemies array is empty', () => {
@@ -1543,6 +1546,8 @@ describe('buildMatchTimeline — F67 [ENEMY BUFFS]', () => {
       }),
     );
     expect(result).not.toContain('[ENEMY BUFFS]');
+    expect(result).not.toContain('[ENEMY BUFF]');
+    expect(result).not.toContain('[ENEMY BUFF END]');
   });
 
   it('does NOT emit [ENEMY BUFFS] for untracked spell IDs (e.g. Bloodlust 2825 is not logged as aura on enemies)', () => {
@@ -1569,6 +1574,8 @@ describe('buildMatchTimeline — F67 [ENEMY BUFFS]', () => {
       }),
     );
     expect(result).not.toContain('[ENEMY BUFFS]');
+    expect(result).not.toContain('[ENEMY BUFF]');
+    expect(result).not.toContain('[ENEMY BUFF END]');
   });
 
   it('emits [ENEMY BUFF] at start time and [ENEMY BUFF END] at end time', () => {
@@ -1626,6 +1633,8 @@ describe('buildMatchTimeline — F67 [ENEMY BUFFS]', () => {
         ],
       }),
     );
+    expect(result).toContain('[ENEMY BUFF]');
+    expect(result).toContain('[ENEMY BUFF END]');
     expect(result).not.toContain('[ENEMY BUFFS]');
     // numeric ID '3' should appear in the [ENEMY BUFF] line
     const buffLine = result.split('\n').find((l) => l.includes('[ENEMY BUFF]') && !l.includes('[ENEMY BUFF END]'));
