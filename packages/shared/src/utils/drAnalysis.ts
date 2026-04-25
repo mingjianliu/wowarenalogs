@@ -433,7 +433,7 @@ function immuneAppsNote(count: number): string {
  * No hardcoded spell ID list — unknown spells are handled automatically.
  *
  * Applications from the same (spellId, casterName) are split into separate casts
- * whenever the gap between consecutive applications exceeds 0.5s.
+ * whenever the gap from the group's first application exceeds 0.5s.
  */
 export function extractAoeCCEvents(chains: IOutgoingCCChain[]): IAoeCCEvent[] {
   const flat: Array<{
