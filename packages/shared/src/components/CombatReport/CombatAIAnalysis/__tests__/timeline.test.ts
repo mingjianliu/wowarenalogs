@@ -1309,12 +1309,10 @@ describe('buildMatchTimeline — [CC CAST] events', () => {
     expect(result).not.toContain('[CC CAST]');
   });
 
-  it('emits [CC CAST] for Psychic Scream hitting 1 enemy', () => {
+  it('does not emit [CC CAST] for Psychic Scream hitting only 1 enemy', () => {
     const chains: IOutgoingCCChain[] = [makeAoeCCChain('EnemyA', 'Feramonk', '8122', 'Psychic Scream', 21, 8)];
     const result = buildMatchTimeline(makeBaseParams({ outgoingCCChains: chains }));
-    expect(result).toContain('[CC CAST]');
-    expect(result).toContain('Psychic Scream');
-    expect(result).toContain('0:21');
+    expect(result).not.toContain('[CC CAST]');
   });
 
   it('emits [CC CAST] for Psychic Scream hitting 2 enemies, listing both targets and count', () => {
@@ -1342,18 +1340,27 @@ describe('buildMatchTimeline — [CC CAST] events', () => {
   });
 
   it('uses enemyPid to compress enemy target names when idMaps are provided', () => {
-    const chains: IOutgoingCCChain[] = [makeAoeCCChain('EnemyA', 'Feramonk', '8122', 'Psychic Scream', 21, 8)];
+    const chains: IOutgoingCCChain[] = [
+      makeAoeCCChain('EnemyA', 'Feramonk', '8122', 'Psychic Scream', 21, 8),
+      makeAoeCCChain('EnemyB', 'Feramonk', '8122', 'Psychic Scream', 21, 8),
+    ];
     const playerIdMap = new Map([['Feramonk', 1]]);
-    const enemyIdMap = new Map([['EnemyA', 4]]);
+    const enemyIdMap = new Map([
+      ['EnemyA', 4],
+      ['EnemyB', 5],
+    ]);
     const result = buildMatchTimeline(makeBaseParams({ outgoingCCChains: chains, playerIdMap, enemyIdMap }));
     expect(result).toContain('[CC CAST]');
     expect(result).toContain('4');
+    expect(result).toContain('5');
   });
 
   it('emits separate [CC CAST] lines for separate casts of same spell (> 0.5s apart)', () => {
     const chains: IOutgoingCCChain[] = [
       makeAoeCCChain('EnemyA', 'Feramonk', '8122', 'Psychic Scream', 21, 8),
+      makeAoeCCChain('EnemyB', 'Feramonk', '8122', 'Psychic Scream', 21, 8),
       makeAoeCCChain('EnemyA', 'Feramonk', '8122', 'Psychic Scream', 45, 8),
+      makeAoeCCChain('EnemyB', 'Feramonk', '8122', 'Psychic Scream', 45, 8),
     ];
     const result = buildMatchTimeline(makeBaseParams({ outgoingCCChains: chains }));
     const castLines = result.split('\n').filter((l) => l.includes('[CC CAST]'));
