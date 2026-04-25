@@ -2528,21 +2528,25 @@ describe('buildResourceSnapshot — F72 compact [RES] format', () => {
         },
       ]),
     });
+    expect(result).toMatch(/^\s*\[RES\] rdy:/);
     expect(result).not.toContain('enemy:');
   });
 
   it('CC present: includes cc field, omits free players', () => {
     const cc = makeCC('Psychic Scream', 27, 8, 'Fear');
+    const freePlayer = makeSummary('Player2', []);
     const result = buildResourceSnapshot({
       timeSeconds: 30,
       ownerCDs: [],
       ownerName: 'Player1',
       ownerSpec: 'Holy Paladin',
       teammateCDs: [],
-      ccTrinketSummaries: [makeSummary('Player1', [cc])],
+      ccTrinketSummaries: [makeSummary('Player1', [cc]), freePlayer],
       enemyCDTimeline: BASE_ENEMY_TIMELINE,
     });
+    expect(result).toMatch(/^\s*\[RES\] rdy:/);
     expect(result).toContain('cc:Player1/Psychic Scream-5s');
+    expect(result).not.toContain('Player2');
     expect(result).not.toContain('[stun]');
     expect(result).not.toContain('[trinketed]');
   });
@@ -2586,6 +2590,7 @@ describe('buildResourceSnapshot — F72 compact [RES] format', () => {
       ccTrinketSummaries: [makeSummary('Player1', [cc], [30])],
       enemyCDTimeline: BASE_ENEMY_TIMELINE,
     });
+    expect(result).toMatch(/^\s*\[RES\] rdy:/);
     expect(result).not.toContain('[trinketed]');
   });
 
@@ -2599,6 +2604,7 @@ describe('buildResourceSnapshot — F72 compact [RES] format', () => {
       ccTrinketSummaries: [makeSummary('Player1', [])],
       enemyCDTimeline: BASE_ENEMY_TIMELINE,
     });
+    expect(result).toMatch(/^\s*\[RES\] rdy:/);
     expect(result).not.toContain('cc:');
   });
 
