@@ -61,27 +61,27 @@ Core rules:
 Your task:
 Your goal is **resource optimization, not survival confirmation**. Do not explain how the player survived. Explain whether they spent the minimum necessary resource to survive — and if not, what that waste costs them in the next enemy burst window.
 
-You are given a PLAYER LOADOUT (all major CDs available this match) and a MATCH TIMELINE (raw chronological events). Each [OWNER CD] and [TEAMMATE CD] event is followed by a [RESOURCES] block showing ground-truth state at that exact moment: which friendly CDs were ready or on cooldown, which enemy offensive CDs were recently active, and the CC state of every friendly player.
+You are given a PLAYER LOADOUT (all major CDs available this match) and a MATCH TIMELINE (raw chronological events). Each [OWNER CD] and [TEAMMATE CD] event is followed by a [RES] line showing ground-truth state at that exact moment. Fields: rdy = friendly CDs ready now; cd = friendly CDs on cooldown with seconds remaining; enemy = enemy offensive CDs cast in the last 30s with seconds since cast (field absent = none active); cc = friendly players currently CC'd with seconds remaining (field absent = all players free). A [stun] tag means the player is cast-locked; [trinketed] means they used their PvP trinket at this exact moment.
 
 Identify the most important decision points yourself. Read the full timeline, build your own causal narrative about what happened and why, then evaluate the decisions that most affected match outcome.
 
 For each decision point, apply these four mandatory checks before writing your finding:
 
 **1. Trade Equity**
-Cross-reference the [RESOURCES] enemy active line at the moment of the CD use.
+Cross-reference the [RES] enemy field at the moment of the CD use.
 - If an enemy offensive CD was active: the trade may be warranted — evaluate HP trajectory and whether a smaller tool could have covered the window instead.
 - If no enemy offensive CD was active: do NOT conclude Bait if dampening > 40% (healing is severely impaired; flat damage is lethal at that point). Do NOT conclude Bait if the preceding 10s shows sustained heavy spell pressure (Chaos Bolt chains, Pyroblast casts, Greater Pyro reads). If both conditions are absent, flag as potential Bait and assess whether a smaller tool could have covered the window.
 
 **2. Overlap Attribution**
-If two or more friendly major CDs appear within 3s in the timeline, determine Primary (the CD that was correct to use) and Secondary (the redundant one), using the [RESOURCES] CC state:
-- Healer is [CAST-LOCKED] (physical stun — cannot cast): the DPS defensive is Primary (correct). Any healer defensive appearing in the same window required Trinket use to break the stun — flag as potential Total Tactical Disaster: trinket burned on an already-covered window.
+If two or more friendly major CDs appear within 3s in the timeline, determine Primary (the CD that was correct to use) and Secondary (the redundant one), using the [RES] cc field:
+- Healer cc entry has [stun] (cast-locked by physical stun): the DPS defensive is Primary (correct). Any healer defensive appearing in the same window required Trinket use to break the stun — check for [trinketed] on the cc entry — flag as potential Total Tactical Disaster: trinket burned on an already-covered window.
 - Healer is free: the healer's defensive is Primary. Any DPS defensive within 3s is a Panic Click — DPS is responsible for the redundancy.
 - Both are free: the player with the larger-cooldown ability should have held — they are responsible.
 The finding must name who held the redundant resource and which specific ability they should have kept.
 
 **3. Counterfactual Path**
 The alternative is never "do nothing." It is always "the cheapest tool that could have covered this window."
-- Use HP trajectory and CC state from [RESOURCES] to estimate whether small tools (Ignore Pain, shields, passive healing, positioning) could have bridged the 4–6s gap.
+- Use HP trajectory and cc field from [RES] to estimate whether small tools (Ignore Pain, shields, passive healing, positioning) could have bridged the 4–6s gap.
 - If the only conclusion is "not using X would have caused death with no available alternative," downgrade this finding — do not include it in your Top 5. Only findings where a cheaper path plausibly existed qualify.
 
 **4. Specific Future Consequence**
