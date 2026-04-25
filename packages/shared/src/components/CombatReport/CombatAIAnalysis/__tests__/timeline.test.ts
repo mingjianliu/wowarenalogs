@@ -1673,7 +1673,7 @@ describe('buildMatchTimeline — [ENEMY BUFF] events', () => {
     expect(result).not.toContain('[ENEMY BUFFS]');
   });
 
-  it('does NOT repeat buff info on every [RESOURCES] snapshot during the buff window', () => {
+  it('does NOT repeat buff info on every [RES] snapshot during the buff window', () => {
     const matchStartMs = 1_000_000;
     const matchEndMs = matchStartMs + 60_000;
 
@@ -1723,6 +1723,8 @@ describe('buildMatchTimeline — [ENEMY BUFF] events', () => {
     expect(buffCount).toBe(1);
     expect(buffEndCount).toBe(1);
     expect(result).not.toContain('[ENEMY BUFFS]');
+    expect(result).not.toContain('[RESOURCES]');
+    expect(result).toContain('[RES]');
   });
 });
 
