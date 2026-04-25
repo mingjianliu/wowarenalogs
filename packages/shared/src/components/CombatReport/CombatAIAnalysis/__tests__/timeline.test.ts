@@ -18,6 +18,7 @@ import {
   buildMatchTimeline,
   BuildMatchTimelineParams,
   buildPlayerLoadout,
+  buildResourceSnapshot,
   computeHealingInWindow,
   extractEnemyMajorBuffIntervals,
   extractOwnerCDBuffExpiry,
@@ -2411,5 +2412,210 @@ describe('buildMatchTimeline — [HP] / [ENEMY HP] split', () => {
     for (const line of hpLines) {
       expect(line).not.toContain('Dzinked');
     }
+  });
+});
+
+// ── buildResourceSnapshot — F72 compact format ────────────────────────────────
+
+describe('buildResourceSnapshot — F72 compact [RES] format', () => {
+  const BASE_ENEMY_TIMELINE = makeEnemyTimeline();
+
+  function makeCC(spellName: string, atSeconds: number, durationSeconds: number, category: string): ICCInstance {
+    return {
+      atSeconds,
+      durationSeconds,
+      spellId: '0',
+      spellName,
+      sourceName: 'enemy',
+      sourceSpec: 'Unknown',
+      damageTakenDuring: 0,
+      trinketState: 'available_unused',
+      drInfo: { category, level: 'Full' as const, sequenceIndex: 0 },
+      distanceYards: null,
+      losBlocked: null,
+    };
+  }
+
+  function makeSummary(
+    playerName: string,
+    ccInstances: ICCInstance[] = [],
+    trinketUseTimes: number[] = [],
+  ): IPlayerCCTrinketSummary {
+    return {
+      playerName,
+      playerSpec: 'Holy Paladin',
+      trinketType: 'Gladiator',
+      trinketCooldownSeconds: 90,
+      ccInstances,
+      trinketUseTimes,
+      missedTrinketWindows: [],
+    };
+  }
+
+  it('calm state: emits rdy and cd only, no enemy or cc fields', () => {
+    const avWr = { ...makeCD('Avenging Wrath', 120), casts: [] };
+    const ps = {
+      ...makeCD('Pain Suppression', 120),
+      casts: [{ timeSeconds: 5 }],
+    };
+    const result = buildResourceSnapshot({
+      timeSeconds: 30,
+      ownerCDs: [avWr, ps],
+      ownerName: 'Player1',
+      ownerSpec: 'Holy Paladin',
+      teammateCDs: [],
+      ccTrinketSummaries: [],
+      enemyCDTimeline: BASE_ENEMY_TIMELINE,
+    });
+    expect(result).toMatch(/^\s*\[RES\] rdy:/);
+    expect(result).toContain('rdy:Avenging Wrath');
+    expect(result).toContain('cd:Pain Suppression(');
+    expect(result).not.toContain('enemy:');
+    expect(result).not.toContain('cc:');
+  });
+
+  it('enemy burst: includes enemy field with seconds-since-cast', () => {
+    const result = buildResourceSnapshot({
+      timeSeconds: 20,
+      ownerCDs: [],
+      ownerName: 'Player1',
+      ownerSpec: 'Holy Paladin',
+      teammateCDs: [],
+      ccTrinketSummaries: [],
+      enemyCDTimeline: makeEnemyTimeline([
+        {
+          playerName: 'Rogue1',
+          specName: 'Outlaw Rogue',
+          offensiveCDs: [
+            {
+              spellId: '0',
+              spellName: 'Adrenaline Rush',
+              castTimeSeconds: 12,
+              cooldownSeconds: 180,
+              availableAgainAtSeconds: 192,
+              buffEndSeconds: 22,
+            },
+          ],
+        },
+      ]),
+    });
+    expect(result).toContain('enemy:Adrenaline Rush/Outlaw Rogue(8s)');
+    expect(result).not.toContain('cc:');
+  });
+
+  it('enemy CD older than 30s is omitted from enemy field', () => {
+    const result = buildResourceSnapshot({
+      timeSeconds: 60,
+      ownerCDs: [],
+      ownerName: 'Player1',
+      ownerSpec: 'Holy Paladin',
+      teammateCDs: [],
+      ccTrinketSummaries: [],
+      enemyCDTimeline: makeEnemyTimeline([
+        {
+          playerName: 'Rogue1',
+          specName: 'Outlaw Rogue',
+          offensiveCDs: [
+            {
+              spellId: '0',
+              spellName: 'Adrenaline Rush',
+              castTimeSeconds: 20,
+              cooldownSeconds: 180,
+              availableAgainAtSeconds: 200,
+              buffEndSeconds: 30,
+            },
+          ],
+        },
+      ]),
+    });
+    expect(result).not.toContain('enemy:');
+  });
+
+  it('CC present: includes cc field, omits free players', () => {
+    const cc = makeCC('Psychic Scream', 27, 8, 'Fear');
+    const result = buildResourceSnapshot({
+      timeSeconds: 30,
+      ownerCDs: [],
+      ownerName: 'Player1',
+      ownerSpec: 'Holy Paladin',
+      teammateCDs: [],
+      ccTrinketSummaries: [makeSummary('Player1', [cc])],
+      enemyCDTimeline: BASE_ENEMY_TIMELINE,
+    });
+    expect(result).toContain('cc:Player1/Psychic Scream-5s');
+    expect(result).not.toContain('[stun]');
+    expect(result).not.toContain('[trinketed]');
+  });
+
+  it('physical stun appends [stun] tag', () => {
+    const cc = makeCC('Kidney Shot', 27, 8, 'Stun');
+    const result = buildResourceSnapshot({
+      timeSeconds: 30,
+      ownerCDs: [],
+      ownerName: 'Player1',
+      ownerSpec: 'Holy Paladin',
+      teammateCDs: [],
+      ccTrinketSummaries: [makeSummary('Player1', [cc])],
+      enemyCDTimeline: BASE_ENEMY_TIMELINE,
+    });
+    expect(result).toContain('cc:Player1/Kidney Shot-5s[stun]');
+  });
+
+  it('stun + trinket at same second appends [trinketed] tag', () => {
+    const cc = makeCC('Kidney Shot', 27, 8, 'Stun');
+    const result = buildResourceSnapshot({
+      timeSeconds: 30,
+      ownerCDs: [],
+      ownerName: 'Player1',
+      ownerSpec: 'Holy Paladin',
+      teammateCDs: [],
+      ccTrinketSummaries: [makeSummary('Player1', [cc], [30])],
+      enemyCDTimeline: BASE_ENEMY_TIMELINE,
+    });
+    expect(result).toContain('[stun][trinketed]');
+  });
+
+  it('non-stun CC does not get [trinketed] even with trinket use at same time', () => {
+    const cc = makeCC('Psychic Scream', 27, 8, 'Fear');
+    const result = buildResourceSnapshot({
+      timeSeconds: 30,
+      ownerCDs: [],
+      ownerName: 'Player1',
+      ownerSpec: 'Holy Paladin',
+      teammateCDs: [],
+      ccTrinketSummaries: [makeSummary('Player1', [cc], [30])],
+      enemyCDTimeline: BASE_ENEMY_TIMELINE,
+    });
+    expect(result).not.toContain('[trinketed]');
+  });
+
+  it('all players free: cc field absent entirely', () => {
+    const result = buildResourceSnapshot({
+      timeSeconds: 30,
+      ownerCDs: [],
+      ownerName: 'Player1',
+      ownerSpec: 'Holy Paladin',
+      teammateCDs: [],
+      ccTrinketSummaries: [makeSummary('Player1', [])],
+      enemyCDTimeline: BASE_ENEMY_TIMELINE,
+    });
+    expect(result).not.toContain('cc:');
+  });
+
+  it('playerIdMap compresses names to numeric IDs in cc field', () => {
+    const cc = makeCC('Kidney Shot', 27, 8, 'Stun');
+    const playerIdMap = new Map([['Player1', 1]]);
+    const result = buildResourceSnapshot({
+      timeSeconds: 30,
+      ownerCDs: [],
+      ownerName: 'Player1',
+      ownerSpec: 'Holy Paladin',
+      teammateCDs: [],
+      ccTrinketSummaries: [makeSummary('Player1', [cc])],
+      enemyCDTimeline: BASE_ENEMY_TIMELINE,
+      playerIdMap,
+    });
+    expect(result).toContain('cc:1/Kidney Shot-5s[stun]');
+    expect(result).not.toContain('Player1');
   });
 });
