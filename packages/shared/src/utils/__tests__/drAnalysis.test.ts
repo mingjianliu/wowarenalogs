@@ -373,7 +373,13 @@ describe('extractAoeCCEvents', () => {
       makeChain('Enemy1', [
         { atSeconds: 21.0, spellId: '8122', spellName: 'Psychic Scream', casterName: 'Caster', durationSeconds: 8 },
       ]),
+      makeChain('Enemy2', [
+        { atSeconds: 21.0, spellId: '8122', spellName: 'Psychic Scream', casterName: 'Caster', durationSeconds: 8 },
+      ]),
       makeChain('Enemy1', [
+        { atSeconds: 35.0, spellId: '8122', spellName: 'Psychic Scream', casterName: 'Caster', durationSeconds: 8 },
+      ]),
+      makeChain('Enemy2', [
         { atSeconds: 35.0, spellId: '8122', spellName: 'Psychic Scream', casterName: 'Caster', durationSeconds: 8 },
       ]),
     ];
@@ -385,6 +391,12 @@ describe('extractAoeCCEvents', () => {
     const chains = [
       makeChain('Enemy1', [
         { atSeconds: 21, spellId: '8122', spellName: 'Psychic Scream', casterName: 'CasterA', durationSeconds: 8 },
+      ]),
+      makeChain('Enemy2', [
+        { atSeconds: 21, spellId: '8122', spellName: 'Psychic Scream', casterName: 'CasterA', durationSeconds: 8 },
+      ]),
+      makeChain('Enemy1', [
+        { atSeconds: 21, spellId: '8122', spellName: 'Psychic Scream', casterName: 'CasterB', durationSeconds: 8 },
       ]),
       makeChain('Enemy2', [
         { atSeconds: 21, spellId: '8122', spellName: 'Psychic Scream', casterName: 'CasterB', durationSeconds: 8 },
@@ -402,6 +414,12 @@ describe('extractAoeCCEvents', () => {
         { atSeconds: 21, spellId: '8122', spellName: 'Psychic Scream', casterName: 'Caster', durationSeconds: 8 },
       ]),
       makeChain('Enemy2', [
+        { atSeconds: 21, spellId: '8122', spellName: 'Psychic Scream', casterName: 'Caster', durationSeconds: 8 },
+      ]),
+      makeChain('Enemy1', [
+        { atSeconds: 21, spellId: '5246', spellName: 'Intimidating Shout', casterName: 'Caster', durationSeconds: 8 },
+      ]),
+      makeChain('Enemy2', [
         { atSeconds: 21, spellId: '5246', spellName: 'Intimidating Shout', casterName: 'Caster', durationSeconds: 8 },
       ]),
     ];
@@ -409,20 +427,23 @@ describe('extractAoeCCEvents', () => {
     expect(result).toHaveLength(2);
   });
 
-  it('returns an event with 1 target when only one enemy was hit', () => {
+  it('does NOT emit an event when only one enemy was hit (single-target CC)', () => {
     const chains = [
       makeChain('Enemy1', [
         { atSeconds: 21, spellId: '8122', spellName: 'Psychic Scream', casterName: 'Caster', durationSeconds: 8 },
       ]),
     ];
     const result = extractAoeCCEvents(chains);
-    expect(result).toHaveLength(1);
-    expect(result[0].targets).toHaveLength(1);
+    expect(result).toHaveLength(0);
   });
 
   it('returns events sorted by atSeconds', () => {
     const chains = [
       makeChain('Enemy1', [
+        { atSeconds: 45, spellId: '8122', spellName: 'Psychic Scream', casterName: 'Caster', durationSeconds: 8 },
+        { atSeconds: 21, spellId: '8122', spellName: 'Psychic Scream', casterName: 'Caster', durationSeconds: 8 },
+      ]),
+      makeChain('Enemy2', [
         { atSeconds: 45, spellId: '8122', spellName: 'Psychic Scream', casterName: 'Caster', durationSeconds: 8 },
         { atSeconds: 21, spellId: '8122', spellName: 'Psychic Scream', casterName: 'Caster', durationSeconds: 8 },
       ]),
@@ -445,5 +466,43 @@ describe('extractAoeCCEvents', () => {
     const result = extractAoeCCEvents(chains);
     expect(result[0].targets.find((t) => t.name === 'Enemy1')?.durationSeconds).toBe(8);
     expect(result[0].targets.find((t) => t.name === 'Enemy2')?.durationSeconds).toBe(4);
+  });
+
+  it('emits an event for an unknown spell ID when it hits ≥2 distinct enemies', () => {
+    // Any spell that hits 2+ targets is AoE — no hardcoded whitelist needed
+    const chains = [
+      makeChain('Enemy1', [
+        { atSeconds: 10, spellId: '99999', spellName: 'Mystery Fear', casterName: 'Caster', durationSeconds: 6 },
+      ]),
+      makeChain('Enemy2', [
+        { atSeconds: 10, spellId: '99999', spellName: 'Mystery Fear', casterName: 'Caster', durationSeconds: 6 },
+      ]),
+    ];
+    const result = extractAoeCCEvents(chains);
+    expect(result).toHaveLength(1);
+    expect(result[0].spellId).toBe('99999');
+    expect(result[0].targets).toHaveLength(2);
+  });
+
+  it('treats two rapid same-caster casts 0.6s apart as two separate events (not merged)', () => {
+    // Bug fix: old code anchored window to first-seen app, merging these incorrectly
+    const chains = [
+      makeChain('Enemy1', [
+        { atSeconds: 10.0, spellId: '8122', spellName: 'Psychic Scream', casterName: 'Caster', durationSeconds: 8 },
+      ]),
+      makeChain('Enemy2', [
+        { atSeconds: 10.0, spellId: '8122', spellName: 'Psychic Scream', casterName: 'Caster', durationSeconds: 8 },
+      ]),
+      makeChain('Enemy1', [
+        { atSeconds: 10.6, spellId: '8122', spellName: 'Psychic Scream', casterName: 'Caster', durationSeconds: 8 },
+      ]),
+      makeChain('Enemy2', [
+        { atSeconds: 10.6, spellId: '8122', spellName: 'Psychic Scream', casterName: 'Caster', durationSeconds: 8 },
+      ]),
+    ];
+    const result = extractAoeCCEvents(chains);
+    expect(result).toHaveLength(2);
+    expect(result[0].atSeconds).toBe(10.0);
+    expect(result[1].atSeconds).toBe(10.6);
   });
 });

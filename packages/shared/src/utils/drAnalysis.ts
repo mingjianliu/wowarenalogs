@@ -113,26 +113,12 @@ export const DR_CATEGORY_MAP: Record<string, string> = {
  * Spell IDs whose single cast can apply CC to multiple enemy targets simultaneously.
  * Used to group SPELL_AURA_APPLIED events from analyzeOutgoingCCChains into per-cast AoE events.
  */
-export const AOE_CC_SPELL_IDS = new Set<string>([
-  '8122', // Psychic Scream (Priest)
-  '5246', // Intimidating Shout (Warrior)
-  '316593', // Intimidating Shout (rank 2)
-  '316595', // Intimidating Shout (rank 3)
-  '5484', // Howl of Terror (Warlock)
-  '77505', // Shockwave (Warrior)
-  '119381', // Leg Sweep (Monk)
-  '20549', // War Stomp (Tauren racial)
-  '99', // Incapacitating Roar (Druid Bear)
-  '30283', // Shadowfury (Warlock) — small AoE on impact
-  '255941', // Bursting Shot (Hunter) — disorients group
-]);
-
 export interface IAoeCCEvent {
   casterName: string;
   spellId: string;
   spellName: string;
   atSeconds: number;
-  /** Each enemy target affected, in order of atSeconds */
+  /** Each enemy target affected, in order of first application */
   targets: Array<{ name: string; durationSeconds: number }>;
 }
 
@@ -440,14 +426,14 @@ function immuneAppsNote(count: number): string {
 }
 
 /**
- * Groups simultaneous AoE CC applications from outgoing CC chains into per-cast events.
+ * Groups CC applications from outgoing CC chains into per-cast AoE events.
  *
- * AoE CC (Psychic Scream, Intimidating Shout, etc.) produces one SPELL_AURA_APPLIED per
- * target hit within a single server tick (~50ms). This function groups applications from
- * the same caster and spell within a 0.5s window so Claude sees one event per cast with
- * all targets listed.
+ * AoE-ness is determined at runtime: any (spellId, casterName) pair that hits
+ * ≥2 distinct enemy targets within a 0.5s window is treated as an AoE cast.
+ * No hardcoded spell ID list — unknown spells are handled automatically.
  *
- * Only spells in AOE_CC_SPELL_IDS are included; single-target CCs are skipped.
+ * Applications from the same (spellId, casterName) are split into separate casts
+ * whenever the gap between consecutive applications exceeds 0.5s.
  */
 export function extractAoeCCEvents(chains: IOutgoingCCChain[]): IAoeCCEvent[] {
   const flat: Array<{
@@ -461,7 +447,6 @@ export function extractAoeCCEvents(chains: IOutgoingCCChain[]): IAoeCCEvent[] {
 
   for (const chain of chains) {
     for (const app of chain.applications) {
-      if (!AOE_CC_SPELL_IDS.has(app.spellId)) continue;
       flat.push({
         casterName: app.casterName,
         spellId: app.spellId,
@@ -475,29 +460,32 @@ export function extractAoeCCEvents(chains: IOutgoingCCChain[]): IAoeCCEvent[] {
 
   flat.sort((a, b) => a.atSeconds - b.atSeconds);
 
-  const events: IAoeCCEvent[] = [];
   const GROUPING_WINDOW_S = 0.5;
+  const events: IAoeCCEvent[] = [];
+  // pairKey → the most recently started event for that (spellId, casterName) pair
+  const currentEvent = new Map<string, IAoeCCEvent>();
 
   for (const app of flat) {
-    const existing = events.find(
-      (e) =>
-        e.casterName === app.casterName &&
-        e.spellId === app.spellId &&
-        Math.abs(e.atSeconds - app.atSeconds) <= GROUPING_WINDOW_S,
-    );
+    const pairKey = `${app.spellId}\x00${app.casterName}`;
+    const prev = currentEvent.get(pairKey);
 
-    if (existing) {
-      existing.targets.push({ name: app.targetName, durationSeconds: app.durationSeconds });
-    } else {
-      events.push({
+    if (prev === undefined || app.atSeconds - prev.atSeconds > GROUPING_WINDOW_S) {
+      const evt: IAoeCCEvent = {
         casterName: app.casterName,
         spellId: app.spellId,
         spellName: app.spellName,
         atSeconds: app.atSeconds,
         targets: [{ name: app.targetName, durationSeconds: app.durationSeconds }],
-      });
+      };
+      events.push(evt);
+      currentEvent.set(pairKey, evt);
+    } else {
+      prev.targets.push({ name: app.targetName, durationSeconds: app.durationSeconds });
     }
   }
 
-  return events;
+  // Only emit events that hit ≥2 distinct enemy targets (data-driven AoE detection)
+  return events
+    .filter((e) => new Set(e.targets.map((t) => t.name)).size >= 2)
+    .sort((a, b) => a.atSeconds - b.atSeconds);
 }
