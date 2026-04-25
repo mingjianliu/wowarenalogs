@@ -125,7 +125,7 @@ export const AOE_CC_SPELL_IDS = new Set<string>([
   '99', // Incapacitating Roar (Druid Bear)
   '30283', // Shadowfury (Warlock) — small AoE on impact
   '255941', // Bursting Shot (Hunter) — disorients group
-  '204399', // Sigil of Misery (Vengeance DH) — AoE incapacitate
+  '207685', // Sigil of Misery (Demon Hunter) — AoE incapacitate
 ]);
 
 export interface IAoeCCEvent {
