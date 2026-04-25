@@ -1212,7 +1212,7 @@ describe('buildMatchTimeline — F62 dense HP ticks in critical windows', () => 
 });
 
 describe('buildMatchTimeline — F64 enemy HP in [HP] ticks', () => {
-  it('includes enemy HP on the same [HP] line as friendly HP', () => {
+  it('includes friendly HP on [HP] line and enemy HP on [ENEMY HP] line during a critical window', () => {
     const matchStartMs = 0;
 
     const friend = makeUnit('unit-1', {
@@ -1225,27 +1225,32 @@ describe('buildMatchTimeline — F64 enemy HP in [HP] ticks', () => {
     // advancedActorId must match the unit's id for getUnitHpAtTimestamp to pick it up
     const enemy = makeUnit('enemy-1', {
       name: 'Natjkis',
+      reaction: CombatUnitReaction.Hostile,
       advancedActions: [
         { ...makeAdvancedAction(6_000, 0, 0, 500_000, 175_000), advancedActorId: 'enemy-1' }, // 35% at t=6s
       ],
     }) as ICombatUnit;
 
+    // Enemy death at t=10s creates a critical window [0, 10] that covers t=6s
     const result = buildMatchTimeline(
       makeBaseParams({
         friends: [friend],
         enemies: [enemy],
+        enemyDeaths: [{ spec: 'Affliction Warlock', name: 'Natjkis', atSeconds: 10 }],
         matchStartMs,
-        matchEndMs: 9_000,
+        matchEndMs: 12_000,
       }),
     );
 
-    // Both HP readings should appear on the same [HP] line at t=6s
-    const hpLines = result.split('\n').filter((l) => l.includes('[HP]'));
-    expect(hpLines.length).toBeGreaterThan(0);
-    const sixSecondLine = hpLines.find((l) => l.startsWith('0:06'));
-    expect(sixSecondLine).toBeDefined();
-    expect(sixSecondLine).toContain('Feramonk:90%');
-    expect(sixSecondLine).toContain('Natjkis:35%');
+    // Friendly HP on [HP] lines, enemy HP on [ENEMY HP] lines
+    const hpLines = result.split('\n').filter((l) => /\[HP\]/.test(l) && !/\[ENEMY HP\]/.test(l));
+    const enemyHpLines = result.split('\n').filter((l) => l.includes('[ENEMY HP]'));
+    expect(hpLines.some((l) => l.includes('Feramonk:90%'))).toBeTruthy();
+    expect(enemyHpLines.some((l) => l.includes('Natjkis:35%'))).toBeTruthy();
+    // Enemy name must NOT appear on plain [HP] lines
+    for (const line of hpLines) {
+      expect(line).not.toContain('Natjkis');
+    }
   });
 
   it('adds 1s dense ticks in [T-10, T] window before an enemy death', () => {
@@ -1253,6 +1258,7 @@ describe('buildMatchTimeline — F64 enemy HP in [HP] ticks', () => {
 
     const enemy = makeUnit('enemy-1', {
       name: 'Natjkis',
+      reaction: CombatUnitReaction.Hostile,
       advancedActions: [
         { ...makeAdvancedAction(51_000, 0, 0, 500_000, 100_000), advancedActorId: 'enemy-1' }, // 20% at t=51s
         { ...makeAdvancedAction(53_000, 0, 0, 500_000, 65_000), advancedActorId: 'enemy-1' }, // 13% at t=53s
@@ -1269,9 +1275,9 @@ describe('buildMatchTimeline — F64 enemy HP in [HP] ticks', () => {
       }),
     );
 
-    // Dense window [50, 60] — expect consecutive 1s ticks (not just 3s multiples like 51, 54, 57, 60)
-    const hpLines = result.split('\n').filter((l) => l.includes('[HP]'));
-    const tickSeconds = hpLines
+    // Dense window [50, 60] — expect consecutive 1s ticks on [ENEMY HP] lines
+    const enemyHpLines = result.split('\n').filter((l) => l.includes('[ENEMY HP]'));
+    const tickSeconds = enemyHpLines
       .map((l) => {
         const m = l.match(/^(\d+):(\d+)/);
         return m ? parseInt(m[1]) * 60 + parseInt(m[2]) : null;
@@ -2306,5 +2312,111 @@ describe('buildMatchTimeline — [HEALING] line on healing amplifier CDs', () =>
     const healOut = [makeHealEvent(matchStartMs + 12_000, 'healer-1', 100_000)];
     const timeline = buildMatchTimeline(makeBaseParams(healOut, [painSuppCD]));
     expect(timeline).not.toContain('[HEALING]');
+  });
+});
+
+// ── buildMatchTimeline — [HP] / [ENEMY HP] split ─────────────────────────────
+
+describe('buildMatchTimeline — [HP] / [ENEMY HP] split', () => {
+  it('emits [HP] for friendly units on baseline ticks (no critical window)', () => {
+    const matchStartMs = 0;
+    const matchEndMs = 12_000; // 12s match, no deaths
+
+    // unit id must match advancedActorId ('unit-1') so getUnitHpAtTimestamp picks it up
+    const friend = makeUnit('unit-1', {
+      name: 'Feramonk',
+      advancedActions: [makeAdvancedAction(3_000, 0, 0, 500_000, 450_000)],
+    });
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        friends: [friend],
+        matchStartMs,
+        matchEndMs,
+      }),
+    );
+
+    expect(result).toContain('[HP]');
+  });
+
+  it('does NOT emit [ENEMY HP] on baseline ticks (no critical window)', () => {
+    const matchStartMs = 0;
+    const matchEndMs = 12_000;
+
+    const enemy = makeUnit('enemy-1', {
+      name: 'Dzinked',
+      reaction: CombatUnitReaction.Hostile,
+      advancedActions: [{ ...makeAdvancedAction(3_000, 0, 0, 500_000, 450_000), advancedActorId: 'enemy-1' }],
+    });
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        enemies: [enemy],
+        matchStartMs,
+        matchEndMs,
+      }),
+    );
+
+    expect(result).not.toContain('[ENEMY HP]');
+  });
+
+  it('emits [ENEMY HP] on critical-window ticks (death window)', () => {
+    const matchStartMs = 0;
+    const deathAtSeconds = 30;
+    const matchEndMs = 60_000;
+
+    const enemy = makeUnit('enemy-1', {
+      name: 'Dzinked',
+      reaction: CombatUnitReaction.Hostile,
+      advancedActions: [
+        { ...makeAdvancedAction((deathAtSeconds - 5) * 1000, 0, 0, 500_000, 100_000), advancedActorId: 'enemy-1' },
+      ],
+    });
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        enemies: [enemy],
+        enemyDeaths: [{ spec: 'Affliction Warlock', name: 'Dzinked', atSeconds: deathAtSeconds }],
+        matchStartMs,
+        matchEndMs,
+      }),
+    );
+
+    expect(result).toContain('[ENEMY HP]');
+  });
+
+  it('does NOT include enemy HP on [HP] lines', () => {
+    const matchStartMs = 0;
+    const deathAtSeconds = 30;
+    const matchEndMs = 60_000;
+
+    // unit-1 matches default advancedActorId from makeAdvancedAction
+    const friend = makeUnit('unit-1', {
+      name: 'Feramonk',
+      advancedActions: [makeAdvancedAction((deathAtSeconds - 3) * 1000, 0, 0, 500_000, 400_000)],
+    });
+    const enemy = makeUnit('enemy-1', {
+      name: 'Dzinked',
+      reaction: CombatUnitReaction.Hostile,
+      advancedActions: [
+        { ...makeAdvancedAction((deathAtSeconds - 3) * 1000, 0, 0, 500_000, 50_000), advancedActorId: 'enemy-1' },
+      ],
+    });
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        friends: [friend],
+        enemies: [enemy],
+        enemyDeaths: [{ spec: 'Affliction Warlock', name: 'Dzinked', atSeconds: deathAtSeconds }],
+        matchStartMs,
+        matchEndMs,
+      }),
+    );
+
+    // [HP] lines must not contain enemy names; enemy HP goes on [ENEMY HP] lines
+    const hpLines = result.split('\n').filter((l) => /\[HP\]/.test(l) && !/\[ENEMY HP\]/.test(l));
+    for (const line of hpLines) {
+      expect(line).not.toContain('Dzinked');
+    }
   });
 });

@@ -1781,22 +1781,43 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   const HP_SAMPLE_WINDOW_CRITICAL_MS = 1_500; // ±1.5s for 1s dense ticks
   const HP_SAMPLE_WINDOW_BASELINE_MS = 3_000; // ±3s for 3s baseline ticks
 
-  const hpUnits: Array<{ unit: ICombatUnit; label: (name: string) => string }> = [
-    ...friends.map((u) => ({ unit: u, label: (name: string) => pid(name) })),
-    ...(enemies ?? []).map((u) => ({ unit: u, label: (name: string) => enemyPid(name) })),
-  ];
+  const friendlyHpUnits: Array<{ unit: ICombatUnit; label: (name: string) => string }> = friends.map((u) => ({
+    unit: u,
+    label: (name: string) => pid(name),
+  }));
+
+  const enemyHpUnits: Array<{ unit: ICombatUnit; label: (name: string) => string }> = (enemies ?? []).map((u) => ({
+    unit: u,
+    label: (name: string) => enemyPid(name),
+  }));
 
   for (const t of [...tickSet].sort((a, b) => a - b)) {
     const tsMs = matchStartMs + t * 1000;
     const sampleWindowMs = criticalWindowSet.has(t) ? HP_SAMPLE_WINDOW_CRITICAL_MS : HP_SAMPLE_WINDOW_BASELINE_MS;
-    const parts = hpUnits
+
+    const friendlyParts = friendlyHpUnits
       .map(({ unit, label }) => {
         const pct = getUnitHpAtTimestamp(unit, tsMs, sampleWindowMs);
         return pct !== null ? `${label(unit.name)}:${pct}%` : null;
       })
       .filter((s): s is string => s !== null);
-    if (parts.length > 0) {
-      addEntry(t, `${fmtTime(t)}  [HP]   ${parts.join(' / ')}`);
+
+    if (friendlyParts.length > 0) {
+      addEntry(t, `${fmtTime(t)}  [HP]   ${friendlyParts.join(' / ')}`);
+    }
+
+    // Enemy HP only in critical windows — suppressed on quiet baseline ticks
+    if (criticalWindowSet.has(t) && enemyHpUnits.length > 0) {
+      const enemyParts = enemyHpUnits
+        .map(({ unit, label }) => {
+          const pct = getUnitHpAtTimestamp(unit, tsMs, sampleWindowMs);
+          return pct !== null ? `${label(unit.name)}:${pct}%` : null;
+        })
+        .filter((s): s is string => s !== null);
+
+      if (enemyParts.length > 0) {
+        addEntry(t, `${fmtTime(t)}  [ENEMY HP]   ${enemyParts.join(' / ')}`);
+      }
     }
   }
 
