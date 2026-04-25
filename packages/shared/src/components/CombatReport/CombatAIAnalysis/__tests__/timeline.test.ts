@@ -19,6 +19,7 @@ import {
   BuildMatchTimelineParams,
   buildPlayerLoadout,
   computeHealingInWindow,
+  extractEnemyMajorBuffIntervals,
   extractOwnerCDBuffExpiry,
   HEALING_AMPLIFIER_SPELL_IDS,
 } from '../utils';
@@ -45,6 +46,49 @@ function makeCD(spellName: string, cooldownSeconds: number, neverUsed = false): 
 function makeEnemyTimeline(players: IEnemyCDTimeline['players'] = []): IEnemyCDTimeline {
   return { alignedBurstWindows: [], players };
 }
+
+// ── extractEnemyMajorBuffIntervals ────────────────────────────────────────────
+
+describe('extractEnemyMajorBuffIntervals — pre-cast seeding', () => {
+  it('detects a buff applied before matchStartMs with no prior removal', () => {
+    const matchStartMs = 1_000_000;
+    const matchEndMs = matchStartMs + 60_000;
+
+    // PI was applied 5s before match start, never removed before start
+    const enemy = makeUnit('enemy-1', {
+      name: 'Dzinked',
+      reaction: CombatUnitReaction.Hostile,
+      auraEvents: [
+        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '10060', matchStartMs - 5_000, 'healer-1', 'enemy-1'),
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '10060', matchStartMs + 15_000, 'healer-1', 'enemy-1'),
+      ],
+    });
+
+    const result = extractEnemyMajorBuffIntervals([enemy], matchStartMs, matchEndMs);
+    const intervals = result.get('Dzinked') ?? [];
+    expect(intervals.length).toBeGreaterThan(0);
+    expect(intervals[0].startSeconds).toBe(0);
+    expect(intervals[0].endSeconds).toBeCloseTo(15, 1);
+    expect(intervals[0].spellName).toBe('Power Infusion');
+  });
+
+  it('does NOT seed a buff that was applied and removed before matchStartMs', () => {
+    const matchStartMs = 1_000_000;
+    const matchEndMs = matchStartMs + 60_000;
+
+    const enemy = makeUnit('enemy-1', {
+      name: 'Dzinked',
+      reaction: CombatUnitReaction.Hostile,
+      auraEvents: [
+        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '10060', matchStartMs - 10_000, 'healer-1', 'enemy-1'),
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '10060', matchStartMs - 2_000, 'healer-1', 'enemy-1'),
+      ],
+    });
+
+    const result = extractEnemyMajorBuffIntervals([enemy], matchStartMs, matchEndMs);
+    expect(result.get('Dzinked')).toBeUndefined();
+  });
+});
 
 // ── buildPlayerLoadout ────────────────────────────────────────────────────────
 
