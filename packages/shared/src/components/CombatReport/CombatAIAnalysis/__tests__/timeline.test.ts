@@ -1410,7 +1410,7 @@ describe('buildMatchTimeline — F67 [ENEMY BUFFS]', () => {
     });
   }
 
-  it('emits [ENEMY BUFFS] line on [OWNER CD] when enemy has Power Infusion active', () => {
+  it('emits [ENEMY BUFF] and [ENEMY BUFF END] when enemy has Power Infusion active', () => {
     // PI active on Natjkis from 20s to 40s; owner CD cast at 30s
     const enemy = makeEnemyWithAura('enemy-1', 'Natjkis', '10060', 20_000, 40_000);
     const result = buildMatchTimeline(
@@ -1432,11 +1432,13 @@ describe('buildMatchTimeline — F67 [ENEMY BUFFS]', () => {
         ],
       }),
     );
-    expect(result).toContain('[ENEMY BUFFS]');
+    expect(result).toContain('[ENEMY BUFF]');
+    expect(result).toContain('[ENEMY BUFF END]');
     expect(result).toContain('Power Infusion');
+    expect(result).not.toContain('[ENEMY BUFFS]');
   });
 
-  it('marks Power Infusion as [PURGEABLE]', () => {
+  it('marks Power Infusion as purgeable in [ENEMY BUFF] event', () => {
     const enemy = makeEnemyWithAura('enemy-1', 'Natjkis', '10060', 20_000, 40_000);
     const result = buildMatchTimeline(
       makeBaseParams({
@@ -1457,10 +1459,12 @@ describe('buildMatchTimeline — F67 [ENEMY BUFFS]', () => {
         ],
       }),
     );
-    expect(result).toContain('[PURGEABLE]');
+    const buffLine = result.split('\n').find((l) => l.includes('[ENEMY BUFF]') && !l.includes('[ENEMY BUFF END]'));
+    expect(buffLine).toBeDefined();
+    expect(buffLine).toContain('purgeable');
   });
 
-  it('emits [ENEMY BUFFS] on [TEAMMATE CD] too', () => {
+  it('emits [ENEMY BUFF] / [ENEMY BUFF END] even when only [TEAMMATE CD] is cast', () => {
     const enemy = makeEnemyWithAura('enemy-1', 'Natjkis', '10060', 20_000, 40_000);
     const result = buildMatchTimeline(
       makeBaseParams({
@@ -1487,8 +1491,10 @@ describe('buildMatchTimeline — F67 [ENEMY BUFFS]', () => {
         ],
       }),
     );
-    expect(result).toContain('[ENEMY BUFFS]');
+    expect(result).toContain('[ENEMY BUFF]');
+    expect(result).toContain('[ENEMY BUFF END]');
     expect(result).toContain('Power Infusion');
+    expect(result).not.toContain('[ENEMY BUFFS]');
   });
 
   it('does NOT emit [ENEMY BUFFS] when no tracked buff is active at snapshot time', () => {
@@ -1565,8 +1571,8 @@ describe('buildMatchTimeline — F67 [ENEMY BUFFS]', () => {
     expect(result).not.toContain('[ENEMY BUFFS]');
   });
 
-  it('shows remaining seconds for active buff', () => {
-    // PI active 20–50s, owner CD at 30s → 20s remaining
+  it('emits [ENEMY BUFF] at start time and [ENEMY BUFF END] at end time', () => {
+    // PI active 20–50s; [ENEMY BUFF] appears at 0:20, [ENEMY BUFF END] at 0:50
     const enemy = makeEnemyWithAura('enemy-1', 'Natjkis', '10060', 20_000, 50_000);
     const result = buildMatchTimeline(
       makeBaseParams({
@@ -1587,10 +1593,15 @@ describe('buildMatchTimeline — F67 [ENEMY BUFFS]', () => {
         ],
       }),
     );
-    expect(result).toContain('20s left');
+    const buffLine = result.split('\n').find((l) => l.includes('[ENEMY BUFF]') && !l.includes('[ENEMY BUFF END]'));
+    const buffEndLine = result.split('\n').find((l) => l.includes('[ENEMY BUFF END]'));
+    expect(buffLine).toBeDefined();
+    expect(buffLine).toContain('0:20');
+    expect(buffEndLine).toBeDefined();
+    expect(buffEndLine).toContain('0:50');
   });
 
-  it('uses numeric enemy ID when enemyIdMap is provided', () => {
+  it('uses numeric enemy ID in [ENEMY BUFF] event when enemyIdMap is provided', () => {
     const enemy = makeEnemyWithAura('enemy-1', 'Natjkis', '10060', 20_000, 40_000);
     const playerIdMap = new Map([['Feramonk', 1]]);
     const enemyIdMap = new Map([['Natjkis', 3]]);
@@ -1615,11 +1626,94 @@ describe('buildMatchTimeline — F67 [ENEMY BUFFS]', () => {
         ],
       }),
     );
-    expect(result).toContain('[ENEMY BUFFS]');
-    // numeric ID '3' should appear in the buff line
-    const buffLine = result.split('\n').find((l) => l.includes('[ENEMY BUFFS]'));
+    expect(result).not.toContain('[ENEMY BUFFS]');
+    // numeric ID '3' should appear in the [ENEMY BUFF] line
+    const buffLine = result.split('\n').find((l) => l.includes('[ENEMY BUFF]') && !l.includes('[ENEMY BUFF END]'));
     expect(buffLine).toBeDefined();
     expect(buffLine).toContain('3');
+  });
+});
+
+// ── buildMatchTimeline — [ENEMY BUFF] events ──────────────────────────────────
+
+describe('buildMatchTimeline — [ENEMY BUFF] events', () => {
+  it('emits [ENEMY BUFF] at buff start and [ENEMY BUFF END] at buff end', () => {
+    const matchStartMs = 1_000_000;
+    const matchEndMs = matchStartMs + 60_000;
+
+    const enemy = makeUnit('enemy-1', {
+      name: 'Dzinked',
+      reaction: CombatUnitReaction.Hostile,
+      auraEvents: [
+        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '10060', matchStartMs + 23_000, 'healer-1', 'enemy-1'),
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '10060', matchStartMs + 43_000, 'healer-1', 'enemy-1'),
+      ],
+    });
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        enemies: [enemy],
+        matchStartMs,
+        matchEndMs,
+      }),
+    );
+
+    expect(result).toContain('[ENEMY BUFF]');
+    expect(result).toContain('[ENEMY BUFF END]');
+    expect(result).toContain('Power Infusion');
+    expect(result).not.toContain('[ENEMY BUFFS]');
+  });
+
+  it('does NOT repeat buff info on every [RESOURCES] snapshot during the buff window', () => {
+    const matchStartMs = 1_000_000;
+    const matchEndMs = matchStartMs + 60_000;
+
+    const enemy = makeUnit('enemy-1', {
+      name: 'Dzinked',
+      reaction: CombatUnitReaction.Hostile,
+      auraEvents: [
+        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '10060', matchStartMs + 5_000, 'healer-1', 'enemy-1'),
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '10060', matchStartMs + 55_000, 'healer-1', 'enemy-1'),
+      ],
+    });
+
+    const ownerCDs: IMajorCooldownInfo[] = [
+      {
+        spellId: '31884',
+        spellName: 'Avenging Wrath',
+        tag: 'Offensive',
+        cooldownSeconds: 120,
+        maxChargesDetected: 1,
+        casts: [{ timeSeconds: 10 }],
+        availableWindows: [],
+        neverUsed: false,
+      },
+      {
+        spellId: '6940',
+        spellName: 'Blessing of Sacrifice',
+        tag: 'Defensive',
+        cooldownSeconds: 120,
+        maxChargesDetected: 1,
+        casts: [{ timeSeconds: 20 }],
+        availableWindows: [],
+        neverUsed: false,
+      },
+    ];
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        enemies: [enemy],
+        ownerCDs,
+        matchStartMs,
+        matchEndMs,
+      }),
+    );
+
+    const buffCount = (result.match(/\[ENEMY BUFF\]/g) ?? []).length;
+    const buffEndCount = (result.match(/\[ENEMY BUFF END\]/g) ?? []).length;
+    expect(buffCount).toBe(1);
+    expect(buffEndCount).toBe(1);
+    expect(result).not.toContain('[ENEMY BUFFS]');
   });
 });
 

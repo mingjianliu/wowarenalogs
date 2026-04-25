@@ -1254,10 +1254,6 @@ export interface ResourceSnapshotParams {
   ccTrinketSummaries: IPlayerCCTrinketSummary[];
   enemyCDTimeline: IEnemyCDTimeline;
   playerIdMap?: Map<string, number>;
-  /** Pre-computed enemy buff intervals from extractEnemyMajorBuffIntervals. */
-  enemyBuffIntervals?: Map<string, IEnemyBuffInterval[]>;
-  /** Enemy player name → numeric ID. Used to compress enemy names in [ENEMY BUFFS]. */
-  enemyIdMap?: Map<string, number>;
 }
 
 export function buildResourceSnapshot({
@@ -1269,8 +1265,6 @@ export function buildResourceSnapshot({
   ccTrinketSummaries,
   enemyCDTimeline,
   playerIdMap,
-  enemyBuffIntervals,
-  enemyIdMap,
 }: ResourceSnapshotParams): string[] {
   function pid(name: string): string {
     if (!playerIdMap) return name;
@@ -1365,27 +1359,7 @@ export function buildResourceSnapshot({
 
   const ccLine = `                   CC state: ${ccParts.join(' | ')}`;
 
-  // ── Line 4: Enemy active major buffs (F67) ────────────────────────────────
-  const enemyBuffParts: string[] = [];
-  if (enemyBuffIntervals) {
-    const enemyBuffPid = (name: string): string => {
-      if (!enemyIdMap) return name;
-      const id = enemyIdMap.get(name);
-      return id !== undefined ? String(id) : name;
-    };
-    for (const [enemyName, intervals] of enemyBuffIntervals) {
-      const activeBuffs = intervals.filter((i) => i.startSeconds <= timeSeconds && timeSeconds < i.endSeconds);
-      for (const buff of activeBuffs) {
-        const remaining = Math.max(0, Math.round(buff.endSeconds - timeSeconds));
-        const purgeNote = buff.purgeable ? ' [PURGEABLE]' : '';
-        enemyBuffParts.push(`${enemyBuffPid(enemyName)}:${buff.spellName} (${remaining}s left${purgeNote})`);
-      }
-    }
-  }
-
-  const buffLine = enemyBuffParts.length > 0 ? `                   [ENEMY BUFFS]  ${enemyBuffParts.join(' | ')}` : null;
-
-  return buffLine !== null ? [friendlyLine, enemyLine, ccLine, buffLine] : [friendlyLine, enemyLine, ccLine];
+  return [friendlyLine, enemyLine, ccLine];
 }
 
 // ── buildMatchTimeline ─────────────────────────────────────────────────────
@@ -1501,8 +1475,6 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       ccTrinketSummaries,
       enemyCDTimeline,
       playerIdMap,
-      enemyBuffIntervals,
-      enemyIdMap,
     });
   }
 
@@ -1671,6 +1643,22 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       addEntry(
         event.atSeconds,
         `${fmtTime(event.atSeconds)}  [CC CAST]   ${event.spellName} (by ${casterLabel}) → ${targetLabels}${countNote}`,
+      );
+    }
+  }
+
+  // ── [ENEMY BUFF] / [ENEMY BUFF END] events (F67b) ─────────────────────────
+
+  for (const [enemyName, intervals] of enemyBuffIntervals) {
+    for (const interval of intervals) {
+      const purgeNote = interval.purgeable ? ' (purgeable)' : '';
+      addEntry(
+        interval.startSeconds,
+        `${fmtTime(interval.startSeconds)}  [ENEMY BUFF]   ${enemyPid(enemyName)}: ${interval.spellName}${purgeNote}`,
+      );
+      addEntry(
+        interval.endSeconds,
+        `${fmtTime(interval.endSeconds)}  [ENEMY BUFF END]   ${enemyPid(enemyName)}: ${interval.spellName}`,
       );
     }
   }
