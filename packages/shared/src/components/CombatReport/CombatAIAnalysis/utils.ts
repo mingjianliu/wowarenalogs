@@ -1518,7 +1518,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
           ? ` → ${pid(cast.targetName)}${cast.targetHpPct !== undefined ? ` (${cast.targetHpPct}% HP)` : ''}`
           : '';
 
-      const extraLines: string[] = [...resourceSnapshot(cast.timeSeconds)];
+      const extraLines: string[] = [resourceSnapshot(cast.timeSeconds)];
 
       if (HEALING_AMPLIFIER_SPELL_IDS.has(cd.spellId)) {
         const duration = spellEffectData[cd.spellId]?.durationSeconds;
@@ -1615,7 +1615,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         addEntry(
           cast.timeSeconds,
           `${fmtTime(cast.timeSeconds)}  [TEAMMATE CD]   ${pid(player.name)} (${spec}): ${cd.spellName}`,
-          ...resourceSnapshot(cast.timeSeconds),
+          resourceSnapshot(cast.timeSeconds),
         );
       }
     }
