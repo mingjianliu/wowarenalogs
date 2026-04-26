@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { NEW_SYSTEM_PROMPT, SYSTEM_PROMPT } from '../../shared/src/prompts/analyzeSystemPrompts';
+import { NEW_SYSTEM_PROMPT, SYSTEM_PROMPT } from '../../../shared/src/prompts/analyzeSystemPrompts';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
