@@ -965,7 +965,7 @@ async function printMatch(
       const [responseA, responseB] = await Promise.all([callClaude(prompt, 'baseline'), callClaude(prompt, 'new')]);
       console.log('\n--- ANALYSIS A (baseline — raw timeline, no counterfactual rules) ---\n');
       console.log(responseA);
-      console.log('\n--- ANALYSIS B (new — [RESOURCES] blocks + 4 counterfactual reasoning checks) ---\n');
+      console.log('\n--- ANALYSIS B (new — [RES] compact format + 4 counterfactual reasoning checks) ---\n');
       console.log(responseB);
       process.stderr.write(`  Calling Claude judge...\n`);
       const judgment = await callClaudeJudge(prompt, responseA, responseB);
