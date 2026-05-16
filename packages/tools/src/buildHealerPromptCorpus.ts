@@ -31,6 +31,12 @@ const TARGET_COUNT = Number(process.env.TARGET_COUNT ?? 100);
 const PAGE_SIZE = Number(process.env.PAGE_SIZE ?? 50);
 const MAX_PAGES = Number(process.env.MAX_PAGES ?? 20); // safety stop: 20 * 50 = 1000 candidates
 const BRACKET = process.env.BRACKET ?? '3v3';
+const MIN_RATING = Number(process.env.MIN_RATING ?? 0);
+
+// 7 healer specs: Druid_Restoration, Monk_Mistweaver, Paladin_Holy, Priest_Discipline,
+// Priest_Holy, Shaman_Restoration, Evoker_Preservation
+const NUM_HEALER_SPECS = 7;
+const QUOTA_PER_SPEC = Math.ceil(TARGET_COUNT / NUM_HEALER_SPECS);
 
 const OUTPUT_DIR = path.join(__dirname, '../local-batch/healer-review');
 const PROMPTS_DIR = path.join(OUTPUT_DIR, 'prompts');
@@ -52,19 +58,26 @@ function sanitizeForFilename(s: string): string {
 
 async function main() {
   await fs.ensureDir(PROMPTS_DIR);
-  console.log(`Target: ${TARGET_COUNT} healer prompts at bracket=${BRACKET}`);
+  console.log(
+    `Target: ${TARGET_COUNT} healer prompts at bracket=${BRACKET}${MIN_RATING > 0 ? ` minRating=${MIN_RATING}` : ''}`,
+  );
   console.log(`Output: ${OUTPUT_DIR}\n`);
 
   const entries: IndexEntry[] = [];
   const seenMatchIds = new Set<string>();
+  const specCounts = new Map<string, number>();
   let page = 0;
+
+  console.log(
+    `Quota: ${QUOTA_PER_SPEC} per spec (${NUM_HEALER_SPECS} specs × ${QUOTA_PER_SPEC} = up to ${NUM_HEALER_SPECS * QUOTA_PER_SPEC} total)\n`,
+  );
 
   while (entries.length < TARGET_COUNT && page < MAX_PAGES) {
     const offset = page * PAGE_SIZE;
     console.log(`Fetching stubs page ${page + 1} (offset=${offset}, count=${PAGE_SIZE})...`);
     let stubs: MatchStub[];
     try {
-      stubs = await fetchStubs(BRACKET, PAGE_SIZE, offset);
+      stubs = await fetchStubs(BRACKET, PAGE_SIZE, offset, MIN_RATING > 0 ? MIN_RATING : undefined);
     } catch (e) {
       console.error(`  Stub fetch failed: ${e}`);
       break;
@@ -78,8 +91,11 @@ async function main() {
       if (entries.length >= TARGET_COUNT) break;
       if (seenMatchIds.has(stub.id)) continue;
       seenMatchIds.add(stub.id);
-      const entry = await tryProcessStub(stub, entries.length + 1);
-      if (entry) entries.push(entry);
+      const entry = await tryProcessStub(stub, entries.length + 1, specCounts);
+      if (entry) {
+        entries.push(entry);
+        specCounts.set(entry.spec, (specCounts.get(entry.spec) ?? 0) + 1);
+      }
     }
 
     page++;
@@ -89,12 +105,23 @@ async function main() {
 
   console.log(`\nWrote ${entries.length} prompt(s) to ${PROMPTS_DIR}`);
   console.log(`Index: ${INDEX_FILE}`);
+
+  console.log('\nSpec distribution:');
+  for (const [spec, count] of [...specCounts.entries()].sort()) {
+    const bar = '#'.repeat(count);
+    console.log(`  ${spec.padEnd(30)} ${String(count).padStart(3)}  ${bar}`);
+  }
+
   if (entries.length < TARGET_COUNT) {
     console.warn(`WARNING: only ${entries.length}/${TARGET_COUNT} healer matches found after ${page} page(s).`);
   }
 }
 
-async function tryProcessStub(stub: MatchStub, ordinal: number): Promise<IndexEntry | null> {
+async function tryProcessStub(
+  stub: MatchStub,
+  ordinal: number,
+  specCounts: Map<string, number>,
+): Promise<IndexEntry | null> {
   const date = new Date(stub.startTime).toISOString().slice(0, 10);
   process.stderr.write(`  [${ordinal}] ${stub.id} (${stub.startInfo?.bracket ?? BRACKET}, ${date})... `);
 
@@ -128,6 +155,11 @@ async function tryProcessStub(stub: MatchStub, ordinal: number): Promise<IndexEn
     if (!isHealerSpec(owner.spec)) continue;
 
     const spec = specToString(owner.spec);
+    if ((specCounts.get(spec) ?? 0) >= QUOTA_PER_SPEC) {
+      process.stderr.write(`quota full (${spec})\n`);
+      return null;
+    }
+
     const durationSec = Math.round((combat.endTime - combat.startTime) / 1000);
     if (durationSec < 10) continue;
 

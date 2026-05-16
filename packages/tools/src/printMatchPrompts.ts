@@ -220,8 +220,8 @@ export type ParsedCombat = IArenaMatch | IShuffleRound;
 // ---------------------------------------------------------------------------
 
 const STUBS_QUERY = `
-  query GetLatestMatches($wowVersion: String!, $bracket: String, $offset: Int!, $count: Int!) {
-    latestMatches(wowVersion: $wowVersion, bracket: $bracket, offset: $offset, count: $count) {
+  query GetLatestMatches($wowVersion: String!, $bracket: String, $offset: Int!, $count: Int!, $minRating: Float) {
+    latestMatches(wowVersion: $wowVersion, bracket: $bracket, offset: $offset, count: $count, minRating: $minRating) {
       combats {
         ... on ArenaMatchDataStub  { id wowVersion logObjectUrl startTime endTime timezone startInfo { bracket } }
         ... on ShuffleRoundStub    { id wowVersion logObjectUrl startTime endTime timezone startInfo { bracket } }
@@ -238,11 +238,14 @@ export interface MatchStub {
   startInfo?: { bracket: string };
 }
 
-export async function fetchStubs(bracket: string, count: number, offset = 0): Promise<MatchStub[]> {
+export async function fetchStubs(bracket: string, count: number, offset = 0, minRating?: number): Promise<MatchStub[]> {
   const res = await fetch(`${API_BASE}/api/graphql`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query: STUBS_QUERY, variables: { wowVersion: 'retail', bracket, offset, count } }),
+    body: JSON.stringify({
+      query: STUBS_QUERY,
+      variables: { wowVersion: 'retail', bracket, offset, count, minRating },
+    }),
   });
   if (!res.ok) throw new Error(`GraphQL ${res.status}: ${res.statusText}`);
   const json = (await res.json()) as { data?: { latestMatches?: { combats?: MatchStub[] } }; errors?: unknown[] };
