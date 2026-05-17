@@ -8,7 +8,7 @@
  * AI prompt for each combat where `combat.playerId` is a healer spec, until
  * we have TARGET_COUNT files. Output:
  *
- *   packages/tools/local-batch/healer-review/
+ *   packages/tools/local-batch/healer-eval/
  *     prompts/<NNN>-<spec>-<W|L>-<matchId>.txt
  *     index.json
  *
@@ -32,7 +32,7 @@ const PAGE_SIZE = Number(process.env.PAGE_SIZE ?? 50);
 const MAX_PAGES = Number(process.env.MAX_PAGES ?? 20); // safety stop: 20 * 50 = 1000 candidates
 const BRACKET = process.env.BRACKET ?? '3v3';
 
-const OUTPUT_DIR = path.join(__dirname, '../local-batch/healer-review');
+const OUTPUT_DIR = path.join(__dirname, '../local-batch/healer-eval');
 const PROMPTS_DIR = path.join(OUTPUT_DIR, 'prompts');
 const INDEX_FILE = path.join(OUTPUT_DIR, 'index.json');
 
