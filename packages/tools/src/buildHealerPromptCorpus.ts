@@ -8,7 +8,7 @@
  * AI prompt for each combat where `combat.playerId` is a healer spec, until
  * we have TARGET_COUNT files. Output:
  *
- *   packages/tools/local-batch/healer-review/
+ *   packages/tools/local-batch/healer-eval/
  *     prompts/<NNN>-<spec>-<W|L>-<matchId>.txt
  *     index.json
  *
@@ -38,7 +38,7 @@ const MIN_RATING = Number(process.env.MIN_RATING ?? 0);
 const NUM_HEALER_SPECS = 7;
 const QUOTA_PER_SPEC = Math.ceil(TARGET_COUNT / NUM_HEALER_SPECS);
 
-const OUTPUT_DIR = path.join(__dirname, '../local-batch/healer-review');
+const OUTPUT_DIR = path.join(__dirname, '../local-batch/healer-eval');
 const PROMPTS_DIR = path.join(OUTPUT_DIR, 'prompts');
 const INDEX_FILE = path.join(OUTPUT_DIR, 'index.json');
 
