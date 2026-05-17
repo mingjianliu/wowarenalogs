@@ -18,6 +18,7 @@ If `--save-snapshot` was passed:
 2. Delete `packages/tools/local-batch/healer-eval/prompts-snapshot/` if it exists.
 3. Copy `packages/tools/local-batch/healer-eval/prompts/` to `packages/tools/local-batch/healer-eval/prompts-snapshot/` (including `index.json` — copy it to the snapshot dir as `index.json`).
 4. Report: "Snapshot saved: N prompt files copied to healer-eval/prompts-snapshot/."
+   The resulting layout will be: `prompts-snapshot/index.json` (at root) and `prompts-snapshot/prompts/*.txt` (the prompt files as a subdirectory).
 5. Stop. Do not proceed to Step 1–4.
 
 ---
@@ -34,13 +35,15 @@ Wait for it to complete. If it exits non-zero, abort: "Corpus build failed — s
 
 After completion, verify that `packages/tools/local-batch/healer-eval/index.json` exists. Read it to get the list of entries.
 
-In snapshot mode, read `packages/tools/local-batch/healer-eval/prompts-snapshot/index.json` instead. Set the prompts source directory to `prompts-snapshot/prompts/` for all subsequent steps.
+In snapshot mode, read `packages/tools/local-batch/healer-eval/prompts-snapshot/index.json` instead. Set the prompts source directory to `packages/tools/local-batch/healer-eval/prompts-snapshot/prompts/` for all subsequent steps.
 
 ---
 
 ## Step 2: Generate Responses (Parallel Sub-Agents)
 
-Read `index.json` (or `prompts-snapshot/index.json` in snapshot mode) to get the full list of entries. Each entry has: `ordinal`, `file`, `matchId`, `spec`, `bracket`, `result`, `durationSec`.
+Read `packages/tools/local-batch/healer-eval/index.json` (fresh mode) or `packages/tools/local-batch/healer-eval/prompts-snapshot/index.json` (snapshot mode) to get the full list of entries. Each entry has: `ordinal`, `file`, `matchId`, `spec`, `bracket`, `result`, `durationSec`.
+
+Before spawning each sub-agent, resolve the actual prompt file path based on the current mode and substitute it into the template — do not pass mode-conditional logic to the sub-agent. In fresh mode the path is `packages/tools/local-batch/healer-eval/prompts/FILENAME`; in snapshot mode it is `packages/tools/local-batch/healer-eval/prompts-snapshot/prompts/FILENAME` (where FILENAME comes from the entry's `file` field).
 
 For each entry, spawn a **background sub-agent** using the Agent tool with `run_in_background: true`. The sub-agent's prompt must be self-contained (it has no context from this conversation). Use this template for each sub-agent, substituting the actual values:
 
@@ -48,9 +51,6 @@ For each entry, spawn a **background sub-agent** using the Agent tool with `run_
 >
 > Read the match prompt from this file:
 > `packages/tools/local-batch/healer-eval/prompts/FILENAME`
-> (In snapshot mode, replace `prompts/` with `prompts-snapshot/prompts/`)
->
-> Where FILENAME is the filename only from the index entry `file` field (e.g., `001-Priest_Discipline-L-abc123.txt`).
 >
 > Produce coaching advice for the healer. Focus on:
 > - What went wrong or right in this match
@@ -66,17 +66,17 @@ For each entry, spawn a **background sub-agent** using the Agent tool with `run_
 
 Spawn all sub-agents at once (not sequentially). You will receive background completion notifications.
 
-After all sub-agents have completed (or after 5 minutes — whichever comes first), verify that all expected response files exist. If any are missing, note which ordinals are missing and continue without them — do not abort.
+Proceed to Step 3 once you have received completion notifications from all sub-agents, or once you stop receiving new notifications. Verify that all expected response files exist. If any are missing, note which ordinals are missing and continue without them — do not abort.
 
 ---
 
 ## Step 3: Score Each Match
 
-For each entry in `index.json` where a corresponding `responses/NNN.txt` file exists:
+For each entry in `packages/tools/local-batch/healer-eval/index.json` (fresh mode) or `packages/tools/local-batch/healer-eval/prompts-snapshot/index.json` (snapshot mode) where a corresponding `responses/NNN.txt` file exists:
 
-1. Read the prompt file: `packages/tools/local-batch/healer-eval/prompts/FILENAME` (use `prompts-snapshot/prompts/` in snapshot mode)
+1. Read the prompt file: `packages/tools/local-batch/healer-eval/prompts/FILENAME` (fresh mode) or `packages/tools/local-batch/healer-eval/prompts-snapshot/prompts/FILENAME` (snapshot mode)
 2. Read the response: `packages/tools/local-batch/healer-eval/responses/NNN.txt`
-3. Note the match `result` (Win/Loss/Unknown) from `index.json`
+3. Note the match `result` (Win/Loss/Unknown) from the index file
 
 Apply the rubric below to score both. Write the result to `packages/tools/local-batch/healer-eval/scores/NNN.json` (create `scores/` if needed).
 
@@ -96,7 +96,7 @@ Apply the rubric below to score both. Write the result to `packages/tools/local-
 
 - **accuracy**: Does the response reference only events that appear in the prompt? Check 2–3 specific claims against the prompt text. Hallucinated spell names, made-up timestamps, events not in the prompt → score 1–2. Accurate → 4–5.
 
-- **outcomeAlignment**: Does the response explain factors that plausibly contributed to the win or loss? For a Loss: does it identify what broke down? For a Win: does it credit the right decisions? A response that ignores the result entirely → score 1–2. Directly addresses outcome → 4–5.
+- **outcomeAlignment**: Does the response explain factors that plausibly contributed to the win or loss? For a Loss: does it identify what broke down? For a Win: does it credit the right decisions? For result Unknown: score based on whether the response identifies the key turning points regardless of explicit outcome reference — treat it the same as a Loss if the match was short or one-sided in the prompt. A response that ignores the result entirely → score 1–2. Directly addresses outcome → 4–5.
 
 - **focusCalibration**: Does Claude identify the highest-leverage moments, or give equal weight to everything? A response that spends as much time on a minor potion use as on a match-deciding CC chain → score 1–2. Clear prioritization → 4–5.
 
