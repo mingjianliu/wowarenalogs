@@ -197,3 +197,54 @@ rm -rf packages/tools/local-batch/healer-eval/raw-logs/
 ## Disk Usage
 
 Raw combat logs are saved from Phase 1 until `conclude`. Each log is 1–10 MB; 20 matches = up to 200 MB temporarily on disk. All deleted automatically on `adopt` or `abandon`.
+
+---
+
+## Gemini CLI Instructions
+
+The workflow is identical to the Claude Code version above. The only differences are how you invoke skills and which tool names to use.
+
+### Invoking Skills
+
+| Claude Code | Gemini CLI |
+| ----------- | ---------- |
+| `/eval-healer-prompts` | `activate_skill eval-healer-prompts` |
+| `/eval-healer-prompts --snapshot` | `activate_skill eval-healer-prompts --snapshot` |
+| `/eval-healer-prompts --save-snapshot` | `activate_skill eval-healer-prompts --save-snapshot` |
+| `/improve-healer-prompts` | `activate_skill improve-healer-prompts` |
+| `/improve-healer-prompts adopt` | `activate_skill improve-healer-prompts adopt` |
+| `/improve-healer-prompts abandon` | `activate_skill improve-healer-prompts abandon` |
+
+### Tool Name Mapping
+
+The skills internally reference Claude Code tool names. When Gemini follows them, use these equivalents:
+
+| Skill references | Gemini uses |
+| ---------------- | ----------- |
+| `Read` | `read_file` |
+| `Write` | `write_file` |
+| `Edit` | `replace` |
+| `Bash` | `run_shell_command` |
+| `Agent` (spawn sub-agent) | `@generalist` with the inline prompt |
+
+### Parallel Sub-Agents
+
+`eval-healer-prompts` and `improve-healer-prompts` spawn one sub-agent per match to generate coaching responses in parallel (Step 2 of the eval pipeline). In Gemini, dispatch all of these `@generalist` tasks at once in a single message — do not serialize them. Pass the full sub-agent prompt from the skill's template as the message to each `@generalist`.
+
+### Full Cycle (Gemini)
+
+```
+activate_skill eval-healer-prompts          # find what to fix
+  ↓ (pick an issue, implement the fix)
+activate_skill improve-healer-prompts       # establish control (before code change)
+  ↓ (implement your change)
+activate_skill improve-healer-prompts       # run treatment (after code change)
+  ↓ (fix-now items if any)
+activate_skill improve-healer-prompts       # iterate treatment (optional)
+  ↓
+activate_skill improve-healer-prompts adopt|abandon   # conclude and clean up
+  ↓
+activate_skill eval-healer-prompts          # new baseline
+```
+
+Everything else — the state file, disk layout, adopt/abandon logic, triage in the comparison report — is identical to the Claude Code version.
