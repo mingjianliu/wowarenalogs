@@ -41,6 +41,8 @@ const QUOTA_PER_SPEC = Math.ceil(TARGET_COUNT / NUM_HEALER_SPECS);
 const OUTPUT_DIR = path.join(__dirname, '../local-batch/healer-eval');
 const PROMPTS_DIR = path.join(OUTPUT_DIR, 'prompts');
 const INDEX_FILE = path.join(OUTPUT_DIR, 'index.json');
+const SAVE_RAW_LOGS = process.env.SAVE_RAW_LOGS === '1';
+const RAW_LOGS_DIR = path.join(OUTPUT_DIR, 'raw-logs');
 
 interface IndexEntry {
   ordinal: number;
@@ -58,6 +60,9 @@ function sanitizeForFilename(s: string): string {
 
 async function main() {
   await fs.ensureDir(PROMPTS_DIR);
+  if (SAVE_RAW_LOGS) {
+    await fs.ensureDir(RAW_LOGS_DIR);
+  }
   console.log(
     `Target: ${TARGET_COUNT} healer prompts at bracket=${BRACKET}${MIN_RATING > 0 ? ` minRating=${MIN_RATING}` : ''}`,
   );
@@ -136,6 +141,10 @@ async function tryProcessStub(
   } catch (e) {
     process.stderr.write(`download error: ${e}\n`);
     return null;
+  }
+
+  if (SAVE_RAW_LOGS) {
+    await fs.writeFile(path.join(RAW_LOGS_DIR, `${stub.id}.log`), text, 'utf8');
   }
 
   let combats: ParsedCombat[];
