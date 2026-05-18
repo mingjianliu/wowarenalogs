@@ -223,6 +223,7 @@ async function runFromRawLogs(): Promise<void> {
   await fs.ensureDir(OUTPUT_PROMPTS_DIR);
 
   const entries: IndexEntry[] = [];
+  let ordinal = 0;
   for (let i = 0; i < matchIds.length; i++) {
     const matchId = matchIds[i];
     const rawLogPath = path.join(RAW_LOGS_DIR, `${matchId}.log`);
@@ -238,6 +239,7 @@ async function runFromRawLogs(): Promise<void> {
       process.stderr.write(`  [${i + 1}] ${matchId}: parse error: ${e}\n`);
       continue;
     }
+    const entriesLenBefore = entries.length;
     for (const combat of combats) {
       const friends = (Object.values(combat.units) as ICombatUnit[]).filter(
         (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
@@ -256,11 +258,12 @@ async function runFromRawLogs(): Promise<void> {
       const prompt = buildMatchPromptNew(combat, true);
       if (!prompt) continue;
 
-      const ordinalStr = String(i + 1).padStart(3, '0');
+      ordinal++;
+      const ordinalStr = String(ordinal).padStart(3, '0');
       const filename = `${ordinalStr}-${sanitizeForFilename(spec)}-${resultLetter}-${sanitizeForFilename(matchId)}.txt`;
       await fs.writeFile(path.join(OUTPUT_PROMPTS_DIR, filename), prompt, 'utf8');
       entries.push({
-        ordinal: i + 1,
+        ordinal,
         file: path.join('prompts', filename),
         matchId,
         spec,
@@ -270,6 +273,9 @@ async function runFromRawLogs(): Promise<void> {
       });
       process.stderr.write(`  [${i + 1}] ${matchId}: wrote ${filename}\n`);
       break; // one healer perspective per log
+    }
+    if (entries.length === entriesLenBefore) {
+      process.stderr.write(`  [${i + 1}] ${matchId}: no healer perspective\n`);
     }
   }
 
