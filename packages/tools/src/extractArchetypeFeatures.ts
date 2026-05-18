@@ -49,8 +49,12 @@ import { computeOffensiveWindows } from '../../shared/src/utils/offensiveWindows
 // ── Config ────────────────────────────────────────────────────────────────────
 
 const MATCH_COUNT = parseInt(process.env.MATCH_COUNT ?? '200', 10);
+// BRACKET is the API query value: '3v3' for rated 3v3, 'Rated Solo Shuffle' for solo shuffle.
+// These map to distinct combat types (IArenaMatch vs IShuffleRound) — never mixed in one run.
 const BRACKET = process.env.BRACKET ?? '3v3';
-const MIN_RATING = parseInt(process.env.MIN_RATING ?? '2100', 10);
+// 2400 approximates top-200 players per spec in the current season.
+// The leaderboard cutoff shifts each patch; adjust when top-200 drops below 2400.
+const MIN_RATING = parseInt(process.env.MIN_RATING ?? '2400', 10);
 const CONCURRENCY = parseInt(process.env.CONCURRENCY ?? '5', 10);
 const REQUIRE_ADVANCED_LOGGING = process.env.REQUIRE_ADVANCED_LOGGING === 'true';
 const API_BASE = process.env.API_BASE ?? 'https://wowarenalogs.com';
@@ -307,11 +311,27 @@ function hasAdvancedLoggingEnabled(units: Array<{ advancedActions: Array<{ advan
   return false;
 }
 
+// ── Bracket enforcement ───────────────────────────────────────────────────────
+
+// IArenaMatch = 3v3/2v2 arena. IShuffleRound = solo shuffle round.
+// These are distinct combat types and must never be mixed in one corpus run.
+const IS_SOLO_SHUFFLE = BRACKET.toLowerCase().includes('solo');
+
+function isBracketMatch(combat: IArenaMatch | IShuffleRound): boolean {
+  if (IS_SOLO_SHUFFLE) {
+    // Accept only solo shuffle rounds (IShuffleRound has no 'endInfo' team data)
+    return !('playerTeamId' in combat);
+  }
+  // Accept only arena matches (IArenaMatch has playerTeamId)
+  return 'playerTeamId' in combat;
+}
+
 // ── Per-match processing ──────────────────────────────────────────────────────
 
 type ParsedCombat = IArenaMatch | IShuffleRound;
 
 function processMatch(combat: ParsedCombat, matchId: string): IArchetypeFeatureRow[] {
+  if (!isBracketMatch(combat)) return [];
   const allUnits = Object.values(combat.units);
   const friends = allUnits.filter(
     (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
@@ -585,8 +605,8 @@ async function parseLogText(text: string): Promise<ParsedCombat[]> {
 // ── API ───────────────────────────────────────────────────────────────────────
 
 const STUBS_QUERY = `
-  query GetLatestMatches($wowVersion: String!, $bracket: String, $offset: Int!, $count: Int!) {
-    latestMatches(wowVersion: $wowVersion, bracket: $bracket, offset: $offset, count: $count) {
+  query GetLatestMatches($wowVersion: String!, $bracket: String, $minRating: Float, $offset: Int!, $count: Int!) {
+    latestMatches(wowVersion: $wowVersion, bracket: $bracket, minRating: $minRating, offset: $offset, count: $count) {
       combats {
         ... on ArenaMatchDataStub  { id wowVersion logObjectUrl startTime endTime startInfo { bracket } }
         ... on ShuffleRoundStub    { id wowVersion logObjectUrl startTime endTime startInfo { bracket } }
@@ -605,7 +625,10 @@ async function fetchStubs(count: number, offset: number): Promise<MatchStub[]> {
   const res = await fetch(`${API_BASE}/api/graphql`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query: STUBS_QUERY, variables: { wowVersion: 'retail', bracket: BRACKET, offset, count } }),
+    body: JSON.stringify({
+      query: STUBS_QUERY,
+      variables: { wowVersion: 'retail', bracket: BRACKET, minRating: MIN_RATING, offset, count },
+    }),
   });
   if (!res.ok) throw new Error(`GraphQL ${res.status}: ${res.statusText}`);
   const json = (await res.json()) as { data?: { latestMatches?: { combats?: MatchStub[] } }; errors?: unknown[] };

@@ -1,25 +1,24 @@
 /* eslint-disable no-console */
 /**
- * buildArchetypePrompts.ts — Match Archetype Clustering & Prompt Generation (Phase 2)
+ * buildArchetypePrompts.ts — Match Archetype Clustering (Phase 2)
  *
  * Reads features.jsonl produced by extractArchetypeFeatures.ts, clusters matches into
- * dynamic archetypes per healer spec via k-means, aggregates behavioral stats per cluster,
- * and calls Claude to write a 2-3 sentence narrative summary for each archetype.
+ * dynamic archetypes per healer spec via k-means, and aggregates behavioral stats per cluster.
+ *
+ * Outputs a DRAFT JSON (promptText: "") — narrative generation is handled separately by
+ * a Claude Code subagent reading archetype_prompts_draft.json.
  *
  * Outputs:
- *   packages/tools/archetypes/archetype_prompts.json  (committed — reviewed output)
- *   packages/tools/archetypes/archetype_model.json    (centroids for future live lookup)
+ *   packages/tools/archetypes/archetype_prompts_draft.json  (stats + empty promptText)
+ *   packages/tools/archetypes/archetype_model.json          (centroids for future live lookup)
  *
  * Usage:
  *   npm run -w @wowarenalogs/tools start:buildArchetypePrompts
  *
  * Env vars:
- *   K=4                    number of clusters per spec (default 4)
- *   MIN_MATCHES=10         minimum matches per cluster to generate prompt (default 10)
- *   ANTHROPIC_API_KEY      required for Claude narrative generation
+ *   K=4             number of clusters per spec (default 4)
+ *   MIN_MATCHES=10  minimum matches per cluster to include (default 10)
  */
-
-import Anthropic from '@anthropic-ai/sdk';
 import fs from 'fs-extra';
 import { kmeans } from 'ml-kmeans';
 import path from 'path';
@@ -40,7 +39,10 @@ const MIN_MATCHES = parseInt(process.env.MIN_MATCHES ?? '10', 10);
 
 const ARCHETYPES_DIR = path.join(__dirname, '../archetypes');
 const FEATURES_FILE = path.join(ARCHETYPES_DIR, 'features.jsonl');
-const PROMPTS_FILE = path.join(ARCHETYPES_DIR, 'archetype_prompts.json');
+// Draft: stats only, promptText = "". Narratives are added by the Claude Code skill.
+const DRAFT_FILE = path.join(ARCHETYPES_DIR, 'archetype_prompts_draft.json');
+// Final path — written by the Claude Code skill after narrative generation.
+export const PROMPTS_FILE = path.join(ARCHETYPES_DIR, 'archetype_prompts.json');
 const MODEL_FILE = path.join(ARCHETYPES_DIR, 'archetype_model.json');
 
 // ── Feature vector for clustering ────────────────────────────────────────────
@@ -309,16 +311,16 @@ function aggregateEnemyHealer(rows: IArchetypeFeatureRow[]): IArchetypeCluster['
   };
 }
 
-// ── Claude narrative ──────────────────────────────────────────────────────────
+// ── Narrative prompt builder (exported for Claude Code skill) ─────────────────
 
-function buildNarrativePrompt(
+export function buildNarrativePrompt(
   spec: string,
   clusterLabel: string,
   dynamics: IDynamicSummary,
   behaviors: IAggregatedBehaviors,
 ): string {
   const lines: string[] = [
-    `You are summarizing observed behavioral patterns from high-rated (2100+ MMR) 3v3 arena matches.`,
+    `You are summarizing observed behavioral patterns from high-rated (2400+ MMR) 3v3 arena matches.`,
     `Write exactly 2-3 sentences describing how ${spec} healers actually play in this match dynamic.`,
     `Be specific and factual. Describe what they do, not what they should do.`,
     `Avoid "should", "must", "always", "never". Express only what the data shows.`,
@@ -349,23 +351,6 @@ function buildNarrativePrompt(
   ].filter((l) => l !== '');
 
   return lines.join('\n');
-}
-
-async function generateNarrative(
-  client: Anthropic,
-  spec: string,
-  clusterLabel: string,
-  dynamics: IDynamicSummary,
-  behaviors: IAggregatedBehaviors,
-): Promise<string> {
-  const prompt = buildNarrativePrompt(spec, clusterLabel, dynamics, behaviors);
-  const response = await client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 300,
-    messages: [{ role: 'user', content: prompt }],
-  });
-  const text = response.content[0];
-  return text.type === 'text' ? text.text.trim() : '';
 }
 
 // ── Print centroid summary ────────────────────────────────────────────────────
@@ -400,8 +385,6 @@ function printCentroidSummary(
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
   console.log(`Loading features from ${FEATURES_FILE}...`);
   const allRows = await loadFeatures();
   console.log(`Loaded ${allRows.length} rows.`);
@@ -428,9 +411,9 @@ async function main() {
   const prompts: IArchetypePrompts = {};
   const specModels: Record<string, { centroids: number[][] }> = {};
 
-  // Load existing prompts to preserve manually set labels
-  if (await fs.pathExists(PROMPTS_FILE)) {
-    const existing = (await fs.readJson(PROMPTS_FILE)) as IArchetypePrompts;
+  // Load existing draft to preserve manually set labels across re-runs
+  if (await fs.pathExists(DRAFT_FILE)) {
+    const existing = (await fs.readJson(DRAFT_FILE)) as IArchetypePrompts;
     for (const [spec, clusters] of Object.entries(existing)) {
       prompts[spec] = clusters;
     }
@@ -469,7 +452,6 @@ async function main() {
     // Store centroids for model file
     specModels[spec] = { centroids: result.centroids };
 
-    // Initialize spec entry in prompts if needed
     if (!prompts[spec]) prompts[spec] = {};
 
     for (let clusterIdx = 0; clusterIdx < K; clusterIdx++) {
@@ -480,37 +462,32 @@ async function main() {
       }
 
       const clusterKey = `cluster_${clusterIdx}`;
-      // Preserve existing label if user has set it
       const existingLabel = prompts[spec]?.[clusterKey]?.label;
       const label = existingLabel && existingLabel !== 'pending_review' ? existingLabel : 'pending_review';
 
       const dynamics = aggregateDynamics(rows);
       const behaviors = aggregateBehaviors(rows);
 
-      // Add enemy healer partial data for matches in this cluster
       const matchIds = new Set(rows.map((r) => r.matchId));
       const enemyRows = [...enemyRowsByMatchId.values()].flat().filter((r) => matchIds.has(r.matchId));
       const enemyHealerPartial = aggregateEnemyHealer(enemyRows);
 
-      console.log(`\n  cluster_${clusterIdx} (${rows.length} matches, label: "${label}"): generating narrative...`);
-      const promptText = await generateNarrative(client, spec, label, dynamics, behaviors);
-
       prompts[spec][clusterKey] = {
         label,
         matchCount: rows.length,
-        minRating: 2100,
+        minRating: 2400,
         generatedAt: new Date().toISOString(),
         dynamics,
         behaviors,
         enemyHealerPartial,
-        promptText,
+        promptText: prompts[spec]?.[clusterKey]?.promptText ?? '',
       };
     }
   }
 
   await fs.ensureDir(ARCHETYPES_DIR);
-  await fs.writeJson(PROMPTS_FILE, prompts, { spaces: 2 });
-  console.log(`\nWrote ${PROMPTS_FILE}`);
+  await fs.writeJson(DRAFT_FILE, prompts, { spaces: 2 });
+  console.log(`\nWrote draft: ${DRAFT_FILE}`);
 
   const model: IArchetypeModel = {
     generatedAt: new Date().toISOString(),
@@ -519,13 +496,13 @@ async function main() {
     specModels,
   };
   await fs.writeJson(MODEL_FILE, model, { spaces: 2 });
-  console.log(`Wrote ${MODEL_FILE}`);
+  console.log(`Wrote model: ${MODEL_FILE}`);
 
   console.log('\nNext steps:');
   console.log('  1. Inspect cluster centroids and sample comps above.');
-  console.log('  2. Edit archetype_prompts.json: rename "pending_review" labels to descriptive names.');
-  console.log('  3. Re-run this script to regenerate promptText with the new labels.');
-  console.log('  4. Review promptText, commit archetype_prompts.json + archetype_model.json.');
+  console.log('  2. Edit archetype_prompts_draft.json: rename "pending_review" labels.');
+  console.log('  3. Re-run /build-match-archetypes in Claude Code to generate narratives via subagent.');
+  console.log('  4. Review archetype_prompts.json and commit.');
 }
 
 main().catch((e) => {
