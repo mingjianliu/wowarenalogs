@@ -2,5 +2,6 @@ prompts_output.txt
 sample_prompts.txt
 archetypes/features.jsonl
 archetypes/logs/
+archetypes/archetype_prompts_draft.json
 benchmarks/logs/
 benchmarks/log_manifest.json

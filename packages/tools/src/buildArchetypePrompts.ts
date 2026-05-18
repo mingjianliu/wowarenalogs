@@ -236,7 +236,7 @@ function aggregateBehaviors(rows: IArchetypeFeatureRow[]): IAggregatedBehaviors 
 
   const cdTiming = Object.fromEntries(
     timingKeys.map((k) => [k, roundTo(mean(timingAccum[k]), 3)]),
-  ) as ITimingDistribution;
+  ) as unknown as ITimingDistribution;
 
   const ccSorted = [...ccOffensiveCounts].sort((a, b) => a - b);
   const ccP75 = ccSorted.length > 0 ? ccSorted[Math.ceil(0.75 * ccSorted.length) - 1] : 0;
@@ -434,7 +434,7 @@ async function main() {
 
     // Group rows by cluster assignment
     const clusterRows = Array.from({ length: K }, () => [] as IArchetypeFeatureRow[]);
-    result.clusters.forEach((clusterIdx, rowIdx) => {
+    result.clusters.forEach((clusterIdx: number, rowIdx: number) => {
       clusterRows[clusterIdx].push(ownRows[rowIdx]);
     });
 
