@@ -1,5 +1,7 @@
 Evaluate healer arena prompts and Claude responses across 10–50 matches, then produce a cross-match quality report. This command orchestrates a four-step pipeline.
 
+> **Scope note:** This command assesses prompt and response quality and identifies what to fix. To validate whether a specific code change improved scores, use `/improve-healer-prompts` instead. The `--snapshot` / `--save-snapshot` modes in this command test *rubric drift* (did Claude's scoring of the same old prompts change?) — they do not test prompt builder changes.
+
 ## Argument Handling
 
 Read the arguments passed to this command (the text after `/eval-healer-prompts`):
