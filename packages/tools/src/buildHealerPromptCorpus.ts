@@ -43,6 +43,10 @@ const PROMPTS_DIR = path.join(OUTPUT_DIR, 'prompts');
 const INDEX_FILE = path.join(OUTPUT_DIR, 'index.json');
 const SAVE_RAW_LOGS = process.env.SAVE_RAW_LOGS === '1';
 const RAW_LOGS_DIR = path.join(OUTPUT_DIR, 'raw-logs');
+const FROM_RAW_LOGS = process.env.FROM_RAW_LOGS === '1';
+const STATE_FILE = path.join(OUTPUT_DIR, 'ab-test', 'state.json');
+const OUTPUT_PROMPTS_DIR = process.env.OUTPUT_PROMPTS_DIR ? path.resolve(process.env.OUTPUT_PROMPTS_DIR) : PROMPTS_DIR;
+const OUTPUT_INDEX_FILE = process.env.OUTPUT_INDEX_FILE ? path.resolve(process.env.OUTPUT_INDEX_FILE) : INDEX_FILE;
 
 interface IndexEntry {
   ordinal: number;
@@ -205,7 +209,76 @@ async function tryProcessStub(
   return null;
 }
 
-main().catch((e) => {
+async function runFromRawLogs(): Promise<void> {
+  if (!(await fs.pathExists(STATE_FILE))) {
+    console.error('No ab-test/state.json found. Run /improve-healer-prompts first to establish control.');
+    process.exit(1);
+  }
+  const state = (await fs.readJson(STATE_FILE)) as { matchIds: string[] };
+  const matchIds: string[] = state.matchIds ?? [];
+  if (matchIds.length === 0) {
+    console.error('state.json has no matchIds.');
+    process.exit(1);
+  }
+  await fs.ensureDir(OUTPUT_PROMPTS_DIR);
+
+  const entries: IndexEntry[] = [];
+  for (let i = 0; i < matchIds.length; i++) {
+    const matchId = matchIds[i];
+    const rawLogPath = path.join(RAW_LOGS_DIR, `${matchId}.log`);
+    if (!(await fs.pathExists(rawLogPath))) {
+      process.stderr.write(`  [${i + 1}] ${matchId}: raw log missing, skipping\n`);
+      continue;
+    }
+    const text = await fs.readFile(rawLogPath, 'utf8');
+    let combats: ParsedCombat[];
+    try {
+      combats = await parseLogText(text);
+    } catch (e) {
+      process.stderr.write(`  [${i + 1}] ${matchId}: parse error: ${e}\n`);
+      continue;
+    }
+    for (const combat of combats) {
+      const friends = (Object.values(combat.units) as ICombatUnit[]).filter(
+        (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
+      );
+      const owner = friends.find((p) => p.id === combat.playerId);
+      if (!owner || !isHealerSpec(owner.spec)) continue;
+
+      const spec = specToString(owner.spec);
+      const durationSec = Math.round((combat.endTime - combat.startTime) / 1000);
+      const combatAny = combat as unknown as Record<string, unknown>;
+      const playerWon =
+        typeof combatAny['winningTeamId'] === 'string' ? combatAny['winningTeamId'] === combat.playerTeamId : null;
+      const result: IndexEntry['result'] = playerWon === true ? 'Win' : playerWon === false ? 'Loss' : 'Unknown';
+      const resultLetter = result === 'Win' ? 'W' : result === 'Loss' ? 'L' : 'U';
+
+      const prompt = buildMatchPromptNew(combat, true);
+      if (!prompt) continue;
+
+      const ordinalStr = String(i + 1).padStart(3, '0');
+      const filename = `${ordinalStr}-${sanitizeForFilename(spec)}-${resultLetter}-${sanitizeForFilename(matchId)}.txt`;
+      await fs.writeFile(path.join(OUTPUT_PROMPTS_DIR, filename), prompt, 'utf8');
+      entries.push({
+        ordinal: i + 1,
+        file: path.join('prompts', filename),
+        matchId,
+        spec,
+        bracket: combat.startInfo?.bracket ?? BRACKET,
+        result,
+        durationSec,
+      });
+      process.stderr.write(`  [${i + 1}] ${matchId}: wrote ${filename}\n`);
+      break; // one healer perspective per log
+    }
+  }
+
+  await fs.writeJson(OUTPUT_INDEX_FILE, entries, { spaces: 2 });
+  console.log(`\nWrote ${entries.length} treatment prompt(s) to ${OUTPUT_PROMPTS_DIR}`);
+}
+
+const run = FROM_RAW_LOGS ? runFromRawLogs : main;
+run().catch((e) => {
   console.error(e);
   process.exit(1);
 });
