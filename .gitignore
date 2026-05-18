@@ -149,8 +149,11 @@ packages/tools/local-batch/healer-eval/responses/
 packages/tools/local-batch/healer-eval/scores/
 packages/tools/local-batch/healer-eval/eval-report.md
 packages/tools/local-batch/healer-eval/index.json
+packages/tools/local-batch/healer-eval/raw-logs/
+packages/tools/local-batch/healer-eval/ab-test/
 
 .aider*
 packages/parser/perf/results/
+packages/tools/local-batch/
 .claude/
 .worktrees/
