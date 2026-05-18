@@ -252,7 +252,7 @@ function classifySetupStyle(
 // ── Offensive participation ───────────────────────────────────────────────────
 
 function computeOffensiveParticipation(
-  healer: { spellCastEvents: Array<{ logLine: { timestamp: number; event: string }; spellId: string }> },
+  healer: { spellCastEvents: Array<{ logLine: { timestamp: number; event: string }; spellId: string | null }> },
   offensiveWindows: Array<{ fromSeconds: number; toSeconds: number }>,
   matchStartMs: number,
   ccSpellIds: Set<string>,
@@ -267,6 +267,7 @@ function computeOffensiveParticipation(
         e.logLine.event === 'SPELL_CAST_SUCCESS' &&
         e.logLine.timestamp >= fromMs &&
         e.logLine.timestamp <= toMs &&
+        e.spellId !== null &&
         ccSpellIds.has(e.spellId),
     );
     if (didCast) participated++;
@@ -286,10 +287,10 @@ function getCCSpellIds(): Set<string> {
     if (ccTypes.has(entry.type)) ids.add(id);
   }
   // Also include any from the spell ID lists
-  const lists = spellIdListsData as Record<string, string[]>;
+  const lists = spellIdListsData as unknown as Record<string, unknown>;
   for (const [key, values] of Object.entries(lists)) {
-    if (key.toLowerCase().includes('cc') || key.toLowerCase().includes('stun')) {
-      values.forEach((id) => ids.add(id));
+    if (Array.isArray(values) && (key.toLowerCase().includes('cc') || key.toLowerCase().includes('stun'))) {
+      (values as string[]).forEach((id) => ids.add(id));
     }
   }
   return ids;
