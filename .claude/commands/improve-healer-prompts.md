@@ -61,6 +61,8 @@ Run the full eval pipeline (Steps 2–4 from `eval-healer-prompts`) on the contr
 
 Use the same rubric and scoring process as the regular eval skill (Steps 2–4 of `eval-healer-prompts`), reading prompts from `ab-test/control/prompts/` and the index from `ab-test/control/index.json`.
 
+**Path override:** When spawning sub-agents following the eval-healer-prompts Step 2 template, substitute the output paths: replace `packages/tools/local-batch/healer-eval/responses/` with `packages/tools/local-batch/healer-eval/ab-test/control/responses/`, replace `packages/tools/local-batch/healer-eval/scores/` with `packages/tools/local-batch/healer-eval/ab-test/control/scores/`, and read prompts from `ab-test/control/prompts/` (not `healer-eval/prompts/`). The index to read is `ab-test/control/index.json`.
+
 ### Step 1.4: Write state file
 
 Collect all matchIds from the index. Write `packages/tools/local-batch/healer-eval/ab-test/state.json`:
@@ -121,9 +123,11 @@ Wait for completion. Verify that `ab-test/treatment/prompts/` contains the same 
 
 Run the full eval pipeline (Steps 2–4 of `eval-healer-prompts`) on the treatment prompts, writing to `ab-test/treatment/`. Read prompts from `ab-test/treatment/prompts/` and index from `ab-test/treatment/index.json`. Write responses to `ab-test/treatment/responses/`, scores to `ab-test/treatment/scores/`, report to `ab-test/treatment/eval-report.md`.
 
+**Path override:** When spawning sub-agents following the eval-healer-prompts Step 2 template, substitute: `healer-eval/responses/` → `ab-test/treatment/responses/`, `healer-eval/scores/` → `ab-test/treatment/scores/`, prompts read from `ab-test/treatment/prompts/`, index from `ab-test/treatment/index.json`.
+
 ### Step 2.4: Produce comparison report
 
-Read all score files from both `ab-test/control/scores/` and `ab-test/treatment/scores/`. For each ordinal present in both, compute the delta per dimension.
+Read all score files from both `ab-test/control/scores/` and `ab-test/treatment/scores/`. For each ordinal present in both, compute the delta per dimension. Track how many control ordinals are absent from treatment scores — this is the Skipped count K.
 
 Write `packages/tools/local-batch/healer-eval/ab-test/comparison-report.md` using this structure:
 
@@ -132,7 +136,7 @@ Write `packages/tools/local-batch/healer-eval/ab-test/comparison-report.md` usin
 
 **Change tested:** <changeDescription>
 **Target dimension:** <targetDimension>
-**Treatment run:** N  |  **Matches:** M
+**Treatment run:** N  |  **Control matches:** M  |  **Skipped (missing raw logs):** K
 
 ---
 
@@ -239,6 +243,8 @@ Final target dimension delta: <from last comparison report>
 Decision: ADOPT | ABANDON
 ```
 
+Retain `state.matchIds` in memory — you will need this list in Step 3.3b to delete raw logs after the ab-test directory is removed.
+
 ### Step 3.2: Abandon reminder
 
 If `abandon`, print:
@@ -247,20 +253,22 @@ If `abandon`, print:
 ⚠ Remember to revert your code change to the prompt builder before continuing.
 ```
 
-### Step 3.3: Clean up disk
+### Step 3.3a: Capture rubric feedback before deletion
 
-Read the rubric feedback section from `ab-test/comparison-report.md` BEFORE deleting (you will need it in Step 3.5). Then delete raw logs for all matchIds in this cycle and the ab-test directory:
+Read `packages/tools/local-batch/healer-eval/ab-test/comparison-report.md` and extract the "Rubric Feedback" section content into memory. If the file does not exist, note "No comparison report found."
+
+### Step 3.3b: Clean up disk
+
+Delete raw logs and the ab-test directory. Use the `matchIds` retained from Step 3.1:
 
 ```bash
+# Delete raw logs for this cycle
+for matchId in <matchIds from state.matchIds>; do
+  rm -f packages/tools/local-batch/healer-eval/raw-logs/$matchId.log
+done
+# Remove ab-test directory
 rm -rf packages/tools/local-batch/healer-eval/ab-test/
-```
-
-If `raw-logs/` is now empty after deleting those files, delete it too:
-
-```bash
-# For each matchId in state.matchIds:
-rm -f packages/tools/local-batch/healer-eval/raw-logs/<matchId>.log
-# Then check if empty:
+# Remove raw-logs dir if now empty
 rmdir packages/tools/local-batch/healer-eval/raw-logs/ 2>/dev/null || true
 ```
 
