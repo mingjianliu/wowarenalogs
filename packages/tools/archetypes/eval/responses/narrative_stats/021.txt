@@ -1,0 +1,11 @@
+The cluster data shows 53% CD nonuse, a 14% healing gap rate, and 43% offensive participation — and this match demonstrates all three tendencies.
+
+Your Windwalker Monk died at 0:22 inside a 26-second critical offensive window that opened the moment Avatar fired at 0:10. Avenging Crusader was available from 0:13 onward and was used at 0:21 — one second after the death. Blessing of Sacrifice and Blessing of Protection were also available and unused through the entire kill sequence. This is a direct instance of the 53% CD nonuse pattern: the one dangerous moment in a 50-second game passed without your major defensive tools being deployed.
+
+The 7638ms median CD response latency the cluster reports is long for a match this short. In a 50-second game, responding to a kill window 11 seconds after the offensive CD fired means the response never lands in time.
+
+The two healing gaps (3.6s at 0:34, 10.5s at 0:40) align with the cluster's 14% gap rate. Neither gap was the primary cause of the loss — the Monk death was — but a 10.5-second inactive window on a pressured target in 3v2 reflects the same hesitancy the gap metric describes.
+
+Offensive participation of 43% tracks: you threw a couple of Judgment-type casts at enemies but no sustained offensive contribution. In a 50-second match that is not the problem, but it is consistent with the cluster profile.
+
+The single correction that changes the outcome of this match: Avenging Crusader when Avatar fires at 0:10, not after the kill is confirmed. Short passive swap matches have exactly one threatening sequence. CD response needs to be proactive, not reactive.

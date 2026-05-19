@@ -1,0 +1,12 @@
+The loss came down to two things: Power Infusion was not purged when it was purgeable, and the healer used Emerald Communion while stunned at 0:57, which is the only moment in the match that delivered real throughput — and it went to waste.
+
+At 0:17, the enemy Discipline Priest cast Power Infusion onto the enemy Frost Mage. That buff is purgeable. Your Frost Mage could have purged it. There is no record of a purge attempt on it. That PI window ran until 0:32, covering the window where your mage dropped to 45% health and needed Ice Block to survive. Removing PI from the mage during that early pressure would have reduced incoming damage by a meaningful amount during your team's most vulnerable moment.
+
+The kill on your Frost Mage at 1:04 looks preventable on paper — health was 96% at T-3 seconds, meaning the death happened in a burst window you did not see coming. The damage sources were Inescapable Torment (pet), Expiation, and Shatter. The healer was at 100% mana and full HP, but there was no CD on the mage for those final seconds. Emerald Communion had been used at 0:57 during a Kidney Shot on the healer. Using a 3-second channel while stunned inside a Kidney Shot is a wasted global — you heal nothing. That CD should have been held for the next spike.
+
+After the mage died at 1:04, the healer was silenced and the rogue went from 98% to dead in 10 seconds. The enemy team ran Power Infusion again, and the Discipline Priest's Ultimate Penitence topped the damage chart in the kill window. The healer tried Garrote-Silence interrupts at the wrong time; with the rogue down and no meaningful cooldowns left, the match was over.
+
+For next time:
+- Assign purge responsibility clearly. Your Frost Mage is the only purger on the team. When Power Infusion goes up on an enemy DPS at 0:17 into the match, that is the highest-value purge target in the game. Get rid of it immediately.
+- Never use Emerald Communion inside a Kidney Shot. If you are CCed when you activate it, you are wasting it. Hold it or use it the moment CC breaks if health is critical.
+- Watch the 0:57 cluster more carefully: Kidney Shot on the healer plus Polymorph on the healer plus Psychic Scream on the rogue all landed within one second. That three-way lockdown at 0:57 is the setup that killed the mage seven seconds later. Anticipate that setup after Deathmark goes out and position your healer away from the rogue to avoid splash CC.

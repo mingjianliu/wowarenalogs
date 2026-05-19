@@ -1,0 +1,337 @@
+[ARCHETYPE: Preservation Evoker — heavy_burst_swap]
+These matches feature 4.4 burst windows per match with a peak burst score of 20.1, and top Preservation Evokers achieve optimal CD timing in 55% of windows — the highest rate across all clusters — with a median response latency of 7.3 seconds. Offensive CC contribution averages 9.4 events with a 75th percentile of 13, and cc_then_burst setup style appears in 34% of matches. The tunnel score of 0.586 reflects a mild swap tendency under sustained burst pressure over 268-second matches.
+
+Key behavioral patterns observed in this match type:
+CD timing: 55% Optimal / 11% Early / 14% Late / 3% Reactive
+CD never used: 29%
+CD response latency: 7277ms median
+Outgoing CC per match: 9.4 mean
+Healing gap rate during burst: 1%
+Offensive participation: 66%
+Purge rate: 3.73/min
+Missed cleanse rate: 48%
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Frost Mage | Bracket: 3v3 | Result: Loss | Duration: 3:47
+  My team: Assassination Rogue, Preservation Evoker, Frost Mage
+  Enemy team: Retribution Paladin, Restoration Druid, Beast Mastery Hunter
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Frost Mage): CAN offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 15% at match end
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Scalm-ShatteredHand-EU (Frost Mage — log owner):
+    Ice Block [240s, 2 Charges], Dragon's Breath [45s]
+  2: Aythusha-TwistingNether-EU (Assassination Rogue):
+    Cloak of Shadows [120s], Kidney Shot [30s], Evasion [120s]
+  3: Drakbrampa-Ravencrest-EU (Preservation Evoker):
+    Deep Breath [120s], Tail Swipe [180s], Wing Buffet [180s], Cauterizing Flame [60s], Rewind [240s], Emerald Communion [180s], Stasis [90s], Rescue [60s]
+  4: Anavãr-TwistingNether-EU (Retribution Paladin — enemy):
+    Execution Sentence [60s]
+  5: Justforgames-Ravencrest-EU (Restoration Druid — enemy):
+    Incarnation: Tree of Life [180s], Innervate [180s], Nature's Swiftness [60s]
+  6: Áglåriå-Ravencrest-EU (Beast Mastery Hunter — enemy):
+    Bestial Wrath [90s]
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100 2:100 3:100
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:06  [STATE]   friends 1:100 3:99
+0:09  [STATE]   friends 1:100 2:100 3:98
+0:12  [STATE]   friends 1:100 2:100 3:94
+0:13  [STATE]   friends 1:100 2:100 3:88 / enemies 6:93
+0:14  [STATE]   friends 1:100 2:100 3:88 / enemies 4:100 5:100 6:89
+0:15  [STATE]   friends 1:100 2:100 3:88 / enemies 4:100 5:100 6:99
+0:16  [STATE]   friends 1:100 2:100 3:88 / enemies 4:100 5:100 6:84
+0:17  [STATE]   friends 1:99 2:100 3:87 / enemies 4:99 5:100 6:77
+0:17  [DMG SPIKE]   1 (Frost Mage): 0.56M in 10s
+0:18  [STATE]   friends 1:96 2:99 3:87 / enemies 4:97 5:100 6:95
+0:19  [STATE]   friends 1:95 2:99 3:87 / enemies 4:98 5:100 6:96
+0:20  [STATE]   friends 1:98 2:98 3:90 / enemies 4:99 6:99
+0:21  [STATE]   friends 1:98 2:100 3:91 / enemies 4:100 6:94
+0:22  [STATE]   friends 1:99 2:98 3:100 / enemies 4:90 6:95
+0:22  [OFFENSIVE WINDOW]   0:22–0:38 | Critical | 0.68M on 1 (Frost Mage) | CDs: Execution Sentence + Bestial Wrath + Incarnation: Tree of Life
+0:22  [ENEMY CD]   4 (Retribution Paladin): Execution Sentence
+0:23  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath
+0:24  [STATE]   friends 1:85 2:100 3:100
+0:25  [CC ON TEAM]   1 ← Binding Shot (Áglåriå-Ravencrest-EU) | 1s
+0:26  [STATE]   friends 1:87 2:100 3:98 / enemies 4:82 5:100 6:98
+0:26  [ENEMY CD]   5 (Restoration Druid): Incarnation: Tree of Life
+0:27  [STATE]   friends 1:78 2:100 3:96 / enemies 4:79 5:99 6:98
+0:27  [CLEANSE]   3 dispelled 5 effects: Moonfire off 1, Binding Shot off 1, Expurgation off 1, Truth's Wake off 1, Judgment of Justice off 1
+0:28  [STATE]   friends 1:79 2:100 3:94 / enemies 4:79 5:94 6:99
+0:28  [TEAMMATE CD]   3 (Preservation Evoker): Deep Breath
+      [RES] rdy:Δ+Ice Block,2:Kidney Shot,3:Deep Breath,3:Cauterizing Flame  cd:—  enemy:Execution Sentence/Retribution Paladin(5s),Incarnation: Tree of Life/Restoration Druid(2s),Bestial Wrath/Beast Mastery Hunter(4s)
+0:28  [CLEANSE]   3 dispelled 2 effects: Judgment of Justice off 3, Consecration off 3
+0:29  [STATE]   friends 1:80 2:100 3:95 / enemies 4:74 5:88 6:100
+0:30  [STATE]   friends 1:85 2:100 3:96 / enemies 4:69 5:84 6:100
+0:30  [TEAMMATE CD]   2 (Assassination Rogue): Kidney Shot
+      [RES] rdy:Δ+Ice Block,Dragon's Breath,3:Tail Swipe,3:Wing Buffet,3:Rewind,3:Emerald Communion,3:Stasis  cd:—  enemy:Execution Sentence/Retribution Paladin(8s),Incarnation: Tree of Life/Restoration Druid(4s),Bestial Wrath/Beast Mastery Hunter(7s)
+0:31  [STATE]   friends 1:85 2:100 3:98 / enemies 4:62 5:81 6:99
+0:31  [DMG SPIKE]   1 (Frost Mage): 0.68M in 10s
+0:32  [STATE]   friends 1:78 2:100 3:100 / enemies 4:61 5:80 6:98
+0:33  [STATE]   friends 1:49 2:100 3:100 / enemies 4:65 5:88 6:99
+0:33  [ENEMY CD]   5 (Restoration Druid): Innervate
+0:34  [STATE]   friends 1:69 2:100 3:100 / enemies 4:66 5:77 6:97
+0:35  [STATE]   friends 1:99 2:100 3:100 / enemies 4:65 5:71 6:96
+0:36  [STATE]   friends 1:91 2:99 3:100 / enemies 4:100 5:88 6:100
+0:38  [CC ON TEAM]   3 ← Freezing Trap (Áglåriå-Ravencrest-EU) | 1s
+0:39  [STATE]   friends 1:71 2:93 3:91 / enemies 4:100 5:91 6:98
+0:40  [STATE]   friends 1:65 2:93 3:96 / enemies 4:92 5:95 6:99
+0:41  [STATE]   friends 1:62 2:95 3:98 / enemies 4:98 5:99 6:100
+0:41  [TEAMMATE CD]   3 (Preservation Evoker): Cauterizing Flame
+      [RES] rdy:Δ+Ice Block,Dragon's Breath,2:Cloak of Shadows,2:Evasion,3:Tail Swipe,3:Rewind,3:Emerald Communion,3:Stasis  cd:—  enemy:Execution Sentence/Retribution Paladin(18s),Incarnation: Tree of Life/Restoration Druid(15s),Innervate/Restoration Druid(8s),Bestial Wrath/Beast Mastery Hunter(17s)  cc:1/Glacial Spike-3s[kick]
+0:41  [CLEANSE]   3 dispelled Barbed Shot off 1
+0:41  [CC ON TEAM]   3 ← Hammer of Justice (Anavãr-TwistingNether-EU) | 5s
+0:42  [STATE]   friends 1:58 2:96 3:100 / enemies 4:96 5:100 6:100
+0:43  [STATE]   friends 1:45 2:98 3:100 / enemies 4:97 5:99 6:99
+0:44  [STATE]   friends 1:45 2:98 3:100 / enemies 4:99 5:100 6:98
+0:45  [STATE]   friends 1:46 2:99 3:100 / enemies 4:86 5:100 6:98
+0:46  [STATE]   friends 1:47 2:100 3:100 / enemies 4:93 5:99 6:99
+0:46  [CC ON TEAM]   2 ← Ursol's Vortex (Justforgames-Ravencrest-EU) | 2s
+0:47  [STATE]   friends 1:48 2:90 3:100 / enemies 4:93 5:100 6:98
+0:48  [STATE]   friends 1:42 2:95 3:100 / enemies 4:95 5:99 6:100
+0:48  [CC ON TEAM]   2 ← Ursol's Vortex (Justforgames-Ravencrest-EU) | 4s
+0:49  [STATE]   friends 1:30 2:100 3:100 / enemies 4:94 5:99 6:100
+0:50  [STATE]   friends 1:31 2:100 3:100 / enemies 4:100 5:100 6:100
+0:51  [STATE]   friends 1:29 2:99 3:98 / enemies 4:100 5:100 6:100
+0:52  [STATE]   friends 1:48 2:99 3:100 / enemies 4:100 5:100 6:100
+0:53  [STATE]   friends 1:38 2:97 3:100 / enemies 4:100 5:100 6:100
+0:54  [STATE]   friends 1:81 2:100 3:100 / enemies 4:100 5:100 6:100
+0:55  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:100 6:100
+0:56  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:100 6:100
+0:57  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:100 6:100
+0:58  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:97 6:100
+1:00  [STATE]   friends 1:100 2:100 3:100
+1:01  [TEAMMATE CD]   2 (Assassination Rogue): Kidney Shot
+      [RES] rdy:Δ-3:Cauterizing Flame  cd:3:Cauterizing Flame(40s)  enemy:Innervate/Restoration Druid(28s)
+1:03  [STATE]   friends 1:90 2:100 3:100
+1:04  [CC ON TEAM]   3 ← Freezing Trap (Áglåriå-Ravencrest-EU) | 6s
+1:05  [STATE]   friends 1:86 2:100 3:100 / enemies 4:100 5:47 6:100
+1:06  [STATE]   friends 1:81 2:100 3:100 / enemies 4:100 5:92 6:99
+1:06  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath
+1:07  [STATE]   friends 1:69 2:100 3:100 / enemies 4:100 5:92 6:97
+1:08  [STATE]   friends 1:68 2:100 3:100 / enemies 4:100 5:92 6:97
+1:09  [STATE]   friends 1:53 2:100 3:100 / enemies 4:96 5:95 6:99
+1:09  [ENEMY CD]   5 (Restoration Druid): Nature's Swiftness
+1:09  [CC ON TEAM]   3 ← Cyclone (Justforgames-Ravencrest-EU) | 1s | trinket: used
+1:10  [STATE]   friends 1:41 2:100 3:100 / enemies 4:99 5:99 6:100
+1:10  [TRINKET]   3 used PvP trinket
+1:10  [OWNER CD]   Ice Block
+      [RES] rdy:Ice Block,Dragon's Breath,2:Cloak of Shadows,2:Evasion,3:Tail Swipe,3:Wing Buffet,3:Rewind,3:Emerald Communion,3:Stasis,3:Rescue  cd:2:Kidney Shot(20s),3:Deep Breath(77s),3:Cauterizing Flame(30s)  enemy:Nature's Swiftness/Restoration Druid(2s),Bestial Wrath/Beast Mastery Hunter(4s)
+1:11  [STATE]   friends 1:30 2:100 3:100 / enemies 4:99 5:91 6:100
+1:12  [STATE]   friends 1:31 2:100 3:100 / enemies 4:100 5:78 6:100
+1:13  [STATE]   friends 1:55 2:94 3:99 / enemies 4:100 5:93 6:100
+1:14  [STATE]   friends 1:65 2:92 3:99 / enemies 4:100 5:94 6:100
+1:15  [STATE]   friends 1:79 2:87 3:99 / enemies 4:99 5:94 6:100
+1:16  [STATE]   friends 1:94 2:90 3:100 / enemies 4:100 5:90 6:100
+1:16  [CC ON TEAM]   3 ← Hammer of Justice (Anavãr-TwistingNether-EU) | 5s | trinket: ON CD (85s left)
+1:16  [BUFF FADED]   Ice Block
+1:17  [STATE]   friends 1:99 2:68 3:100 / enemies 4:100 5:92 6:100
+1:18  [STATE]   friends 1:99 2:50 3:100 / enemies 4:99 5:96 6:100
+1:18  [CC ON TEAM]   2 ← Maim (Justforgames-Ravencrest-EU) | 1s | trinket: used
+1:18  [CC ON TEAM]   1 ← Binding Shot (Áglåriå-Ravencrest-EU) | 3s
+1:19  [STATE]   friends 1:100 2:47 3:100 / enemies 4:99 5:88 6:100
+1:19  [TRINKET]   2 used PvP trinket
+1:19  [TEAMMATE CD]   2 (Assassination Rogue): Evasion
+      [RES] rdy:Δ+Dragon's Breath,2:Cloak of Shadows,2:Evasion,3:Rewind,3:Emerald Communion,3:Stasis,3:Rescue-2:Kidney Shot,3:Cauterizing Flame  cd:2:Kidney Shot(12s),3:Cauterizing Flame(22s)  enemy:Nature's Swiftness/Restoration Druid(10s),Bestial Wrath/Beast Mastery Hunter(12s)  cc:1/Binding Shot-3s[stun],3/Hammer of Justice-2s[stun]
+1:19  [TEAMMATE CD]   2 (Assassination Rogue): Cloak of Shadows
+      [RES] rdy:Δ+2:Cloak of Shadows,2:Evasion,3:Rewind,3:Emerald Communion,3:Stasis,3:Rescue-2:Kidney Shot,3:Cauterizing Flame  cd:2:Kidney Shot(11s),3:Cauterizing Flame(21s)  enemy:Nature's Swiftness/Restoration Druid(10s),Bestial Wrath/Beast Mastery Hunter(13s)  cc:1/Binding Shot-2s[stun],3/Hammer of Justice-2s[stun]
+1:20  [STATE]   friends 1:100 2:40 3:100 / enemies 4:92 5:73 6:100
+1:21  [STATE]   friends 1:99 2:44 3:95 / enemies 4:96 5:74 6:100
+1:22  [STATE]   friends 1:97 2:51 3:97 / enemies 4:100 5:97 6:100
+1:22  [OWNER CD]   Dragon's Breath
+      [RES] rdy:Δ+3:Rewind,3:Emerald Communion,3:Stasis,3:Rescue-3:Cauterizing Flame  cd:3:Cauterizing Flame(19s)  enemy:Nature's Swiftness/Restoration Druid(13s),Bestial Wrath/Beast Mastery Hunter(15s)
+1:22  [CC CAST]   Dragon's Breath (by 1) → nil [non-player target]
+1:23  [STATE]   friends 1:88 2:71 3:100 / enemies 4:100 5:97 6:100
+1:24  [STATE]   friends 1:87 2:98 3:100 / enemies 4:100 5:98 6:100
+1:25  [STATE]   friends 1:94 2:100 3:100 / enemies 4:100 5:100 6:100
+1:25  [ENEMY CD]   4 (Retribution Paladin): Execution Sentence
+1:26  [STATE]   friends 1:94 2:100 3:100 / enemies 4:100 5:100 6:100
+1:26  [TEAMMATE CD]   3 (Preservation Evoker): Stasis
+      [RES] rdy:Δ+3:Rewind,3:Stasis-3:Cauterizing Flame  cd:3:Cauterizing Flame(14s)  enemy:Execution Sentence/Retribution Paladin(1s),Nature's Swiftness/Restoration Druid(17s),Bestial Wrath/Beast Mastery Hunter(20s)
+1:26  [ENEMY CD]   5 (Restoration Druid): Incarnation: Tree of Life
+1:27  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:98 6:100
+1:28  [STATE]   friends 1:75 2:100 3:100 / enemies 4:100 5:91 6:100
+1:30  [STATE]   friends 1:85 2:100 3:99
+1:33  [STATE]   friends 1:75 2:97 3:92
+1:34  [CC ON TEAM]   2 ← Blinding Light (Anavãr-TwistingNether-EU) | 1s | trinket: ON CD (105s left)
+1:34  [CC ON TEAM]   3 ← Blinding Light (Anavãr-TwistingNether-EU) | 1s | trinket: ON CD (67s left)
+1:35  [STATE]   friends 1:71 2:97 3:97 / enemies 4:99 5:94 6:100
+1:35  [TEAMMATE CD]   2 (Assassination Rogue): Kidney Shot
+      [RES] rdy:Δ-Ice Block,Dragon's Breath,2:Cloak of Shadows,2:Evasion,3:Stasis  cd:Ice Block(215s),Dragon's Breath(32s),2:Cloak of Shadows(104s),2:Evasion(104s),3:Stasis(81s)  enemy:Execution Sentence/Retribution Paladin(9s),Nature's Swiftness/Restoration Druid(26s),Incarnation: Tree of Life/Restoration Druid(8s),Bestial Wrath/Beast Mastery Hunter(28s)
+1:36  [STATE]   friends 1:59 2:89 3:99 / enemies 4:100 5:91 6:100
+1:37  [STATE]   friends 1:58 2:92 3:100 / enemies 4:100 5:98 6:100
+1:37  [TEAMMATE CD]   3 (Preservation Evoker): Rewind
+      [RES] rdy:Δ-Ice Block,Dragon's Breath,2:Cloak of Shadows,2:Evasion,3:Cauterizing Flame,3:Stasis  cd:Ice Block(213s),Dragon's Breath(30s),2:Cloak of Shadows(102s),2:Evasion(102s),3:Cauterizing Flame(4s),3:Stasis(79s)  enemy:Execution Sentence/Retribution Paladin(11s),Nature's Swiftness/Restoration Druid(28s),Incarnation: Tree of Life/Restoration Druid(10s)
+1:38  [STATE]   friends 1:65 2:95 3:98 / enemies 4:100 5:100 6:99
+1:39  [STATE]   friends 1:87 2:100 3:100 / enemies 4:100 5:99 6:100
+1:40  [STATE]   friends 1:98 2:100 3:100 / enemies 4:100 5:95 6:100
+1:41  [STATE]   friends 1:94 2:100 3:100 / enemies 4:100 5:81 6:99
+1:41  [CC ON TEAM]   3 ← Freezing Trap (Áglåriå-Ravencrest-EU) | 6s | trinket: ON CD (59s left)
+1:42  [STATE]   friends 1:83 2:100 3:100 / enemies 4:100 5:100 6:100
+1:42  [DMG SPIKE]   1 (Frost Mage): 0.69M in 10s
+1:43  [STATE]   friends 1:78 2:100 3:100 / enemies 4:100 5:99 6:100
+1:44  [STATE]   friends 1:69 2:98 3:100 / enemies 4:100 5:99 6:100
+1:44  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath
+1:44  [TEAMMATE CD]   3 (Preservation Evoker): Emerald Communion
+      [RES] rdy:Δ+3:Cauterizing Flame-3:Rewind  cd:3:Rewind(233s)  enemy:Execution Sentence/Retribution Paladin(19s),Incarnation: Tree of Life/Restoration Druid(18s),Bestial Wrath/Beast Mastery Hunter(0s)  cc:3/Freezing Trap-3s
+1:45  [STATE]   friends 1:76 2:95 3:100 / enemies 4:100 5:100 6:100
+1:46  [STATE]   friends 1:76 2:94 3:100 / enemies 4:100 5:100 6:100
+1:47  [STATE]   friends 1:100 2:99 3:100 / enemies 4:99 5:99 6:100
+1:48  [STATE]   friends 1:100 2:100 3:100 / enemies 4:98 5:100 6:100
+1:49  [STATE]   friends 1:95 2:98 3:99 / enemies 4:98 5:100 6:100
+1:50  [STATE]   friends 1:88 2:96 3:96 / enemies 4:99 5:100 6:100
+1:51  [STATE]   friends 1:68 2:96 3:98 / enemies 4:96 5:98 6:99
+1:54  [STATE]   friends 1:100 2:99 3:98
+1:57  [STATE]   friends 1:70 2:99 3:100
+2:00  [STATE]   friends 1:76 2:100 3:100
+2:02  [STATE]   friends 1:96 2:99 3:100 / enemies 4:87 5:100 6:97
+2:02  [TEAMMATE CD]   3 (Preservation Evoker): Rescue
+      [RES] rdy:Δ+3:Rescue-3:Stasis  cd:3:Stasis(54s)  enemy:Bestial Wrath/Beast Mastery Hunter(18s)  cc:1/Polymorph-2s[kick]
+2:02  [CLEANSE]   3 dispelled 2 effects: Judgment of Justice off 1, Concussive Shot off 1
+2:03  [STATE]   friends 1:91 2:100 3:100 / enemies 4:93 5:100 6:97
+2:04  [STATE]   friends 1:99 2:100 3:100 / enemies 4:99 5:98 6:99
+2:04  [CC ON TEAM]   1 ← Incapacitating Roar (Justforgames-Ravencrest-EU) | 1s
+2:04  [CC ON TEAM]   2 ← Incapacitating Roar (Justforgames-Ravencrest-EU) | 3s | trinket: ON CD (75s left)
+2:04  [CC ON TEAM]   3 ← Hammer of Justice (Anavãr-TwistingNether-EU) | 5s | trinket: ON CD (36s left)
+2:05  [STATE]   friends 1:98 2:99 3:100 / enemies 4:100 5:95 6:100
+2:05  [CC ON TEAM]   3 ← Ursol's Vortex (Justforgames-Ravencrest-EU) | 5s | trinket: ON CD (35s left)
+2:06  [STATE]   friends 1:99 2:100 3:100 / enemies 4:100 5:95 6:100
+2:06  [CC ON TEAM]   2 ← Ursol's Vortex (Justforgames-Ravencrest-EU) | 2s | trinket: ON CD (73s left)
+2:06  [CC ON TEAM]   3 ← Freezing Trap (Áglåriå-Ravencrest-EU) | 1s | trinket: ON CD (34s left)
+2:06  [DMG SPIKE]   1 (Frost Mage): 0.67M in 10s
+2:07  [STATE]   friends 1:93 2:100 3:100 / enemies 4:100 5:94 6:97
+2:08  [STATE]   friends 1:94 2:100 3:100 / enemies 4:99 5:87 6:94
+2:08  [CC ON TEAM]   2 ← Ursol's Vortex (Justforgames-Ravencrest-EU) | 2s | trinket: ON CD (71s left)
+2:09  [STATE]   friends 1:91 2:99 3:82 / enemies 4:99 5:83 6:94
+2:10  [STATE]   friends 1:98 2:100 3:83 / enemies 4:97 5:75 6:94
+2:10  [CC ON TEAM]   3 ← Ursol's Vortex (Justforgames-Ravencrest-EU) | 0s | trinket: ON CD (30s left)
+2:11  [STATE]   friends 1:88 2:99 3:86 / enemies 4:97 5:74 6:94
+2:12  [STATE]   friends 1:94 2:99 3:87 / enemies 4:100 5:73 6:97
+2:12  [ENEMY CD]   5 (Restoration Druid): Incarnation: Tree of Life
+2:12  [TEAMMATE CD]   2 (Assassination Rogue): Kidney Shot
+      [RES] rdy:Δ+Dragon's Breath,3:Cauterizing Flame-3:Rewind,3:Emerald Communion,3:Rescue  cd:3:Rewind(205s),3:Emerald Communion(152s),3:Rescue(50s)  enemy:Incarnation: Tree of Life/Restoration Druid(0s),Bestial Wrath/Beast Mastery Hunter(28s)
+2:13  [STATE]   friends 1:76 2:93 3:90 / enemies 4:100 5:56 6:97
+2:14  [STATE]   friends 1:52 2:93 3:91 / enemies 4:100 5:36 6:99
+2:15  [STATE]   friends 1:32 2:93 3:88 / enemies 4:93 5:44 6:99
+2:16  [STATE]   friends 1:34 2:95 3:92 / enemies 4:87 5:51 6:98
+2:16  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath
+2:17  [STATE]   friends 1:19 2:95 3:70 / enemies 4:96 5:57 6:100
+2:17  [OWNER CD]   Ice Block
+      [RES] rdy:Δ+3:Cauterizing Flame-Ice Block,2:Cloak of Shadows,2:Evasion,3:Rewind,3:Emerald Communion,3:Stasis,3:Rescue  cd:Ice Block(174s),2:Cloak of Shadows(63s),2:Evasion(62s),3:Rewind(200s),3:Emerald Communion(148s),3:Stasis(40s),3:Rescue(46s)  enemy:Incarnation: Tree of Life/Restoration Druid(5s),Bestial Wrath/Beast Mastery Hunter(1s)
+2:18  [STATE]   friends 1:56 2:88 3:89 / enemies 4:97 5:63 6:100
+2:19  [STATE]   friends 1:69 2:83 3:89 / enemies 4:100 5:79 6:100
+2:20  [STATE]   friends 1:100 2:94 3:100 / enemies 4:100 5:100 6:100
+2:21  [STATE]   friends 1:100 2:92 3:100
+2:24  [STATE]   friends 1:100 2:98 3:95
+2:24  [BUFF FADED]   Ice Block
+2:26  [ENEMY CD]   4 (Retribution Paladin): Execution Sentence
+2:27  [STATE]   friends 1:98 2:99 3:98
+2:29  [TEAMMATE CD]   3 (Preservation Evoker): Deep Breath
+      [RES] rdy:Δ-Ice Block,2:Cloak of Shadows,2:Kidney Shot,2:Evasion,3:Rewind,3:Emerald Communion,3:Stasis,3:Rescue  cd:Ice Block(162s),2:Cloak of Shadows(51s),2:Kidney Shot(13s),2:Evasion(50s),3:Rewind(188s),3:Emerald Communion(136s),3:Stasis(28s),3:Rescue(34s)  enemy:Execution Sentence/Retribution Paladin(2s),Incarnation: Tree of Life/Restoration Druid(17s),Bestial Wrath/Beast Mastery Hunter(13s)
+2:30  [STATE]   friends 1:100 2:98 3:99
+2:33  [STATE]   friends 1:94 2:98 3:100
+2:36  [STATE]   friends 1:90 2:98 3:100
+2:38  [CC ON TEAM]   3 ← Freezing Trap (Áglåriå-Ravencrest-EU) | 6s | trinket: ON CD (3s left)
+2:39  [STATE]   friends 1:72 2:97 3:100 / enemies 4:96 5:100 6:100
+2:40  [STATE]   friends 1:70 2:98 3:100 / enemies 4:92 5:100 6:100
+2:41  [STATE]   friends 1:67 2:97 3:100 / enemies 4:87 5:99 6:100
+2:42  [STATE]   friends 1:76 2:99 3:100 / enemies 4:85 5:100 6:100
+2:43  [STATE]   friends 1:74 2:100 3:100 / enemies 4:87 5:98 6:100
+2:43  [OFFENSIVE WINDOW]   2:43–3:02 | High | 0.58M on 1 (Frost Mage) | CDs: Nature's Swiftness + Bestial Wrath
+2:43  [ENEMY CD]   5 (Restoration Druid): Nature's Swiftness
+2:43  [CC ON TEAM]   3 ← Cyclone (Justforgames-Ravencrest-EU) | 1s | trinket: used
+2:44  [STATE]   friends 1:66 2:100 3:100 / enemies 4:97 5:98 6:100
+2:44  [TRINKET]   3 used PvP trinket
+2:44  [CC ON TEAM]   1 ← Hammer of Justice (Anavãr-TwistingNether-EU) | 1s
+2:45  [STATE]   friends 1:77 2:100 3:100 / enemies 4:87 5:94 6:99
+2:45  [DMG SPIKE]   1 (Frost Mage): 0.58M in 10s
+2:45  [CLEANSE]   3 dispelled 3 effects: Expurgation off 1, Judgment of Justice off 1, Hammer of Justice off 1
+2:46  [STATE]   friends 1:81 2:100 3:100 / enemies 4:86 5:94 6:99
+2:47  [STATE]   friends 1:86 2:100 3:99 / enemies 4:96 5:93 6:100
+2:47  [OWNER CD]   Dragon's Breath
+      [RES] rdy:Δ+2:Kidney Shot,3:Cauterizing Flame-3:Rewind,3:Emerald Communion,3:Stasis,3:Rescue  cd:3:Rewind(170s),3:Emerald Communion(118s),3:Stasis(10s),3:Rescue(15s)  enemy:Execution Sentence/Retribution Paladin(21s),Nature's Swiftness/Restoration Druid(4s)  cc:1/Immobilized-1s[root]
+2:47  [CC CAST]   Dragon's Breath (by 1) → nil [non-player target]
+2:47  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath
+2:48  [STATE]   friends 1:85 2:100 3:97 / enemies 4:100 5:92 6:100
+2:49  [STATE]   friends 1:95 2:94 3:95 / enemies 4:100 5:91 6:100
+2:50  [STATE]   friends 1:88 2:91 3:94 / enemies 4:100 5:89 6:100
+2:50  [TEAMMATE CD]   2 (Assassination Rogue): Kidney Shot
+      [RES] rdy:Δ-Dragon's Breath  cd:Dragon's Breath(41s)  enemy:Execution Sentence/Retribution Paladin(24s),Nature's Swiftness/Restoration Druid(8s),Bestial Wrath/Beast Mastery Hunter(4s)
+2:51  [STATE]   friends 1:71 2:87 3:90 / enemies 4:100 5:86 6:100
+2:52  [STATE]   friends 1:65 2:86 3:89 / enemies 4:100 5:77 6:100
+2:53  [STATE]   friends 1:59 2:84 3:82 / enemies 4:96 5:62 6:98
+2:54  [STATE]   friends 1:37 2:80 3:71 / enemies 4:91 5:58 6:100
+2:57  [STATE]   friends 1:77 2:90 3:92
+2:57  [TEAMMATE CD]   3 (Preservation Evoker): Stasis
+      [RES] rdy:Δ+3:Cauterizing Flame-3:Rewind,3:Emerald Communion,3:Rescue  cd:3:Rewind(160s),3:Emerald Communion(107s),3:Rescue(5s)  enemy:Nature's Swiftness/Restoration Druid(15s),Bestial Wrath/Beast Mastery Hunter(11s)
+2:59  [TEAMMATE CD]   3 (Preservation Evoker): Tail Swipe
+      [RES] rdy:Δ-Dragon's Breath,3:Deep Breath  cd:Dragon's Breath(32s),3:Deep Breath(89s)  enemy:Nature's Swiftness/Restoration Druid(17s),Bestial Wrath/Beast Mastery Hunter(12s)
+3:00  [STATE]   friends 1:86 2:94 3:100
+3:02  [TEAMMATE CD]   3 (Preservation Evoker): Wing Buffet
+      [RES] rdy:Δ+3:Rescue-3:Tail Swipe  cd:3:Tail Swipe(177s)  enemy:Nature's Swiftness/Restoration Druid(19s),Bestial Wrath/Beast Mastery Hunter(15s)
+3:03  [STATE]   friends 1:65 2:94 3:100
+3:06  [STATE]   friends 1:62 2:96 3:99
+3:08  [CC ON TEAM]   2 ← Blinding Light (Anavãr-TwistingNether-EU) | 2s | trinket: ON CD (11s left)
+3:08  [CC ON TEAM]   1 ← Blinding Light (Anavãr-TwistingNether-EU) | 1s | trinket: used
+3:09  [STATE]   friends 1:93 2:89 3:100 / enemies 4:42 5:96 6:92
+3:09  [TRINKET]   1 used PvP trinket
+3:09  [CC ON TEAM]   3 ← Freezing Trap (Áglåriå-Ravencrest-EU) | 6s | trinket: ON CD (65s left)
+3:10  [STATE]   friends 1:93 2:90 3:100 / enemies 4:40 5:96 6:92
+3:11  [STATE]   friends 1:91 2:89 3:100 / enemies 4:64 5:100 6:93
+3:12  [STATE]   friends 1:79 2:89 3:100 / enemies 4:56 5:100 6:94
+3:13  [STATE]   friends 1:74 2:89 3:100 / enemies 4:60 5:100 6:93
+3:14  [STATE]   friends 1:91 2:91 3:100 / enemies 4:46 5:100 6:92
+3:15  [STATE]   friends 1:84 2:90 3:100 / enemies 4:59 5:100 6:97
+3:15  [CC ON TEAM]   1 ← Hammer of Justice (Anavãr-TwistingNether-EU) | 1s | trinket: ON CD (114s left)
+3:16  [STATE]   friends 1:89 2:90 3:100 / enemies 4:56 5:100 6:98
+3:17  [STATE]   friends 1:100 2:92 3:99 / enemies 4:57 5:100 6:94
+3:17  [CLEANSE]   3 dispelled 2 effects: Expurgation off 1, Hammer of Justice off 1
+3:18  [STATE]   friends 1:100 2:93 3:100 / enemies 4:49 5:100 6:94
+3:19  [STATE]   friends 1:100 2:94 3:100 / enemies 4:47 5:100 6:89
+3:20  [STATE]   friends 1:99 2:96 3:99 / enemies 4:51 5:100 6:91
+3:20  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath
+3:21  [STATE]   friends 1:82 2:96 3:100 / enemies 4:53 5:98 6:86
+3:21  [CC ON TEAM]   3 ← Cyclone (Justforgames-Ravencrest-EU) | 5s | trinket: ON CD (53s left)
+3:22  [STATE]   friends 1:74 2:95 3:99 / enemies 4:80 5:98 6:87
+3:23  [STATE]   friends 1:52 2:96 / enemies 4:75 5:97 6:88
+3:24  [STATE]   friends 1:41 2:96 / enemies 4:58 5:94 6:88
+3:25  [STATE]   friends 1:dead 2:90 3:100 / enemies 4:38 5:94 6:90
+3:25  [DEATH]  1 (Frost Mage — friendly)
+               HP: 90% at T-15s → 86% at T-10s → 85% at T-5s → 69% at T-3s → dead
+               Top damage in final 10s: Anavãr-TwistingNether-EU — Hammer of Wrath (130k), Áglåriå-Ravencrest-EU — Barbed Shot (59k), [pet] — Bestial Wrath (53k)
+3:26  [STATE]   friends 1:dead 2:88 3:100 / enemies 4:35 5:89 6:90
+3:26  [TEAMMATE CD]   2 (Assassination Rogue): Cloak of Shadows
+      [RES] rdy:Δ+2:Kidney Shot,3:Cauterizing Flame-Dragon's Breath,3:Tail Swipe,3:Wing Buffet,3:Rewind,3:Emerald Communion,3:Stasis  cd:Dragon's Breath(5s),3:Tail Swipe(153s),3:Wing Buffet(156s),3:Rewind(131s),3:Emerald Communion(78s),3:Stasis(61s)  enemy:Bestial Wrath/Beast Mastery Hunter(6s)
+3:27  [STATE]   friends 1:dead 2:100 3:100 / enemies 4:53 5:99 6:99
+3:28  [STATE]   friends 1:dead 2:97 3:100 / enemies 4:73 5:100 6:100
+3:29  [STATE]   friends 1:dead 2:100 3:85 / enemies 4:98 5:100 6:100
+3:30  [STATE]   friends 1:dead 2:99 3:100 / enemies 4:100 5:100 6:100
+3:31  [STATE]   friends 1:dead 2:99 3:99 / enemies 4:99 5:100 6:100
+3:33  [STATE]   friends 1:dead 2:88 3:99
+3:33  [ENEMY CD]   4 (Retribution Paladin): Execution Sentence
+3:36  [STATE]   friends 1:dead 2:71 3:99
+3:37  [STATE]   friends 1:dead 2:65 3:99 / enemies 4:100 5:97 6:100
+3:38  [STATE]   friends 1:dead 2:57 3:100 / enemies 4:98 5:96 6:100
+3:39  [STATE]   friends 1:dead 2:52 3:100 / enemies 4:98 5:94 6:100
+3:40  [STATE]   friends 1:dead 2:43 3:100 / enemies 4:99 5:96 6:100
+3:41  [STATE]   friends 1:dead 2:40 3:100 / enemies 4:98 5:95 6:100
+3:42  [STATE]   friends 1:dead 2:35 3:100 / enemies 4:100 5:98 6:100
+3:43  [STATE]   friends 1:dead 2:44 3:99 / enemies 4:98 5:100 6:100
+3:44  [STATE]   friends 1:dead 2:21 3:100 / enemies 4:100 5:98 6:100
+3:45  [STATE]   friends 1:dead 2:24 3:99 / enemies 4:100 5:97 6:100
+3:46  [STATE]   friends 1:dead 2:dead 3:99 / enemies 4:100 5:96 6:100
+3:46  [DEATH]  2 (Assassination Rogue — friendly)
+               HP: 97% at T-15s → 69% at T-10s → 36% at T-5s → 34% at T-3s → dead
+               Top damage in final 10s: Anavãr-TwistingNether-EU — Final Verdict (109k), [pet] — Kill Command (69k), Anavãr-TwistingNether-EU — Hammer of Light (62k)
+
+3:47  [MATCH END]   damp: 15%
+  friends 1:dead(3:25) 2:dead(3:46) 3:98% / enemies 4:100% 5:92% 6:100%

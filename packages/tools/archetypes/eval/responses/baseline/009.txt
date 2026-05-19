@@ -1,0 +1,17 @@
+This was a solid win for your Holy Priest in a pressure-heavy 1:05 match. Your team killed the Assassination Rogue at 0:56 and the Devourer Demon Hunter at 1:05 while surviving constant rogue CC pressure and a dangerous mid-match window where your Mage was nearly dead. Let's review the key decisions.
+
+The opening was aggressive from the enemy side: Garrote silence on your Mage at 0:05, then on you at 0:06, Cheap Shot on the Mage at 0:07. Within the first 7 seconds, both healers and your highest-burst player were suppressed. You handled this well — Dispel Magic off yourself removed Crippling Poison at 0:10, and you immediately resumed healing the Mage who had dropped to 86%.
+
+Your Psychic Scream at 0:17 targeting the enemy Disc Priest was an excellent offensive read. The Priest had just been in range and your Warrior's Dismantle had suppressed the Rogue — you used that brief window to fear the enemy healer out, creating space for your Mage and Rogue to extend pressure on the Rogue target. This was the offensive foundation of the win.
+
+The Guardian Spirit at 0:21 on the Rogue at 78% HP during a Kidney Shot was conservative — Guardian Spirit is typically reserved for truly lethal situations, and 78% HP with a Kidney Shot incoming could have been held with Flash Heal alone given the Rogue has enormous self-sustain. However, the subsequent 1.14M damage spike on the Rogue at 0:22 validates the concern; the Rogue was taking heavy damage and Guardian Spirit prevented a kill. The question is whether Flash Heal or Desperate Prayer would have sufficed, saving Guardian Spirit for later.
+
+The Divine Hymn at 0:27 was a strong response to the situation at that moment: Power Infusion had just activated on the enemy Disc Priest, your Rogue was at 71% HP and dropping fast, your Mage was in the mid-60s. Both needed healing simultaneously and you couldn't target-switch fast enough. Divine Hymn covering all three team members was the right tool.
+
+The period from 0:40 to 0:47 was the most dangerous stretch. The Mage was at 39%, then 22% after Cheap Shot, and you were Garrote silenced at 0:42 with your trinket now on cooldown (trinketed at 0:46). Your Apotheosis at 0:47 while the Mage was at 25% HP gave you a burst healing window that brought the Mage back to 69%, and then your two Power Infusion charges at 0:49 — one on the Mage at 69% HP, one on yourself — was creative. Using PI offensively on the Mage to boost their damage output while your team had pressure on the Rogue showed good match-awareness about the state of the game.
+
+Your Dispel activity was consistent: Crippling Poison off yourself at 0:10, Shadow Word: Pain off the Rogue at 0:37. Two purges on the enemy Assassination Rogue's debuffs is active and correct.
+
+The closing sequence after the Rogue death at 0:56 was clean: Psychic Scream on the Disc Priest and Demon Hunter at 0:59, Devouring Plague (or equivalent offensive tool) onto the Demon Hunter at 1:00–1:01, healing the Mage back up, and the team closed the Demon Hunter at 1:05.
+
+One refinement: Guardian Spirit at 0:21 on a 78% HP target during a 5-second Kidney Shot is on the early side. Watching whether the Rogue's HP held through Flash Heal for another 2–3 seconds before committing would have preserved a very strong save tool for longer. The rest of the match, particularly the Mage at 22% HP at 0:43 — where you needed Apotheosis as your primary save rather than Guardian Spirit — shows that the cooldown was better suited for that moment.

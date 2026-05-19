@@ -1,0 +1,13 @@
+This was a clean 1:31 win. You killed the Shadow Priest at 1:20 and the Preservation Evoker at 1:30, finishing 100/100/100 on your side against a team where the Windwalker Monk survived at 93%. Here is what worked and what you can sharpen.
+
+What you did well: Psychic Scream at 0:12 hit both the Shadow Priest and the Preservation Evoker simultaneously, disrupting both their damage and their healing at the same moment your Outlaw Rogue and Frost Mage were opening. That was an excellent use of the CC — two-for-one on healer and damage dealer during your first offensive window. You immediately followed with Mind Blast casts on the Shadow Priest to accelerate the kill. Power Infusion at 0:05 was aggressive but justified given your team's comp opened before 10 seconds were up and you needed immediate throughput amplification.
+
+Your cleanse work was strong. At 0:06 you removed Landslide off your Rogue instantly. At 0:18 you cleared four debuffs from your Rogue before any of them could deal meaningful damage. At 0:43 you cleared five effects off your Mage during a Silence, breaking the pressure in the Frost Mage's worst moment. These were fast, correct priority calls.
+
+Guardian Spirit at 0:53 on the Mage at 88% was slightly early. The Mage was under a Psychic Scream AoE from the Shadow Priest and had just been Leg Swept — they had Ice Block available and used it at 0:34 earlier. By 0:53 the Mage dropped from 88% to 31% at 0:59 before recovering; Guardian Spirit faded at 1:05 without triggering. It bought time psychologically but the charge was effectively unused. The Mage's own Ice Block was better suited for that defensive moment since it would have saved a major CD. Holding Guardian Spirit for the Rogue (your kill dealer) during the final Shadow Priest burn window would have been more impactful.
+
+Apotheosis at 1:07 was well-placed — you were in the kill window and needed maximum healing output to keep the Mage alive through the sustained Vampire Touch / Shadow Word pressure while the Rogue and Mage burned the Shadow Priest to zero. The Psychic Scream at 1:14 on the Evoker to keep her locked out as the Shadow Priest was dying was excellent sequencing.
+
+You left Divine Hymn and Desperate Prayer entirely unused, which is fine — you did not need them in this match. Blind on your Rogue was also unused, which is also acceptable given the win.
+
+The one actionable takeaway: your Guardian Spirit is too valuable to spend on a target that has a personal defensive CD available. Save it for your Rogue or as an emergency tool on whoever is the kill target in the final burn sequence.

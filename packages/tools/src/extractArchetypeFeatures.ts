@@ -64,7 +64,8 @@ const API_BASE = process.env.API_BASE ?? 'https://wowarenalogs.com';
 const PAGE_SIZE = 50;
 
 const OUTPUT_DIR = path.join(__dirname, '../archetypes');
-const FEATURES_FILE = path.join(OUTPUT_DIR, 'features.jsonl');
+const BRACKET_SLUG = BRACKET.toLowerCase().includes('solo') ? 'solo_shuffle' : '3v3';
+const FEATURES_FILE = path.join(OUTPUT_DIR, `features_${BRACKET_SLUG}.jsonl`);
 const LOGS_DIR = path.join(OUTPUT_DIR, 'logs');
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -322,11 +323,9 @@ const IS_SOLO_SHUFFLE = BRACKET.toLowerCase().includes('solo');
 
 function isBracketMatch(combat: IArenaMatch | IShuffleRound): boolean {
   if (IS_SOLO_SHUFFLE) {
-    // Accept only solo shuffle rounds (IShuffleRound has no 'endInfo' team data)
-    return !('playerTeamId' in combat);
+    return combat.dataType === 'ShuffleRound';
   }
-  // Accept only arena matches (IArenaMatch has playerTeamId)
-  return 'playerTeamId' in combat;
+  return combat.dataType === 'ArenaMatch';
 }
 
 // ── Per-match processing ──────────────────────────────────────────────────────

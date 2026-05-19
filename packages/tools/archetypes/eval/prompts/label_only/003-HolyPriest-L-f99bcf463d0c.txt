@@ -1,0 +1,359 @@
+[ARCHETYPE: Holy Priest — fast_nuke_tunnel]
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Holy Priest (Healer) | Bracket: 3v3 | Result: Loss | Duration: 2:37
+  My team: Outlaw Rogue, Holy Priest, Frost Mage
+  Enemy team: Discipline Priest, Enhancement Shaman, Arms Warrior
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Holy Priest): CAN offensive purge
+  Team purgers: Frost Mage
+
+DAMPENING (3v3): started at 10%, ended at 10% at match end
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Shieldbot-Sylvanas-EU (Holy Priest — log owner):
+    Psychic Scream [40s, 2 Charges], Power Infusion [120s, 2 Charges], Desperate Prayer [90s], Guardian Spirit [180s, 2 Charges], Divine Hymn [180s, 2 Charges], Apotheosis [120s]
+  2: Nablesse-Silvermoon-EU (Outlaw Rogue):
+    Cloak of Shadows [120s], Kidney Shot [30s], Blind [120s], Adrenaline Rush [180s, 2 Charges]
+  3: Womànmoment-Ravencrest-EU (Frost Mage):
+    Ice Block [240s], Dragon's Breath [45s, 2 Charges]
+  4: Nylinnia-Aegwynn-EU (Discipline Priest — enemy):
+    Power Infusion [120s]
+  5: Windfury-Kazzak-EU (Enhancement Shaman — enemy):
+    Bloodlust [60s], Ascendance [180s]
+  6: Flaxenwarr-Stormscale-EU (Arms Warrior — enemy):
+    Avatar [90s]
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100 2:100 3:100
+0:00  [OWNER CAST]   33076 → 2
+0:01  [OWNER CAST]   33076 → 3
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:06  [STATE]   friends 1:98 2:100 3:100
+0:07  [OWNER CAST]   527 → 3
+0:07  [CLEANSE]   1 dispelled 3 effects: Flame Shock off 3, Stormbind off 3, Earthbind off 3
+0:08  [OWNER CD]   Power Infusion → 3 (100% HP)
+      [RES] rdy:Δ+Power Infusion,Desperate Prayer,Guardian Spirit,Divine Hymn,Apotheosis,2:Cloak of Shadows,2:Blind,2:Adrenaline Rush,3:Ice Block  cd:—
+      [HEALING]    0–5s: 26.9k HPS | 5–10s: 36.9k HPS | 10–15s: 47.0k HPS | Overheal: 55%
+0:08  [OWNER CD]   Power Infusion → 1 (81% HP)
+      [RES] rdy:Δ  cd:—
+      [HEALING]    0–5s: 26.9k HPS | 5–10s: 36.9k HPS | 10–15s: 47.0k HPS | Overheal: 55%
+0:09  [STATE]   friends 1:80 2:100 3:100
+0:09  [OWNER CAST]   121536
+0:09  [OWNER CAST]   586
+0:10  [CC ON TEAM]   1 ← Champion's Spear (Flaxenwarr-Stormscale-EU) | 4s
+0:10  [CC ON TEAM]   3 ← Champion's Spear (Flaxenwarr-Stormscale-EU) | 6s
+0:11  [STATE]   friends 1:81 2:100 3:85 / enemies 4:100 5:100 6:100
+0:11  [ENEMY CD]   6 (Arms Warrior): Avatar
+0:11  [OWNER CAST]   33076 → 3 [succeeded after CC arrived — within 1s in log]
+0:12  [STATE]   friends 1:76 2:100 3:92 / enemies 4:100 5:100 6:100
+0:12  [ENEMY CD]   5 (Enhancement Shaman): Bloodlust
+0:12  [TEAMMATE CD]   2 (Outlaw Rogue): Adrenaline Rush
+      [RES] rdy:Δ+Psychic Scream,Guardian Spirit,Divine Hymn,2:Cloak of Shadows,2:Adrenaline Rush,3:Ice Block,3:Dragon's Breath  cd:—  enemy:Bloodlust/Enhancement Shaman(0s),Avatar/Arms Warrior(1s)  cc:1/Champion's Spear-2s,3/Champion's Spear-4s
+0:12  [OWNER CAST]   121536
+0:13  [STATE]   friends 1:79 2:100 3:93 / enemies 4:100 5:100 6:100
+0:13  [TEAMMATE CD]   2 (Outlaw Rogue): Kidney Shot
+      [RES] rdy:Δ+Psychic Scream,Guardian Spirit,Divine Hymn,2:Adrenaline Rush,3:Ice Block,3:Dragon's Breath  cd:—  enemy:Bloodlust/Enhancement Shaman(1s),Avatar/Arms Warrior(2s)  cc:1/Champion's Spear-2s,3/Champion's Spear-4s
+0:14  [STATE]   friends 1:81 2:100 3:94 / enemies 4:100 5:100 6:100
+0:14  [OWNER CD]   Spirit of Redemption
+      [RES] rdy:Δ+Guardian Spirit,Divine Hymn,2:Cloak of Shadows,2:Blind,3:Ice Block  cd:—  enemy:Bloodlust/Enhancement Shaman(2s),Avatar/Arms Warrior(3s)  cc:3/Champion's Spear-2s
+0:15  [STATE]   friends 1:82 2:99 3:95 / enemies 4:100 5:100 6:100
+0:15  [OWNER CAST]   64844
+0:15  [OWNER CD]   Divine Hymn
+      [RES] rdy:Δ+Guardian Spirit,Divine Hymn,Apotheosis,2:Cloak of Shadows,2:Blind,3:Ice Block  cd:—  enemy:Bloodlust/Enhancement Shaman(3s),Avatar/Arms Warrior(4s)  cc:3/Champion's Spear-2s
+0:16  [STATE]   friends 1:83 2:98 3:99 / enemies 4:100 5:98 6:100
+0:16  [OWNER CAST]   64844
+0:17  [STATE]   friends 1:83 2:97 3:99 / enemies 4:100 5:70 6:100
+0:17  [OWNER CAST]   64844
+0:18  [STATE]   friends 1:84 2:100 3:100 / enemies 4:100 5:36 6:100
+0:18  [OWNER CAST]   64844
+0:18  [BUFF FADED]   Divine Hymn
+0:18  [OWNER CAST]   1262763 → 3
+0:19  [STATE]   friends 1:84 2:94 3:100 / enemies 4:100 5:65 6:100
+0:19  [ENEMY BUFF]   5: Power Infusion (purgeable)
+0:19  [ENEMY CD]   4 (Discipline Priest): Power Infusion
+0:19  [ENEMY BUFF]   4: Power Infusion (purgeable)
+0:20  [STATE]   friends 1:86 2:94 3:72 / enemies 4:100 5:69 6:100
+0:20  [ENEMY BUFF END]   5: Power Infusion
+0:21  [STATE]   friends 1:86 2:93 3:76
+0:21  [OWNER CAST]   2061 → 3
+0:21  [OWNER CAST]   73325 → 3
+0:22  [OWNER CAST]   33076 → 3
+0:23  [BUFF FADED]   Power Infusion
+0:24  [STATE]   friends 1:86 2:100 3:100
+0:24  [OWNER CAST]   1262763 → 3
+0:25  [CC ON TEAM]   3 ← Storm Bolt (Flaxenwarr-Stormscale-EU) | 2s
+0:25  [MISSED CLEANSE]   Flame Shock on 2 | 18s | 84k taken during | dispel: Magic
+0:26  [STATE]   friends 1:93 2:95 3:100 / enemies 4:100 5:90 6:100
+0:26  [OWNER CAST]   73325 → 3
+0:26  [CC ON TEAM]   2 ← Mind Control (Nylinnia-Aegwynn-EU) | 2s
+0:26  [OWNER CAST]   33076 → 3
+0:27  [STATE]   friends 1:95 2:96 3:100 / enemies 4:100 5:90 6:100
+0:28  [STATE]   friends 1:96 2:96 3:100 / enemies 4:100 5:91 6:100
+0:28  [OWNER CAST]   528 → 2 [totem/pet]
+0:28  [CLEANSE]   1 dispelled Mind Control off 2
+0:29  [STATE]   friends 1:96 2:98 3:100 / enemies 4:100 5:91 6:100
+0:30  [STATE]   friends 1:97 2:96 3:100 / enemies 4:100 5:92 6:100
+0:31  [STATE]   friends 1:97 2:88 3:100 / enemies 4:100 5:93 6:100
+0:31  [OWNER CAST]   32379 → 5
+0:31  [CC ON TEAM]   3 ← Psychic Scream (Nylinnia-Aegwynn-EU) | 1s | trinket: used
+0:32  [STATE]   friends 1:97 2:86 3:100 / enemies 4:100 5:95 6:100
+0:32  [TRINKET]   3 used PvP trinket
+0:32  [OWNER CAST]   527 → 3 [completed before CC landed]
+0:32  [CC ON TEAM]   2 ← Shockwave (Flaxenwarr-Stormscale-EU) | 3s
+0:32  [CC ON TEAM]   1 ← Shockwave (Flaxenwarr-Stormscale-EU) | 3s
+0:33  [STATE]   friends 1:100 2:89 3:100 / enemies 4:100 5:86 6:100
+0:34  [STATE]   friends 1:98 2:91 3:100 / enemies 4:100 5:88 6:100
+0:34  [CC ON TEAM]   1 ← Hex (Windfury-Kazzak-EU) | 2s
+0:34  [ENEMY BUFF END]   4: Power Infusion
+0:35  [STATE]   friends 1:100 2:92 3:100 / enemies 4:100 5:100 6:100
+0:35  [CLEANSE]   3 dispelled Hex off 1
+0:36  [STATE]   friends 1:99 2:88 3:100 / enemies 4:100 5:100 6:100
+0:36  [OWNER CAST]   33076 → 2
+0:37  [STATE]   friends 1:100 2:87 3:100 / enemies 4:100 5:100 6:100
+0:38  [STATE]   friends 1:100 2:89 3:98 / enemies 4:100 5:99 6:100
+0:38  [ENEMY CD]   5 (Enhancement Shaman): Ascendance
+0:39  [STATE]   friends 1:100 2:92 3:100 / enemies 4:100 5:93 6:100
+0:39  [CC ON TEAM]   1 ← Intimidating Shout (Flaxenwarr-Stormscale-EU) | 5s | trinket: used
+0:39  [CC ON TEAM]   2 ← Intimidating Shout (Flaxenwarr-Stormscale-EU) | 1s | trinket: used
+0:40  [STATE]   friends 1:100 2:85 3:100 / enemies 4:100 5:93 6:100
+0:40  [TRINKET]   2 used PvP trinket
+0:41  [STATE]   friends 1:100 2:87 3:97 / enemies 4:100 5:95 6:100
+0:42  [STATE]   friends 1:100 2:91 3:96 / enemies 4:100 5:90 6:100
+0:43  [STATE]   friends 1:100 2:89 3:82 / enemies 4:100 5:83 6:100
+0:43  [DMG SPIKE]   3 (Frost Mage): 0.57M in 10s
+0:44  [STATE]   friends 1:100 2:70 3:32 / enemies 4:100 5:80 6:100
+0:44  [TRINKET]   1 used PvP trinket
+0:44  [TEAMMATE CD]   3 (Frost Mage): Dragon's Breath
+      [RES] rdy:Δ+Psychic Scream,Guardian Spirit,2:Kidney Shot,3:Dragon's Breath  cd:—  enemy:Power Infusion/Discipline Priest(25s),Ascendance/Enhancement Shaman(6s)
+0:44  [CC CAST]   Dragon's Breath (by 3) → nil [non-player target]
+0:44  [OWNER CD]   Guardian Spirit → 3 (31% HP)
+      [RES] rdy:Δ+Guardian Spirit,Apotheosis,2:Cloak of Shadows,2:Blind,3:Ice Block  cd:—  enemy:Power Infusion/Discipline Priest(25s),Ascendance/Enhancement Shaman(6s)
+0:44  [OWNER CAST]   2050 → 3
+0:45  [STATE]   friends 1:99 2:72 3:97 / enemies 4:100 5:81 6:100
+0:45  [TEAMMATE CD]   2 (Outlaw Rogue): Kidney Shot
+      [RES] rdy:Δ-Guardian Spirit,Divine Hymn,2:Adrenaline Rush,3:Dragon's Breath  cd:Guardian Spirit(179s),Divine Hymn(150s),2:Adrenaline Rush(147s),3:Dragon's Breath(44s)  enemy:Power Infusion/Discipline Priest(26s),Ascendance/Enhancement Shaman(7s)
+0:45  [OWNER CAST]   88625 → 4
+0:46  [STATE]   friends 1:100 2:71 3:100 / enemies 4:95 5:93 6:100
+0:47  [STATE]   friends 1:100 2:70 3:100 / enemies 4:93 5:96 6:100
+0:47  [OWNER CAST]   33076 → 2
+0:48  [STATE]   friends 1:100 2:81 3:93 / enemies 4:93 5:89 6:100
+0:49  [STATE]   friends 1:100 2:83 3:87 / enemies 5:82 6:100
+0:50  [OWNER CAST]   1262763 → 3
+0:51  [STATE]   friends 1:100 2:91 3:100
+0:52  [OWNER CAST]   2061 → 3
+0:53  [OWNER CAST]   2061 → 2
+0:54  [STATE]   friends 1:100 2:79 3:85
+0:54  [OWNER CD]   Psychic Scream
+      [RES] rdy:Psychic Scream,Desperate Prayer,Apotheosis,2:Cloak of Shadows,2:Blind,3:Ice Block  cd:Power Infusion(74s),Guardian Spirit(170s),Divine Hymn(141s),2:Kidney Shot(21s),2:Adrenaline Rush(138s),3:Dragon's Breath(35s)  enemy:Ascendance/Enhancement Shaman(16s)
+0:54  [CC CAST]   Psychic Scream (by 1) → nil [non-player target]
+0:54  [CC CAST]   Psychic Scream (by 1) → 4
+0:55  [OWNER CAST]   14914 → 5
+0:56  [BUFF FADED]   Guardian Spirit
+0:57  [STATE]   friends 1:99 2:80 3:99
+0:57  [OWNER CAST]   33076 → 2
+0:58  [MISSED CLEANSE]   Flame Shock on 1 | 23s | 35k taken during | dispel: Magic
+1:00  [STATE]   friends 1:100 2:83 3:91
+1:00  [OWNER CAST]   34861
+1:01  [OWNER CAST]   121536
+1:01  [OWNER CAST]   586
+1:01  [CLEANSE]   1 dispelled Earthbind off 1
+1:02  [OWNER CAST]   33076 → 2
+1:03  [STATE]   friends 1:100 2:99 3:96
+1:04  [OWNER CAST]   527 → 3
+1:04  [CLEANSE]   1 dispelled 2 effects: Earthbind off 3, Flame Shock off 3
+1:06  [STATE]   friends 1:78 2:95 3:86
+1:08  [MISSED CLEANSE]   Flame Shock on 3 | 6s | 307k taken during | dispel: Magic
+1:09  [STATE]   friends 1:81 2:95 3:76
+1:12  [STATE]   friends 1:84 2:96 3:46
+1:12  [CC ON TEAM]   1 ← Psychic Scream (Nylinnia-Aegwynn-EU) | 6s | trinket: ON CD (63s left)
+1:13  [STATE]   friends 1:85 2:98 3:39 / enemies 4:100 5:72 6:100
+1:14  [STATE]   friends 1:85 2:96 3:23 / enemies 4:100 5:67 6:100
+1:14  [TEAMMATE CD]   3 (Frost Mage): Ice Block
+      [RES] rdy:Δ+Desperate Prayer,Apotheosis,2:Cloak of Shadows,2:Blind,3:Ice Block-Psychic Scream,3:Dragon's Breath  cd:Psychic Scream(20s),3:Dragon's Breath(15s)  cc:1/Psychic Scream-4s
+1:15  [STATE]   friends 1:85 2:86 3:24 / enemies 4:100 5:70 6:100
+1:16  [STATE]   friends 1:86 2:69 3:25 / enemies 4:100 5:71 6:100
+1:17  [STATE]   friends 1:86 2:64 3:25 / enemies 4:100 5:72 6:100
+1:18  [STATE]   friends 1:87 2:64 3:25 / enemies 4:100 5:73 6:100
+1:18  [TEAMMATE CD]   2 (Outlaw Rogue): Cloak of Shadows
+      [RES] rdy:Δ+Desperate Prayer,Apotheosis,2:Cloak of Shadows,2:Kidney Shot,2:Blind-Psychic Scream,3:Dragon's Breath  cd:Psychic Scream(16s),3:Dragon's Breath(11s)
+1:18  [OWNER CAST]   2050 → 3
+1:19  [STATE]   friends 1:87 2:69 3:95 / enemies 4:100 5:86 6:100
+1:19  [TEAMMATE CD]   2 (Outlaw Rogue): Blind
+      [RES] rdy:Δ+Desperate Prayer,Apotheosis,2:Blind-3:Dragon's Breath  cd:3:Dragon's Breath(10s)
+1:20  [STATE]   friends 1:88 2:75 3:95 / enemies 4:100 5:92 6:100
+1:20  [OWNER CAST]   33076 → 2
+1:21  [STATE]   friends 1:88 2:88 3:99 / enemies 4:100 5:92 6:100
+1:21  [MISSED CLEANSE]   Flame Shock on 3 | 33s | 72k taken during | dispel: Magic
+1:21  [OWNER CAST]   33076 → 2
+1:22  [STATE]   friends 1:87 2:100 3:96 / enemies 4:100 5:93
+1:24  [STATE]   friends 1:88 2:100 3:93
+1:24  [OWNER CAST]   88625 → 4
+1:26  [OWNER CAST]   121536
+1:26  [TEAMMATE CD]   3 (Frost Mage): Dragon's Breath
+      [RES] rdy:Δ-Psychic Scream,Guardian Spirit,2:Cloak of Shadows,2:Blind,3:Ice Block,3:Dragon's Breath  cd:Psychic Scream(8s),Guardian Spirit(138s),2:Cloak of Shadows(111s),2:Blind(112s),3:Ice Block(228s),3:Dragon's Breath(2s)  cc:3/Glacial Spike-0s[kick]
+1:26  [CC CAST]   Dragon's Breath (by 3) → nil [non-player target]
+1:26  [OWNER CAST]   586
+1:27  [STATE]   friends 1:88 2:100 3:96
+1:27  [TEAMMATE CD]   2 (Outlaw Rogue): Kidney Shot
+      [RES] rdy:Δ-Psychic Scream,2:Cloak of Shadows,2:Blind,3:Ice Block  cd:Psychic Scream(7s),2:Cloak of Shadows(111s),2:Blind(112s),3:Ice Block(227s)
+1:28  [OWNER CD]   Psychic Scream
+      [RES] rdy:Δ-Psychic Scream,2:Cloak of Shadows,2:Blind,3:Ice Block  cd:Psychic Scream(6s),2:Cloak of Shadows(110s),2:Blind(111s),3:Ice Block(226s)
+1:28  [CC CAST]   Psychic Scream (by 1) → nil [non-player target]
+1:28  [CC CAST]   Psychic Scream (by 1) → 4
+1:29  [OWNER CAST]   14914 → 5
+1:30  [STATE]   friends 1:89 2:100 3:81
+1:30  [OFFENSIVE WINDOW]   1:30–1:50 | Moderate | 1.02M on 3 (Frost Mage) | CDs: Avatar + Bloodlust
+1:30  [ENEMY CD]   6 (Arms Warrior): Avatar
+1:30  [OWNER CAST]   14914 → 5
+1:32  [TEAMMATE CD]   2 (Outlaw Rogue): Adrenaline Rush
+      [RES] rdy:Δ-Psychic Scream,Guardian Spirit,Divine Hymn,2:Cloak of Shadows,2:Kidney Shot,2:Blind,2:Adrenaline Rush,3:Ice Block  cd:Psychic Scream(2s),Guardian Spirit(132s),Divine Hymn(103s),2:Cloak of Shadows(106s),2:Kidney Shot(25s),2:Blind(107s),2:Adrenaline Rush(100s),3:Ice Block(222s)  enemy:Avatar/Arms Warrior(2s)
+1:33  [STATE]   friends 1:89 2:100 3:81
+1:33  [OWNER CAST]   14914 → 5
+1:34  [OWNER CAST]   585 → 5
+1:35  [CC ON TEAM]   3 ← Storm Bolt (Flaxenwarr-Stormscale-EU) | 3s | trinket: ON CD (57s left)
+1:36  [STATE]   friends 1:93 2:97 3:66 / enemies 4:93 5:44 6:100
+1:36  [OWNER CAST]   33076 → 3
+1:37  [STATE]   friends 1:93 2:97 3:58 / enemies 4:94 5:53 6:100
+1:38  [STATE]   friends 1:93 2:99 3:52 / enemies 4:94 5:71 6:100
+1:38  [OWNER CAST]   2050 → 3
+1:38  [ENEMY CD]   5 (Enhancement Shaman): Bloodlust
+1:39  [STATE]   friends 1:93 2:100 3:59 / enemies 4:94 5:67 6:100
+1:39  [OWNER CAST]   33076 → 3
+1:40  [STATE]   friends 1:95 2:100 3:71 / enemies 4:94 5:68 6:100
+1:40  [OWNER CAST]   527 → 2
+1:40  [CLEANSE]   1 dispelled Earthgrab off 2
+1:40  [CC ON TEAM]   3 ← Champion's Spear (Flaxenwarr-Stormscale-EU) | 6s | trinket: ON CD (52s left)
+1:41  [STATE]   friends 1:95 2:100 3:77 / enemies 4:94 5:62 6:100
+1:42  [STATE]   friends 1:98 2:100 3:77 / enemies 4:94 5:60 6:99
+1:42  [OWNER CAST]   33076 → 3
+1:43  [STATE]   friends 1:100 2:100 3:92 / enemies 4:94 5:28 6:95
+1:43  [OWNER CAST]   32379 → 4
+1:44  [STATE]   friends 1:100 2:100 3:85 / enemies 4:92 5:20 6:92
+1:45  [STATE]   friends 1:99 2:100 3:86 / enemies 4:87 5:38 6:92
+1:45  [OWNER CD]   Apotheosis
+      [RES] rdy:Δ+Desperate Prayer,Apotheosis  cd:—  enemy:Bloodlust/Enhancement Shaman(7s),Avatar/Arms Warrior(15s)  cc:3/Champion's Spear-2s
+1:46  [STATE]   friends 1:100 2:100 3:78 / enemies 4:97 5:30 6:100
+1:46  [OWNER CAST]   2050 → 3
+1:47  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:35 6:100
+1:48  [STATE]   friends 1:93 2:100 3:92 / enemies 4:97 5:46 6:100
+1:49  [STATE]   friends 1:95 2:100 3:85 / enemies 4:99 5:58 6:99
+1:50  [STATE]   friends 1:98 2:100 3:78 / enemies 4:95 5:68 6:93
+1:51  [STATE]   friends 1:98 2:98 3:67 / enemies 4:95 5:69 6:90
+1:51  [CC ON TEAM]   2 ← Shockwave (Flaxenwarr-Stormscale-EU) | 3s | trinket: ON CD (50s left)
+1:51  [OWNER CAST]   33076 → 3
+1:52  [STATE]   friends 1:99 2:98 3:73 / enemies 4:95 5:84 6:90
+1:53  [STATE]   friends 1:96 2:93 3:78 / enemies 4:92 5:89 6:83
+1:53  [DMG SPIKE]   3 (Frost Mage): 1.02M in 10s
+1:54  [STATE]   friends 1:96 2:90 3:61 / enemies 4:86 5:79 6:75
+1:54  [OWNER CAST]   2050 → 3
+1:55  [STATE]   friends 1:79 2:90 3:62 / enemies 4:88 5:79 6:82
+1:55  [OWNER CD]   Guardian Spirit → 3 (58% HP)
+      [RES] rdy:Δ-Guardian Spirit,Apotheosis,2:Cloak of Shadows,2:Kidney Shot,2:Blind,3:Ice Block  cd:Guardian Spirit(109s),Apotheosis(110s),2:Cloak of Shadows(83s),2:Kidney Shot(2s),2:Blind(84s),3:Ice Block(199s)  enemy:Bloodlust/Enhancement Shaman(17s),Avatar/Arms Warrior(25s)
+1:56  [STATE]   friends 1:74 2:91 3:34 / enemies 4:94 5:84 6:88
+1:56  [OWNER CAST]   33076 → 3
+1:57  [STATE]   friends 1:65 2:98 3:42 / enemies 4:98 5:87 6:97
+1:57  [OWNER CAST]   1262763 → 3
+1:58  [STATE]   friends 1:62 2:99 3:67 / enemies 4:100 5:93 6:100
+1:58  [OWNER CAST]   586
+1:58  [CLEANSE]   1 dispelled Earthbind off 1
+1:58  [OWNER CD]   Desperate Prayer
+      [RES] rdy:Δ+Desperate Prayer,2:Kidney Shot-Power Infusion  cd:Power Infusion(10s)  enemy:Bloodlust/Enhancement Shaman(20s),Avatar/Arms Warrior(28s)
+1:59  [STATE]   friends 1:68 2:100 3:74 / enemies 4:100 5:87 6:100
+1:59  [OWNER CAST]   88625 → 4
+2:00  [STATE]   friends 1:62 2:94 3:59 / enemies 4:100 5:82 6:100
+2:01  [STATE]   friends 1:63 2:85 3:100 / enemies 4:100 5:83 6:100
+2:01  [OWNER CAST]   2050 → 3
+2:03  [STATE]   friends 1:63 2:84 3:62
+2:03  [OWNER CAST]   33076 → 3
+2:04  [OWNER CAST]   2061 → 3
+2:05  [BUFF FADED]   Apotheosis
+2:05  [OWNER CD]   Psychic Scream
+      [RES] rdy:Δ+Psychic Scream,2:Kidney Shot,3:Dragon's Breath-Desperate Prayer,Apotheosis  cd:Desperate Prayer(83s),Apotheosis(99s)  enemy:Bloodlust/Enhancement Shaman(27s)
+2:05  [CC CAST]   Psychic Scream (by 1) → nil [non-player target]
+2:05  [CC CAST]   Psychic Scream (by 1) → 4
+2:06  [STATE]   friends 1:72 2:89 3:84
+2:07  [TEAMMATE CD]   2 (Outlaw Rogue): Kidney Shot
+      [RES] rdy:Δ+3:Dragon's Breath-Desperate Prayer,Apotheosis  cd:Desperate Prayer(81s),Apotheosis(98s)  enemy:Bloodlust/Enhancement Shaman(29s)  cc:3/Ray of Frost-2s[kick]
+2:07  [OWNER CAST]   14914 → 5 [completed before CC landed]
+2:07  [BUFF FADED]   Guardian Spirit
+2:07  [CC ON TEAM]   1 ← Intimidating Shout (Flaxenwarr-Stormscale-EU) | 6s | trinket: ON CD (7s left)
+2:07  [CC ON TEAM]   2 ← Intimidating Shout (Flaxenwarr-Stormscale-EU) | 6s | trinket: ON CD (33s left)
+2:07  [CC ON TEAM]   3 ← Intimidating Shout (Flaxenwarr-Stormscale-EU) | 1s | trinket: ON CD (25s left)
+2:08  [STATE]   friends 1:74 2:88 3:72 / enemies 4:100 5:62 6:100
+2:09  [STATE]   friends 1:76 2:90 3:61 / enemies 4:100 5:61 6:100
+2:10  [STATE]   friends 1:76 2:91 3:59 / enemies 4:100 5:62 6:100
+2:11  [STATE]   friends 1:77 2:93 3:51 / enemies 4:100 5:62 6:100
+2:12  [STATE]   friends 1:77 2:94 3:39 / enemies 4:100 5:62 6:100
+2:13  [STATE]   friends 1:77 2:94 3:42 / enemies 4:100 5:62 6:100
+2:13  [CC ON TEAM]   1 ← Hex (Windfury-Kazzak-EU) | 1s | trinket: ON CD (1s left)
+2:14  [STATE]   friends 1:78 2:96 3:42 / enemies 4:100 5:61 6:100
+2:14  [CLEANSE]   3 dispelled Hex off 1
+2:15  [STATE]   friends 1:78 2:95 3:42 / enemies 5:56 6:100
+2:15  [OWNER CAST]   2050 → 3
+2:16  [STATE]   friends 1:73 2:94 3:72 / enemies 5:54 6:100
+2:16  [OWNER CD]   Power Infusion → 3 (72% HP)
+      [RES] rdy:Δ-Desperate Prayer,Guardian Spirit,Divine Hymn,Apotheosis,2:Cloak of Shadows,2:Kidney Shot,2:Blind,2:Adrenaline Rush,3:Ice Block  cd:Desperate Prayer(72s),Guardian Spirit(88s),Divine Hymn(59s),Apotheosis(89s),2:Cloak of Shadows(62s),2:Kidney Shot(21s),2:Blind(63s),2:Adrenaline Rush(56s),3:Ice Block(178s)
+      [HEALING]    0–5s: 64.0k HPS | 5–10s: 38.6k HPS | 10–15s: 7.0k HPS | Overheal: 26%
+2:16  [OWNER CD]   Power Infusion → 1 (73% HP)
+      [RES] rdy:Δ  cd:—
+      [HEALING]    0–5s: 64.0k HPS | 5–10s: 38.6k HPS | 10–15s: 7.0k HPS | Overheal: 26%
+2:16  [DMG SPIKE]   3 (Frost Mage): 0.70M in 10s
+2:16  [OWNER CAST]   33076 → 3
+2:17  [STATE]   friends 1:73 2:95 3:83 / enemies 5:60 6:100
+2:18  [STATE]   friends 1:72 2:96 3:84 / enemies 4:100 5:66 6:100
+2:18  [OWNER CD]   Spirit of Redemption
+      [RES] rdy:Δ-Desperate Prayer,Guardian Spirit,Divine Hymn,Apotheosis,2:Cloak of Shadows,2:Blind,3:Ice Block  cd:Desperate Prayer(70s),Guardian Spirit(86s),Divine Hymn(57s),Apotheosis(87s),2:Cloak of Shadows(60s),2:Blind(61s),3:Ice Block(176s)
+2:18  [OWNER CAST]   64844
+2:18  [OWNER CD]   Divine Hymn
+      [RES] rdy:Δ-Desperate Prayer,Guardian Spirit,Divine Hymn,Apotheosis,2:Cloak of Shadows,2:Blind,3:Ice Block  cd:Desperate Prayer(70s),Guardian Spirit(86s),Divine Hymn(57s),Apotheosis(87s),2:Cloak of Shadows(60s),2:Blind(61s),3:Ice Block(176s)
+2:18  [BUFF FADED]   Desperate Prayer
+2:19  [STATE]   friends 1:90 2:100 3:66 / enemies 4:100 5:71 6:100
+2:19  [DMG SPIKE]   2 (Outlaw Rogue): 0.74M in 10s
+2:19  [OWNER CAST]   64844
+2:20  [STATE]   friends 1:90 2:98 3:53 / enemies 4:100 5:78 6:100
+2:20  [ENEMY CD]   4 (Discipline Priest): Power Infusion
+2:20  [ENEMY BUFF]   4: Power Infusion (purgeable)
+2:20  [ENEMY BUFF]   5: Power Infusion (purgeable)
+2:20  [OWNER CAST]   64844
+2:21  [STATE]   friends 1:90 2:100 3:45 / enemies 4:100 5:79 6:100
+2:21  [OWNER CAST]   64844
+2:22  [STATE]   friends 1:90 2:96 3:50 / enemies 4:100 5:61 6:97
+2:22  [OWNER CAST]   64844
+2:22  [BUFF FADED]   Divine Hymn
+2:23  [STATE]   friends 1:90 2:91 3:27 / enemies 4:100 5:83 6:97
+2:23  [BUFF FADED]   Power Infusion
+2:23  [TEAMMATE CD]   2 (Outlaw Rogue): Adrenaline Rush
+      [RES] rdy:Δ+Psychic Scream-Desperate Prayer,Apotheosis  cd:Desperate Prayer(65s),Apotheosis(82s)  enemy:Power Infusion/Discipline Priest(3s)
+2:24  [STATE]   friends 2:81 3:dead / enemies 4:100 5:91 6:97
+2:24  [DEATH]  3 (Frost Mage — friendly)
+               HP: 75% at T-15s → 42% at T-10s → 66% at T-5s → 38% at T-3s → dead
+               Top damage in final 10s: Windfury-Kazzak-EU — Stormstrike (126k), Windfury-Kazzak-EU — Lightning Bolt (108k), Flaxenwarr-Stormscale-EU — Execute (77k)
+2:25  [STATE]   friends 2:61 3:dead / enemies 4:100 5:100 6:100
+2:26  [STATE]   friends 2:51 3:dead / enemies 4:100 5:100 6:100
+2:27  [STATE]   friends 2:35 3:dead / enemies 4:100 5:100 6:100
+2:28  [STATE]   friends 1:90 2:3 3:dead / enemies 4:100 5:100 6:100
+2:28  [DMG SPIKE]   1 (Holy Priest): 0.50M in 10s
+2:29  [STATE]   friends 1:78 2:3 3:dead / enemies 4:100 5:100 6:100
+2:30  [STATE]   friends 1:65 2:2 3:dead / enemies 4:100 5:100 6:100
+2:31  [STATE]   friends 1:58 2:1 3:dead / enemies 4:100 5:100 6:100
+2:31  [BUFF FADED]   Power Infusion (estimated)
+2:31  [BUFF FADED]   Power Infusion
+2:32  [STATE]   friends 1:38 2:1 3:dead / enemies 4:100 5:100 6:100
+2:33  [STATE]   friends 1:23 2:3 3:dead / enemies 4:100 5:100 6:100
+2:34  [STATE]   friends 1:24 2:3 3:dead / enemies 4:100 5:100 6:100
+2:35  [STATE]   friends 1:22 2:5 3:dead / enemies 4:100 5:100 6:100
+2:35  [ENEMY BUFF END]   5: Power Infusion
+2:35  [ENEMY BUFF END]   4: Power Infusion
+2:36  [STATE]   friends 1:dead 2:6 3:dead / enemies 4:100 5:100 6:100
+2:36  [DEATH]  1 (Holy Priest — friendly)
+               HP: 90% at T-15s → 90% at T-10s → 47% at T-5s → 23% at T-3s → dead
+               Top damage in final 10s: Windfury-Kazzak-EU — Lightning Bolt (156k), Windfury-Kazzak-EU — Crash Lightning (48k), Flaxenwarr-Stormscale-EU — Execute (47k)
+
+2:37  [MATCH END]   damp: 10%
+  friends 1:dead(2:36) 2:6% 3:dead(2:24) / enemies 4:100% 5:100% 6:100%

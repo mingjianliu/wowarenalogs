@@ -1,0 +1,15 @@
+This was a well-managed win in a CC-heavy match against an Assassination Rogue who spent the entire game cycling silences and stuns across your team. Your Holy Priest's combination of active offense, fast cleansing, and layered defensive cooldowns carried the game.
+
+The opening Psychic Scream on the enemy Disc Priest at 0:17 was the defining offensive moment early. With the Rogue's Dismantle suppressing the enemy Rogue briefly, you used the window to fear the enemy healer, creating a healing gap on their side while your team put pressure on the Assassination Rogue. That decision established offensive tempo before the enemy team could settle into their rotation.
+
+Guardian Spirit at 0:21 on the Outlaw Rogue at 78% HP during a 5-second Kidney Shot warrants discussion. The 1.14M damage spike that followed at 0:22 indicates the threat was real, and the Guardian Spirit prevented a kill. However, 78% HP at the start of a stun — before any burst had landed — is an early threshold for a 180-second cooldown. The 2–3 second gap between stun application and the spike arriving is where the evaluation happens: watching for whether the burst confirms before committing the cooldown. In practice, these reads are difficult under pressure, so this is more of a refinement target than a clear mistake.
+
+Divine Hymn at 0:27 during the Power Infusion window was correct. Two players needed healing simultaneously — the Rogue at 71% and Mage at 66% — and single-target healing couldn't address both fast enough. A 2-second Divine Hymn covering the team was the efficient tool.
+
+The most dangerous moment was 0:40–0:47, where the Mage dropped to 22% HP under a Garrote silence on you and a Cheap Shot on the Mage with your trinket on cooldown. Your Apotheosis at 0:47 followed by two Power Infusion charges at 0:49 — one on the Mage for healing throughput, one on yourself — was creative. Using PI on the Mage offensively (boosting their damage output toward the Rogue) while you handled healing with Apotheosis showed reading of what the match needed at that point.
+
+Cleansing was active: Crippling Poison at 0:10, Shadow Word: Pain off the Rogue at 0:37. Both removed promptly before they could compound damage or reduce mobility.
+
+The second Psychic Scream at 0:59 targeting both the Disc Priest and then the Demon Hunter after the first kill was smart cleanup — keeping the surviving enemies disrupted during the final kill push.
+
+Strong overall. The main thing to examine going forward is Guardian Spirit timing relative to confirmed burst versus anticipated burst.

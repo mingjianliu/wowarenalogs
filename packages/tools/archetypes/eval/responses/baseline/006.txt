@@ -1,0 +1,17 @@
+This was a fast, brutal loss decided almost entirely by the opening 46 seconds. The enemy team — Arms Warrior with Avatar, Discipline Priest with Power Infusion, and Devourer Demon Hunter — executed a textbook short-tunnel kill on your Enhancement Shaman. Let's break down what happened and what could have changed the outcome.
+
+The kill sequence began at 0:08 when the Warrior landed Storm Bolt on the Shaman, forcing an early trinket. That was the first problem: trinketing a 1-second stun at the very start of the game, before any meaningful pressure had built, left the Shaman without an escape for the next 120 seconds. At 0:10, Champion's Spear immediately followed — now the Shaman was locked in place with trinket gone, and Avatar plus Power Infusion both fired at 0:11–0:13. That 20-second window saw 1.04M damage land on one target. The Druid responded correctly by placing Ironbark at 0:14, but the Shaman still dropped from 86% to 41% in the next two seconds.
+
+The Druid's toolkit during that opening window: Ironbark went out at 0:14 (correct), but Frenzied Regeneration, Incapacitating Roar, Stampeding Roar, and Incarnation: Tree of Life were all sitting unused while the Shaman was taking 1.04M damage. The Power Infusion buff on the Warrior was purgeable — the Enhancement Shaman could purge as the sole team purger, but was stunned, rooted, or dealing with the burst for most of this window. The Warrior had die-by-the-sword active too. That Power Infusion showing up at 0:13 on the Warrior should have been the signal for Frenzied Regeneration immediately. The Druid waited until the situation was already resolved on its own.
+
+The second kill attempt began at 0:38. At 0:40, the Druid was Imprisoned for 3 seconds, then Storm Bolted at 0:40 — back-to-back CC forced a trinket at 0:41. That was the Druid's trinket burned. Then at 0:43, Sigil of Misery landed with the Druid's trinket already gone. The Shaman dropped from 17% to dead at 0:46 while the Druid was incapacitated by Sigil of Misery. The Druid literally could not act during the killing blow.
+
+Three things to address going forward:
+
+First, the Shaman should not have trinketed the 0:08 Storm Bolt. That was a 1-second stun early in the game. The Warrior's real setup — Champion's Spear — came immediately after. It would have been better to take the 1-second stun and save trinket for Champion's Spear, which is a 6-second immobilize that actually enables the kill.
+
+Second, when Avatar and Power Infusion both light up simultaneously and a teammate is at 62% HP and falling fast, the Druid needs to be using all available defensive options in that moment, not just Ironbark. Frenzied Regeneration on the Shaman, Incapacitating Roar to interrupt the Warrior's momentum — both were available and unused.
+
+Third, Incarnation: Tree of Life was never used. In a 53-second match, that cooldown sat on the shelf. When the Shaman was at 41% HP during a Critical offensive window, that was the moment to pop it and flood the team with healing throughput. The Druid's cooldown usage was too conservative throughout.
+
+The structural issue is matchup awareness. Warrior plus Disc Priest is a team that will spend Power Infusion on itself through the Mage Tier, then chain stun with Storm Bolt and Champion's Spear into Avatar. Your team needs to plan for two kill windows — one around 0:10–0:30 with PI, one around 1:30 when Avatar and PI reset. Surviving the first window with cooldowns intact changes the entire game.

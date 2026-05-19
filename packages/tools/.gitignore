@@ -1,6 +1,9 @@
 prompts_output.txt
 sample_prompts.txt
-archetypes/features.jsonl
+archetypes/features_3v3.jsonl
+archetypes/features_solo_shuffle.jsonl
+archetypes/archetype_prompts_3v3_draft.json
+archetypes/archetype_prompts_solo_shuffle_draft.json
 archetypes/logs/
 archetypes/archetype_prompts_draft.json
 benchmarks/logs/

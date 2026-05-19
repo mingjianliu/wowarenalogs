@@ -1,0 +1,19 @@
+Top Holy Priests in cc_heavy_swap matches hold 46% optimal CD timing with a 6499ms median response latency and a 34% missed cleanse rate. At 65 seconds this match is right in the archetype's median duration window (109 second average includes some longer matchups, but 65 seconds is well within the cc_heavy_swap range where kills happen fast). Your CD sequencing across the match was close to optimal.
+
+The core structure: enemy Rogue opened with Garrote-Silence chains on your Mage and yourself simultaneously at 0:05-0:06, establishing tempo. You responded with Crippling Poison cleanse at 0:10 and Renew on the Mage. Your Psychic Scream at 0:17 on the enemy Disc Priest was the kill setup — locking out their healer while your team had Kidney Shot queued and Adrenaline Rush active. That CC decision at 0:17 is the match's turning point.
+
+Guardian Spirit at 0:21 on your Outlaw (78% HP, under Kidney Shot stun, 1.14M incoming) was optimally timed by archetype standards. Response latency here was effectively zero — you recognized the stun application and cast immediately. The buff expired at 0:33 when the Outlaw had returned to safe HP, which is the ideal outcome: the Spirit was present for the full danger window without needing to actually proc.
+
+Divine Hymn at 0:27 was another correct call. The Spirit had just fired, the Power Infusion window from the enemy Disc Priest was fading, and both Outlaw (50% HP) and Mage (66% HP) needed recovery. Divine Hymn brought them back to functional HP in two casts.
+
+At 0:44 the Mage hit Ice Block at 19% HP while the enemy Rogue continued CC cycling. You followed with Apotheosis at 0:47. This sequencing — using Apotheosis to benefit from Ice Block's 4-second invulnerability — is exactly the right pattern. As Ice Block expired at 0:44+4 seconds, you had empowered shields and heals available. Power Infusion on the Mage and yourself at 0:49 converted this defensive phase into the kill window. Rogue dead at 0:56.
+
+The archetype benchmark shows 33% of cooldowns are never used. In a 65-second match, Desperate Prayer was unused — correct, the Mage handled their own defense via Ice Block. Power Infusion had two charges and you correctly used both: one on the Mage during kill setup, one on yourself during the same kill phase.
+
+One missed cleanse is logged at 0:51 — Flame Shock on the Outlaw from 18 seconds running 94k damage. Against Assassination Rogue with a Shaman in the pocket this is less likely to appear, but it's flagged in the log. The archetype's 34% missed cleanse rate means this is within normal variance.
+
+The purge note: Power Infusion appeared as purgeable on the DH at 0:22. Neither you nor your Mage removed it before it expired at 0:37. For 15 seconds the enemy DH had an amplified output window. Removing Power Infusion from the DH is a meaningful combat action in this matchup — it directly reduces incoming damage on your kill target during the DH's most active phase. In future matches against this comp, flag Power Infusion on the DH as your Mage's first purge target when it appears.
+
+Outgoing CC: Psychic Scream used twice (0:17, 0:59) — both meaningful. The 0:17 cast displaced the healer during the kill window, the 0:59 cast kept the Priest out of the DH cleanup. Your CC rate was below the 4.2 mean for the archetype, but in a 65-second match with two decisive Screams that created the kill conditions, that's appropriate.
+
+Overall this was a clean execution. The CD sequencing matched the archetype's optimal profile, healing gaps were zero, and the kill sequence flowed correctly from the initial Psychic Scream setup.

@@ -1,0 +1,9 @@
+The archetype description for this cluster notes 45% missed cleanse rate as a deliberate tradeoff when prioritizing atonement healing during burst windows. This match exposes the cost of that tradeoff — but also a moment where the dispel was genuinely available and not used.
+
+At 1:08, Oppressing Roar landed on all three of your players simultaneously during the critical offensive window (1:04–1:19 featuring Adrenaline Rush + Oppressing Roar + Deep Breath). Your Warrior absorbed 273k damage through the debuff. You were not CC'd at this moment. The dispel was there. This is not the kind of cleanse miss the cluster description excuses — a multi-player crit debuff during the enemy's main burst window is the highest-value dispel in the match. The 45% missed cleanse rate in this archetype reflects low-priority dots and curses during atonement windows, not Oppressing Roar during a kill attempt.
+
+Your Power Infusion cycles were active and used each reset, consistent with the 0% never-used stat the cluster reports. However the second charge at 2:24 went onto a player at 100% HP. The cluster's 59% optimal CD timing suggests most healers in this archetype align their CDs to incoming burst; casting PI on a healthy target when the enemy's Adrenaline Rush is still 18 seconds out is early.
+
+Pain Suppression at 3:12 on an 82% Ret was the other misalignment. That charge was gone when the actual kill attempt came at 4:06. Optimal Pain Suppression timing in this archetype means holding the second charge until you can see the enemy's offensive window forming, not spending it proactively at high health.
+
+Your Psychic Scream rotation was correct — the Evoker is the right target to disrupt healing in this match. The purge rate was appropriate given you had no other purgers.

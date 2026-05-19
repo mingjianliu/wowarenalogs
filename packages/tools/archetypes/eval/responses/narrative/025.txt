@@ -1,0 +1,21 @@
+The match started with a kill opportunity you had no right to miss. At 0:11, the enemy Arms Warrior used Avatar and the Evoker used Deep Breath simultaneously — every major cooldown on the enemy team was burning, meaning the Evoker was occupied and defensively unavailable. Your Frost Mage got a 0.71M damage window and pushed the Warrior to 27% HP. But the Mistweaver's Leg Sweep hit the Evoker and Paladin, not the Warrior, and the Evoker was free to respond as soon as her stun expired. The Warrior walked away with 95% HP after the recovery.
+
+This established the pattern that defined the entire match. Every time your team generated serious damage on the Warrior or Paladin, the Evoker was either free to heal or already healing. Your CC went onto the wrong targets.
+
+The 1:03 window was your best chance to close the game. The Mistweaver hit the Warrior and Paladin with Leg Sweep simultaneously, and the Warlock used Paralysis on the Paladin and Mortal Coil on the Warrior — five seconds of hard control on both damage dealers while the Mage was in a damage window. The Warrior fell from 66% to 6% HP at 1:34. He was a single global away from dying. The Evoker healed him to 95% in the next two seconds.
+
+Where was the Warlock's Shadowfury? It landed on the Evoker at 1:32 — 28 seconds after the initial stun chain, after she had been healing freely the entire time the Warrior was low. Shadowfury should have been the first thing you threw at the Evoker when the Warrior dropped below 50%, not a reactionary cast when you realized she was healing him back. By 1:32, she had already done the work.
+
+The Paladin dipped to 24% at 1:43 in the next window. Again the Evoker was free. The Warlock used Dark Pact at 1:43 to protect himself — the right personal defensive call — but there was no CC on the Evoker during this window either. The pattern held: damage without healer lockout.
+
+From roughly 1:50 to 2:45 your team played neutral — both sides stable, grinding through CDs. The Mistweaver's cleansing was solid, pulling Judgment of Justice and Earthbind off teammates when needed. The Warlock's Dark Pact and Shadowfury kept cycling. The Mage had another burst window at 1:58 (0.61M) with the Retribution Paladin sitting at 62%, but the Evoker was at 100% health and unchained.
+
+The 2:36 Shadowfury hit both the Warrior and Paladin — AoE stunning your damage dealers while the Evoker was free. This is the exact wrong call in a sustained game. Two seconds later, Deep Breath came off cooldown for the Evoker at 2:31. She flew. Your team had no CC for her. The Mage was at 46% and falling during Deep Breath.
+
+The 3:34 burst window (Mage at 0.60M) coincided with Shadowfury on the Warrior alone, and Dragon's Breath from the Mage at 3:41 disconnecting the Paladin. The Evoker sat at 84% HP with no CC on her. The Warrior recovered again.
+
+At 4:09 the Mage hit 25% HP and the Warlock used Dark Pact reactively. The 0.91M Mage window at 4:08 with the Avatar on the Warrior was the last genuine kill attempt. The Warlock's Shadowfury at 4:27 finally caught all three enemies — Warrior, Paladin, and Evoker — and Dragon's Breath followed at 4:36. But by then you were at 21% dampening. The Evoker kept the Warrior alive through the CC and the window closed.
+
+The endgame was pure attrition. Intimidating Shout hit all three of your players at 4:48. The Mage had used both Ice Blocks, trinket was spent, and she fell to 18% within seconds. At 5:07 she took Storm Bolt, Ice Blocked at 27%, and died at 5:13 from Execute + Innate Light during the recovery. Once the Mage was dead, the Warlock lasted 10 more seconds at 7% HP and the Mistweaver followed.
+
+One change ends this match before dampening: when the Warrior drops below 40% HP, your next global must stun the Evoker. Not the Warrior. Not the Paladin. The Evoker. Use Shadowfury first to create the kill window, then Leg Sweep to extend it. That sequencing — Evoker locked out, Warrior focused — turns a 5:24 loss into a 2-minute win.

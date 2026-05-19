@@ -1,0 +1,9 @@
+Cluster stats: 59% optimal CD timing, 0% CD never-used, 45% missed cleanse rate, 7515ms median CD response latency, 8.0 CC per match, 5% healing gap rate. This match sits below that standard on cleanse priority and above it on CD timing.
+
+The critical dispel miss was at 1:08 — Oppressing Roar landed on all three players during the Adrenaline Rush + Oppressing Roar + Deep Breath window. Your Warrior took 273k through it. You were not CC'd. The 45% missed cleanse rate in this archetype is explained by intentional atonement prioritization — but that logic applies to minor debuffs during downtime, not a mass debuff in the game's main kill window. This is a case where the cleanse was worth interrupting atonement output for.
+
+CD timing: Power Infusion at 0:15 into the Warrior during their Avatar was well-timed and consistent with the 59% optimal rate. The second use at 2:24 on a player at 100% HP with the next Adrenaline Rush 18 seconds away is the kind of early cast that pulls the cluster's optimal rate down from 100%. Pain Suppression at 3:12 on 82% health is the same pattern — the CD response latency stat (7515ms median) suggests most players in this cluster respond quickly to burst, not preemptively at high health.
+
+Pain Suppression at 3:12 was spent; the kill came at 4:06 when Avatar fired into a Kidney Shot on your Warrior. The actual Ret death at 4:16 happened 12 seconds after the offensive window opened at 4:06, with no defensive CD remaining. With 25s on Avenging Wrath at 4:06 and a clear Avatar fire, this was a readable kill attempt — Pain Suppression here would have fit the 59% optimal profile.
+
+Psychic Scream on the Evoker throughout is correct and explains the high CC output this match. The 0% CD nonuse metric is confirmed — you used Pain Suppression and Power Infusion each cycle. The issue is allocation, not frequency.

@@ -1,0 +1,32 @@
+This is a cc_heavy_swap win — the enemy applied heavy CC (Freezing Trap, Scorpid/Spider Venom chains, Blinding Light, Leg Sweep, Hammer of Justice repeating) while swapping targets, and you had to manage cleanse priority, maintain throughput through CC on yourself, and coordinate offensive Scream usage to peel the enemy Mistweaver off heals.
+
+You handled the defensive pressure well enough to win, but there are clear inefficiencies in how you responded to the CC pattern.
+
+**CC response: mostly correct, some gaps**
+
+The first Freezing Trap at 0:15 trapped you for the full 4 seconds — unavoidable opener. Your response was immediate: you healed the Mage back from 62% with Flash Heal and then got Guardian Spirit on at 0:24. Where it went wrong is the Spirit landed on the Water Elemental instead of the Mage. The Mage was at 50% HP, Bestial Wrath was active, and Guardian Spirit went onto a pet. That is a target selection error that cost you one of two charges on a 180-second CD.
+
+The 0:33 cleanse was strong — you got Scorpid Venom off yourself and Judgment of Justice in one Dispel. The follow-up Dispel at 0:36 removing Hammer of Justice off the Rogue was correct prioritization: your physical carry being stunned kills a go. Both cleanses were within 3 seconds of the CC landing.
+
+The missed Blinding Light cleanse at 0:54 on the Rogue is the most impactful error in the match. Both you and the Mage were also blinded — your team was fully locked at a moment when the Ret was at 83%. With all three of you incapacitated under Leg Sweep immediately after, you had no opportunity to capitalize on that HP deficit. Getting the Rogue out of Blinding Light faster would have given him 2–3 extra seconds of damage in the window before Leg Sweep landed.
+
+The Freezing Trap at 2:20 on the Rogue sat for the full 4 seconds (19k damage inside). At that moment you had just used both Power Infusion charges and were actively healing the Mage through Bestial Wrath. The Rogue's Freezing Trap was the lower priority compared to keeping the Mage alive — but if you had dispelled it at 2 seconds instead of letting it run, you gain roughly 2 seconds of Rogue uptime during an active offensive window.
+
+**Offensive Scream usage**
+
+You used Psychic Scream five times over 3:45. The three most impactful uses hit the enemy Mistweaver: at 0:40 (solo), 1:22 (Monk + Ret simultaneously), and 2:41 (Monk solo). The Ret died first at 3:17. In a cc_heavy_swap match, Scream into the enemy healer during your offensive windows is the correct decision — it prevents the Mistweaver from healing the swapped target. All three of these casts were well-timed relative to Rogue Kidney Shots and Mage damage windows.
+
+The last two Screams at 3:15 and 3:44 were mopping up — Monk at 3:15, then Monk+Evoker at 3:44 after the Ret was already dead. Those closed the game correctly.
+
+**Apotheosis timing**
+
+Using Apotheosis at 0:32 while CC'd by Scorpid Venom was the right call. The Mage was at 88% HP and about to take Bestial Wrath damage. Apotheosis ran until 0:52 and kept your team healthy through the next wave of CC (Blinding Light + Leg Sweep at 0:54). The subsequent Divine Hymn at 0:45 while Spirit of Redemption proc'd was a legitimate emergency response — your teammates were taking heavy damage. The execution here was correct.
+
+The second Apotheosis at 2:36 deployed when the Mage was at 12% HP in Ice Block and recovering. This was used to amplify throughput post-Ice Block while Bestial Wrath was ticking. The timing was sound.
+
+**What to change**
+
+Three specific adjustments:
+1. Resolve your target selection before casting Guardian Spirit — especially in fights where pets are on-screen. The Water Elemental misclick was avoidable.
+2. In a cc_heavy_swap match, your Rogue being Frozen or Blinded is always high-priority cleanse, above most other targets. Physical carry CC loses go windows.
+3. When you identify the primary kill target (in this match, the Ret), coordinate your Psychic Scream timing to land on the Mistweaver during the Rogue's Kidney Shot, not seconds before or after. The 1:22 Scream was the best example of this.

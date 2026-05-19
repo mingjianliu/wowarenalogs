@@ -1,0 +1,9 @@
+The cluster description notes that top Preservation Evokers leave cooldowns unused 57% of the time and absorb the highest CC pressure of any cluster (13.82 events per minute). This match ran at roughly that CC density — Cyclone, Kidney Shot, Blind, Cheap Shot, and Sleep Walk hit you repeatedly from 0:25 to match end. The 57% CD nonuse rate means most top players in this archetype conserve tools rather than spending them early — but Rewind is the one CD that should not be in the unused pile when you die as the kill target.
+
+You never used Rewind in 2:32. You died at 2:19. Rewind has a 240-second cooldown, so there was exactly one window to use it. The two most justified moments were at 1:34 (23% health, Deep Breath CC active, sustained pressure) and at 2:18 (32% health, Shadow Blades + Incarnation returned). At 2:19 you died before you could react. The 57% CD nonuse cluster stat reflects tools that genuinely weren't needed — Rewind in a match where you're the kill target for 2.5 minutes is not that.
+
+Emerald Communion at 1:02 was correctly timed to survive the first Incarnation window. The issue is that it placed Communion on 173-second cooldown, leaving you without major throughput for the 2:10 window when Incarnation returned. That gap — and Rewind sitting unused — is what made the second Incarnation window fatal.
+
+Your offensive CC via Sleep Walk on the enemy Evoker was consistent and correct; disrupting their healing output is the right priority in a mirror Evoker comp. The cluster's cc_then_burst setup at 50% of matches aligns with your team's approach.
+
+The adjustment: in cc_heavy_fast matches where you are the kill target across multiple offensive windows, Rewind is the throughput bridge between burst sequences. Treat it as a mandatory use when your health reaches 20–30% under sustained CC pressure.

@@ -1,0 +1,490 @@
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Preservation Evoker (Healer) | Bracket: 3v3 | Result: Loss | Duration: 3:34
+  My team: Preservation Evoker, Enhancement Shaman, Arms Warrior
+  Enemy team: Affliction Warlock, Frost Mage, Discipline Priest
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Preservation Evoker): CANNOT offensive purge
+  Team purgers: Enhancement Shaman
+
+DAMPENING (3v3): started at 10%, ended at 14% at match end
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Jadeddr-Proudmoore-US (Preservation Evoker — log owner):
+    Deep Breath [120s], Wing Buffet [180s], Cauterizing Flame [60s], Rewind [240s], Emerald Communion [180s], Stasis [90s], Rescue [60s]
+  2: Yen-Icecrown-US (Enhancement Shaman):
+    Hex [30s, 2 Charges], Ascendance (Enhancement) [180s, 2 Charges]
+  3: Frugged-Illidan-US (Arms Warrior):
+    Avatar [90s, 2 Charges], Intimidating Shout [90s], Die by the Sword [120s], Bladestorm (Arms) [90s]
+  4: Jcaesar-Area52-US (Discipline Priest — enemy):
+    Power Infusion [120s]
+  5: Woopzyy-Tichondrius-US (Affliction Warlock — enemy):
+    none tracked
+  6: Venruki-Tichondrius-US (Frost Mage — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:06  [OWNER CAST]   360995 → 2
+0:06  [OWNER CAST]   361195 → 2
+0:07  [OWNER CAST]   364343 → 2
+0:08  [OWNER CAST]   355936
+0:09  [STATE]   friends 1:99 2:88 3:100
+0:09  [TEAMMATE CD]   3 (Arms Warrior): Avatar
+      [RES] rdy:Δ+Deep Breath,Wing Buffet,Rewind,Emerald Communion,Stasis,2:Hex,2:Ascendance (Enhancement)  cd:—
+0:10  [OWNER CAST]   364343 → 2
+0:10  [TEAMMATE CD]   2 (Enhancement Shaman): Ascendance (Enhancement)
+      [RES] rdy:Δ+Wing Buffet,Rewind,Emerald Communion,Stasis,2:Ascendance (Enhancement)  cd:—
+0:11  [OWNER CAST]   357208
+0:12  [STATE]   friends 1:87 2:79 3:94
+0:13  [OWNER CAST]   360995 → 3
+0:13  [OWNER CAST]   361195 → 3
+0:14  [OWNER CAST]   364343 → 2
+0:14  [CC ON TEAM]   2 ← Mortal Coil (Woopzyy-Tichondrius-US) | 1s | trinket: used
+0:14  [CC ON TEAM]   2 ← Mind Control (Jcaesar-Area52-US) | 1s | trinket: used
+0:15  [STATE]   friends 1:96 2:68 3:95 / enemies 5:100 6:100 4:100
+0:15  [OWNER CAST]   1256581 → 3
+0:15  [TRINKET]   2 used PvP trinket
+0:16  [STATE]   friends 1:100 2:67 3:99 / enemies 5:100 6:100 4:100
+0:16  [OWNER CAST]   364343 → 2
+0:17  [STATE]   friends 1:99 2:67 3:98 / enemies 5:98 6:100 4:100
+0:17  [OWNER CAST]   357208
+0:18  [STATE]   friends 1:99 2:67 3:99 / enemies 5:81 6:100 4:100
+0:18  [OWNER CD]   Time Dilation → 2
+      [RES] rdy:Δ+Deep Breath,Rewind,Emerald Communion,2:Hex-3:Avatar  cd:3:Avatar(80s)
+0:19  [STATE]   friends 1:100 2:69 3:100 / enemies 5:81 6:100 4:100
+0:19  [TEAMMATE CD]   3 (Arms Warrior): Intimidating Shout
+      [RES] rdy:Δ+Wing Buffet,Rewind,Emerald Communion,Stasis-3:Avatar  cd:3:Avatar(80s)
+0:19  [CC CAST]   Intimidating Shout (by 3) → 4
+0:20  [STATE]   friends 1:94 2:65 3:99 / enemies 5:84 6:100 4:100
+0:20  [CC ON TEAM]   2 ← Ring of Frost (Venruki-Tichondrius-US) | 1s | trinket: ON CD (116s left)
+0:21  [STATE]   friends 1:95 2:65 3:99 / enemies 5:73 6:100 4:100
+0:21  [OWNER CD]   Hover
+      [RES] rdy:Δ-3:Intimidating Shout  cd:3:Intimidating Shout(88s)  cc:2/Ring of Frost-1s
+0:21  [OWNER CAST]   361509 → 2 [completed before CC landed]
+0:21  [OWNER CAST]   431443 → 2 [completed before CC landed]
+0:22  [STATE]   friends 1:100 2:65 3:99 / enemies 5:74 6:100 4:100
+0:22  [CC ON TEAM]   1 ← Psychic Scream (Jcaesar-Area52-US) | 1s
+0:22  [CC ON TEAM]   2 ← Psychic Scream (Jcaesar-Area52-US) | 1s | trinket: ON CD (114s left)
+0:23  [STATE]   friends 1:97 2:75 3:98 / enemies 5:78 6:100 4:100
+0:24  [STATE]   friends 1:98 2:87 3:97 / enemies 5:82 6:99 4:100
+0:24  [OWNER CAST]   364343 → 2
+0:24  [CLEANSE]   2 dispelled Chilled off 2
+0:25  [STATE]   friends 1:100 2:69 3:98 / enemies 5:93 6:99 4:100
+0:25  [OWNER CAST]   360995 → 2
+0:25  [OWNER CAST]   361195 → 2
+0:26  [STATE]   friends 1:98 2:78 3:96 / enemies 5:100 6:98 4:100
+0:26  [OWNER CAST]   364343 → 2
+0:27  [STATE]   friends 1:100 2:87 3:98 / enemies 5:96 6:98 4:100
+0:27  [OWNER CAST]   1256581 → 2 [completed before CC landed]
+0:27  [DMG SPIKE]   2 (Enhancement Shaman): 0.80M in 10s
+0:27  [CC ON TEAM]   1 ← Polymorph (Venruki-Tichondrius-US) | 8s
+0:28  [STATE]   friends 1:100 2:99 3:99 / enemies 5:100 6:98 4:100
+0:29  [STATE]   friends 1:100 2:97 3:98 / enemies 5:93 6:99 4:100
+0:30  [STATE]   friends 1:100 2:93 3:100 / enemies 5:94 6:99 4:100
+0:31  [STATE]   friends 1:100 2:81 3:98 / enemies 5:96 6:99 4:100
+0:31  [ENEMY CD]   4 (Discipline Priest): Power Infusion
+0:31  [ENEMY BUFF]   5: Power Infusion (purgeable)
+0:31  [ENEMY BUFF]   4: Power Infusion (purgeable)
+0:32  [STATE]   friends 1:100 2:72 3:94 / enemies 5:100 6:100 4:100
+0:32  [OWNER CAST]   355941
+0:32  [OWNER CAST]   361195 → 2 [completed before CC landed]
+0:33  [STATE]   friends 1:100 2:82 3:91 / enemies 5:100 6:100 4:100
+0:33  [CC ON TEAM]   3 ← Howl of Terror (Woopzyy-Tichondrius-US) | 3s
+0:33  [CC ON TEAM]   1 ← Howl of Terror (Woopzyy-Tichondrius-US) | 3s
+0:34  [STATE]   friends 1:100 2:83 3:91 / enemies 5:100 6:100 4:100
+0:35  [STATE]   friends 1:100 2:75 3:91 / enemies 5:100 6:100 4:100
+0:36  [STATE]   friends 1:99 2:63 3:92 / enemies 5:100 6:100 4:100
+0:36  [OWNER CAST]   406971
+0:36  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ  cd:—  enemy:Power Infusion/Discipline Priest(5s)
+0:37  [STATE]   friends 1:99 2:34 3:77 / enemies 5:99 6:100 4:100
+0:37  [OWNER CD]   Rewind
+      [RES] rdy:Δ+Deep Breath,Rewind,Emerald Communion,Stasis,2:Hex-3:Avatar,3:Intimidating Shout  cd:3:Avatar(62s),3:Intimidating Shout(72s)  enemy:Power Infusion/Discipline Priest(6s)
+0:38  [STATE]   friends 1:100 2:51 3:91 / enemies 5:100 6:100 4:100
+0:38  [OWNER CAST]   364343 → 2
+0:38  [OWNER CAST]   355936
+0:39  [STATE]   friends 1:100 2:94 3:92 / enemies 5:87 6:99 4:100
+0:39  [OWNER CAST]   356995 → 5
+0:39  [BUFF FADED]   Rewind
+0:40  [STATE]   friends 1:99 2:99 3:87 / enemies 5:71 6:100 4:100
+0:40  [OWNER CAST]   364343 → 3
+0:41  [STATE]   friends 1:99 2:98 3:89 / enemies 5:67 6:100 4:100
+0:41  [OWNER CD]   Hover
+      [RES] rdy:Δ-Rewind  cd:Rewind(236s)  enemy:Power Infusion/Discipline Priest(10s)
+0:41  [OWNER CAST]   1256581 → 3
+0:42  [STATE]   friends 1:100 2:100 3:99 / enemies 5:89 6:100 4:100
+0:42  [OWNER CAST]   364343 → 3
+0:43  [STATE]   friends 1:98 2:98 3:87 / enemies 5:94 6:100 4:100
+0:43  [OWNER CAST]   357208
+0:45  [STATE]   friends 1:98 2:88 3:77
+0:45  [OWNER CAST]   431443 → 5
+0:45  [OWNER CAST]   360995 → 3
+0:45  [OWNER CAST]   361195 → 3
+0:46  [OWNER CAST]   364343 → 3
+0:46  [ENEMY BUFF END]   5: Power Infusion
+0:46  [ENEMY BUFF END]   4: Power Infusion
+0:47  [OWNER CAST]   366155 → 2
+0:47  [OWNER CAST]   364343 → 2
+0:48  [STATE]   friends 1:88 2:86 3:100
+0:48  [OWNER CD]   Deep Breath
+      [RES] rdy:Deep Breath,Wing Buffet,Cauterizing Flame,Emerald Communion,Stasis,Rescue,2:Hex,3:Die by the Sword,3:Bladestorm (Arms)  cd:Rewind(229s),2:Ascendance (Enhancement)(142s),3:Avatar(50s),3:Intimidating Shout(61s)  enemy:Power Infusion/Discipline Priest(17s)
+0:48  [CLEANSE]   1 dispelled Chilled off 1
+0:50  [BUFF FADED]   Deep Breath
+0:50  [OWNER CAST]   355936
+0:51  [STATE]   friends 1:64 2:62 3:92
+0:51  [OWNER CAST]   1256581 → self
+0:52  [OWNER CAST]   358385
+0:53  [OWNER CD]   Obsidian Scales → self
+      [RES] rdy:Δ-Deep Breath  cd:Deep Breath(115s)  enemy:Power Infusion/Discipline Priest(22s)
+0:53  [OWNER CAST]   364343 → self
+0:54  [STATE]   friends 1:80 2:88 3:93
+0:54  [MISSED CLEANSE]   Curse of Tongues on 1 | 30s | 150k taken during | dispel: Curse
+0:54  [MISSED CLEANSE]   Curse of Tongues on 2 | 28s | 129k taken during | dispel: Curse
+0:54  [MISSED CLEANSE]   Curse of Tongues on 3 | 28s | 149k taken during | dispel: Curse
+0:54  [CLEANSE]   2 dispelled Chilled off 2
+0:54  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Power Infusion/Discipline Priest(23s)
+0:55  [OWNER CAST]   Sleep Walk → 4
+0:55  [OWNER CD]   Time Dilation → self
+      [RES] rdy:Δ  cd:—  enemy:Power Infusion/Discipline Priest(25s)
+0:56  [OWNER CAST]   360995 → 2
+0:57  [STATE]   friends 1:64 2:79 3:78
+0:57  [OWNER CAST]   361195 → 2
+0:57  [OWNER CAST]   364343 → 2
+0:58  [OWNER CAST]   366155 → self
+1:00  [STATE]   friends 1:100 2:94 3:80
+1:00  [OWNER CAST]   Sleep Walk → 4
+1:00  [OWNER CAST]   364343 → 2
+1:02  [OWNER CAST]   431443 → 6
+1:02  [OWNER CAST]   357208
+1:03  [STATE]   friends 1:96 2:71 3:74
+1:04  [OWNER CAST]   366155 → 2
+1:05  [OWNER CAST]   364343 → 2
+1:06  [STATE]   friends 1:100 2:82 3:67
+1:06  [OWNER CAST]   360995 → 3
+1:06  [OWNER CAST]   361195 → 3
+1:07  [OWNER CAST]   364343 → 2
+1:07  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ  cd:—
+1:08  [OWNER CAST]   355936
+1:09  [STATE]   friends 1:97 2:84 3:62
+1:11  [CC ON TEAM]   1 ← Fear (Woopzyy-Tichondrius-US) | 9s
+1:12  [STATE]   friends 1:95 2:86 3:98 / enemies 5:100 6:90 4:100
+1:12  [CC ON TEAM]   1 ← Polymorph (Venruki-Tichondrius-US) | 6s
+1:13  [STATE]   friends 1:95 2:86 3:98 / enemies 5:100 6:90 4:100
+1:14  [STATE]   friends 1:97 2:86 3:100 / enemies 5:100 6:81 4:100
+1:15  [STATE]   friends 1:97 2:86 3:96 / enemies 5:100 6:68 4:100
+1:15  [CC ON TEAM]   2 ← Mortal Coil (Woopzyy-Tichondrius-US) | 3s | trinket: ON CD (61s left)
+1:16  [STATE]   friends 1:98 2:85 3:91 / enemies 5:100 6:72 4:100
+1:17  [STATE]   friends 1:100 2:83 3:89 / enemies 5:100 6:73 4:100
+1:18  [STATE]   friends 1:100 2:69 3:88 / enemies 5:100 6:87 4:100
+1:19  [STATE]   friends 1:100 2:68 3:71 / enemies 5:100 6:93 4:100
+1:20  [STATE]   friends 1:100 2:67 3:89 / enemies 5:100 6:92 4:99
+1:20  [OWNER CAST]   360823 → 2
+1:20  [CLEANSE]   1 dispelled 3 effects: Shadow Word: Pain off 2, Freeze off 2, Chilled off 2
+1:21  [STATE]   friends 1:100 2:66 3:84 / enemies 5:100 6:81 4:99
+1:21  [OWNER CAST]   360995 → 2
+1:21  [OWNER CAST]   361195 → 2
+1:22  [STATE]   friends 1:100 2:72 3:78 / enemies 5:100 6:70 4:100
+1:22  [OWNER CAST]   364343 → 2
+1:23  [STATE]   friends 1:100 2:59 3:73 / enemies 5:100 6:80 4:100
+1:23  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—
+1:23  [OWNER CAST]   1256581 → 3
+1:24  [STATE]   friends 1:100 2:54 3:78 / enemies 5:100 6:94 4:100
+1:24  [OWNER CAST]   364343 → 2
+1:25  [STATE]   friends 1:100 2:62 3:96 / enemies 5:100 6:78 4:100
+1:26  [OWNER CAST]   361509 → 2
+1:26  [OWNER CAST]   431443 → 2
+1:27  [STATE]   friends 1:100 2:51 3:90
+1:27  [OWNER CAST]   364343 → 2
+1:27  [CLEANSE]   2 dispelled Chilled off 2
+1:28  [OWNER CAST]   355936
+1:29  [STATE]   friends 1:99 2:36 3:85 / enemies 5:100 6:87 4:100
+1:29  [OWNER CAST]   364343 → 2
+1:30  [STATE]   friends 1:99 2:71 3:100 / enemies 5:100 6:62 4:100
+1:31  [STATE]   friends 1:99 2:68 3:96 / enemies 5:99 6:53 4:90
+1:31  [OWNER CAST]   360995 → 2
+1:32  [STATE]   friends 1:100 2:59 3:94 / enemies 5:97 6:55 4:81
+1:32  [OWNER CAST]   361195 → 2
+1:32  [OWNER CAST]   364343 → 2
+1:33  [STATE]   friends 1:99 2:75 3:95 / enemies 5:85 6:69 4:81
+1:33  [DMG SPIKE]   2 (Enhancement Shaman): 1.21M in 10s
+1:33  [OWNER CAST]   1256581 → 2
+1:34  [STATE]   friends 1:100 2:59 3:91 / enemies 5:85 6:70 4:81
+1:35  [STATE]   friends 1:100 2:86 3:97 / enemies 5:84 6:71 4:81
+1:36  [STATE]   friends 1:99 2:53 3:86 / enemies 5:76 6:78 4:92
+1:36  [OWNER CAST]   Sleep Walk → 4
+1:36  [OWNER CAST]   364343 → 2
+1:37  [STATE]   friends 1:100 2:35 3:86 / enemies 5:84 6:84 4:100
+1:37  [OWNER CAST]   357208
+1:38  [STATE]   friends 1:100 2:46 3:83 / enemies 5:85 6:85 4:100
+1:39  [STATE]   friends 1:100 2:39 3:80
+1:39  [OWNER CAST]   366155 → 2
+1:39  [TEAMMATE CD]   3 (Arms Warrior): Avatar
+      [RES] rdy:Δ-Deep Breath,Rewind,2:Ascendance (Enhancement),3:Intimidating Shout  cd:Deep Breath(69s),Rewind(178s),2:Ascendance (Enhancement)(91s),3:Intimidating Shout(10s)
+1:40  [OWNER CAST]   364343 → 2
+1:42  [STATE]   friends 1:99 2:48 3:76
+1:42  [OWNER CAST]   431443 → 6
+1:42  [OWNER CD]   Emerald Communion
+      [RES] rdy:Δ+3:Avatar-Deep Breath,Rewind  cd:Deep Breath(66s),Rewind(175s)
+1:45  [STATE]   friends 1:100 2:69 3:86
+1:45  [CLEANSE]   2 dispelled 2 effects: Curse of Exhaustion off 2, Chilled off 2
+1:46  [BUFF FADED]   Emerald Communion
+1:46  [OWNER CAST]   1256581 → 2 [completed before CC landed]
+1:47  [CC ON TEAM]   1 ← Howl of Terror (Woopzyy-Tichondrius-US) | 6s
+1:48  [STATE]   friends 1:100 2:100 3:100 / enemies 5:100 6:75 4:93
+1:48  [CC ON TEAM]   2 ← Dragon's Breath (Venruki-Tichondrius-US) | 1s | trinket: ON CD (28s left)
+1:48  [CC ON TEAM]   3 ← Dragon's Breath (Venruki-Tichondrius-US) | 1s | trinket: used
+1:49  [STATE]   friends 1:99 2:99 3:98 / enemies 5:100 6:33 4:100
+1:50  [STATE]   friends 1:100 2:94 3:96 / enemies 5:100 6:21 4:100
+1:50  [CC ON TEAM]   3 ← Mind Control (Jcaesar-Area52-US) | 1s | trinket: used
+1:50  [TRINKET]   3 used PvP trinket
+1:51  [STATE]   friends 1:99 2:99 3:96 / enemies 5:100 6:22 4:100
+1:52  [STATE]   friends 1:98 2:96 3:96 / enemies 5:100 6:24 4:100
+1:53  [STATE]   friends 1:97 2:94 3:95 / enemies 5:100 6:53 4:100
+1:53  [CC ON TEAM]   1 ← Fear (Woopzyy-Tichondrius-US) | 3s
+1:54  [STATE]   friends 1:97 2:90 3:94 / enemies 5:100 6:54 4:99
+1:55  [STATE]   friends 1:99 2:89 3:90 / enemies 5:100 6:78 4:100
+1:55  [TEAMMATE CD]   2 (Enhancement Shaman): Hex
+      [RES] rdy:Δ+Wing Buffet,Stasis,3:Avatar  cd:—  cc:1/Fear-1s
+1:56  [STATE]   friends 1:98 2:85 3:85 / enemies 5:100 6:78 4:99
+1:56  [OWNER CAST]   364343 → 2
+1:57  [STATE]   friends 1:96 2:82 3:85 / enemies 5:100 6:79 4:100
+1:57  [OWNER CD]   Stasis
+      [RES] rdy:Δ+3:Intimidating Shout-Emerald Communion,2:Hex  cd:Emerald Communion(165s),2:Hex(28s)
+1:57  [CC ON TEAM]   2 ← Psychic Scream (Jcaesar-Area52-US) | 1s | trinket: ON CD (19s left)
+1:57  [OWNER CAST]   360995 → 2
+1:57  [OWNER CAST]   361195 → 2
+1:58  [STATE]   friends 1:100 2:87 3:67 / enemies 5:100 6:81 4:100
+1:58  [OWNER CAST]   364343 → 2
+1:59  [STATE]   friends 1:99 2:73 3:67 / enemies 5:100 6:80 4:100
+1:59  [OWNER CAST]   355936
+2:00  [STATE]   friends 1:100 2:67 3:62 / enemies 5:100 6:76 4:100
+2:00  [OWNER CAST]   355936
+2:01  [STATE]   friends 1:97 2:52 3:58 / enemies 5:100 6:86 4:100
+2:01  [OWNER CAST]   1256581 → 2
+2:02  [STATE]   friends 1:100 2:100 3:92 / enemies 5:100 6:100 4:100
+2:02  [OWNER CD]   Hover
+      [RES] rdy:Δ+3:Avatar,3:Intimidating Shout-Emerald Communion,Stasis,2:Hex  cd:Emerald Communion(161s),Stasis(85s),2:Hex(23s)
+2:03  [STATE]   friends 1:100 2:98 3:99 / enemies 5:100 6:100 4:100
+2:03  [OWNER CAST]   431443 → 6
+2:03  [OWNER CAST]   360823 → 3
+2:03  [CLEANSE]   1 dispelled 4 effects: Corruption off 3, Chilled off 3, Frost Nova off 3, Shadow Word: Pain off 3
+2:04  [STATE]   friends 1:97 2:87 3:94 / enemies 5:100 6:85 4:100
+2:05  [STATE]   friends 1:88 2:84 3:94 / enemies 5:100 6:81 4:100
+2:05  [CLEANSE]   2 dispelled Chilled off 2
+2:06  [STATE]   friends 1:75 2:73 3:84 / enemies 5:100 6:82 4:100
+2:07  [STATE]   friends 1:65 2:69 3:83 / enemies 5:100 6:89 4:100
+2:08  [OWNER CAST]   Sleep Walk → 4
+2:08  [OWNER CAST]   361195 → 2
+2:08  [OWNER CD]   Obsidian Scales → self
+      [RES] rdy:Δ  cd:—
+2:08  [OWNER CAST]   364343 → 2
+2:08  [OWNER CD]   Time Dilation → self
+      [RES] rdy:Δ  cd:—
+2:08  [OWNER CAST]   355941
+2:09  [STATE]   friends 1:43 2:99 3:90
+2:09  [OWNER CAST]   1256581 → self
+2:10  [OWNER CAST]   356995 → 6 [completed before CC landed]
+2:10  [CC ON TEAM]   1 ← Mortal Coil (Woopzyy-Tichondrius-US) | 3s
+2:11  [STATE]   friends 1:79 2:100 3:98 / enemies 5:95 6:70 4:100
+2:12  [STATE]   friends 1:78 2:98 3:100 / enemies 5:96 6:71
+2:12  [CC ON TEAM]   2 ← Bull Rush (Venruki-Tichondrius-US) | 2s | trinket: ON CD (4s left)
+2:12  [CC ON TEAM]   3 ← Bull Rush (Venruki-Tichondrius-US) | 2s | trinket: ON CD (99s left)
+2:13  [STATE]   friends 1:80 2:97 3:98 / enemies 5:98 6:72 4:100
+2:13  [OWNER CAST]   360823 → 2
+2:13  [CLEANSE]   1 dispelled 3 effects: Shadow Word: Pain off 2, Haunt off 2, Corruption off 2
+2:14  [STATE]   friends 1:78 2:98 3:98 / enemies 5:100 6:72 4:100
+2:14  [OWNER CD]   Wing Buffet
+      [RES] rdy:Δ+Wing Buffet,3:Avatar-Deep Breath  cd:Deep Breath(35s)
+2:15  [STATE]   friends 1:80 2:100 3:99 / enemies 5:100 6:85 4:100
+2:15  [TEAMMATE CD]   2 (Enhancement Shaman): Ascendance (Enhancement)
+      [RES] rdy:Δ+3:Avatar-Deep Breath,Wing Buffet,Rewind,Emerald Communion,Stasis,2:Hex,2:Ascendance (Enhancement)  cd:Deep Breath(33s),Wing Buffet(178s),Rewind(142s),Emerald Communion(147s),Stasis(72s),2:Hex(9s),2:Ascendance (Enhancement)(55s)
+2:16  [STATE]   friends 1:77 2:100 3:98 / enemies 5:100 6:86 4:100
+2:16  [OWNER CD]   Hover
+      [RES] rdy:Δ-Wing Buffet  cd:Wing Buffet(178s)
+2:17  [STATE]   friends 1:78 2:99 3:98 / enemies 5:100 6:88 4:100
+2:17  [OWNER CAST]   Sleep Walk → 4
+2:17  [OWNER CAST]   364343 → self
+2:18  [STATE]   friends 1:77 2:99 3:100 / enemies 5:100 6:99 4:100
+2:18  [CLEANSE]   3 dispelled Curse of Exhaustion off 3
+2:18  [OWNER CAST]   360995 → self
+2:18  [OWNER CAST]   361195 → self
+2:18  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ  cd:—
+2:19  [STATE]   friends 1:98 2:98 3:99 / enemies 5:100 6:56 4:100
+2:19  [OWNER CAST]   364343 → self
+2:20  [STATE]   friends 1:100 2:98 3:99 / enemies 5:100 6:23 4:100
+2:21  [STATE]   friends 1:96 2:97 3:98 / enemies 5:100 6:20 4:100
+2:21  [OWNER CAST]   Sleep Walk → 5
+2:22  [STATE]   friends 1:86 2:96 3:99 / enemies 5:100 6:37 4:100
+2:22  [OWNER CAST]   357208 [completed before CC landed]
+2:23  [OWNER CAST]   366155 → self [completed before CC landed]
+2:23  [CC ON TEAM]   2 ← Howl of Terror (Woopzyy-Tichondrius-US) | 0s
+2:23  [CC ON TEAM]   1 ← Howl of Terror (Woopzyy-Tichondrius-US) | 0s
+2:23  [CC ON TEAM]   3 ← Howl of Terror (Woopzyy-Tichondrius-US) | 0s | trinket: ON CD (88s left)
+2:23  [OWNER CAST]   364343 → 2 [succeeded after CC arrived — within 1s in log]
+2:24  [STATE]   friends 1:96 2:95 3:98 / enemies 5:80 6:43 4:100
+2:25  [STATE]   friends 1:95 2:94 3:97 / enemies 5:51 6:59 4:100
+2:25  [OWNER CAST]   431443 → 5
+2:25  [OWNER CAST]   355936
+2:26  [STATE]   friends 1:100 2:100 3:100 / enemies 5:73 6:79 4:91
+2:26  [OWNER CAST]   358385
+2:27  [STATE]   friends 1:97 2:100 3:99 / enemies 5:72 6:81 4:92
+2:27  [OWNER CAST]   1256581 → self
+2:28  [STATE]   friends 1:94 2:99 3:99 / enemies 5:68 6:79 4:77
+2:28  [OWNER CAST]   360995 → self
+2:28  [OWNER CAST]   361195 → self
+2:28  [CLEANSE]   2 dispelled 2 effects: Curse of Exhaustion off 2, Chilled off 2
+2:28  [OWNER CD]   Hover
+      [RES] rdy:Δ+2:Hex  cd:—
+2:29  [STATE]   friends 1:87 2:99 3:99 / enemies 5:74 6:71 4:75
+2:29  [OWNER CAST]   356995 → 6
+2:30  [STATE]   friends 1:78 2:98 3:99 / enemies 5:77 6:58 4:92
+2:31  [STATE]   friends 1:75 2:94 3:100 / enemies 5:84 6:62 4:99
+2:31  [OWNER CAST]   431443 → 6
+2:32  [STATE]   friends 1:74 2:92 3:100 / enemies 5:85 6:63 4:100
+2:32  [OWNER CAST]   431443 → 6
+2:32  [OWNER CAST]   1256581 → self
+2:33  [STATE]   friends 1:91 2:92 3:96 / enemies 5:86 6:57 4:100
+2:33  [ENEMY CD]   4 (Discipline Priest): Power Infusion
+2:33  [ENEMY BUFF]   6: Power Infusion (purgeable)
+2:33  [ENEMY BUFF]   4: Power Infusion (purgeable)
+2:34  [OWNER CD]   Obsidian Scales → self
+      [RES] rdy:Δ  cd:—  enemy:Power Infusion/Discipline Priest(1s)
+2:36  [STATE]   friends 1:82 2:82 3:92
+2:36  [OWNER CAST]   356995 → 6
+2:38  [TEAMMATE CD]   2 (Enhancement Shaman): Hex
+      [RES] rdy:Δ-Wing Buffet,Stasis  cd:Wing Buffet(156s),Stasis(49s)  enemy:Power Infusion/Discipline Priest(5s)
+2:38  [OWNER CAST]   355936
+2:39  [STATE]   friends 1:76 2:87 3:100
+2:40  [OWNER CAST]   Sleep Walk → 5
+2:40  [OWNER CAST]   360995 → self
+2:40  [OWNER CAST]   361195 → self
+2:41  [OWNER CAST]   360823 → 3
+2:41  [CLEANSE]   1 dispelled 3 effects: Freeze off 3, Shared Fate off 3, Shadow Word: Pain off 3
+2:42  [STATE]   friends 1:79 2:87 3:94
+2:43  [OWNER CAST]   Sleep Walk → 5
+2:43  [OWNER CAST]   364343 → self
+2:44  [OWNER CAST]   1256581 → self
+2:45  [STATE]   friends 1:100 2:89 3:90
+2:45  [OWNER CAST]   357208
+2:47  [OWNER CAST]   Sleep Walk → 4
+2:47  [OWNER CAST]   356995 → 5
+2:48  [STATE]   friends 1:93 2:99 3:99
+2:48  [ENEMY BUFF END]   6: Power Infusion
+2:48  [ENEMY BUFF END]   4: Power Infusion
+2:48  [OWNER CAST]   360823 → self
+2:48  [CLEANSE]   1 dispelled 3 effects: Corruption off 1, Haunt off 1, Shadow Word: Pain off 1
+2:49  [OWNER CAST]   406971
+2:50  [TEAMMATE CD]   3 (Arms Warrior): Avatar
+      [RES] rdy:Δ+Deep Breath,3:Intimidating Shout-Wing Buffet,Emerald Communion,Stasis  cd:Wing Buffet(144s),Emerald Communion(113s),Stasis(37s)  enemy:Power Infusion/Discipline Priest(17s)
+2:51  [STATE]   friends 1:71 2:97 3:100
+2:52  [STATE]   friends 1:55 2:97 3:99 / enemies 5:98 6:75 4:100
+2:52  [OWNER CAST]   Sleep Walk → 4
+2:52  [OWNER CD]   Time Dilation → self
+      [RES] rdy:Δ+Deep Breath-3:Avatar  cd:3:Avatar(17s)  enemy:Power Infusion/Discipline Priest(20s)
+2:53  [STATE]   friends 1:43 2:95 3:97 / enemies 5:98 6:75 4:100
+2:53  [OWNER CAST]   360995 → self
+2:53  [OWNER CAST]   361195 → self
+2:53  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Power Infusion/Discipline Priest(20s)
+2:54  [STATE]   friends 1:52 2:95 3:94 / enemies 5:98 6:67 4:99
+2:54  [CLEANSE]   2 dispelled Curse of Exhaustion off 2
+2:54  [OWNER CAST]   364343 → self
+2:55  [STATE]   friends 1:51 2:97 3:91 / enemies 5:98 6:61 4:99
+2:55  [OWNER CAST]   1256581 → self
+2:56  [STATE]   friends 1:95 2:95 3:100 / enemies 5:98 6:62 4:96
+2:56  [DMG SPIKE]   1 (Preservation Evoker): 0.80M in 10s
+2:56  [OWNER CAST]   364343 → self
+2:57  [STATE]   friends 1:100 2:100 3:98 / enemies 5:99 6:63 4:90
+2:57  [OWNER CAST]   357208
+2:57  [TEAMMATE CD]   2 (Enhancement Shaman): Hex
+      [RES] rdy:Δ+Deep Breath-3:Avatar  cd:3:Avatar(11s)  enemy:Power Infusion/Discipline Priest(25s)
+2:58  [STATE]   friends 1:99 2:100 3:97 / enemies 5:100 6:64 4:92
+2:59  [STATE]   friends 1:96 2:100 3:98 / enemies 5:100 6:100 4:99
+3:00  [STATE]   friends 1:97 2:100 3:98 / enemies 5:100 6:100 4:100
+3:00  [OWNER CD]   Deep Breath
+      [RES] rdy:Δ+3:Intimidating Shout-Wing Buffet,Emerald Communion,Stasis,2:Hex  cd:Wing Buffet(134s),Emerald Communion(103s),Stasis(27s),2:Hex(8s)  enemy:Power Infusion/Discipline Priest(27s)
+3:00  [OWNER CAST]   431443 → 4
+3:01  [STATE]   friends 1:75 2:99 3:95 / enemies 5:100 6:100 4:95
+3:01  [BUFF FADED]   Deep Breath
+3:01  [OWNER CAST]   360995 → self
+3:01  [OWNER CAST]   361195 → self
+3:02  [STATE]   friends 1:93 2:100 3:98 / enemies 5:100 6:100 4:100
+3:02  [OWNER CAST]   364343 → self
+3:03  [STATE]   friends 1:92 2:98 3:91 / enemies 5:100 6:94 4:100
+3:03  [OWNER CAST]   366155 → 3
+3:04  [STATE]   friends 1:100 2:99 3:98 / enemies 5:100 6:80 4:100
+3:04  [OWNER CAST]   364343 → self
+3:05  [STATE]   friends 1:84 2:97 3:97 / enemies 5:100 6:68 4:100
+3:05  [OWNER CAST]   355936
+3:06  [STATE]   friends 1:69 2:94 3:99 / enemies 5:100 6:56 4:100
+3:06  [DMG SPIKE]   1 (Preservation Evoker): 1.48M in 10s
+3:06  [OWNER CAST]   364343 → self
+3:07  [STATE]   friends 1:97 2:97 3:99 / enemies 5:100 6:61 4:100
+3:08  [STATE]   friends 1:60 2:99 3:92 / enemies 5:100 6:77 4:100
+3:08  [OWNER CD]   Hover
+      [RES] rdy:Δ-Deep Breath  cd:Deep Breath(111s)
+3:09  [STATE]   friends 1:33 2:97 3:90 / enemies 5:100 6:78 4:100
+3:09  [OWNER CAST]   361509 → self
+3:09  [OWNER CAST]   431443 → self
+3:09  [OWNER CAST]   364343 → self
+3:10  [STATE]   friends 1:88 2:98 3:91 / enemies 5:100 6:79 4:100
+3:10  [OWNER CAST]   1256581 → self
+3:11  [STATE]   friends 1:94 2:97 3:90 / enemies 5:100 6:82 4:100
+3:11  [OWNER CAST]   364343 → self
+3:12  [STATE]   friends 1:84 2:98 3:97 / enemies 5:100 6:93 4:100
+3:13  [STATE]   friends 1:71 2:98 3:100 / enemies 5:100 6:94 4:100
+3:13  [CC ON TEAM]   3 ← Howl of Terror (Woopzyy-Tichondrius-US) | 1s | trinket: ON CD (38s left)
+3:13  [CC ON TEAM]   1 ← Howl of Terror (Woopzyy-Tichondrius-US) | 1s
+3:14  [STATE]   friends 1:58 2:96 3:98 / enemies 5:100 6:93 4:100
+3:14  [OWNER CAST]   360823 → 3 [succeeded after CC arrived — within 1s in log]
+3:14  [CLEANSE]   1 dispelled 2 effects: Chilled off 3, Howl of Terror off 3
+3:14  [CC ON TEAM]   2 ← Mind Control (Jcaesar-Area52-US) | 6s
+3:14  [MISSED CLEANSE]   Mind Control on 2 | 6s | 0k taken during | dispel: Magic
+3:15  [STATE]   friends 1:50 2:94 3:97 / enemies 5:100 6:95 4:100
+3:15  [OWNER CAST]   360995 → self
+3:15  [OWNER CAST]   361195 → self
+3:16  [STATE]   friends 1:76 2:93 3:83 / enemies 5:100 6:94 4:100
+3:16  [OWNER CAST]   364343 → self
+3:16  [DMG SPIKE]   1 (Preservation Evoker): 0.82M in 10s
+3:17  [STATE]   friends 1:82 2:93 3:79 / enemies 5:100 6:94 4:100
+3:17  [OWNER CAST]   366155 → self
+3:18  [STATE]   friends 1:100 2:92 3:75 / enemies 5:100 6:95 4:100
+3:19  [STATE]   friends 1:88 2:91 3:75 / enemies 5:100 6:74 4:100
+3:19  [OWNER CAST]   364343 → 3
+3:20  [STATE]   friends 1:91 2:91 3:75 / enemies 5:100 6:73 4:100
+3:21  [STATE]   friends 1:69 2:89 3:76 / enemies 5:100 6:74 4:100
+3:22  [STATE]   friends 1:62 2:88 3:69 / enemies 5:100 6:75 4:100
+3:23  [STATE]   friends 1:41 2:88 3:69 / enemies 5:100 6:76 4:100
+3:24  [STATE]   friends 1:dead 2:85 3:67 / enemies 5:100 6:77 4:100
+3:24  [TRINKET]   1 used PvP trinket
+3:24  [DEATH]  1 (Preservation Evoker — friendly)
+               HP: 22% at T-15s → 49% at T-10s → 87% at T-5s → 59% at T-3s → dead
+               Top damage in final 10s: Venruki-Tichondrius-US — Shatter (194k), Woopzyy-Tichondrius-US — Unstable Affliction (123k), Woopzyy-Tichondrius-US — Drain Soul (118k)
+3:24  [CLEANSE]   3 dispelled 2 effects: Curse of Exhaustion off 3, Chilled off 3
+3:25  [STATE]   friends 1:dead 2:86 3:67 / enemies 5:100 6:78 4:100
+3:26  [STATE]   friends 1:dead 2:85 3:68 / enemies 5:100 6:78 4:100
+3:27  [STATE]   friends 1:dead 2:84 3:67 / enemies 5:100 6:79 4:100
+3:28  [STATE]   friends 1:dead 2:82 3:65 / enemies 5:100 6:81 4:100
+3:29  [STATE]   friends 1:dead 2:82 3:64 / enemies 5:100 6:89 4:100
+3:30  [STATE]   friends 1:dead 2:82 3:54 / enemies 5:100 6:94 4:100
+3:31  [STATE]   friends 1:dead 2:82 3:51 / enemies 5:100 6:97 4:100
+3:31  [TEAMMATE CD]   3 (Arms Warrior): Die by the Sword
+      [RES] rdy:Δ+2:Ascendance (Enhancement),3:Avatar-Deep Breath,Wing Buffet,Rewind,Emerald Communion  cd:Deep Breath(89s),Wing Buffet(103s),Rewind(66s),Emerald Communion(71s)
+3:32  [STATE]   friends 1:dead 2:82 3:34 / enemies 5:100 6:100 4:100
+3:33  [STATE]   friends 1:dead 2:83 3:17 / enemies 5:100 6:100 4:100
+3:34  [STATE]   friends 1:dead 2:82 3:dead / enemies 5:100 6:100 4:100
+3:34  [DEATH]  3 (Arms Warrior — friendly)
+               HP: 76% at T-15s → 67% at T-10s → 64% at T-5s → 51% at T-3s → dead
+               Top damage in final 10s: Woopzyy-Tichondrius-US — Drain Soul (138k), Venruki-Tichondrius-US — Glacial Spike (71k), Jcaesar-Area52-US — Ultimate Penitence (68k)
+
+3:34  [MATCH END]   damp: 14%
+  friends 1:dead(3:24) 2:82% 3:dead(3:34) / enemies 5:100% 6:100% 4:100%

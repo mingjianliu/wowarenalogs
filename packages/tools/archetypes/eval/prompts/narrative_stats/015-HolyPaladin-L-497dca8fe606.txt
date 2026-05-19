@@ -1,0 +1,559 @@
+[ARCHETYPE: Holy Paladin — short_passive_swap]
+Matches in this cluster are short (median 118s) with low burst activity and moderate CC pressure. CD usage is notably absent in 53% of cases, and purge data is unavailable, suggesting limited offensive engagement. A 14% healing gap rate is elevated for Holy Paladin given the short duration, and offensive participation sits at 43%, the lowest across clusters.
+
+Key behavioral patterns observed in this match type:
+CD timing: 42% Optimal / 10% Early / 4% Late / 1% Reactive
+CD never used: 53%
+CD response latency: 7638ms median
+Outgoing CC per match: 2.2 mean
+Healing gap rate during burst: 14%
+Offensive participation: 43%
+Missed cleanse rate: 34%
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Holy Paladin (Healer) | Bracket: 3v3 | Result: Loss | Duration: 3:47
+  My team: Holy Paladin, Balance Druid, Windwalker Monk
+  Enemy team: Affliction Warlock, Restoration Shaman, Assassination Rogue
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Holy Paladin): CANNOT offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 15% at match end
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Lilholypal-Outland-EU (Holy Paladin — log owner):
+    Lay on Hands [600s], Divine Shield [300s], Hammer of Justice [45s, 2 Charges], Blessing of Protection [300s], Avenging Crusader [60s], Divine Protection [60s], Blessing of Sacrifice [120s], Aura Mastery [180s]
+  2: Moomre-Kazzak-EU (Balance Druid):
+    Mass Entanglement [30s], Barkskin [60s], Incarnation: Chosen of Elune [180s, 2 Charges], Stampeding Roar [120s], Incapacitating Roar [30s], Frenzied Regeneration [36s]
+  3: Saintviper-Outland-EU (Windwalker Monk):
+    Paralysis [45s, 2 Charges], Leg Sweep [60s, 2 Charges], Touch of Karma [90s]
+  4: Dretch-Antonidas-EU (Assassination Rogue — enemy):
+    Deathmark [120s]
+  5: Rutena-Ravencrest-EU (Affliction Warlock — enemy):
+    none tracked
+  6: Dêstrux-Blackrock-EU (Restoration Shaman — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:03  [OWNER CAST]   432459 → 3
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:06  [OWNER CAST]   433568
+0:07  [OWNER CAST]   20473 → 3 [completed before CC landed]
+0:08  [CC ON TEAM]   1 ← Sap (Dretch-Antonidas-EU) | 2s
+0:09  [STATE]   enemies 5:100 6:100 4:100
+0:09  [CC ON TEAM]   3 ← Cheap Shot (Dretch-Antonidas-EU) | 4s
+0:10  [STATE]   enemies 5:100 6:100 4:100
+0:10  [CC ON TEAM]   3 ← Garrote - Silence (Dretch-Antonidas-EU) | 3s
+0:11  [STATE]   friends 2:100 / enemies 5:100 6:100 4:100
+0:12  [STATE]   friends 2:100 / enemies 5:100 6:100 4:100
+0:12  [CC CAST]   Incapacitating Roar (by 2) → 6, 5 [2 enemies]
+0:12  [TEAMMATE CD]   2 (Balance Druid): Incapacitating Roar
+      [RES] rdy:Δ+Divine Shield,Avenging Crusader,Blessing of Sacrifice,2:Incarnation: Chosen of Elune,3:Paralysis,3:Touch of Karma  cd:—  cc:3/Cheap Shot-1s[stun]
+0:12  [CC CAST]   Incapacitating Roar (by 2) → nil [non-player target]
+0:13  [STATE]   friends 2:100 / enemies 5:100 6:100 4:95
+0:14  [STATE]   friends 2:100 3:100 / enemies 5:100 4:100
+0:15  [STATE]   friends 2:100 3:100 / enemies 5:100 4:98
+0:16  [STATE]   friends 2:100 3:100 / enemies 5:100 4:83
+0:16  [CC ON TEAM]   2 ← Kidney Shot (Dretch-Antonidas-EU) | 5s
+0:17  [STATE]   friends 1:100 2:100 3:100 / enemies 5:100 4:83
+0:17  [CC ON TEAM]   2 ← Garrote - Silence (Dretch-Antonidas-EU) | 3s
+0:17  [OWNER CAST]   275773 → 4
+0:17  [CLEANSE]   3 dispelled 3 effects: Crippling Poison off 3, Curse of Exhaustion off 3, Earthbind off 3
+0:18  [STATE]   friends 1:100 2:100 3:100 / enemies 5:100 4:83
+0:19  [STATE]   friends 1:100 2:88 3:100 / enemies 5:100 6:99 4:75
+0:19  [TEAMMATE CD]   3 (Windwalker Monk): Leg Sweep
+      [RES] rdy:Δ+Divine Shield,Blessing of Protection,Avenging Crusader,Divine Protection,Blessing of Sacrifice,2:Barkskin,2:Incarnation: Chosen of Elune,2:Frenzied Regeneration,3:Touch of Karma-2:Incapacitating Roar  cd:2:Incapacitating Roar(23s)  cc:2/Kidney Shot-2s[stun]
+0:19  [CC CAST]   Leg Sweep (by 3) → 5, 4 [2 enemies]
+0:19  [CC CAST]   Leg Sweep (by 3) → nil [non-player target]
+0:19  [OWNER CD]   Blessing of Sacrifice → 2 (88% HP)
+      [RES] rdy:Δ+Divine Shield,Avenging Crusader,Blessing of Sacrifice,2:Incarnation: Chosen of Elune,3:Touch of Karma-2:Incapacitating Roar  cd:2:Incapacitating Roar(23s)  cc:2/Kidney Shot-2s[stun]
+0:19  [TEAMMATE CD]   2 (Balance Druid): Barkskin
+      [RES] rdy:Δ+Hammer of Justice,Avenging Crusader,Blessing of Sacrifice,2:Incarnation: Chosen of Elune,2:Frenzied Regeneration,3:Paralysis,3:Touch of Karma-2:Incapacitating Roar  cd:2:Incapacitating Roar(23s)  cc:2/Kidney Shot-2s[stun]
+0:19  [OWNER CAST]   85673 → 2
+0:20  [STATE]   friends 1:100 2:100 3:100 / enemies 5:100 6:100 4:61
+0:20  [OWNER CAST]   20473 → 4
+0:21  [STATE]   friends 1:100 2:100 3:100 / enemies 5:80 6:98 4:51
+0:21  [CC ON TEAM]   2 ← Howl of Terror (Rutena-Ravencrest-EU) | 1s
+0:21  [CC ON TEAM]   3 ← Howl of Terror (Rutena-Ravencrest-EU) | 1s | trinket: used
+0:21  [TRINKET]   3 used PvP trinket
+0:22  [STATE]   friends 1:100 2:100 3:100 / enemies 5:90 6:100 4:47
+0:22  [OWNER CAST]   4987 → 2
+0:22  [CLEANSE]   1 dispelled 7 effects: Crippling Poison off 2, Atrophic Poison off 2, Amplifying Poison off 2, Wound Poison off 2, Corruption off 2, Howl of Terror off 2, Haunt off 2
+0:22  [TEAMMATE CD]   2 (Balance Druid): Mass Entanglement
+      [RES] rdy:Δ+Divine Shield,Blessing of Protection,Avenging Crusader,Divine Protection,2:Incarnation: Chosen of Elune,2:Frenzied Regeneration,3:Touch of Karma-2:Incapacitating Roar,3:Leg Sweep  cd:2:Incapacitating Roar(19s),3:Leg Sweep(56s)
+0:23  [STATE]   friends 1:99 2:100 3:100 / enemies 5:94 6:100 4:50
+0:23  [TEAMMATE CD]   2 (Balance Druid): Incarnation: Chosen of Elune
+      [RES] rdy:Δ+Divine Shield,Avenging Crusader,Divine Protection,2:Incarnation: Chosen of Elune,3:Touch of Karma-2:Mass Entanglement,2:Barkskin,2:Incapacitating Roar,3:Leg Sweep  cd:2:Mass Entanglement(29s),2:Barkskin(55s),2:Incapacitating Roar(18s),3:Leg Sweep(55s)
+0:23  [OWNER CAST]   275773 → 4
+0:24  [STATE]   friends 1:100 2:100 3:100 / enemies 5:95 6:100 4:41
+0:25  [STATE]   friends 1:100 2:100 3:99 / enemies 5:97 6:100 4:43
+0:25  [OWNER CAST]   20473 → 4
+0:26  [STATE]   friends 1:99 2:99 3:98 / enemies 5:97 6:100 4:29
+0:27  [STATE]   friends 1:97 2:96 3:95 / enemies 5:97 6:98 4:34
+0:27  [OWNER CAST]   20473 → 4
+0:28  [STATE]   friends 1:89 2:90 3:95 / enemies 5:100 6:98 4:43
+0:28  [CC ON TEAM]   1 ← Blind (Dretch-Antonidas-EU) | 1s
+0:29  [STATE]   friends 1:86 2:100 3:89 / enemies 5:100 6:89 4:75
+0:29  [OWNER CAST]   19750 → 2 [succeeded after CC arrived — within 1s in log]
+0:29  [CLEANSE]   1 dispelled 4 effects: Amplifying Poison off 2, Wound Poison off 2, Atrophic Poison off 2, Crippling Poison off 2
+0:30  [STATE]   friends 1:86 2:93 3:88 / enemies 5:100 6:72 4:78
+0:30  [OWNER CAST]   85673 → 2
+0:30  [CC ON TEAM]   3 ← Lightning Lasso (Dêstrux-Blackrock-EU) | 3s | trinket: ON CD (112s left)
+0:31  [STATE]   friends 1:85 2:99 3:90 / enemies 5:100 6:39 4:100
+0:31  [BUFF FADED]   Blessing of Sacrifice
+0:31  [OWNER CD]   Avenging Crusader
+      [RES] rdy:Δ+Divine Shield,Avenging Crusader,Divine Protection,2:Frenzied Regeneration,3:Touch of Karma-2:Mass Entanglement,2:Incapacitating Roar,3:Leg Sweep  cd:2:Mass Entanglement(22s),2:Incapacitating Roar(11s),3:Leg Sweep(48s)  cc:3/Lightning Lasso-2s[stun]
+0:31  [OWNER CAST]   82326 → 3
+0:32  [STATE]   friends 1:85 2:93 3:100 / enemies 5:100 6:44 4:100
+0:33  [STATE]   friends 1:85 2:89 3:92 / enemies 5:100 6:45 4:95
+0:33  [OWNER CAST]   85673 → 2
+0:34  [STATE]   friends 1:84 2:98 3:90 / enemies 5:100 6:64 4:92
+0:34  [CC ON TEAM]   3 ← Fear (Rutena-Ravencrest-EU) | 1s | trinket: ON CD (108s left)
+0:34  [OWNER CAST]   1241413 → 4
+0:35  [STATE]   friends 1:85 2:96 3:85 / enemies 5:100 6:63 4:84
+0:36  [STATE]   friends 1:88 2:98 3:86 / enemies 5:100 6:65 4:87
+0:36  [OWNER CAST]   85673 → 3
+0:37  [STATE]   friends 1:85 2:96 3:94 / enemies 5:100 6:63 4:73
+0:37  [OWNER CAST]   20473 → 3
+0:38  [STATE]   friends 1:83 2:95 3:98 / enemies 5:100 6:63 4:73
+0:39  [STATE]   friends 1:80 2:91 3:93 / enemies 5:100 6:91 4:80
+0:39  [OWNER CAST]   1241413 → 4
+0:40  [STATE]   friends 1:80 2:79 3:90 / enemies 5:100 6:91 4:68
+0:40  [OWNER CAST]   85673 → 2
+0:41  [STATE]   friends 1:81 2:88 3:95 / enemies 6:91 4:45
+0:42  [STATE]   friends 1:79 2:92 3:91 / enemies 5:100 6:92 4:35
+0:42  [OWNER CAST]   20473 → 2
+0:43  [STATE]   friends 1:76 2:86 3:87 / enemies 5:100 6:100 4:80
+0:43  [OWNER CAST]   1241413 → 4
+0:44  [STATE]   friends 1:76 2:77 3:83 / enemies 5:100 6:100 4:72
+0:45  [STATE]   friends 1:80 2:84 3:86
+0:45  [OWNER CAST]   85673 → 3
+0:46  [STATE]   friends 1:77 2:83 3:98 / enemies 5:100 6:100 4:72
+0:46  [OWNER CAST]   20473 → 2
+0:47  [STATE]   friends 1:74 2:87 3:98 / enemies 5:100 6:100 4:68
+0:47  [CC ON TEAM]   3 ← Gouge (Dretch-Antonidas-EU) | 1s | trinket: ON CD (95s left)
+0:48  [STATE]   friends 1:73 2:82 3:96 / enemies 5:100 6:100 4:50
+0:48  [OWNER CAST]   432472 → 2 [completed before CC landed]
+0:49  [STATE]   friends 1:73 2:78 3:96 / enemies 5:100 6:100 4:61
+0:49  [CC ON TEAM]   1 ← Fear (Rutena-Ravencrest-EU) | 1s | trinket: used
+0:49  [CC ON TEAM]   3 ← Kidney Shot (Dretch-Antonidas-EU) | 5s | trinket: ON CD (93s left)
+0:50  [STATE]   friends 1:72 2:76 3:96 / enemies 5:100 6:100 4:56
+0:50  [TRINKET]   1 used PvP trinket
+0:50  [DMG SPIKE]   3 (Windwalker Monk): 0.61M in 10s
+0:51  [STATE]   friends 1:71 2:89 3:100 / enemies 5:100 6:99 4:55
+0:51  [OWNER CAST]   19750 → 3
+0:51  [CLEANSE]   1 dispelled 3 effects: Atrophic Poison off 3, Crippling Poison off 3, Amplifying Poison off 3
+0:51  [MISSED CLEANSE]   Flame Shock on 2 | 18s | 94k taken during | dispel: Magic
+0:52  [STATE]   friends 1:73 2:85 3:99 / enemies 6:100 4:58
+0:52  [OWNER CAST]   19750 → 2
+0:53  [STATE]   friends 1:80 2:100 3:98 / enemies 6:100 4:50
+0:53  [BUFF FADED]   Avenging Crusader
+0:53  [ENEMY CD]   4 (Assassination Rogue): Deathmark
+0:54  [STATE]   friends 1:100 2:98 3:87 / enemies 6:99 4:51
+0:54  [OWNER CAST]   85673 → self
+0:55  [STATE]   friends 1:99 2:95 3:82 / enemies 5:100 6:100 4:82
+0:55  [OWNER CAST]   20473 → 3
+0:56  [STATE]   friends 1:99 2:97 3:51 / enemies 5:100 6:100 4:72
+0:56  [OWNER CAST]   19750 → 3
+0:56  [CLEANSE]   1 dispelled 4 effects: Atrophic Poison off 3, Wound Poison off 3, Crippling Poison off 3, Amplifying Poison off 3
+0:57  [STATE]   friends 1:100 2:99 3:61 / enemies 5:100 6:100 4:57
+0:58  [STATE]   friends 1:99 2:99 3:51 / enemies 5:100 6:100 4:51
+0:58  [OWNER CAST]   19750 → 3
+0:58  [CLEANSE]   1 dispelled 2 effects: Amplifying Poison off 3, Crippling Poison off 3
+0:59  [STATE]   friends 1:99 2:99 3:63 / enemies 5:100 6:100 4:46
+0:59  [OWNER CAST]   275773 → 4
+1:00  [STATE]   friends 1:100 2:99 3:54
+1:00  [TEAMMATE CD]   2 (Balance Druid): Incapacitating Roar
+      [RES] rdy:Δ-Avenging Crusader,Blessing of Sacrifice,2:Barkskin,2:Incarnation: Chosen of Elune,3:Leg Sweep  cd:Avenging Crusader(31s),Blessing of Sacrifice(79s),2:Barkskin(19s),2:Incarnation: Chosen of Elune(144s),3:Leg Sweep(19s)  enemy:Deathmark/Assassination Rogue(6s)
+1:00  [CC CAST]   Incapacitating Roar (by 2) → 6
+1:00  [CC CAST]   Incapacitating Roar (by 2) → nil [non-player target]
+1:01  [TEAMMATE CD]   3 (Windwalker Monk): Touch of Karma
+      [RES] rdy:Δ+Divine Shield,Divine Protection,2:Frenzied Regeneration,3:Touch of Karma-2:Incapacitating Roar,3:Leg Sweep  cd:2:Incapacitating Roar(29s),3:Leg Sweep(18s)  enemy:Deathmark/Assassination Rogue(8s)
+1:01  [OWNER CAST]   85673 → 3
+1:01  [CC ON TEAM]   3 ← Mortal Coil (Rutena-Ravencrest-EU) | 2s | trinket: ON CD (81s left)
+1:01  [CC ON TEAM]   2 ← Cheap Shot (Dretch-Antonidas-EU) | 4s
+1:02  [STATE]   friends 1:100 2:99 3:68 / enemies 5:100 6:100 4:48
+1:02  [CC ON TEAM]   2 ← Garrote - Silence (Dretch-Antonidas-EU) | 3s
+1:03  [STATE]   friends 1:100 2:98 3:77 / enemies 5:100 6:100 4:60
+1:03  [OWNER CAST]   20473 → 3
+1:03  [TEAMMATE CD]   3 (Windwalker Monk): Paralysis
+      [RES] rdy:Δ+Divine Shield,Divine Protection-3:Leg Sweep,3:Touch of Karma  cd:3:Leg Sweep(15s),3:Touch of Karma(88s)  enemy:Deathmark/Assassination Rogue(10s)  cc:2/Cheap Shot-2s[stun]
+1:04  [STATE]   friends 1:100 2:96 3:78 / enemies 5:100 6:100 4:83
+1:05  [STATE]   friends 1:100 2:91 3:78 / enemies 5:100 6:100 4:99
+1:06  [STATE]   friends 1:100 2:88 3:78 / enemies 5:100 6:100 4:100
+1:06  [CLEANSE]   2 dispelled Crippling Poison off 2
+1:06  [OWNER CAST]   190784
+1:07  [STATE]   friends 1:100 2:78 3:78 / enemies 5:100 6:100 4:89
+1:07  [OWNER CD]   Hammer of Justice → Rutena-Ravencrest-EU (100% HP)
+      [RES] rdy:Δ+2:Mass Entanglement,2:Frenzied Regeneration-2:Barkskin,3:Paralysis  cd:2:Barkskin(12s),3:Paralysis(42s)  enemy:Deathmark/Assassination Rogue(13s)
+1:08  [STATE]   friends 1:100 2:67 3:78 / enemies 5:100 6:99 4:75
+1:08  [OWNER CAST]   85673 → 2
+1:09  [STATE]   friends 1:100 2:80 3:86 / enemies 5:100 6:100 4:77
+1:10  [STATE]   friends 1:100 2:69 3:88 / enemies 5:96 6:100 4:57
+1:10  [OWNER CAST]   275773 → 4
+1:11  [STATE]   friends 1:100 2:61 3:91 / enemies 5:89 6:100 4:61
+1:11  [TEAMMATE CD]   3 (Windwalker Monk): Leg Sweep
+      [RES] rdy:Δ-Hammer of Justice,Avenging Crusader,Blessing of Sacrifice,2:Barkskin,2:Incarnation: Chosen of Elune,3:Paralysis,3:Leg Sweep,3:Touch of Karma  cd:Hammer of Justice(41s),Avenging Crusader(20s),Blessing of Sacrifice(68s),2:Barkskin(8s),2:Incarnation: Chosen of Elune(132s),3:Paralysis(37s),3:Leg Sweep(8s),3:Touch of Karma(80s)  enemy:Deathmark/Assassination Rogue(18s)
+1:11  [CC CAST]   Leg Sweep (by 3) → nil [non-player target]
+1:11  [CC CAST]   Leg Sweep (by 3) → 4, 5 [2 enemies]
+1:12  [STATE]   friends 1:100 2:58 3:88 / enemies 5:89 6:100 4:79
+1:12  [OWNER CAST]   20473 → 2
+1:13  [STATE]   friends 1:100 2:61 3:90 / enemies 5:96 6:100 4:100
+1:13  [OWNER CAST]   432459 → 2
+1:14  [STATE]   friends 1:100 2:61 3:91 / enemies 5:98 6:100 4:100
+1:15  [STATE]   friends 1:100 2:62 3:92 / enemies 5:98 6:99 4:91
+1:15  [OWNER CAST]   4987 → 3
+1:15  [CLEANSE]   1 dispelled 4 effects: Soul Anathema off 3, Haunt off 3, Corruption off 3, Capacitor Totem off 3
+1:16  [STATE]   friends 1:100 2:49 3:96 / enemies 5:100 6:97 4:80
+1:16  [OWNER CAST]   19750 → 2
+1:16  [CLEANSE]   1 dispelled 4 effects: Amplifying Poison off 2, Wound Poison off 2, Crippling Poison off 2, Atrophic Poison off 2
+1:17  [STATE]   friends 1:100 2:78 3:95 / enemies 5:100 6:96 4:62
+1:17  [DMG SPIKE]   2 (Balance Druid): 0.46M in 10s
+1:18  [STATE]   friends 1:100 2:72 3:92 / enemies 5:100 6:96 4:51
+1:18  [OWNER CAST]   85673 → 2 [completed before CC landed]
+1:18  [CC ON TEAM]   1 ← Fear (Rutena-Ravencrest-EU) | 2s | trinket: ON CD (62s left)
+1:19  [STATE]   friends 1:100 2:92 3:93 / enemies 5:100 6:98 4:69
+1:20  [STATE]   friends 2:86 3:95 / enemies 5:100 6:98 4:69
+1:21  [STATE]   friends 1:100 2:81 3:92 / enemies 5:100 6:97 4:90
+1:21  [OWNER CAST]   275773 → 4
+1:22  [STATE]   friends 1:100 2:74 3:90 / enemies 5:100 6:95 4:91
+1:23  [STATE]   friends 1:100 2:67 3:89 / enemies 5:100 6:95 4:99
+1:23  [OWNER CAST]   19750 → 2 [completed before CC landed]
+1:23  [CC ON TEAM]   1 ← Kidney Shot (Dretch-Antonidas-EU) | 4s | trinket: ON CD (58s left)
+1:23  [CLEANSE]   1 dispelled 3 effects: Amplifying Poison off 2, Atrophic Poison off 2, Wound Poison off 2
+1:24  [STATE]   friends 1:100 2:82 3:89 / enemies 5:100 6:95 4:95
+1:25  [STATE]   friends 1:99 2:80 3:88 / enemies 5:100 6:97 4:69
+1:26  [STATE]   friends 1:95 2:61 3:85 / enemies 5:100 6:95 4:60
+1:27  [STATE]   friends 1:91 2:49 3:81 / enemies 5:100 6:99 4:49
+1:28  [STATE]   friends 1:91 2:40 3:79 / enemies 5:100 6:99 4:40
+1:28  [OWNER CAST]   85673 → 2 [completed before CC landed]
+1:28  [CC ON TEAM]   1 ← Garrote - Silence (Dretch-Antonidas-EU) | 3s | trinket: ON CD (53s left)
+1:29  [STATE]   friends 1:88 2:51 3:79 / enemies 6:100 4:74
+1:29  [CC ON TEAM]   3 ← Cheap Shot (Dretch-Antonidas-EU) | 2s | trinket: ON CD (53s left)
+1:30  [STATE]   friends 1:87 2:49 3:77 / enemies 6:100 4:99
+1:30  [CC ON TEAM]   2 ← Garrote - Silence (Dretch-Antonidas-EU) | 3s
+1:30  [OWNER CAST]   432472 → 2
+1:30  [CLEANSE]   2 dispelled Crippling Poison off 2
+1:31  [STATE]   friends 1:85 2:46 3:76 / enemies 5:99 6:99 4:99
+1:32  [STATE]   friends 1:90 2:46 3:83 / enemies 5:99 6:100 4:90
+1:32  [OWNER CAST]   85673 → 2
+1:33  [STATE]   friends 1:99 2:54 3:85 / enemies 5:100 6:100 4:80
+1:33  [TEAMMATE CD]   2 (Balance Druid): Frenzied Regeneration
+      [RES] rdy:Δ+Divine Shield,Avenging Crusader,Divine Protection,2:Barkskin-Hammer of Justice,3:Paralysis  cd:Hammer of Justice(19s),3:Paralysis(15s)  cc:2/Garrote - Silence-0s
+1:33  [OWNER CD]   Avenging Crusader
+      [RES] rdy:Δ+2:Mass Entanglement,2:Barkskin,2:Incapacitating Roar,3:Leg Sweep-Hammer of Justice,3:Paralysis,3:Touch of Karma  cd:Hammer of Justice(19s),3:Paralysis(15s),3:Touch of Karma(58s)
+1:34  [STATE]   friends 1:99 2:64 3:93 / enemies 5:100 6:100 4:75
+1:34  [OWNER CAST]   190784 [completed before CC landed]
+1:34  [OWNER CAST]   82326 → 2 [completed before CC landed]
+1:34  [CLEANSE]   1 dispelled 4 effects: Crippling Poison off 2, Atrophic Poison off 2, Wound Poison off 2, Amplifying Poison off 2
+1:35  [STATE]   friends 1:100 2:98 3:96 / enemies 5:100 6:100 4:69
+1:35  [CC ON TEAM]   2 ← Howl of Terror (Rutena-Ravencrest-EU) | 1s
+1:35  [CC ON TEAM]   1 ← Howl of Terror (Rutena-Ravencrest-EU) | 1s | trinket: ON CD (46s left)
+1:35  [CC ON TEAM]   3 ← Howl of Terror (Rutena-Ravencrest-EU) | 2s | trinket: ON CD (47s left)
+1:36  [STATE]   friends 1:86 2:92 3:99 / enemies 5:100 6:100 4:73
+1:36  [CLEANSE]   2 dispelled 2 effects: Curse of Exhaustion off 2, Crippling Poison off 2
+1:36  [OWNER CAST]   1241413 → 4
+1:37  [STATE]   friends 1:99 2:99 3:100 / enemies 5:100 6:100 4:62
+1:37  [TEAMMATE CD]   2 (Balance Druid): Mass Entanglement
+      [RES] rdy:Δ+2:Barkskin,2:Incapacitating Roar,3:Leg Sweep-Hammer of Justice,Avenging Crusader,2:Incarnation: Chosen of Elune,2:Frenzied Regeneration,3:Paralysis,3:Touch of Karma  cd:Hammer of Justice(15s),Avenging Crusader(56s),2:Incarnation: Chosen of Elune(106s),2:Frenzied Regeneration(32s),3:Paralysis(11s),3:Touch of Karma(54s)  cc:3/Howl of Terror-0s
+1:37  [TEAMMATE CD]   3 (Windwalker Monk): Paralysis
+      [RES] rdy:Δ+2:Barkskin,2:Incapacitating Roar,3:Leg Sweep-Hammer of Justice,2:Frenzied Regeneration,3:Paralysis  cd:Hammer of Justice(14s),2:Frenzied Regeneration(32s),3:Paralysis(11s)
+1:38  [STATE]   friends 1:100 2:100 3:98 / enemies 5:100 6:100 4:64
+1:38  [TEAMMATE CD]   2 (Balance Druid): Incarnation: Chosen of Elune
+      [RES] rdy:Δ+2:Barkskin,2:Incapacitating Roar,3:Leg Sweep-Hammer of Justice,Avenging Crusader,2:Incarnation: Chosen of Elune,2:Frenzied Regeneration,3:Paralysis,3:Touch of Karma  cd:Hammer of Justice(14s),Avenging Crusader(56s),2:Incarnation: Chosen of Elune(106s),2:Frenzied Regeneration(31s),3:Paralysis(11s),3:Touch of Karma(53s)
+1:38  [CC ON TEAM]   2 ← Gouge (Dretch-Antonidas-EU) | 1s
+1:38  [OWNER CAST]   19750 → 2
+1:38  [CLEANSE]   1 dispelled 4 effects: Wound Poison off 2, Amplifying Poison off 2, Atrophic Poison off 2, Crippling Poison off 2
+1:39  [STATE]   friends 1:99 2:97 3:100 / enemies 5:100 6:100 4:62
+1:39  [DMG SPIKE]   2 (Balance Druid): 0.44M in 10s
+1:40  [STATE]   friends 1:99 2:95 3:99 / enemies 5:100 6:100 4:64
+1:41  [STATE]   friends 1:96 2:92 3:99 / enemies 5:100 6:100 4:47
+1:41  [OWNER CAST]   Blessing of Freedom → 2
+1:42  [STATE]   friends 1:93 2:89 3:96 / enemies 5:100 6:100 4:39
+1:42  [OWNER CD]   Hammer of Justice → Dêstrux-Blackrock-EU (100% HP)
+      [RES] rdy:Δ+2:Barkskin,2:Incapacitating Roar,3:Leg Sweep-Hammer of Justice,2:Mass Entanglement,2:Frenzied Regeneration  cd:Hammer of Justice(9s),2:Mass Entanglement(25s),2:Frenzied Regeneration(26s)
+1:43  [STATE]   friends 1:92 2:80 3:95 / enemies 5:98 6:95 4:45
+1:43  [TEAMMATE CD]   2 (Balance Druid): Incapacitating Roar
+      [RES] rdy:Δ+2:Barkskin,3:Leg Sweep-Hammer of Justice,2:Mass Entanglement,2:Frenzied Regeneration,3:Paralysis,3:Touch of Karma  cd:Hammer of Justice(9s),2:Mass Entanglement(24s),2:Frenzied Regeneration(26s),3:Paralysis(6s),3:Touch of Karma(48s)
+1:43  [CC CAST]   Incapacitating Roar (by 2) → 6
+1:43  [CC CAST]   Incapacitating Roar (by 2) → nil [non-player target]
+1:44  [STATE]   friends 1:89 2:73 3:97 / enemies 5:98 6:100 4:51
+1:44  [OWNER CAST]   19750 → 2
+1:45  [STATE]   friends 1:91 2:95 3:100 / enemies 5:98 6:100 4:55
+1:45  [OWNER CAST]   1241413 → 4
+1:46  [STATE]   friends 1:89 2:85 3:94 / enemies 5:100 6:99 4:65
+1:47  [STATE]   friends 1:93 2:73 3:96 / enemies 5:100 6:100 4:40
+1:47  [OWNER CAST]   85673 → 2
+1:48  [STATE]   friends 1:97 2:82 3:93 / enemies 5:100 6:99 4:48
+1:48  [OWNER CAST]   432459 → 2
+1:50  [OWNER CAST]   85673 → 2
+1:51  [STATE]   friends 1:100 2:87 3:99
+1:52  [OWNER CAST]   20473 → 2
+1:53  [CC ON TEAM]   3 ← Fear (Rutena-Ravencrest-EU) | 1s | trinket: ON CD (29s left)
+1:54  [STATE]   friends 1:100 2:89 3:100 / enemies 5:99 6:98 4:49
+1:54  [OWNER CAST]   4987 → 3
+1:54  [CLEANSE]   1 dispelled 6 effects: Amplifying Poison off 3, Wound Poison off 3, Atrophic Poison off 3, Crippling Poison off 3, Corruption off 3, Fear off 3
+1:55  [STATE]   friends 1:100 2:86 3:100 / enemies 5:100 6:99 4:50
+1:55  [CC ON TEAM]   3 ← Kidney Shot (Dretch-Antonidas-EU) | 1s | trinket: ON CD (27s left)
+1:56  [STATE]   friends 1:100 2:77 3:99 / enemies 5:100 6:100 4:94
+1:56  [BUFF FADED]   Avenging Crusader
+1:56  [OWNER CAST]   190784
+1:57  [STATE]   friends 1:100 2:68 3:94 / enemies 5:100 6:100 4:93
+1:58  [STATE]   friends 1:100 2:65 3:91 / enemies 5:98 6:100 4:87
+1:58  [OWNER CAST]   85673 → 2
+1:59  [STATE]   friends 1:98 2:83 3:95 / enemies 5:100 6:99 4:90
+2:00  [STATE]   friends 1:98 2:82 3:93 / enemies 5:99 6:100 4:92
+2:00  [OWNER CAST]   20473 → 2
+2:01  [STATE]   friends 1:100 2:86 3:92 / enemies 5:100 6:100 4:89
+2:01  [OWNER CAST]   275773 → 4
+2:02  [STATE]   friends 1:100 2:80 3:94 / enemies 5:100 6:100 4:74
+2:03  [STATE]   friends 1:100 2:66 3:94 / enemies 5:100 6:99 4:55
+2:03  [OWNER CAST]   19750 → 2 [completed before CC landed]
+2:03  [CLEANSE]   1 dispelled 4 effects: Crippling Poison off 2, Amplifying Poison off 2, Wound Poison off 2, Atrophic Poison off 2
+2:03  [CC ON TEAM]   1 ← Hex (Dêstrux-Blackrock-EU) | 1s | trinket: ON CD (17s left)
+2:04  [STATE]   friends 1:100 2:84 3:94 / enemies 5:100 6:99 4:56
+2:04  [TEAMMATE CD]   3 (Windwalker Monk): Leg Sweep
+      [RES] rdy:Δ+Hammer of Justice,2:Barkskin,3:Paralysis,3:Leg Sweep-2:Mass Entanglement,2:Frenzied Regeneration  cd:2:Mass Entanglement(3s),2:Frenzied Regeneration(5s)  cc:1/Hex-1s
+2:04  [CC CAST]   Leg Sweep (by 3) → 4
+2:04  [CC CAST]   Leg Sweep (by 3) → nil [non-player target]
+2:04  [OWNER CD]   Divine Shield
+      [RES] rdy:Lay on Hands,Divine Shield,Hammer of Justice,Blessing of Protection,Divine Protection,Aura Mastery,2:Barkskin,2:Stampeding Roar,3:Paralysis  cd:Avenging Crusader(29s),Blessing of Sacrifice(14s),2:Mass Entanglement(2s),2:Incarnation: Chosen of Elune(79s),2:Incapacitating Roar(8s),2:Frenzied Regeneration(4s),3:Leg Sweep(6s),3:Touch of Karma(26s)
+2:05  [STATE]   friends 1:100 2:97 3:92 / enemies 5:100 6:99 4:60
+2:06  [STATE]   friends 1:100 2:89 3:91 / enemies 5:100 6:100 4:50
+2:06  [OWNER CAST]   85673 → 2
+2:07  [STATE]   friends 1:100 2:96 3:95 / enemies 5:100 6:100 4:70
+2:08  [STATE]   friends 1:100 2:94 3:96 / enemies 5:99 6:100 4:77
+2:08  [OWNER CAST]   275773 → 4
+2:09  [STATE]   friends 1:100 2:91 3:97 / enemies 5:99 6:100 4:58
+2:09  [OWNER CAST]   19750 → 2
+2:09  [CLEANSE]   1 dispelled 4 effects: Wound Poison off 2, Crippling Poison off 2, Atrophic Poison off 2, Amplifying Poison off 2
+2:09  [HEALING GAP]   1 inactive 3.5s (3.5s free) while 2 under pressure
+2:10  [STATE]   friends 1:100 2:100 3:97 / enemies 5:99 6:100 4:51
+2:11  [STATE]   friends 1:100 2:93 3:97 / enemies 5:100 6:100 4:57
+2:12  [STATE]   friends 1:100 2:86 3:97 / enemies 5:100 6:100 4:74
+2:12  [BUFF FADED]   Divine Shield
+2:13  [STATE]   friends 1:100 2:80 3:100 / enemies 5:100 6:100 4:70
+2:13  [OWNER CAST]   19750 → 2
+2:13  [CLEANSE]   1 dispelled 4 effects: Wound Poison off 2, Atrophic Poison off 2, Amplifying Poison off 2, Crippling Poison off 2
+2:13  [TEAMMATE CD]   3 (Windwalker Monk): Paralysis
+      [RES] rdy:Δ+Hammer of Justice,2:Frenzied Regeneration,3:Paralysis-Divine Shield  cd:Divine Shield(291s)
+2:14  [STATE]   friends 1:100 2:94 3:96 / enemies 5:100 6:100 4:69
+2:15  [STATE]   friends 1:100 2:91 3:94 / enemies 5:80 6:100 4:71
+2:15  [OWNER CAST]   Blessing of Freedom → 2
+2:15  [DMG SPIKE]   2 (Balance Druid): 0.46M in 10s
+2:16  [STATE]   friends 1:100 2:82 3:92 / enemies 5:84 6:100 4:69
+2:17  [STATE]   friends 1:98 2:58 3:91 / enemies 5:86 6:100 4:70
+2:17  [OWNER CAST]   4987 → 3
+2:17  [CLEANSE]   1 dispelled 3 effects: Earthgrab off 3, Capacitor Totem off 3, Corruption off 3
+2:18  [STATE]   friends 1:95 2:54 3:95 / enemies 5:87 6:100 4:76
+2:18  [OWNER CAST]   85673 → 2
+2:19  [STATE]   friends 1:95 2:73 3:100 / enemies 5:89 6:100 4:81
+2:19  [OWNER CD]   Blessing of Sacrifice → 2 (73% HP)
+      [RES] rdy:Δ+2:Incapacitating Roar-Divine Shield,Avenging Crusader,2:Incarnation: Chosen of Elune,3:Paralysis,3:Touch of Karma  cd:Divine Shield(286s),Avenging Crusader(14s),2:Incarnation: Chosen of Elune(65s),3:Paralysis(4s),3:Touch of Karma(12s)
+2:19  [MISSED CLEANSE]   Flame Shock on 1 | 18s | 96k taken during | dispel: Magic
+2:20  [STATE]   friends 1:90 2:71 3:100 / enemies 5:91 6:100 4:60
+2:20  [CLEANSE]   3 dispelled Earthbind off 3
+2:20  [OWNER CAST]   20473 → 2
+2:21  [STATE]   friends 1:77 2:67 3:96
+2:21  [TEAMMATE CD]   2 (Balance Druid): Incarnation: Chosen of Elune
+      [RES] rdy:Δ+Hammer of Justice,2:Mass Entanglement,2:Frenzied Regeneration-Divine Shield  cd:Divine Shield(283s)
+2:21  [OWNER CAST]   275773 → 4
+2:23  [OWNER CAST]   85673 → 2
+2:24  [STATE]   friends 1:67 2:66 3:91
+2:24  [CC ON TEAM]   2 ← Mortal Coil (Rutena-Ravencrest-EU) | 3s
+2:24  [MISSED CLEANSE]   Mortal Coil on 2 | 3s | 207k taken during | dispel: Magic
+2:25  [STATE]   friends 1:66 2:60 3:87 / enemies 5:100 6:100 4:58
+2:26  [STATE]   friends 1:58 2:50 3:85 / enemies 5:100 6:100 4:63
+2:27  [STATE]   friends 1:39 2:44 3:80 / enemies 5:100 6:100 4:66
+2:27  [OWNER CD]   Divine Protection
+      [RES] rdy:Δ+Divine Protection,2:Barkskin,2:Incapacitating Roar-Avenging Crusader,3:Touch of Karma  cd:Avenging Crusader(6s),3:Touch of Karma(4s)  cc:2/Mortal Coil-0s
+2:27  [TEAMMATE CD]   2 (Balance Druid): Barkskin
+      [RES] rdy:Δ+2:Incapacitating Roar-Divine Shield,Avenging Crusader,Divine Protection,Blessing of Sacrifice,2:Incarnation: Chosen of Elune,3:Touch of Karma  cd:Divine Shield(277s),Avenging Crusader(6s),Divine Protection(59s),Blessing of Sacrifice(111s),2:Incarnation: Chosen of Elune(130s),3:Touch of Karma(3s)
+2:28  [STATE]   friends 1:41 2:42 3:81 / enemies 5:100 6:100 4:73
+2:29  [STATE]   friends 1:42 2:51 3:82 / enemies 5:100 6:100 4:78
+2:29  [OWNER CAST]   432472 → 2
+2:29  [TEAMMATE CD]   2 (Balance Druid): Incapacitating Roar
+      [RES] rdy:Δ+Hammer of Justice,2:Mass Entanglement,2:Frenzied Regeneration,3:Paralysis-Divine Shield,Divine Protection,2:Barkskin  cd:Divine Shield(276s),Divine Protection(58s),2:Barkskin(58s)
+2:29  [CC CAST]   Incapacitating Roar (by 2) → 4, 5 [2 enemies]
+2:29  [CC CAST]   Incapacitating Roar (by 2) → nil [non-player target]
+2:29  [CLEANSE]   2 dispelled 2 effects: Crippling Poison off 2, Earthbind off 2
+2:30  [STATE]   friends 1:49 2:52 3:85 / enemies 5:100 6:100 4:78
+2:30  [OWNER CAST]   85673 → 2
+2:31  [STATE]   friends 1:51 2:56 3:85 / enemies 5:88 6:100 4:85
+2:31  [BUFF FADED]   Blessing of Sacrifice
+2:31  [CLEANSE]   2 dispelled Earthbind off 2
+2:32  [STATE]   friends 1:50 2:52 3:86 / enemies 5:81 6:100 4:95
+2:32  [OWNER CAST]   275773 → 5
+2:33  [STATE]   friends 1:54 2:52 3:85 / enemies 5:50 6:100 4:98
+2:33  [CC ON TEAM]   1 ← Kidney Shot (Dretch-Antonidas-EU) | 2s | trinket: used
+2:34  [STATE]   friends 1:53 2:50 3:84 / enemies 5:35 6:100 4:100
+2:34  [CC ON TEAM]   1 ← Howl of Terror (Rutena-Ravencrest-EU) | 1s | trinket: used
+2:34  [CC ON TEAM]   3 ← Howl of Terror (Rutena-Ravencrest-EU) | 3s
+2:34  [CC ON TEAM]   2 ← Howl of Terror (Rutena-Ravencrest-EU) | 1s
+2:35  [STATE]   friends 1:50 2:48 3:83 / enemies 5:51 6:100 4:100
+2:35  [BUFF FADED]   Divine Protection
+2:35  [TRINKET]   1 used PvP trinket
+2:35  [OWNER CAST]   85673 → 2
+2:36  [STATE]   friends 1:49 2:84 3:88 / enemies 5:50 6:100 4:100
+2:37  [STATE]   friends 1:40 2:60 3:86 / enemies 5:60 6:100 4:99
+2:37  [CLEANSE]   1 dispelled 5 effects: Amplifying Poison off 1, Atrophic Poison off 1, Crippling Poison off 1, Wound Poison off 1, Crippling Poison off 1
+2:37  [OWNER CAST]   19750 → self
+2:38  [STATE]   friends 1:71 2:66 3:87 / enemies 5:59 6:100 4:98
+2:38  [OWNER CAST]   20473 → self
+2:39  [STATE]   friends 1:71 2:71 3:87 / enemies 5:74 6:100 4:93
+2:39  [MISSED CLEANSE]   Flame Shock on 3 | 18s | 107k taken during | dispel: Magic
+2:40  [STATE]   friends 1:64 2:62 3:84 / enemies 5:74 6:100 4:84
+2:40  [OWNER CAST]   19750 → 2
+2:40  [CLEANSE]   1 dispelled 2 effects: Crippling Poison off 2, Wound Poison off 2
+2:41  [STATE]   friends 1:62 2:73 3:80 / enemies 5:75 6:100 4:81
+2:41  [CLEANSE]   1 dispelled Amplifying Poison off 1
+2:41  [OWNER CAST]   19750 → self
+2:42  [STATE]   friends 1:76 2:63 3:79 / enemies 5:74 6:100 4:74
+2:42  [OWNER CD]   Avenging Crusader
+      [RES] rdy:Δ+Hammer of Justice,3:Paralysis,3:Touch of Karma-Divine Shield,Divine Protection,2:Barkskin,2:Incapacitating Roar  cd:Divine Shield(262s),Divine Protection(44s),2:Barkskin(45s),2:Incapacitating Roar(16s)
+2:43  [STATE]   friends 1:73 2:56 3:77 / enemies 5:76 6:100 4:65
+2:43  [OWNER CAST]   82326 → 2
+2:43  [CLEANSE]   1 dispelled Wound Poison off 2
+2:44  [STATE]   friends 1:71 2:97 3:76 / enemies 5:75 6:100 4:59
+2:44  [DMG SPIKE]   2 (Balance Druid): 0.86M in 10s
+2:44  [CC CAST]   Cyclone (by 2) → Grounding Totem [non-player target]
+2:45  [STATE]   friends 1:68 2:89 3:74 / enemies 5:78 6:99 4:57
+2:45  [OWNER CAST]   1241413 → Grounding Totem [absorbed: Grounding Totem]
+2:46  [STATE]   friends 1:66 2:81 3:71 / enemies 5:79 6:88 4:46
+2:46  [OWNER CAST]   85673 → 2
+2:47  [STATE]   friends 1:60 2:78 3:69 / enemies 5:87 6:66 4:64
+2:48  [STATE]   friends 1:55 2:56 3:69 / enemies 5:87 6:76 4:65
+2:48  [OWNER CAST]   19750 → 3
+2:48  [CLEANSE]   1 dispelled 3 effects: Amplifying Poison off 3, Crippling Poison off 3, Wound Poison off 3
+2:49  [STATE]   friends 1:50 2:48 3:85 / enemies 5:89 6:77 4:66
+2:50  [OWNER CAST]   85673 → 2
+2:51  [STATE]   friends 1:40 2:46 3:82
+2:51  [OWNER CAST]   1241413 → 4 [completed before CC landed]
+2:52  [CLEANSE]   2 dispelled Curse of Exhaustion off 2
+2:52  [CC ON TEAM]   1 ← Fear (Rutena-Ravencrest-EU) | 1s | trinket: ON CD (73s left)
+2:53  [STATE]   friends 1:51 2:36 3:51 / enemies 5:100 6:100 4:98
+2:53  [TEAMMATE CD]   2 (Balance Druid): Frenzied Regeneration
+      [RES] rdy:Δ+Hammer of Justice,3:Paralysis,3:Touch of Karma-Divine Shield,Avenging Crusader,Divine Protection,2:Barkskin,2:Incapacitating Roar  cd:Divine Shield(252s),Avenging Crusader(50s),Divine Protection(34s),2:Barkskin(35s),2:Incapacitating Roar(6s)  cc:1/Fear-0s
+2:53  [TEAMMATE CD]   3 (Windwalker Monk): Touch of Karma
+      [RES] rdy:Δ+3:Leg Sweep-Divine Shield,Divine Protection  cd:Divine Shield(252s),Divine Protection(34s)  cc:1/Fear-0s
+2:54  [STATE]   friends 1:46 2:32 3:49 / enemies 5:100 6:100 4:95
+2:54  [OWNER CAST]   471195 → 2
+2:54  [MISSED CLEANSE]   Flame Shock on 2 | 18s | 140k taken during | dispel: Magic
+2:55  [STATE]   friends 1:35 2:90 3:56 / enemies 5:100 6:100 4:89
+2:55  [OWNER CAST]   20473 → 3
+2:56  [STATE]   friends 1:38 2:94 3:57 / enemies 5:100 6:100 4:96
+2:56  [OWNER CAST]   85673 → self
+2:57  [STATE]   friends 1:50 2:97 3:57 / enemies 5:90 6:100 4:100
+2:58  [STATE]   friends 1:47 2:93 3:57 / enemies 5:92 6:100 4:99
+2:58  [CLEANSE]   3 dispelled 2 effects: Crippling Poison off 3, Curse of Exhaustion off 3
+2:58  [OWNER CAST]   432459 → 3
+2:58  [ENEMY CD]   4 (Assassination Rogue): Deathmark
+2:59  [STATE]   friends 1:46 2:93 3:58 / enemies 5:98 6:100 4:99
+2:59  [TEAMMATE CD]   3 (Windwalker Monk): Leg Sweep
+      [RES] rdy:Δ+2:Mass Entanglement,2:Incapacitating Roar-Divine Shield,Divine Protection,2:Barkskin  cd:Divine Shield(246s),Divine Protection(28s),2:Barkskin(29s)  enemy:Deathmark/Assassination Rogue(0s)
+2:59  [CC CAST]   Leg Sweep (by 3) → nil [non-player target]
+2:59  [CC CAST]   Leg Sweep (by 3) → 4, 5 [2 enemies]
+3:00  [STATE]   friends 1:43 2:89 3:58 / enemies 5:79 6:100 4:99
+3:00  [OWNER CAST]   85673 → self [completed before CC landed]
+3:01  [STATE]   friends 1:57 2:95 3:58 / enemies 5:80 6:100 4:100
+3:01  [CC ON TEAM]   1 ← Cheap Shot (Dretch-Antonidas-EU) | 4s | trinket: ON CD (65s left)
+3:02  [STATE]   friends 1:50 2:93 3:58 / enemies 5:82 6:100 4:100
+3:03  [STATE]   friends 1:48 2:91 3:58 / enemies 5:82 6:100 4:100
+3:03  [CC ON TEAM]   1 ← Garrote - Silence (Dretch-Antonidas-EU) | 3s | trinket: ON CD (63s left)
+3:04  [STATE]   friends 1:40 2:88 3:58 / enemies 5:83 6:100 4:99
+3:05  [STATE]   friends 1:35 2:81 3:64 / enemies 5:84 6:100 4:100
+3:05  [CC ON TEAM]   1 ← Kidney Shot (Dretch-Antonidas-EU) | 2s | trinket: ON CD (60s left)
+3:05  [BUFF FADED]   Avenging Crusader
+3:05  [CC ON TEAM]   1 ← Hex (Dêstrux-Blackrock-EU) | 1s | trinket: ON CD (60s left)
+3:06  [STATE]   friends 1:26 2:72 3:66 / enemies 5:87 6:100 4:99
+3:07  [STATE]   friends 1:21 2:68 3:66 / enemies 5:88 6:100 4:100
+3:07  [OWNER CD]   Blessing of Protection → 1 (15% HP)
+      [RES] rdy:Δ+Hammer of Justice,2:Mass Entanglement,3:Paralysis-Divine Shield,Divine Protection,2:Barkskin  cd:Divine Shield(237s),Divine Protection(20s),2:Barkskin(20s)  enemy:Deathmark/Assassination Rogue(9s)
+3:08  [STATE]   friends 1:12 2:58 3:66 / enemies 5:89 6:100 4:99
+3:09  [STATE]   friends 1:23 2:56 3:67 / enemies 5:90 6:100 4:98
+3:09  [OWNER CAST]   20473 → self
+3:09  [TEAMMATE CD]   3 (Windwalker Monk): Paralysis
+      [RES] rdy:Δ-Blessing of Protection,Divine Protection,2:Barkskin,2:Frenzied Regeneration  cd:Blessing of Protection(298s),Divine Protection(18s),2:Barkskin(19s),2:Frenzied Regeneration(20s)  enemy:Deathmark/Assassination Rogue(10s)
+3:10  [STATE]   friends 1:15 2:53 3:67 / enemies 5:91 6:100 4:100
+3:10  [OWNER CAST]   275773 → 5
+3:11  [STATE]   friends 1:18 2:51 3:68 / enemies 5:98 6:100 4:100
+3:12  [STATE]   friends 1:36 2:49 3:71 / enemies 5:98 6:100 4:100
+3:12  [OWNER CAST]   85673 → self
+3:13  [STATE]   friends 1:36 2:42 3:71 / enemies 6:100 4:100
+3:13  [OWNER CAST]   19750 → 2
+3:13  [CLEANSE]   1 dispelled 2 effects: Crippling Poison off 2, Wound Poison off 2
+3:14  [STATE]   friends 1:40 2:61 3:74 / enemies 6:100 4:100
+3:14  [CC ON TEAM]   3 ← Blind (Dretch-Antonidas-EU) | 5s
+3:14  [MISSED CLEANSE]   Blind on 3 | 5s | 0k taken during | dispel: Magic
+3:15  [STATE]   friends 1:40 2:60 3:75 / enemies 6:100 4:98
+3:15  [OWNER CAST]   190784
+3:15  [OWNER CAST]   20473 → 2
+3:16  [STATE]   friends 1:40 2:62 3:75 / enemies 5:98 6:100 4:95
+3:17  [STATE]   friends 1:40 2:56 3:75 / enemies 5:100 6:100 4:97
+3:17  [OWNER CD]   Aura Mastery
+      [RES] rdy:Δ+3:Paralysis-Blessing of Protection,Divine Protection,Blessing of Sacrifice,2:Barkskin,2:Frenzied Regeneration  cd:Blessing of Protection(290s),Divine Protection(10s),Blessing of Sacrifice(62s),2:Barkskin(10s),2:Frenzied Regeneration(12s)  enemy:Deathmark/Assassination Rogue(18s)  cc:3/Blind-2s
+3:17  [BUFF FADED]   Blessing of Protection
+3:18  [STATE]   friends 1:41 2:51 3:75 / enemies 5:100 6:100 4:97
+3:18  [TRINKET]   2 used PvP trinket
+3:18  [OWNER CAST]   85673 → 2
+3:19  [STATE]   friends 1:41 2:48 3:77 / enemies 5:100 6:99 4:99
+3:20  [STATE]   friends 1:42 2:32 3:77 / enemies 5:100 6:100 4:95
+3:20  [OWNER CAST]   275773 → 4 [completed before CC landed]
+3:20  [CC ON TEAM]   1 ← Fear (Rutena-Ravencrest-EU) | 4s | trinket: ON CD (45s left)
+3:21  [STATE]   friends 1:43 2:31 3:77 / enemies 5:100 6:98 4:87
+3:22  [STATE]   friends 1:43 2:29 3:77 / enemies 5:99 6:100 4:84
+3:23  [STATE]   friends 1:43 2:dead 3:77 / enemies 5:99 6:100 4:86
+3:23  [DEATH]  2 (Balance Druid — friendly)
+               HP: 57% at T-15s → 41% at T-10s → 48% at T-5s → 32% at T-3s → dead
+               Top damage in final 10s: Rutena-Ravencrest-EU — Unstable Affliction (56k), Dretch-Antonidas-EU — Envenom (51k), Dretch-Antonidas-EU — Implacable Strikes (50k)
+3:24  [STATE]   friends 1:43 2:dead 3:77 / enemies 5:99 6:100 4:71
+3:25  [STATE]   friends 1:56 2:dead 3:77 / enemies 5:100 6:100 4:56
+3:25  [OWNER CAST]   85673 → self
+3:25  [BUFF FADED]   Aura Mastery
+3:26  [STATE]   friends 1:56 2:dead 3:77 / enemies 5:100 6:99 4:75
+3:26  [OWNER CAST]   19750 → self
+3:27  [STATE]   friends 1:70 2:dead 3:78 / enemies 5:100 6:99 4:75
+3:28  [STATE]   friends 1:69 2:dead 3:65 / enemies 5:100 6:100 4:89
+3:29  [STATE]   friends 1:68 2:dead 3:60 / enemies 5:100 6:99 4:87
+3:29  [CC ON TEAM]   3 ← Gouge (Dretch-Antonidas-EU) | 1s
+3:29  [OWNER CAST]   85673 → self
+3:30  [STATE]   friends 1:79 2:dead 3:48 / enemies 5:100 6:100 4:90
+3:30  [OWNER CAST]   275773 → 5
+3:31  [STATE]   friends 1:83 2:dead 3:34 / enemies 5:99 6:100 4:51
+3:32  [STATE]   friends 1:73 2:dead 3:25 / enemies 5:96 6:99 4:57
+3:32  [OWNER CAST]   20473 → 3
+3:33  [STATE]   friends 1:73 2:dead 3:28 / enemies 5:100 6:100 4:65
+3:34  [STATE]   friends 1:73 2:dead 3:41 / enemies 5:100 6:100 4:63
+3:34  [OWNER CAST]   85673 → 3
+3:34  [CC ON TEAM]   3 ← Howl of Terror (Rutena-Ravencrest-EU) | 1s | trinket: used
+3:35  [STATE]   friends 1:75 2:dead 3:35 / enemies 5:100 6:99 4:63
+3:35  [TRINKET]   3 used PvP trinket
+3:36  [STATE]   friends 1:73 2:dead 3:35 / enemies 5:100 6:99 4:56
+3:36  [OWNER CAST]   20473 → 3
+3:37  [STATE]   friends 1:73 2:dead 3:34 / enemies 5:100 6:99 4:53
+3:37  [OWNER CAST]   275773 → 5 [completed before CC landed]
+3:37  [HEALING GAP]   1 inactive 9.7s (6.8s free) while 3 under pressure
+3:38  [STATE]   friends 1:74 2:dead 3:28 / enemies 5:100 6:99 4:61
+3:38  [CC ON TEAM]   1 ← Fear (Rutena-Ravencrest-EU) | 3s | trinket: ON CD (28s left)
+3:38  [CC ON TEAM]   3 ← Lightning Lasso (Dêstrux-Blackrock-EU) | 1s | trinket: ON CD (117s left)
+3:39  [STATE]   friends 1:74 2:dead 3:dead / enemies 5:99 6:99 4:62
+3:39  [DEATH]  3 (Windwalker Monk — friendly)
+               HP: 77% at T-15s → 49% at T-10s → 36% at T-5s → 35% at T-3s → dead
+               Top damage in final 10s: Rutena-Ravencrest-EU — Unstable Affliction (107k), Rutena-Ravencrest-EU — Drain Soul (90k), Dretch-Antonidas-EU — Sudden Demise (49k)
+3:40  [STATE]   friends 1:74 2:dead 3:dead / enemies 5:100 6:100 4:74
+3:41  [STATE]   friends 1:74 2:dead 3:dead / enemies 5:100 6:100 4:78
+3:42  [STATE]   friends 1:73 2:dead 3:dead / enemies 5:100 6:100 4:95
+3:43  [STATE]   friends 1:72 2:dead 3:dead / enemies 5:100 6:100 4:99
+3:44  [STATE]   friends 1:71 2:dead 3:dead / enemies 5:100 6:100 4:100
+3:45  [STATE]   friends 1:70 2:dead 3:dead / enemies 5:100 6:100 4:100
+3:46  [STATE]   friends 1:68 2:dead 3:dead / enemies 5:100 6:100 4:100
+3:47  [STATE]   friends 1:68 2:dead 3:dead / enemies 5:100 6:100 4:100
+
+3:47  [MATCH END]   damp: 15%
+  friends 1:68% 2:dead(3:23) 3:dead(3:39) / enemies 5:95% 6:95% 4:100%

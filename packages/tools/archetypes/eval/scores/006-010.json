@@ -1,0 +1,167 @@
+{
+  "006": {
+    "spec": "Restoration Druid",
+    "cluster": "short_tunnel",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": false,
+      "notes": "Strong focus on the two pivotal moments (0:08 trinket bait, 0:38-0:43 CC chain on Druid). Correctly identifies unused CDs as the margin. One factual error: claims 'Die by the Sword was active' on the enemy Warrior — Die by the Sword is not listed in the enemy Warrior's CD loadout and does not appear in the log. The Warrior's tracked CD was Avatar only. Also slightly over-reads the Frenzied Regeneration situation — at 0:15 the Shaman had climbed back to 60%, reducing urgency. Otherwise timeline citations are accurate."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Best-calibrated response in this batch for focus. Opens by naming the archetype's kill-window logic, then traces the exact sequence (0:08 trinket, Champion's Spear, Avatar+PI, unused CDs). Correctly identifies the DH Imprison-into-Sigil pattern as a secondary closing mechanism. All timestamps and spell names verified against the log. No inventions. Appropriately concise — does not over-analyze the post-death period. The 'known DH pattern' framing is accurate without overstating archetype context."
+    },
+    "narrative": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Solid analysis. The archetype framing is used to contextualize the unused-CD pattern (51% unused in cluster) without contradicting match data. Correctly identifies the two-kill-window structure. Mild focus issue: slightly overweights the Imprison positioning point relative to the primary error (trinket at 0:08 + all CDs unused). The phrase 'sparse CC events that land precisely before burst' is accurate for this match. No false events introduced."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": true,
+      "notes": "Strong causal chain. The purge rate stat (1.14/min) is used accurately — there was no purge at all, and the Enhancement Shaman was indeed the sole purger. The missed-cleanse discussion introduces slight risk: it notes Blaze of Light self-cleanses at 0:33 and 0:42 but attributes a pattern of 'Druid not proactively cleansing dots off the focused target' — the log shows the Shaman cleansed Blaze of Light off themselves, not a Druid failure. This constitutes a mild hallucination risk: the stat (29% missed cleanse) is applied to invent a behavior pattern not directly evidenced in the log. The purge framing (Shaman was stunned, preventing purge) is accurate and adds value."
+    }
+  },
+  "007": {
+    "spec": "Restoration Druid",
+    "cluster": "short_tunnel",
+    "result": "Win",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Accurate throughout — all timestamps (Ironbark 0:10, Incarnation 0:15, Cyclone 0:19, Shadowmeld 1:13, Incapacitating Roar 1:30) verified in the log. Correctly identifies the Cyclone at 0:19 as the turning point and the Incarnation timing debate as the key refinement. One small calibration issue: the response gives roughly equal weight to the Shadowmeld discussion and the Cyclone discussion, but the Cyclone at 0:19 was the higher-leverage play. The early Incarnation question is well-handled. Cleanse tracking (Chilled x2, Crippling Poison, Psychic Scream, Polymorph) is accurate."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Best focus calibration of the four variants. Opens with the two most decisive decisions (Ironbark at 45% HP + Incarnation during PI window, then Cyclone at 0:19 creating the tempo swing), then addresses the early Incarnation cost in the correct order of importance. The note that 'burning Incarnation at 15 seconds is a habit worth examining' is calibrated — it flags the risk without overstating it. All events verified. The Barkskin at 1:09 during Kidney Shot and Shadowmeld at 1:13 are correctly cited."
+    },
+    "narrative": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Uses archetype context well — the '51% unused CDs' stat is correctly applied to frame the early Incarnation as a deliberate trade-off rather than an error. The 'fast kill-or-die pacing' description from the archetype is accurate for this 92-second match. Slight over-reading: says 'this match had more CC complexity than average' due to rogue pressure, which is a fair observation, but the response then slightly undersells how much the rogue's CC shaped the match structure. The Shadowmeld framing ('hallmark of high-level Druid play') is evaluatively accurate. No factual errors."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Effective use of the 58% optimal CD timing and 7.8s median latency benchmarks — the 4-5 second Ironbark deployment is correctly described as within optimal range. The 29% missed cleanse comparison is used accurately (this match's cleansing was better than average). The purge rate note (1.14/min, not applicable because Druid can't purge) is correctly flagged rather than applied. The third burst window at 1:09 (0.72M on Warrior) is verified in the log. One minor issue: the response says the Warrior was managed with 'Barkskin, Frenzied Regeneration, and single-target healing' at 1:09 — the log shows Barkskin at 1:09 and extensive owner casts, but no explicit Frenzied Regeneration event logged. This is a minor unverifiable claim, not a clear fabrication."
+    }
+  },
+  "008": {
+    "spec": "Restoration Druid",
+    "cluster": "short_tunnel",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Best causal analysis of match 008. Correctly identifies the two-window structure: manageable early pressure draining the CD bank, then an undefended Ascendance+Bloodlust kill at 0:57. The Incapacitating Roar misdirection (targeting the Warrior instead of the Shaman who was actually killing) is accurate and insightful. One accuracy issue: the response says 'Ascendance was used at 0:11 and has a 180-second cooldown, so the second Ascendance wasn't in range during this match' — but this refers to the friendly Shaman's Ascendance, not the enemy's. The enemy Shaman's Ascendance at 0:57 was tracked in the log. The framing is muddled here. Otherwise accurate."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Clearest and most accurate of the four variants. The opening sentence captures the match perfectly. CD sequence (Incarnation 0:12, Ironbark 0:18, Barkskin 0:30, Incarnation 0:33) is accurate. The 'by 0:33, both Incarnation charges were spent' framing is correct and well-placed. The Earthen Chains cleanses at 1:00 and 1:04 are verified. The Incapacitating Roar misdirection (Warrior, not Shaman, as target) is correctly identified. The conclusion ('short-tunnel matches against Enhancement Shamans with Bloodlust') is well-framed without overgeneralizing."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Strong use of archetype context — the 'opposite of 51% unused CDs' framing is accurate and analytically valuable. The claim that the Avatar window's 'damage peak' was already past at 0:33 is a reasonable inference given state data showing the Warrior recovering. The comp-specific advice (Warrior Avatar window can be held with Ironbark+Barkskin alone, Incarnation reserved for Ascendance) is accurate match-level coaching. One minor issue: the log shows the Shaman Scorpid Venom cleanse at 0:30 credited to the Druid — the response correctly attributes this. The 'Шокwave stun' mention for Barkskin at 0:30 refers to log entry for Shockwave CC at 0:29 — confirmed."
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Analytically the most sophisticated response. The response latency framing (Incarnation at 0:12 described as 'preemptive' — inside 1-2s of first pressure) is accurate. However, two accuracy issues: (1) States 'Bloodlust became active at 0:57 — it is purgeable. The Shaman had Hex available but was stunned at 0:58' — Hex is a CC, not a purge. Bloodlust is a purgeable buff and the Enhancement Shaman has Wind Shear for interrupts and can actually purge with their own spells. Describing Hex as the purge tool is inaccurate. (2) The '2% healing gap rate' benchmark is applied without a direct log datapoint supporting that a gap occurred — the Druid was stunned at 0:58 which creates a mandatory gap, but the stat application is somewhat circular. The hallucination risk is the Hex-as-purge characterization, which contradicts how Enhancement Shaman offensive dispel works."
+    }
+  },
+  "009": {
+    "spec": "Holy Priest",
+    "cluster": "cc_heavy_swap",
+    "result": "Win",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Correctly identifies Psychic Scream at 0:17 as the offensive turning point and Apotheosis at 0:47 as the defensive save. Guardian Spirit timing discussion is well-calibrated (78% HP at start of Kidney Shot stun, 1.14M incoming — acknowledges it as a difficult call rather than a clear error). One accuracy issue: mentions 'Shadow Word: Pain off the Rogue at 0:37' as a purge — this is confirmed in the log. The response describes Power Infusion as appearing on 'the Warrior' — but this match has no friendly Warrior. The log shows PI on enemies 4 (Disc Priest) and 5 (DH). The response correctly says 'enemy Disc Priest' in context, so no actual error. Minor calibration issue: the Mage-at-22% moment at 0:43 is underdeveloped — this was the match's highest-danger moment and deserved more weight than the Guardian Spirit question."
+    },
+    "label_only": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Clean and accurate. All events verified: Kidney Shot on Rogue at 0:20 (5s stun), Guardian Spirit at 0:21, 1.14M spike at 0:22, Divine Hymn at 0:27, Mage Ice Block at 0:44, Apotheosis at 0:47, PI charges at 0:49. The label framing ('cc_heavy_swap matches') is used briefly without over-invoking it. The Guardian Spirit discussion (78% HP, 'difficult read under pressure') is well-balanced. The PI-on-Mage-for-damage framing is accurate — the log shows PI used on player 3 (Frost Mage) at 0:49. One calibration gap: doesn't discuss the Mage damage spike at 0:37 (0.75M on Mage) which created significant pressure between the two main cooldown sequences."
+    },
+    "narrative": {
+      "focusCalibration": 3,
+      "outcomeAlignment": 3,
+      "accuracy": 2,
+      "hallucination_risk": true,
+      "notes": "Multiple factual errors that constitute hallucination: (1) 'you responded with Word of Glory on the Outlaw immediately' — Word of Glory is a Paladin ability, not available to Holy Priests. The cast at 0:20 was a Holy Priest spell (cast ID 527, likely Flash Heal or equivalent). (2) 'your Rogue had burned their trinket from Imprison at 0:19' — the log shows player 3 (Frost Mage) used trinket from Imprison at 0:19, not the Rogue. (3) Describes 'your Rogue had Kidney Shot queued' around the kill setup at 0:17 — but the enemy Rogue Kidney Shotted our Outlaw at 0:20, not our Rogue using an offensive Kidney Shot on an enemy. These are meaningful factual inversions that undermine the coaching value. The archetype framing ('race: CC the Disc Priest, tunnel the Rogue') is correct at a high level but the narrative invents events to fit the story."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "The benchmark framing (46% optimal CD timing, 6499ms median response latency, 34% missed cleanse) is applied with reasonable discipline. The Guardian Spirit response time assessment (0s latency — cast immediately on stun application) is accurate. However: (1) 'One missed cleanse is logged at 0:51 — Flame Shock on the Outlaw from 18 seconds running 94k damage' — there is no Flame Shock in this match. The enemy team is Disc Priest, Devourer DH, and Assassination Rogue. None of these specs apply Flame Shock. This is an invented debuff and a clear hallucination. (2) 'Desperate Prayer was unused — correct, the Mage handled their own defense via Ice Block' — Desperate Prayer is a self-heal, so the comparison is category-confused, but not harmful. The Flame Shock fabrication is the significant issue and warrants hallucination_risk: true."
+    }
+  },
+  "010": {
+    "spec": "Mistweaver Monk",
+    "cluster": "heavy_burst_tunnel",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Excellent causal diagnosis: the Freezing Trap pattern (five times, always enabling the burst window) is correctly identified as the structural problem. The kill sequence timeline is accurate. One calibration issue: the analysis of the first burst window (0:10) is slightly over-detailed — the Warrior Bladestorm and Die by the Sword descriptions are accurate but take focus away from the trap pattern. One accuracy note: the response says 'Mistweaver at 2:18' but the log shows Mistweaver is player 2 and died at 2:18 — confirmed. The trinket-burned-at-1:30 analysis is accurate and correctly identified as the inflection point. The Hex targeting (full-HP Disc Priest at 0:21 while Shaman at 40%) is a valid coaching point verified by the log."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Best focus calibration for this match. Opens with the core pattern in one sentence, then correctly credits what the Mistweaver did well before identifying the structural gap. The Hex timing critique (0:21, Shaman at 40%, Execution Sentence still active with 9 seconds) is accurate and appropriately nuanced. The Ascendance timing question is also valid. One minor accuracy issue: the response says the Mistweaver's trinket was burned at 1:30 — confirmed in log. The claim that 'Ascendance in a match where you're being tunneled needs to accomplish something offensive before the enemy refocuses' is a valid strategic point without being invented."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "The 0:52 Paladin-at-24% kill window analysis is the match's best coaching insight and is accurately grounded. Log at 0:52 shows enemies 5 (Ret Paladin) at 24% HP with all enemy CDs expired — confirmed. The 'Ascendance into the Paladin' suggestion at that window is reasonable given the log state. One accuracy gap: the response says 'Paralysis was used at 0:40 on someone' without specifying who — the log shows Paralysis going to the Disc Priest at 0:40, which is actually mentioned correctly earlier in the response (paragraph 3). The Psychic Scream at 2:09 hitting both Mistweaver and Warrior simultaneously is confirmed in the log. Archetype framing ('heavy_burst_tunnel matches are decided by whether you can kill someone during CD-down windows') is appropriate and not overextended."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "The benchmark application (63% optimal CD timing, 0% never-used CDs, 7464ms median latency, 6.2 outgoing CC mean, 39% missed cleanse) is generally appropriate. The Life Cocoon response latency (2 seconds from Bestial Wrath at 1:03 to Life Cocoon at 1:05) is accurate. However, two accuracy issues: (1) 'four effects at 2:05' — the log at 2:05 shows only 2 effects cleansed (Hammer of Justice + Searing Light off player 1), not four. The four-effect cleanse was at 1:43. This is a direct timestamp-count error. (2) 'Consecration at 1:59' credited as a cleanse by the Mistweaver — the log at 1:59 shows `[CLEANSE] 3 dispelled Consecration off 3`, meaning the Arms Warrior (player 3) cleansed Consecration off themselves, not the Mistweaver. Misattributing a cleanse to the Mistweaver is a factual error. These combined errors constitute hallucination_risk: true, as archetype-stat-driven analysis led to overcounting the Mistweaver's cleanse activity."
+    }
+  }
+}

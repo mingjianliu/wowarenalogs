@@ -1,0 +1,276 @@
+[ARCHETYPE: Discipline Priest — balanced_swap]
+This Discipline Priest operates in short matches averaging 154 seconds with minimal burst pressure and low peak damage events. Offensive participation sits at 57% with moderate purge activity at 1.4 per minute, and CD timing is predominantly optimal at 47%. The match setup is largely undefined in pattern, with cc_then_burst appearing in only 15% of games and a 34% missed cleanse rate suggesting reactive defensive decision-making.
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Discipline Priest (Healer) | Bracket: 3v3 | Result: Win | Duration: 1:53
+  My team: Arms Warrior, Discipline Priest, Retribution Paladin
+  Enemy team: Devastation Evoker, Restoration Shaman, Arms Warrior
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Discipline Priest): CAN offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 10% at match end
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Alahkazam-TarrenMill-EU (Discipline Priest — log owner):
+    Psychic Scream [40s], Power Infusion [120s, 2 Charges], Pain Suppression [180s]
+  2: Arediønw-Kil'jaeden-EU (Arms Warrior):
+    Avatar [90s, 2 Charges], Intimidating Shout [90s, 2 Charges], Die by the Sword [120s], Bladestorm (Arms) [90s]
+  3: Mectrl-Ravencrest-EU (Retribution Paladin):
+    Lay on Hands [600s], Hammer of Justice [45s, 2 Charges], Blessing of Spellwarding [300s], Avenging Wrath [120s]
+  4: Senegos-Ravencrest-EU (Devastation Evoker — enemy):
+    Dragonrage [120s]
+  5: Felguârd-Ravencrest-EU (Arms Warrior — enemy):
+    Avatar [90s]
+  6: Ebø-Ravencrest-EU (Restoration Shaman — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100 2:100 3:100
+0:01  [OWNER CAST]   200829 → 2
+0:02  [OWNER CAST]   200829 → 3
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:05  [OWNER CAST]   589 → 5
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:06  [CC ON TEAM]   2 ← Champion's Spear (Felguârd-Ravencrest-EU) | 6s
+0:06  [OWNER CAST]   47540 → 5
+0:07  [STATE]   friends 1:100 2:93 3:100 / enemies 4:100 6:100 5:96
+0:07  [MISSED CLEANSE]   Flame Shock on 2 | 18s | 92k taken during | dispel: Magic
+0:08  [STATE]   friends 1:100 2:89 3:100 / enemies 4:100 6:100 5:89
+0:08  [OWNER CAST]   1253593
+0:09  [STATE]   friends 1:100 2:96 3:100 / enemies 4:99 6:100 5:90
+0:09  [ENEMY CD]   4 (Devastation Evoker): Dragonrage
+0:10  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 6:100 5:82
+0:10  [OWNER CAST]   527 → 3
+0:10  [CLEANSE]   1 dispelled Earthgrab off 3
+0:11  [STATE]   friends 1:100 2:100 3:100 / enemies 4:96 6:100 5:83
+0:11  [CLEANSE]   2 dispelled Earthgrab off 2
+0:12  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 6:100 5:94
+0:12  [CC ON TEAM]   3 ← Terror of the Skies (Senegos-Ravencrest-EU) | 3s
+0:12  [OWNER CAST]   8092 → 5
+0:12  [OWNER CAST]   47540 → 5
+0:12  [CC ON TEAM]   2 ← Terror of the Skies (Senegos-Ravencrest-EU) | 2s
+0:13  [STATE]   friends 1:100 2:97 3:90 / enemies 4:100 6:100 5:90
+0:13  [OWNER CAST]   17 → 3 [completed before CC landed]
+0:13  [CC ON TEAM]   1 ← Terror of the Skies (Senegos-Ravencrest-EU) | 2s
+0:14  [STATE]   friends 1:100 2:93 3:94 / enemies 4:100 6:100 5:99
+0:15  [STATE]   friends 1:100 2:100 3:100 / enemies 4:97 6:100 5:98
+0:15  [TEAMMATE CD]   2 (Arms Warrior): Intimidating Shout
+      [RES] rdy:Δ+Psychic Scream,Power Infusion,Pain Suppression,2:Avatar,2:Intimidating Shout,2:Bladestorm (Arms),3:Hammer of Justice  cd:—  enemy:Dragonrage/Devastation Evoker(6s)  cc:1/Terror of the Skies-0s[stun]
+0:15  [CC CAST]   Intimidating Shout (by 2) → 4
+0:15  [OWNER CAST]   32379 → 4
+0:16  [STATE]   friends 1:100 2:100 3:100 / enemies 4:98 6:100 5:98
+0:17  [STATE]   friends 1:100 2:100 3:100 / enemies 4:95 6:100 5:100
+0:17  [OWNER CAST]   589 → 4
+0:18  [STATE]   friends 1:100 2:99 3:100 / enemies 4:95 6:100 5:100
+0:19  [STATE]   friends 1:96 2:95 3:97 / enemies 4:96 6:100 5:100
+0:19  [OWNER CAST]   47540 → 5
+0:19  [ENEMY CD]   5 (Arms Warrior): Avatar
+0:20  [STATE]   friends 1:97 2:85 3:92 / enemies 4:99 6:100 5:95
+0:20  [OWNER CAST]   17 → 2
+0:20  [TEAMMATE CD]   2 (Arms Warrior): Avatar
+      [RES] rdy:Δ+Power Infusion,2:Avatar,3:Hammer of Justice  cd:—  enemy:Dragonrage/Devastation Evoker(12s),Avatar/Arms Warrior(1s)
+0:21  [STATE]   friends 1:100 2:86 3:93 / enemies 4:90 6:100 5:89
+0:21  [DMG SPIKE]   3 (Retribution Paladin): 0.53M in 10s
+0:22  [STATE]   friends 1:100 2:99 3:85 / enemies 4:88 6:100 5:82
+0:22  [OWNER CAST]   194509 → 2
+0:22  [OWNER CAST]   472433 → 2
+0:22  [OWNER CD]   Power Infusion → 2 (100% HP)
+      [RES] rdy:Δ+Power Infusion,Pain Suppression,3:Hammer of Justice  cd:—  enemy:Dragonrage/Devastation Evoker(13s),Avatar/Arms Warrior(3s)
+      [HEALING]    0–5s: 47.7k HPS | 5–10s: 145.9k HPS | 10–15s: 10.3k HPS | Overheal: 47%
+0:22  [OWNER CD]   Power Infusion → 1 (100% HP)
+      [RES] rdy:Δ  cd:—  enemy:Dragonrage/Devastation Evoker(13s),Avatar/Arms Warrior(3s)
+      [HEALING]    0–5s: 47.7k HPS | 5–10s: 145.9k HPS | 10–15s: 10.3k HPS | Overheal: 47%
+0:23  [STATE]   friends 1:100 2:100 3:83 / enemies 4:96 6:100 5:99
+0:23  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ+Psychic Scream,Pain Suppression  cd:—  enemy:Dragonrage/Devastation Evoker(14s),Avatar/Arms Warrior(4s)
+0:23  [OWNER CAST]   47540 → 4
+0:24  [STATE]   friends 1:100 2:99 3:83 / enemies 4:83 6:100 5:87
+0:25  [STATE]   friends 1:100 2:100 3:94 / enemies 4:89 6:100 5:95
+0:25  [TRINKET]   2 used PvP trinket
+0:25  [DMG SPIKE]   2 (Arms Warrior): 0.53M in 10s
+0:26  [STATE]   friends 1:99 2:92 3:96 / enemies 4:96 6:100 5:100
+0:26  [OWNER CAST]   421453 → 4
+0:26  [OWNER CAST]   17 → 2
+0:27  [STATE]   friends 1:88 2:77 3:78 / enemies 4:87 6:100 5:73
+0:28  [STATE]   friends 1:100 2:85 3:70 / enemies 4:85 6:100 5:46
+0:29  [STATE]   friends 1:100 2:100 3:85 / enemies 4:84 6:100 5:51
+0:30  [STATE]   friends 1:100 2:100 3:86 / enemies 4:81 6:97 5:51
+0:31  [OWNER CAST]   47540 → 5
+0:33  [STATE]   friends 1:100 2:97 3:100
+0:33  [OWNER CAST]   32379 → 5
+0:33  [CC ON TEAM]   3 ← Sleep Walk (Senegos-Ravencrest-EU) | 1s
+0:34  [STATE]   friends 1:96 2:97 3:100 / enemies 4:76 6:94 5:50
+0:34  [CC ON TEAM]   2 ← Storm Bolt (Felguârd-Ravencrest-EU) | 3s | trinket: ON CD (112s left)
+0:34  [OWNER CAST]   527 → 3
+0:34  [CLEANSE]   1 dispelled Sleep Walk off 3
+0:35  [STATE]   friends 1:96 2:86 3:100 / enemies 4:78 6:96 5:51
+0:35  [OWNER CAST]   1253593
+0:36  [STATE]   friends 1:96 2:79 3:100 / enemies 4:82 6:97 5:89
+0:36  [CC ON TEAM]   3 ← Shockwave (Felguârd-Ravencrest-EU) | 2s
+0:36  [OWNER CD]   Pain Suppression → 2 (80% HP)
+      [RES] rdy:Δ-Power Infusion,3:Hammer of Justice  cd:Power Infusion(106s),3:Hammer of Justice(32s)  enemy:Dragonrage/Devastation Evoker(27s),Avatar/Arms Warrior(17s)  cc:2/Storm Bolt-1s[stun],3/Shockwave-2s[stun]
+0:36  [OWNER CAST]   586
+0:36  [CLEANSE]   1 dispelled Earthbind off 1
+0:36  [OWNER CAST]   121536
+0:36  [CC ON TEAM]   3 ← Sleep Walk (Senegos-Ravencrest-EU) | 1s
+0:37  [STATE]   friends 1:96 2:81 3:100 / enemies 4:93 6:100 5:97
+0:37  [BUFF FADED]   Power Infusion
+0:37  [BUFF FADED]   Power Infusion
+0:37  [OWNER CAST]   47540 → 2
+0:38  [STATE]   friends 1:96 2:87 3:100 / enemies 4:93 6:100 5:99
+0:39  [STATE]   friends 1:97 2:93 3:98 / enemies 4:89 6:100 5:90
+0:39  [DMG SPIKE]   3 (Retribution Paladin): 0.57M in 10s
+0:40  [STATE]   friends 1:97 2:100 3:97 / enemies 4:76 6:100 5:91
+0:41  [STATE]   friends 1:98 2:100 3:100 / enemies 4:66 6:100 5:90
+0:41  [CC ON TEAM]   2 ← Sleep Walk (Senegos-Ravencrest-EU) | 2s | trinket: ON CD (105s left)
+0:42  [STATE]   friends 1:98 2:100 3:92 / enemies 4:58 6:100 5:86
+0:42  [OWNER CAST]   8092 → 5
+0:42  [OWNER CAST]   47540 → 5
+0:43  [STATE]   friends 1:100 2:100 3:91 / enemies 4:57 6:100 5:83
+0:43  [OWNER CAST]   1253593
+0:44  [STATE]   friends 1:100 2:100 3:88 / enemies 4:86 6:100 5:77
+0:44  [BUFF FADED]   Pain Suppression
+0:45  [STATE]   friends 1:100 2:100 3:95 / enemies 4:77 6:100 5:81
+0:46  [STATE]   friends 1:100 2:100 3:80 / enemies 4:71 6:99 5:81
+0:47  [STATE]   friends 1:100 2:100 3:64 / enemies 4:84 6:100 5:79
+0:48  [STATE]   friends 1:100 2:100 3:52 / enemies 4:84 6:100 5:71
+0:49  [STATE]   friends 1:100 2:100 3:42 / enemies 4:82 6:100 5:68
+0:50  [STATE]   friends 1:100 2:100 3:33 / enemies 4:81 6:100 5:67
+0:50  [OWNER CAST]   186263 → 3
+0:50  [OWNER CAST]   47540 → 3
+0:51  [STATE]   friends 1:100 2:100 3:69 / enemies 4:97 6:99 5:70
+0:53  [OWNER CAST]   194509 → 2
+0:54  [STATE]   friends 1:100 2:98 3:100
+0:54  [OWNER CAST]   527 → self
+0:54  [CLEANSE]   1 dispelled Earthgrab off 1
+0:56  [OWNER CAST]   589 → Earthgrab Totem [totem/pet]
+0:56  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ-Pain Suppression,3:Hammer of Justice  cd:Pain Suppression(160s),3:Hammer of Justice(12s)
+0:57  [STATE]   friends 1:100 2:89 3:100
+0:57  [OWNER CAST]   17 → 2 [completed before CC landed]
+0:57  [CC ON TEAM]   2 ← Intimidating Shout (Felguârd-Ravencrest-EU) | 1s | trinket: ON CD (89s left)
+0:57  [CC ON TEAM]   1 ← Intimidating Shout (Felguârd-Ravencrest-EU) | 1s
+0:57  [CC ON TEAM]   3 ← Intimidating Shout (Felguârd-Ravencrest-EU) | 1s
+0:58  [STATE]   friends 1:100 2:89 3:100 / enemies 4:76 6:100 5:80
+0:58  [OWNER CAST]   586
+0:58  [OWNER CAST]   121536
+0:58  [CLEANSE]   1 dispelled 2 effects: Permeating Chill off 1, Earthbind off 1
+0:59  [STATE]   friends 1:100 2:92 3:100 / enemies 4:62 6:96 5:65
+1:00  [STATE]   friends 1:100 2:93 3:100 / enemies 4:38 6:99 5:43
+1:00  [OWNER CD]   Psychic Scream
+      [RES] rdy:Psychic Scream,2:Die by the Sword,2:Bladestorm (Arms),3:Lay on Hands,3:Blessing of Spellwarding,3:Avenging Wrath  cd:Power Infusion(82s),Pain Suppression(156s),2:Avatar(50s),2:Intimidating Shout(45s),3:Hammer of Justice(8s)
+1:00  [CC CAST]   Psychic Scream (by 1) → 6
+1:00  [CC CAST]   Psychic Scream (by 1) → nil [non-player target]
+1:01  [STATE]   friends 1:100 2:95 3:100 / enemies 4:47 6:100 5:43
+1:01  [OWNER CAST]   32379 → 5
+1:02  [STATE]   friends 1:100 2:100 3:100 / enemies 4:47 6:100 5:36
+1:02  [OWNER CAST]   47540 → 5
+1:03  [STATE]   friends 1:100 2:100 3:100 / enemies 4:47 6:100 5:32
+1:03  [CC ON TEAM]   2 ← Storm Bolt (Felguârd-Ravencrest-EU) | 2s | trinket: ON CD (82s left)
+1:04  [STATE]   friends 1:100 2:100 3:100 / enemies 4:50 6:100 5:30
+1:04  [OWNER CAST]   1253593
+1:05  [STATE]   friends 1:100 2:100 3:87 / enemies 4:49 6:100 5:32
+1:06  [STATE]   friends 1:100 2:100 3:98 / enemies 4:64 6:100 5:37
+1:07  [STATE]   friends 1:100 2:100 3:100 / enemies 4:65 6:100 5:44
+1:07  [OWNER CAST]   194509 → self
+1:07  [OWNER CAST]   472433 → self
+1:08  [STATE]   friends 1:100 2:100 3:100 / enemies 4:63 6:100 5:36
+1:08  [OWNER CAST]   47540 → 5
+1:09  [STATE]   friends 1:100 2:100 3:100 / enemies 4:59 6:100 5:29
+1:09  [DMG SPIKE]   2 (Arms Warrior): 0.58M in 10s
+1:10  [STATE]   friends 1:100 2:83 3:94 / enemies 4:75 6:100 5:62
+1:11  [STATE]   friends 1:100 2:75 3:97 / enemies 4:75 6:100 5:64
+1:11  [OWNER CAST]   8092 → 5
+1:11  [OWNER CAST]   17 → 2
+1:12  [STATE]   friends 1:100 2:80 3:100 / enemies 4:73 6:100 5:75
+1:12  [DMG SPIKE]   3 (Retribution Paladin): 0.58M in 10s
+1:13  [STATE]   friends 1:100 2:71 3:78 / enemies 4:83 6:100 5:83
+1:13  [OWNER CAST]   186263 → 2
+1:13  [OWNER CAST]   194509 → 3
+1:14  [STATE]   friends 1:100 2:84 3:79 / enemies 4:90 6:100 5:73
+1:14  [OWNER CAST]   47540 → 5
+1:15  [STATE]   friends 1:100 2:83 3:81 / enemies 4:99 6:100 5:89
+1:16  [STATE]   friends 1:100 2:91 3:79 / enemies 4:100 6:100 5:82
+1:16  [OWNER CAST]   17 → 3
+1:17  [STATE]   friends 1:100 2:89 3:91 / enemies 4:100 6:100 5:83
+1:18  [STATE]   friends 1:100 2:93 3:93
+1:18  [CC ON TEAM]   3 ← Terror of the Skies (Senegos-Ravencrest-EU) | 3s
+1:19  [STATE]   friends 1:100 2:88 3:75 / enemies 4:100 6:100 5:79
+1:19  [OWNER CAST]   585 → 5
+1:19  [OWNER CAST]   47540 → 5
+1:19  [CC ON TEAM]   2 ← Terror of the Skies (Senegos-Ravencrest-EU) | 2s | trinket: ON CD (67s left)
+1:20  [STATE]   friends 1:100 2:80 3:62 / enemies 4:100 6:100 5:81
+1:20  [CC ON TEAM]   1 ← Terror of the Skies (Senegos-Ravencrest-EU) | 1s
+1:21  [STATE]   friends 1:100 2:88 3:63 / enemies 4:99 6:100 5:81
+1:22  [STATE]   friends 1:100 2:91 3:45 / enemies 4:98 6:100 5:100
+1:22  [OWNER CAST]   1253593
+1:23  [STATE]   friends 1:100 2:93 3:40 / enemies 4:93 6:100 5:100
+1:24  [STATE]   friends 1:100 2:96 3:41 / enemies 4:93 6:91 5:100
+1:24  [OWNER CAST]   32379 → 6 [completed before CC landed]
+1:25  [STATE]   friends 1:100 2:98 3:43 / enemies 4:86 6:99 5:100
+1:25  [CC ON TEAM]   1 ← Hex (Ebø-Ravencrest-EU) | 0s
+1:25  [TEAMMATE CD]   2 (Arms Warrior): Bladestorm (Arms)
+      [RES] rdy:Δ+2:Bladestorm (Arms),3:Hammer of Justice  cd:—  cc:1/Hex-0s
+1:26  [STATE]   friends 1:100 2:100 3:45 / enemies 4:90 6:100 5:98
+1:26  [OWNER CAST]   47540 → 3 [succeeded after CC arrived — within 1s in log]
+1:27  [STATE]   friends 1:100 2:100 3:58 / enemies 4:75 6:99 5:97
+1:27  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ+3:Hammer of Justice-Psychic Scream,2:Bladestorm (Arms)  cd:Psychic Scream(12s),2:Bladestorm (Arms)(88s)
+1:28  [STATE]   friends 1:100 2:100 3:60 / enemies 4:72 6:92 5:97
+1:28  [ENEMY CD]   5 (Arms Warrior): Avatar
+1:28  [TEAMMATE CD]   2 (Arms Warrior): Avatar
+      [RES] rdy:Δ-Psychic Scream,Power Infusion,Pain Suppression,2:Avatar,2:Bladestorm (Arms),3:Hammer of Justice  cd:Psychic Scream(12s),Power Infusion(54s),Pain Suppression(127s),2:Avatar(22s),2:Bladestorm (Arms)(87s),3:Hammer of Justice(12s)  enemy:Avatar/Arms Warrior(0s)
+1:29  [STATE]   friends 1:100 2:88 3:41 / enemies 4:62 6:99 5:100
+1:29  [OWNER CAST]   186263 → 3
+1:29  [OWNER CAST]   17 → 3
+1:30  [STATE]   friends 1:100 2:77 3:50 / enemies 4:58 6:100 5:100
+1:30  [OWNER CAST]   194509 → 3
+1:31  [STATE]   friends 1:100 2:84 3:56 / enemies 4:63 6:100 5:97
+1:32  [STATE]   friends 1:100 2:87 3:58 / enemies 4:68 6:100 5:100
+1:33  [STATE]   friends 1:100 2:87 3:46 / enemies 4:65 6:100 5:93
+1:33  [OWNER CAST]   2061 → 3
+1:33  [OWNER CAST]   47540 → 4
+1:34  [STATE]   friends 1:100 2:92 3:53 / enemies 4:34 6:98 5:94
+1:35  [STATE]   friends 1:100 2:100 3:45 / enemies 4:38 6:100 5:94
+1:35  [TEAMMATE CD]   2 (Arms Warrior): Intimidating Shout
+      [RES] rdy:Δ-Psychic Scream,Power Infusion,Pain Suppression,2:Avatar,2:Intimidating Shout,2:Bladestorm (Arms),3:Hammer of Justice  cd:Psychic Scream(5s),Power Infusion(47s),Pain Suppression(121s),2:Avatar(15s),2:Intimidating Shout(10s),2:Bladestorm (Arms)(80s),3:Hammer of Justice(6s)  enemy:Avatar/Arms Warrior(7s)  cc:2/Disarm-0s[disarm]
+1:35  [CC CAST]   Intimidating Shout (by 2) → 4, 6 [2 enemies]
+1:35  [OWNER CAST]   17 → 3
+1:36  [STATE]   friends 1:100 2:100 3:50 / enemies 4:13 6:100 5:96
+1:37  [STATE]   friends 1:100 2:100 3:56 / enemies 4:dead 6:87 5:96
+1:37  [OWNER CAST]   32379 → 4
+1:37  [DEATH]  4 (Devastation Evoker — enemy)
+1:37  [ROSTER]  enemy 4 removed (dead)
+1:39  [STATE]   friends 1:100 2:92 3:38
+1:39  [OWNER CAST]   2061 → 3
+1:40  [OWNER CAST]   73325 → 3
+1:40  [OWNER CAST]   47540 → 3
+1:42  [STATE]   friends 1:100 2:100 3:60
+1:42  [OWNER CAST]   1253593
+1:43  [STATE]   friends 1:100 2:100 3:65 / enemies 4:dead 6:73 5:87
+1:43  [OWNER CAST]   200829 → 2
+1:44  [STATE]   friends 1:100 2:100 3:66 / enemies 4:dead 6:71 5:87
+1:45  [STATE]   friends 1:100 2:100 3:67 / enemies 4:dead 6:59 5:87
+1:45  [OWNER CAST]   589 → 6
+1:46  [STATE]   friends 1:100 2:100 3:67 / enemies 4:dead 6:39 5:86
+1:47  [STATE]   friends 1:100 2:100 3:67 / enemies 4:dead 6:33 5:86
+1:47  [OWNER CAST]   8092 → 6
+1:47  [OWNER CAST]   47540 → 6
+1:48  [STATE]   friends 1:100 2:100 3:71 / enemies 4:dead 6:50
+1:49  [STATE]   friends 1:100 2:100 3:92 / enemies 4:dead 6:39
+1:50  [STATE]   friends 1:100 2:100 3:100 / enemies 4:dead 6:26
+1:50  [OWNER CAST]   32379 → 6
+1:51  [STATE]   friends 1:100 2:99 3:100 / enemies 4:dead 6:9 5:92
+1:52  [STATE]   friends 1:100 2:100 3:100 / enemies 4:dead 6:dead 5:92
+1:52  [OWNER CAST]   585 → 6
+1:52  [DEATH]  6 (Restoration Shaman — enemy)
+1:52  [ROSTER]  enemy 6 removed (dead)
+
+1:53  [MATCH END]   damp: 10%
+  friends 1:100% 2:100% 3:100% / enemies 4:dead(1:37) 6:dead(1:52) 5:98%

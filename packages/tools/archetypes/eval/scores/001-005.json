@@ -1,0 +1,167 @@
+{
+  "001": {
+    "spec": "Preservation Evoker",
+    "cluster": "cc_heavy_fast",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Correctly pinpoints the two highest-leverage moments: PI not purged at 0:17 and Emerald Communion activated inside the Kidney Shot stun at 0:57. Identifies the 0:57 three-way lockdown as the kill setup. No equal-weight treatment of minor events — every sentence earns its place. All referenced events (PI at 0:17, KS+Poly+Scream at 0:57, mage death at 1:04) are confirmed in the timeline."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": true,
+      "notes": "Strong framing around cc_heavy_fast archetype. Correctly centers the Emerald Communion stun issue. However, claims 'PI appeared...again at 0:57 timeframe around the kill' — the prompt shows no Power Infusion event near 0:57 in this match; PI ended at 0:33. This is a fabricated second-PI claim that introduces hallucination risk. The outcome alignment is otherwise solid."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Best use of archetype context in this match. The 57% CD-unused stat is used precisely — to explain that hoarding is correct but firing into a stun is the failure mode. The cc_then_burst pattern reference (50% of matches) maps directly to what the enemy executed. All specific events are confirmed in the prompt. No invented data."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Accurate use of benchmark stats (9.9s median latency, 57% unused, 3% gap rate, 45% missed cleanse). The missed cleanse rate discussion is slightly misapplied — the match's cleanse problem was purge (Mage's job), not dispel (Evoker's job) — which reduces focus calibration marginally. All events confirmed. The note that Emerald Communion 'animation may not fire visually' is speculative but not a factual error."
+    }
+  },
+  "002": {
+    "spec": "Discipline Priest",
+    "cluster": "cc_heavy_swap",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Identifies the three decisive errors in priority order: missed Infected Wounds cleanses (four instances, 631k+ cumulative), PI both charges burned at near-full HP at 0:23, and 9.5s healing gap at 0:57. Correctly notes Pain Suppression unused throughout. All damage figures and timestamps confirmed in the prompt. No padding."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Adds archetype framing (cc_heavy_swap, Cyclone-the-Warrior structure) and correctly identifies Pain Suppression as the missing defensive tool. The structural observation that 'once the enemy gets your Warrior in Cyclone and your healer in incapacitate simultaneously' maps directly to the 0:46 and 0:51 CC sequence. All specific events confirmed."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Correctly uses cc_then_burst pattern (60% of matches) to explain the enemy's Incarnation-Cyclone-kill sequence. The coaching point that offensive GCDs during the kill window should pause is well-grounded in the 0:47-0:56 healing gap data. References to cc_heavy_swap dynamics are appropriate and do not contradict the actual match."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Best use of benchmark stats: 39% missed cleanse rate, 4,568ms median latency, 8% healing gap rate are all directly applied against specific match events. The observation that 'one of those offensive casts during 0:47-0:56 could have been the missing Infected Wounds cleanse' is an accurate attribution of opportunity cost. Slight focus dilution from extended benchmark discussion, but all data is accurate."
+    }
+  },
+  "003": {
+    "spec": "Holy Priest",
+    "cluster": "fast_nuke_tunnel",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Correctly identifies PI at 0:08 as premature, Guardian Spirit at 0:44 as correct, missed Flame Shock cleanses as a slow bleed, and second Guardian Spirit at 1:55 at 58% as the CD that was needed at 2:24. Match events confirmed. Slightly lower focus because the analysis of the mage death at 2:24 buries the most important point (tracking Bloodlust cooldown for the kill window) in a long chronological walk-through."
+    },
+    "label_only": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Maps the three Avatar windows reasonably but the framing is slightly off — 'second Avatar at 1:30' and 'third Avatar at 1:46' conflates the Avatar at 1:30 with the near-simultaneous Ascendance+Bloodlust window; Avatar re-used at 1:46 per the archetype framing is not confirmed in the prompt as a separate Avatar cast. Some minor imprecision in CD window attribution, though the core coaching point (map enemy CD rotation, know the kill window) is sound."
+    },
+    "narrative": {
+      "focusCalibration": 3,
+      "outcomeAlignment": 3,
+      "accuracy": 2,
+      "hallucination_risk": true,
+      "notes": "Clear factual error: 'Window three (2:43-2:58)' is invented — the match ended at 2:37 and the Mage died at 2:24. The response creates a post-match timeline that does not exist. Also 'second Avatar at 1:30, used Divine Hymn and the Mage's Ice Block' — Divine Hymn was used at 0:15, not during the 1:30 window. The archetype context appears to have led the model to assume a third CD window existed that was not in the data."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 2,
+      "hallucination_risk": true,
+      "notes": "Lists Flame Shock damage windows as '35k, 307k, 72k, 84k, 190k, 242k, 302k, 67k, 81k, 290k, and 618k'. The 003 prompt shows only four Flame Shock missed cleanse events (84k, 35k, 307k, 72k). The values 190k, 242k, 302k, 290k, and 618k appear in the 005 match prompt — the response cross-contaminated data from a different match. Second Guardian Spirit analysis (1:55 at 58% is 'more questionable') is correct and valuable. Core coaching is accurate but the Flame Shock enumeration is fabricated."
+    }
+  },
+  "004": {
+    "spec": "Preservation Evoker",
+    "cluster": "fast_nuke_swap",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Correctly identifies Curse of Tongues (all three players, 28-30s, 428k damage) as the match's biggest avoidable error. Correctly identifies the patient DOT+CC enemy strategy. Notes the Rewind question near the death accurately as a question ('Check whether Rewind was on cooldown') rather than a fabricated claim. Minor focus issue: the Sleep Walk analysis consumes significant space for a lower-leverage observation."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Best response for this match. Immediately identifies the mismatch between archetype label (fast_nuke_swap, median 107s) and actual match length (3:34) and uses that to reframe the strategy. Correctly explains how Curse of Tongues halved healing throughput and forced extra CD expenditure throughout. All CD usages (Rewind at 0:37, Emerald Communion at 1:42, Deep Breath at 0:48) confirmed and correctly evaluated."
+    },
+    "narrative": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Uses the 58% CD-never-used rate well to explain that holding CDs was rational but CD conservation needed to extend across a longer match. The Stasis availability analysis at 3:22 is speculative arithmetic, not fabricated. Minor inaccuracy: claims Sleep Walk used 'at 0:55 and 1:00' as 'good disruption' when the prompt shows Sleep Walk at 0:55, 1:00, 1:36, 2:08, etc. — this is correct but incomplete. Overall accurate."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Good use of 8,679ms median latency and 42% missed cleanse rate to benchmark this match. The Stasis cooldown arithmetic (used at 1:57, available again at ~3:22) is reasonable inference. Claims '428k total damage across three players' from Curse of Tongues — this is quoted from the baseline response logic, not the prompt directly, but is consistent with the documented 150k+129k+149k window data. Slight focus dilution from latency benchmark discussion."
+    }
+  },
+  "005": {
+    "spec": "Preservation Evoker",
+    "cluster": "dampening_grind_swap",
+    "result": "Win",
+    "baseline": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Correctly identifies the three positive decisions (Ascendance handling at 0:32, Emerald Communion held until 3:39 double-low, Deep Breath at 4:09 as kill setup) and three negative patterns (Flame Shock cleanse latency, two Sleep Walks into Grounding Totem at 1:00 and 1:03, Stasis loaded late). The 618k Flame Shock at 3:37 is correctly cited. All events confirmed in the prompt. Balanced treatment of a win — does not over-praise."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Concise and accurate. Correctly frames the dampening_grind_swap archetype context (Flame Shock as attrition tool, Sleep Walk into totem as CC loss). Correctly identifies the kill sequence (Deep Breath at 4:09 → Warrior dead at 4:16). The Stasis critique (loading at 2:05 and detonating at 3:43) is confirmed and well-articulated. No hallucination."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Strongest response across all four conditions for this match. The three-act structure (first Ascendance 0:32, second 2:43, endgame) maps precisely to the timeline. The key coaching insight — that surviving the second Ascendance without panic-spending resources was the decisive skill — is the correct outcome explanation. The Flame Shock critique (30% archetype baseline already suboptimal, 618k is a 'full burst window of bonus damage') is precisely framed. All events confirmed."
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Excellent benchmark integration: 34% optimal CD timing, 0% healing gap rate, 30% missed cleanse rate, 3.9 purge/min are all applied to specific match events. The purge-rate framing ('roughly one dispel every 15 seconds on average — this Flame Shock ran 18 seconds') is a precise and useful way to contextualize the miss. Deep Breath kill-condition analysis is correct. No invented events."
+    }
+  }
+}

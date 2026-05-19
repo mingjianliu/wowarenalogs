@@ -1,0 +1,17 @@
+You won a 4:23 dampening grind against Enhancement Shaman, Holy Paladin, Arms Warrior. The match went deep into dampening but you held your team together well through repeated critical burst windows and finished both the Shaman and Warrior cleanly once your damage built enough pressure.
+
+What went right: Your response to the critical Ascendance+Bloodlust windows at 0:32 and 2:43 was excellent. When the Shaman popped everything at 0:32 with 1.30M incoming on your DH, you immediately shifted to them, cleansed Capacitor Totem, Flame Shock, and Earthbind off in one cast, and threw Obsidian Scales on the rogue as secondary pressure arrived. You kept the DH alive through a 1.30M spike window without using a major CD, which is what let you have resources available later. At 2:43 when the second Ascendance came with your rogue at 29% HP, you correctly layered Emerald Communion at 3:39 when both yourself and the DH hit critical lows simultaneously — that was the right call, not saving it for a hypothetical worse scenario.
+
+Deep Breath usage at 0:45 and 4:09 was well-timed. The first one dropped mid-panic during the combined first-burst phase and helped stabilize. The second at 4:09 landed when your team was getting kited under back-to-back Champion's Spear chains, and the Warriors died 7 seconds later at 4:16. That timing won the match.
+
+Where you cost yourself effort: Flame Shock cleanse discipline was poor throughout. The log shows nine missed Flame Shock cleanses, with some running for 23–36 seconds and dealing 43k–618k during their duration. The 618k at 3:37 is particularly damaging — that's roughly a full extra burst window's worth of damage from one uncleared debuff. Flame Shock is a magic dispel, you always have the global for it when HoTs are ticking. Make it muscle memory: when Flame Shock appears on the frames, dispel it within 3 seconds.
+
+At 1:28 there's a missed Flame Shock on the DH worth 190k. You were casting on yourself at that moment, but the DH had been at full for several seconds — this was a cleanseable window you had available.
+
+The second area is Sleep Walk targeting. You wasted two Sleep Walks into Grounding Totem at 1:00 and 1:03. You should develop a habit of checking for Grounding Totem on the field before casting Sleep Walk — the Shaman will drop it as a reflex whenever you're about to CC the Paladin. Either line of sight the totem or wait for your rogue to kill it before attempting the CC.
+
+Stasis at 2:05 — used during a calm phase when all three friendlies were at or near full. Stasis should be loaded when your team is healthy so it fires into the next burst window. You then popped it back out at 3:43 which was reasonable timing, but you lost the front-loaded efficiency of having it ready longer in advance.
+
+Trinket management across the match was acceptable. Your rogue burned their trinket early on Intimidating Shout at 0:24, which left them exposed for the Avatar at 0:28 — but the DH's trinket situation was fine and your own trinket usage at 1:43 and 1:45 was correct under the Bloodlust pressure.
+
+Going forward: build a reflex to check Flame Shock on every GCD when Shaman is in the game, develop Grounding Totem awareness before throwing CC, and load Stasis during lulls so it's ready to detonate at the next CD window.

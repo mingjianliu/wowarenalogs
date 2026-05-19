@@ -1,0 +1,17 @@
+This was a 2:31 win against a Restoration Druid/Shadow Priest/Beast Mastery Hunter team, and the most notable thing is how consistently your Subtlety Rogue was the target throughout — nearly every damage spike and missed cleanse landed on them, and you kept them alive through a relentless volume of incoming CC.
+
+The opening burst window at 0:19–0:42 was the most demanding stretch. The enemy burned Incarnation: Tree of Life, Power Infusion, Innervate, and Bestial Wrath simultaneously, generating a 0.78M spike on your Rogue. The enemy had maximum healing strength running (Tree + Innervate) while applying maximum pressure. You responded correctly: Time Dilation on the Rogue at 0:33 when they were declining, continuous direct heals throughout, and Sleep Walk on the Druid at 0:27 to interrupt their cast flow. The Rogue was back to full shortly after and you held the match.
+
+The cleanse execution is the main area for critique. Against a Shadow Priest, Vampiric Touch and Shadow Word: Madness are your two priority dispels, and there were repeated misses:
+- 0:19: Vampiric Touch on you (5s, 39k during), Shadow Word: Madness on the Rogue (6s, 95k during)
+- 0:32: Vampiric Touch on you and the Rogue simultaneously (53k and 221k respectively)
+- 1:04: Vampiric Touch on you (25s, 99k during), Shadow Word: Madness on the Rogue (11s, 348k during)
+- 1:54: Shadow Word: Madness on the Rogue for 331k during 6 seconds
+
+Shadow Word: Madness in particular is extremely dangerous — 331k in 6 seconds on the Rogue at 1:54 is nearly a kill-threat level debuff. As a Preservation Evoker you cannot offensive purge, but you have Cauterizing Flame and your dispel. These should be going off almost every time a Shadow Priest debuff lands on your Rogue. The pattern here suggests either global busy-ness preventing timely dispels, or not tracking the debuffs visually.
+
+Good moments: The Stasis at 1:52 during the Bestial Wrath window at 1:49 was smart — banking heals for the expected burst. Time Dilation at 2:08 during the second Bestial Wrath and the Rogue spike was precise. The kill sequence at 2:20–2:22 when you applied offensive pressure directly on the Druid to land the killing blow showed confidence.
+
+The enemy Druid used Cyclone on you at 1:02, 1:20, 1:26, and 2:12 — you were the CC target repeatedly, and your Rogue had to manage 30+ seconds of solo pressure. This is a hard matchup for Preservation. The fact that you won while absorbing that much disruption is testament to the overall team execution.
+
+Cleanses on Shadow Priest debuffs — particularly Shadow Word: Madness — need to be near-instant. That's the clearest thing to fix.

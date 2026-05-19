@@ -1,0 +1,14 @@
+This was a 50-second loss where your Windwalker Monk died at 0:22 into a critical offensive window that ran from 0:10 to 0:36. The enemy Arms Warrior opened Avatar immediately, and with your healer Hammer of Justiced at 0:15, the Monk dropped from 86% to dead inside 10 seconds with no defensive answer.
+
+The core problem was Avenging Crusader landing at 0:21 — one second before the Monk died. That CD came too late. When Avatar popped at 0:10 and the Monk started taking 0.55M damage in 10 seconds, that was the moment to pop Avenging Crusader, not 11 seconds later. You had it available the entire window.
+
+You also had Blessing of Sacrifice and Blessing of Protection sitting ready throughout the death sequence. Blessing of Sacrifice on the Monk at 0:12 when he hit 84% would have bought time. Blessing of Protection at any point in the Bladestorm-Mortal Strike finisher at 0:22 would have prevented the kill entirely.
+
+After the Monk died, you played through two more burn attempts on your Druid (0:26, 0:36) and held up reasonably well — the Druid survived to match end at 48%. The healing gaps at 0:34 (3.6s) and 0:40 (10.5s) were unnecessary given your output tools were available; the 10.5-second gap while the Druid was under pressure is the kind of lapse that compounds quickly in a 3v2.
+
+Your team also had no purgers. Power Infusion went out on both the Warrior (0:17) and the Disc Priest (0:17) and sat there for 15 seconds contributing to the Monk's death. You cannot remove it as Holy Paladin, but it's worth noting for comp selection.
+
+Key adjustments:
+- Recognize when Avatar fires with a healer CC'd simultaneously — that is your Avenging Crusader trigger, not a fallback option.
+- Blessing of Sacrifice belongs on a teammate the moment an offensive CD window opens on them, not after their health is already critical.
+- In a 3v2 scenario, stay active. A 10-second healing gap on a player under pressure when your CDs are ready is not sustainable.

@@ -1,0 +1,35 @@
+This was a 5:24 loss against Arms Warrior/Preservation Evoker/Retribution Paladin, ending at 25% dampening. The Mage died at 5:13 from Paladin Execute + Warrior Mortal Strike, then the Warlock and Mistweaver followed within 11 seconds. Your team had multiple moments to win this game — the Warrior dipped to 4% HP at 1:34 — but failed to convert any of them into kills, and spent the last 90 seconds watching dampening drain your healing while the Evoker kept the enemy alive.
+
+**The 1:34 kill opportunity**
+
+The most important moment in the match is at 1:32–1:35. The Warrior was at 24%, then 6%, and your Mage had 0.71M in a 10-second window starting at 0:13. The Warlock used Shadowfury on the Evoker at 1:32, stunning her so she couldn't emergency-heal the Warrior. The Warrior was at 6% at 1:34 and lived. He reset to 95% at 1:35.
+
+What killed this window? The Paralysis from the Mistweaver at 1:04 went onto the Warrior and Paladin — locking the Warrior's healing window — but the Evoker was free. Shadowfury at 1:32 targeted the Evoker, not the Warrior who was at 21%. The Warlock should have kept pressure on the Warrior's heals rather than CCing the Evoker. The Evoker's Deep Breath at 0:20 had already expired; she was available to heal. When the Warrior hit 6%, the Evoker was not CC'd — she healed him out.
+
+Additionally, the Mistweaver's Life Cocoon at 1:28 went onto the Frost Mage (dropping to 46% from 52% with Storm Bolt incoming), not onto the Warrior who was being killed. The Life Cocoon is correct defensively, but it came at the exact moment when 3 seconds of uninterrupted kill pressure on the Warrior would have ended the match.
+
+**Kill target discipline**
+
+The Retribution Paladin was at 31% at 1:42 and 24% at 1:43 — another near-kill that didn't convert. Your team's CC landed on the wrong targets during this window: Paralysis on the Paladin at 1:42 (who was already being killed) when the Evoker was free. Hammer of Justice kept coming onto the Mage, the Mistweaver, and the Warlock in rotation, and your team responded by spending CC defensively rather than maintaining kill target focus.
+
+The core problem is that your team needed to commit to one target — Warrior or Paladin — and apply sustained CC to the Evoker during the kill window, not split CC between the two DPS targets and let the Evoker freely heal.
+
+**Mistweaver's defensive window**
+
+The Mistweaver used Life Cocoon three times: at 0:23 (Mage at 31%, correct), at 1:28 (Mage at 46%, correct given Storm Bolt stun), and at 3:18 (Mage at 42%). All three were reactive saves on the Mage. The issue is that by the time you reach the 4:00–5:00 window, the Mage has taken repeated heavy damage cycles and both Ice Blocks have been spent. The Mistweaver then faces a situation where the Mage is repeatedly getting to 25–30% HP with no Ice Block and diminishing returns on Life Cocoon because the Evoker's Deep Breath and Oppressing Roar are countering heal output.
+
+The Mistweaver's Leg Sweep was used well — hitting both the Warrior and Paladin at 1:03 to create the kill window, then again at 3:02, 3:53, and 4:43. Coordination with the Warlock's Shadowfury was mostly present. The missed cleanse at 35% for this archetype is reflected in the match — Flame Shock, Judgment of Justice, and Earthbind frequently sat on teammates. These are not game-losing individually but they accumulated into sustained damage that eroded the Mage's health over the 5-minute game.
+
+**Final phase breakdown**
+
+After 4:45, the Warrior used Intimidating Shout on all three of your players simultaneously, with trinkets either on CD or just used. The Mage was at 84% going into it but fell to 18% within 25 seconds. At 5:07 the Mage took Storm Bolt at 27%, Ice Blocked, and died at 5:13 from Execute + Innate Light while still inside Ice Block window recovery. The Mistweaver was at 60% HP at T-10 before her death, steadily draining under Preservation Evoker Living Flame.
+
+The game was lost in the final 25% dampening window because your team never converted the early kill opportunities on the Warrior. Every time you got him low, the Evoker healed him and your Warlock's Dark Pact expired, removing the personal shield that was keeping him in the fight while the Mage was targeted.
+
+**Adjustments**
+
+1. When the Warrior hits below 20%, the Warlock's next CC must target the Evoker, not anyone else. A 2-second Shadowfury stun on the Evoker at 1:33 instead of at 1:32 would likely have killed the Warrior.
+
+2. Shadowfury should be held specifically for Evoker interrupt/CC during your kill windows, not for opportunistic AoE. The Evoker has Deep Breath and emergency heals that reset any near-kill; she must be silenced or stunned when the target is in execute range.
+
+3. The Mistweaver should tunnel Leg Sweep timing to match Warlock Shadowfury — both CC abilities should land on the enemy healer simultaneously during your burst, not on the kill target.

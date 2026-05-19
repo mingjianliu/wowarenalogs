@@ -1,0 +1,11 @@
+Solid balanced_swap win with good team coordination, but two habits need work.
+
+Flame Shock on your Warrior at 0:07 went uncleansed for 18 seconds and dealt 92k. As the only Magic dispel in this comp, you own every Magic debuff that hits your team. Shaman Flame Shock is a high-priority cleanse — it amplifies the enemy's damage pattern and feeds their next CC setup. Get it off within 2–3 seconds.
+
+Both Power Infusion charges fired at 0:22 into full HP targets with no active enemy go window. Dragonrage had already expired and Avatar was just starting. PI should amplify a real threat or a defined offensive moment — two charges burned off cooldown on capped targets is value left on the table. In the balanced_swap pattern, PI timing matters a lot because enemy windows are spaced; you want it available when the next one lands.
+
+Pain Suppression at 0:36 into the double CC (Storm Bolt + Shockwave on two targets simultaneously) with Warrior trinket down was correct. But you got there reactively. If you'd spotted the CC chain building earlier — the Evoker Sleep Walks at 0:33 were telegraphing the incoming setup — you could've broken it up with Psychic Scream first and kept PainSup deeper.
+
+Psychic Scream into the Shaman at 1:00 cleanly opened the path to the Evoker kill at 1:37. Good read on healer targeting when both enemy players were already significantly depleted. Closing through the Shaman at 1:52 with consistent offensive pressure was well executed.
+
+Priority fixes: instant Magic cleanse on Flame Shock, and hold PI for aligned go windows rather than off-cooldown dumps.

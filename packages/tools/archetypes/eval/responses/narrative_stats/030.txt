@@ -1,0 +1,31 @@
+This heavy_burst_cc_swap win demonstrates your archetype's strengths: 0% CD never-used rate, 59% optimal CD timing, and 71% offensive participation. All three showed up. Your CD usage rate this match is high — both Pain Suppression charges, both Power Infusion charges, Psychic Scream five times — and none were wasted. The 45% missed cleanse rate for the archetype is also reflected, specifically in five Flame Shock applications that ran full duration on the Ret Paladin.
+
+The match opened with a critical-rated offensive window at 0:09 — four major enemy CDs simultaneously. Your response time on Power Infusion was 6 seconds from combat start (0:15), within your 7515ms median latency for this archetype. The Psychic Scream at 0:17 (8 seconds after combat) is slightly above median but within normal range given the opening CC pressure from Champion's Spear. The Evoker's heal output was suppressed for 6 seconds during Bloodlust burst, which contributed directly to the Shaman reaching 35% HP at 0:18 under your Ret's burst.
+
+**Power Infusion deployment**
+
+First use at 0:15 on the Warrior, then on yourself. Your HPS during the 0–5 second window was 85.8k — substantially higher than the 5–10s window at 24k. The drop at 5–10s reflects the full-team CC lockdown from Bloodlust burst. Power Infusion at 0:15 amplified your healing output during the highest-danger window. The 41% overheal in the following period indicates your team was stable, not that the PI was wasted — the Ret was actively being attacked and you maintained him at 67–88% through Bloodlust.
+
+Second Power Infusion at 2:20 came as Deep Breath returned at 2:12. Your HPS at 59.8k/34.9k/46.1k during the three windows shows lower throughput than the first use — the Ret was at 55–65% HP and the game was in a more controlled phase. This PI was proactive given the incoming Deep Breath + Oppressing Roar sequence at 2:31 and 2:50. The 36% overheal is acceptable for a pre-emptive heal amplification.
+
+**Pain Suppression: both optimal**
+
+Your 59% optimal CD timing rate for this archetype is visible in the Pain Suppression placements. At 1:09 the Ret was at 60% HP with the second Bloodlust 6 seconds away — Suppression absorbed that burst and the Ret ended at 61%. That is textbook timing. At 2:11 Suppression went in 1 second before Storm Bolt stunned the Ret at 42% HP — the stun's free damage window was mitigated by the active Suppression. Both uses qualify as optimal under any reasonable assessment.
+
+The third Pain Suppression use at 3:17 on the Warrior at 38% HP during Bladestorm is a reactive defensive save — the Warrior was the Bladestorm target, Die by the Sword was expired, and the Ret was stable at 65%. Pain Suppression here is classified as reactive rather than optimal (deploying in response to an active emergency rather than anticipating the next wave), but it was the correct decision given the kill timing on the Shaman was imminent.
+
+**Psychic Scream: above archetype mean**
+
+Your archetype mean is 8.0 CC per match. This match delivered 5 Psychic Screams in 3:52 — roughly 1.3 per minute, totaling to 5 casts. All five targeted the Evoker (twice with AoE also hitting the enemy Warrior). The cc_then_burst setup style (60% of your matches) is executed correctly here: Scream on healer, burst from Ret/Warrior, repeat. The coordinated Scream at 0:58 landing simultaneously with the Warrior's Intimidating Shout is the archetype's defining execution — two CC tools landing on two targets in one second, creating maximum lockout with minimum ability overlap.
+
+**Purge participation**
+
+Your purge rate for this archetype is 0.95/min. In 3:52 that translates to approximately 3.7 purges expected. You exceeded that: Holy Fire and Mind Blast into the Shaman and enemy Warrior ran throughout the match. Notable specific purges: Landslide off the Warrior at 0:08 (combat second 8, fast response), four-effect cleanse from the Warrior at 3:08 (Flame Shock, Earthbind, Permeating Chill, Capacitor Totem — the best GCD in the match), and four-effect cleanse at 3:35 (Landslide, Flame Shock, Permeating Chill, Stormbind off the Warrior). Your offensive purge commitment kept the Shaman's buffed-damage rotations interrupted.
+
+**Flame Shock missed cleanses: the pattern**
+
+Five missed applications: 140k (0:09–0:27), 254k (0:32–0:50), 181k (1:02–1:17), 212k (1:48–2:06), 235k (2:09–4:09, 65 seconds). Total: approximately 1.02M in dispellable sustained damage on the Ret.
+
+The 45% missed cleanse rate for this archetype reflects a deliberate tradeoff: Discipline (and Holy Priest in atonement-heavy play) prioritizes offensive output during burst windows over reactive dispelling. That tradeoff is valid during burst windows. But the 65-second Flame Shock at 2:09 is not a burst-window miss — it sat through two entirely separate burst phases. Between 2:09 and 4:09 there were multiple periods of 15+ seconds where neither a burst window nor personal CC prevented a dispel GCD.
+
+The practical rule: dispel Flame Shock off the Ret on your first free GCD outside a burst window, never wait more than 10 seconds. The 65-second miss cost 235k of avoidable damage that required additional healing throughput.

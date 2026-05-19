@@ -1,0 +1,256 @@
+[ARCHETYPE: Holy Priest — cc_heavy_swap]
+This Holy Priest plays in short matches averaging 109 seconds with high offensive CC pressure at 10.59 events per minute, predominantly using a cc_then_burst setup style (55% of matches). CD usage is mostly optimal (46%) but 33% of cooldowns go unused, and missed cleanses occur in 34% of opportunities. Offensive participation is moderate at 42% with purge activity around 1.1 per minute.
+
+Key behavioral patterns observed in this match type:
+CD timing: 46% Optimal / 11% Early / 11% Late / 2% Reactive
+CD never used: 33%
+CD response latency: 6499ms median
+Outgoing CC per match: 4.2 mean
+Healing gap rate during burst: 4%
+Offensive participation: 42%
+Purge rate: 1.07/min
+Missed cleanse rate: 34%
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Holy Priest (Healer) | Bracket: 3v3 | Result: Win | Duration: 1:31
+  My team: Outlaw Rogue, Holy Priest, Frost Mage
+  Enemy team: Windwalker Monk, Preservation Evoker, Shadow Priest
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Holy Priest): CAN offensive purge
+  Team purgers: Frost Mage
+
+DAMPENING (3v3): started at 10%, ended at 10% at match end
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Shieldbot-Sylvanas-EU (Holy Priest — log owner):
+    Psychic Scream [40s], Power Infusion [120s, 2 Charges], Desperate Prayer [90s], Guardian Spirit [180s], Divine Hymn [180s], Apotheosis [120s]
+  2: Nablesse-Silvermoon-EU (Outlaw Rogue):
+    Cloak of Shadows [120s], Kidney Shot [30s], Blind [120s], Adrenaline Rush [180s, 2 Charges]
+  3: Womànmoment-Ravencrest-EU (Frost Mage):
+    Ice Block [240s], Dragon's Breath [45s]
+  4: Swagpelle-Ravencrest-EU (Windwalker Monk — enemy):
+    Touch of Karma [90s]
+  5: Dnbx-Kazzak-EU (Shadow Priest — enemy):
+    Power Infusion [120s]
+  6: Drakebady-TwistingNether-EU (Preservation Evoker — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100 2:100 3:100
+0:00  [OWNER CAST]   33076 → 3
+0:02  [OWNER CAST]   33076 → self
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:03  [OWNER CAST]   121536
+0:04  [STATE]   friends 1:100 3:100 / enemies 4:100 6:100 5:100
+0:05  [STATE]   friends 1:100 3:100 / enemies 4:100 6:100 5:100
+0:05  [OWNER CD]   Power Infusion → 3 (100% HP)
+      [RES] rdy:Δ+Power Infusion,Guardian Spirit,Apotheosis,2:Kidney Shot,2:Adrenaline Rush,3:Ice Block,3:Dragon's Breath  cd:—  cc:2/Landslide-1s[root]
+      [HEALING]    0–5s: 5.9k HPS | 5–10s: 54.7k HPS | 10–15s: 15.1k HPS | Overheal: 50%
+0:05  [OWNER CD]   Power Infusion → 1 (100% HP)
+      [RES] rdy:Δ  cd:—  cc:2/Landslide-1s[root]
+      [HEALING]    0–5s: 5.9k HPS | 5–10s: 54.7k HPS | 10–15s: 15.1k HPS | Overheal: 50%
+0:06  [STATE]   friends 1:100 3:100 / enemies 4:100 6:100 5:96
+0:06  [OWNER CAST]   527 → 2
+0:06  [CLEANSE]   1 dispelled Landslide off 2
+0:07  [STATE]   friends 1:100 2:100 / enemies 4:100 6:100 5:100
+0:08  [STATE]   friends 1:99 2:100 3:100 / enemies 4:97 6:100 5:100
+0:08  [DMG SPIKE]   2 (Outlaw Rogue): 0.32M in 10s
+0:09  [STATE]   friends 1:100 2:82 3:100 / enemies 4:100 6:100 5:100
+0:09  [CC ON TEAM]   3 ← Silence (Dnbx-Kazzak-EU) | 2s | trinket: used
+0:10  [STATE]   friends 1:100 2:67 3:100 / enemies 4:100 6:96 5:96
+0:10  [OWNER CAST]   88625 → 6
+0:10  [MISSED CLEANSE]   Shadow Word: Madness on 2 | 6s | 73k taken during | dispel: Magic
+0:10  [TEAMMATE CD]   2 (Outlaw Rogue): Adrenaline Rush
+      [RES] rdy:Δ+Guardian Spirit,Apotheosis,2:Adrenaline Rush,3:Ice Block,3:Dragon's Breath  cd:—  cc:3/Silence-1s
+0:11  [STATE]   friends 1:99 2:68 3:100 / enemies 4:99 6:96 5:87
+0:11  [TEAMMATE CD]   2 (Outlaw Rogue): Kidney Shot
+      [RES] rdy:Δ+Guardian Spirit,2:Kidney Shot,2:Adrenaline Rush,3:Ice Block  cd:—  cc:3/Silence-1s
+0:11  [OWNER CAST]   2050 → 2
+0:11  [TRINKET]   3 used PvP trinket
+0:12  [STATE]   friends 1:100 2:89 3:100 / enemies 4:99 6:97 5:86
+0:12  [TEAMMATE CD]   3 (Frost Mage): Dragon's Breath
+      [RES] rdy:Δ+Psychic Scream,3:Dragon's Breath  cd:—
+0:12  [CC CAST]   Dragon's Breath (by 3) → nil [non-player target]
+0:12  [OWNER CD]   Psychic Scream
+      [RES] rdy:Psychic Scream,Desperate Prayer,Guardian Spirit,Divine Hymn,Apotheosis,2:Cloak of Shadows,2:Blind,3:Ice Block  cd:Power Infusion(113s),2:Kidney Shot(28s),2:Adrenaline Rush(178s),3:Dragon's Breath(44s)
+0:12  [CC CAST]   Psychic Scream (by 1) → 6, 5 [2 enemies]
+0:12  [CC CAST]   Psychic Scream (by 1) → nil [non-player target]
+0:13  [STATE]   friends 1:100 2:91 3:99 / enemies 4:97 6:97 5:79
+0:13  [OWNER CAST]   14914 → 5
+0:14  [STATE]   friends 1:100 2:92 3:100 / enemies 4:97 6:98 5:63
+0:15  [STATE]   friends 1:100 2:95 3:99 / enemies 4:97 6:98 5:47
+0:15  [OWNER CAST]   14914 → 5
+0:16  [STATE]   friends 1:99 2:97 3:100 / enemies 4:97 6:100 5:63
+0:16  [OWNER CAST]   33076 → 3
+0:17  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 6:100 5:89
+0:18  [STATE]   friends 1:99 2:100 3:100 / enemies 4:100 6:99 5:98
+0:18  [OWNER CAST]   527 → 2 [completed before CC landed]
+0:18  [CLEANSE]   1 dispelled 4 effects: Fire Breath off 2, Horrific Visions off 2, Shadow Word: Pain off 2, Vampiric Touch off 2
+0:18  [CC ON TEAM]   1 ← Sin and Punishment (Dnbx-Kazzak-EU) | 3s
+0:19  [STATE]   friends 1:99 2:100 3:100 / enemies 4:98 6:100 5:100
+0:19  [CC ON TEAM]   3 ← Psychic Scream (Dnbx-Kazzak-EU) | 4s | trinket: ON CD (113s left)
+0:19  [CC ON TEAM]   1 ← Psychic Scream (Dnbx-Kazzak-EU) | 6s
+0:20  [STATE]   friends 1:99 2:100 3:100 / enemies 4:98 6:85 5:99
+0:20  [BUFF FADED]   Power Infusion
+0:20  [BUFF FADED]   Power Infusion
+0:21  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 6:89 5:100
+0:21  [ENEMY BUFF]   4: Power Infusion (purgeable)
+0:21  [ENEMY BUFF]   5: Power Infusion (purgeable)
+0:21  [ENEMY CD]   5 (Shadow Priest): Power Infusion
+0:21  [MISSED CLEANSE]   Shadow Word: Madness on 2 | 6s | 35k taken during | dispel: Magic
+0:22  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 6:91 5:99
+0:22  [DMG SPIKE]   3 (Frost Mage): 0.70M in 10s
+0:23  [STATE]   friends 1:100 2:100 3:96 / enemies 4:98 6:94 5:98
+0:24  [STATE]   friends 1:100 2:99 3:73 / enemies 4:97 6:94 5:84
+0:25  [STATE]   friends 1:100 2:100 3:67 / enemies 4:95 6:93 5:67
+0:26  [STATE]   friends 1:100 2:100 3:60 / enemies 4:95 6:90 5:50
+0:26  [OWNER CAST]   586 [completed before CC landed]
+0:26  [CC ON TEAM]   1 ← Sleep Walk (Drakebady-TwistingNether-EU) | 3s
+0:27  [STATE]   friends 1:100 2:100 3:61 / enemies 4:95 6:88 5:42
+0:28  [STATE]   friends 1:100 2:99 3:93 / enemies 4:100 6:88 5:38
+0:29  [STATE]   friends 1:100 2:100 3:78 / enemies 4:99 6:100 5:60
+0:29  [MISSED CLEANSE]   Vampiric Touch on 3 | 5s | 229k taken during | dispel: Magic
+0:29  [MISSED CLEANSE]   Shadow Word: Madness on 3 | 5s | 225k taken during | dispel: Magic
+0:30  [STATE]   friends 1:100 2:100 3:45 / enemies 4:100 6:100 5:57
+0:31  [STATE]   friends 1:100 2:100 3:26 / enemies 4:100 6:100 5:66
+0:31  [CC ON TEAM]   1 ← Paralysis (Swagpelle-Ravencrest-EU) | 3s
+0:32  [STATE]   friends 1:100 2:100 3:24 / enemies 4:100 6:98 5:66
+0:33  [STATE]   friends 1:100 2:100 3:25 / enemies 4:100 6:100 5:71
+0:34  [STATE]   friends 1:100 2:100 3:27 / enemies 4:100 6:100 5:82
+0:34  [TEAMMATE CD]   3 (Frost Mage): Ice Block
+      [RES] rdy:Δ+Guardian Spirit,Apotheosis,3:Ice Block-Psychic Scream,2:Kidney Shot  cd:Psychic Scream(18s),2:Kidney Shot(7s)  enemy:Power Infusion/Shadow Priest(13s)  cc:1/Paralysis-0s
+0:35  [STATE]   friends 1:100 2:100 3:27 / enemies 4:100 6:100 5:80
+0:36  [STATE]   friends 1:100 2:99 3:29 / enemies 4:100 6:100 5:78
+0:36  [ENEMY BUFF END]   4: Power Infusion
+0:36  [ENEMY BUFF END]   5: Power Infusion
+0:36  [OWNER CAST]   2050 → 3
+0:36  [CC ON TEAM]   2 ← Sleep Walk (Drakebady-TwistingNether-EU) | 1s
+0:37  [STATE]   friends 1:100 2:95 3:100 / enemies 4:100 6:100 5:87
+0:38  [STATE]   friends 1:100 2:91 3:100 / enemies 4:100 6:93 5:88
+0:38  [OWNER CAST]   33076 → 2
+0:39  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 6:95 5:82
+0:40  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 6:95 5:79
+0:40  [OWNER CAST]   33076 → 2
+0:41  [STATE]   friends 1:100 2:100 3:99 / enemies 4:100 6:100 5:73
+0:41  [CC ON TEAM]   3 ← Silence (Dnbx-Kazzak-EU) | 2s | trinket: ON CD (91s left)
+0:41  [ENEMY CD]   4 (Windwalker Monk): Touch of Karma
+0:42  [STATE]   friends 1:100 2:100 3:83 / enemies 4:100 6:100 5:72
+0:43  [STATE]   friends 1:100 2:99 3:74 / enemies 4:100 6:100 5:72
+0:43  [TEAMMATE CD]   2 (Outlaw Rogue): Kidney Shot
+      [RES] rdy:Δ-Psychic Scream,2:Adrenaline Rush,3:Ice Block,3:Dragon's Breath  cd:Psychic Scream(10s),2:Adrenaline Rush(148s),3:Ice Block(232s),3:Dragon's Breath(14s)  enemy:Touch of Karma/Windwalker Monk(1s),Power Infusion/Shadow Priest(21s)  cc:3/Silence-0s
+0:43  [OWNER CAST]   1262763 → 3 [completed before CC landed]
+0:43  [OWNER CAST]   527 → 3 [completed before CC landed]
+0:43  [CLEANSE]   1 dispelled 5 effects: Vampiric Touch off 3, Shadow Word: Madness off 3, Silence off 3, Horrific Visions off 3, Shadow Word: Pain off 3
+0:43  [CC ON TEAM]   1 ← Sin and Punishment (Dnbx-Kazzak-EU) | 3s
+0:44  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 6:99 5:73
+0:45  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 6:100 5:83
+0:46  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 6:99 5:89
+0:47  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 6:97 5:65
+0:48  [STATE]   friends 1:100 2:100 3:99 / enemies 4:100 6:94 5:53
+0:48  [OWNER CAST]   88625 → 6
+0:49  [STATE]   friends 1:100 2:100 3:96 / enemies 4:100 6:93 5:44
+0:49  [CC ON TEAM]   2 ← Leg Sweep (Swagpelle-Ravencrest-EU) | 1s | trinket: used
+0:49  [CC ON TEAM]   3 ← Leg Sweep (Swagpelle-Ravencrest-EU) | 4s | trinket: ON CD (82s left)
+0:50  [CC ON TEAM]   1 ← Leg Sweep (Swagpelle-Ravencrest-EU) | 4s
+0:50  [STATE]   friends 1:100 2:99 3:99 / enemies 4:100 6:92 5:38
+0:50  [TRINKET]   2 used PvP trinket
+0:51  [STATE]   friends 2:100 3:99 / enemies 4:100 6:95 5:48
+0:51  [DMG SPIKE]   3 (Frost Mage): 0.59M in 10s
+0:52  [STATE]   friends 1:99 2:100 3:97 / enemies 4:98 6:95 5:46
+0:53  [STATE]   friends 1:100 2:99 3:88 / enemies 4:98 6:100 5:41
+0:53  [OWNER CD]   Guardian Spirit → 3 (88% HP)
+      [RES] rdy:Δ-Power Infusion,2:Kidney Shot,2:Adrenaline Rush,3:Ice Block,3:Dragon's Breath  cd:Power Infusion(72s),2:Kidney Shot(20s),2:Adrenaline Rush(137s),3:Ice Block(221s),3:Dragon's Breath(4s)  enemy:Touch of Karma/Windwalker Monk(11s)  cc:1/Leg Sweep-1s[stun],3/Leg Sweep-1s[stun]
+0:53  [CC ON TEAM]   3 ← Psychic Scream (Dnbx-Kazzak-EU) | 2s | trinket: ON CD (79s left)
+0:53  [CC ON TEAM]   1 ← Psychic Scream (Dnbx-Kazzak-EU) | 6s
+0:53  [CC ON TEAM]   2 ← Psychic Scream (Dnbx-Kazzak-EU) | 3s | trinket: ON CD (118s left)
+0:54  [STATE]   friends 1:100 2:100 3:87 / enemies 4:100 6:100 5:47
+0:55  [STATE]   friends 1:100 2:100 3:84 / enemies 4:100 6:100 5:49
+0:55  [MISSED CLEANSE]   Vampiric Touch on 3 | 10s | 390k taken during | dispel: Magic
+0:56  [STATE]   friends 1:93 2:99 3:87 / enemies 4:100 6:100 5:59
+0:56  [MISSED CLEANSE]   Shadow Word: Madness on 3 | 8s | 384k taken during | dispel: Magic
+0:57  [STATE]   friends 1:93 2:99 3:64 / enemies 4:100 6:100 5:82
+0:58  [STATE]   friends 1:93 2:97 3:50 / enemies 4:100 6:100 5:83
+0:59  [STATE]   friends 1:93 2:94 3:31 / enemies 4:100 6:100 5:83
+0:59  [OWNER CAST]   2050 → 3
+1:00  [STATE]   friends 1:94 2:95 3:89 / enemies 4:100 6:100 5:75
+1:00  [OWNER CAST]   527 → 2 [completed before CC landed]
+1:00  [CLEANSE]   1 dispelled 2 effects: Horrific Visions off 2, Vampiric Touch off 2
+1:00  [CC ON TEAM]   1 ← Sin and Punishment (Dnbx-Kazzak-EU) | 3s
+1:01  [STATE]   friends 1:94 2:93 3:94 / enemies 4:100 6:98 5:86
+1:02  [STATE]   friends 1:95 2:92 3:93 / enemies 4:98 6:99 5:77
+1:02  [DMG SPIKE]   3 (Frost Mage): 0.35M in 10s
+1:03  [STATE]   friends 1:95 2:90 3:95 / enemies 4:94 6:99 5:68
+1:04  [STATE]   friends 1:95 2:77 3:87 / enemies 4:93 6:98 5:61
+1:04  [OWNER CAST]   33076 → 2
+1:05  [STATE]   friends 1:95 2:87 3:90 / enemies 4:92 6:99 5:60
+1:05  [BUFF FADED]   Guardian Spirit
+1:05  [MISSED CLEANSE]   Shadow Word: Madness on 3 | 9s | 213k taken during | dispel: Magic
+1:06  [STATE]   friends 1:95 2:90 3:85 / enemies 4:92 6:100 5:49
+1:06  [OWNER CAST]   33076 → 2
+1:07  [STATE]   friends 1:96 2:100 3:83 / enemies 4:90 6:100 5:40
+1:07  [OWNER CD]   Apotheosis
+      [RES] rdy:Δ+3:Dragon's Breath-Guardian Spirit  cd:Guardian Spirit(166s)  enemy:Touch of Karma/Windwalker Monk(26s)  cc:3/Disable-0s[root]
+1:08  [STATE]   friends 1:99 2:100 3:55 / enemies 4:90 6:99 5:55
+1:08  [OWNER CAST]   2050 → 3
+1:09  [STATE]   friends 1:99 2:100 3:81 / enemies 4:92 6:100 5:51
+1:09  [TEAMMATE CD]   3 (Frost Mage): Dragon's Breath
+      [RES] rdy:Δ-Guardian Spirit,Apotheosis,3:Ice Block  cd:Guardian Spirit(164s),Apotheosis(118s),3:Ice Block(205s)  enemy:Touch of Karma/Windwalker Monk(28s)
+1:09  [CC CAST]   Dragon's Breath (by 3) → nil [non-player target]
+1:10  [STATE]   friends 1:99 2:100 3:85 / enemies 4:99 6:100 5:58
+1:11  [STATE]   friends 1:99 2:100 3:85 / enemies 4:100 6:100 5:60
+1:11  [OWNER CAST]   88625 → 6
+1:12  [STATE]   friends 1:100 2:100 3:89 / enemies 4:100 6:96 5:62
+1:12  [CC ON TEAM]   3 ← Silence (Dnbx-Kazzak-EU) | 3s | trinket: ON CD (60s left)
+1:13  [STATE]   friends 1:100 2:99 3:86 / enemies 4:100 6:100 5:55
+1:13  [TEAMMATE CD]   2 (Outlaw Rogue): Kidney Shot
+      [RES] rdy:Δ+Psychic Scream-Guardian Spirit,Apotheosis  cd:Guardian Spirit(160s),Apotheosis(114s)  cc:3/Silence-2s
+1:13  [TEAMMATE CD]   2 (Outlaw Rogue): Adrenaline Rush
+      [RES] rdy:Δ-Guardian Spirit,Apotheosis,2:Adrenaline Rush,3:Ice Block,3:Dragon's Breath  cd:Guardian Spirit(159s),Apotheosis(114s),2:Adrenaline Rush(117s),3:Ice Block(201s),3:Dragon's Breath(40s)  cc:3/Silence-2s
+1:14  [STATE]   friends 1:100 2:99 3:86 / enemies 6:98 5:54
+1:14  [OWNER CD]   Psychic Scream
+      [RES] rdy:Δ-Guardian Spirit,Apotheosis,3:Ice Block  cd:Guardian Spirit(159s),Apotheosis(113s),3:Ice Block(200s)  cc:3/Silence-2s
+1:14  [CC CAST]   Psychic Scream (by 1) → nil [non-player target]
+1:14  [CC CAST]   Psychic Scream (by 1) → 6
+1:15  [STATE]   friends 1:100 2:100 3:81 / enemies 4:99 6:100 5:43
+1:15  [OWNER CAST]   527 → 3 [completed before CC landed]
+1:15  [CLEANSE]   1 dispelled 4 effects: Silence off 3, Vampiric Touch off 3, Horrific Visions off 3, Shadow Word: Pain off 3
+1:15  [CC ON TEAM]   1 ← Sin and Punishment (Dnbx-Kazzak-EU) | 3s
+1:16  [STATE]   friends 1:100 2:100 3:76 / enemies 4:99 6:100 5:34
+1:17  [STATE]   friends 1:100 2:99 3:77 / enemies 4:100 5:32
+1:18  [STATE]   friends 1:100 2:99 3:77 / enemies 4:100 5:30
+1:18  [CC ON TEAM]   3 ← Paralysis (Swagpelle-Ravencrest-EU) | 3s | trinket: ON CD (54s left)
+1:18  [MISSED CLEANSE]   Paralysis on 3 | 3s | 0k taken during | dispel: Magic
+1:19  [STATE]   friends 1:100 2:99 3:79 / enemies 4:98 5:18
+1:19  [OWNER CAST]   14914 → 5
+1:20  [STATE]   friends 1:100 2:99 3:79 / enemies 4:100 5:dead
+1:20  [DEATH]  5 (Shadow Priest — enemy)
+1:20  [ROSTER]  enemy 5 removed (dead)
+1:21  [STATE]   friends 1:100 2:99 3:89 / enemies 4:99 5:dead
+1:21  [OWNER CAST]   33076 → 3
+1:22  [STATE]   friends 1:100 2:100 3:90 / enemies 4:98 5:dead
+1:22  [OWNER CAST]   1262763 → 3
+1:23  [STATE]   friends 1:100 2:100 3:100 / enemies 4:90 5:dead
+1:24  [STATE]   friends 1:100 2:100 3:100 / enemies 4:90 6:99 5:dead
+1:25  [STATE]   friends 1:100 2:100 3:100 / enemies 4:90 6:99 5:dead
+1:25  [OWNER CAST]   527 → 2 [completed before CC landed]
+1:25  [CLEANSE]   1 dispelled 3 effects: Vampiric Touch off 2, Shadow Word: Pain off 2, Horrific Visions off 2
+1:25  [CC ON TEAM]   1 ← Sin and Punishment (Dnbx-Kazzak-EU) | 3s
+1:26  [STATE]   friends 1:100 2:100 3:100 / enemies 6:85 5:dead
+1:27  [STATE]   friends 1:100 2:100 3:100 / enemies 6:76 5:dead
+1:27  [BUFF FADED]   Apotheosis
+1:28  [STATE]   friends 1:100 2:100 3:100 / enemies 6:47 5:dead
+1:28  [OWNER CAST]   14914 → 6
+1:29  [STATE]   friends 1:100 2:100 3:100 / enemies 4:93 6:22 5:dead
+1:30  [STATE]   friends 1:100 2:100 3:100 / enemies 4:93 6:dead 5:dead
+1:30  [OWNER CAST]   32379 → 6
+1:30  [DEATH]  6 (Preservation Evoker — enemy)
+1:30  [ROSTER]  enemy 6 removed (dead)
+1:31  [STATE]   friends 1:100 2:100 3:100 / enemies 4:93 6:dead 5:dead
+
+1:31  [MATCH END]   damp: 10%
+  friends 1:100% 2:100% 3:100% / enemies 4:93% 6:dead(1:30) 5:dead(1:20)

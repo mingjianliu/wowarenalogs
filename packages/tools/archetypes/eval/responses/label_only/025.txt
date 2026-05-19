@@ -1,0 +1,31 @@
+This is a long_sustained_swap loss — 5:24, 25% dampening, the Warrior hit 4% HP and survived, the Paladin hit 24% and survived. The archetype requires sustained CC pressure on the enemy healer across multiple burst windows and eventual kill through dampening, but your team never closed despite having three separate kill windows. The enemy's Preservation Evoker was the decisive factor; she was not locked out during any of your genuine damage bursts.
+
+**What this archetype demands**
+
+Long_sustained_swap is not about burst: it is about maintaining consistent damage while keeping the enemy healer CC'd across a 4–5 minute game. The Mistweaver and Warlock are the CC engine — Leg Sweep, Paralysis, Shadowfury, Mortal Coil stacked across multiple windows. The Mage supplies burst damage when CC lands. The win condition is dampening the enemy healer to the point where she cannot keep the target alive on your third or fourth go.
+
+Your team demonstrated the first part correctly. The Mage had six damage spikes across 5 minutes: 0.71M, 0.61M, 0.60M, 0.91M across the documented windows. Leg Sweep connected on the Warrior and Paladin repeatedly. The problem is that the Evoker was not simultaneously CC'd during the highest-value moments.
+
+**1:03 window: Leg Sweep on Warrior + Paladin, Evoker free**
+
+At 1:03 the Mistweaver swept both the Warrior (71% HP) and Paladin into a stun, and immediately Paralyzed with follow-up. The Warlock's Shadowfury at 1:32 targeted the Evoker — 25 seconds after the initial stun chain. By then the Warrior was at 24% HP and the Mage had done 0.71M. The Evoker recovered from Paralysis at 1:04 and had a free window from 1:04 to 1:32 during which the Warrior went from 69% to 6% and then healed back to 95%. She had 28 seconds of uninterrupted healing time.
+
+The correct sequence: Shadowfury on the Evoker at 1:04 when the Warrior first drops below 50%, then Leg Sweep on the Warrior again when Shadowfury expires. Instead, Shadowfury was used at 1:32 after the Warrior had already started recovering. This is the match-deciding error.
+
+**2:36 window: Shadowfury on Warrior + Paladin, Evoker free**
+
+At 2:36 the Warlock used Shadowfury on the Warrior and Paladin simultaneously. The Evoker was at full health and not CC'd. She was at 98% HP at 2:36 and remained free while the Mage had a 0.60M spike at 3:34. This is the same problem: AoE CC on your kill targets is not useful if it does not include or simultaneously include the enemy healer.
+
+**4:27 window: Shadowfury on all three enemies**
+
+At 4:27 the Warlock hit all three enemies with Shadowfury. This is the correct target selection — it locked the Evoker out during the Mage's 0.91M spike. The Warrior went from 73% to 100% (Evoker presumably healed while on DR from Shadowfury) and the window did not convert. Dragon's Breath on the Evoker at 4:36 was 9 seconds after Shadowfury, which is correct follow-up CC. But by 4:27 you were at 21% dampening — healing output was already meaningfully reduced, but so was damage.
+
+**Mistweaver's role**
+
+Life Cocoon usage was defensively correct: Mage at 31% (0:23), Mage at 46% with Storm Bolt incoming (1:28), Mage at 42% (3:18). These are appropriate reactive saves. The issue is not the Mistweaver's defensive play — it's that Leg Sweep was repeatedly used to stun damage dealers instead of splitting Leg Sweep and Paralysis across the enemy healer + one DPS simultaneously.
+
+At 4:43 the Mistweaver used Leg Sweep on the Warrior and Paladin during Deep Breath. This is the one instance where the timing was correct: Evoker neutralized by Deep Breath, Leg Sweep used on DPS to create pressure. The Mage had 0.91M in that 10-second window. It still did not kill because the Evoker was healing between Deep Breath casts.
+
+**Conclusion**
+
+The match was winnable on at least three occasions. The pattern that prevented the win is consistent: Shadowfury and Leg Sweep were used to CC the enemy DPS during kill windows rather than to CC the enemy healer. In a long_sustained_swap game, your CC should target the enemy healer first, and damage dealers second. Fix that priority and this comp closes games in the 2–3 minute range instead of going to 25% dampening.

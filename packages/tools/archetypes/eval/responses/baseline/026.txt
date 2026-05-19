@@ -1,0 +1,13 @@
+You lost this match because the enemy Fury Warrior ran Avatar and Recklessness three separate times and each time you were caught without a major defensive cooldown available. The pattern repeated in nearly identical fashion across all three critical windows.
+
+The first burst window at 0:41 hit your Enhancement Shaman with 0.88M in a 20-second span. Your Shaman dropped to 39% before you stabilized. The response was solid — Emerald Communion at 0:43 was the right call given your Warrior was already stunned and the Shaman was the primary target. You held that window.
+
+The second window at 1:19 swapped to you. You reached 43% at 1:27 and burned through Tip the Scales plus personal heals to survive. No major defensive was available and your trinket was still on cooldown. You survived but it cost you all mobility.
+
+The third and decisive window at 2:02 was the fatal one. Avatar and Recklessness came up simultaneously with the Restoration Druid's Incarnation: Tree of Life, and you dropped to 27% in two seconds. Obsidian Scales was the only tool available. You got back to 90% immediately, but then the Warrior's fourth window at 2:45 found you without Rewind (on 199s cooldown), without Emerald Communion (on 115s cooldown), and without Stasis (just used). You spent Stasis reactively at 1:49 during the third spike on the Shaman — that Stasis use was premature given how deep into the match you were and how many more windows were coming.
+
+The death trace shows the Fury Warrior and Restoration Druid combined on you in the final window: Rampage for 233k, Bloodbath for 163k, Starsurge for 137k. Your Warrior used his trinket to survive a Cyclone at 2:45, which meant he couldn't cover you when Intimidating Shout cycled back.
+
+The core issue is resource depletion by attrition. The enemy team ran a textbook rotation: Intimidating Shout or Cyclone to remove a threat, then Avatar into Recklessness on whoever is exposed. Each cycle they burned your defensive tools down one by one. Stasis at 1:49 should have been held for the 2:02 window or later — those stored charges of Lifebind and Reversion would have covered the Evoker's burst at the worst moment.
+
+Sleep Walk on the Fury Warrior at 1:21 and 1:24 shows you tried to interrupt the rotation, but the Warrior's trinket was up for the 1:28 Storm Bolt and both of your defensive CDs for the third wave were on extended cooldown. Next time you face this comp, consider whether spending Stasis mid-fight to top off a teammate at 61% HP is worth more than holding it for the moment when your own HP will crater to 27%.

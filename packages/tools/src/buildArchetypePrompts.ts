@@ -36,14 +36,16 @@ import {
 
 const K = parseInt(process.env.K ?? '4', 10);
 const MIN_MATCHES = parseInt(process.env.MIN_MATCHES ?? '10', 10);
+const BRACKET = process.env.BRACKET ?? '3v3';
+const BRACKET_SLUG = BRACKET.toLowerCase().includes('solo') ? 'solo_shuffle' : '3v3';
 
 const ARCHETYPES_DIR = path.join(__dirname, '../archetypes');
-const FEATURES_FILE = path.join(ARCHETYPES_DIR, 'features.jsonl');
+const FEATURES_FILE = path.join(ARCHETYPES_DIR, `features_${BRACKET_SLUG}.jsonl`);
 // Draft: stats only, promptText = "". Narratives are added by the Claude Code skill.
-const DRAFT_FILE = path.join(ARCHETYPES_DIR, 'archetype_prompts_draft.json');
+const DRAFT_FILE = path.join(ARCHETYPES_DIR, `archetype_prompts_${BRACKET_SLUG}_draft.json`);
 // Final path — written by the Claude Code skill after narrative generation.
-export const PROMPTS_FILE = path.join(ARCHETYPES_DIR, 'archetype_prompts.json');
-const MODEL_FILE = path.join(ARCHETYPES_DIR, 'archetype_model.json');
+export const PROMPTS_FILE = path.join(ARCHETYPES_DIR, `archetype_prompts_${BRACKET_SLUG}.json`);
+const MODEL_FILE = path.join(ARCHETYPES_DIR, `archetype_model_${BRACKET_SLUG}.json`);
 
 // ── Feature vector for clustering ────────────────────────────────────────────
 

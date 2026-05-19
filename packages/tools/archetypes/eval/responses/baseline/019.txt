@@ -1,0 +1,9 @@
+This was a 17-second win — effectively a perfect execute against a 2v3 that was resolved before any real game state developed. The enemy team (Feral Druid and Discipline Priest) was at a numerical disadvantage, and your team correctly identified and capitalized on that immediately.
+
+The enemy Feral Druid opened with Tiger's Fury at 0:03 and Incarnation: Avatar of Ashamane at 0:04, attempting to use their offensive cooldowns to compensate for the 2v3 disadvantage. The Rake stun at 0:05 on your Paladin was their only CC, and the Paladin correctly trinketed it immediately. Your Warrior popped Die by the Sword at 0:07 as a precautionary defensive while the enemy Feral's burst window was active.
+
+Your role in this match was primarily setup and mana management. You started pre-hotting the team at 0:00, had Innervate running on yourself at 0:10 (correct for match economy), and Incarnation: Tree of Life at 0:10. Given the match lasted 17 seconds, none of these were truly necessary for survival — this was a cleanup execution rather than a contested game. The Discipline Priest died at 0:14 and the Feral Druid at 0:17.
+
+The only coaching note in a 17-second match is to flag that the Druid used Incarnation: Tree of Life and Innervate for a fight that lasted 17 seconds. In a legitimate 2v3, opening with Tree of Life is correct because you need every healing tool available. But if you read the situation immediately as a guaranteed win (no healer on enemy team), conserving those CDs for the next match is the smarter play. The broader question is whether the enemy's 2v3 was immediately apparent at pull — if it was, a more restrained CD budget was possible.
+
+Nothing was meaningfully wrong here. It's a 17-second win against an incomplete enemy team. Execute quickly, don't over-spend resources, move on.

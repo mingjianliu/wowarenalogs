@@ -1,0 +1,11 @@
+dampening_grind_swap win at 29% dampening — survival and cleanse discipline define these matches, and your execution was mostly strong. Two things to address.
+
+Missed Oppressing Roar cleanses at 0:15 and 3:54 both sat for their full duration. In a dampening game, Oppressing Roar debuffs your healing output at exactly the moments the enemy is applying pressure — it's the highest-priority dispel on your action list when it lands. The match context at 0:15 was chaotic (three simultaneous CCs across your team), but that's precisely when the dispel matters most. Practice dispelling while in motion or during cast breaks — don't wait for a clean window that never comes.
+
+Your Rewind at 0:55 with the Warlock at 27% was correct and well-timed. The Time Dilation at 0:20 on the Warlock mid-Execution Sentence was equally good — extending HoTs during enemy CD windows is core Evoker identity. Both of these showed sound defensive CD prioritization.
+
+Sleep Walk on the enemy Evoker was used consistently and correctly throughout the match. Soft-locking the enemy healer through repeated short disorients accumulates meaningful healing loss over 6 minutes under dampening. That pattern is right.
+
+The Emerald Communion at 2:38 during the Critical offensive window (0.94M on you as the healer) with Hammer of Justice stunning you immediately after was necessary and correctly timed — you were in danger and the cooldown saved the match. Be mindful that Emerald Communion and Stasis came up within 30 seconds of each other in the mid-game, leaving a gap where only Stasis was available. Try to space major healing cooldowns by 45+ seconds where possible so you always have a fallback.
+
+The sustained Warlock pressure keeping enemy Warlock and Shaman in the 40–60% range through the mid-game before the final swing at 2:15 shows good target economy in a dampening grind. You won this correctly — just address the dispel habit.

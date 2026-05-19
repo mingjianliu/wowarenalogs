@@ -1,0 +1,370 @@
+[ARCHETYPE: Preservation Evoker — fast_nuke_swap]
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Preservation Evoker (Healer) | Bracket: 3v3 | Result: Win | Duration: 2:40
+  My team: Arms Warrior, Enhancement Shaman, Preservation Evoker
+  Enemy team: Windwalker Monk, Holy Paladin, Affliction Warlock
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Preservation Evoker): CANNOT offensive purge
+  Team purgers: Enhancement Shaman
+
+DAMPENING (3v3): started at 10%, ended at 10% at match end
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Jadeddr-Proudmoore-US (Preservation Evoker — log owner):
+    Deep Breath [120s], Wing Buffet [180s, 2 Charges], Cauterizing Flame [60s], Rewind [240s], Emerald Communion [180s], Stasis [90s], Rescue [60s]
+  2: Frugged-Illidan-US (Arms Warrior):
+    Avatar [90s, 2 Charges], Intimidating Shout [90s], Die by the Sword [120s], Bladestorm (Arms) [90s]
+  3: Yen-Icecrown-US (Enhancement Shaman):
+    Hex [30s], Ascendance (Enhancement) [180s, 2 Charges]
+  4: Blowjabs-Azralon-US (Windwalker Monk — enemy):
+    Touch of Karma [90s]
+  5: Iihatemyjob-Stormrage-US (Holy Paladin — enemy):
+    Avenging Crusader [60s]
+  6: Lalaylaria-Zul'jin-US (Affliction Warlock — enemy):
+    Soul Rip [60s]
+
+MATCH TIMELINE
+
+0:06  [STATE]   friends 1:100 3:100
+0:08  [OWNER CAST]   360995 → 3
+0:08  [OWNER CAST]   361195 → 3
+0:09  [STATE]   friends 1:100 3:95
+0:09  [OWNER CAST]   406971
+0:10  [OWNER CAST]   364343 → 3
+0:12  [STATE]   friends 1:100 2:99 3:98
+0:14  [OWNER CAST]   Sleep Walk → 5
+0:14  [OWNER CAST]   1256581 → 2
+0:15  [STATE]   friends 1:100 2:94 3:97
+0:16  [OWNER CAST]   364343 → 2
+0:17  [TEAMMATE CD]   2 (Arms Warrior): Avatar
+      [RES] rdy:Δ+Wing Buffet,Rewind,Emerald Communion,Stasis,3:Hex,3:Ascendance (Enhancement)  cd:—
+0:17  [OWNER CAST]   357208
+0:18  [STATE]   friends 1:100 2:97 3:100
+0:19  [OWNER CAST]   Sleep Walk → 5
+0:19  [OWNER CAST]   355936
+0:20  [TEAMMATE CD]   3 (Enhancement Shaman): Ascendance (Enhancement)
+      [RES] rdy:Δ+Wing Buffet,Rewind,Emerald Communion,Stasis,3:Ascendance (Enhancement)-2:Avatar  cd:2:Avatar(87s)
+0:21  [STATE]   friends 1:100 2:99 3:100
+0:21  [OWNER CD]   Hover
+      [RES] rdy:Δ+Deep Breath,Wing Buffet,Rewind,Emerald Communion,3:Hex-2:Avatar  cd:2:Avatar(86s)
+0:21  [OWNER CAST]   356995 → 4
+0:23  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ  cd:—  cc:3/Disable-0s[root],3/Grapple Weapon-0s[disarm]
+0:23  [OFFENSIVE WINDOW]   0:23–0:39 | High | 0.89M on 2 (Arms Warrior) | CDs: Touch of Karma + Avenging Crusader + Soul Rip
+0:23  [ENEMY CD]   4 (Windwalker Monk): Touch of Karma
+0:23  [OWNER CAST]   1256581 → 3
+0:24  [STATE]   friends 1:100 2:99 3:100
+0:24  [TRINKET]   3 used PvP trinket
+0:24  [ENEMY CD]   5 (Holy Paladin): Avenging Crusader
+0:25  [OWNER CAST]   364343 → 3
+0:26  [OWNER CAST]   357208
+0:27  [STATE]   friends 1:100 2:99 3:100
+0:28  [OWNER CAST]   431443 → 4
+0:28  [OWNER CD]   Deep Breath
+      [RES] rdy:Deep Breath,Wing Buffet,Cauterizing Flame,Rewind,Emerald Communion,Stasis,Rescue,2:Intimidating Shout,2:Die by the Sword,2:Bladestorm (Arms),3:Hex  cd:2:Avatar(79s),3:Ascendance (Enhancement)(173s)  enemy:Touch of Karma/Windwalker Monk(4s),Avenging Crusader/Holy Paladin(4s)
+0:29  [CC ON TEAM]   2 ← Howl of Terror (Lalaylaria-Zul'jin-US) | 5s
+0:29  [CC ON TEAM]   3 ← Howl of Terror (Lalaylaria-Zul'jin-US) | 3s | trinket: ON CD (115s left)
+0:30  [STATE]   friends 1:100 2:99 3:98 / enemies 4:100 5:100 6:85
+0:30  [BUFF FADED]   Deep Breath
+0:30  [OWNER CD]   Wing Buffet
+      [RES] rdy:Δ-Deep Breath  cd:Deep Breath(118s)  enemy:Touch of Karma/Windwalker Monk(6s),Avenging Crusader/Holy Paladin(6s)  cc:2/Howl of Terror-4s,3/Howl of Terror-2s
+0:30  [ENEMY CD]   6 (Affliction Warlock): Soul Rip
+0:31  [STATE]   friends 1:100 2:100 3:97 / enemies 4:100 5:100 6:85
+0:31  [OWNER CAST]   356995 → 6 [completed before CC landed]
+0:31  [CC ON TEAM]   1 ← Paralysis (Blowjabs-Azralon-US) | 3s
+0:31  [CC ON TEAM]   1 ← Hammer of Justice (Iihatemyjob-Stormrage-US) | 5s
+0:32  [STATE]   friends 1:94 2:100 3:96 / enemies 4:100 5:100 6:85
+0:33  [STATE]   friends 1:95 2:99 3:94 / enemies 4:100 5:100 6:99
+0:33  [OWNER CAST]   355941
+0:34  [STATE]   friends 1:100 2:100 3:99 / enemies 4:100 5:100 6:100
+0:34  [OWNER CAST]   361195 → 3
+0:34  [CC ON TEAM]   2 ← Leg Sweep (Blowjabs-Azralon-US) | 3s | trinket: used
+0:34  [DMG SPIKE]   2 (Arms Warrior): 0.89M in 10s
+0:35  [STATE]   friends 1:96 2:92 3:99 / enemies 4:100 5:100 6:100
+0:36  [STATE]   friends 1:96 2:67 3:93 / enemies 4:100 5:100 6:100
+0:37  [STATE]   friends 1:97 2:29 3:92 / enemies 4:100 5:100 6:100
+0:37  [OWNER CD]   Rewind
+      [RES] rdy:Δ+Rewind,Emerald Communion,Stasis,3:Hex-2:Avatar  cd:2:Avatar(70s)  enemy:Touch of Karma/Windwalker Monk(13s),Avenging Crusader/Holy Paladin(13s),Soul Rip/Affliction Warlock(7s)  cc:2/Leg Sweep-0s[stun][trinketed]
+0:37  [TRINKET]   2 used PvP trinket
+0:37  [OWNER CD]   Time Dilation → 2
+      [RES] rdy:Δ-Deep Breath,Wing Buffet,Rewind  cd:Deep Breath(110s),Wing Buffet(172s),Rewind(239s)  enemy:Touch of Karma/Windwalker Monk(14s),Avenging Crusader/Holy Paladin(14s),Soul Rip/Affliction Warlock(8s)
+0:38  [STATE]   friends 1:99 2:40 3:97 / enemies 4:100 5:100 6:100
+0:38  [OWNER CAST]   364343 → 2
+0:39  [STATE]   friends 1:100 2:40 3:100 / enemies 4:100 5:100 6:100
+0:39  [OWNER CAST]   1256581 → 2
+0:40  [STATE]   friends 1:100 2:100 3:100 / enemies 4:94 5:100 6:100
+0:40  [BUFF FADED]   Rewind
+0:41  [STATE]   friends 1:100 2:96 3:100 / enemies 4:95 5:100 6:99
+0:41  [OWNER CAST]   Sleep Walk → 5
+0:41  [OWNER CAST]   364343 → 2
+0:42  [STATE]   friends 1:99 2:92 3:100 / enemies 4:100 5:100 6:100
+0:43  [STATE]   friends 1:98 2:89 3:99 / enemies 4:100 5:100 6:100
+0:43  [OWNER CAST]   360995 → 2
+0:43  [TEAMMATE CD]   3 (Enhancement Shaman): Hex
+      [RES] rdy:Δ+Emerald Communion,Stasis,3:Hex-Deep Breath,2:Avatar  cd:Deep Breath(105s),2:Avatar(64s)  enemy:Touch of Karma/Windwalker Monk(19s),Avenging Crusader/Holy Paladin(19s),Soul Rip/Affliction Warlock(13s)
+0:43  [OWNER CAST]   361195 → 2
+0:43  [CC ON TEAM]   3 ← Mortal Coil (Lalaylaria-Zul'jin-US) | 3s | trinket: ON CD (101s left)
+0:43  [MISSED CLEANSE]   Mortal Coil on 3 | 3s | 24k taken during | dispel: Magic
+0:43  [OWNER CAST]   364343 → 3
+0:44  [STATE]   friends 1:99 2:100 3:100 / enemies 4:98 6:100
+0:45  [STATE]   friends 1:99 2:100 3:100 / enemies 4:98 6:100
+0:46  [STATE]   friends 1:99 2:99 3:100 / enemies 4:87 6:100
+0:46  [DMG SPIKE]   2 (Arms Warrior): 0.74M in 10s
+0:47  [STATE]   friends 1:99 2:97 3:100 / enemies 4:82 6:100
+0:48  [STATE]   friends 1:97 2:82 3:100 / enemies 4:76 6:100
+0:48  [OWNER CAST]   Sleep Walk → 5
+0:48  [OWNER CAST]   366155 → 2
+0:49  [STATE]   friends 1:100 2:83 3:100 / enemies 4:71 6:96
+0:49  [OWNER CAST]   364343 → 2
+0:49  [MISSED CLEANSE]   Curse of Weakness on 2 | 38s | 392k taken during | dispel: Curse
+0:50  [STATE]   friends 1:100 2:72 3:99 / enemies 4:69 6:95
+0:50  [OWNER CAST]   355936
+0:51  [STATE]   friends 1:91 2:49 3:99 / enemies 4:63 5:100 6:95
+0:51  [OWNER CAST]   360995 → 2
+0:52  [STATE]   friends 1:100 2:66 3:100 / enemies 4:47 5:100 6:94
+0:52  [OWNER CAST]   361195 → 2
+0:52  [OWNER CAST]   364343 → 2
+0:53  [STATE]   friends 1:100 2:71 3:99 / enemies 4:62 5:100 6:94
+0:54  [STATE]   friends 1:99 2:70 3:98
+0:54  [OWNER CAST]   361509 → 2
+0:54  [OWNER CAST]   431443 → 2
+0:54  [OWNER CAST]   357208
+0:56  [OWNER CAST]   1256581 → 2
+0:57  [STATE]   friends 1:87 2:97 3:91
+0:58  [OWNER CAST]   Sleep Walk → 6
+0:58  [OWNER CAST]   364343 → self
+0:59  [CLEANSE]   3 dispelled 2 effects: Disable off 2, Curse of Exhaustion off 3
+1:00  [STATE]   friends 1:72 2:91 3:90
+1:00  [OWNER CAST]   358385
+1:01  [OWNER CD]   Obsidian Scales → self
+      [RES] rdy:Δ-3:Hex  cd:3:Hex(12s)
+1:01  [OWNER CD]   Time Dilation → self
+      [RES] rdy:Δ  cd:—
+1:02  [OWNER CAST]   431443 → 4
+1:02  [OWNER CAST]   360995 → self
+1:03  [STATE]   friends 1:78 2:92 3:87
+1:03  [OWNER CAST]   361195 → self
+1:03  [OWNER CAST]   360823 → 2
+1:03  [CLEANSE]   1 dispelled 2 effects: Corruption off 2, Searing Glare off 2
+1:04  [STATE]   friends 1:96 2:98 3:73 / enemies 4:68 5:88 6:100
+1:05  [STATE]   friends 1:100 2:100 3:74 / enemies 4:87 5:89 6:100
+1:05  [OWNER CAST]   364343 → 3
+1:06  [STATE]   friends 1:99 2:100 3:69 / enemies 4:83 5:86 6:100
+1:06  [OWNER CAST]   366155 → 3
+1:06  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—
+1:07  [STATE]   friends 1:97 2:100 3:78 / enemies 4:90 5:85 6:100
+1:07  [OWNER CAST]   364343 → 3 [completed before CC landed]
+1:07  [CLEANSE]   3 dispelled Disable off 3
+1:07  [CC ON TEAM]   1 ← Paralysis (Blowjabs-Azralon-US) | 1s
+1:08  [STATE]   friends 1:100 2:99 3:79 / enemies 4:86 5:84 6:100
+1:08  [CLEANSE]   3 dispelled Consecration off 2
+1:08  [OWNER CAST]   355936 [succeeded after CC arrived — within 1s in log]
+1:08  [DMG SPIKE]   3 (Enhancement Shaman): 0.82M in 10s
+1:09  [STATE]   friends 1:99 2:90 3:65 / enemies 4:84 5:85 6:100
+1:09  [CC ON TEAM]   2 ← Howl of Terror (Lalaylaria-Zul'jin-US) | 2s | trinket: ON CD (88s left)
+1:09  [CC ON TEAM]   1 ← Howl of Terror (Lalaylaria-Zul'jin-US) | 2s
+1:09  [CC ON TEAM]   3 ← Howl of Terror (Lalaylaria-Zul'jin-US) | 1s | trinket: ON CD (75s left)
+1:10  [STATE]   friends 1:99 2:100 3:70 / enemies 4:83 5:86 6:100
+1:10  [CC ON TEAM]   1 ← Hammer of Justice (Iihatemyjob-Stormrage-US) | 5s
+1:11  [STATE]   friends 1:100 2:100 3:65 / enemies 4:83 5:86 6:100
+1:12  [STATE]   friends 1:96 2:96 3:64 / enemies 4:82 5:88 6:100
+1:13  [STATE]   friends 1:96 2:91 3:38 / enemies 4:79 5:88 6:100
+1:14  [STATE]   friends 1:90 2:92 3:57 / enemies 4:69 5:88 6:100
+1:14  [OWNER CD]   Emerald Communion
+      [RES] rdy:Δ-Rewind  cd:Rewind(203s)  cc:1/Hammer of Justice-0s[stun]
+1:15  [STATE]   friends 1:99 2:95 3:54 / enemies 4:74 5:96 6:99
+1:16  [STATE]   friends 1:94 2:97 3:70 / enemies 4:90 5:98 6:95
+1:16  [BUFF FADED]   Emerald Communion
+1:17  [STATE]   friends 1:100 2:99 3:73 / enemies 4:83 5:98 6:94
+1:18  [STATE]   friends 1:100 2:98 3:100 / enemies 4:93 5:99 6:92
+1:18  [OWNER CAST]   364342 → self
+1:19  [STATE]   friends 1:99 2:94 3:98 / enemies 4:96 5:99 6:87
+1:19  [OWNER CAST]   364343 → 2
+1:20  [STATE]   friends 1:97 2:95 3:98 / enemies 4:92 5:99 6:86
+1:21  [STATE]   friends 1:96 2:96 3:97
+1:21  [OWNER CAST]   1256581 → 2
+1:22  [OWNER CAST]   364343 → 2
+1:22  [OWNER CD]   Hover
+      [RES] rdy:Δ+3:Hex-Emerald Communion  cd:Emerald Communion(172s)
+1:24  [STATE]   friends 1:85 2:95 3:99
+1:24  [OWNER CAST]   Sleep Walk → 5
+1:26  [OWNER CAST]   355936
+1:27  [STATE]   friends 1:97 2:100 3:98
+1:27  [OWNER CAST]   356995 → 6
+1:29  [TEAMMATE CD]   2 (Arms Warrior): Avatar
+      [RES] rdy:Δ-Deep Breath,Wing Buffet,Rewind,Emerald Communion,2:Avatar,3:Ascendance (Enhancement)  cd:Deep Breath(58s),Wing Buffet(120s),Rewind(188s),Emerald Communion(165s),2:Avatar(18s),3:Ascendance (Enhancement)(111s)
+1:30  [STATE]   friends 1:96 2:100 3:96
+1:30  [OWNER CAST]   Sleep Walk → 5
+1:30  [OWNER CAST]   1256581 → 3
+1:31  [OWNER CAST]   357208
+1:32  [STATE]   friends 1:96 2:100 3:97 / enemies 4:81 6:56
+1:33  [STATE]   friends 1:98 2:100 3:97 / enemies 4:77 5:100 6:56
+1:34  [STATE]   friends 1:100 2:100 3:100 / enemies 4:58 5:100 6:73
+1:34  [OWNER CAST]   356995 → 4
+1:35  [STATE]   friends 1:99 2:100 3:99 / enemies 4:32 5:100 6:73
+1:35  [ENEMY CD]   5 (Holy Paladin): Avenging Crusader
+1:36  [STATE]   friends 1:94 2:100 3:97 / enemies 4:56 5:100 6:77
+1:36  [DMG SPIKE]   1 (Preservation Evoker): 0.71M in 10s
+1:37  [STATE]   friends 1:76 2:100 3:96 / enemies 4:67 5:93 6:79
+1:37  [OWNER CAST]   360995 → self
+1:37  [OWNER CAST]   361195 → self
+1:38  [STATE]   friends 1:70 2:100 3:96 / enemies 4:58 5:92 6:79
+1:39  [STATE]   friends 1:55 2:100 3:97 / enemies 4:52 5:100 6:87
+1:39  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Avenging Crusader/Holy Paladin(4s)  cc:1/Chrono Flames-0s[kick]
+1:40  [STATE]   friends 1:53 2:100 3:97 / enemies 4:73 5:98 6:89
+1:40  [OWNER CAST]   361509 → self
+1:40  [OWNER CAST]   431443 → self
+1:40  [OWNER CAST]   364343 → self
+1:40  [OWNER CD]   Obsidian Scales → self
+      [RES] rdy:Δ  cd:—  enemy:Avenging Crusader/Holy Paladin(5s)
+1:41  [STATE]   friends 1:74 2:100 3:100 / enemies 4:62 5:96 6:100
+1:41  [OWNER CAST]   1256581 → self
+1:42  [STATE]   friends 1:100 2:100 3:100
+1:42  [OWNER CAST]   364343 → self [completed before CC landed]
+1:42  [CC ON TEAM]   1 ← Leg Sweep (Blowjabs-Azralon-US) | 4s
+1:43  [STATE]   friends 1:100 2:100 3:100 / enemies 4:66 5:93 6:100
+1:43  [CC ON TEAM]   1 ← Hammer of Justice (Iihatemyjob-Stormrage-US) | 3s
+1:44  [STATE]   friends 1:96 2:100 3:98 / enemies 4:66 5:85 6:100
+1:45  [STATE]   friends 1:95 2:98 3:97 / enemies 4:51 5:81 6:100
+1:46  [STATE]   friends 1:66 2:96 3:96 / enemies 4:48 5:86 6:100
+1:46  [CC ON TEAM]   3 ← Howl of Terror (Lalaylaria-Zul'jin-US) | 0s | trinket: ON CD (38s left)
+1:46  [OWNER CAST]   360823 → 3
+1:46  [OWNER CD]   Time Dilation → self
+      [RES] rdy:Δ+2:Avatar  cd:—  enemy:Avenging Crusader/Holy Paladin(12s)  cc:1/Disable-0s[root],3/Howl of Terror-0s
+1:46  [CLEANSE]   1 dispelled 2 effects: Corruption off 3, Howl of Terror off 3
+1:47  [STATE]   friends 1:63 2:95 3:97 / enemies 4:48 5:80 6:100
+1:48  [STATE]   friends 1:53 2:96 3:97 / enemies 4:82 5:62 6:100
+1:48  [OWNER CAST]   360995 → self
+1:48  [OWNER CAST]   361195 → self
+1:48  [MISSED CLEANSE]   Curse of Weakness on 1 | 48s | 127k taken during | dispel: Curse
+1:49  [STATE]   friends 1:89 2:91 3:98 / enemies 4:83 5:73 6:100
+1:49  [TEAMMATE CD]   3 (Enhancement Shaman): Hex
+      [RES] rdy:Δ+2:Avatar-Emerald Communion  cd:Emerald Communion(146s)  enemy:Avenging Crusader/Holy Paladin(14s)
+1:49  [OWNER CAST]   364343 → self
+1:50  [STATE]   friends 1:93 2:92 3:98 / enemies 4:73 5:78 6:100
+1:50  [OWNER CAST]   366155 → self
+1:51  [STATE]   friends 1:99 2:94 3:99 / enemies 4:76 5:76 6:99
+1:52  [STATE]   friends 1:96 2:93 3:99 / enemies 4:74 5:75 6:94
+1:52  [DMG SPIKE]   3 (Enhancement Shaman): 0.66M in 10s
+1:52  [OWNER CAST]   Sleep Walk → 5
+1:52  [OWNER CAST]   364343 → 3
+1:53  [STATE]   friends 1:98 2:90 3:83 / enemies 4:86 5:78 6:100
+1:53  [OWNER CD]   Stasis
+      [RES] rdy:Δ+2:Avatar-Emerald Communion,3:Hex  cd:Emerald Communion(141s),3:Hex(25s)  enemy:Avenging Crusader/Holy Paladin(19s)
+1:54  [STATE]   friends 1:95 2:90 3:52 / enemies 4:86 5:83 6:100
+1:54  [OWNER CAST]   360995 → 3
+1:54  [OWNER CAST]   361195 → 3
+1:55  [STATE]   friends 1:98 2:88 3:49 / enemies 4:85 5:83 6:100
+1:55  [OWNER CAST]   364343 → 3
+1:55  [ENEMY CD]   4 (Windwalker Monk): Touch of Karma
+1:56  [STATE]   friends 1:99 2:91 3:51 / enemies 4:78 5:83 6:100
+1:56  [OWNER CAST]   355936
+1:57  [STATE]   friends 1:100 2:100 3:66 / enemies 4:81 5:83 6:100
+1:58  [OWNER CAST]   Sleep Walk → 5
+1:58  [OWNER CD]   Wing Buffet
+      [RES] rdy:Δ+2:Avatar-Wing Buffet,Rewind,Emerald Communion,Stasis,3:Hex  cd:Wing Buffet(92s),Rewind(159s),Emerald Communion(136s),Stasis(85s),3:Hex(21s)  enemy:Touch of Karma/Windwalker Monk(3s),Avenging Crusader/Holy Paladin(23s)
+1:59  [OWNER CAST]   364343 → 3
+2:00  [STATE]   friends 1:92 2:99 3:50
+2:01  [CC ON TEAM]   1 ← Fear (Lalaylaria-Zul'jin-US) | 1s
+2:01  [OWNER CAST]   361195 → 3 [succeeded after CC arrived — within 1s in log]
+2:02  [STATE]   friends 1:87 2:99 3:54 / enemies 4:100 5:83 6:100
+2:02  [OWNER CAST]   355941 [succeeded after CC arrived — within 1s in log]
+2:02  [OWNER CAST]   1256581 → 3
+2:03  [STATE]   friends 1:98 2:99 3:69 / enemies 4:95 5:85 6:100
+2:03  [OWNER CD]   Hover
+      [RES] rdy:Δ-Stasis,3:Hex  cd:Stasis(80s),3:Hex(16s)  enemy:Touch of Karma/Windwalker Monk(8s),Avenging Crusader/Holy Paladin(28s)  cc:2/Disable-0s[root]
+2:03  [OWNER CAST]   364343 → 3
+2:04  [STATE]   friends 1:92 2:95 3:61 / enemies 4:89 5:89 6:100
+2:04  [OWNER CAST]   357208
+2:05  [STATE]   friends 1:73 2:84 3:47 / enemies 4:81 5:89 6:100
+2:06  [STATE]   friends 1:74 2:85 3:39 / enemies 4:71 5:92 6:100
+2:06  [OWNER CAST]   361509 → 3
+2:06  [OWNER CAST]   431443 → 3
+2:06  [CLEANSE]   3 dispelled 2 effects: Disable off 3, Consecration off 3
+2:07  [STATE]   friends 1:72 2:89 3:68 / enemies 4:75 5:94 6:100
+2:08  [STATE]   friends 1:82 2:90 3:82 / enemies 4:72 5:94 6:99
+2:08  [OWNER CAST]   431443 → 4
+2:09  [STATE]   friends 1:82 2:90 3:86 / enemies 4:82 5:98 6:93
+2:09  [OWNER CAST]   Sleep Walk → 4
+2:09  [OWNER CAST]   360823 → 3
+2:09  [CLEANSE]   1 dispelled 3 effects: Corruption off 3, Haunt off 3, Touch of Karma off 3
+2:10  [STATE]   friends 1:82 2:91 3:85 / enemies 4:78 5:98 6:93
+2:10  [OWNER CAST]   364343 → 3 [completed before CC landed]
+2:10  [CC ON TEAM]   1 ← Paralysis (Blowjabs-Azralon-US) | 3s
+2:11  [STATE]   friends 1:82 2:91 3:89 / enemies 4:69 5:99 6:83
+2:12  [STATE]   friends 1:83 2:93 3:96 / enemies 4:69 5:99 6:75
+2:13  [STATE]   friends 1:83 2:93 3:90 / enemies 4:63 5:99 6:74
+2:13  [OWNER CAST]   360995 → 3
+2:14  [STATE]   friends 1:85 2:92 3:70 / enemies 4:62 5:96 6:69
+2:14  [OWNER CAST]   361195 → 3
+2:14  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ  cd:—  enemy:Touch of Karma/Windwalker Monk(19s)
+2:14  [OWNER CAST]   364343 → 3
+2:15  [STATE]   friends 1:91 2:91 3:75 / enemies 4:59 5:95 6:62
+2:16  [STATE]   friends 1:98 2:91 3:76 / enemies 4:71 5:95 6:63
+2:16  [OWNER CAST]   366155 → 3
+2:16  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ  cd:—  enemy:Touch of Karma/Windwalker Monk(21s)
+2:17  [STATE]   friends 1:100 2:95 3:98 / enemies 4:57 5:95 6:54
+2:17  [OWNER CAST]   364343 → 3
+2:18  [STATE]   friends 1:100 2:90 3:90 / enemies 4:50 5:86 6:54
+2:18  [OWNER CAST]   357208
+2:19  [STATE]   friends 1:95 2:88 3:97 / enemies 4:43 5:79 6:100
+2:19  [OWNER CAST]   431443 → 6
+2:19  [OWNER CAST]   356995 → 6
+2:20  [STATE]   friends 1:95 2:89 3:93 / enemies 4:74 5:74 6:93
+2:20  [OWNER CAST]   1256581 → 3
+2:21  [STATE]   friends 1:100 2:89 3:98
+2:21  [OWNER CAST]   364343 → 3
+2:22  [OWNER CAST]   355936
+2:24  [STATE]   friends 1:100 2:93 3:100
+2:24  [OWNER CAST]   1256581 → 2
+2:25  [CC ON TEAM]   2 ← Howl of Terror (Lalaylaria-Zul'jin-US) | 2s | trinket: ON CD (12s left)
+2:25  [CC ON TEAM]   1 ← Howl of Terror (Lalaylaria-Zul'jin-US) | 2s | trinket: used
+2:25  [CC ON TEAM]   3 ← Howl of Terror (Lalaylaria-Zul'jin-US) | 1s
+2:26  [STATE]   friends 1:100 2:91 3:100 / enemies 4:50 5:66 6:33
+2:27  [STATE]   friends 1:100 2:92 3:96 / enemies 4:51 5:66 6:33
+2:27  [TRINKET]   1 used PvP trinket
+2:27  [OWNER CAST]   360823 → 2
+2:27  [CLEANSE]   1 dispelled 2 effects: Corruption off 2, Howl of Terror off 2
+2:28  [STATE]   friends 1:100 2:94 3:94 / enemies 4:45 5:67 6:50
+2:28  [OWNER CAST]   406971
+2:29  [STATE]   friends 1:100 2:94 3:92 / enemies 4:43 5:67 6:46
+2:29  [TEAMMATE CD]   3 (Enhancement Shaman): Hex
+      [RES] rdy:Δ+Deep Breath-Stasis  cd:Stasis(54s)
+2:30  [STATE]   friends 1:100 2:92 3:89 / enemies 4:33 5:62 6:46
+2:30  [TEAMMATE CD]   3 (Enhancement Shaman): Ascendance (Enhancement)
+      [RES] rdy:Δ+2:Avatar-Wing Buffet,Rewind,Emerald Communion,Stasis,3:Hex,3:Ascendance (Enhancement)  cd:Wing Buffet(60s),Rewind(127s),Emerald Communion(105s),Stasis(54s),3:Hex(29s),3:Ascendance (Enhancement)(51s)
+2:30  [CC ON TEAM]   3 ← Mortal Coil (Lalaylaria-Zul'jin-US) | 1s | trinket: used
+2:30  [OWNER CAST]   364343 → 3
+2:31  [STATE]   friends 1:100 2:93 3:88 / enemies 4:21 5:89 6:52
+2:31  [OWNER CAST]   366155 → 3
+2:31  [TRINKET]   3 used PvP trinket
+2:32  [STATE]   friends 1:100 2:92 3:90 / enemies 4:29 5:90 6:51
+2:32  [CC ON TEAM]   1 ← Hammer of Justice (Iihatemyjob-Stormrage-US) | 5s | trinket: ON CD (86s left)
+2:33  [STATE]   friends 1:100 2:94 3:88 / enemies 4:28 5:90 6:51
+2:34  [STATE]   friends 1:100 2:96 3:89 / enemies 4:33 5:90 6:51
+2:35  [STATE]   friends 1:100 2:97 3:88 / enemies 4:dead 5:91 6:51
+2:35  [DEATH]  4 (Windwalker Monk — enemy)
+2:35  [ROSTER]  enemy 4 removed (dead)
+2:36  [STATE]   friends 1:100 2:99 3:88 / enemies 4:dead 5:92 6:51
+2:37  [STATE]   friends 1:100 2:100 3:88 / enemies 4:dead 5:92 6:50
+2:37  [OWNER CAST]   364343 → 3
+2:37  [OWNER CD]   Hover
+      [RES] rdy:Δ+Deep Breath  cd:—
+2:38  [STATE]   friends 1:100 2:100 3:90 / enemies 4:dead 6:40
+2:39  [STATE]   friends 1:100 2:100 3:89 / enemies 4:dead 6:98
+2:39  [TEAMMATE CD]   2 (Arms Warrior): Intimidating Shout
+      [RES] rdy:Δ+Deep Breath,2:Avatar-Stasis,3:Hex  cd:Stasis(45s),3:Hex(20s)
+2:39  [CC CAST]   Intimidating Shout (by 2) → 5
+2:40  [STATE]   friends 1:100 2:100 3:90 / enemies 4:dead
+
+2:40  [MATCH END]   damp: 10%
+  friends 1:100% 2:100% 3:90% / enemies 4:dead(2:35) 5:92% 6:98%

@@ -1,0 +1,13 @@
+This was a well-executed win in a short-tunnel format against a rogue-heavy team that relied on persistent CC chains to suppress your healing. Your Druid's combination of active offense, timely cooldown placement, and fast cleansing drove the outcome.
+
+The early Ironbark at 0:10 on the Warrior at 45% HP — while Power Infusion was still active on the enemy side — was a correct read of the threat level. Following immediately with Incarnation: Tree of Life at 0:15 gave you the throughput to hold the Warrior through a 0.90M burst window. These two decisions in the first 15 seconds prevented what easily could have been an early kill.
+
+The offensive pivot at 0:19 was the match's turning point. Using Nature's Swiftness into Cyclone on the enemy Disc Priest, while the Warrior was being focused, created a healing gap on the other side and gave your Warrior room to recover. In short-tunnel matches, healer-on-healer offense is often how games are decided — the team that can force the opposing healer out of the fight, even briefly, creates a window their opponents cannot.
+
+Your cleansing was consistent: Chilled off yourself at 0:15 and 0:35, Crippling Poison at 1:15, Psychic Scream off the Paladin at 1:18, Polymorph off the Paladin at 0:49. The Polymorph cleanse was particularly well-timed — removed before the Paladin took meaningful damage through the CC.
+
+Barkskin at 1:09 in response to a Kidney Shot on yourself during the final kill push was appropriate self-preservation while still contributing offensively. Shadowmeld at 1:13 to briefly drop threat and reposition against the Disc Priest showed awareness of your own survivability.
+
+The one note: Incarnation: Tree of Life came very early (0:15), and while it was clearly effective at keeping the Warrior alive, it meant your biggest healing cooldown was unavailable for the rest of the match. In short-tunnel games, this is often the right trade — but in a longer match, burning Incarnation at 15 seconds can leave you exposed later. Worth being conscious of whether Ironbark alone could have held the Warrior for a few more seconds while you evaluated whether Incarnation was truly necessary.
+
+Solid overall execution. The offensive discipline, cleansing speed, and willingness to Cyclone the enemy healer under pressure were the decisive factors.

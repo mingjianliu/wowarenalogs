@@ -1,0 +1,13 @@
+This cluster records the highest peak burst score across all healer archetypes (18.9), with 63% optimal CD timing and only 8% never-used — meaning successful Mistweaver players in this archetype are using their CDs early and correctly, not holding them. This match ended in 83 seconds with a full wipe, which is within the cluster's short-to-medium match duration profile (~129s median). The difference between a win and a loss in this archetype often comes down to whether the defensive resources are distributed across both burst peaks or spent in the first one.
+
+The enemy executed two distinct burst windows. The first ran 0:10–0:30: Avatar, Oppressing Roar, Deep Breath, Champion's Spear, producing the 1.18M spike on you during 0:10–0:30. Your team consumed Leg Sweep, Life Cocoon, Ascendance, Intimidating Shout, and Die by the Sword across this window. The second burst window opened at 0:27 when the enemy Enhancement Shaman simultaneously used Bloodlust and Ascendance — a second 1.18M spike against a team with no remaining major defensive tools. That window produced the kill trajectory.
+
+The cluster's missed cleanse rate is 39%. In this match there were no flagged missed cleanses — the Mistweaver cleared Stormbind, Flame Shock, Earthgrab, Earthbind, and Permeating Chill actively throughout. Cleanse execution was not the issue.
+
+Healing gap rate during burst in this archetype is 1% — meaning top Mistweavers almost never have healing gaps during enemy burst. The 8-second Sleep Walk on your Mistweaver at 1:04 with no trinket available (spent 80 seconds earlier) is the functional equivalent of a healing gap at the worst possible moment. With you at 10% and the Warrior at 34%, 8 seconds of no healing was fatal. This Sleep Walk timing suggests the enemy Evoker was tracking your trinket CD.
+
+CD response latency for this cluster is 7464ms median. Your first major defensive response (Ascendance and Life Cocoon) came at 0:19, approximately 9 seconds after the initial pressure began at 0:10 — within the expected window. The issue is not latency but resource allocation: both major defensive tools in the same GCD window left nothing for the second burst phase.
+
+The Mistweaver's offensive participation rate in this cluster is 49%. Leg Sweep at 0:11 into Intimidating Shout at 0:14 represented good early offensive CC contribution. Paralysis at 0:25 added a third CC. The offensive contribution was not the problem.
+
+Structural recommendation: against comps with a clear secondary burst peak (Bloodlust being the signal), split your defensive CD budget explicitly. One tool for the opener, one tool held specifically for Bloodlust. Surviving the first window at 70% health is better than surviving it at 100% with nothing left.

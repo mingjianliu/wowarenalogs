@@ -1,0 +1,11 @@
+This was a clean sweep loss — your entire team died in 83 seconds with the enemy finishing at full or near-full health. The core problem was not any single decision but a structural disadvantage in the opener that your team never recovered from.
+
+The enemy opened with everything at 0:10: Avatar on their Warrior, Oppressing Roar from the Evoker, followed immediately by Deep Breath at 0:12. Champion's Spear rooted both you and your Warrior at 0:10 for 6 seconds. With you and the Warrior locked down for 6 seconds and their Evoker's Deep Breath landing at 0:12, your Mistweaver had to handle the opener largely alone. Life Cocoon at 0:19 on you was the right call when you were at 55% and dropping — that's exactly when Life Cocoon should be used. The enemy Warrior's Avatar produced 1.07M on your Arms Warrior in 10 seconds from 0:09 onward, and Intimidating Shout at 0:14 by your Warrior hit all three enemies, which was the right counter-move.
+
+The critical failure was at 0:27 when the enemy Enhancement Shaman hit Bloodlust and Ascendance simultaneously. At that moment your Ascendance was already on CD (used at 0:19), your Mistweaver's Life Cocoon was on CD (used at 0:19), and Paralysis was the only active defensive CC option. The 1.18M on you in 10 seconds starting at 0:27 was a kill window you had no answers for. Dying to 5% by 1:10 is the predictable result.
+
+One specific issue: at 1:04 the Mistweaver took an 8-second Sleep Walk from the enemy Evoker with the trinket still 80 seconds away from being ready. Your Mistweaver had no external trinket and no way to break out, leaving you and the Warrior to fend for yourselves for 8 seconds while both were at low health. After you died at 1:11, the Warrior and Monk died shortly after.
+
+The broader lesson is that your comp needed to either win the first exchange or protect your Ascendance until the enemy's burst was partially exhausted. Using your own Ascendance at 0:19 while under their full opener may have been the forced call given how much pressure was landing, but it meant the enemy's Bloodlust/Ascendance window at 0:27 found you completely spent defensively.
+
+Going into these types of matchups, consider holding Ascendance as a second-phase defensive tool rather than using it reactively in the first burst window, if you can survive long enough for that to matter.

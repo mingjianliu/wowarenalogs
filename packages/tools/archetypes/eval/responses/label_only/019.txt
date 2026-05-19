@@ -1,0 +1,9 @@
+This is a short_tunnel win in the most literal sense — 17 seconds against what appears to have been an incomplete enemy team (only two enemies present: Feral Druid and Discipline Priest in a 3v3 bracket). The enemy had no healer that could sustain against your Arms Warrior and Retribution Paladin in a 3v2.
+
+The Feral Druid opened with their full burst CD suite (Tiger's Fury, Incarnation) at 0:03–0:04, attempting to score an early kill before being overwhelmed. Rake stun on your Paladin at 0:05 was their only meaningful CC, and the Paladin correctly trinketed immediately. The stun was too short and too late to change the outcome.
+
+Your execution was correct: pre-hots at the start, Die by the Sword coverage on the Warrior during the Feral's Incarnation window, Innervate used to self-sustain. Tree of Life and Innervate were arguably over-investment for a 17-second fight against a two-player team — if you recognized the 2v3 immediately at pull, those cooldowns could have been saved.
+
+The only meaningful coaching note: in short_tunnel matches where the enemy composition is visibly incomplete, assess the kill speed before committing major defensive CDs. If two players can clearly not threaten your team, your defensive CDs are better saved for the next queue. The Feral's Incarnation at 0:04 was not a real threat against three players; Ironbark and Frenzied Regeneration would have been sufficient coverage without Tree of Life.
+
+Win correctly executed. CD economy is the only refinement.

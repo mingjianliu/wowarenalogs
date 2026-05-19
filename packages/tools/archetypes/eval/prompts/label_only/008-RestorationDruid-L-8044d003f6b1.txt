@@ -1,0 +1,162 @@
+[ARCHETYPE: Restoration Druid — short_tunnel]
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Beast Mastery Hunter | Bracket: 3v3 | Result: Loss | Duration: 1:24
+  My team: Restoration Druid, Enhancement Shaman, Beast Mastery Hunter
+  Enemy team: Arms Warrior, Enhancement Shaman, Restoration Shaman
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Beast Mastery Hunter): CANNOT offensive purge
+  Team purgers: Enhancement Shaman
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Чакнорисов-Ревущийфьорд-EU (Beast Mastery Hunter — log owner):
+    Roar of Sacrifice [120s], Exhilaration [120s], Bestial Wrath [90s, 2 Charges]
+  2: Dantax-Hyjal-EU (Restoration Druid):
+    Barkskin [60s], Stampeding Roar [120s], Incapacitating Roar [30s], Frenzied Regeneration [36s], Tranquility [180s], Incarnation: Tree of Life [180s, 2 Charges], Ironbark [90s]
+  3: Isáwûrûñáwáý-Ravencrest-EU (Enhancement Shaman):
+    Hex [30s], Ascendance (Enhancement) [180s], Spirit Walk [60s]
+  4: Sutlac-GrimBatol-EU (Arms Warrior — enemy):
+    Avatar [90s]
+  5: Thatstheways-TwistingNether-EU (Enhancement Shaman — enemy):
+    Ascendance [180s], Bloodlust [60s]
+  6: Hellforce-Outland-EU (Restoration Shaman — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100 2:100 3:100
+0:03  [STATE]   friends 1:100 2:100 3:99
+0:06  [STATE]   friends 1:100 2:100 3:96
+0:07  [OWNER CD]   Bestial Wrath
+      [RES] rdy:Δ+Roar of Sacrifice,Bestial Wrath,2:Barkskin,2:Incapacitating Roar,2:Frenzied Regeneration,2:Incarnation: Tree of Life,2:Ironbark,3:Hex,3:Ascendance (Enhancement)  cd:—
+0:09  [STATE]   friends 1:100 2:100 3:100
+0:09  [CC ON TEAM]   1 ← Storm Bolt (Sutlac-GrimBatol-EU) | 3s
+0:09  [CC CAST]   Sundering (by 3) → nil [non-player target]
+0:10  [STATE]   friends 1:100 2:100 3:98 / enemies 4:82 5:100 6:100
+0:11  [STATE]   friends 1:93 2:100 3:96 / enemies 4:90 5:99 6:100
+0:11  [TEAMMATE CD]   3 (Enhancement Shaman): Ascendance (Enhancement)
+      [RES] rdy:Δ+Roar of Sacrifice,2:Barkskin,2:Incarnation: Tree of Life,2:Ironbark,3:Ascendance (Enhancement)  cd:—  cc:1/Storm Bolt-2s[stun]
+0:11  [OWNER CD]   Roar of Sacrifice → 1 (93% HP)
+      [RES] rdy:Roar of Sacrifice,Exhilaration,2:Barkskin,2:Stampeding Roar,2:Incapacitating Roar,2:Frenzied Regeneration,2:Tranquility,2:Incarnation: Tree of Life,2:Ironbark,3:Hex,3:Spirit Walk  cd:Bestial Wrath(86s),3:Ascendance (Enhancement)(179s)  cc:1/Storm Bolt-1s[stun]
+0:12  [STATE]   friends 1:94 2:100 3:97 / enemies 4:81 5:99 6:100
+0:12  [TEAMMATE CD]   2 (Restoration Druid): Incarnation: Tree of Life
+      [RES] rdy:Δ+2:Barkskin,2:Incarnation: Tree of Life,2:Ironbark,3:Hex  cd:—  cc:1/Storm Bolt-0s[stun]
+0:13  [STATE]   friends 1:92 2:100 3:100 / enemies 4:94 5:85 6:100
+0:14  [STATE]   friends 1:94 2:100 3:100 / enemies 4:88 5:100 6:100
+0:14  [DMG SPIKE]   3 (Enhancement Shaman): 0.41M in 10s
+0:15  [STATE]   friends 1:94 2:100 3:89 / enemies 4:82 5:100 6:100
+0:16  [STATE]   friends 1:98 2:100 3:99 / enemies 4:89 5:94 6:100
+0:17  [STATE]   friends 1:99 2:100 3:92 / enemies 4:90 5:95 6:100
+0:18  [STATE]   friends 1:100 2:100 3:77 / enemies 4:94 5:100 6:100
+0:18  [TEAMMATE CD]   2 (Restoration Druid): Ironbark
+      [RES] rdy:Δ+2:Barkskin,2:Ironbark  cd:—  cc:3/Disarm-0s[disarm]
+0:19  [STATE]   friends 1:100 2:100 3:100 / enemies 4:93 5:99 6:100
+0:21  [STATE]   friends 1:100 2:100 3:100
+0:21  [BUFF FADED]   Roar of Sacrifice
+0:22  [BUFF FADED]   Bestial Wrath
+0:24  [STATE]   friends 1:100 2:100 3:100
+0:27  [STATE]   friends 1:99 2:100 3:100
+0:29  [CC ON TEAM]   2 ← Shockwave (Sutlac-GrimBatol-EU) | 1s | trinket: used
+0:29  [TRINKET]   2 used PvP trinket
+0:30  [STATE]   friends 1:100 2:99 3:100 / enemies 4:76 5:93 6:100
+0:30  [CLEANSE]   2 dispelled Дрожь костей off 2
+0:30  [TEAMMATE CD]   2 (Restoration Druid): Barkskin
+      [RES] rdy:Δ+2:Barkskin,2:Incapacitating Roar,2:Frenzied Regeneration,3:Hex  cd:—
+0:31  [STATE]   friends 1:100 2:94 3:100 / enemies 4:90 5:97 6:100
+0:31  [ENEMY CD]   4 (Arms Warrior): Avatar
+0:32  [STATE]   friends 1:100 2:95 3:100 / enemies 4:94 5:97 6:97
+0:32  [CC ON TEAM]   2 ← Champion's Spear (Sutlac-GrimBatol-EU) | 6s | trinket: ON CD (88s left)
+0:33  [STATE]   friends 1:100 2:98 3:100 / enemies 4:94 5:100 6:96
+0:33  [TEAMMATE CD]   2 (Restoration Druid): Incarnation: Tree of Life
+      [RES] rdy:Δ-2:Barkskin,2:Incarnation: Tree of Life,2:Ironbark  cd:2:Barkskin(57s),2:Incarnation: Tree of Life(159s),2:Ironbark(75s)  enemy:Avatar/Arms Warrior(2s)  cc:2/Champion's Spear-4s
+0:34  [STATE]   friends 1:99 2:98 3:93 / enemies 4:95 5:100 6:100
+0:35  [STATE]   friends 1:100 2:100 3:94 / enemies 4:90 5:100 6:100
+0:36  [STATE]   friends 1:98 2:100 3:88 / enemies 4:87 5:100 6:100
+0:37  [STATE]   friends 1:98 2:100 3:90 / enemies 4:86 5:100 6:100
+0:37  [DMG SPIKE]   3 (Enhancement Shaman): 1.08M in 10s
+0:38  [STATE]   friends 1:100 2:100 3:76 / enemies 4:68 5:100 6:100
+0:38  [OWNER CD]   Bestial Wrath
+      [RES] rdy:Δ-Roar of Sacrifice,Bestial Wrath,2:Barkskin,2:Incarnation: Tree of Life,2:Ironbark,3:Ascendance (Enhancement)  cd:Roar of Sacrifice(93s),Bestial Wrath(60s),2:Barkskin(53s),2:Incarnation: Tree of Life(154s),2:Ironbark(70s),3:Ascendance (Enhancement)(153s)  enemy:Avatar/Arms Warrior(7s)
+0:39  [STATE]   friends 1:100 2:100 3:80 / enemies 4:76 5:90 6:100
+0:40  [STATE]   friends 1:100 2:100 3:99 / enemies 4:59 5:82 6:100
+0:41  [STATE]   friends 1:100 2:100 3:92 / enemies 4:72 5:99 6:100
+0:42  [STATE]   friends 1:100 2:100 3:88 / enemies 4:75 5:100 6:100
+0:43  [CC CAST]   Sundering (by 3) → nil [non-player target]
+0:45  [STATE]   friends 1:100 2:100 3:50
+0:48  [STATE]   friends 1:100 2:100 3:52
+0:51  [STATE]   friends 1:100 2:100 3:100
+0:52  [CC ON TEAM]   2 ← Intimidating Shout (Sutlac-GrimBatol-EU) | 6s | trinket: ON CD (68s left)
+0:53  [STATE]   friends 1:100 2:100 3:100 / enemies 4:89 5:96 6:100
+0:53  [BUFF FADED]   Bestial Wrath
+0:54  [STATE]   friends 1:100 2:100 3:97 / enemies 4:94 5:98 6:100
+0:54  [CC ON TEAM]   1 ← Lightning Lasso (Hellforce-Outland-EU) | 2s
+0:55  [STATE]   friends 1:100 2:100 3:95 / enemies 4:100 5:100 6:99
+0:56  [STATE]   friends 1:99 2:100 3:94 / enemies 4:97 5:100 6:100
+0:57  [STATE]   friends 1:100 2:100 3:96 / enemies 4:98 5:99 6:100
+0:57  [OFFENSIVE WINDOW]   0:57–1:12 | High | 0.98M on 2 (Restoration Druid) | CDs: Ascendance + Bloodlust
+0:57  [ENEMY CD]   5 (Enhancement Shaman): Ascendance
+0:57  [ENEMY CD]   5 (Enhancement Shaman): Bloodlust
+0:58  [STATE]   friends 1:100 2:97 3:93 / enemies 4:100 5:100 6:100
+0:58  [DMG SPIKE]   2 (Restoration Druid): 0.98M in 10s
+0:58  [CC ON TEAM]   2 ← Storm Bolt (Sutlac-GrimBatol-EU) | 3s | trinket: ON CD (62s left)
+0:59  [STATE]   friends 1:100 2:72 3:91 / enemies 4:100 5:100 6:100
+0:59  [TEAMMATE CD]   3 (Enhancement Shaman): Hex
+      [RES] rdy:Δ-2:Barkskin,2:Ironbark  cd:2:Barkskin(31s),2:Ironbark(49s)  enemy:Avatar/Arms Warrior(28s),Ascendance/Enhancement Shaman(3s),Bloodlust/Enhancement Shaman(3s)  cc:2/Storm Bolt-2s[stun]
+1:00  [STATE]   friends 1:100 2:44 3:92 / enemies 4:100 5:100 6:100
+1:00  [CLEANSE]   2 dispelled Оковы земли off 2
+1:01  [STATE]   friends 1:100 2:41 3:94 / enemies 4:100 5:100 6:100
+1:02  [STATE]   friends 1:100 2:33 3:93 / enemies 4:100 5:99 6:100
+1:03  [STATE]   friends 1:100 2:34 3:91 / enemies 4:94 5:100 6:100
+1:03  [TEAMMATE CD]   2 (Restoration Druid): Frenzied Regeneration
+      [RES] rdy:Δ+2:Frenzied Regeneration  cd:—  enemy:Ascendance/Enhancement Shaman(6s),Bloodlust/Enhancement Shaman(6s)
+1:04  [STATE]   friends 1:100 2:31 3:90 / enemies 4:93 5:99 6:100
+1:04  [TEAMMATE CD]   2 (Restoration Druid): Incapacitating Roar
+      [RES] rdy:Δ-2:Barkskin,2:Frenzied Regeneration,3:Hex  cd:2:Barkskin(26s),2:Frenzied Regeneration(35s),3:Hex(25s)  enemy:Ascendance/Enhancement Shaman(7s),Bloodlust/Enhancement Shaman(7s)
+1:04  [CC CAST]   Incapacitating Roar (by 2) → nil [non-player target]
+1:04  [CC CAST]   Incapacitating Roar (by 2) → 4
+1:04  [CLEANSE]   2 dispelled Оковы земли off 2
+1:05  [STATE]   friends 1:100 2:33 3:95 / enemies 4:97 5:99 6:100
+1:06  [STATE]   friends 1:100 2:32 3:100 / enemies 4:100 5:100 6:100
+1:07  [STATE]   friends 1:100 2:9 3:100 / enemies 4:100 5:100 6:99
+1:07  [DMG SPIKE]   1 (Beast Mastery Hunter): 0.78M in 10s
+1:08  [STATE]   friends 1:99 2:dead 3:100 / enemies 4:100 5:100 6:100
+1:08  [DEATH]  2 (Restoration Druid — friendly)
+               HP: 100% at T-15s → 91% at T-10s → 33% at T-5s → 33% at T-3s → dead
+               Top damage in final 10s: Thatstheways-TwistingNether-EU — Удар ветра (195k), Thatstheways-TwistingNether-EU — Удар ветра [левая рука] (115k), Thatstheways-TwistingNether-EU — Цепная молния (102k)
+1:09  [STATE]   friends 1:100 2:dead 3:100 / enemies 4:100 5:100 6:95
+1:10  [STATE]   friends 1:75 2:dead 3:100 / enemies 4:100 5:90 6:97
+1:10  [CLEANSE]   3 dispelled Оковы земли off 3
+1:11  [STATE]   friends 1:57 2:dead 3:99 / enemies 4:100 5:91 6:98
+1:11  [OWNER CD]   Bestial Wrath
+      [RES] rdy:Δ-2:Incapacitating Roar,2:Frenzied Regeneration,3:Hex  cd:2:Incapacitating Roar(23s),2:Frenzied Regeneration(28s),3:Hex(19s)  enemy:Ascendance/Enhancement Shaman(14s),Bloodlust/Enhancement Shaman(14s)
+1:11  [CLEANSE]   3 dispelled Оковы земли off 3
+1:12  [STATE]   friends 1:40 2:dead 3:100 / enemies 4:100 5:75 6:99
+1:13  [STATE]   friends 1:18 2:dead 3:99 / enemies 4:88 5:52 6:100
+1:14  [STATE]   friends 1:32 2:dead 3:100 / enemies 4:85 5:40 6:100
+1:14  [OWNER CD]   Exhilaration
+      [RES] rdy:Δ-Roar of Sacrifice,2:Barkskin,2:Incapacitating Roar,2:Frenzied Regeneration,2:Incarnation: Tree of Life,2:Ironbark,3:Hex  cd:Roar of Sacrifice(58s),2:Barkskin(17s),2:Incapacitating Roar(20s),2:Frenzied Regeneration(25s),2:Incarnation: Tree of Life(118s),2:Ironbark(35s),3:Hex(16s)  enemy:Ascendance/Enhancement Shaman(17s),Bloodlust/Enhancement Shaman(17s)
+1:15  [STATE]   friends 1:23 2:dead 3:100 / enemies 4:78 5:54 6:100
+1:15  [DMG SPIKE]   3 (Enhancement Shaman): 0.70M in 10s
+1:16  [STATE]   friends 1:13 2:dead 3:99 / enemies 4:74 5:47 6:100
+1:17  [STATE]   friends 1:dead 2:dead 3:99 / enemies 4:77 5:57 6:100
+1:17  [BUFF FADED]   Bestial Wrath
+1:17  [DEATH]  1 (Beast Mastery Hunter — friendly)
+               HP: 100% at T-15s → 99% at T-10s → 28% at T-5s → 22% at T-3s → dead
+               Top damage in final 10s: Thatstheways-TwistingNether-EU — Молния (144k), Thatstheways-TwistingNether-EU — Удар ветра (81k), Sutlac-GrimBatol-EU — Казнь (77k)
+1:18  [STATE]   friends 1:dead 2:dead 3:95 / enemies 4:83 5:58 6:99
+1:19  [STATE]   friends 1:dead 2:dead 3:79 / enemies 4:86 5:59 6:99
+1:20  [STATE]   friends 1:dead 2:dead 3:56 / enemies 4:86 5:53 6:100
+1:21  [STATE]   friends 1:dead 2:dead 3:47 / enemies 4:97 5:63 6:100
+1:22  [STATE]   friends 1:dead 2:dead 3:39 / enemies 4:98 5:72 6:100
+1:23  [STATE]   friends 1:dead 2:dead 3:19 / enemies 4:98 5:71 6:100
+1:24  [STATE]   friends 1:dead 2:dead 3:dead / enemies 4:100 5:71 6:100
+1:24  [DEATH]  3 (Enhancement Shaman — friendly)
+               HP: 100% at T-15s → 100% at T-10s → 71% at T-5s → 46% at T-3s → dead
+               Top damage in final 10s: Sutlac-GrimBatol-EU — Казнь (114k), Thatstheways-TwistingNether-EU — Буря (85k), Thatstheways-TwistingNether-EU — Удар бури (84k)
+
+1:24  [MATCH END]   damp: 10%
+  friends 1:dead(1:17) 2:dead(1:08) 3:dead(1:24) / enemies 4:100% 5:89% 6:100%

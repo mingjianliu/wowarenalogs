@@ -1,0 +1,11 @@
+Clean win in under two minutes. Your team killed the Shadow Priest at 0:51, the Restoration Shaman at 1:35, and the Arms Warrior at 1:44. You accomplished this while absorbing enormous pressure — the Retribution Paladin took 0.54M and 0.80M damage spikes in back-to-back 10-second windows, and your Arms Warrior absorbed 0.53M and 0.58M simultaneously during the early fight.
+
+The most important decision of the match was Ironbark at 0:22 when the Paladin hit 41% HP. The enemy Shadow Priest had just used Power Infusion, the enemy Arms Warrior had Avatar active, and you were being silenced and feared repeatedly. Ironbark at that exact moment kept the Paladin alive through the deepest HP deficit of the match. Your own Incarnation: Tree of Life at 0:28 amplified everything coming in afterward.
+
+Incarnation timing was correct. At 0:28 you had incoming CC stacking on yourself and both DPS teammates simultaneously — Cascading Horrors on you and the Paladin, Champion's Spear on the Warrior, Intimidating Shout echoes still wearing off. Tree of Life gave you the throughput to heal through all of it without burning Tranquility. You came out of the fight with everyone at full health by 0:39 despite taking 0.58M and 0.54M spikes on your two DPS in the 0:20–0:35 window.
+
+One thing to note: your Cyclone at 0:42 went into a Grounding Totem and was absorbed. The enemy Shaman placed that totem specifically to block your CC. Against Restoration Shaman, you need to either wait for the Grounding Totem to be used by another ability first, or coordinate with your Warrior to bait or destroy it before you cast Cyclone. You didn't need the Cyclone there since the Shadow Priest was already near death, but in a tighter game that wasted CC cast would matter.
+
+The offensive CC on the Shaman's healing at 1:06 through 1:09 — Moonfire application, two applications of Entangling Roots — correctly kept their healer anchored while your DPS finished the Shaman. Going from 39% at 1:05 to dead at 1:35 required sustained pressure from your Warrior's Avatar at 1:24, your Hammer of Justice from the Paladin at 1:26, and your own CC chain.
+
+Solid macro throughout. Your Innervate at 0:26 to sustain mana through the extended Tree of Life window was efficient.

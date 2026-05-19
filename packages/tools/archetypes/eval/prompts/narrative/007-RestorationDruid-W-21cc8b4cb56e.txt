@@ -1,0 +1,248 @@
+[ARCHETYPE: Restoration Druid — short_tunnel]
+These matches averaged only 99 seconds with a tunnel score of 0.586, reflecting focused single-target pressure in a fast kill-or-die pacing. Offensive CC was sparse at 4.2 events per team and DR chains were minimal at 0.06, indicating limited setup complexity before damage landed. Cooldown usage was optimal 58% of the time but 51% of cooldowns were never activated, consistent with matches resolving before full cooldown rotations were relevant.
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Restoration Druid (Healer) | Bracket: 3v3 | Result: Win | Duration: 1:32
+  My team: Arms Warrior, Retribution Paladin, Restoration Druid
+  Enemy team: Discipline Priest, Frost Mage, Subtlety Rogue
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Restoration Druid): CANNOT offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 10% at match end
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Yoruichiuwu-Tichondrius-US (Restoration Druid — log owner):
+    Barkskin [60s], Stampeding Roar [120s], Incapacitating Roar [30s], Frenzied Regeneration [36s], Tranquility [180s], Incarnation: Tree of Life [180s], Ironbark [90s]
+  2: Swishin-BurningLegion-US (Arms Warrior):
+    Avatar [90s, 2 Charges], Intimidating Shout [90s], Die by the Sword [120s], Bladestorm (Arms) [90s]
+  3: Tandue-Tichondrius-US (Retribution Paladin):
+    Lay on Hands [600s], Hammer of Justice [45s, 2 Charges], Blessing of Protection [300s], Blessing of Spellwarding [300s], Avenging Wrath [120s]
+  4: Upsahldead-Area52-US (Discipline Priest — enemy):
+    Power Infusion [120s]
+  5: Noodlerat-Stormrage-US (Subtlety Rogue — enemy):
+    Shadow Blades [90s]
+  6: Zokorzik-Area52-US (Frost Mage — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100 2:100 3:100
+0:00  [OWNER CAST]   774 → 2
+0:02  [OWNER CAST]   774 → 3
+0:02  [OWNER CAST]   Prowl
+0:03  [OWNER CD]   Dash
+0:03  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100
+0:03  [CC ON TEAM]   3 ← Sap (Noodlerat-Stormrage-US) | 6s
+0:04  [STATE]   friends 1:100 2:100 3:100
+0:05  [STATE]   friends 2:100 3:100 / enemies 4:100 6:100 5:100
+0:06  [STATE]   friends 2:96 3:100 / enemies 4:100 6:100 5:100
+0:06  [OFFENSIVE WINDOW]   0:06–0:29 | High | 0.90M on 2 (Arms Warrior) | CDs: Power Infusion + Shadow Blades
+0:06  [ENEMY BUFF]   6: Power Infusion (purgeable)
+0:06  [ENEMY CD]   4 (Discipline Priest): Power Infusion
+0:06  [ENEMY BUFF]   4: Power Infusion (purgeable)
+0:07  [STATE]   friends 1:100 2:81 3:100 / enemies 4:100 6:100 5:100
+0:07  [DMG SPIKE]   2 (Arms Warrior): 0.49M in 10s
+0:07  [OWNER CAST]   1822 → 6
+0:08  [STATE]   friends 1:100 2:66 3:100 / enemies 4:100 6:100 5:97
+0:09  [STATE]   friends 1:100 2:42 3:100 / enemies 4:100 6:100 5:97
+0:09  [CC ON TEAM]   1 ← Kidney Shot (Noodlerat-Stormrage-US) | 1s
+0:10  [STATE]   friends 1:98 2:49 3:100 / enemies 4:100 6:100 5:100
+0:10  [OWNER CD]   Ironbark → 2 (45% HP)
+      [RES] rdy:Δ+Ironbark,2:Avatar  cd:—  enemy:Power Infusion/Discipline Priest(4s)
+0:10  [OWNER CAST]   33763 → 2
+0:10  [DMG SPIKE]   1 (Restoration Druid): 0.51M in 10s
+0:11  [STATE]   friends 1:99 2:42 3:100 / enemies 4:100 6:99 5:100
+0:11  [OWNER CAST]   48438 [completed before CC landed]
+0:12  [STATE]   friends 1:90 2:51 3:98 / enemies 4:100 6:95 5:100
+0:12  [TEAMMATE CD]   2 (Arms Warrior): Avatar
+      [RES] rdy:Δ+Barkskin,Incarnation: Tree of Life,2:Avatar,2:Intimidating Shout,3:Hammer of Justice  cd:—  enemy:Power Infusion/Discipline Priest(6s)
+0:12  [CC ON TEAM]   1 ← Blind (Noodlerat-Stormrage-US) | 1s
+0:13  [STATE]   friends 1:99 2:71 3:100 / enemies 4:100 6:87 5:94
+0:13  [ENEMY CD]   5 (Subtlety Rogue): Shadow Blades
+0:14  [STATE]   friends 1:100 2:91 3:100 / enemies 4:100 6:85 5:96
+0:14  [OWNER CAST]   18562 → 2
+0:15  [STATE]   friends 1:99 2:99 3:100 / enemies 4:100 6:82 5:96
+0:15  [OWNER CD]   Incarnation: Tree of Life
+      [RES] rdy:Δ+Barkskin,Incarnation: Tree of Life,2:Intimidating Shout  cd:—  enemy:Power Infusion/Discipline Priest(9s),Shadow Blades/Subtlety Rogue(2s)
+0:15  [CLEANSE]   1 dispelled Chilled off 1
+0:16  [STATE]   friends 1:95 2:100 3:96 / enemies 4:100 6:70 5:93
+0:17  [STATE]   friends 1:79 2:98 3:98 / enemies 4:100 6:52 5:81
+0:17  [OWNER CAST]   8936 → self
+0:17  [CC ON TEAM]   3 ← Cheap Shot (Noodlerat-Stormrage-US) | 4s
+0:18  [STATE]   friends 1:75 2:98 3:90 / enemies 4:100 6:53 5:96
+0:18  [OWNER CAST]   774 → self
+0:19  [STATE]   friends 1:65 2:92 3:76 / enemies 4:100 6:78 5:95
+0:19  [OWNER CD]   Nature's Swiftness
+      [RES] rdy:Δ+Barkskin,Stampeding Roar,Incapacitating Roar,Frenzied Regeneration,Tranquility,2:Intimidating Shout,2:Die by the Sword,2:Bladestorm (Arms),3:Lay on Hands,3:Hammer of Justice,3:Blessing of Protection,3:Blessing of Spellwarding,3:Avenging Wrath  cd:Incarnation: Tree of Life(176s),Ironbark(81s),2:Avatar(83s)  enemy:Power Infusion/Discipline Priest(13s),Shadow Blades/Subtlety Rogue(5s)  cc:3/Cheap Shot-2s[stun]
+0:19  [OWNER CAST]   Cyclone → 4
+0:20  [STATE]   friends 1:65 2:100 3:79 / enemies 4:100 6:94 5:93
+0:20  [OWNER CAST]   155777 → self
+0:20  [OWNER CAST]   774 → self
+0:21  [STATE]   friends 1:67 2:99 3:81 / enemies 4:100 6:95 5:92
+0:21  [ENEMY BUFF END]   6: Power Infusion
+0:21  [ENEMY BUFF END]   4: Power Infusion
+0:22  [STATE]   friends 1:67 2:94 3:79 / enemies 4:100 6:100 5:86
+0:22  [OWNER CAST]   48438
+0:22  [BUFF FADED]   Ironbark
+0:22  [DMG SPIKE]   2 (Arms Warrior): 0.90M in 10s
+0:23  [STATE]   friends 1:68 2:99 3:81 / enemies 4:100 6:100 5:85
+0:23  [CC ON TEAM]   2 ← Dismantle (Noodlerat-Stormrage-US) | 5s
+0:23  [OWNER CAST]   774 → 3
+0:24  [STATE]   friends 1:72 2:84 3:81 / enemies 4:100 6:99 5:72
+0:25  [STATE]   friends 1:70 2:76 3:84 / enemies 4:97 6:99 5:65
+0:25  [OWNER CAST]   774 → 2
+0:26  [STATE]   friends 1:73 2:82 3:89 / enemies 4:99 6:100 5:63
+0:26  [OWNER CAST]   155777 → 2
+0:26  [OWNER CAST]   774 → 2
+0:27  [STATE]   friends 1:76 2:84 3:91 / enemies 4:100 6:100 5:65
+0:28  [STATE]   friends 1:70 2:75 3:94 / enemies 4:100 6:100 5:78
+0:28  [OWNER CAST]   33763 → 2
+0:29  [STATE]   friends 1:80 2:62 3:98 / enemies 4:100 6:100 5:82
+0:30  [STATE]   friends 1:74 2:55 3:99 / enemies 4:100 6:100 5:100
+0:30  [OWNER CAST]   48438
+0:31  [STATE]   friends 1:80 2:57 3:98 / enemies 4:100 6:95 5:100
+0:31  [OWNER CAST]   18562 → 2
+0:32  [STATE]   friends 1:90 2:98 3:98 / enemies 4:100 6:98 5:100
+0:32  [OWNER CAST]   774 → 2
+0:32  [OWNER CAST]   155777 → 3
+0:33  [STATE]   friends 1:95 2:100 3:100 / enemies 4:100 6:99 5:100
+0:34  [OWNER CAST]   8936 → self
+0:35  [OWNER CAST]   768
+0:35  [CLEANSE]   1 dispelled Chilled off 1
+0:36  [STATE]   friends 1:100 2:100 3:99
+0:37  [OWNER CAST]   106785
+0:38  [OWNER CAST]   106785 [completed before CC landed]
+0:39  [STATE]   friends 1:100 2:100 3:100
+0:39  [CC ON TEAM]   1 ← Cheap Shot (Noodlerat-Stormrage-US) | 4s
+0:40  [STATE]   friends 1:93 2:98 3:97 / enemies 4:100 6:100 5:92
+0:41  [STATE]   friends 1:93 2:100 3:98 / enemies 4:100 6:100 5:98
+0:41  [CC ON TEAM]   2 ← Cheap Shot (Noodlerat-Stormrage-US) | 4s
+0:42  [STATE]   friends 1:100 2:100 3:97 / enemies 4:100 6:100 5:100
+0:42  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ+3:Hammer of Justice  cd:—  enemy:Shadow Blades/Subtlety Rogue(29s)  cc:1/Cheap Shot-1s[stun],2/Cheap Shot-3s[stun]
+0:43  [STATE]   friends 1:100 2:87 3:93 / enemies 4:100 6:100 5:100
+0:43  [OWNER CAST]   106785
+0:44  [STATE]   friends 1:99 2:74 3:87 / enemies 4:100 6:100 5:100
+0:45  [STATE]   friends 1:99 2:72 3:85 / enemies 4:100 6:100 5:100
+0:45  [OWNER CAST]   33763 → 2
+0:45  [TEAMMATE CD]   2 (Arms Warrior): Intimidating Shout
+      [RES] rdy:Δ+Barkskin,2:Intimidating Shout  cd:—
+0:45  [CC CAST]   Intimidating Shout (by 2) → 4, 5 [2 enemies]
+0:46  [STATE]   friends 1:99 2:68 3:86 / enemies 4:100 6:100 5:100
+0:46  [OWNER CAST]   18562 → 2
+0:47  [STATE]   friends 1:100 2:100 3:88 / enemies 4:100 6:100 5:100
+0:47  [CC ON TEAM]   3 ← Polymorph (Zokorzik-Area52-US) | 2s
+0:47  [OWNER CAST]   774 → 3
+0:47  [OWNER CAST]   155777 → 2
+0:48  [STATE]   friends 1:100 2:100 3:95 / enemies 4:100 6:100 5:100
+0:49  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 6:100 5:100
+0:49  [OWNER CAST]   88423 → 3
+0:49  [CLEANSE]   1 dispelled Polymorph off 3
+0:50  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 6:100 5:99
+0:50  [OWNER CAST]   768
+0:51  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 6:100 5:98
+0:51  [CC ON TEAM]   3 ← Cheap Shot (Noodlerat-Stormrage-US) | 1s | trinket: used
+0:52  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 6:92 5:99
+0:52  [TRINKET]   3 used PvP trinket
+0:52  [OWNER CAST]   783
+0:53  [STATE]   friends 1:100 2:100 3:97 / enemies 4:100 6:87 5:99
+0:53  [DMG SPIKE]   2 (Arms Warrior): 0.66M in 10s
+0:54  [STATE]   friends 1:100 2:86 3:97 / enemies 4:100 6:86 5:99
+0:55  [STATE]   friends 1:100 2:77 3:95 / enemies 4:100 6:61 5:98
+0:55  [OWNER CAST]   48438
+0:56  [STATE]   friends 1:100 2:64 3:94 / enemies 4:100 6:73 5:96
+0:57  [STATE]   friends 1:94 2:37 3:94 / enemies 4:100 6:68 5:97
+0:57  [OWNER CAST]   18562 → 2
+0:58  [STATE]   friends 1:97 2:67 3:76 / enemies 4:100 6:75 5:92
+0:58  [OWNER CAST]   8936 → 2
+0:59  [STATE]   friends 1:100 2:99 3:89 / enemies 4:100 6:80 5:89
+0:59  [OWNER CAST]   155777 → 3
+0:59  [OWNER CAST]   774 → 3
+1:00  [STATE]   friends 1:100 2:100 3:92 / enemies 4:100 6:80 5:79
+1:01  [STATE]   friends 1:100 2:99 3:95 / enemies 4:99 6:87 5:78
+1:03  [STATE]   friends 1:100 2:97 3:90
+1:04  [OWNER CAST]   Cyclone → 4
+1:05  [STATE]   friends 1:100 2:88 3:86 / enemies 4:99 6:97 5:86
+1:05  [OWNER CAST]   48438
+1:06  [STATE]   friends 1:100 2:93 3:96 / enemies 4:99 6:99 5:88
+1:07  [STATE]   friends 1:100 2:98 3:99 / enemies 4:99 6:100 5:89
+1:07  [OWNER CAST]   768
+1:08  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 6:96 5:90
+1:08  [OWNER CAST]   22570 → 4
+1:09  [STATE]   friends 1:90 2:100 3:93 / enemies 4:100 6:100 5:95
+1:09  [OWNER CAST]   1822 → 4 [completed before CC landed]
+1:09  [CC ON TEAM]   1 ← Kidney Shot (Noodlerat-Stormrage-US) | 1s | trinket: used
+1:09  [OWNER CD]   Barkskin
+      [RES] rdy:Barkskin,Stampeding Roar,Incapacitating Roar,Frenzied Regeneration,Tranquility,2:Die by the Sword,2:Bladestorm (Arms),3:Lay on Hands,3:Blessing of Protection,3:Blessing of Spellwarding,3:Avenging Wrath  cd:Incarnation: Tree of Life(126s),Ironbark(31s),2:Avatar(33s),2:Intimidating Shout(66s),3:Hammer of Justice(18s)  cc:1/Kidney Shot-1s[stun][trinketed]
+1:09  [DMG SPIKE]   2 (Arms Warrior): 0.72M in 10s
+1:10  [STATE]   friends 1:92 2:99 3:94 / enemies 4:89 6:100 5:82
+1:10  [TRINKET]   1 used PvP trinket
+1:10  [OWNER CAST]   106785
+1:11  [STATE]   friends 1:99 2:99 3:97 / enemies 4:83 6:99 5:79
+1:11  [CC ON TEAM]   2 ← Cheap Shot (Noodlerat-Stormrage-US) | 1s | trinket: used
+1:11  [OWNER CAST]   106785
+1:12  [STATE]   friends 1:100 2:96 3:100 / enemies 4:83 6:100 5:78
+1:12  [TRINKET]   2 used PvP trinket
+1:13  [STATE]   friends 1:99 2:84 3:99 / enemies 4:77 6:100 5:71
+1:13  [OWNER CD]   Shadowmeld
+      [RES] rdy:Δ-Barkskin,2:Intimidating Shout,3:Hammer of Justice  cd:Barkskin(57s),2:Intimidating Shout(63s),3:Hammer of Justice(15s)
+1:13  [OWNER CAST]   1822 → 4
+1:14  [STATE]   friends 1:98 2:61 3:97 / enemies 4:62 6:99 5:61
+1:14  [OWNER CAST]   22568 → 4
+1:15  [STATE]   friends 1:100 2:41 3:100 / enemies 4:52 6:98 5:60
+1:15  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ-Barkskin,2:Intimidating Shout,3:Hammer of Justice  cd:Barkskin(55s),2:Intimidating Shout(61s),3:Hammer of Justice(13s)
+1:15  [OWNER CAST]   33763 → 2
+1:15  [CLEANSE]   1 dispelled Crippling Poison off 1
+1:16  [STATE]   friends 1:100 2:45 3:100 / enemies 4:54 6:99 5:67
+1:16  [CC ON TEAM]   2 ← Psychic Scream (Upsahldead-Area52-US) | 2s | trinket: ON CD (116s left)
+1:16  [CC ON TEAM]   3 ← Psychic Scream (Upsahldead-Area52-US) | 2s | trinket: ON CD (96s left)
+1:17  [STATE]   friends 1:100 2:52 3:100 / enemies 4:41 6:100 5:50
+1:17  [OWNER CAST]   18562 → 2
+1:18  [STATE]   friends 1:99 2:77 3:100 / enemies 4:37 6:100 5:47
+1:18  [OWNER CAST]   88423 → 3
+1:18  [CLEANSE]   1 dispelled Psychic Scream off 3
+1:19  [STATE]   friends 1:99 2:80 3:100 / enemies 4:38 6:100 5:48
+1:19  [OWNER CAST]   774 → 2
+1:20  [STATE]   friends 1:100 2:91 3:100 / enemies 4:35 6:97 5:55
+1:20  [OWNER CAST]   48438
+1:21  [STATE]   friends 1:100 2:100 3:100 / enemies 4:30 6:100 5:63
+1:21  [BUFF FADED]   Barkskin
+1:22  [STATE]   friends 1:100 2:99 3:100 / enemies 4:31 6:99 5:58
+1:22  [CC ON TEAM]   3 ← Polymorph (Zokorzik-Area52-US) | 2s | trinket: ON CD (91s left)
+1:22  [OWNER CAST]   155777 → 2
+1:22  [OWNER CAST]   774 → 2
+1:23  [STATE]   friends 1:100 2:100 3:100 / enemies 4:31 6:99 5:60
+1:23  [TEAMMATE CD]   2 (Arms Warrior): Avatar
+      [RES] rdy:Δ-Barkskin,Incarnation: Tree of Life,2:Avatar,2:Intimidating Shout,3:Hammer of Justice  cd:Barkskin(46s),Incarnation: Tree of Life(112s),2:Avatar(19s),2:Intimidating Shout(52s),3:Hammer of Justice(4s)  cc:3/Polymorph-1s
+1:24  [STATE]   friends 1:99 2:99 3:100 / enemies 4:52 6:100 5:60
+1:24  [CLEANSE]   2 dispelled Crippling Poison off 2
+1:25  [STATE]   friends 1:99 2:93 3:100 / enemies 4:56 6:100 5:69
+1:25  [OWNER CAST]   783
+1:26  [STATE]   friends 1:99 2:100 3:100 / enemies 4:45 6:100 5:74
+1:26  [OWNER CAST]   197626 → 5
+1:27  [STATE]   friends 1:98 2:99 3:100 / enemies 4:29 6:100 5:51
+1:28  [STATE]   friends 1:100 2:100 3:100 / enemies 4:13 6:100 5:46
+1:28  [OWNER CAST]   18562 → 2
+1:29  [STATE]   friends 1:98 2:99 3:100 / enemies 4:dead 6:100 5:39
+1:29  [OWNER CAST]   48438
+1:29  [DEATH]  4 (Discipline Priest — enemy)
+1:29  [ROSTER]  enemy 4 removed (dead)
+1:30  [STATE]   friends 1:100 2:95 3:100 / enemies 4:dead 6:100 5:30
+1:30  [OWNER CD]   Incapacitating Roar
+      [RES] rdy:Δ+3:Hammer of Justice-Barkskin  cd:Barkskin(39s)
+1:30  [CC CAST]   Incapacitating Roar (by 1) → nil [non-player target]
+1:30  [CC CAST]   Incapacitating Roar (by 1) → 5
+1:31  [STATE]   friends 1:100 2:100 3:100 / enemies 4:dead 6:100 5:14
+1:32  [STATE]   friends 1:100 2:100 3:100 / enemies 4:dead 6:100 5:dead
+1:32  [OWNER CAST]   33763 → 2
+1:32  [DEATH]  5 (Subtlety Rogue — enemy)
+1:32  [ROSTER]  enemy 5 removed (dead)
+
+1:32  [MATCH END]   damp: 10%
+  friends 1:100% 2:100% 3:100% / enemies 4:dead(1:29) 6:100% 5:dead(1:32)

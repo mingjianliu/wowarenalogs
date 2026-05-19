@@ -1,0 +1,9 @@
+This is a short_passive_swap loss — the enemy picked off your Windwalker Monk at 0:22 using a clean Avatar window, then sustained pressure on your Druid for the remaining 28 seconds. The archetype label fits: the kill happened fast and passively, not through extended setup.
+
+Your biggest mistake was Avenging Crusader at 0:21 — one second after the kill. The Monk was at 86% ten seconds before death and the enemy Avatar had been active since 0:10. You had Avenging Crusader available from 0:13 onward and waited through the entire kill sequence. In a short_passive_swap match, the enemy's threat arrives and executes quickly, often within 15–20 seconds. Your defensive CDs need to land before the health bar collapses, not after.
+
+Blessing of Sacrifice and Blessing of Protection were also both available throughout the kill. Either one on the Monk at 0:12–0:15 when he first dropped to 84% would have changed the outcome.
+
+After going 3v2, you maintained the Druid well enough to reach match end at 48%, which shows your reactive healing was functional. The healing gaps at 0:34 and 0:40 (one over 10 seconds) are worth cleaning up, but they didn't cost you the match — the Monk death did.
+
+In the short_passive_swap pattern, you need to front-load your defensive response the moment an offensive CD lands on a teammate. Waiting for HP to confirm danger means the kill is already in progress.

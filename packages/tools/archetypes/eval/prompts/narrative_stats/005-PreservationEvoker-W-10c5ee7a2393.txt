@@ -1,0 +1,585 @@
+[ARCHETYPE: Preservation Evoker — dampening_grind_swap]
+In long attrition matches averaging 319 seconds, top Preservation Evokers maintain a balanced target-swap pattern (tunnel score 0.544) with optimal CD timing in 34% of windows and a median response latency of 10 seconds. Purge pressure runs at 3.9 per minute across extended dampening exchanges, while healing gaps are absent and offensive participation holds at 65%. The setup style splits evenly between cc_then_burst and flat_dampening at 22% each, with the match dynamic often unresolved in structure.
+
+Key behavioral patterns observed in this match type:
+CD timing: 34% Optimal / 6% Early / 14% Late / 9% Reactive
+CD never used: 23%
+CD response latency: 10032ms median
+Outgoing CC per match: 11.3 mean
+Healing gap rate during burst: 0%
+Offensive participation: 65%
+Purge rate: 3.86/min
+Missed cleanse rate: 30%
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Preservation Evoker (Healer) | Bracket: 3v3 | Result: Win | Duration: 4:23
+  My team: Devourer Demon Hunter, Preservation Evoker, Subtlety Rogue
+  Enemy team: Enhancement Shaman, Holy Paladin, Arms Warrior
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Preservation Evoker): CANNOT offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 19% at match end
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Evoteiken-DunModr-EU (Preservation Evoker — log owner):
+    Deep Breath [120s], Cauterizing Flame [60s], Rewind [240s], Emerald Communion [180s], Stasis [90s], Rescue [60s]
+  2: Syxs-Ravencrest-EU (Devourer Demon Hunter):
+    none tracked
+  3: Racherlul-DunModr-EU (Subtlety Rogue):
+    Cloak of Shadows [120s], Kidney Shot [30s], Shadow Blades [90s]
+  4: Хотткот-СвежевательДуш-EU (Enhancement Shaman — enemy):
+    Ascendance [180s], Bloodlust [60s]
+  5: Jìmjim-Ysondre-EU (Holy Paladin — enemy):
+    Avenging Crusader [60s]
+  6: Zhreystorm-Outland-EU (Arms Warrior — enemy):
+    Avatar [90s]
+
+MATCH TIMELINE
+
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:04  [OWNER CAST]   355936
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:09  [STATE]   friends 1:100 2:100 3:95
+0:12  [STATE]   friends 1:100 2:100 3:91
+0:12  [OWNER CAST]   364343 → 3
+0:13  [TEAMMATE CD]   3 (Subtlety Rogue): Kidney Shot
+      [RES] rdy:Δ+Stasis,3:Kidney Shot,3:Shadow Blades  cd:—
+0:13  [OWNER CAST]   1256581 → 3
+0:15  [STATE]   friends 1:100 2:98 3:100
+0:15  [TEAMMATE CD]   3 (Subtlety Rogue): Shadow Blades
+      [RES] rdy:Δ+Emerald Communion,Stasis,3:Cloak of Shadows,3:Shadow Blades-3:Kidney Shot  cd:3:Kidney Shot(28s)
+0:17  [OWNER CD]   Hover
+      [RES] rdy:Δ+Emerald Communion,3:Cloak of Shadows  cd:—  cc:1/Chrono Flames-1s[kick]
+0:18  [STATE]   friends 1:100 2:100 3:84
+0:18  [OFFENSIVE WINDOW]   0:18–0:48 | Moderate | 1.30M on 2 (Devourer Demon Hunter) | CDs: Avenging Crusader + Avatar
+0:18  [ENEMY CD]   5 (Holy Paladin): Avenging Crusader
+0:19  [MISSED CLEANSE]   Flame Shock on 3 | 23s | 43k taken during | dispel: Magic
+0:20  [OWNER CAST]   360995 → 3
+0:21  [STATE]   friends 1:100 2:100 3:78
+0:21  [OWNER CAST]   361195 → 3
+0:21  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Avenging Crusader/Holy Paladin(3s)  cc:3/Disarm-4s[disarm]
+0:23  [OWNER CAST]   Sleep Walk → 5
+0:24  [STATE]   friends 1:100 2:85 3:97
+0:24  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ  cd:—  enemy:Avenging Crusader/Holy Paladin(5s)  cc:3/Disarm-2s[disarm]
+0:24  [OWNER CAST]   357208 [completed before CC landed]
+0:24  [CC ON TEAM]   1 ← Intimidating Shout (Zhreystorm-Outland-EU) | 5s
+0:24  [CC ON TEAM]   2 ← Intimidating Shout (Zhreystorm-Outland-EU) | 1s
+0:24  [CC ON TEAM]   3 ← Intimidating Shout (Zhreystorm-Outland-EU) | 2s | trinket: used
+0:25  [STATE]   friends 1:100 2:86 3:100 / enemies 4:68 5:100 6:75
+0:26  [STATE]   friends 1:100 2:80 3:100 / enemies 4:64 5:100 6:69
+0:27  [STATE]   friends 1:100 2:80 3:94 / enemies 4:65 5:100 6:56
+0:27  [OWNER CAST]   355941
+0:27  [OWNER CAST]   361195 → 2
+0:27  [OWNER CAST]   355941
+0:28  [STATE]   friends 1:100 2:100 3:100 / enemies 4:60 5:100 6:58
+0:28  [CC ON TEAM]   3 ← Storm Bolt (Zhreystorm-Outland-EU) | 2s | trinket: used
+0:28  [ENEMY CD]   6 (Arms Warrior): Avatar
+0:29  [STATE]   friends 1:100 2:100 3:93 / enemies 4:61 5:100 6:62
+0:29  [TRINKET]   3 used PvP trinket
+0:30  [STATE]   friends 1:92 2:99 3:75 / enemies 4:55 5:100 6:80
+0:30  [OWNER CD]   Obsidian Scales → 3
+      [RES] rdy:Δ  cd:—  enemy:Avenging Crusader/Holy Paladin(12s),Avatar/Arms Warrior(2s)
+0:30  [OWNER CAST]   360995 → 3
+0:30  [OWNER CAST]   361195 → 3
+0:31  [STATE]   friends 1:94 2:100 3:79 / enemies 4:66 5:100 6:84
+0:31  [OWNER CAST]   364343 → 3
+0:32  [STATE]   friends 1:91 2:100 3:82 / enemies 4:64 5:100 6:85
+0:32  [DMG SPIKE]   2 (Devourer Demon Hunter): 1.30M in 10s
+0:32  [OWNER CAST]   1256581 → 3
+0:32  [OFFENSIVE WINDOW]   0:32–0:47 | Critical | 1.30M on 2 (Devourer Demon Hunter) | CDs: Ascendance + Bloodlust
+0:32  [ENEMY CD]   4 (Enhancement Shaman): Ascendance
+0:32  [ENEMY CD]   4 (Enhancement Shaman): Bloodlust
+0:33  [STATE]   friends 1:100 2:99 3:99 / enemies 4:70 5:100 6:90
+0:33  [OWNER CAST]   360823 → 2
+0:33  [CLEANSE]   1 dispelled 3 effects: Capacitor Totem off 2, Flame Shock off 2, Earthbind off 2
+0:33  [OWNER CAST]   364343 → self
+0:34  [STATE]   friends 1:100 2:90 3:99 / enemies 4:71 5:100 6:92
+0:34  [OWNER CAST]   366155 → 2
+0:35  [STATE]   friends 1:100 2:56 3:99 / enemies 4:70 5:100 6:100
+0:35  [OWNER CAST]   364343 → 2
+0:36  [STATE]   friends 1:100 2:61 3:99 / enemies 4:85 5:100 6:100
+0:36  [OWNER CAST]   355936
+0:37  [STATE]   friends 1:100 2:69 3:99 / enemies 4:81 5:100 6:100
+0:37  [CC ON TEAM]   2 ← Champion's Spear (Zhreystorm-Outland-EU) | 6s
+0:38  [STATE]   friends 1:100 2:59 3:99 / enemies 4:74 5:100 6:95
+0:38  [OWNER CAST]   431443 → 6
+0:38  [OWNER CAST]   364343 → 2
+0:39  [STATE]   friends 1:100 2:55 3:100 / enemies 4:44 5:100 6:82
+0:39  [OWNER CAST]   1256581 → 2
+0:40  [STATE]   friends 1:100 2:74 3:92 / enemies 4:63 5:100 6:97
+0:40  [OWNER CAST]   364343 → 2
+0:41  [STATE]   friends 1:100 2:69 3:85 / enemies 4:63 5:100 6:95
+0:41  [OWNER CAST]   360995 → 2
+0:41  [OWNER CAST]   361195 → 2
+0:42  [STATE]   friends 1:100 2:85 3:81 / enemies 4:81 5:100 6:99
+0:42  [OWNER CAST]   364343 → 2
+0:43  [STATE]   friends 1:93 2:99 3:88 / enemies 4:93 5:100 6:100
+0:43  [OWNER CAST]   360995 → 3
+0:43  [OWNER CAST]   361195 → 3
+0:44  [STATE]   friends 1:86 2:96 3:93 / enemies 4:93 5:100 6:91
+0:45  [STATE]   friends 1:83 2:100 3:94 / enemies 4:94 5:100 6:91
+0:45  [OWNER CD]   Deep Breath
+      [RES] rdy:Deep Breath,Cauterizing Flame,Rewind,Emerald Communion,Stasis,Rescue,3:Cloak of Shadows,3:Kidney Shot  cd:3:Shadow Blades(60s)  enemy:Ascendance/Enhancement Shaman(13s),Bloodlust/Enhancement Shaman(13s),Avenging Crusader/Holy Paladin(26s),Avatar/Arms Warrior(17s)
+0:45  [CLEANSE]   1 dispelled Consecration off 1
+0:45  [TEAMMATE CD]   3 (Subtlety Rogue): Kidney Shot
+      [RES] rdy:Δ-3:Shadow Blades  cd:3:Shadow Blades(60s)  enemy:Ascendance/Enhancement Shaman(13s),Bloodlust/Enhancement Shaman(13s),Avenging Crusader/Holy Paladin(27s),Avatar/Arms Warrior(17s)
+0:46  [STATE]   friends 1:93 2:100 3:99 / enemies 4:95 6:91
+0:47  [STATE]   friends 1:95 2:100 3:100 / enemies 4:87 6:92
+0:47  [BUFF FADED]   Deep Breath
+0:48  [STATE]   friends 1:100 2:100 3:100
+0:48  [CC ON TEAM]   1 ← Hammer of Justice (Jìmjim-Ysondre-EU) | 5s
+0:49  [STATE]   friends 1:98 2:100 3:100 / enemies 4:74 5:100 6:93
+0:50  [STATE]   friends 1:99 2:100 3:100 / enemies 4:65 5:100 6:100
+0:51  [STATE]   friends 1:99 2:91 3:100 / enemies 4:70 5:100 6:100
+0:52  [STATE]   friends 1:97 2:86 3:100 / enemies 4:84 5:100 6:100
+0:53  [STATE]   friends 1:87 2:78 3:100 / enemies 4:78 5:100 6:100
+0:53  [OWNER CAST]   360995 → 2
+0:54  [STATE]   friends 1:81 2:71 3:100 / enemies 4:79 5:100 6:100
+0:54  [OWNER CAST]   361195 → 2
+0:54  [OWNER CD]   Hover
+      [RES] rdy:Δ-Deep Breath  cd:Deep Breath(111s)  enemy:Ascendance/Enhancement Shaman(22s),Bloodlust/Enhancement Shaman(22s),Avatar/Arms Warrior(26s)
+0:55  [STATE]   friends 1:80 2:79 3:91 / enemies 4:85 5:100 6:100
+0:55  [OWNER CAST]   364343 → self
+0:56  [STATE]   friends 1:79 2:80 3:92 / enemies 4:83 5:100 6:100
+0:57  [STATE]   friends 1:80 2:71 3:93 / enemies 4:79 5:100 6:100
+0:58  [STATE]   friends 1:81 2:72 3:95 / enemies 4:76 5:100 6:100
+0:58  [OWNER CAST]   355936
+1:00  [STATE]   friends 1:99 2:100 3:100
+1:00  [OWNER CAST]   Sleep Walk → Grounding Totem [absorbed: Grounding Totem]
+1:00  [CC CAST]   Sleep Walk (by 1) → Grounding Totem [non-player target]
+1:00  [CLEANSE]   1 dispelled Searing Glare off 1
+1:00  [OWNER CAST]   360823 → self
+1:01  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Ascendance/Enhancement Shaman(29s),Bloodlust/Enhancement Shaman(29s)
+1:02  [MISSED CLEANSE]   Flame Shock on 3 | 36s | 2k taken during | dispel: Magic
+1:02  [MISSED CLEANSE]   Flame Shock on 2 | 23s | 41k taken during | dispel: Magic
+1:03  [STATE]   friends 1:100 2:68 3:80
+1:03  [OWNER CAST]   Sleep Walk → Grounding Totem [absorbed: Grounding Totem]
+1:03  [CC CAST]   Sleep Walk (by 1) → Grounding Totem [non-player target]
+1:04  [OWNER CAST]   360995 → 2
+1:05  [OWNER CAST]   361195 → 2
+1:05  [OWNER CAST]   364343 → 3
+1:06  [STATE]   friends 1:100 2:86 3:84
+1:06  [OWNER CAST]   1256581 → 2
+1:09  [STATE]   friends 1:81 2:99 3:87
+1:10  [OWNER CAST]   364343 → self
+1:10  [OWNER CD]   Time Dilation → self
+      [RES] rdy:Δ  cd:—  cc:1/Chrono Flames-1s[kick]
+1:11  [OWNER CAST]   366155 → self
+1:12  [STATE]   friends 1:73 2:100 3:83
+1:13  [OWNER CAST]   360995 → self
+1:13  [OWNER CAST]   361195 → self
+1:14  [OWNER CAST]   364343 → 3
+1:15  [STATE]   friends 1:96 2:95 3:75
+1:15  [OWNER CAST]   357208
+1:16  [MISSED CLEANSE]   Flame Shock on 1 | 23s | 81k taken during | dispel: Magic
+1:18  [STATE]   friends 1:100 2:94 3:75
+1:18  [OWNER CAST]   431443 → 4
+1:19  [ENEMY CD]   5 (Holy Paladin): Avenging Crusader
+1:19  [OWNER CAST]   431443 → 4
+1:19  [OWNER CAST]   356995 → 4
+1:21  [STATE]   friends 1:95 2:100 3:60
+1:21  [OWNER CAST]   1256581 → 3
+1:23  [OWNER CAST]   364343 → 3
+1:24  [STATE]   friends 1:89 2:100 3:50
+1:24  [OWNER CAST]   355936
+1:25  [OWNER CAST]   364343 → 3
+1:26  [OWNER CAST]   360995 → self
+1:26  [OWNER CAST]   361195 → self
+1:26  [OWNER CD]   Obsidian Scales → self
+      [RES] rdy:Δ+3:Kidney Shot  cd:—  enemy:Avenging Crusader/Holy Paladin(8s)
+1:27  [STATE]   friends 1:72 2:100 3:87
+1:27  [OWNER CAST]   364343 → self
+1:28  [OWNER CAST]   1256581 → self
+1:28  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Avenging Crusader/Holy Paladin(10s)
+1:28  [MISSED CLEANSE]   Flame Shock on 2 | 18s | 190k taken during | dispel: Magic
+1:30  [STATE]   friends 1:100 2:100 3:100
+1:30  [CC ON TEAM]   1 ← Storm Bolt (Zhreystorm-Outland-EU) | 3s
+1:31  [STATE]   friends 1:100 2:81 3:97 / enemies 4:99 5:100 6:93
+1:32  [STATE]   friends 1:99 2:82 3:84 / enemies 4:99 5:100 6:100
+1:33  [STATE]   friends 1:93 2:73 3:85 / enemies 4:98 5:100 6:100
+1:33  [ENEMY CD]   4 (Enhancement Shaman): Bloodlust
+1:33  [OWNER CAST]   364343 → self
+1:34  [STATE]   friends 1:93 2:74 3:78 / enemies 4:99 5:100 6:100
+1:35  [STATE]   friends 1:99 2:75 3:80 / enemies 4:100 5:100 6:100
+1:35  [OWNER CAST]   360995 → 2
+1:36  [STATE]   friends 1:98 2:95 3:80 / enemies 4:99 5:100 6:100
+1:36  [OWNER CAST]   361195 → 2
+1:36  [OWNER CAST]   374968
+1:37  [STATE]   friends 1:100 2:100 3:86 / enemies 4:92 5:100 6:100
+1:38  [STATE]   friends 1:96 2:100 3:82 / enemies 4:100 5:100 6:100
+1:38  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Bloodlust/Enhancement Shaman(5s),Avenging Crusader/Holy Paladin(19s)
+1:39  [STATE]   friends 1:100 2:100 3:78 / enemies 4:100 5:100 6:100
+1:40  [STATE]   friends 1:100 2:100 3:63 / enemies 4:92 5:100 6:100
+1:40  [TEAMMATE CD]   3 (Subtlety Rogue): Kidney Shot
+      [RES] rdy:Δ-Deep Breath  cd:Deep Breath(64s)  enemy:Bloodlust/Enhancement Shaman(8s),Avenging Crusader/Holy Paladin(22s)  cc:1/Sleep Walk-2s[kick]
+1:42  [STATE]   friends 1:100 2:100 3:50
+1:43  [OWNER CAST]   364343 → 3 [completed before CC landed]
+1:43  [CC ON TEAM]   1 ← Intimidating Shout (Zhreystorm-Outland-EU) | 1s | trinket: used
+1:43  [CC ON TEAM]   2 ← Intimidating Shout (Zhreystorm-Outland-EU) | 3s
+1:44  [STATE]   friends 1:100 2:100 3:52 / enemies 4:81 5:100 6:100
+1:45  [STATE]   friends 1:100 2:100 3:52 / enemies 4:75 6:100
+1:45  [TEAMMATE CD]   3 (Subtlety Rogue): Shadow Blades
+      [RES] rdy:Δ-Deep Breath  cd:Deep Breath(60s)  enemy:Bloodlust/Enhancement Shaman(12s),Avenging Crusader/Holy Paladin(26s)  cc:1/Intimidating Shout-0s,2/Intimidating Shout-1s
+1:45  [TRINKET]   1 used PvP trinket
+1:45  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ+3:Shadow Blades-3:Kidney Shot  cd:3:Kidney Shot(25s)  enemy:Bloodlust/Enhancement Shaman(12s),Avenging Crusader/Holy Paladin(26s)  cc:2/Intimidating Shout-1s
+1:45  [OWNER CAST]   355936
+1:46  [STATE]   friends 1:99 2:100 3:53 / enemies 4:67 5:100 6:100
+1:46  [ENEMY CD]   6 (Arms Warrior): Avatar
+1:47  [STATE]   friends 1:100 2:100 3:74 / enemies 4:39 5:100 6:100
+1:48  [STATE]   friends 1:100 2:87 3:72 / enemies 4:72 5:100 6:100
+1:48  [OWNER CAST]   431443 → 4
+1:48  [OWNER CAST]   357208
+1:49  [STATE]   friends 1:99 2:76 3:69 / enemies 4:100 5:100 6:100
+1:50  [STATE]   friends 1:100 2:75 3:67 / enemies 4:95 5:97 6:82
+1:50  [OWNER CAST]   360995 → 3
+1:50  [OWNER CAST]   361195 → 3
+1:51  [STATE]   friends 1:100 2:79 3:73 / enemies 4:91 5:96 6:72
+1:51  [MISSED CLEANSE]   Flame Shock on 2 | 15s | 242k taken during | dispel: Magic
+1:51  [OWNER CAST]   364343 → 3
+1:52  [STATE]   friends 1:95 2:53 3:77 / enemies 4:90 5:96 6:64
+1:52  [OWNER CAST]   1256581 → 3
+1:53  [STATE]   friends 1:100 2:68 3:96 / enemies 4:90 5:96 6:36
+1:53  [OWNER CAST]   364343 → 2
+1:54  [STATE]   friends 1:100 2:88 3:100
+1:54  [OWNER CAST]   366155 → 2 [completed before CC landed]
+1:55  [CC ON TEAM]   1 ← Shockwave (Zhreystorm-Outland-EU) | 2s | trinket: ON CD (81s left)
+1:55  [CC ON TEAM]   2 ← Shockwave (Zhreystorm-Outland-EU) | 2s
+1:56  [STATE]   friends 1:99 2:82 3:99 / enemies 4:90 5:95 6:47
+1:57  [STATE]   friends 1:100 2:60 3:100 / enemies 4:98 5:100 6:64
+1:57  [OWNER CAST]   364343 → 2
+1:58  [STATE]   friends 1:97 2:21 3:96 / enemies 4:98 5:100 6:69
+1:58  [OWNER CAST]   360995 → 2
+1:58  [OWNER CAST]   361195 → 2
+1:58  [OWNER CD]   Time Dilation → 2
+      [RES] rdy:Δ-3:Shadow Blades  cd:3:Shadow Blades(76s)  enemy:Bloodlust/Enhancement Shaman(26s),Avatar/Arms Warrior(12s)
+1:59  [STATE]   friends 1:100 2:48 3:100 / enemies 4:100 5:100 6:87
+1:59  [OWNER CAST]   364343 → 2
+2:00  [STATE]   friends 1:100 2:59 3:100 / enemies 4:100 5:100 6:95
+2:00  [OWNER CAST]   366155 → 2
+2:01  [STATE]   friends 1:100 2:85 3:95 / enemies 4:100 5:100 6:100
+2:01  [MISSED CLEANSE]   Flame Shock on 1 | 18s | 67k taken during | dispel: Magic
+2:01  [MISSED CLEANSE]   Flame Shock on 3 | 5s | 302k taken during | dispel: Magic
+2:02  [STATE]   friends 1:97 2:94 3:98 / enemies 4:100 5:100 6:100
+2:02  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Bloodlust/Enhancement Shaman(29s),Avatar/Arms Warrior(15s)
+2:02  [CC ON TEAM]   1 ← Hammer of Justice (Jìmjim-Ysondre-EU) | 3s | trinket: ON CD (73s left)
+2:03  [STATE]   friends 1:88 2:95 3:90 / enemies 4:96 5:100 6:100
+2:03  [CC ON TEAM]   3 ← Storm Bolt (Zhreystorm-Outland-EU) | 3s | trinket: ON CD (27s left)
+2:04  [STATE]   friends 1:88 2:98 3:91 / enemies 4:96 5:100 6:100
+2:05  [STATE]   friends 1:90 2:99 3:77 / enemies 4:100 5:100 6:93
+2:05  [OWNER CAST]   364343 → 3
+2:05  [OWNER CD]   Stasis
+      [RES] rdy:Δ+3:Cloak of Shadows-Deep Breath  cd:Deep Breath(39s)  enemy:Avatar/Arms Warrior(19s)
+2:06  [STATE]   friends 1:90 2:95 3:67 / enemies 4:100 5:100 6:96
+2:06  [OWNER CAST]   355936
+2:07  [STATE]   friends 1:100 2:100 3:72 / enemies 4:100 5:100 6:100
+2:07  [OWNER CAST]   364343 → 3
+2:08  [STATE]   friends 1:100 2:99 3:81 / enemies 4:100 5:100 6:100
+2:08  [OWNER CAST]   1256581 → 3
+2:09  [STATE]   friends 1:99 2:95 3:92 / enemies 4:89 5:100 6:93
+2:10  [STATE]   friends 1:100 2:94 3:96 / enemies 4:90 5:100 6:87
+2:11  [STATE]   friends 1:100 2:84 3:97 / enemies 4:91 5:100 6:90
+2:12  [STATE]   friends 1:100 2:73 3:98 / enemies 4:75 5:100 6:73
+2:13  [STATE]   friends 1:100 2:70 3:99 / enemies 4:51 5:100 6:82
+2:13  [OWNER CAST]   Sleep Walk → 6
+2:13  [OWNER CAST]   431443 → 4
+2:15  [STATE]   friends 1:100 2:94 3:100
+2:15  [OWNER CAST]   Sleep Walk → 5
+2:15  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ+3:Kidney Shot-Stasis  cd:Stasis(80s)  enemy:Avatar/Arms Warrior(29s)
+2:15  [OWNER CAST]   357208
+2:17  [OWNER CAST]   356995 → 6
+2:18  [STATE]   friends 1:87 2:96 3:100
+2:19  [OWNER CAST]   360995 → self
+2:19  [OWNER CAST]   361195 → self
+2:20  [OWNER CAST]   364343 → self
+2:21  [STATE]   friends 1:95 2:92 3:100
+2:21  [ENEMY CD]   5 (Holy Paladin): Avenging Crusader
+2:21  [OWNER CAST]   366155 → self
+2:23  [OWNER CAST]   431443 → Grounding Totem [absorbed: Grounding Totem]
+2:23  [OWNER CAST]   360995 → 2
+2:24  [STATE]   friends 1:100 2:88 3:91
+2:24  [OWNER CAST]   361195 → 2
+2:24  [OWNER CAST]   364343 → 2
+2:26  [OWNER CAST]   431443 → 4
+2:26  [OWNER CAST]   356995 → 4 [completed before CC landed]
+2:27  [STATE]   friends 1:100 2:98 3:85
+2:27  [CC ON TEAM]   2 ← Champion's Spear (Zhreystorm-Outland-EU) | 6s
+2:27  [CC ON TEAM]   1 ← Champion's Spear (Zhreystorm-Outland-EU) | 6s | trinket: ON CD (48s left)
+2:28  [STATE]   friends 1:99 2:96 3:86 / enemies 4:82 5:100 6:91
+2:28  [OWNER CAST]   360995 → 3 [succeeded after CC arrived — within 1s in log]
+2:28  [OWNER CAST]   361195 → 3
+2:29  [STATE]   friends 1:100 2:91 3:100 / enemies 4:100 5:100 6:100
+2:29  [OWNER CD]   Obsidian Scales → 3
+      [RES] rdy:Δ  cd:—  enemy:Avenging Crusader/Holy Paladin(8s)  cc:1/Champion's Spear-4s,2/Champion's Spear-4s
+2:29  [OWNER CAST]   364343 → self
+2:30  [STATE]   friends 1:100 2:82 3:100 / enemies 4:100 5:100 6:100
+2:30  [CC ON TEAM]   2 ← Storm Bolt (Zhreystorm-Outland-EU) | 3s
+2:30  [OWNER CAST]   366155 → 2
+2:31  [STATE]   friends 1:100 2:93 3:100 / enemies 4:100 5:100 6:100
+2:32  [STATE]   friends 1:100 2:81 3:99 / enemies 4:100 5:100 6:100
+2:32  [OWNER CAST]   364343 → self
+2:33  [STATE]   friends 1:100 2:80 3:100 / enemies 4:98 5:100 6:100
+2:33  [CC ON TEAM]   1 ← Hammer of Justice (Jìmjim-Ysondre-EU) | 5s | trinket: ON CD (42s left)
+2:34  [STATE]   friends 1:94 2:71 3:90 / enemies 4:100 5:100 6:100
+2:35  [STATE]   friends 1:96 2:75 3:93 / enemies 4:100 5:100 6:96
+2:35  [OWNER CAST]   355941
+2:36  [STATE]   friends 1:100 2:80 3:100 / enemies 4:100 5:100 6:92
+2:37  [STATE]   friends 1:100 2:70 3:100 / enemies 4:100 5:100 6:100
+2:37  [CC ON TEAM]   1 ← Shockwave (Zhreystorm-Outland-EU) | 1s | trinket: ON CD (38s left)
+2:37  [CC ON TEAM]   2 ← Shockwave (Zhreystorm-Outland-EU) | 1s
+2:37  [CC ON TEAM]   3 ← Shockwave (Zhreystorm-Outland-EU) | 2s
+2:38  [STATE]   friends 1:100 2:56 3:99 / enemies 4:100 5:100 6:100
+2:38  [OWNER CAST]   360995 → 2
+2:38  [OWNER CAST]   361195 → 2
+2:39  [STATE]   friends 1:99 2:65 3:100 / enemies 4:100 5:100 6:100
+2:39  [OWNER CAST]   364343 → 2
+2:40  [STATE]   friends 1:97 2:59 3:100 / enemies 4:100 5:100 6:99
+2:40  [OWNER CAST]   1256581 → 2
+2:41  [STATE]   friends 1:100 2:99 3:100 / enemies 4:97 5:100 6:96
+2:41  [OWNER CAST]   364343 → 2
+2:42  [STATE]   friends 1:93 2:95 3:97 / enemies 4:99 5:100 6:100
+2:43  [STATE]   friends 1:89 2:99 3:97 / enemies 4:88 5:100 6:100
+2:43  [OFFENSIVE WINDOW]   2:43–2:58 | High | 0.71M on 2 (Devourer Demon Hunter) | CDs: Ascendance + Bloodlust
+2:43  [ENEMY CD]   4 (Enhancement Shaman): Ascendance
+2:43  [ENEMY CD]   4 (Enhancement Shaman): Bloodlust
+2:44  [STATE]   friends 1:91 2:100 3:93 / enemies 4:100 5:100 6:100
+2:44  [TEAMMATE CD]   3 (Subtlety Rogue): Kidney Shot
+      [RES] rdy:Δ+Deep Breath-Stasis  cd:Stasis(51s)  enemy:Ascendance/Enhancement Shaman(2s),Bloodlust/Enhancement Shaman(2s),Avenging Crusader/Holy Paladin(24s)  cc:1/Chrono Flames-1s[kick]
+2:45  [STATE]   friends 1:77 2:100 3:50 / enemies 4:98 5:100 6:100
+2:45  [OWNER CAST]   360995 → 3
+2:46  [STATE]   friends 1:73 2:100 3:29 / enemies 4:100 5:100 6:100
+2:46  [TEAMMATE CD]   3 (Subtlety Rogue): Cloak of Shadows
+      [RES] rdy:Δ+Deep Breath,Emerald Communion,3:Cloak of Shadows  cd:—  enemy:Ascendance/Enhancement Shaman(3s),Bloodlust/Enhancement Shaman(3s),Avenging Crusader/Holy Paladin(25s)
+2:46  [OWNER CAST]   361195 → 3
+2:47  [STATE]   friends 1:70 2:100 3:39 / enemies 4:82 5:100 6:100
+2:47  [OWNER CAST]   364343 → 3
+2:48  [STATE]   friends 1:61 2:100 3:39 / enemies 4:79 5:100 6:100
+2:48  [OWNER CAST]   366155 → 3
+2:49  [STATE]   friends 1:75 2:100 3:64 / enemies 4:79 5:100 6:100
+2:49  [OWNER CD]   Time Dilation → self
+      [RES] rdy:Δ+Deep Breath-3:Cloak of Shadows,3:Kidney Shot  cd:3:Cloak of Shadows(117s),3:Kidney Shot(26s)  enemy:Ascendance/Enhancement Shaman(6s),Bloodlust/Enhancement Shaman(6s),Avenging Crusader/Holy Paladin(28s)
+2:49  [OWNER CAST]   364343 → self
+2:50  [STATE]   friends 1:78 2:100 3:66 / enemies 4:71 6:97
+2:50  [OWNER CAST]   355936
+2:51  [STATE]   friends 1:96 2:100 3:80 / enemies 4:66 5:100 6:93
+2:51  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Ascendance/Enhancement Shaman(8s),Bloodlust/Enhancement Shaman(8s)
+2:52  [STATE]   friends 1:100 2:100 3:82 / enemies 4:61 5:100 6:77
+2:52  [DMG SPIKE]   2 (Devourer Demon Hunter): 0.71M in 10s
+2:52  [OWNER CAST]   Sleep Walk → 5
+2:53  [STATE]   friends 1:100 2:80 3:79 / enemies 4:61 5:100 6:75
+2:54  [STATE]   friends 1:99 2:64 3:67 / enemies 4:62 6:74
+2:55  [STATE]   friends 1:98 2:36 3:67 / enemies 4:62 6:92
+2:55  [OWNER CAST]   431443 → 4
+2:55  [OWNER CAST]   364343 → 2
+2:56  [STATE]   friends 1:98 2:33 3:58 / enemies 4:63 5:99 6:86
+2:56  [OWNER CAST]   1256581 → 2
+2:57  [STATE]   friends 1:100 2:70 3:65 / enemies 4:63 5:99 6:80
+2:57  [OWNER CAST]   364343 → 3
+2:58  [OWNER CAST]   1256581 → 2
+2:59  [OWNER CAST]   360995 → 2
+3:00  [STATE]   friends 1:100 2:62 3:76
+3:00  [OWNER CAST]   361195 → 2
+3:01  [OWNER CAST]   431443 → 6
+3:02  [MISSED CLEANSE]   Flame Shock on 3 | 34s | 4k taken during | dispel: Magic
+3:02  [OWNER CAST]   431443 → 6
+3:02  [OWNER CAST]   356995 → 6
+3:03  [STATE]   friends 1:100 2:84 3:83
+3:04  [CC ON TEAM]   1 ← Intimidating Shout (Zhreystorm-Outland-EU) | 6s | trinket: ON CD (12s left)
+3:04  [CC ON TEAM]   2 ← Intimidating Shout (Zhreystorm-Outland-EU) | 1s | trinket: used
+3:04  [TRINKET]   2 used PvP trinket
+3:05  [STATE]   friends 1:100 2:91 3:91 / enemies 4:77 5:93 6:62
+3:06  [STATE]   friends 1:100 2:90 3:91 / enemies 4:77 5:93 6:60
+3:06  [CC ON TEAM]   1 ← Hex (Хотткот-СвежевательДуш-EU) | 5s | trinket: ON CD (9s left)
+3:07  [STATE]   friends 1:100 2:92 3:92 / enemies 4:77 5:93 6:55
+3:08  [STATE]   friends 1:100 2:96 3:94 / enemies 4:78 5:94 6:59
+3:09  [STATE]   friends 1:100 2:96 3:94 / enemies 4:79 5:95 6:54
+3:10  [STATE]   friends 1:100 2:96 3:86 / enemies 4:80 5:97 6:58
+3:11  [STATE]   friends 1:100 2:96 3:89 / enemies 4:81 5:97 6:69
+3:11  [OWNER CAST]   360995 → 3
+3:11  [OWNER CAST]   361195 → 3
+3:12  [STATE]   friends 1:87 2:93 3:100 / enemies 4:81 5:97 6:62
+3:12  [OWNER CAST]   364343 → self
+3:12  [MISSED CLEANSE]   Flame Shock on 1 | 18s | 47k taken during | dispel: Magic
+3:13  [STATE]   friends 1:77 2:98 3:95 / enemies 4:82 5:97 6:52
+3:13  [ENEMY CD]   6 (Arms Warrior): Avatar
+3:13  [OWNER CAST]   366155 → self
+3:13  [OWNER CD]   Obsidian Scales → self
+      [RES] rdy:Δ  cd:—  enemy:Avatar/Arms Warrior(1s)
+3:14  [STATE]   friends 1:86 2:90 3:100 / enemies 4:84 5:100 6:54
+3:14  [OWNER CAST]   364343 → self
+3:15  [STATE]   friends 1:88 2:84 3:95 / enemies 4:86 5:100 6:84
+3:16  [STATE]   friends 1:88 2:72 3:98 / enemies 4:69 5:100 6:81
+3:16  [OWNER CAST]   355936
+3:17  [CC ON TEAM]   1 ← Hammer of Justice (Jìmjim-Ysondre-EU) | 5s
+3:18  [STATE]   friends 1:100 2:54 3:100 / enemies 4:82 5:100 6:86
+3:19  [STATE]   friends 1:99 2:46 3:100 / enemies 4:89 5:100 6:100
+3:20  [STATE]   friends 1:100 2:51 3:94 / enemies 4:90 5:100 6:100
+3:20  [TEAMMATE CD]   3 (Subtlety Rogue): Kidney Shot
+      [RES] rdy:Δ+3:Shadow Blades-3:Cloak of Shadows  cd:3:Cloak of Shadows(86s)  enemy:Avatar/Arms Warrior(7s)  cc:1/Hammer of Justice-2s[stun],2/Charge-1s[root]
+3:21  [STATE]   friends 1:100 2:39 3:81 / enemies 4:91 6:100
+3:22  [STATE]   friends 1:100 2:41 3:82 / enemies 4:77 6:100
+3:22  [OWNER CAST]   360995 → 2
+3:22  [TEAMMATE CD]   3 (Subtlety Rogue): Shadow Blades
+      [RES] rdy:Δ+Deep Breath-Stasis,3:Cloak of Shadows  cd:Stasis(14s),3:Cloak of Shadows(84s)  enemy:Avatar/Arms Warrior(9s)
+3:22  [OWNER CAST]   361195 → 2
+3:23  [STATE]   friends 1:99 2:47 3:82 / enemies 4:61 6:100
+3:23  [OWNER CAST]   364343 → 2
+3:24  [STATE]   friends 1:100 2:54 3:83 / enemies 4:75 6:100
+3:24  [OWNER CAST]   1256581 → 2
+3:24  [CC ON TEAM]   2 ← Shockwave (Zhreystorm-Outland-EU) | 2s | trinket: ON CD (100s left)
+3:25  [STATE]   friends 1:100 2:78 3:87 / enemies 4:75 6:100
+3:25  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Avatar/Arms Warrior(12s)  cc:2/Shockwave-1s[stun]
+3:26  [STATE]   friends 1:100 2:79 3:100 / enemies 4:74 6:100
+3:26  [OWNER CAST]   Sleep Walk → 5
+3:27  [STATE]   friends 1:100 2:88 3:100 / enemies 4:51 5:100 6:100
+3:27  [ENEMY CD]   5 (Holy Paladin): Avenging Crusader
+3:28  [STATE]   friends 1:100 2:90 3:87 / enemies 4:79 5:100 6:100
+3:28  [OWNER CAST]   431443 → 4
+3:28  [OWNER CAST]   356995 → 4
+3:29  [STATE]   friends 1:100 2:99 3:78 / enemies 4:64 5:100 6:88
+3:30  [STATE]   friends 1:100 2:100 3:45 / enemies 4:75 5:100 6:100
+3:30  [OWNER CAST]   Sleep Walk → 5
+3:31  [STATE]   friends 1:100 2:100 3:33 / enemies 4:63 5:100 6:93
+3:31  [OWNER CAST]   366155 → 3
+3:32  [STATE]   friends 1:99 2:99 3:28 / enemies 4:77 5:100 6:90
+3:32  [OWNER CAST]   364343 → 3
+3:33  [STATE]   friends 1:100 2:100 3:50 / enemies 4:92 5:100 6:85
+3:33  [OWNER CAST]   360995 → 3
+3:33  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ  cd:—  enemy:Avenging Crusader/Holy Paladin(6s),Avatar/Arms Warrior(21s)
+3:34  [STATE]   friends 1:100 2:100 3:53 / enemies 4:91 5:100 6:79
+3:34  [CC ON TEAM]   3 ← Storm Bolt (Zhreystorm-Outland-EU) | 3s
+3:34  [OWNER CAST]   361195 → 3
+3:35  [STATE]   friends 1:100 2:100 3:77 / enemies 4:92 5:100 6:79
+3:35  [DMG SPIKE]   1 (Preservation Evoker): 0.88M in 10s
+3:36  [STATE]   friends 1:96 2:97 3:84 / enemies 4:89 5:100 6:82
+3:36  [OWNER CAST]   361509 → 3
+3:36  [OWNER CAST]   431443 → 3
+3:37  [STATE]   friends 1:97 2:93 3:97 / enemies 4:100 5:100 6:93
+3:37  [MISSED CLEANSE]   Flame Shock on 1 | 18s | 618k taken during | dispel: Magic
+3:37  [OWNER CAST]   431443 → 6
+3:37  [OWNER CAST]   360823 → 2
+3:37  [CLEANSE]   1 dispelled 4 effects: Stormbind off 2, Flame Shock off 2, Searing Glare off 2, Earthbind off 2
+3:38  [STATE]   friends 1:60 2:57 3:91 / enemies 4:100 5:100 6:100
+3:39  [STATE]   friends 1:53 2:54 3:97 / enemies 4:100 5:100 6:100
+3:39  [OWNER CD]   Emerald Communion
+      [RES] rdy:Δ+Emerald Communion,Stasis  cd:—  enemy:Avenging Crusader/Holy Paladin(11s),Avatar/Arms Warrior(26s)
+3:40  [STATE]   friends 1:58 2:55 3:100 / enemies 4:100 5:100 6:100
+3:41  [STATE]   friends 1:70 2:55 3:96 / enemies 4:100 5:100 6:100
+3:42  [STATE]   friends 1:100 2:70 3:98 / enemies 4:87 5:100 6:99
+3:42  [BUFF FADED]   Emerald Communion
+3:42  [OWNER CAST]   364343 → 2
+3:43  [STATE]   friends 1:99 2:82 3:99 / enemies 4:80 5:100 6:83
+3:43  [OWNER CD]   Stasis
+      [RES] rdy:Δ+Deep Breath-Emerald Communion,3:Cloak of Shadows  cd:Emerald Communion(176s),3:Cloak of Shadows(63s)  enemy:Avenging Crusader/Holy Paladin(16s)
+3:44  [STATE]   friends 1:86 2:48 3:98 / enemies 4:78 5:100 6:80
+3:44  [OWNER CAST]   355936
+3:44  [OWNER CAST]   364343 → 2
+3:45  [STATE]   friends 1:90 2:64 3:100
+3:45  [OWNER CD]   Hover
+      [RES] rdy:Δ-Emerald Communion  cd:Emerald Communion(174s)  enemy:Avenging Crusader/Holy Paladin(18s)
+3:46  [STATE]   friends 1:90 2:75 3:99 / enemies 4:43 5:100 6:67
+3:47  [STATE]   friends 1:89 2:76 3:97 / enemies 4:67 5:68 6:72
+3:47  [OWNER CAST]   Sleep Walk → 5
+3:47  [ENEMY CD]   4 (Enhancement Shaman): Bloodlust
+3:48  [STATE]   friends 1:81 2:79 3:95 / enemies 4:67 5:67 6:60
+3:49  [STATE]   friends 1:79 2:80 3:85 / enemies 4:65 5:66 6:52
+3:49  [OWNER CAST]   360995 → 3
+3:50  [OWNER CAST]   361195 → 3
+3:50  [STATE]   friends 1:81 2:88 3:88 / enemies 4:66 5:66 6:67
+3:50  [DMG SPIKE]   1 (Preservation Evoker): 1.00M in 10s
+3:51  [STATE]   friends 1:65 2:90 3:95 / enemies 4:68 5:68 6:64
+3:51  [OWNER CAST]   370564
+3:51  [OWNER CAST]   355941
+3:51  [OWNER CAST]   364343 → 2
+3:52  [STATE]   friends 1:84 2:100 3:87 / enemies 4:68 5:86 6:68
+3:52  [OWNER CAST]   361195 → 3
+3:52  [TEAMMATE CD]   3 (Subtlety Rogue): Kidney Shot
+      [RES] rdy:Δ-Emerald Communion,3:Shadow Blades  cd:Emerald Communion(167s),3:Shadow Blades(60s)  enemy:Bloodlust/Enhancement Shaman(5s),Avenging Crusader/Holy Paladin(25s)  cc:1/Chrono Flames-1s[kick]
+3:52  [OWNER CAST]   358385
+3:53  [STATE]   friends 1:88 2:99 3:94 / enemies 4:70 5:86 6:83
+3:53  [DMG SPIKE]   3 (Subtlety Rogue): 0.74M in 10s
+3:54  [STATE]   friends 1:88 2:100 3:93 / enemies 4:71 5:86 6:93
+3:54  [OWNER CAST]   364343 → self
+3:55  [STATE]   friends 1:78 2:100 3:82 / enemies 4:69 5:86 6:84
+3:55  [OWNER CAST]   1256581 → self
+3:56  [STATE]   friends 1:89 2:100 3:100 / enemies 4:67 5:84 6:79
+3:56  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ  cd:—  enemy:Bloodlust/Enhancement Shaman(9s),Avenging Crusader/Holy Paladin(29s)
+3:56  [OWNER CAST]   357208
+3:57  [STATE]   friends 1:81 2:100 3:85 / enemies 4:78 5:82 6:66
+3:57  [OWNER CAST]   431443 → 6
+3:58  [STATE]   friends 1:71 2:100 3:85 / enemies 4:71 5:72 6:42
+3:58  [OWNER CAST]   360995 → self
+3:58  [OWNER CAST]   361195 → self
+3:58  [OWNER CAST]   364343 → self
+3:59  [OWNER CAST]   1256581 → self
+4:00  [STATE]   friends 1:100 2:100 3:87
+4:00  [MISSED CLEANSE]   Flame Shock on 1 | 18s | 290k taken during | dispel: Magic
+4:00  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Bloodlust/Enhancement Shaman(13s)
+4:01  [OWNER CAST]   356995 → 6 [completed before CC landed]
+4:02  [CC ON TEAM]   1 ← Storm Bolt (Zhreystorm-Outland-EU) | 3s
+4:03  [STATE]   friends 1:80 2:100 3:42 / enemies 4:63 5:71 6:91
+4:04  [STATE]   friends 1:77 2:100 3:33 / enemies 4:49 5:71 6:100
+4:05  [STATE]   friends 1:61 2:100 3:34 / enemies 4:57 5:71 6:90
+4:05  [OWNER CAST]   360995 → 3
+4:05  [OWNER CAST]   361195 → 3
+4:06  [STATE]   friends 1:63 2:100 3:46 / enemies 4:66 5:71 6:92
+4:06  [OWNER CAST]   364343 → self [completed before CC landed]
+4:06  [CC ON TEAM]   1 ← Champion's Spear (Zhreystorm-Outland-EU) | 6s
+4:06  [CC ON TEAM]   3 ← Champion's Spear (Zhreystorm-Outland-EU) | 6s
+4:07  [STATE]   friends 1:68 2:100 3:49 / enemies 4:66 5:72 6:79
+4:07  [OWNER CAST]   355936 [succeeded after CC arrived — within 1s in log]
+4:07  [CC ON TEAM]   3 ← Shockwave (Zhreystorm-Outland-EU) | 2s
+4:08  [STATE]   friends 1:98 2:100 3:73 / enemies 4:81 5:74 6:83
+4:08  [OWNER CAST]   364343 → 3
+4:09  [STATE]   friends 1:94 2:100 3:79 / enemies 4:84 5:74 6:80
+4:09  [OWNER CD]   Deep Breath
+      [RES] rdy:Δ-Emerald Communion,Stasis,3:Cloak of Shadows,3:Kidney Shot  cd:Emerald Communion(149s),Stasis(64s),3:Cloak of Shadows(37s),3:Kidney Shot(13s)  enemy:Bloodlust/Enhancement Shaman(22s)  cc:1/Champion's Spear-3s,3/Champion's Spear-3s
+4:10  [STATE]   friends 1:95 2:100 3:71 / enemies 4:80 5:74 6:73
+4:11  [STATE]   friends 1:98 2:100 3:70 / enemies 4:75 5:76 6:80
+4:12  [STATE]   friends 1:100 2:96 3:67 / enemies 4:74 5:78 6:95
+4:12  [BUFF FADED]   Deep Breath
+4:13  [STATE]   friends 1:100 2:90 3:63 / enemies 4:58 5:78 6:73
+4:13  [OWNER CD]   Hover
+      [RES] rdy:Δ-Deep Breath  cd:Deep Breath(116s)  enemy:Bloodlust/Enhancement Shaman(26s)
+4:13  [CC ON TEAM]   1 ← Hammer of Justice (Jìmjim-Ysondre-EU) | 3s
+4:14  [STATE]   friends 1:100 2:98 3:68 / enemies 4:49 5:78 6:50
+4:15  [STATE]   friends 1:91 2:100 3:72 / enemies 4:70 6:28
+4:16  [STATE]   friends 1:91 2:100 3:76 / enemies 4:69 5:92 6:dead
+4:16  [DEATH]  6 (Arms Warrior — enemy)
+4:16  [ROSTER]  enemy 6 removed (dead)
+4:17  [STATE]   friends 1:92 2:100 3:77 / enemies 4:88 5:92 6:dead
+4:17  [OWNER CAST]   Sleep Walk → 5
+4:17  [OWNER CAST]   360995 → 3
+4:17  [OWNER CAST]   361195 → 3
+4:18  [STATE]   friends 1:99 2:100 3:91 / enemies 4:63 5:92 6:dead
+4:19  [STATE]   friends 1:100 2:100 3:94 / enemies 4:49 6:dead
+4:19  [OWNER CAST]   431443 → 4
+4:19  [OWNER CAST]   357208
+4:20  [STATE]   friends 1:100 2:100 3:97 / enemies 4:47 6:dead
+4:21  [STATE]   friends 1:100 2:100 3:100 / enemies 4:31 6:dead
+4:22  [STATE]   friends 1:100 2:100 3:100 / enemies 4:dead 6:dead
+4:22  [OWNER CAST]   431443 → 4
+4:22  [OWNER CAST]   356995 → 4
+4:22  [DEATH]  4 (Enhancement Shaman — enemy)
+4:22  [ROSTER]  enemy 4 removed (dead)
+4:23  [STATE]   friends 1:100 2:100 3:100 / enemies 4:dead 6:dead
+
+4:23  [MATCH END]   damp: 19%
+  friends 1:100% 2:100% 3:100% / enemies 4:dead(4:22) 5:92% 6:dead(4:16)

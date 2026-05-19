@@ -1,0 +1,35 @@
+This is a heavy_burst_cc_swap win — the enemy ran a structured burst pattern using Bloodlust/Ascendance, Avatar, and Deep Breath as their primary setup tools, with Oppressing Roar, Sleep Walk, and Storm Bolt as CC support. Your job was to keep the Ret Paladin alive through multiple burst windows while generating enough offensive pressure through Psychic Scream and purges to eventually kill the Enhancement Shaman.
+
+The structure was sound. This archetype demands high offensive participation (71% average) and CC-driven burst setup (60% cc_then_burst), and you delivered on both. The Flame Shock missed cleanses are the persistent drag.
+
+**CC-then-burst coordination**
+
+Your Psychic Scream on the Evoker at 0:17 was the right opener during Bloodlust burst. The Evoker was in the middle of her healing rotation; Scream removed her from the equation for 6 seconds while your Ret had his highest damage window at 0.60M (0:13) and 0.76M (0:34). The follow-up at 0:58 using Intimidating Shout (Warrior) simultaneously with Psychic Scream (yourself) on both the Evoker and enemy Arms Warrior created a coordinated double lockout. Two different CC tools landing on two different targets in the same second is the defining skill of cc_then_burst play. That combination at 0:58 was excellent.
+
+Psychic Scream at 2:26 during the second Bloodlust/Ascendance window (both came back at 2:25) was timed immediately as the Bloodlust started, which is the correct reflex — Evoker interrupted before she can respond to the Shaman taking burst damage. Your Warrior's Intimidating Shout at 2:30 on the Shaman arrived 4 seconds later, keeping the lockout chain continuous.
+
+**Pain Suppression deployment**
+
+Pain Suppression is your major defensive CD and you have two charges. You used both:
+
+1:09 on the Ret at 60% HP, right as the second Bloodlust arrived at 1:15. The Ret went from 60% to 61% at the end of the 8-second window, confirming that Suppression absorbed the Bloodlust burst cleanly. Well-timed.
+
+2:11 on the Ret at 42% HP under Storm Bolt. The Ret was stunned for 3 seconds; Suppression was active, which meant the Warrior's Avatar burst at 2:47 did not immediately follow into an unshielded target. The Ret recovered to 100% by 2:34.
+
+3:17 on the Warrior at 38% HP during a Bladestorm window. This was the correct call — the Warrior had Die by the Sword expired, Bladestorm was the only mitigation tool left, and the Ret was at 65% (safe). Suppression on the active target-being-killed is the right heavy_burst decision.
+
+**The Flame Shock problem**
+
+Five logged missed Flame Shock cleanses: 140k at 0:09, 254k at 0:32, 181k at 1:02, 212k at 1:48, 235k at 2:09. This totals roughly 1.02M in sustained damage on the Ret Paladin from a dispellable dot. That is the equivalent of approximately two full Pain Suppression windows worth of incoming damage that you could have eliminated with GCDs.
+
+The 45% missed cleanse rate for this archetype is reflected exactly here. In heavy_burst_cc_swap, you are intentionally trading off reactive dispelling to maintain your offensive damage output through Penance, Holy Fire, and Atonement. That tradeoff is correct during burst windows when your throughput is generating heals. But Flame Shock is not a burst mechanic — it ticks for 18 seconds at a predictable rate. Dispelling it within 3 seconds of application costs you one GCD and saves approximately 140–254k over the next 15 seconds. The math favors the cleanse unless you are in the middle of a burst window.
+
+The best Flame Shock cleanse in the match was at 3:08: you removed Flame Shock, Earthbind, Permeating Chill, and Capacitor Totem from the Warrior in one GCD, saving roughly 18 seconds of stacked debuff damage. That is the correct execution when you have a free GCD. Build the same reflex for the Ret's Flame Shock earlier in the match.
+
+**Kill target execution**
+
+The Shaman was the correct primary target. He has the weakest personal survivability of the three enemies, his Bloodlust windows are telegraphed and predictable, and killing him removes the Bloodlust threat. The kill sequence from 3:30 to 3:42 was clean: Psychic Scream at 3:44 (after the Shaman was already at 23%) locked the Evoker out, the Warrior's Avatar at 3:43 finished it. The follow-up kill of the enemy Arms Warrior at 3:51 while the Evoker was at 25% HP was inevitable from that point.
+
+**Offensive purge**
+
+Your purge rate on the Shaman — Holy Fire, Mind Blast, and Penance targeting him throughout — kept his offensive buffs from stacking. The Grounding Totem at 1:30 absorbed one Dispel and the Earthgrab Totem at 1:31 created an additional cleanse demand. Recognizing the totems and adjusting your purge targets accordingly was the right response. You cleansed the Earthgrab at 2:02 off the Warrior, which freed his mobility during the 2:00–2:15 burst window.

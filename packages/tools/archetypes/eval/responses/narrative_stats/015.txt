@@ -1,0 +1,22 @@
+Top Holy Paladins in short_passive_swap matches show 42% optimal CD timing, 53% CD never-used, and a 14% healing gap rate — the highest healing gap rate across clusters. This archetype is characterized by low burst, moderate CC pressure, and attrition dynamics. At 3:47, this match far exceeded the 118-second median, which itself indicates a structural mismatch: the enemy's Restoration Shaman kept their team alive longer than the archetype normally resolves.
+
+The core stat to examine is the 14% healing gap rate as the cluster average. In this match, two logged healing gaps appear: 3.5 seconds at 2:09 while the Druid was under pressure, and 9.7 seconds at 3:37 while the Monk was at 28-35% HP. The second gap is the match-ending event — the Monk died during it. In the context of the cluster's 14% gap rate, this confirms the archetype's weakness: when the Holy Paladin is displaced or makes a targeting error during active damage, the gap is long enough to produce a kill.
+
+The 9.7-second gap at 3:37 had 6.8 seconds of unforced inactivity — not CC, not cast-time-limited. At 3:37 you cast Wrath on the Warlock while the Monk was at 34% HP. That offensive cast during a genuine healing emergency is the decision that created the gap. At the 53% CD never-used rate for this cluster, the offensive participation at 43% means Holy Paladin is already the spec least expected to contribute offensively. A Wrath cast on the Warlock with the Monk below 35% HP is not the moment for offensive participation.
+
+Cleanse discipline exceeded cluster standards. The cluster's 34% missed cleanse rate means top players miss roughly one in three dispellable debuffs. Your cleanse output — seven effects at 0:22, six effects at 1:15, five effects at 2:37 — demonstrates well above average cleanse frequency. This is quantifiably why the match lasted 3:47 rather than ending at ~2:30. The Warlock's passive DoT damage (Unstable Affliction, Drain Soul, Corruption) stacks into a kill without consistent dispelling; you prevented that.
+
+CD timing analysis against the 42% optimal benchmark:
+- Blessing of Sacrifice at 0:19 (Druid under Kidney Shot, 88% HP): Optimal. Timely response to stun on primary threat target.
+- Blessing of Sacrifice at 2:19 (Druid at 73%, steady decline): Optimal.
+- Avenging Crusader at 0:31 (multiple teammates declining, after initial burst pressure): Optimal.
+- Avenging Crusader at 1:33 (Druid at 46% under Garrote silence): Optimal.
+- Divine Shield at 2:04 (all teammates near full, Druid at 84%, Monk at 94%): Suboptimal. Using Divine Shield during a relatively stable phase interrupts healing output. At 2:04, your team's HP was the highest it had been since 1:00 — this is not a defensive CD moment.
+- Aura Mastery at 3:17 (Monk at 34%, Deathmark active, Warlock heavy damage): Optimal given the Warlock's Fear-adjacent abilities.
+- Blessing of Protection at 3:07 on yourself at 15% HP under Cheap Shot / Garrote / Kidney Shot / Hex chain: Optimal. Self-preservation correctly prioritized during a chain where all your trinkets were on cooldown.
+
+The cluster's 53% CD never-used rate is relevant here — Lay on Hands, Divine Shield (used once), and other major CDs stayed off the board for most of the match. This is normal for the archetype.
+
+The structural issue: the cluster's 43% offensive participation average and 2.2 mean outgoing CC events reflect that Holy Paladin in this setup contributes minimally to offensive pressure. Your Hammer of Justice at 1:07 on the Warlock and 1:42 on the Shaman, plus multiple Blessing of Freedom casts on the Druid during Earthbind pressure, match the archetype's expected offensive contribution. But the target selection problem (all pressure to the Rogue, Shaman sustaining the Rogue without being threatened) is not a CD timing problem — it's a game plan problem that the cluster's structure doesn't solve.
+
+Against Restoration Shaman without team purge access, the archetype's short_passive_swap model (passive damage accumulation leading to a kill) requires either a kill on the damage source (Warlock) or a kill window that exceeds Shaman heal-per-second. Neither condition was met. The Warlock was never killed or seriously threatened, and the Druid's Incarnation burst windows were directed at the Rogue rather than the Warlock. This is the ceiling of the archetype's model in this specific matchup.

@@ -1,0 +1,11 @@
+This is a cc_heavy_fast match, and the loss pattern is exactly what kills you in that archetype: the enemy rogue applied CC in waves faster than your team could reset, and a single wasted cooldown during lockdown sealed the outcome.
+
+The match was decided at 0:57. The enemy team ran a full lockdown: Kidney Shot on the healer, Polymorph on the healer (overlapping), and Psychic Scream on the rogue — all within one second. The Evoker popped Emerald Communion at 0:58 while Kidney Shotted. A 3-second channel while stunned heals nothing. That CD was gone for the rest of the match.
+
+Seven seconds later, your Frost Mage died from full HP in a window the healer had no answer to, because Emerald Communion was on a 3-minute cooldown. The enemy used their second Power Infusion during the kill and your team had nothing.
+
+In cc_heavy_fast games against a mirror comp (Rogue/Mage/Disc versus your Rogue/Mage/Evoker), CD timing is the entire game. The enemy executed two clean setups: the first at 0:24–0:28 when your mage needed Ice Block, and the decisive one at 0:57. Your team's responses to the first setup were solid — Ice Block, cleanse, Cauterizing Flame on the mage. The response to the second setup failed because the big CD went into a stun.
+
+Also, Power Infusion went on the enemy Frost Mage at 0:17 and was never purged. Your Frost Mage can purge. In a cc_heavy_fast match where every second of buffed enemy damage counts, removing a purgeable PI from their main damage dealer within the first 15 seconds is a free win condition that was missed twice (PI appeared on both the mage and the priest at 0:17–0:18, and again at 0:57 timeframe around the kill).
+
+Next time: if you are Kidney Shot and you have Emerald Communion, wait for the stun to expire before channeling it. The enemy cannot immediately follow Kidney Shot with another stun of the same type — that 2-second delay is all you need. And build a habit of checking for purgeable PI buffs on the enemy mage in the first 20 seconds.

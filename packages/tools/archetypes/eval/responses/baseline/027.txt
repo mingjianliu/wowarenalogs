@@ -1,0 +1,9 @@
+This was a Frost Mage perspective on a match your Preservation Evoker healer was handling. The loss came from sustained pressure on you across three phases — 0:22, 1:06, and 2:13 — where the enemy Ret Paladin's Execution Sentence combined with Beast Mastery Hunter's Bestial Wrath to deal roughly 0.56–0.69M in 10-second bursts. Your Evoker managed the early phases well but ran out of answers in the final phase starting at 2:12.
+
+Your Ice Block at 1:10 was well-timed — you were at 41% with Bestial Wrath active and the Evoker's trinket already spent. Going defensive there was correct; it bought your team 7 seconds to reset and the Evoker's Emerald Communion at 1:44 stabilized the situation. The second Ice Block at 2:17 was equally correct, used at 19% during the third burst phase.
+
+The death at 3:25 was not a failure of the Evoker's major cooldowns — it was a failure of setup. The enemy Restoration Druid's Cyclone on the Evoker at 3:21 for 5 seconds removed your healer at the exact moment Bestial Wrath came up again at 3:20. You dropped from 82% to dead in 15 seconds because the Cyclone timing was perfect and your trinket (used at 3:09) was on cooldown. The Evoker could not dispel the Cyclone on themselves, and your rogue was out of position to provide defensive support.
+
+The Dragon's Breath at 1:22 and 2:47 missed — both went to a non-player target. In this fight, the Hunter is not always directly attackable, but the Ret Paladin was and applying crowd control to the Paladin at key moments would have disrupted their Execution Sentence timing. The Psychic Scream equivalent on your side (you're a Mage, you have no fear) — consider coordinating with your Rogue's Kidney Shot to interrupt the Paladin's windows.
+
+Your Rogue died 21 seconds after you, burned down by the Paladin's execute combo. With the Evoker at 98% at match end, the Evoker kept you both alive as long as possible given the resource constraints.

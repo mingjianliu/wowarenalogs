@@ -1,0 +1,11 @@
+This is a cc_heavy_fast win — but the 2:31 duration is well above the archetype median, which means the enemy's CC pressure and their Restoration Druid sustained the match longer than typical. You stayed alive and found the kill, which is the result, but the execution had clear gaps.
+
+The enemy team's CC pattern was heavy and consistent: Psychic Scream, Cascading Horrors, Cyclone, Freezing Trap, Silence, Maim, Binding Shot, Sin and Punishment — your team absorbed an enormous volume of disruption across the full match. Your Rogue was the primary target. Keeping the Rogue functional under that volume of incoming debuffs required constant dispel work, and the log shows repeated Shadow Word: Madness misses on the Rogue that collectively cost significant health.
+
+The most important cleanse misses: Shadow Word: Madness at 0:19 (95k during 6s), at 0:28 (300k during 21s — the longest running instance), at 1:04 (348k during 11s), at 1:19 (129k during 7s), at 1:31 (122k during 13s), at 1:54 (331k during 6s), and at 2:11 (7k). The 0:28 instance running for 21 seconds is the most egregious — that's nearly 300k in preventable damage while you had healing cooldowns available. Vampiric Touch had similar misses throughout.
+
+In cc_heavy_fast matches, the healer's cleanse throughput is as important as their healing throughput, because the CC and debuffs are how the enemy team creates kill windows. Shadow Priest debuffs need to be on a near-zero-delay dispel cycle.
+
+What you did well: Time Dilation timing at 0:33 and 2:08 was accurate, triggered when the Rogue was in active decline. Sleep Walk on the Druid at 0:27 and 1:13 disrupted their healing at critical moments. Stasis at 1:52 was correctly pre-empted before the Bestial Wrath at 1:49. The closing kill sequence on the Druid at 2:20–2:22, then quickly rotating to finish the Hunter and Priest, showed clean target priority.
+
+The Rogue's Cloak of Shadows at 2:05 was important — absorbing a full CC chain cleanly and keeping the match alive during the final push.

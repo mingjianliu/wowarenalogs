@@ -1,0 +1,11 @@
+This is a fast_nuke_tunnel match, and the enemy ran it perfectly: Arms Warrior tunneled the Frost Mage with Avatar twice, the Shaman ran Bloodlust and Ascendance to amplify the damage, and the Disc Priest locked you out with CC at the critical moments. You kept the mage alive through the first two major windows — the Guardian Spirit at 0:44 was the right call — but the mage died in the third window at 2:24 when you had nothing left.
+
+The core problem is that fast_nuke_tunnel matches are decided by whether you can outlast the enemy's offensive CD cycles. The enemy had Avatar on a 90-second cooldown and used it at 0:11, 1:30, and again near the end. Every time Avatar went up, it was paired with an Ascendance or Bloodlust window. Your job was to have a response CD available for each cycle. You succeeded for the first two and failed on the third.
+
+Why did you fail on the third? Because your PI was already on cooldown at 2:16 when you used it, and your Guardian Spirit charges were both spent. The mage died at 2:24 under a Stormstrike hit (126k) during a window where you had only Divine Hymn running and no dedicated cooldown for the mage.
+
+The Flame Shock cleanse failures accelerated the mage's death. A 33-second uncleansed Flame Shock on the mage from 1:21 to 1:54 cost him constant pressure during a period when you were trying to keep him alive against the second Avatar window. Had you cleared that debuff, his health would have been higher entering the third enemy CD window and you would have had more margin.
+
+In fast_nuke_tunnel, you should map out the enemy's CD rotation before you spend defensive CDs: first Avatar at 0:11, used Guardian Spirit correctly at 0:44. Second Avatar at 1:30, used Divine Hymn and the Mage's Ice Block. Third Avatar at 1:46 was paired with Ascendance, and you had Apotheosis active — that transition was fine. The actual kill came during a non-Avatar Ascendance Bloodlust window at 2:24, meaning the enemy found a gap between your mapped defensive cooldowns.
+
+Next time: track that Bloodlust cooldown. The Shaman's second Bloodlust at 1:33 sets the timer for the third Bloodlust window at roughly 2:33. That is your kill window. Plan your remaining cooldowns around it.

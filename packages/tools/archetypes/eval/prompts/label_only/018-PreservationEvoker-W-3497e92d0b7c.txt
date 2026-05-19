@@ -1,0 +1,376 @@
+[ARCHETYPE: Preservation Evoker — cc_heavy_fast]
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Preservation Evoker (Healer) | Bracket: 3v3 | Result: Win | Duration: 2:31
+  My team: Devourer Demon Hunter, Preservation Evoker, Subtlety Rogue
+  Enemy team: Restoration Druid, Shadow Priest, Beast Mastery Hunter
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Preservation Evoker): CANNOT offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 10% at match end
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Evoteiken-DunModr-EU (Preservation Evoker — log owner):
+    Cauterizing Flame [60s], Rewind [240s], Emerald Communion [180s], Stasis [90s], Rescue [60s]
+  2: Syxs-Ravencrest-EU (Devourer Demon Hunter):
+    none tracked
+  3: Racherlul-DunModr-EU (Subtlety Rogue):
+    Cloak of Shadows [120s], Kidney Shot [30s], Shadow Blades [90s]
+  4: Demerit-Aegwynn-EU (Restoration Druid — enemy):
+    Incarnation: Tree of Life [180s], Innervate [180s], Nature's Swiftness [60s]
+  5: Æåeåeåéåe-TwistingNether-EU (Shadow Priest — enemy):
+    Power Infusion [120s]
+  6: Sayzx-Archimonde-EU (Beast Mastery Hunter — enemy):
+    Bestial Wrath [90s]
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100 2:100 3:100
+0:00  [OWNER CAST]   355936
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:09  [STATE]   friends 1:100 2:100 3:100
+0:11  [OWNER CAST]   360995 → 2
+0:12  [STATE]   friends 1:100 2:100 3:100
+0:12  [OWNER CAST]   361195 → 2
+0:12  [TEAMMATE CD]   3 (Subtlety Rogue): Kidney Shot
+      [RES] rdy:Δ+Stasis,3:Kidney Shot  cd:—
+0:12  [OWNER CD]   Oppressing Roar
+      [RES] rdy:Δ+3:Kidney Shot  cd:—
+0:13  [CC ON TEAM]   3 ← Psychic Scream (Æåeåeåéåe-TwistingNether-EU) | 6s
+0:13  [MISSED CLEANSE]   Psychic Scream on 3 | 6s | 0k taken during | dispel: Magic
+0:13  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ-3:Kidney Shot  cd:3:Kidney Shot(29s)  cc:3/Psychic Scream-6s
+0:14  [STATE]   friends 1:99 2:100 3:100 / enemies 4:98 5:94 6:98
+0:14  [OWNER CAST]   357208 [completed before CC landed]
+0:14  [CC ON TEAM]   1 ← Silence (Æåeåeåéåe-TwistingNether-EU) | 4s
+0:15  [STATE]   friends 1:98 2:100 3:100 / enemies 4:96 5:84 6:99
+0:16  [STATE]   friends 1:100 2:100 3:100 / enemies 4:97 5:86 6:99
+0:17  [STATE]   friends 1:100 2:100 3:100 / enemies 4:98 5:87 6:100
+0:18  [STATE]   friends 1:100 2:100 3:100 / enemies 4:98 5:90 6:100
+0:18  [OWNER CAST]   360995 → 3
+0:19  [STATE]   friends 1:100 2:99 3:100 / enemies 4:98 5:88 6:98
+0:19  [OFFENSIVE WINDOW]   0:19–0:42 | Critical | 0.78M on 3 (Subtlety Rogue) | CDs: Incarnation: Tree of Life + Power Infusion + Innervate + Bestial Wrath
+0:19  [ENEMY CD]   4 (Restoration Druid): Incarnation: Tree of Life
+0:19  [MISSED CLEANSE]   Vampiric Touch on 1 | 5s | 39k taken during | dispel: Magic
+0:19  [MISSED CLEANSE]   Shadow Word: Madness on 3 | 6s | 95k taken during | dispel: Magic
+0:19  [OWNER CAST]   361195 → 3
+0:20  [STATE]   friends 1:98 2:98 3:100 / enemies 4:98 5:77 6:100
+0:20  [ENEMY BUFF]   6: Power Infusion (purgeable)
+0:20  [ENEMY CD]   5 (Shadow Priest): Power Infusion
+0:20  [ENEMY BUFF]   5: Power Infusion (purgeable)
+0:20  [OWNER CAST]   364343 → 3
+0:21  [STATE]   friends 1:99 2:99 3:99 / enemies 4:100 5:55 6:74
+0:21  [OWNER CAST]   1256581 → self
+0:21  [TEAMMATE CD]   3 (Subtlety Rogue): Shadow Blades
+      [RES] rdy:Δ+Stasis,3:Cloak of Shadows-3:Kidney Shot  cd:3:Kidney Shot(21s)  enemy:Incarnation: Tree of Life/Restoration Druid(3s),Power Infusion/Shadow Priest(1s)
+0:21  [OWNER CD]   Obsidian Scales → self
+      [RES] rdy:Δ  cd:—  enemy:Incarnation: Tree of Life/Restoration Druid(3s),Power Infusion/Shadow Priest(2s)
+0:22  [STATE]   friends 1:100 2:100 3:99 / enemies 4:99 5:37 6:67
+0:23  [STATE]   friends 1:99 2:98 3:96 / enemies 4:100 5:77 6:76
+0:24  [STATE]   friends 1:100 2:100 3:97 / enemies 4:100 5:73 6:64
+0:24  [CC ON TEAM]   1 ← Freezing Trap (Sayzx-Archimonde-EU) | 1s
+0:24  [ENEMY CD]   4 (Restoration Druid): Innervate
+0:25  [STATE]   friends 1:100 2:99 3:96 / enemies 4:100 5:100 6:57
+0:25  [CLEANSE]   2 dispelled 5 effects: Shadow Word: Pain off 2, Freezing Trap off 1, Vampiric Touch off 3, Horrific Visions off 3, Shadow Word: Pain off 3
+0:25  [CC ON TEAM]   2 ← Sin and Punishment (Æåeåeåéåe-TwistingNether-EU) | 2s
+0:26  [STATE]   friends 1:100 2:100 3:97 / enemies 4:100 5:99 6:47
+0:26  [DMG SPIKE]   3 (Subtlety Rogue): 0.47M in 10s
+0:27  [STATE]   friends 1:99 2:99 3:94 / enemies 4:100 5:100 6:46
+0:27  [OWNER CAST]   Sleep Walk → 4
+0:27  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath
+0:28  [STATE]   friends 1:94 2:87 3:88 / enemies 4:100 5:100 6:50
+0:28  [CC ON TEAM]   3 ← Cascading Horrors (Æåeåeåéåe-TwistingNether-EU) | 1s
+0:28  [MISSED CLEANSE]   Shadow Word: Madness on 3 | 21s | 300k taken during | dispel: Magic
+0:29  [STATE]   friends 1:95 2:90 3:78 / enemies 4:100 5:83 6:51
+0:29  [CC ON TEAM]   1 ← Cascading Horrors (Æåeåeåéåe-TwistingNether-EU) | 4s
+0:29  [CC ON TEAM]   3 ← Cascading Horrors (Æåeåeåéåe-TwistingNether-EU) | 1s
+0:30  [STATE]   friends 1:95 2:92 3:70 / enemies 4:100 5:85 6:61
+0:30  [CC ON TEAM]   3 ← Cascading Horrors (Æåeåeåéåe-TwistingNether-EU) | 2s
+0:30  [OWNER CAST]   355941
+0:30  [OWNER CAST]   361195 → 2
+0:31  [STATE]   friends 1:100 2:99 3:75 / enemies 4:100 5:85 6:64
+0:31  [OWNER CAST]   355941
+0:32  [STATE]   friends 1:100 2:99 3:92 / enemies 4:100 5:94 6:59
+0:32  [MISSED CLEANSE]   Vampiric Touch on 1 | 18s | 53k taken during | dispel: Magic
+0:32  [MISSED CLEANSE]   Vampiric Touch on 3 | 32s | 221k taken during | dispel: Magic
+0:33  [STATE]   friends 1:99 2:100 3:77 / enemies 4:99 5:95 6:91
+0:33  [OWNER CAST]   360995 → 3
+0:33  [OWNER CAST]   361195 → 3
+0:33  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ-3:Shadow Blades  cd:3:Shadow Blades(78s)  enemy:Incarnation: Tree of Life/Restoration Druid(15s),Innervate/Restoration Druid(9s),Power Infusion/Shadow Priest(14s),Bestial Wrath/Beast Mastery Hunter(6s)
+0:34  [STATE]   friends 1:100 2:100 3:83 / enemies 4:98 5:98 6:91
+0:34  [OWNER CAST]   364343 → 3
+0:34  [MISSED CLEANSE]   Vampiric Touch on 2 | 24s | 50k taken during | dispel: Magic
+0:35  [STATE]   friends 1:100 2:100 3:89 / enemies 4:87 5:100 6:100
+0:35  [ENEMY BUFF END]   6: Power Infusion
+0:35  [OWNER CAST]   1256581 → 3
+0:35  [ENEMY BUFF END]   5: Power Infusion
+0:36  [STATE]   friends 1:100 2:100 3:100 / enemies 4:71 5:100 6:100
+0:36  [OWNER CAST]   431443 → 4
+0:36  [OWNER CAST]   357208
+0:37  [STATE]   friends 1:100 2:100 3:97 / enemies 4:75 5:99 6:100
+0:37  [DMG SPIKE]   3 (Subtlety Rogue): 0.78M in 10s
+0:38  [STATE]   friends 1:99 2:95 3:89 / enemies 4:67 5:100 6:100
+0:38  [OWNER CAST]   356995 → 4
+0:39  [STATE]   friends 1:100 2:100 3:73 / enemies 4:58 5:100 6:100
+0:40  [STATE]   friends 1:97 2:100 3:59 / enemies 4:55 5:100 6:95
+0:40  [OWNER CAST]   360995 → 3
+0:40  [OWNER CAST]   361195 → 3
+0:41  [STATE]   friends 1:98 2:98 3:54 / enemies 4:54 5:100 6:86
+0:41  [OWNER CAST]   364343 → 3
+0:42  [STATE]   friends 1:99 2:100 3:46 / enemies 4:67 5:100 6:99
+0:42  [OWNER CAST]   355936
+0:43  [OWNER CAST]   364343 → 3
+0:44  [OWNER CAST]   1256581 → 3 [completed before CC landed]
+0:44  [CC ON TEAM]   1 ← Psychic Scream (Æåeåeåéåe-TwistingNether-EU) | 2s | trinket: used
+0:44  [CC ON TEAM]   3 ← Psychic Scream (Æåeåeåéåe-TwistingNether-EU) | 1s
+0:45  [STATE]   friends 1:97 2:100 3:82 / enemies 4:82 5:97 6:99
+0:46  [STATE]   friends 1:99 2:100 3:71 / enemies 4:83 5:98 6:100
+0:46  [TRINKET]   1 used PvP trinket
+0:46  [OWNER CAST]   360995 → 3
+0:47  [STATE]   friends 1:100 2:99 3:65 / enemies 4:87 5:93 6:100
+0:47  [OWNER CAST]   361195 → 3
+0:47  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ+3:Kidney Shot  cd:—  enemy:Incarnation: Tree of Life/Restoration Druid(28s),Innervate/Restoration Druid(23s),Power Infusion/Shadow Priest(27s),Bestial Wrath/Beast Mastery Hunter(20s)
+0:47  [OWNER CAST]   364343 → 3
+0:48  [STATE]   friends 1:99 2:100 3:62 / enemies 4:88 5:95 6:100
+0:48  [OWNER CAST]   1256581 → 3
+0:49  [STATE]   friends 1:100 2:100 3:88 / enemies 4:90 5:66 6:96
+0:50  [STATE]   friends 1:100 2:100 3:97 / enemies 4:91 5:62 6:98
+0:50  [CC ON TEAM]   1 ← Freezing Trap (Sayzx-Archimonde-EU) | 6s | trinket: ON CD (87s left)
+0:51  [STATE]   friends 1:99 2:99 3:97 / enemies 4:91 5:41 6:97
+0:52  [STATE]   friends 1:100 2:99 3:97 / enemies 4:94 5:39 6:100
+0:53  [STATE]   friends 1:100 2:100 3:96 / enemies 4:94 5:44 6:100
+0:54  [STATE]   friends 1:100 2:100 3:95 / enemies 4:98 5:49 6:100
+0:55  [STATE]   friends 1:100 2:100 3:97 / enemies 4:100 5:59 6:100
+0:56  [STATE]   friends 1:100 2:99 3:96 / enemies 4:100 5:81 6:100
+0:56  [CC ON TEAM]   1 ← Silence (Æåeåeåéåe-TwistingNether-EU) | 4s | trinket: ON CD (81s left)
+0:57  [STATE]   friends 1:100 2:99 3:95 / enemies 4:100 5:74 6:100
+0:58  [STATE]   friends 1:100 2:100 3:93 / enemies 4:100 5:79 6:100
+0:58  [MISSED CLEANSE]   Shadow Word: Madness on 2 | 6s | 41k taken during | dispel: Magic
+0:59  [STATE]   friends 1:100 2:98 3:91 / enemies 4:100 5:82 6:100
+1:00  [STATE]   friends 1:100 2:97 3:89 / enemies 4:100 5:94 6:100
+1:00  [OWNER CAST]   360995 → 3
+1:01  [STATE]   friends 1:100 2:97 3:93 / enemies 4:100 5:100 6:100
+1:01  [OWNER CAST]   361195 → 3
+1:01  [OWNER CAST]   364343 → 3
+1:02  [STATE]   friends 1:100 2:96 3:87 / enemies 4:100 5:100 6:100
+1:02  [CC ON TEAM]   2 ← Cyclone (Demerit-Aegwynn-EU) | 5s
+1:03  [STATE]   friends 1:100 2:96 3:89 / enemies 4:100 5:100 6:100
+1:03  [OWNER CAST]   366155 → 3
+1:04  [STATE]   friends 1:100 3:96 / enemies 4:99 5:100 6:100
+1:04  [MISSED CLEANSE]   Vampiric Touch on 1 | 25s | 99k taken during | dispel: Magic
+1:04  [MISSED CLEANSE]   Shadow Word: Madness on 3 | 11s | 348k taken during | dispel: Magic
+1:05  [STATE]   friends 1:99 3:90 / enemies 4:100 5:100 6:100
+1:05  [DMG SPIKE]   3 (Subtlety Rogue): 0.70M in 10s
+1:05  [OWNER CAST]   Sleep Walk → 5
+1:06  [STATE]   friends 1:99 2:95 3:79 / enemies 4:100 5:100 6:100
+1:06  [OWNER CAST]   360995 → 3
+1:06  [OWNER CAST]   361195 → 3
+1:07  [STATE]   friends 1:99 2:95 3:81 / enemies 4:100 5:100 6:100
+1:07  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath
+1:07  [OWNER CAST]   364343 → 3
+1:08  [STATE]   friends 1:90 2:100 3:67 / enemies 4:100 5:100 6:100
+1:08  [OWNER CAST]   355936
+1:09  [STATE]   friends 1:93 2:100 3:55 / enemies 4:100 5:100 6:91
+1:09  [OWNER CAST]   364343 → 3
+1:10  [STATE]   friends 1:100 2:100 3:62 / enemies 4:100 5:100 6:93
+1:11  [STATE]   friends 1:100 2:99 3:65 / enemies 4:100 5:100 6:95
+1:11  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Bestial Wrath/Beast Mastery Hunter(4s)
+1:12  [STATE]   friends 1:99 2:100 3:55 / enemies 4:100 5:91 6:97
+1:12  [TEAMMATE CD]   3 (Subtlety Rogue): Kidney Shot
+      [RES] rdy:Δ-3:Shadow Blades  cd:3:Shadow Blades(39s)  enemy:Bestial Wrath/Beast Mastery Hunter(5s)
+1:13  [OWNER CAST]   Sleep Walk → 4
+1:13  [OWNER CAST]   1256581 → 3
+1:14  [OWNER CAST]   364343 → 3
+1:15  [STATE]   friends 1:100 2:100 3:61
+1:16  [OWNER CAST]   431443 → 5
+1:16  [OWNER CAST]   357208
+1:17  [CC ON TEAM]   2 ← Psychic Scream (Æåeåeåéåe-TwistingNether-EU) | 3s
+1:17  [CC ON TEAM]   3 ← Psychic Scream (Æåeåeåéåe-TwistingNether-EU) | 1s
+1:17  [MISSED CLEANSE]   Psychic Scream on 2 | 3s | 28k taken during | dispel: Magic
+1:18  [STATE]   friends 1:100 2:100 3:49 / enemies 4:95 5:36 6:98
+1:18  [OWNER CAST]   360995 → 3
+1:18  [OWNER CAST]   361195 → 3
+1:19  [STATE]   friends 1:99 2:100 3:62 / enemies 4:97 5:40 6:100
+1:19  [OWNER CAST]   360823 → 3
+1:19  [CLEANSE]   1 dispelled 3 effects: Vampiric Touch off 3, Shadow Word: Pain off 3, Hunter's Mark off 3
+1:19  [MISSED CLEANSE]   Vampiric Touch on 3 | 46s | 128k taken during | dispel: Magic
+1:19  [MISSED CLEANSE]   Shadow Word: Madness on 3 | 7s | 129k taken during | dispel: Magic
+1:20  [STATE]   friends 1:100 2:99 3:51 / enemies 4:100 5:50 6:100
+1:20  [OWNER CAST]   366155 → 3 [completed before CC landed]
+1:20  [ENEMY CD]   4 (Restoration Druid): Nature's Swiftness
+1:20  [CC ON TEAM]   1 ← Cyclone (Demerit-Aegwynn-EU) | 5s | trinket: ON CD (56s left)
+1:21  [STATE]   friends 1:98 2:98 3:62 / enemies 4:99 5:69 6:100
+1:22  [STATE]   friends 1:98 2:98 3:52 / enemies 4:100 5:75 6:100
+1:23  [STATE]   friends 2:100 3:52 / enemies 4:100 5:71 6:95
+1:24  [STATE]   friends 2:99 3:51 / enemies 4:100 5:70 6:98
+1:25  [STATE]   friends 1:100 2:99 3:53 / enemies 4:100 5:72 6:100
+1:25  [OWNER CAST]   364343 → 3 [completed before CC landed]
+1:26  [STATE]   friends 1:100 2:100 3:53 / enemies 4:100 5:46 6:100
+1:26  [CC ON TEAM]   1 ← Cyclone (Demerit-Aegwynn-EU) | 3s | trinket: ON CD (50s left)
+1:27  [STATE]   friends 1:99 2:100 3:56 / enemies 4:100 5:73 6:100
+1:28  [STATE]   friends 1:99 2:100 3:52 / enemies 4:100 5:71 6:100
+1:29  [STATE]   friends 1:99 2:95 3:44 / enemies 4:100 5:76 6:100
+1:29  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ-3:Kidney Shot  cd:3:Kidney Shot(13s)  enemy:Nature's Swiftness/Restoration Druid(8s),Bestial Wrath/Beast Mastery Hunter(22s)
+1:29  [CC ON TEAM]   1 ← Freezing Trap (Sayzx-Archimonde-EU) | 2s | trinket: ON CD (48s left)
+1:30  [STATE]   friends 1:99 2:95 3:44 / enemies 4:99 5:83 6:98
+1:31  [STATE]   friends 1:100 2:99 3:41 / enemies 4:100 5:61 6:100
+1:31  [CLEANSE]   2 dispelled 3 effects: Moonfire off 2, Vampiric Touch off 2, Freezing Trap off 1
+1:31  [CC ON TEAM]   2 ← Sin and Punishment (Æåeåeåéåe-TwistingNether-EU) | 3s
+1:31  [OWNER CAST]   360995 → 3
+1:31  [MISSED CLEANSE]   Shadow Word: Madness on 3 | 13s | 122k taken during | dispel: Magic
+1:31  [OWNER CAST]   361195 → 3
+1:32  [STATE]   friends 1:100 2:99 3:65 / enemies 4:100 5:68 6:100
+1:32  [OWNER CAST]   364343 → 3 [completed before CC landed]
+1:32  [CC ON TEAM]   3 ← Maim (Demerit-Aegwynn-EU) | 5s
+1:32  [CC ON TEAM]   1 ← Cascading Horrors (Æåeåeåéåe-TwistingNether-EU) | 4s | trinket: ON CD (44s left)
+1:33  [STATE]   friends 1:100 2:100 3:71 / enemies 4:100 5:73 6:100
+1:33  [CC ON TEAM]   1 ← Silence (Æåeåeåéåe-TwistingNether-EU) | 4s | trinket: ON CD (44s left)
+1:33  [CC ON TEAM]   2 ← Cascading Horrors (Æåeåeåéåe-TwistingNether-EU) | 2s
+1:34  [STATE]   friends 1:100 2:100 3:70 / enemies 4:99 5:81 6:100
+1:35  [STATE]   friends 1:99 2:100 3:67 / enemies 4:98 5:85 6:100
+1:35  [CC ON TEAM]   3 ← Cascading Horrors (Æåeåeåéåe-TwistingNether-EU) | 1s
+1:36  [STATE]   friends 1:100 2:100 3:66 / enemies 4:99 5:75 6:100
+1:37  [STATE]   friends 1:100 2:100 3:58 / enemies 4:100 5:92 6:99
+1:37  [OWNER CAST]   355936
+1:38  [STATE]   friends 1:100 2:100 3:75 / enemies 4:100 5:95 6:100
+1:38  [OWNER CAST]   364343 → 3
+1:39  [STATE]   friends 1:100 2:100 3:98 / enemies 4:100 5:99 6:100
+1:39  [OWNER CAST]   1256581 → 3
+1:39  [DMG SPIKE]   3 (Subtlety Rogue): 0.47M in 10s
+1:40  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:98
+1:41  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:100
+1:41  [MISSED CLEANSE]   Vampiric Touch on 2 | 27s | 41k taken during | dispel: Magic
+1:41  [MISSED CLEANSE]   Shadow Word: Madness on 2 | 6s | 34k taken during | dispel: Magic
+1:42  [STATE]   friends 1:100 2:100 3:97 / enemies 4:100 5:97 6:100
+1:42  [OWNER CAST]   431443 → 5
+1:42  [OWNER CD]   Hover
+      [RES] rdy:Δ+3:Kidney Shot  cd:—  enemy:Nature's Swiftness/Restoration Druid(22s)
+1:43  [STATE]   friends 1:100 2:100 3:84 / enemies 4:93 5:94 6:100
+1:44  [STATE]   friends 1:100 2:100 3:77 / enemies 4:97 5:100 6:97
+1:45  [STATE]   friends 1:100 2:100 3:72 / enemies 4:97 5:100 6:98
+1:45  [TEAMMATE CD]   3 (Subtlety Rogue): Kidney Shot
+      [RES] rdy:Δ  cd:—  enemy:Nature's Swiftness/Restoration Druid(24s)  cc:1/Sleep Walk-1s[kick]
+1:45  [OWNER CAST]   364343 → 3
+1:46  [OWNER CAST]   366155 → 3
+1:46  [OWNER CD]   Hover
+      [RES] rdy:Δ-3:Kidney Shot  cd:3:Kidney Shot(28s)  enemy:Nature's Swiftness/Restoration Druid(26s)
+1:48  [STATE]   friends 1:99 2:98 3:79
+1:48  [OWNER CAST]   Sleep Walk → 4
+1:49  [STATE]   friends 1:98 2:98 3:77 / enemies 4:94 5:86 6:99
+1:49  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath
+1:50  [STATE]   friends 1:98 2:98 3:65 / enemies 4:95 5:92 6:100
+1:51  [STATE]   friends 1:97 2:98 3:55 / enemies 4:97 5:99 6:97
+1:51  [OWNER CAST]   431443 → 5
+1:51  [OWNER CAST]   360995 → 3
+1:51  [OWNER CAST]   361195 → 3
+1:52  [STATE]   friends 1:100 2:98 3:60 / enemies 4:97 5:85 6:96
+1:52  [OWNER CAST]   364343 → 3
+1:52  [OWNER CD]   Stasis
+      [RES] rdy:Cauterizing Flame,Rewind,Emerald Communion,Stasis,Rescue,3:Cloak of Shadows,3:Shadow Blades  cd:3:Kidney Shot(22s)  enemy:Bestial Wrath/Beast Mastery Hunter(4s)  cc:3/Binding Shot-2s[root]
+1:53  [STATE]   friends 1:99 2:100 3:56 / enemies 4:92 5:81 6:97
+1:53  [DMG SPIKE]   3 (Subtlety Rogue): 0.70M in 10s
+1:53  [OWNER CAST]   360995 → 3
+1:53  [OWNER CAST]   361195 → 3
+1:54  [STATE]   friends 1:96 2:100 3:75 / enemies 4:91 5:92 6:99
+1:54  [MISSED CLEANSE]   Shadow Word: Madness on 3 | 6s | 331k taken during | dispel: Magic
+1:55  [STATE]   friends 1:100 2:100 3:64 / enemies 4:84 5:100 6:98
+1:55  [CC ON TEAM]   3 ← Binding Shot (Sayzx-Archimonde-EU) | 3s
+1:55  [OWNER CAST]   355936
+1:56  [STATE]   friends 1:100 2:98 3:78 / enemies 4:88 5:100 6:100
+1:56  [OWNER CAST]   364343 → 3
+1:57  [STATE]   friends 1:100 2:98 3:95 / enemies 4:92 5:100 6:100
+1:57  [OWNER CAST]   1256581 → 3 [completed before CC landed]
+1:58  [STATE]   friends 1:100 2:99 3:100 / enemies 4:87 5:100 6:100
+1:58  [CC ON TEAM]   1 ← Psychic Scream (Æåeåeåéåe-TwistingNether-EU) | 6s | trinket: ON CD (19s left)
+1:58  [CC ON TEAM]   2 ← Psychic Scream (Æåeåeåéåe-TwistingNether-EU) | 5s
+1:59  [STATE]   friends 1:100 2:99 3:96 / enemies 4:94 5:100 6:100
+2:00  [STATE]   friends 1:100 2:100 3:81 / enemies 4:97 5:95 6:100
+2:01  [STATE]   friends 1:100 2:99 3:69 / enemies 4:100 5:100 6:100
+2:02  [STATE]   friends 1:100 2:99 3:51 / enemies 4:100 5:100 6:100
+2:03  [STATE]   friends 1:99 2:96 3:35 / enemies 4:100 5:100 6:100
+2:03  [OWNER CAST]   361195 → 3
+2:03  [OWNER CAST]   355941 [completed before CC landed]
+2:04  [STATE]   friends 1:100 2:99 3:71 / enemies 4:100 5:100 6:99
+2:04  [CC ON TEAM]   1 ← Silence (Æåeåeåéåe-TwistingNether-EU) | 4s | trinket: ON CD (13s left)
+2:04  [CC ON TEAM]   1 ← Freezing Trap (Sayzx-Archimonde-EU) | 1s | trinket: ON CD (13s left)
+2:05  [STATE]   friends 1:100 2:99 3:67 / enemies 4:100 5:100 6:98
+2:05  [TEAMMATE CD]   3 (Subtlety Rogue): Cloak of Shadows
+      [RES] rdy:Δ+3:Cloak of Shadows  cd:—  enemy:Bestial Wrath/Beast Mastery Hunter(16s)  cc:1/Silence-3s,2/Entangling Roots-3s[root]
+2:06  [STATE]   friends 1:99 2:98 3:58 / enemies 4:100 5:100 6:85
+2:07  [STATE]   friends 1:99 2:97 3:53 / enemies 4:100 5:100 6:88
+2:08  [STATE]   friends 1:100 2:96 3:52 / enemies 4:100 5:100 6:88
+2:08  [OWNER CAST]   360995 → 3
+2:08  [CC ON TEAM]   2 ← Ursol's Vortex (Demerit-Aegwynn-EU) | 2s
+2:08  [OWNER CAST]   361195 → 3
+2:08  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ+3:Shadow Blades-Stasis,3:Cloak of Shadows  cd:Stasis(74s),3:Cloak of Shadows(117s)  enemy:Bestial Wrath/Beast Mastery Hunter(19s)  cc:2/Ursol's Vortex-2s
+2:09  [STATE]   friends 1:100 2:95 3:66 / enemies 4:100 5:100 6:96
+2:09  [ENEMY CD]   4 (Restoration Druid): Incarnation: Tree of Life
+2:09  [OWNER CAST]   364343 → 3
+2:10  [STATE]   friends 1:100 2:98 3:74 / enemies 4:98 5:100 6:96
+2:10  [OWNER CAST]   1256581 → 3
+2:10  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Incarnation: Tree of Life/Restoration Druid(2s),Bestial Wrath/Beast Mastery Hunter(21s)
+2:11  [STATE]   friends 1:100 2:100 3:95 / enemies 4:99 5:94 6:99
+2:11  [MISSED CLEANSE]   Shadow Word: Madness on 3 | 6s | 7k taken during | dispel: Magic
+2:12  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:80 6:99
+2:12  [ENEMY CD]   4 (Restoration Druid): Nature's Swiftness
+2:12  [CC ON TEAM]   3 ← Cyclone (Demerit-Aegwynn-EU) | 5s
+2:12  [OWNER CAST]   Sleep Walk → 4
+2:13  [STATE]   friends 1:100 2:99 3:100 / enemies 4:98 5:88 6:100
+2:14  [STATE]   friends 1:100 2:99 / enemies 4:98 5:89 6:100
+2:15  [STATE]   friends 1:100 2:96 / enemies 4:99 5:95 6:98
+2:16  [STATE]   friends 1:100 2:94 3:100 / enemies 4:99 5:100 6:100
+2:16  [OWNER CAST]   Sleep Walk → 6
+2:17  [STATE]   friends 1:100 2:93 3:100 / enemies 4:100 5:100 6:100
+2:18  [STATE]   friends 1:100 2:91 3:100 / enemies 4:100 5:100 6:100
+2:18  [OWNER CAST]   Sleep Walk → 5
+2:19  [STATE]   friends 1:100 2:92 3:98 / enemies 4:88 5:100 6:100
+2:19  [TEAMMATE CD]   3 (Subtlety Rogue): Kidney Shot
+      [RES] rdy:Δ+3:Shadow Blades-Stasis,3:Cloak of Shadows  cd:Stasis(64s),3:Cloak of Shadows(106s)  enemy:Incarnation: Tree of Life/Restoration Druid(10s),Nature's Swiftness/Restoration Druid(7s),Bestial Wrath/Beast Mastery Hunter(30s)
+2:20  [STATE]   friends 1:100 2:93 3:93 / enemies 4:82 5:100 6:91
+2:20  [OWNER CAST]   431443 → 4
+2:20  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ  cd:—  enemy:Incarnation: Tree of Life/Restoration Druid(11s),Nature's Swiftness/Restoration Druid(8s)
+2:20  [OWNER CAST]   357208
+2:20  [TEAMMATE CD]   3 (Subtlety Rogue): Shadow Blades
+      [RES] rdy:Δ-Stasis,3:Cloak of Shadows  cd:Stasis(62s),3:Cloak of Shadows(105s)  enemy:Incarnation: Tree of Life/Restoration Druid(12s),Nature's Swiftness/Restoration Druid(9s)
+2:21  [STATE]   friends 1:100 2:99 3:97 / enemies 4:52 5:100 6:94
+2:21  [OWNER CAST]   431443 → 4
+2:21  [OWNER CAST]   356995 → 4
+2:22  [STATE]   friends 1:100 2:100 3:97 / enemies 4:dead 5:100 6:95
+2:22  [TRINKET]   3 used PvP trinket
+2:22  [DEATH]  4 (Restoration Druid — enemy)
+2:22  [ROSTER]  enemy 4 removed (dead)
+2:23  [STATE]   friends 1:100 2:99 3:96 / enemies 4:dead 5:100 6:96
+2:23  [OWNER CAST]   360995 → 3
+2:23  [OWNER CAST]   361195 → 3
+2:24  [STATE]   friends 1:100 2:99 3:99 / enemies 4:dead 5:89 6:95
+2:24  [OWNER CAST]   364343 → 3
+2:25  [STATE]   friends 1:100 2:98 3:98 / enemies 4:dead 5:85 6:73
+2:25  [OWNER CAST]   1256581 → 3
+2:26  [STATE]   friends 1:100 2:100 3:99 / enemies 4:dead 5:79 6:54
+2:26  [OWNER CAST]   431443 → 6
+2:27  [STATE]   friends 1:100 2:99 3:99 / enemies 4:dead 5:77 6:48
+2:28  [STATE]   friends 1:100 2:100 3:99 / enemies 4:dead 5:50 6:dead
+2:28  [OWNER CAST]   431443 → 6
+2:28  [OWNER CAST]   356995 → 6
+2:28  [DEATH]  6 (Beast Mastery Hunter — enemy)
+2:28  [ROSTER]  enemy 6 removed (dead)
+2:29  [STATE]   friends 1:100 2:98 3:98 / enemies 4:dead 5:27 6:dead
+2:30  [STATE]   friends 1:100 2:99 3:99 / enemies 4:dead 5:dead 6:dead
+2:30  [DEATH]  5 (Shadow Priest — enemy)
+2:30  [ROSTER]  enemy 5 removed (dead)
+
+2:31  [MATCH END]   damp: 10%
+  friends 1:100% 2:100% 3:97% / enemies 4:dead(2:22) 5:dead(2:30) 6:dead(2:28)

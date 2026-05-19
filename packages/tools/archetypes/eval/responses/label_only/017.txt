@@ -1,0 +1,11 @@
+This is a heavy_burst_tunnel loss — the enemy executed back-to-back layered burst windows and your team had no sufficient answer for the second one.
+
+The first window at 0:10 was a full opener: Avatar, Oppressing Roar, Deep Breath, Champion's Spear rooting you and your Warrior simultaneously. Your Mistweaver answered with Leg Sweep into Intimidating Shout and eventually Life Cocoon at 0:19. Your own Ascendance at 0:19 was the right emergency call given the pressure — you were at 55% and falling under sustained damage.
+
+The problem is that burning Ascendance in the first window meant the second window at 0:27 — Bloodlust plus Ascendance from the enemy Enhancement Shaman — found you with nothing. In heavy_burst_tunnel matches the defining challenge is that teams have two separate burst peaks, and if you spend all your resources on the first, the second one kills you. That's exactly what happened: 1.18M on you in 10 seconds starting at 0:27, no defensive tools remaining, dead at 1:11.
+
+In this archetype the Mistweaver needs to be thinking about CD layering across both burst windows. Life Cocoon at 0:19 and Ascendance at 0:19 used simultaneously created a brief wall but left nothing for the follow-up. Ideally one of those two tools gets staggered — either use Life Cocoon early (when the first pressure hits) and hold Ascendance for the Bloodlust window, or vice versa.
+
+The Sleep Walk on your Mistweaver at 1:04 for 8 seconds with no trinket available was effectively a kill shot on your team — with two players at critical health and the healer locked out for 8 seconds, the cascading deaths were inevitable.
+
+Tactically, the Mistweaver should be tracking the enemy Enhancement Shaman's Bloodlust and Ascendance CDs as the second burst threat and ensuring there is always something held in reserve for that window.

@@ -1,0 +1,11 @@
+This was a 4:28 loss against Devourer Demon Hunter / Preservation Evoker / Outlaw Rogue. You played the Disc Priest role well enough to keep your team alive through a long, chaotic game — but you lost on a final kill attempt at 4:06 where 1.05M hit your Ret Paladin in 10 seconds, and you ran out of tools to keep him up.
+
+The most costly single moment was at 1:08 when Oppressing Roar landed on all three of your teammates simultaneously and you missed the dispel on all three. That debuff cost your Arms Warrior 273k damage while you couldn't respond, and it's a magic dispel on a 10-second window — you had dispel available. Your healer was not CC'd at that moment. This is the miss that gave the enemy their best kill window of the match and forced Pain Suppression at 1:18 on a Ret at 34% instead of as a proactive tool.
+
+Your Power Infusion usage patterns were reasonable on timing but the second use at 2:24 went onto your warrior at 100% HP. That charge is better held for a moment when your warrior is taking pressure at 70–75% and needs the additional survivability and damage output synergy, not spent as an opener at full health.
+
+The missed Landslide dispel at 0:29 was a softer version of the same problem — you were occupied elsewhere, but that debuff sat for 6 seconds on you for only 9k damage, so it was low stakes. The Oppressing Roar misses at 1:08 were not.
+
+Late game (4:06 onward), your Ret took 1.05M in 10 seconds, dropped to dead despite Pain Suppression being up at the start of that window. Pain Suppression went on at 3:12 on a Ret at 82% — that is early. The kill at 4:16 came after the buff had already faded. Saving Pain Suppression for the 4:06 Avatar window would have been a better allocation.
+
+The trinket management and Psychic Scream usage were solid throughout. You consistently provided CC on the enemy Evoker to disrupt their healing, which is the right call on this comp. The problem is the dispel gap in the critical window and Pain Suppression being used before the actual kill attempt.

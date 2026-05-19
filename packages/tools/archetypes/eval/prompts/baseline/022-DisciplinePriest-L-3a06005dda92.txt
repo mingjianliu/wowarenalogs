@@ -1,0 +1,574 @@
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Discipline Priest (Healer) | Bracket: 3v3 | Result: Loss | Duration: 4:28
+  My team: Discipline Priest, Arms Warrior, Retribution Paladin
+  Enemy team: Devourer Demon Hunter, Preservation Evoker, Outlaw Rogue
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Discipline Priest): CAN offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 19% at match end
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Alahkazam-TarrenMill-EU (Discipline Priest — log owner):
+    Psychic Scream [40s, 2 Charges], Power Infusion [120s, 2 Charges], Pain Suppression [180s, 2 Charges]
+  2: Arediønw-Kil'jaeden-EU (Arms Warrior):
+    Avatar [90s, 2 Charges], Intimidating Shout [90s], Die by the Sword [120s], Bladestorm (Arms) [90s]
+  3: Mectrl-Ravencrest-EU (Retribution Paladin):
+    Lay on Hands [600s], Divine Shield [300s], Hammer of Justice [45s, 2 Charges], Blessing of Spellwarding [300s], Avenging Wrath [120s]
+  4: Bka-Ravencrest-EU (Preservation Evoker — enemy):
+    Oppressing Roar [120s], Deep Breath [120s]
+  5: Plarogue-Dalaran-EU (Outlaw Rogue — enemy):
+    Adrenaline Rush [180s]
+  6: Buffhavoc-Elune-EU (Devourer Demon Hunter — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100 2:100
+0:02  [OWNER CAST]   200829 → 2
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:03  [OWNER CAST]   200829 → 3
+0:04  [OWNER CAST]   47540 → 2
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:06  [CC ON TEAM]   1 ← Sap (Plarogue-Dalaran-EU) | 6s
+0:06  [TEAMMATE CD]   2 (Arms Warrior): Bladestorm (Arms)
+      [RES] rdy:Δ+Psychic Scream,Power Infusion,Pain Suppression,2:Avatar,2:Bladestorm (Arms)  cd:—  cc:1/Sap-6s
+0:07  [STATE]   friends 2:100 3:100 / enemies 6:100 4:100 5:96
+0:08  [STATE]   friends 2:100 3:92 / enemies 6:100 4:100 5:96
+0:09  [STATE]   friends 2:100 3:92 / enemies 6:100 4:100 5:92
+0:10  [STATE]   friends 2:100 3:91 / enemies 6:100 4:100 5:91
+0:10  [TEAMMATE CD]   2 (Arms Warrior): Avatar
+      [RES] rdy:Δ+Power Infusion,Pain Suppression,2:Die by the Sword,3:Divine Shield,3:Hammer of Justice  cd:—  cc:1/Sap-2s
+0:11  [STATE]   friends 2:100 3:91 / enemies 6:91 4:100 5:87
+0:11  [CC ON TEAM]   2 ← Cheap Shot (Plarogue-Dalaran-EU) | 4s
+0:12  [STATE]   friends 1:100 2:93 3:91 / enemies 6:89 4:100 5:82
+0:12  [CC ON TEAM]   1 ← Sleep Walk (Bka-Ravencrest-EU) | 1s
+0:13  [STATE]   friends 1:100 2:85 3:99 / enemies 6:98 4:100 5:73
+0:13  [OWNER CAST]   7744 [succeeded after CC arrived — within 1s in log]
+0:13  [OWNER CAST]   194509 → 2
+0:13  [OWNER CAST]   472433 → 2
+0:14  [STATE]   friends 1:100 2:96 3:100 / enemies 6:96 4:98 5:76
+0:14  [CC ON TEAM]   2 ← Dismantle (Plarogue-Dalaran-EU) | 5s
+0:14  [OWNER CAST]   17 → 2
+0:15  [STATE]   friends 1:93 2:91 3:98 / enemies 6:100 4:99 5:57
+0:15  [OWNER CD]   Power Infusion → 2 (91% HP)
+      [RES] rdy:Δ+Power Infusion,Pain Suppression,2:Intimidating Shout,3:Divine Shield,3:Blessing of Spellwarding-2:Avatar,2:Bladestorm (Arms)  cd:2:Avatar(84s),2:Bladestorm (Arms)(81s)  cc:2/Dismantle-4s
+      [HEALING]    0–5s: 74.1k HPS | 5–10s: 12.5k HPS | 10–15s: 38.4k HPS | Overheal: 33%
+0:15  [OWNER CD]   Power Infusion → 1 (88% HP)
+      [RES] rdy:Δ  cd:—  cc:2/Dismantle-4s
+      [HEALING]    0–5s: 74.1k HPS | 5–10s: 12.5k HPS | 10–15s: 38.4k HPS | Overheal: 33%
+0:16  [STATE]   friends 1:85 2:86 3:96 / enemies 6:99 4:100 5:52
+0:16  [CLEANSE]   1 dispelled Fire Breath off 1
+0:16  [OWNER CAST]   527 → self
+0:17  [STATE]   friends 1:85 2:84 3:71 / enemies 6:100 4:100 5:59
+0:17  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ+Pain Suppression,2:Die by the Sword-Power Infusion,2:Avatar  cd:Power Infusion(119s),2:Avatar(83s)  cc:2/Dismantle-3s,3/The Hunt-1s[root]
+0:17  [OWNER CAST]   47540 → 3
+0:18  [STATE]   friends 1:87 2:84 3:66 / enemies 6:100 4:100 5:73
+0:18  [OWNER CAST]   589 → 5
+0:19  [STATE]   friends 1:93 2:89 3:87 / enemies 6:96 4:96 5:66
+0:19  [OWNER CAST]   1253593
+0:20  [STATE]   friends 1:94 2:88 3:97 / enemies 6:98 4:99 5:50
+0:20  [ENEMY CD]   5 (Outlaw Rogue): Adrenaline Rush
+0:21  [STATE]   friends 1:96 2:92 3:98 / enemies 6:100 4:100 5:46
+0:21  [CC ON TEAM]   3 ← Kidney Shot (Plarogue-Dalaran-EU) | 5s
+0:21  [OWNER CAST]   47540 → 5
+0:22  [STATE]   friends 1:100 2:94 3:100 / enemies 6:100 4:99 5:67
+0:22  [OWNER CAST]   73325 → 3 [completed before CC landed]
+0:23  [STATE]   friends 1:100 2:100 3:100 / enemies 6:100 4:100 5:99
+0:23  [CC ON TEAM]   1 ← Imprison (Buffhavoc-Elune-EU) | 2s
+0:24  [STATE]   friends 1:100 2:100 3:100 / enemies 6:96 4:100 5:97
+0:25  [STATE]   friends 1:96 2:100 3:92 / enemies 6:100 4:100 5:100
+0:26  [STATE]   friends 1:95 2:100 3:87 / enemies 6:98 4:100 5:100
+0:26  [OWNER CAST]   32379 → 5 [completed before CC landed]
+0:26  [CC ON TEAM]   2 ← Sleep Walk (Bka-Ravencrest-EU) | 4s
+0:26  [CC ON TEAM]   3 ← Sigil of Misery (Buffhavoc-Elune-EU) | 1s
+0:26  [CC ON TEAM]   1 ← Sigil of Misery (Buffhavoc-Elune-EU) | 1s
+0:27  [STATE]   friends 1:100 2:100 3:83 / enemies 6:100 4:100 5:100
+0:27  [OWNER CAST]   17 → 3 [succeeded after CC arrived — within 1s in log]
+0:28  [STATE]   friends 1:98 2:100 3:69 / enemies 6:100 4:100 5:100
+0:29  [STATE]   friends 1:95 2:100 3:70 / enemies 6:100 4:100 5:100
+0:29  [OWNER CD]   Pain Suppression → 3 (70% HP)
+      [RES] rdy:Δ+Pain Suppression,2:Die by the Sword,3:Divine Shield-Power Infusion,2:Avatar,3:Hammer of Justice  cd:Power Infusion(107s),2:Avatar(71s),3:Hammer of Justice(33s)  enemy:Adrenaline Rush/Outlaw Rogue(8s)  cc:2/Sleep Walk-1s
+0:29  [OWNER CAST]   47540 → 3
+0:29  [MISSED CLEANSE]   Landslide on 1 | 6s | 9k taken during | dispel: Magic
+0:30  [STATE]   friends 1:92 2:100 3:81 / enemies 6:100 4:100 5:95
+0:30  [OWNER CAST]   527 → 2
+0:30  [CLEANSE]   1 dispelled Sleep Walk off 2
+0:30  [BUFF FADED]   Power Infusion
+0:30  [BUFF FADED]   Power Infusion
+0:31  [STATE]   friends 1:92 2:100 3:100 / enemies 6:100 4:100 5:93
+0:31  [OWNER CAST]   589 → 6
+0:32  [STATE]   friends 1:93 2:100 3:100 / enemies 6:100 4:100 5:94
+0:32  [OWNER CAST]   47540 → 4
+0:33  [STATE]   friends 1:93 2:100 3:100 / enemies 6:99 4:100 5:99
+0:34  [STATE]   friends 1:100 2:100 3:100 / enemies 6:98 4:96 5:96
+0:34  [DMG SPIKE]   2 (Arms Warrior): 0.82M in 10s
+0:35  [STATE]   friends 1:100 2:88 3:100 / enemies 6:99 4:96 5:96
+0:35  [OWNER CAST]   17 → 2
+0:36  [STATE]   friends 1:100 2:76 3:100 / enemies 6:100 4:100 5:100
+0:37  [STATE]   friends 1:100 2:76 3:100 / enemies 6:100 4:100 5:100
+0:37  [BUFF FADED]   Pain Suppression
+0:37  [OWNER CAST]   186263 → 2
+0:37  [OWNER CAST]   47540 → 2
+0:38  [STATE]   friends 1:100 2:100 3:92 / enemies 6:100 4:100 5:93
+0:39  [STATE]   friends 1:100 2:95 3:96 / enemies 6:100 4:100 5:86
+0:40  [OWNER CAST]   421453 → 5
+0:40  [OWNER CAST]   17 → 3
+0:42  [STATE]   friends 1:100 2:66 3:92
+0:45  [STATE]   friends 1:100 2:100 3:100
+0:46  [OWNER CAST]   47540 → 5
+0:47  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ-Pain Suppression,3:Hammer of Justice  cd:Pain Suppression(162s),3:Hammer of Justice(15s)  enemy:Adrenaline Rush/Outlaw Rogue(26s)
+0:48  [STATE]   friends 1:100 2:100 3:100
+0:48  [OWNER CAST]   1253593
+0:48  [CC ON TEAM]   3 ← Gouge (Plarogue-Dalaran-EU) | 1s
+0:49  [STATE]   friends 1:99 2:100 3:100 / enemies 6:100 4:98 5:92
+0:49  [OWNER CAST]   527 → 3
+0:49  [CLEANSE]   1 dispelled 4 effects: Hammer of Justice off 3, Fire Breath off 3, Expurgation off 3, Truth's Wake off 3
+0:50  [STATE]   friends 1:100 2:100 3:100 / enemies 6:100 4:100 5:100
+0:51  [STATE]   friends 1:100 2:100 3:100 / enemies 6:100 4:100 5:98
+0:51  [OWNER CAST]   8092 → 5
+0:52  [STATE]   friends 1:100 2:100 3:100 / enemies 6:92 4:100 5:96
+0:52  [OWNER CAST]   32379 → 5
+0:53  [STATE]   friends 1:100 2:100 3:100 / enemies 6:75 4:100 5:87
+0:53  [OWNER CD]   Psychic Scream
+      [RES] rdy:Psychic Scream,2:Intimidating Shout,2:Die by the Sword,3:Lay on Hands,3:Divine Shield,3:Blessing of Spellwarding,3:Avenging Wrath  cd:Power Infusion(82s),Pain Suppression(155s),2:Avatar(46s),2:Bladestorm (Arms)(43s),3:Hammer of Justice(8s)
+0:53  [CC CAST]   Psychic Scream (by 1) → nil [non-player target]
+0:53  [CC CAST]   Psychic Scream (by 1) → 4
+0:54  [STATE]   friends 1:95 2:100 3:100 / enemies 6:36 4:100 5:66
+0:54  [CC ON TEAM]   2 ← Kidney Shot (Plarogue-Dalaran-EU) | 1s | trinket: used
+0:55  [STATE]   friends 1:97 2:100 3:100 / enemies 6:39 4:100 5:47
+0:55  [OWNER CAST]   47540 → 5
+0:55  [TRINKET]   2 used PvP trinket
+0:56  [STATE]   friends 1:100 2:100 3:100 / enemies 6:36 4:100 5:27
+0:57  [STATE]   friends 1:100 2:100 3:100 / enemies 6:34 4:100 5:7
+0:58  [STATE]   friends 1:99 2:100 3:100 / enemies 6:56 4:100 5:33
+0:59  [STATE]   friends 1:99 2:100 3:100 / enemies 6:67 4:100 5:69
+0:59  [OWNER CAST]   17 → 2
+1:00  [STATE]   friends 1:99 2:100 3:92 / enemies 6:85 4:100 5:100
+1:00  [OWNER CAST]   194509 → 3
+1:01  [STATE]   friends 1:100 2:95 3:91 / enemies 6:84 4:100 5:99
+1:01  [OWNER CAST]   586
+1:02  [STATE]   friends 1:100 2:98 3:93 / enemies 6:85 4:100 5:99
+1:02  [OWNER CAST]   194509 → 3 [completed before CC landed]
+1:02  [OWNER CAST]   472433 → 3 [completed before CC landed]
+1:02  [CC ON TEAM]   1 ← Sleep Walk (Bka-Ravencrest-EU) | 7s
+1:03  [STATE]   friends 1:100 2:99 3:84 / enemies 6:94 4:91 5:100
+1:04  [STATE]   friends 1:100 2:94 3:86 / enemies 6:100 4:100 5:100
+1:04  [OFFENSIVE WINDOW]   1:04–1:19 | Critical | 0.63M on 2 (Arms Warrior) | CDs: Adrenaline Rush + Oppressing Roar + Deep Breath
+1:04  [ENEMY CD]   5 (Outlaw Rogue): Adrenaline Rush
+1:05  [STATE]   friends 1:100 2:94 3:75 / enemies 6:89 4:100 5:99
+1:05  [CC ON TEAM]   2 ← Cheap Shot (Plarogue-Dalaran-EU) | 2s | trinket: ON CD (110s left)
+1:06  [STATE]   friends 1:100 2:94 3:70 / enemies 6:94 4:100 5:100
+1:06  [DMG SPIKE]   2 (Arms Warrior): 0.63M in 10s
+1:07  [STATE]   friends 1:100 2:77 3:70 / enemies 6:97 4:100 5:100
+1:08  [STATE]   friends 1:100 2:69 3:70 / enemies 6:97 4:100 5:99
+1:08  [ENEMY CD]   4 (Preservation Evoker): Oppressing Roar
+1:08  [MISSED CLEANSE]   Oppressing Roar on 1 | 10s | 78k taken during | dispel: Magic
+1:08  [MISSED CLEANSE]   Oppressing Roar on 2 | 10s | 273k taken during | dispel: Magic
+1:08  [MISSED CLEANSE]   Oppressing Roar on 3 | 10s | 76k taken during | dispel: Magic
+1:09  [STATE]   friends 1:98 2:67 3:69 / enemies 6:98 4:100 5:100
+1:10  [STATE]   friends 1:96 2:49 3:69 / enemies 6:95 4:100 5:99
+1:10  [OWNER CAST]   47540 → 2 [completed before CC landed]
+1:10  [ENEMY CD]   4 (Preservation Evoker): Deep Breath
+1:10  [CC ON TEAM]   1 ← Terror of the Skies (Bka-Ravencrest-EU) | 2s
+1:10  [CC ON TEAM]   3 ← Terror of the Skies (Bka-Ravencrest-EU) | 1s
+1:11  [STATE]   friends 1:96 2:62 3:70 / enemies 6:88 4:98 5:100
+1:12  [STATE]   friends 1:91 2:55 3:61 / enemies 6:92 4:100 5:100
+1:13  [STATE]   friends 1:92 2:63 3:58 / enemies 6:89 4:98 5:96
+1:14  [STATE]   friends 1:92 2:49 3:53 / enemies 6:87 4:100 5:93
+1:15  [STATE]   friends 1:92 2:41 3:52 / enemies 6:87 4:100 5:91
+1:15  [TEAMMATE CD]   2 (Arms Warrior): Die by the Sword
+      [RES] rdy:Δ+3:Divine Shield,3:Blessing of Spellwarding-Psychic Scream,2:Avatar  cd:Psychic Scream(18s),2:Avatar(25s)  enemy:Oppressing Roar/Preservation Evoker(7s),Deep Breath/Preservation Evoker(5s),Adrenaline Rush/Outlaw Rogue(11s)
+1:15  [OWNER CAST]   1253593
+1:16  [STATE]   friends 1:92 2:98 3:47 / enemies 6:85 4:100 5:91
+1:17  [STATE]   friends 1:95 2:100 3:50 / enemies 6:82 4:100 5:84
+1:17  [OWNER CAST]   194509 → 2
+1:18  [STATE]   friends 1:100 2:100 3:34 / enemies 6:68 4:98 5:84
+1:18  [OWNER CD]   Pain Suppression → 3 (34% HP)
+      [RES] rdy:Δ+3:Hammer of Justice-Psychic Scream,Pain Suppression,2:Die by the Sword  cd:Psychic Scream(16s),Pain Suppression(131s),2:Die by the Sword(118s)  enemy:Oppressing Roar/Preservation Evoker(9s),Deep Breath/Preservation Evoker(8s),Adrenaline Rush/Outlaw Rogue(14s)  cc:3/The Hunt-1s[root]
+1:18  [OWNER CAST]   47540 → 3
+1:19  [STATE]   friends 1:100 2:91 3:31 / enemies 6:66 4:99 5:77
+1:20  [STATE]   friends 1:100 2:95 3:50 / enemies 6:67 4:99 5:78
+1:20  [OWNER CAST]   194509 → 3
+1:21  [STATE]   friends 1:100 2:99 3:62
+1:21  [OWNER CAST]   589 → 6
+1:23  [OWNER CAST]   47540 → 6 [completed before CC landed]
+1:24  [STATE]   friends 1:100 2:94 3:65
+1:24  [CC ON TEAM]   1 ← Imprison (Buffhavoc-Elune-EU) | 3s
+1:25  [STATE]   friends 1:100 2:94 3:74 / enemies 6:100 4:100 5:100
+1:26  [STATE]   friends 1:100 2:94 3:78 / enemies 6:92 4:100 5:100
+1:26  [BUFF FADED]   Pain Suppression
+1:26  [TEAMMATE CD]   2 (Arms Warrior): Avatar
+      [RES] rdy:Δ-Psychic Scream,Power Infusion,Pain Suppression,2:Avatar,2:Die by the Sword  cd:Psychic Scream(7s),Power Infusion(49s),Pain Suppression(123s),2:Avatar(14s),2:Die by the Sword(109s)  enemy:Oppressing Roar/Preservation Evoker(18s),Deep Breath/Preservation Evoker(16s),Adrenaline Rush/Outlaw Rogue(22s)  cc:1/Imprison-1s
+1:26  [CC ON TEAM]   3 ← Gouge (Plarogue-Dalaran-EU) | 1s
+1:27  [STATE]   friends 1:100 2:94 3:78 / enemies 6:86 4:99 5:99
+1:27  [OWNER CAST]   17 → 3
+1:28  [STATE]   friends 1:100 2:82 3:70 / enemies 6:80 4:99 5:88
+1:28  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ+3:Hammer of Justice-Psychic Scream,2:Die by the Sword  cd:Psychic Scream(5s),2:Die by the Sword(107s)  enemy:Oppressing Roar/Preservation Evoker(20s),Deep Breath/Preservation Evoker(18s),Adrenaline Rush/Outlaw Rogue(24s)
+1:28  [OWNER CAST]   47540 → 3
+1:28  [CC ON TEAM]   2 ← Kidney Shot (Plarogue-Dalaran-EU) | 5s | trinket: ON CD (87s left)
+1:29  [STATE]   friends 1:100 2:84 3:58 / enemies 6:81 4:100 5:88
+1:30  [STATE]   friends 1:100 2:88 3:74 / enemies 6:75 4:99 5:89
+1:31  [STATE]   friends 1:100 2:81 3:74 / enemies 6:73 4:92 5:80
+1:31  [OWNER CAST]   2061 → 3
+1:31  [OWNER CAST]   200829 → 2
+1:32  [STATE]   friends 1:100 2:72 3:73 / enemies 6:41 4:92 5:72
+1:32  [OWNER CD]   Psychic Scream
+      [RES] rdy:Δ+3:Hammer of Justice-Psychic Scream,2:Die by the Sword  cd:Psychic Scream(1s),2:Die by the Sword(103s)  enemy:Oppressing Roar/Preservation Evoker(24s),Deep Breath/Preservation Evoker(22s),Adrenaline Rush/Outlaw Rogue(28s)  cc:2/Kidney Shot-1s[stun]
+1:32  [CC CAST]   Psychic Scream (by 1) → nil [non-player target]
+1:32  [CC CAST]   Psychic Scream (by 1) → 4
+1:33  [STATE]   friends 1:100 2:68 3:73 / enemies 6:60 4:100 5:100
+1:33  [CC ON TEAM]   2 ← Dismantle (Plarogue-Dalaran-EU) | 5s | trinket: ON CD (82s left)
+1:33  [OWNER CAST]   47540 → 2
+1:34  [STATE]   friends 1:100 2:72 3:75 / enemies 6:63 4:100 5:93
+1:35  [STATE]   friends 1:100 2:82 3:64 / enemies 6:70 4:98 5:82
+1:35  [OWNER CAST]   1253593
+1:36  [STATE]   friends 1:100 2:87 3:64 / enemies 6:73 4:100 5:76
+1:37  [STATE]   friends 1:100 2:88 3:64 / enemies 6:82 4:99 5:72
+1:37  [OWNER CAST]   8092 → 5
+1:37  [OWNER CAST]   589 → 5
+1:38  [STATE]   friends 1:100 2:90 3:67 / enemies 6:89 4:100 5:62
+1:39  [STATE]   friends 1:100 2:96 3:69 / enemies 6:94 4:100 5:48
+1:40  [STATE]   friends 1:100 2:99 3:70 / enemies 6:99 4:100 5:50
+1:41  [STATE]   friends 1:100 2:99 3:70 / enemies 6:100 4:97 5:52
+1:42  [STATE]   friends 1:100 2:100 3:72 / enemies 6:98 4:100 5:79
+1:42  [OWNER CAST]   589 → 5
+1:43  [STATE]   friends 1:100 2:100 3:80 / enemies 6:88 4:100 5:80
+1:45  [STATE]   friends 1:100 2:100 3:66
+1:45  [OWNER CAST]   194509 → 3
+1:45  [OWNER CAST]   17 → 3
+1:46  [OWNER CAST]   589 → 6
+1:48  [STATE]   friends 1:100 2:90 3:76
+1:48  [OWNER CAST]   47540 → 3 [completed before CC landed]
+1:48  [CC ON TEAM]   1 ← Blind (Plarogue-Dalaran-EU) | 1s | trinket: used
+1:48  [TRINKET]   1 used PvP trinket
+1:49  [STATE]   friends 1:100 2:92 3:84 / enemies 6:66 4:92 5:99
+1:49  [OWNER CAST]   47540 → 3
+1:50  [STATE]   friends 1:100 2:97 3:67 / enemies 6:59 4:92 5:99
+1:50  [OWNER CAST]   32379 → 4 [completed before CC landed]
+1:50  [CC ON TEAM]   1 ← Sleep Walk (Bka-Ravencrest-EU) | 1s | trinket: ON CD (89s left)
+1:51  [STATE]   friends 1:100 2:98 3:77 / enemies 6:78 4:92 5:97
+1:52  [STATE]   friends 1:100 2:99 3:100 / enemies 6:76 4:97 5:95
+1:52  [OWNER CAST]   194509 → 3
+1:52  [OWNER CAST]   472433 → 3
+1:53  [STATE]   friends 1:100 2:92 3:100 / enemies 6:71 4:99 5:100
+1:53  [OWNER CAST]   589 → 6
+1:54  [STATE]   friends 1:100 2:86 3:100 / enemies 6:90 4:100 5:99
+1:54  [OWNER CAST]   1253593
+1:55  [STATE]   friends 1:100 2:69 3:100 / enemies 6:100 4:100 5:98
+1:56  [STATE]   friends 1:100 2:72 3:100 / enemies 6:100 4:100 5:94
+1:56  [OWNER CAST]   194509 → 2
+1:57  [STATE]   friends 1:100 2:84 3:100 / enemies 6:95 4:84 5:91
+1:57  [TEAMMATE CD]   2 (Arms Warrior): Bladestorm (Arms)
+      [RES] rdy:Δ-Power Infusion,Pain Suppression,2:Die by the Sword  cd:Power Infusion(18s),Pain Suppression(92s),2:Die by the Sword(78s)
+1:57  [CLEANSE]   2 dispelled Crippling Poison off 2
+1:57  [OWNER CAST]   47540 → 5
+1:58  [STATE]   friends 1:100 2:74 3:100 / enemies 6:96 4:85 5:88
+1:58  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ+Psychic Scream,2:Avatar  cd:—
+1:59  [STATE]   friends 1:100 2:69 3:100 / enemies 6:96 4:86 5:80
+2:00  [STATE]   friends 1:100 2:80 3:100 / enemies 6:87 4:89 5:76
+2:01  [CC ON TEAM]   3 ← Gouge (Plarogue-Dalaran-EU) | 3s
+2:02  [STATE]   friends 1:100 2:76 3:100 / enemies 6:73 4:100 5:79
+2:02  [OWNER CD]   Psychic Scream
+      [RES] rdy:Δ+Psychic Scream,2:Avatar-3:Hammer of Justice  cd:3:Hammer of Justice(11s)  cc:3/Gouge-2s
+2:02  [CC CAST]   Psychic Scream (by 1) → 4
+2:02  [CC CAST]   Psychic Scream (by 1) → nil [non-player target]
+2:03  [STATE]   friends 1:100 2:94 3:100 / enemies 6:100 4:100 5:100
+2:03  [CC ON TEAM]   2 ← Kidney Shot (Plarogue-Dalaran-EU) | 5s | trinket: ON CD (52s left)
+2:04  [STATE]   friends 1:100 2:94 3:100 / enemies 6:100 4:100 5:100
+2:04  [OWNER CAST]   17 → 2
+2:05  [STATE]   friends 1:100 2:95 3:100 / enemies 6:100 4:100 5:100
+2:05  [OWNER CAST]   73325 → 2
+2:06  [STATE]   friends 1:100 2:97 3:100 / enemies 6:100 4:100 5:99
+2:07  [STATE]   friends 1:100 2:98 3:100 / enemies 6:100 4:100 5:99
+2:07  [OWNER CAST]   589 → 4
+2:08  [STATE]   friends 1:100 2:100 3:100 / enemies 6:100 4:100 5:100
+2:09  [STATE]   friends 1:100 2:82 3:100 / enemies 6:95 4:100 5:98
+2:09  [OWNER CAST]   47540 → 5
+2:10  [STATE]   friends 1:100 2:77 3:100 / enemies 6:89 4:99 5:89
+2:10  [OWNER CAST]   586
+2:11  [STATE]   friends 1:100 2:86 3:100 / enemies 6:100 4:100 5:80
+2:11  [OWNER CAST]   17 → 2
+2:12  [STATE]   friends 1:100 2:81 3:100 / enemies 6:90 4:95 5:83
+2:13  [STATE]   friends 1:100 2:81 3:100 / enemies 6:85 4:100 5:86
+2:13  [OWNER CAST]   32379 → 6
+2:14  [CC ON TEAM]   1 ← Sleep Walk (Bka-Ravencrest-EU) | 4s | trinket: ON CD (65s left)
+2:15  [STATE]   friends 1:96 2:78 3:69 / enemies 6:70 4:99 5:87
+2:16  [STATE]   friends 1:96 2:78 3:64 / enemies 6:98 4:100 5:91
+2:17  [STATE]   friends 2:79 3:57 / enemies 6:93 4:98 5:89
+2:18  [STATE]   friends 1:89 2:79 3:45 / enemies 6:87 4:100 5:90
+2:18  [OWNER CAST]   17 → 3
+2:19  [STATE]   friends 1:90 2:75 3:23 / enemies 6:90 4:100 5:90
+2:19  [TEAMMATE CD]   3 (Retribution Paladin): Divine Shield
+      [RES] rdy:Δ+Power Infusion,2:Intimidating Shout,3:Divine Shield,3:Blessing of Spellwarding-2:Die by the Sword,2:Bladestorm (Arms)  cd:2:Die by the Sword(56s),2:Bladestorm (Arms)(68s)
+2:19  [OWNER CAST]   47540 → 3
+2:20  [STATE]   friends 1:90 2:74 3:46 / enemies 6:96 4:100 5:90
+2:21  [STATE]   friends 1:91 2:80 3:66 / enemies 6:97 4:98 5:93
+2:22  [STATE]   friends 1:85 2:79 3:67 / enemies 6:94 4:86 5:80
+2:22  [OWNER CAST]   186263 → 2
+2:23  [STATE]   friends 1:88 2:100 3:67 / enemies 6:97 4:88 5:72
+2:23  [OWNER CAST]   1253593
+2:24  [STATE]   friends 1:90 2:100 3:69 / enemies 6:99 4:96 5:76
+2:24  [OWNER CD]   Power Infusion → 2 (100% HP)
+      [RES] rdy:Δ+2:Avatar-Pain Suppression,2:Die by the Sword,3:Divine Shield  cd:Pain Suppression(65s),2:Die by the Sword(51s),3:Divine Shield(295s)
+      [HEALING]    0–5s: 54.2k HPS | 5–10s: 30.3k HPS | 10–15s: 28.7k HPS | Overheal: 49%
+2:24  [OWNER CD]   Power Infusion → 1 (91% HP)
+      [RES] rdy:Δ  cd:—
+      [HEALING]    0–5s: 54.1k HPS | 5–10s: 30.4k HPS | 10–15s: 28.6k HPS | Overheal: 49%
+2:25  [OWNER CAST]   589 → 5
+2:26  [OWNER CAST]   47540 → 5
+2:27  [STATE]   friends 1:98 2:96 3:77
+2:29  [OWNER CAST]   8092 → 5
+2:29  [OWNER CAST]   47540 → 5
+2:30  [STATE]   friends 1:100 2:91 3:96
+2:30  [CC ON TEAM]   1 ← Imprison (Buffhavoc-Elune-EU) | 3s | trinket: ON CD (49s left)
+2:31  [STATE]   friends 1:100 2:97 3:100 / enemies 6:98 4:99 5:69
+2:32  [STATE]   friends 1:100 2:93 3:100 / enemies 6:96 4:99 5:53
+2:32  [CC ON TEAM]   2 ← Dismantle (Plarogue-Dalaran-EU) | 5s | trinket: ON CD (23s left)
+2:33  [STATE]   friends 1:100 2:91 3:100 / enemies 6:99 4:100 5:75
+2:34  [STATE]   friends 1:100 2:92 3:92 / enemies 6:100 4:100 5:93
+2:34  [OWNER CAST]   17 → 2
+2:35  [STATE]   friends 1:100 2:93 3:91 / enemies 6:96 4:100 5:95
+2:35  [OWNER CAST]   47540 → 4 [completed before CC landed]
+2:35  [ENEMY CD]   5 (Outlaw Rogue): Adrenaline Rush
+2:35  [CC ON TEAM]   1 ← Kidney Shot (Plarogue-Dalaran-EU) | 1s | trinket: ON CD (44s left)
+2:36  [STATE]   friends 1:100 2:96 3:91 / enemies 6:98 4:100 5:100
+2:37  [STATE]   friends 1:100 2:100 3:90 / enemies 6:99 4:97 5:100
+2:38  [STATE]   friends 1:100 2:100 3:98 / enemies 6:94 4:99 5:100
+2:38  [OWNER CAST]   194509 → 3
+2:38  [OWNER CAST]   472433 → 3
+2:39  [STATE]   friends 1:100 2:100 3:91 / enemies 6:99 4:99 5:100
+2:39  [BUFF FADED]   Power Infusion
+2:39  [BUFF FADED]   Power Infusion
+2:39  [OWNER CAST]   32379 → 5
+2:40  [STATE]   friends 1:100 2:100 3:74 / enemies 6:100 4:100 5:99
+2:40  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ-3:Divine Shield  cd:3:Divine Shield(280s)  enemy:Adrenaline Rush/Outlaw Rogue(4s)
+2:41  [STATE]   friends 1:100 2:100 3:71 / enemies 6:100 4:100 5:98
+2:41  [OWNER CAST]   17 → 3
+2:42  [STATE]   friends 1:100 2:100 3:72 / enemies 6:90 4:91 5:82
+2:42  [OWNER CAST]   47540 → 3 [completed before CC landed]
+2:43  [STATE]   friends 1:100 2:100 3:77 / enemies 6:68 4:91 5:78
+2:43  [CC ON TEAM]   1 ← Gouge (Plarogue-Dalaran-EU) | 2s | trinket: ON CD (36s left)
+2:44  [STATE]   friends 1:100 2:100 3:95 / enemies 6:71 4:84 5:47
+2:44  [TEAMMATE CD]   2 (Arms Warrior): Avatar
+      [RES] rdy:Δ+Psychic Scream,2:Avatar-3:Divine Shield  cd:3:Divine Shield(275s)  enemy:Adrenaline Rush/Outlaw Rogue(9s)  cc:1/Gouge-0s
+2:45  [STATE]   friends 1:100 2:100 3:97 / enemies 6:58 4:74 5:43
+2:46  [STATE]   friends 1:100 2:100 3:88 / enemies 6:55 4:71 5:29
+2:46  [OWNER CAST]   1253593
+2:47  [STATE]   friends 1:100 2:100 3:90 / enemies 6:44 4:83 5:40
+2:48  [STATE]   friends 1:100 2:100 3:92 / enemies 6:48 4:93 5:82
+2:48  [OWNER CAST]   47540 → 6
+2:49  [STATE]   friends 1:100 2:100 3:100 / enemies 6:60 4:100 5:88
+2:49  [OWNER CAST]   589 → 6
+2:50  [STATE]   friends 1:100 2:100 3:99 / enemies 6:56 4:100 5:94
+2:50  [CC ON TEAM]   3 ← Cheap Shot (Plarogue-Dalaran-EU) | 4s
+2:51  [STATE]   friends 1:100 2:100 3:67 / enemies 6:68 4:100 5:98
+2:51  [OWNER CAST]   1253593
+2:52  [STATE]   friends 1:100 2:100 3:69 / enemies 6:88 4:100 5:100
+2:52  [OWNER CAST]   32379 → 4 [completed before CC landed]
+2:52  [CC ON TEAM]   1 ← Sleep Walk (Bka-Ravencrest-EU) | 1s | trinket: ON CD (27s left)
+2:53  [STATE]   friends 1:100 2:100 3:74 / enemies 6:91 4:99 5:98
+2:53  [OWNER CD]   Psychic Scream
+      [RES] rdy:Δ+3:Hammer of Justice-2:Avatar,3:Divine Shield  cd:2:Avatar(3s),3:Divine Shield(266s)  enemy:Adrenaline Rush/Outlaw Rogue(18s)  cc:3/Cheap Shot-0s[stun]
+2:53  [CC CAST]   Psychic Scream (by 1) → nil [non-player target]
+2:53  [CC CAST]   Psychic Scream (by 1) → 4
+2:54  [STATE]   friends 1:100 2:97 3:79 / enemies 6:92 4:100 5:99
+2:55  [STATE]   friends 1:100 2:99 3:80 / enemies 6:89 4:100 5:88
+2:55  [OWNER CAST]   47540 → self
+2:56  [STATE]   friends 1:100 2:100 3:84 / enemies 6:87 4:100 5:70
+2:57  [STATE]   friends 1:100 2:100 3:75 / enemies 6:92 4:99 5:65
+2:58  [STATE]   friends 1:100 2:100 3:56 / enemies 6:95 4:99 5:60
+2:58  [OWNER CAST]   8092 → 5
+2:58  [OWNER CAST]   589 → 5
+2:59  [STATE]   friends 1:100 2:100 3:43 / enemies 6:98 4:98 5:63
+2:59  [OWNER CAST]   17 → 3
+3:00  [STATE]   friends 1:100 2:100 3:43 / enemies 6:96 4:100 5:66
+3:01  [STATE]   friends 1:100 2:100 3:44 / enemies 6:87 4:100 5:73
+3:01  [OWNER CAST]   47540 → 5
+3:02  [STATE]   friends 1:100 2:100 3:50 / enemies 6:95 4:99 5:78
+3:03  [STATE]   friends 1:100 2:100 3:60
+3:04  [OWNER CAST]   585 → 5
+3:04  [OWNER CAST]   32379 → 4
+3:05  [OWNER CAST]   586
+3:05  [OWNER CAST]   121536
+3:06  [STATE]   friends 1:100 2:100 3:79
+3:08  [OWNER CAST]   186263 → 3
+3:09  [STATE]   friends 1:100 2:100 3:100 / enemies 6:97 4:100 5:33
+3:10  [STATE]   friends 1:100 2:100 3:99 / enemies 6:99 4:100 5:25
+3:11  [STATE]   friends 1:100 2:100 3:96 / enemies 6:100 4:100 5:20
+3:11  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ  cd:—
+3:12  [STATE]   friends 1:100 2:100 3:97 / enemies 6:98 4:100 5:18
+3:12  [OWNER CD]   Pain Suppression → 3 (82% HP)
+      [RES] rdy:Δ+Psychic Scream,2:Avatar-3:Divine Shield,3:Hammer of Justice  cd:3:Divine Shield(247s),3:Hammer of Justice(12s)
+3:13  [STATE]   friends 1:100 2:100 3:83 / enemies 6:98 4:100 5:12
+3:13  [CC ON TEAM]   1 ← Blind (Plarogue-Dalaran-EU) | 5s | trinket: ON CD (6s left)
+3:13  [DMG SPIKE]   2 (Arms Warrior): 0.69M in 10s
+3:14  [STATE]   friends 1:100 2:95 3:79 / enemies 6:99 4:100 5:16
+3:15  [STATE]   friends 1:100 2:90 3:80 / enemies 6:100 4:100 5:27
+3:16  [STATE]   friends 1:100 2:90 3:66 / enemies 6:95 4:100 5:40
+3:17  [STATE]   friends 1:100 2:81 3:50 / enemies 6:97 4:95 5:58
+3:17  [CC ON TEAM]   1 ← Kidney Shot (Plarogue-Dalaran-EU) | 2s | trinket: used
+3:18  [STATE]   friends 1:100 2:74 3:30 / enemies 6:89 4:100 5:49
+3:18  [TRINKET]   2 used PvP trinket
+3:18  [TEAMMATE CD]   3 (Retribution Paladin): Blessing of Spellwarding
+      [RES] rdy:Δ+2:Intimidating Shout,3:Blessing of Spellwarding-3:Hammer of Justice  cd:3:Hammer of Justice(6s)  cc:1/Kidney Shot-0s[stun][trinketed]
+3:19  [STATE]   friends 1:94 2:64 3:25 / enemies 6:92 4:100 5:58
+3:19  [TRINKET]   1 used PvP trinket
+3:19  [OWNER CAST]   17 → 3
+3:20  [STATE]   friends 1:94 2:58 3:25 / enemies 6:92 4:100 5:51
+3:20  [OWNER CAST]   194509 → 3
+3:20  [BUFF FADED]   Pain Suppression
+3:21  [STATE]   friends 1:100 2:55 3:41 / enemies 6:93 4:100 5:49
+3:21  [OWNER CAST]   47540 → 2
+3:22  [STATE]   friends 1:100 2:53 3:42 / enemies 6:94 4:96 5:53
+3:23  [STATE]   friends 1:100 2:36 3:47 / enemies 6:100 4:100 5:68
+3:23  [OWNER CAST]   194509 → 2
+3:24  [STATE]   friends 1:100 2:35 3:53 / enemies 6:99 4:95 5:56
+3:25  [STATE]   friends 1:100 2:47 3:54 / enemies 6:99 4:93 5:70
+3:25  [OWNER CAST]   1253593
+3:25  [TEAMMATE CD]   2 (Arms Warrior): Intimidating Shout
+      [RES] rdy:Δ+2:Intimidating Shout  cd:—
+3:25  [CC CAST]   Intimidating Shout (by 2) → 5
+3:26  [STATE]   friends 1:100 2:49 3:55 / enemies 6:87 4:100 5:81
+3:26  [OWNER CAST]   194509 → 2
+3:26  [OWNER CAST]   472433 → 2
+3:27  [STATE]   friends 1:100 2:63 3:77 / enemies 6:86 4:99 5:82
+3:27  [CC ON TEAM]   2 ← Dismantle (Plarogue-Dalaran-EU) | 5s | trinket: ON CD (112s left)
+3:27  [OWNER CAST]   47540 → 2
+3:28  [STATE]   friends 1:100 2:65 3:79 / enemies 6:93 4:99 5:85
+3:28  [ENEMY CD]   4 (Preservation Evoker): Deep Breath
+3:29  [STATE]   friends 1:100 2:85 3:82 / enemies 6:95 4:100 5:100
+3:29  [CC ON TEAM]   3 ← Terror of the Skies (Bka-Ravencrest-EU) | 3s
+3:29  [CC ON TEAM]   2 ← Terror of the Skies (Bka-Ravencrest-EU) | 3s | trinket: ON CD (110s left)
+3:29  [CC ON TEAM]   1 ← Gouge (Plarogue-Dalaran-EU) | 1s | trinket: ON CD (80s left)
+3:30  [STATE]   friends 1:100 2:100 3:48 / enemies 6:100 4:99 5:99
+3:30  [OWNER CAST]   17 → 3
+3:31  [STATE]   friends 1:100 2:100 3:29 / enemies 6:99 4:98 5:99
+3:31  [OWNER CAST]   2061 → 3
+3:32  [STATE]   friends 1:100 2:100 3:39 / enemies 6:100 4:98 5:99
+3:33  [STATE]   friends 1:100 2:100 3:32 / enemies 6:100 4:98 5:99
+3:33  [OWNER CAST]   47540 → 3
+3:34  [STATE]   friends 1:100 2:100 3:57 / enemies 6:97 4:100 5:99
+3:35  [STATE]   friends 1:100 2:100 3:70 / enemies 6:100 4:100 5:100
+3:35  [OWNER CAST]   17 → 3 [completed before CC landed]
+3:35  [CC ON TEAM]   1 ← Imprison (Buffhavoc-Elune-EU) | 2s | trinket: ON CD (74s left)
+3:36  [STATE]   friends 1:100 2:100 3:70 / enemies 6:100 4:100 5:99
+3:37  [STATE]   friends 1:100 2:100 3:70 / enemies 6:100 4:100 5:96
+3:37  [OWNER CD]   Psychic Scream
+      [RES] rdy:Δ+2:Avatar,2:Die by the Sword,2:Bladestorm (Arms)-2:Intimidating Shout,3:Blessing of Spellwarding  cd:2:Intimidating Shout(78s),3:Blessing of Spellwarding(281s)  enemy:Deep Breath/Preservation Evoker(9s)
+3:37  [CC CAST]   Psychic Scream (by 1) → 4
+3:37  [CC CAST]   Psychic Scream (by 1) → nil [non-player target]
+3:38  [STATE]   friends 1:100 2:100 3:71 / enemies 6:99 4:99 5:89
+3:38  [OWNER CAST]   47540 → 3
+3:39  [STATE]   friends 1:100 2:100 3:71 / enemies 6:89 4:99 5:77
+3:40  [STATE]   friends 1:100 2:100 3:85 / enemies 6:85 4:100 5:72
+3:40  [OWNER CAST]   589 → 5
+3:41  [STATE]   friends 1:100 2:100 3:99 / enemies 6:83 4:100 5:76
+3:42  [STATE]   friends 1:100 2:100 3:100 / enemies 6:82 4:92 5:79
+3:43  [STATE]   friends 1:100 2:100 3:100 / enemies 6:85 4:74 5:58
+3:43  [OWNER CAST]   8092 → 5
+3:44  [STATE]   friends 1:100 2:94 3:100 / enemies 6:84 4:91 5:70
+3:44  [OWNER CAST]   47540 → 5
+3:45  [STATE]   friends 1:100 2:93 3:100 / enemies 6:94 4:99 5:70
+3:45  [OWNER CAST]   17 → 2
+3:45  [TEAMMATE CD]   2 (Arms Warrior): Bladestorm (Arms)
+      [RES] rdy:Δ+2:Die by the Sword-2:Intimidating Shout,3:Divine Shield,3:Blessing of Spellwarding  cd:2:Intimidating Shout(70s),3:Divine Shield(214s),3:Blessing of Spellwarding(273s)  enemy:Deep Breath/Preservation Evoker(17s)
+3:45  [CLEANSE]   2 dispelled Crippling Poison off 2
+3:46  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ+2:Die by the Sword-2:Intimidating Shout,3:Blessing of Spellwarding  cd:2:Intimidating Shout(69s),3:Blessing of Spellwarding(272s)  enemy:Deep Breath/Preservation Evoker(18s)
+3:47  [OWNER CAST]   589 → 4
+3:48  [STATE]   friends 1:100 2:100 3:95
+3:49  [OWNER CAST]   194509 → 3
+3:51  [STATE]   friends 1:98 2:96 3:88
+3:51  [OWNER CAST]   527 → 3
+3:51  [CLEANSE]   1 dispelled 2 effects: Hammer of Justice off 3, Judgment of Justice off 3
+3:52  [OWNER CAST]   17 → 3 [completed before CC landed]
+3:52  [CC ON TEAM]   1 ← Cheap Shot (Plarogue-Dalaran-EU) | 1s | trinket: ON CD (57s left)
+3:53  [STATE]   friends 1:98 2:90 3:72 / enemies 6:94 4:100 5:90
+3:53  [CC ON TEAM]   1 ← Sleep Walk (Bka-Ravencrest-EU) | 1s | trinket: ON CD (56s left)
+3:54  [STATE]   friends 1:100 2:89 3:69 / enemies 6:98 4:100 5:82
+3:55  [STATE]   friends 1:99 2:89 3:65 / enemies 6:98 4:100 5:100
+3:55  [OWNER CAST]   7744
+3:55  [OWNER CAST]   47540 → 3
+3:56  [STATE]   friends 1:100 2:91 3:60 / enemies 6:98 4:100 5:99
+3:57  [STATE]   friends 1:100 2:92 3:81 / enemies 6:91 4:100 5:100
+3:57  [OWNER CAST]   1253593
+3:58  [STATE]   friends 1:100 2:95 3:90 / enemies 6:90 4:99 5:92
+3:58  [OWNER CAST]   32379 → 6 [completed before CC landed]
+3:58  [CC ON TEAM]   1 ← Sleep Walk (Bka-Ravencrest-EU) | 1s | trinket: ON CD (51s left)
+3:58  [TEAMMATE CD]   2 (Arms Warrior): Avatar
+      [RES] rdy:Δ+2:Die by the Sword-2:Intimidating Shout,3:Blessing of Spellwarding  cd:2:Intimidating Shout(57s),3:Blessing of Spellwarding(260s)  cc:1/Sleep Walk-1s
+3:59  [STATE]   friends 1:100 2:98 3:94 / enemies 6:87 4:100 5:93
+4:00  [STATE]   friends 1:100 2:100 3:95 / enemies 6:85 4:100 5:85
+4:00  [OWNER CAST]   47540 → 5
+4:01  [STATE]   friends 1:100 2:100 3:71 / enemies 6:93 4:96 5:89
+4:02  [STATE]   friends 1:100 2:100 3:68 / enemies 6:93 4:100 5:74
+4:02  [OWNER CAST]   186263 → 3
+4:03  [STATE]   friends 1:100 2:100 3:93 / enemies 6:96 4:100 5:90
+4:04  [STATE]   friends 1:100 2:100 3:84 / enemies 6:79 4:100 5:88
+4:04  [OWNER CAST]   585 → 5
+4:05  [STATE]   friends 1:100 2:94 3:85 / enemies 6:87 4:99 5:97
+4:05  [OWNER CAST]   17 → 3
+4:06  [STATE]   friends 1:100 2:98 3:85 / enemies 6:96 4:100 5:91
+4:06  [OWNER CAST]   194509 → 3
+4:06  [CC ON TEAM]   2 ← Kidney Shot (Plarogue-Dalaran-EU) | 4s | trinket: ON CD (73s left)
+4:06  [DMG SPIKE]   3 (Retribution Paladin): 1.05M in 10s
+4:07  [STATE]   friends 1:100 2:96 3:75 / enemies 6:96 4:100 5:92
+4:07  [OWNER CAST]   73325 → 2
+4:07  [OWNER CAST]   47540 → 3
+4:08  [STATE]   friends 1:100 2:98 3:46 / enemies 6:97 4:99 5:91
+4:08  [ENEMY CD]   5 (Outlaw Rogue): Adrenaline Rush
+4:09  [STATE]   friends 1:100 2:100 3:60 / enemies 6:96 4:100 5:83
+4:09  [OWNER CAST]   73325 → 3
+4:09  [OWNER CAST]   2061 → 3
+4:10  [STATE]   friends 1:100 2:100 3:59 / enemies 6:83 4:99 5:70
+4:11  [STATE]   friends 1:100 2:100 3:32 / enemies 6:76 4:99 5:55
+4:11  [OWNER CAST]   1253593
+4:12  [STATE]   friends 1:100 2:100 3:24 / enemies 6:74 4:99 5:45
+4:12  [OWNER CAST]   194509 → 3
+4:12  [OWNER CAST]   472433 → 3
+4:13  [STATE]   friends 1:100 2:100 3:14 / enemies 6:79 4:97 5:50
+4:13  [OWNER CAST]   2061 → 3
+4:14  [STATE]   friends 1:100 2:100 3:23 / enemies 6:87 4:100 5:68
+4:14  [OWNER CAST]   194509 → 3
+4:15  [STATE]   friends 1:100 2:100 3:19 / enemies 6:71 4:86 5:61
+4:15  [OWNER CAST]   47540 → 3
+4:16  [STATE]   friends 1:100 2:100 3:dead / enemies 6:70 4:85 5:54
+4:16  [DEATH]  3 (Retribution Paladin — friendly)
+               HP: 70% at T-15s → 85% at T-10s → 29% at T-5s → 16% at T-3s → dead
+               Top damage in final 10s: Buffhavoc-Elune-EU — Cull (139k), Buffhavoc-Elune-EU — Voidsurge (121k), Buffhavoc-Elune-EU — Devour (111k)
+4:17  [STATE]   friends 1:100 2:100 3:dead / enemies 6:91 4:99 5:76
+4:18  [STATE]   friends 1:100 2:100 3:dead / enemies 6:93 4:100 5:83
+4:18  [OWNER CAST]   186263 → 2
+4:19  [STATE]   friends 1:100 2:100 3:dead / enemies 6:97 4:100 5:87
+4:19  [CC ON TEAM]   2 ← Dismantle (Plarogue-Dalaran-EU) | 5s | trinket: ON CD (59s left)
+4:20  [STATE]   friends 1:100 2:100 3:dead / enemies 6:94 4:100 5:72
+4:20  [OWNER CAST]   17 → 2
+4:21  [STATE]   friends 1:100 2:100 3:dead / enemies 6:94 4:99 5:70
+4:21  [DMG SPIKE]   2 (Arms Warrior): 0.95M in 10s
+4:21  [OWNER CAST]   200829 → self
+4:22  [STATE]   friends 1:100 2:80 3:dead / enemies 6:95 4:99 5:70
+4:23  [STATE]   friends 1:100 2:68 3:dead / enemies 6:97 4:99 5:70
+4:23  [OWNER CAST]   589 → 5
+4:24  [STATE]   friends 1:100 2:65 3:dead / enemies 6:100 4:100 5:78
+4:24  [OWNER CAST]   47540 → 5
+4:25  [STATE]   friends 1:100 2:45 3:dead / enemies 6:100 4:100 5:77
+4:26  [STATE]   friends 1:100 2:43 3:dead / enemies 6:99 4:100 5:73
+4:27  [STATE]   friends 1:100 2:41 3:dead / enemies 6:100 4:100 5:71
+4:28  [STATE]   friends 2:dead 3:dead / enemies 6:100 4:100 5:84
+4:28  [DEATH]  2 (Arms Warrior — friendly)
+               HP: 100% at T-15s → 100% at T-10s → 63% at T-5s → 39% at T-3s → dead
+               Top damage in final 10s: Buffhavoc-Elune-EU — Cull (237k), Buffhavoc-Elune-EU — Devour (194k), Buffhavoc-Elune-EU — Void Ray (113k)
+
+4:28  [MATCH END]   damp: 19%
+  friends 1:100% 2:dead(4:28) 3:dead(4:16) / enemies 6:100% 4:100% 5:74%

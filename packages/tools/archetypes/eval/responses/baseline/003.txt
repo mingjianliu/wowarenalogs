@@ -1,0 +1,15 @@
+The loss is a Flame Shock cleanse problem that compounded into a final kill under double Power Infusion. Across the match, Flame Shock went uncleansed on every player multiple times for extended windows — 23s, 6s, 18s, 33s, 23s, 18s durations — and the final uncleansed Flame Shock window at 3:37 covered 618k damage taken on yourself during the kill. Your Mage died at 2:24 with Flame Shock on multiple teammates running uninterrupted.
+
+The specific decisions that determined the outcome:
+
+At 0:08, you used both Power Infusion charges within the same cast window — one on the Frost Mage at full HP, one on yourself at 81% HP. This is the very start of the match. The enemy immediately opened with Avatar, Bloodlust, and Ascendance at 0:11–0:12. Your PI was gone before the enemy cooldowns even landed. The mage went from 100% to 32% at 0:44 and needed Guardian Spirit to survive. If you had held even one PI charge until that dive window, you could have supercharged your output during the actual emergency.
+
+The Guardian Spirit at 0:44 saved the mage at 31% HP — that was correctly timed and necessary. Burning Guardian Spirit in the first minute is acceptable when the mage is at 31% with Ascendance active. Good call.
+
+At 1:08, Flame Shock on the Frost Mage went uncleansed for 6 seconds and accumulated 307k damage. That is a missed cleanse during a window where you still had most cooldowns available. At 1:21, Flame Shock on the Mage went uncleansed again for 33 seconds. These are long windows where the enemy is not hard-CCing you — you had time to dispel.
+
+The Mage death at 2:24: health trail was 42% at T-10, 66% at T-5, then dead. The Shaman's second Bloodlust + Stormstrike combo through a Kidneyshot-on-healer window finished him. You had used your second Guardian Spirit at 1:55, which was already gone. By 2:24 you were running on Divine Hymn (active) but the mage died before the channel could cover the burst.
+
+After the mage died, you and the Rogue were alone against a full enemy team. You died at 2:36 under a 0.50M spike while at 90% HP — the enemy Power Infusion window amplified enemy healing reduction plus damage simultaneously and you ran out of sustain.
+
+Key adjustments: prioritize Flame Shock cleanse on whoever has the most debuff stacks and is taking active physical damage. In a 2:37 match, 33 seconds of uncleansed Flame Shock on the mage is a slow bleed that erodes your healing lead. Also, stagger your PI charges — first one at the start of an enemy CD window, second one 60 seconds later when the enemy refreshes.

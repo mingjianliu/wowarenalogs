@@ -1,0 +1,482 @@
+[
+  {
+    "ordinal": 1,
+    "matchId": "059f9027a478550d7765e0343e1ace6e",
+    "spec": "Preservation Evoker",
+    "bracket": "3v3",
+    "result": "Loss",
+    "durationSec": 75,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "cc_heavy_fast",
+    "files": {
+      "baseline": "001-PreservationEvoker-L-059f9027a478.txt",
+      "label_only": "001-PreservationEvoker-L-059f9027a478.txt",
+      "narrative": "001-PreservationEvoker-L-059f9027a478.txt",
+      "narrative_stats": "001-PreservationEvoker-L-059f9027a478.txt"
+    }
+  },
+  {
+    "ordinal": 2,
+    "matchId": "af49a30381d037a2e2899c9e95b7fb20",
+    "spec": "Discipline Priest",
+    "bracket": "3v3",
+    "result": "Loss",
+    "durationSec": 67,
+    "clusterKey": "cluster_2",
+    "clusterLabel": "cc_heavy_swap",
+    "files": {
+      "baseline": "002-DisciplinePriest-L-af49a30381d0.txt",
+      "label_only": "002-DisciplinePriest-L-af49a30381d0.txt",
+      "narrative": "002-DisciplinePriest-L-af49a30381d0.txt",
+      "narrative_stats": "002-DisciplinePriest-L-af49a30381d0.txt"
+    }
+  },
+  {
+    "ordinal": 3,
+    "matchId": "f99bcf463d0c2e6b36e6afa510add452",
+    "spec": "Holy Priest",
+    "bracket": "3v3",
+    "result": "Loss",
+    "durationSec": 157,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "fast_nuke_tunnel",
+    "files": {
+      "baseline": "003-HolyPriest-L-f99bcf463d0c.txt",
+      "label_only": "003-HolyPriest-L-f99bcf463d0c.txt",
+      "narrative": "003-HolyPriest-L-f99bcf463d0c.txt",
+      "narrative_stats": "003-HolyPriest-L-f99bcf463d0c.txt"
+    }
+  },
+  {
+    "ordinal": 4,
+    "matchId": "abcc375f186b790cfcae0183d9032276",
+    "spec": "Preservation Evoker",
+    "bracket": "3v3",
+    "result": "Loss",
+    "durationSec": 215,
+    "clusterKey": "cluster_2",
+    "clusterLabel": "fast_nuke_swap",
+    "files": {
+      "baseline": "004-PreservationEvoker-L-abcc375f186b.txt",
+      "label_only": "004-PreservationEvoker-L-abcc375f186b.txt",
+      "narrative": "004-PreservationEvoker-L-abcc375f186b.txt",
+      "narrative_stats": "004-PreservationEvoker-L-abcc375f186b.txt"
+    }
+  },
+  {
+    "ordinal": 5,
+    "matchId": "10c5ee7a2393331c0f36000103083e35",
+    "spec": "Preservation Evoker",
+    "bracket": "3v3",
+    "result": "Win",
+    "durationSec": 264,
+    "clusterKey": "cluster_0",
+    "clusterLabel": "dampening_grind_swap",
+    "files": {
+      "baseline": "005-PreservationEvoker-W-10c5ee7a2393.txt",
+      "label_only": "005-PreservationEvoker-W-10c5ee7a2393.txt",
+      "narrative": "005-PreservationEvoker-W-10c5ee7a2393.txt",
+      "narrative_stats": "005-PreservationEvoker-W-10c5ee7a2393.txt"
+    }
+  },
+  {
+    "ordinal": 6,
+    "matchId": "8a0a0aba49ab7fc399647216203bcb58",
+    "spec": "Restoration Druid",
+    "bracket": "3v3",
+    "result": "Loss",
+    "durationSec": 54,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "short_tunnel",
+    "files": {
+      "baseline": "006-RestorationDruid-L-8a0a0aba49ab.txt",
+      "label_only": "006-RestorationDruid-L-8a0a0aba49ab.txt",
+      "narrative": "006-RestorationDruid-L-8a0a0aba49ab.txt",
+      "narrative_stats": "006-RestorationDruid-L-8a0a0aba49ab.txt"
+    }
+  },
+  {
+    "ordinal": 7,
+    "matchId": "21cc8b4cb56e6fa63e22e4d43770b3ad",
+    "spec": "Restoration Druid",
+    "bracket": "3v3",
+    "result": "Win",
+    "durationSec": 93,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "short_tunnel",
+    "files": {
+      "baseline": "007-RestorationDruid-W-21cc8b4cb56e.txt",
+      "label_only": "007-RestorationDruid-W-21cc8b4cb56e.txt",
+      "narrative": "007-RestorationDruid-W-21cc8b4cb56e.txt",
+      "narrative_stats": "007-RestorationDruid-W-21cc8b4cb56e.txt"
+    }
+  },
+  {
+    "ordinal": 8,
+    "matchId": "8044d003f6b10409f073f819952839f2",
+    "spec": "Restoration Druid",
+    "bracket": "3v3",
+    "result": "Loss",
+    "durationSec": 85,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "short_tunnel",
+    "files": {
+      "baseline": "008-RestorationDruid-L-8044d003f6b1.txt",
+      "label_only": "008-RestorationDruid-L-8044d003f6b1.txt",
+      "narrative": "008-RestorationDruid-L-8044d003f6b1.txt",
+      "narrative_stats": "008-RestorationDruid-L-8044d003f6b1.txt"
+    }
+  },
+  {
+    "ordinal": 9,
+    "matchId": "9a763dadc5d406140f319d0e310b4339",
+    "spec": "Holy Priest",
+    "bracket": "3v3",
+    "result": "Win",
+    "durationSec": 66,
+    "clusterKey": "cluster_0",
+    "clusterLabel": "cc_heavy_swap",
+    "files": {
+      "baseline": "009-HolyPriest-W-9a763dadc5d4.txt",
+      "label_only": "009-HolyPriest-W-9a763dadc5d4.txt",
+      "narrative": "009-HolyPriest-W-9a763dadc5d4.txt",
+      "narrative_stats": "009-HolyPriest-W-9a763dadc5d4.txt"
+    }
+  },
+  {
+    "ordinal": 10,
+    "matchId": "624d2444cfd8054d9fdd3ae324c4fede",
+    "spec": "Mistweaver Monk",
+    "bracket": "3v3",
+    "result": "Loss",
+    "durationSec": 139,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "heavy_burst_tunnel",
+    "files": {
+      "baseline": "010-MistweaverMonk-L-624d2444cfd8.txt",
+      "label_only": "010-MistweaverMonk-L-624d2444cfd8.txt",
+      "narrative": "010-MistweaverMonk-L-624d2444cfd8.txt",
+      "narrative_stats": "010-MistweaverMonk-L-624d2444cfd8.txt"
+    }
+  },
+  {
+    "ordinal": 11,
+    "matchId": "22efcd80b1d0e7b9a79db8d886a64305",
+    "spec": "Discipline Priest",
+    "bracket": "3v3",
+    "result": "Win",
+    "durationSec": 113,
+    "clusterKey": "cluster_0",
+    "clusterLabel": "balanced_swap",
+    "files": {
+      "baseline": "011-DisciplinePriest-W-22efcd80b1d0.txt",
+      "label_only": "011-DisciplinePriest-W-22efcd80b1d0.txt",
+      "narrative": "011-DisciplinePriest-W-22efcd80b1d0.txt",
+      "narrative_stats": "011-DisciplinePriest-W-22efcd80b1d0.txt"
+    }
+  },
+  {
+    "ordinal": 12,
+    "matchId": "e8679ffe321fc16d761261ed12018019",
+    "spec": "Mistweaver Monk",
+    "bracket": "3v3",
+    "result": "Win",
+    "durationSec": 154,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "heavy_burst_tunnel",
+    "files": {
+      "baseline": "012-MistweaverMonk-W-e8679ffe321f.txt",
+      "label_only": "012-MistweaverMonk-W-e8679ffe321f.txt",
+      "narrative": "012-MistweaverMonk-W-e8679ffe321f.txt",
+      "narrative_stats": "012-MistweaverMonk-W-e8679ffe321f.txt"
+    }
+  },
+  {
+    "ordinal": 13,
+    "matchId": "f2d34dcd2ae2742672862e27e85e5731",
+    "spec": "Preservation Evoker",
+    "bracket": "3v3",
+    "result": "Win",
+    "durationSec": 365,
+    "clusterKey": "cluster_0",
+    "clusterLabel": "dampening_grind_swap",
+    "files": {
+      "baseline": "013-PreservationEvoker-W-f2d34dcd2ae2.txt",
+      "label_only": "013-PreservationEvoker-W-f2d34dcd2ae2.txt",
+      "narrative": "013-PreservationEvoker-W-f2d34dcd2ae2.txt",
+      "narrative_stats": "013-PreservationEvoker-W-f2d34dcd2ae2.txt"
+    }
+  },
+  {
+    "ordinal": 14,
+    "matchId": "9a29ed803a1a9a60982b3c39b0692566",
+    "spec": "Restoration Druid",
+    "bracket": "3v3",
+    "result": "Loss",
+    "durationSec": 104,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "short_tunnel",
+    "files": {
+      "baseline": "014-RestorationDruid-L-9a29ed803a1a.txt",
+      "label_only": "014-RestorationDruid-L-9a29ed803a1a.txt",
+      "narrative": "014-RestorationDruid-L-9a29ed803a1a.txt",
+      "narrative_stats": "014-RestorationDruid-L-9a29ed803a1a.txt"
+    }
+  },
+  {
+    "ordinal": 15,
+    "matchId": "497dca8fe606ddeb1d3c61f6209499b3",
+    "spec": "Holy Paladin",
+    "bracket": "3v3",
+    "result": "Loss",
+    "durationSec": 228,
+    "clusterKey": "cluster_0",
+    "clusterLabel": "short_passive_swap",
+    "files": {
+      "baseline": "015-HolyPaladin-L-497dca8fe606.txt",
+      "label_only": "015-HolyPaladin-L-497dca8fe606.txt",
+      "narrative": "015-HolyPaladin-L-497dca8fe606.txt",
+      "narrative_stats": "015-HolyPaladin-L-497dca8fe606.txt"
+    }
+  },
+  {
+    "ordinal": 16,
+    "matchId": "8ad9639304ab90a3122ea89d1362d1fa",
+    "spec": "Preservation Evoker",
+    "bracket": "3v3",
+    "result": "Win",
+    "durationSec": 160,
+    "clusterKey": "cluster_2",
+    "clusterLabel": "fast_nuke_swap",
+    "files": {
+      "baseline": "016-PreservationEvoker-W-8ad9639304ab.txt",
+      "label_only": "016-PreservationEvoker-W-8ad9639304ab.txt",
+      "narrative": "016-PreservationEvoker-W-8ad9639304ab.txt",
+      "narrative_stats": "016-PreservationEvoker-W-8ad9639304ab.txt"
+    }
+  },
+  {
+    "ordinal": 17,
+    "matchId": "b45a29961777b178c6409fa8cab24185",
+    "spec": "Mistweaver Monk",
+    "bracket": "3v3",
+    "result": "Loss",
+    "durationSec": 84,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "heavy_burst_tunnel",
+    "files": {
+      "baseline": "017-MistweaverMonk-L-b45a29961777.txt",
+      "label_only": "017-MistweaverMonk-L-b45a29961777.txt",
+      "narrative": "017-MistweaverMonk-L-b45a29961777.txt",
+      "narrative_stats": "017-MistweaverMonk-L-b45a29961777.txt"
+    }
+  },
+  {
+    "ordinal": 18,
+    "matchId": "3497e92d0b7ce166b7f04d97a91221d9",
+    "spec": "Preservation Evoker",
+    "bracket": "3v3",
+    "result": "Win",
+    "durationSec": 151,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "cc_heavy_fast",
+    "files": {
+      "baseline": "018-PreservationEvoker-W-3497e92d0b7c.txt",
+      "label_only": "018-PreservationEvoker-W-3497e92d0b7c.txt",
+      "narrative": "018-PreservationEvoker-W-3497e92d0b7c.txt",
+      "narrative_stats": "018-PreservationEvoker-W-3497e92d0b7c.txt"
+    }
+  },
+  {
+    "ordinal": 19,
+    "matchId": "46237986bc524a77c8c981d57e8f7a5f",
+    "spec": "Restoration Druid",
+    "bracket": "3v3",
+    "result": "Win",
+    "durationSec": 18,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "short_tunnel",
+    "files": {
+      "baseline": "019-RestorationDruid-W-46237986bc52.txt",
+      "label_only": "019-RestorationDruid-W-46237986bc52.txt",
+      "narrative": "019-RestorationDruid-W-46237986bc52.txt",
+      "narrative_stats": "019-RestorationDruid-W-46237986bc52.txt"
+    }
+  },
+  {
+    "ordinal": 20,
+    "matchId": "449560119166cb9f8c1c5dc0fa13afa4",
+    "spec": "Holy Priest",
+    "bracket": "3v3",
+    "result": "Win",
+    "durationSec": 225,
+    "clusterKey": "cluster_0",
+    "clusterLabel": "cc_heavy_swap",
+    "files": {
+      "baseline": "020-HolyPriest-W-449560119166.txt",
+      "label_only": "020-HolyPriest-W-449560119166.txt",
+      "narrative": "020-HolyPriest-W-449560119166.txt",
+      "narrative_stats": "020-HolyPriest-W-449560119166.txt"
+    }
+  },
+  {
+    "ordinal": 21,
+    "matchId": "3cbcf9b54e09440ee777363b94d907b7",
+    "spec": "Holy Paladin",
+    "bracket": "3v3",
+    "result": "Loss",
+    "durationSec": 51,
+    "clusterKey": "cluster_0",
+    "clusterLabel": "short_passive_swap",
+    "files": {
+      "baseline": "021-HolyPaladin-L-3cbcf9b54e09.txt",
+      "label_only": "021-HolyPaladin-L-3cbcf9b54e09.txt",
+      "narrative": "021-HolyPaladin-L-3cbcf9b54e09.txt",
+      "narrative_stats": "021-HolyPaladin-L-3cbcf9b54e09.txt"
+    }
+  },
+  {
+    "ordinal": 22,
+    "matchId": "3a06005dda9231ca7636a419e219f2b8",
+    "spec": "Discipline Priest",
+    "bracket": "3v3",
+    "result": "Loss",
+    "durationSec": 269,
+    "clusterKey": "cluster_1",
+    "clusterLabel": "heavy_burst_cc_swap",
+    "files": {
+      "baseline": "022-DisciplinePriest-L-3a06005dda92.txt",
+      "label_only": "022-DisciplinePriest-L-3a06005dda92.txt",
+      "narrative": "022-DisciplinePriest-L-3a06005dda92.txt",
+      "narrative_stats": "022-DisciplinePriest-L-3a06005dda92.txt"
+    }
+  },
+  {
+    "ordinal": 23,
+    "matchId": "8d3f4643a0d2239a1c6877f524124496",
+    "spec": "Preservation Evoker",
+    "bracket": "3v3",
+    "result": "Loss",
+    "durationSec": 153,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "cc_heavy_fast",
+    "files": {
+      "baseline": "023-PreservationEvoker-L-8d3f4643a0d2.txt",
+      "label_only": "023-PreservationEvoker-L-8d3f4643a0d2.txt",
+      "narrative": "023-PreservationEvoker-L-8d3f4643a0d2.txt",
+      "narrative_stats": "023-PreservationEvoker-L-8d3f4643a0d2.txt"
+    }
+  },
+  {
+    "ordinal": 24,
+    "matchId": "d23f53d095224b8734566e671b3ca9f4",
+    "spec": "Holy Priest",
+    "bracket": "3v3",
+    "result": "Win",
+    "durationSec": 92,
+    "clusterKey": "cluster_0",
+    "clusterLabel": "cc_heavy_swap",
+    "files": {
+      "baseline": "024-HolyPriest-W-d23f53d09522.txt",
+      "label_only": "024-HolyPriest-W-d23f53d09522.txt",
+      "narrative": "024-HolyPriest-W-d23f53d09522.txt",
+      "narrative_stats": "024-HolyPriest-W-d23f53d09522.txt"
+    }
+  },
+  {
+    "ordinal": 25,
+    "matchId": "4d9316160175dbef2c4cdd6803e7b349",
+    "spec": "Mistweaver Monk",
+    "bracket": "3v3",
+    "result": "Loss",
+    "durationSec": 324,
+    "clusterKey": "cluster_1",
+    "clusterLabel": "long_sustained_swap",
+    "files": {
+      "baseline": "025-MistweaverMonk-L-4d9316160175.txt",
+      "label_only": "025-MistweaverMonk-L-4d9316160175.txt",
+      "narrative": "025-MistweaverMonk-L-4d9316160175.txt",
+      "narrative_stats": "025-MistweaverMonk-L-4d9316160175.txt"
+    }
+  },
+  {
+    "ordinal": 26,
+    "matchId": "82bdb12ee454e2bf2e69184ad5a07399",
+    "spec": "Preservation Evoker",
+    "bracket": "3v3",
+    "result": "Loss",
+    "durationSec": 178,
+    "clusterKey": "cluster_1",
+    "clusterLabel": "heavy_burst_swap",
+    "files": {
+      "baseline": "026-PreservationEvoker-L-82bdb12ee454.txt",
+      "label_only": "026-PreservationEvoker-L-82bdb12ee454.txt",
+      "narrative": "026-PreservationEvoker-L-82bdb12ee454.txt",
+      "narrative_stats": "026-PreservationEvoker-L-82bdb12ee454.txt"
+    }
+  },
+  {
+    "ordinal": 27,
+    "matchId": "31653a1dcef9752fb9f026a42db226e8",
+    "spec": "Preservation Evoker",
+    "bracket": "3v3",
+    "result": "Loss",
+    "durationSec": 228,
+    "clusterKey": "cluster_1",
+    "clusterLabel": "heavy_burst_swap",
+    "files": {
+      "baseline": "027-PreservationEvoker-L-31653a1dcef9.txt",
+      "label_only": "027-PreservationEvoker-L-31653a1dcef9.txt",
+      "narrative": "027-PreservationEvoker-L-31653a1dcef9.txt",
+      "narrative_stats": "027-PreservationEvoker-L-31653a1dcef9.txt"
+    }
+  },
+  {
+    "ordinal": 28,
+    "matchId": "25f199b7b37b93079756764a59691120",
+    "spec": "Restoration Druid",
+    "bracket": "3v3",
+    "result": "Win",
+    "durationSec": 105,
+    "clusterKey": "cluster_2",
+    "clusterLabel": "cc_heavy_swap",
+    "files": {
+      "baseline": "028-RestorationDruid-W-25f199b7b37b.txt",
+      "label_only": "028-RestorationDruid-W-25f199b7b37b.txt",
+      "narrative": "028-RestorationDruid-W-25f199b7b37b.txt",
+      "narrative_stats": "028-RestorationDruid-W-25f199b7b37b.txt"
+    }
+  },
+  {
+    "ordinal": 29,
+    "matchId": "dd550898c153738c864c4506a669a9ae",
+    "spec": "Holy Priest",
+    "bracket": "3v3",
+    "result": "Loss",
+    "durationSec": 121,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "fast_nuke_tunnel",
+    "files": {
+      "baseline": "029-HolyPriest-L-dd550898c153.txt",
+      "label_only": "029-HolyPriest-L-dd550898c153.txt",
+      "narrative": "029-HolyPriest-L-dd550898c153.txt",
+      "narrative_stats": "029-HolyPriest-L-dd550898c153.txt"
+    }
+  },
+  {
+    "ordinal": 30,
+    "matchId": "72fb0fdc5ba194b1e601bf66a4c725cf",
+    "spec": "Discipline Priest",
+    "bracket": "3v3",
+    "result": "Win",
+    "durationSec": 232,
+    "clusterKey": "cluster_1",
+    "clusterLabel": "heavy_burst_cc_swap",
+    "files": {
+      "baseline": "030-DisciplinePriest-W-72fb0fdc5ba1.txt",
+      "label_only": "030-DisciplinePriest-W-72fb0fdc5ba1.txt",
+      "narrative": "030-DisciplinePriest-W-72fb0fdc5ba1.txt",
+      "narrative_stats": "030-DisciplinePriest-W-72fb0fdc5ba1.txt"
+    }
+  }
+]

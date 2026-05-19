@@ -1,0 +1,884 @@
+[ARCHETYPE: Preservation Evoker — dampening_grind_swap]
+In long attrition matches averaging 319 seconds, top Preservation Evokers maintain a balanced target-swap pattern (tunnel score 0.544) with optimal CD timing in 34% of windows and a median response latency of 10 seconds. Purge pressure runs at 3.9 per minute across extended dampening exchanges, while healing gaps are absent and offensive participation holds at 65%. The setup style splits evenly between cc_then_burst and flat_dampening at 22% each, with the match dynamic often unresolved in structure.
+
+Key behavioral patterns observed in this match type:
+CD timing: 34% Optimal / 6% Early / 14% Late / 9% Reactive
+CD never used: 23%
+CD response latency: 10032ms median
+Outgoing CC per match: 11.3 mean
+Healing gap rate during burst: 0%
+Offensive participation: 65%
+Purge rate: 3.86/min
+Missed cleanse rate: 30%
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Preservation Evoker (Healer) | Bracket: 3v3 | Result: Win | Duration: 6:05
+  My team: Marksmanship Hunter, Preservation Evoker, Affliction Warlock
+  Enemy team: Retribution Paladin, Arms Warrior, Preservation Evoker
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Preservation Evoker): CANNOT offensive purge
+  Team purgers: Affliction Warlock
+
+DAMPENING (3v3): started at 10%, ended at 29% at match end
+  Note: Reached 29% dampening — healing was meaningfully impaired in the late game.
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Sharkoslav-Kazzak-EU (Preservation Evoker — log owner):
+    Deep Breath [120s], Wing Buffet [180s], Cauterizing Flame [60s], Rewind [240s, 2 Charges], Emerald Communion [180s, 2 Charges], Stasis [90s], Rescue [60s]
+  2: Lolroflmaoxd-Kazzak-EU (Marksmanship Hunter):
+    Roar of Sacrifice [120s], Exhilaration [120s, 2 Charges]
+  3: Aneel-Ravencrest-EU (Affliction Warlock):
+    Mortal Coil [45s], Dark Pact [60s, 2 Charges], Howl of Terror [40s]
+  4: Thelronis-Kel'Thuzad-EU (Retribution Paladin — enemy):
+    Execution Sentence [60s]
+  5: Bigtastybacn-Blackrock-EU (Arms Warrior — enemy):
+    Avatar [90s]
+  6: Vynrock-Ravencrest-EU (Preservation Evoker — enemy):
+    Deep Breath [120s], Oppressing Roar [120s]
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 2:100
+0:03  [STATE]   friends 1:100 2:99 3:100
+0:05  [OWNER CAST]   360995 → 2
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:06  [OWNER CAST]   361195 → 2
+0:06  [CC ON TEAM]   2 ← Shockwave (Bigtastybacn-Blackrock-EU) | 1s | trinket: used
+0:07  [STATE]   friends 1:100 2:97 3:100 / enemies 4:100 5:95 6:100
+0:07  [TRINKET]   2 used PvP trinket
+0:08  [STATE]   friends 1:96 2:88 3:100 / enemies 4:100 5:94 6:99
+0:08  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ+Deep Breath,Wing Buffet,Emerald Communion,Stasis,2:Roar of Sacrifice,3:Mortal Coil,3:Howl of Terror  cd:—
+0:08  [OWNER CAST]   357208
+0:08  [ENEMY CD]   4 (Retribution Paladin): Execution Sentence
+0:09  [STATE]   friends 1:100 2:100 3:100 / enemies 4:85 5:85 6:99
+0:09  [OWNER CAST]   360995 → 2
+0:09  [OWNER CAST]   361195 → 2
+0:10  [STATE]   friends 1:100 2:100 3:100 / enemies 4:84 5:83 6:100
+0:10  [OWNER CAST]   431443 → 5
+0:10  [ENEMY CD]   6 (Preservation Evoker): Deep Breath
+0:10  [OWNER CD]   Oppressing Roar
+      [RES] rdy:Δ  cd:—  enemy:Execution Sentence/Retribution Paladin(2s),Deep Breath/Preservation Evoker(0s)
+0:11  [STATE]   friends 1:100 2:100 3:100 / enemies 4:72 5:82 6:100
+0:11  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Execution Sentence/Retribution Paladin(2s),Deep Breath/Preservation Evoker(1s)
+0:11  [CC ON TEAM]   2 ← Terror of the Skies (Vynrock-Ravencrest-EU) | 1s | trinket: ON CD (117s left)
+0:12  [STATE]   friends 1:98 2:97 3:100 / enemies 4:71 5:72 6:100
+0:12  [OWNER CAST]   431443 → 5 [completed before CC landed]
+0:12  [OWNER CAST]   356995 → 5 [completed before CC landed]
+0:13  [STATE]   friends 1:91 2:93 3:100 / enemies 4:87 5:78 6:99
+0:13  [CC ON TEAM]   3 ← Storm Bolt (Bigtastybacn-Blackrock-EU) | 3s
+0:13  [CC ON TEAM]   1 ← Hammer of Justice (Thelronis-Kel'Thuzad-EU) | 5s
+0:14  [STATE]   friends 1:84 2:93 3:80 / enemies 4:88 5:79 6:100
+0:14  [TEAMMATE CD]   3 (Affliction Warlock): Dark Pact
+      [RES] rdy:Δ+Deep Breath,Rewind,Emerald Communion,2:Roar of Sacrifice  cd:—  enemy:Execution Sentence/Retribution Paladin(5s),Deep Breath/Preservation Evoker(3s)  cc:1/Hammer of Justice-4s[stun],3/Storm Bolt-2s[stun]
+0:14  [CC ON TEAM]   3 ← Champion's Spear (Bigtastybacn-Blackrock-EU) | 6s
+0:14  [CC ON TEAM]   1 ← Sleep Walk (Vynrock-Ravencrest-EU) | 6s
+0:14  [ENEMY CD]   5 (Arms Warrior): Avatar
+0:15  [STATE]   friends 1:86 2:96 3:80 / enemies 4:87 5:65 6:100
+0:15  [ENEMY CD]   6 (Preservation Evoker): Oppressing Roar
+0:15  [MISSED CLEANSE]   Oppressing Roar on 1 | 10s | 0k taken during | dispel: Magic
+0:16  [STATE]   friends 1:86 2:96 3:80 / enemies 4:88 5:62 6:100
+0:16  [TEAMMATE CD]   2 (Marksmanship Hunter): Roar of Sacrifice
+      [RES] rdy:Δ+Deep Breath,Wing Buffet,Stasis,Rescue,2:Roar of Sacrifice-3:Dark Pact  cd:3:Dark Pact(58s)  enemy:Execution Sentence/Retribution Paladin(7s),Avatar/Arms Warrior(2s),Deep Breath/Preservation Evoker(6s),Oppressing Roar/Preservation Evoker(1s)  cc:1/Hammer of Justice-2s[stun],3/Champion's Spear-4s
+0:16  [TEAMMATE CD]   3 (Affliction Warlock): Howl of Terror
+      [RES] rdy:Δ+Deep Breath,Wing Buffet,Emerald Communion,Stasis,2:Roar of Sacrifice,3:Mortal Coil-3:Dark Pact  cd:3:Dark Pact(57s)  enemy:Execution Sentence/Retribution Paladin(8s),Avatar/Arms Warrior(2s),Deep Breath/Preservation Evoker(6s),Oppressing Roar/Preservation Evoker(1s)  cc:1/Hammer of Justice-2s[stun],3/Champion's Spear-4s
+0:16  [CC CAST]   Howl of Terror (by 3) → nil [non-player target]
+0:16  [CC CAST]   Howl of Terror (by 3) → 5, 4 [2 enemies]
+0:17  [STATE]   friends 1:87 2:98 3:81 / enemies 4:88 5:60 6:95
+0:18  [STATE]   friends 1:87 2:100 3:81 / enemies 4:100 5:64 6:100
+0:18  [TEAMMATE CD]   3 (Affliction Warlock): Mortal Coil
+      [RES] rdy:Δ+Deep Breath,Rewind,Emerald Communion,Stasis-3:Dark Pact  cd:3:Dark Pact(56s)  enemy:Execution Sentence/Retribution Paladin(9s),Avatar/Arms Warrior(4s),Deep Breath/Preservation Evoker(8s),Oppressing Roar/Preservation Evoker(3s)  cc:1/Hammer of Justice-0s[stun],3/Champion's Spear-2s
+0:19  [STATE]   friends 1:87 2:100 3:86 / enemies 4:100 5:51 6:93
+0:20  [STATE]   friends 1:91 2:100 3:74 / enemies 4:100 5:76 6:100
+0:20  [OWNER CAST]   360995 → 3
+0:20  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ-2:Roar of Sacrifice,3:Mortal Coil,3:Dark Pact,3:Howl of Terror  cd:2:Roar of Sacrifice(116s),3:Mortal Coil(42s),3:Dark Pact(53s),3:Howl of Terror(36s)  enemy:Execution Sentence/Retribution Paladin(12s),Avatar/Arms Warrior(6s),Deep Breath/Preservation Evoker(10s),Oppressing Roar/Preservation Evoker(6s)
+0:21  [STATE]   friends 1:90 2:100 3:57 / enemies 4:99 5:80 6:99
+0:21  [OWNER CAST]   361195 → 3
+0:21  [OWNER CAST]   364343 → 3
+0:21  [OWNER CD]   Obsidian Scales → 3
+      [RES] rdy:Δ  cd:—  enemy:Execution Sentence/Retribution Paladin(13s),Avatar/Arms Warrior(7s),Deep Breath/Preservation Evoker(11s),Oppressing Roar/Preservation Evoker(7s)
+0:21  [CLEANSE]   3 dispelled 2 effects: Divine Hammer off 3, Consecration off 3
+0:22  [STATE]   friends 1:83 2:100 3:57 / enemies 4:100 5:99 6:100
+0:22  [OWNER CAST]   355936
+0:23  [STATE]   friends 1:96 2:92 3:55 / enemies 4:91 5:84 6:95
+0:23  [OWNER CAST]   364343 → 3
+0:23  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Execution Sentence/Retribution Paladin(15s),Avatar/Arms Warrior(9s),Deep Breath/Preservation Evoker(13s),Oppressing Roar/Preservation Evoker(9s)
+0:24  [STATE]   friends 1:100 2:94 3:82 / enemies 4:75 5:42 6:93
+0:24  [OWNER CAST]   1256581 → 3
+0:25  [OWNER CAST]   360995 → 3
+0:25  [OWNER CAST]   361195 → 3
+0:25  [CLEANSE]   2 dispelled Judgment of Justice off 2
+0:26  [OWNER CAST]   431443 → 5
+0:27  [STATE]   friends 1:95 2:91 3:91
+0:28  [OWNER CAST]   Sleep Walk → 6
+0:30  [STATE]   friends 1:89 2:98 3:78
+0:30  [OWNER CAST]   431443 → 5
+0:31  [OWNER CAST]   431443 → 5
+0:31  [OWNER CAST]   358733
+0:31  [OWNER CAST]   364343 → 3
+0:32  [OWNER CAST]   355941
+0:32  [OWNER CAST]   355941
+0:33  [STATE]   friends 1:100 2:100 3:93
+0:33  [OWNER CAST]   361195 → 2
+0:33  [OWNER CAST]   Sleep Walk → 6
+0:35  [OWNER CAST]   364343 → 3
+0:35  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Execution Sentence/Retribution Paladin(27s),Avatar/Arms Warrior(21s),Deep Breath/Preservation Evoker(25s),Oppressing Roar/Preservation Evoker(20s)  cc:2/Disarm-0s[disarm]
+0:36  [STATE]   friends 1:100 2:100 3:72
+0:36  [OWNER CAST]   357208
+0:37  [OWNER CAST]   431443 → 5
+0:39  [STATE]   friends 1:83 2:100 3:72
+0:39  [OWNER CAST]   356995 → 4
+0:41  [OWNER CAST]   360995 → 3
+0:41  [OWNER CAST]   361195 → 3
+0:42  [STATE]   friends 1:80 2:100 3:88
+0:42  [OWNER CAST]   356995 → 5
+0:43  [STATE]   friends 1:81 2:100 3:88 / enemies 4:68 5:83 6:100
+0:44  [STATE]   friends 1:82 2:100 3:90 / enemies 4:88 5:77 6:100
+0:45  [STATE]   friends 1:83 2:100 3:90 / enemies 4:94 5:75 6:100
+0:45  [OWNER CAST]   431443 → 5
+0:46  [STATE]   friends 1:84 2:100 3:92 / enemies 4:98 5:76 6:100
+0:47  [STATE]   friends 1:86 2:100 3:92 / enemies 4:94 5:65 6:100
+0:47  [DMG SPIKE]   3 (Affliction Warlock): 0.64M in 10s
+0:47  [OWNER CAST]   358733
+0:48  [STATE]   friends 1:88 2:100 3:93 / enemies 4:100 5:100 6:100
+0:48  [CC ON TEAM]   3 ← Storm Bolt (Bigtastybacn-Blackrock-EU) | 1s | trinket: used
+0:48  [OWNER CAST]   364343 → 3
+0:48  [TRINKET]   3 used PvP trinket
+0:49  [STATE]   friends 1:90 2:100 3:80 / enemies 4:97 5:82 6:100
+0:49  [OWNER CAST]   1256581 → 3
+0:50  [STATE]   friends 1:97 2:100 3:72 / enemies 4:93 5:65 6:100
+0:50  [CC ON TEAM]   1 ← Hammer of Justice (Thelronis-Kel'Thuzad-EU) | 3s | trinket: used
+0:51  [STATE]   friends 1:99 2:98 3:72 / enemies 4:93 5:52 6:100
+0:52  [STATE]   friends 1:100 2:97 3:74 / enemies 4:93 5:37 6:100
+0:53  [STATE]   friends 1:96 2:100 3:61 / enemies 4:94 5:49 6:100
+0:53  [TRINKET]   1 used PvP trinket
+0:54  [STATE]   friends 1:96 2:94 3:42 / enemies 4:94 5:88 6:100
+0:54  [OWNER CAST]   374968
+0:54  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—
+0:55  [STATE]   friends 1:96 2:94 3:35 / enemies 4:93 5:78 6:100
+0:55  [OWNER CD]   Rewind
+      [RES] rdy:Δ+Deep Breath,Emerald Communion,Stasis-3:Dark Pact,3:Howl of Terror  cd:3:Dark Pact(19s),3:Howl of Terror(1s)
+0:55  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ  cd:—
+0:56  [STATE]   friends 1:97 2:96 3:27 / enemies 4:85 5:55 6:100
+0:56  [OWNER CAST]   360995 → 3
+0:57  [STATE]   friends 1:100 2:100 3:35 / enemies 4:85 5:49 6:100
+0:57  [OWNER CAST]   361195 → 3
+0:57  [OWNER CAST]   364343 → 3
+0:58  [STATE]   friends 1:99 2:100 3:48 / enemies 4:87 5:50 6:100
+0:58  [BUFF FADED]   Rewind
+0:59  [STATE]   friends 1:100 2:100 3:56 / enemies 4:87 5:47 6:100
+0:59  [OWNER CAST]   355936
+1:00  [STATE]   friends 1:100 2:100 3:80 / enemies 4:85 5:44 6:100
+1:00  [OWNER CD]   Obsidian Scales → 4
+      [RES] rdy:Δ+3:Howl of Terror-Rewind  cd:Rewind(235s)
+1:01  [OWNER CAST]   Sleep Walk → 6
+1:02  [CC ON TEAM]   2 ← Intimidating Shout (Bigtastybacn-Blackrock-EU) | 6s | trinket: ON CD (66s left)
+1:02  [MISSED CLEANSE]   Intimidating Shout on 2 | 6s | 17k taken during | dispel: Magic
+1:02  [CC ON TEAM]   3 ← Intimidating Shout (Bigtastybacn-Blackrock-EU) | 3s | trinket: ON CD (107s left)
+1:02  [OWNER CAST]   Sleep Walk → 6
+1:02  [OWNER CAST]   364343 → 3
+1:03  [STATE]   friends 1:100 2:99 3:100 / enemies 4:81 5:51 6:100
+1:03  [OWNER CAST]   1256581 → 3
+1:04  [STATE]   friends 1:100 2:99 3:100 / enemies 4:81 5:49 6:100
+1:04  [OWNER CAST]   357208
+1:05  [STATE]   friends 1:100 2:100 3:99 / enemies 4:81 5:57 6:99
+1:06  [STATE]   friends 1:100 2:99 3:99 / enemies 4:79 5:59 6:99
+1:07  [STATE]   friends 1:94 2:100 3:100 / enemies 4:67 5:53 6:100
+1:08  [STATE]   friends 1:99 2:98 3:99 / enemies 4:63 5:45 6:99
+1:09  [STATE]   friends 1:98 2:98 3:100 / enemies 4:62 5:64 6:99
+1:10  [STATE]   friends 1:98 2:98 3:99 / enemies 4:66 5:78 6:100
+1:10  [OWNER CAST]   Sleep Walk → 6
+1:10  [OWNER CAST]   431443 → 5
+1:10  [CLEANSE]   2 dispelled Consecration off 2
+1:11  [STATE]   friends 1:99 2:100 3:99 / enemies 4:60 5:68 6:95
+1:11  [OWNER CD]   Hover
+      [RES] rdy:Δ+3:Mortal Coil  cd:—  cc:3/Charge-0s[root]
+1:11  [OWNER CAST]   356995 → 5
+1:12  [STATE]   friends 1:96 2:100 3:88 / enemies 4:58 5:68 6:95
+1:12  [TEAMMATE CD]   3 (Affliction Warlock): Dark Pact
+      [RES] rdy:Δ-Rewind,2:Roar of Sacrifice,3:Dark Pact  cd:Rewind(223s),2:Roar of Sacrifice(64s),3:Dark Pact(2s)
+1:13  [OWNER CAST]   364343 → 3
+1:13  [TEAMMATE CD]   3 (Affliction Warlock): Howl of Terror
+      [RES] rdy:Δ-Rewind,2:Roar of Sacrifice  cd:Rewind(222s),2:Roar of Sacrifice(63s)
+1:13  [CC CAST]   Howl of Terror (by 3) → 4, 5 [2 enemies]
+1:13  [CC CAST]   Howl of Terror (by 3) → nil [non-player target]
+1:14  [OWNER CAST]   355936
+1:15  [STATE]   friends 1:98 2:100 3:100
+1:15  [OWNER CAST]   360995 → 3
+1:15  [OWNER CAST]   361195 → 3
+1:16  [ENEMY CD]   4 (Retribution Paladin): Execution Sentence
+1:16  [OWNER CAST]   356995 → 5
+1:16  [TEAMMATE CD]   3 (Affliction Warlock): Mortal Coil
+      [RES] rdy:Δ+3:Dark Pact-Rewind  cd:Rewind(219s)  enemy:Execution Sentence/Retribution Paladin(0s)
+1:18  [STATE]   friends 1:96 2:100 3:100
+1:18  [OWNER CAST]   360995 → 3
+1:18  [OWNER CAST]   361195 → 3
+1:20  [OWNER CD]   Deep Breath
+      [RES] rdy:Deep Breath,Wing Buffet,Cauterizing Flame,Emerald Communion,Stasis,Rescue,2:Exhilaration,3:Dark Pact  cd:Rewind(215s),2:Roar of Sacrifice(56s),3:Mortal Coil(41s),3:Howl of Terror(33s)  enemy:Execution Sentence/Retribution Paladin(5s)  cc:3/Charge-0s[root]
+1:20  [CC ON TEAM]   3 ← Shockwave (Bigtastybacn-Blackrock-EU) | 3s | trinket: ON CD (89s left)
+1:20  [CC ON TEAM]   2 ← Shockwave (Bigtastybacn-Blackrock-EU) | 3s | trinket: ON CD (48s left)
+1:21  [STATE]   friends 1:93 2:99 3:100 / enemies 4:97 5:65 6:100
+1:22  [STATE]   friends 1:93 2:98 3:94 / enemies 4:96 5:62 6:98
+1:22  [BUFF FADED]   Deep Breath
+1:22  [OWNER CAST]   364343 → 3 [completed before CC landed]
+1:23  [STATE]   friends 1:95 2:98 3:89 / enemies 4:93 5:54 6:94
+1:23  [CC ON TEAM]   1 ← Hammer of Justice (Thelronis-Kel'Thuzad-EU) | 5s | trinket: ON CD (61s left)
+1:23  [CLEANSE]   3 dispelled Boneshaker off 3
+1:24  [STATE]   friends 1:99 2:100 3:67 / enemies 4:92 5:50 6:94
+1:25  [STATE]   friends 1:97 2:88 3:65 / enemies 4:93 5:46 6:96
+1:26  [STATE]   friends 1:99 2:78 3:67 / enemies 4:90 5:27 6:97
+1:27  [STATE]   friends 1:100 2:78 3:68 / enemies 4:87 5:95 6:100
+1:28  [STATE]   friends 1:98 2:77 3:61 / enemies 4:92 5:100 6:100
+1:28  [OWNER CAST]   360995 → self
+1:28  [OWNER CAST]   361195 → self
+1:28  [OWNER CD]   Hover
+      [RES] rdy:Δ+3:Dark Pact-Deep Breath,3:Mortal Coil,3:Howl of Terror  cd:Deep Breath(112s),3:Mortal Coil(33s),3:Howl of Terror(25s)  enemy:Execution Sentence/Retribution Paladin(12s)
+1:29  [STATE]   friends 1:99 2:76 3:71 / enemies 4:100 5:100 6:100
+1:29  [OWNER CAST]   364343 → 3
+1:29  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ  cd:—  enemy:Execution Sentence/Retribution Paladin(14s)
+1:30  [STATE]   friends 1:100 2:75 3:62 / enemies 4:100 5:100 6:100
+1:30  [OWNER CD]   Stasis
+      [RES] rdy:Δ+Wing Buffet,Emerald Communion,Stasis,Rescue-Rewind  cd:Rewind(205s)  enemy:Execution Sentence/Retribution Paladin(14s)
+1:30  [OWNER CAST]   355936
+1:31  [STATE]   friends 1:96 2:75 3:61 / enemies 4:97 5:99 6:100
+1:32  [STATE]   friends 1:97 2:68 3:88 / enemies 4:97 5:98 6:100
+1:32  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ-Stasis  cd:Stasis(88s)  enemy:Execution Sentence/Retribution Paladin(16s)
+1:32  [ENEMY CD]   5 (Arms Warrior): Avatar
+1:32  [OWNER CAST]   357208
+1:33  [STATE]   friends 1:100 2:71 3:71 / enemies 4:80 5:91 6:100
+1:33  [OWNER CAST]   431443 → 4
+1:33  [OWNER CAST]   356995 → 4
+1:33  [DMG SPIKE]   3 (Affliction Warlock): 0.90M in 10s
+1:34  [STATE]   friends 1:99 2:71 3:80 / enemies 4:57 5:86 6:97
+1:35  [STATE]   friends 1:85 2:71 3:96 / enemies 4:48 5:94 6:100
+1:35  [OWNER CAST]   1256581 → 3
+1:36  [STATE]   friends 1:89 2:70 3:93 / enemies 4:53 5:100 6:100
+1:36  [OWNER CAST]   360995 → 3
+1:37  [STATE]   friends 1:88 2:72 3:84 / enemies 4:55 5:99 6:100
+1:37  [OWNER CAST]   361195 → 3
+1:37  [TEAMMATE CD]   2 (Marksmanship Hunter): Exhilaration
+      [RES] rdy:Δ+Wing Buffet,Emerald Communion-Rewind,2:Roar of Sacrifice  cd:Rewind(198s),2:Roar of Sacrifice(38s)  enemy:Execution Sentence/Retribution Paladin(22s),Avatar/Arms Warrior(6s)
+1:38  [STATE]   friends 1:86 2:99 3:85 / enemies 4:56 5:99 6:100
+1:38  [CC ON TEAM]   2 ← Sleep Walk (Vynrock-Ravencrest-EU) | 1s | trinket: ON CD (30s left)
+1:38  [OWNER CAST]   Sleep Walk → 6
+1:38  [OWNER CAST]   364343 → 3
+1:39  [STATE]   friends 1:84 2:100 3:69 / enemies 4:57 5:99 6:100
+1:39  [OWNER CAST]   360823 → 2
+1:39  [CLEANSE]   1 dispelled 3 effects: Sleep Walk off 2, Judgment of Justice off 2, Fire Breath off 2
+1:40  [STATE]   friends 1:85 2:100 3:54 / enemies 4:58 5:99 6:100
+1:40  [OWNER CAST]   366155 → 3
+1:40  [OWNER CAST]   364343 → 3
+1:41  [STATE]   friends 1:100 2:100 3:66 / enemies 4:60 5:100 6:100
+1:41  [OWNER CAST]   431443 → 5
+1:42  [STATE]   friends 1:99 2:100 3:60 / enemies 4:60 5:93 6:100
+1:43  [STATE]   friends 1:100 2:100 3:47 / enemies 4:61 5:82 6:100
+1:43  [OWNER CAST]   431443 → 5
+1:44  [STATE]   friends 1:100 2:100 3:39 / enemies 4:61 5:72 6:100
+1:44  [OWNER CAST]   Sleep Walk → 6
+1:44  [OWNER CAST]   355936
+1:45  [STATE]   friends 1:100 2:100 3:47 / enemies 4:61 5:79 6:100
+1:45  [OWNER CAST]   364343 → 3
+1:45  [OWNER CD]   Hover
+      [RES] rdy:Δ-2:Exhilaration  cd:2:Exhilaration(112s)  enemy:Execution Sentence/Retribution Paladin(30s),Avatar/Arms Warrior(13s)
+1:46  [STATE]   friends 1:93 2:100 3:47 / enemies 4:61 5:64 6:100
+1:46  [OWNER CAST]   360995 → 3
+1:46  [OWNER CAST]   361195 → 3
+1:47  [STATE]   friends 1:100 2:100 3:71 / enemies 4:57 5:66 6:100
+1:47  [OWNER CAST]   356995 → 5
+1:48  [STATE]   friends 1:95 2:98 3:67 / enemies 4:56 5:55 6:100
+1:48  [OWNER CAST]   364343 → 3
+1:50  [OWNER CAST]   431443 → 5
+1:50  [OWNER CAST]   1256581 → 3
+1:51  [STATE]   friends 1:100 2:100 3:74
+1:51  [OWNER CAST]   364343 → 3
+1:51  [OWNER CAST]   360995 → 3
+1:52  [OWNER CAST]   361195 → 3
+1:52  [CC ON TEAM]   3 ← Champion's Spear (Bigtastybacn-Blackrock-EU) | 6s | trinket: ON CD (57s left)
+1:52  [OWNER CAST]   357208
+1:53  [STATE]   friends 1:100 2:100 3:84 / enemies 4:80 5:98 6:100
+1:54  [STATE]   friends 1:99 2:100 3:78 / enemies 4:72 5:95 6:92
+1:54  [CC ON TEAM]   3 ← Storm Bolt (Bigtastybacn-Blackrock-EU) | 3s | trinket: ON CD (55s left)
+1:55  [STATE]   friends 1:100 2:99 3:81 / enemies 4:62 5:92 6:85
+1:55  [OWNER CAST]   431443 → 5
+1:55  [OWNER CAST]   364343 → 3 [completed before CC landed]
+1:56  [STATE]   friends 1:95 2:99 3:65 / enemies 4:61 5:82 6:72
+1:56  [CC ON TEAM]   1 ← Hammer of Justice (Thelronis-Kel'Thuzad-EU) | 5s | trinket: ON CD (28s left)
+1:57  [STATE]   friends 1:98 2:100 3:68 / enemies 4:60 5:80 6:71
+1:58  [STATE]   friends 1:90 2:100 3:53 / enemies 4:59 5:69 6:60
+1:59  [STATE]   friends 1:91 2:100 3:52 / enemies 4:64 5:67 6:66
+1:59  [TEAMMATE CD]   3 (Affliction Warlock): Howl of Terror
+      [RES] rdy:Δ+3:Dark Pact-Deep Breath,Stasis,2:Exhilaration,3:Mortal Coil  cd:Deep Breath(82s),Stasis(61s),2:Exhilaration(99s),3:Mortal Coil(3s)  enemy:Avatar/Arms Warrior(27s)  cc:1/Hammer of Justice-2s[stun],2/Disarm-4s[disarm]
+1:59  [CC CAST]   Howl of Terror (by 3) → nil [non-player target]
+1:59  [CC CAST]   Howl of Terror (by 3) → 4
+1:59  [OWNER CAST]   355941
+2:00  [STATE]   friends 1:100 2:99 3:91 / enemies 4:80 5:80 6:86
+2:00  [OWNER CAST]   361195 → 3
+2:00  [TEAMMATE CD]   3 (Affliction Warlock): Dark Pact
+      [RES] rdy:Δ+3:Dark Pact-Deep Breath,Stasis,2:Exhilaration,3:Mortal Coil,3:Howl of Terror  cd:Deep Breath(80s),Stasis(59s),2:Exhilaration(97s),3:Mortal Coil(1s),3:Howl of Terror(38s)  enemy:Avatar/Arms Warrior(29s)  cc:1/Hammer of Justice-0s[stun],2/Disarm-3s[disarm]
+2:01  [STATE]   friends 1:100 2:100 3:73 / enemies 4:88 5:84 6:89
+2:01  [OWNER CAST]   431443 → 5
+2:02  [STATE]   friends 1:99 2:100 3:74 / enemies 4:100 5:97 6:100
+2:03  [STATE]   friends 1:94 2:96 3:80 / enemies 4:100 5:91 6:100
+2:03  [OWNER CAST]   360995 → 3
+2:03  [OWNER CAST]   361195 → 3
+2:04  [STATE]   friends 1:100 2:98 3:89 / enemies 4:99 5:86 6:99
+2:04  [CC ON TEAM]   1 ← Sleep Walk (Vynrock-Ravencrest-EU) | 6s | trinket: ON CD (19s left)
+2:05  [STATE]   friends 1:98 2:99 3:91 / enemies 4:100 5:71 6:100
+2:05  [CC ON TEAM]   2 ← Shockwave (Bigtastybacn-Blackrock-EU) | 3s | trinket: ON CD (3s left)
+2:06  [STATE]   friends 1:100 2:100 3:93 / enemies 4:100 5:66 6:100
+2:07  [STATE]   friends 1:99 2:100 3:95 / enemies 4:99 5:88 6:100
+2:08  [STATE]   friends 1:100 2:100 3:96 / enemies 4:100 5:87 6:100
+2:09  [STATE]   friends 1:99 2:95 3:98 / enemies 4:100 5:80 6:100
+2:10  [STATE]   friends 1:100 2:92 3:99 / enemies 4:87 5:55 6:100
+2:11  [STATE]   friends 1:100 2:93 3:100 / enemies 4:83 5:42 6:100
+2:11  [OWNER CAST]   360995 → self
+2:11  [OWNER CAST]   361195 → self
+2:12  [STATE]   friends 1:99 2:92 3:93 / enemies 4:74 5:39 6:100
+2:12  [CLEANSE]   1 dispelled Landslide off 1
+2:12  [OWNER CAST]   360823 → self
+2:13  [STATE]   friends 1:100 2:92 3:95 / enemies 4:70 5:40 6:100
+2:13  [TEAMMATE CD]   3 (Affliction Warlock): Mortal Coil
+      [RES] rdy:Δ-Deep Breath,Stasis,2:Exhilaration  cd:Deep Breath(67s),Stasis(46s),2:Exhilaration(84s)
+2:14  [STATE]   friends 1:100 2:93 3:89 / enemies 4:44 5:21 6:92
+2:14  [OWNER CAST]   364343 → 3
+2:15  [STATE]   friends 1:100 2:90 3:84 / enemies 4:43 5:56 6:93
+2:15  [OWNER CAST]   355936
+2:16  [OWNER CAST]   364343 → 3
+2:16  [OWNER CD]   Hover
+      [RES] rdy:Δ+2:Roar of Sacrifice  cd:—
+2:17  [OWNER CAST]   1256581 → 3 [completed before CC landed]
+2:17  [CC ON TEAM]   2 ← Intimidating Shout (Bigtastybacn-Blackrock-EU) | 2s | trinket: used
+2:17  [CC ON TEAM]   1 ← Intimidating Shout (Bigtastybacn-Blackrock-EU) | 3s | trinket: ON CD (6s left)
+2:18  [STATE]   friends 1:100 2:99 3:100 / enemies 4:41 5:71 6:96
+2:19  [STATE]   friends 1:100 2:100 3:100 / enemies 4:80 5:100 6:100
+2:19  [TRINKET]   2 used PvP trinket
+2:19  [OFFENSIVE WINDOW]   2:19–2:34 | Critical | 0.94M on 1 (Preservation Evoker) | CDs: Deep Breath + Execution Sentence
+2:19  [ENEMY CD]   6 (Preservation Evoker): Deep Breath
+2:20  [STATE]   friends 1:100 2:99 3:100 / enemies 4:76 5:97 6:100
+2:20  [CC ON TEAM]   2 ← Terror of the Skies (Vynrock-Ravencrest-EU) | 1s | trinket: ON CD (119s left)
+2:21  [STATE]   friends 1:100 2:96 3:90 / enemies 4:67 5:87 6:100
+2:22  [STATE]   friends 1:99 2:93 3:92 / enemies 4:65 5:79 6:98
+2:22  [OWNER CAST]   Sleep Walk → 6
+2:22  [OWNER CAST]   364343 → 3
+2:23  [STATE]   friends 1:100 2:93 3:96 / enemies 4:60 5:74 6:98
+2:23  [OWNER CAST]   357208
+2:24  [STATE]   friends 1:99 2:93 3:92 / enemies 4:67 5:71 6:99
+2:24  [ENEMY CD]   4 (Retribution Paladin): Execution Sentence
+2:25  [STATE]   friends 1:100 2:96 3:92 / enemies 4:60 5:58 6:98
+2:25  [OWNER CAST]   431443 → 5
+2:26  [STATE]   friends 1:100 2:97 3:74 / enemies 4:64 5:63 6:98
+2:26  [OWNER CAST]   360995 → 3
+2:26  [OWNER CAST]   361195 → 3
+2:27  [STATE]   friends 1:100 2:97 3:84 / enemies 4:66 5:83 6:100
+2:28  [STATE]   friends 1:100 2:97 3:82 / enemies 4:71 5:97 6:100
+2:28  [OWNER CAST]   358733
+2:29  [STATE]   friends 1:76 2:89 3:83 / enemies 4:79 5:99 6:100
+2:29  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Execution Sentence/Retribution Paladin(5s),Deep Breath/Preservation Evoker(10s)
+2:30  [STATE]   friends 1:74 2:86 3:84 / enemies 4:79 5:96 6:99
+2:30  [OWNER CAST]   361509 → 3
+2:30  [OWNER CAST]   431443 → 3
+2:31  [OWNER CAST]   364343 → 3
+2:31  [OWNER CAST]   358733
+2:32  [OWNER CAST]   360995 → 2
+2:33  [STATE]   friends 1:84 2:32 3:98 / enemies 4:75 5:77 6:100
+2:33  [OWNER CAST]   361195 → 2
+2:33  [OWNER CAST]   364343 → 2
+2:33  [OWNER CD]   Time Dilation → 2
+      [RES] rdy:Δ  cd:—  enemy:Execution Sentence/Retribution Paladin(9s),Deep Breath/Preservation Evoker(14s)
+2:34  [STATE]   friends 1:87 2:21 3:100 / enemies 4:70 5:62 6:98
+2:34  [OWNER CAST]   366155 → 2
+2:35  [STATE]   friends 1:100 2:42 3:96 / enemies 4:55 5:35 6:98
+2:35  [OWNER CAST]   364343 → 2
+2:36  [STATE]   friends 1:100 2:47 3:97 / enemies 4:49 5:38 6:100
+2:36  [OWNER CAST]   355936 [completed before CC landed]
+2:36  [CC ON TEAM]   1 ← Hammer of Justice (Thelronis-Kel'Thuzad-EU) | 5s
+2:37  [STATE]   friends 1:95 2:46 3:98 / enemies 4:48 5:65 6:100
+2:37  [DMG SPIKE]   1 (Preservation Evoker): 0.94M in 10s
+2:38  [STATE]   friends 1:83 2:43 3:99 / enemies 4:70 5:99 6:100
+2:38  [ENEMY CD]   5 (Arms Warrior): Avatar
+2:38  [OWNER CD]   Emerald Communion
+      [RES] rdy:Δ+Emerald Communion,2:Roar of Sacrifice-Stasis,2:Exhilaration,3:Howl of Terror  cd:Stasis(22s),2:Exhilaration(59s),3:Howl of Terror(1s)  enemy:Execution Sentence/Retribution Paladin(14s),Avatar/Arms Warrior(0s),Deep Breath/Preservation Evoker(19s)  cc:1/Hammer of Justice-3s[stun]
+2:38  [TEAMMATE CD]   2 (Marksmanship Hunter): Exhilaration
+      [RES] rdy:Δ+2:Roar of Sacrifice,3:Howl of Terror-2:Exhilaration  cd:2:Exhilaration(59s)  enemy:Execution Sentence/Retribution Paladin(15s),Avatar/Arms Warrior(0s),Deep Breath/Preservation Evoker(19s)  cc:1/Hammer of Justice-3s[stun]
+2:39  [STATE]   friends 1:98 2:46 3:100 / enemies 4:60 5:95 6:99
+2:39  [BUFF FADED]   Emerald Communion
+2:40  [STATE]   friends 1:100 2:88 3:100 / enemies 4:57 5:96 6:99
+2:41  [STATE]   friends 1:92 2:87 3:100 / enemies 4:55 5:93 6:99
+2:41  [CC ON TEAM]   1 ← Storm Bolt (Bigtastybacn-Blackrock-EU) | 2s
+2:42  [STATE]   friends 1:76 2:88 3:100 / enemies 4:56 5:95 6:99
+2:43  [STATE]   friends 1:98 2:88 3:100 / enemies 4:66 5:94 6:99
+2:43  [OWNER CAST]   360995 → self
+2:43  [OWNER CAST]   361195 → self
+2:44  [STATE]   friends 1:82 2:97 3:100 / enemies 4:74 5:100 6:100
+2:44  [OWNER CAST]   364343 → self
+2:45  [STATE]   friends 1:64 2:97 3:100 / enemies 4:73 5:95 6:99
+2:45  [OWNER CAST]   366155 → self
+2:46  [STATE]   friends 1:94 2:98 3:100 / enemies 4:94 5:80 6:100
+2:47  [STATE]   friends 1:79 2:99 3:100 / enemies 4:100 5:57 6:100
+2:47  [OWNER CAST]   364343 → self
+2:48  [STATE]   friends 1:66 2:99 3:100 / enemies 4:100 5:52 6:100
+2:48  [OWNER CAST]   358385
+2:49  [STATE]   friends 1:63 2:96 3:100 / enemies 4:97 5:55 6:100
+2:49  [OWNER CAST]   355936
+2:50  [STATE]   friends 1:100 2:98 3:99 / enemies 4:99 5:62 6:100
+2:50  [OWNER CAST]   431443 → 4
+2:51  [STATE]   friends 1:98 2:96 3:99 / enemies 4:91 5:66 6:100
+2:52  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ+3:Howl of Terror-Emerald Communion  cd:Emerald Communion(166s)  enemy:Execution Sentence/Retribution Paladin(28s),Avatar/Arms Warrior(14s)  cc:3/Charge-0s[root],3/Fear-3s[kick]
+2:52  [OWNER CAST]   357208
+2:52  [TEAMMATE CD]   3 (Affliction Warlock): Dark Pact
+      [RES] rdy:Δ+2:Roar of Sacrifice,3:Howl of Terror-Emerald Communion  cd:Emerald Communion(166s)  enemy:Execution Sentence/Retribution Paladin(29s),Avatar/Arms Warrior(14s)  cc:3/Fear-2s[kick]
+2:53  [OWNER CAST]   431443 → 5
+2:54  [STATE]   friends 1:95 2:100 3:75
+2:54  [OWNER CAST]   Sleep Walk → 6
+2:54  [OWNER CAST]   356995 → 5
+2:54  [TEAMMATE CD]   3 (Affliction Warlock): Howl of Terror
+      [RES] rdy:Δ+2:Roar of Sacrifice-Emerald Communion,3:Dark Pact  cd:Emerald Communion(164s),3:Dark Pact(6s)  enemy:Avatar/Arms Warrior(17s)
+2:54  [CC CAST]   Howl of Terror (by 3) → nil [non-player target]
+2:54  [CC CAST]   Howl of Terror (by 3) → 6, 4 [2 enemies]
+2:55  [CC ON TEAM]   3 ← Shockwave (Bigtastybacn-Blackrock-EU) | 3s
+2:56  [STATE]   friends 1:97 2:100 3:75 / enemies 4:49 5:63 6:96
+2:56  [OWNER CAST]   431443 → 5
+2:57  [STATE]   friends 1:99 2:100 3:76 / enemies 4:50 5:56 6:97
+2:57  [OWNER CAST]   431443 → 5
+2:57  [OWNER CAST]   360995 → 3
+2:57  [OWNER CAST]   361195 → 3
+2:58  [STATE]   friends 1:99 2:100 3:82 / enemies 4:51 5:49 6:96
+2:58  [OWNER CAST]   364343 → 3
+2:58  [OWNER CAST]   360823 → 2
+2:58  [CLEANSE]   1 dispelled Searing Glare off 2
+2:58  [CLEANSE]   3 dispelled Boneshaker off 3
+2:59  [STATE]   friends 1:93 2:100 3:84 / enemies 4:52 5:45 6:100
+3:00  [STATE]   friends 1:91 2:98 3:86 / enemies 4:54 5:50 6:100
+3:01  [STATE]   friends 1:87 2:97 3:86 / enemies 4:57 5:51 6:100
+3:01  [OWNER CAST]   360995 → self
+3:01  [OWNER CAST]   361195 → self
+3:02  [STATE]   friends 1:99 2:97 3:94 / enemies 4:60 5:59 6:100
+3:02  [OWNER CD]   Hover
+      [RES] rdy:Δ+Stasis,3:Mortal Coil-3:Howl of Terror  cd:3:Howl of Terror(32s)  enemy:Avatar/Arms Warrior(25s)  cc:2/Disarm-3s[disarm]
+3:03  [STATE]   friends 1:100 2:96 3:94 / enemies 4:73 5:60 6:100
+3:03  [OWNER CAST]   364343 → 3 [completed before CC landed]
+3:03  [CC ON TEAM]   1 ← Sleep Walk (Vynrock-Ravencrest-EU) | 3s
+3:04  [STATE]   friends 1:97 2:96 3:90 / enemies 4:86 5:69 6:100
+3:05  [STATE]   friends 1:97 2:96 3:74 / enemies 4:95 5:50 6:100
+3:06  [STATE]   friends 1:100 2:95 3:70 / enemies 4:96 5:67 6:100
+3:07  [STATE]   friends 1:100 2:95 3:56 / enemies 4:96 5:63 6:100
+3:07  [OWNER CAST]   1256581 → 3
+3:08  [STATE]   friends 1:92 2:89 3:76 / enemies 4:100 5:85 6:100
+3:08  [OWNER CAST]   360995 → 3
+3:08  [OWNER CAST]   361195 → 3
+3:09  [STATE]   friends 1:93 2:89 3:76 / enemies 4:93 5:71 6:92
+3:09  [OWNER CAST]   364343 → 3
+3:09  [OWNER CD]   Stasis
+      [RES] rdy:Δ+2:Roar of Sacrifice,3:Mortal Coil-Emerald Communion,2:Exhilaration  cd:Emerald Communion(149s),2:Exhilaration(28s)
+3:10  [STATE]   friends 1:94 2:88 3:67 / enemies 4:94 5:70 6:95
+3:10  [OWNER CAST]   355936
+3:11  [STATE]   friends 1:100 2:89 3:72 / enemies 4:83 5:74 6:100
+3:11  [OWNER CD]   Obsidian Scales → 3
+      [RES] rdy:Δ-Stasis  cd:Stasis(89s)
+3:12  [STATE]   friends 1:100 2:89 3:80 / enemies 4:96 5:85 6:100
+3:12  [OWNER CAST]   Sleep Walk → 6
+3:12  [OWNER CAST]   364343 → 3
+3:13  [STATE]   friends 1:100 2:89 3:71 / enemies 4:95 5:55 6:100
+3:13  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—
+3:13  [TEAMMATE CD]   2 (Marksmanship Hunter): Roar of Sacrifice
+      [RES] rdy:Δ+3:Dark Pact-Deep Breath,Rewind,Emerald Communion,Stasis,2:Exhilaration,3:Howl of Terror  cd:Deep Breath(7s),Rewind(102s),Emerald Communion(145s),Stasis(86s),2:Exhilaration(24s),3:Howl of Terror(21s)
+3:14  [OWNER CAST]   431443 → 5 [completed before CC landed]
+3:14  [CC ON TEAM]   1 ← Hammer of Justice (Thelronis-Kel'Thuzad-EU) | 5s
+3:14  [TEAMMATE CD]   3 (Affliction Warlock): Mortal Coil
+      [RES] rdy:Δ-Emerald Communion  cd:Emerald Communion(144s)  cc:1/Hammer of Justice-4s[stun]
+3:15  [STATE]   friends 1:100 2:89 3:63 / enemies 4:91 5:28 6:99
+3:16  [STATE]   friends 1:100 2:89 3:72 / enemies 4:92 5:49 6:100
+3:17  [STATE]   friends 1:99 2:89 3:72 / enemies 4:93 5:53 6:100
+3:18  [STATE]   friends 1:98 2:89 3:69 / enemies 4:91 5:56 6:100
+3:19  [STATE]   friends 1:98 2:89 3:73 / enemies 4:88 5:54 6:100
+3:19  [CC ON TEAM]   3 ← Storm Bolt (Bigtastybacn-Blackrock-EU) | 1s | trinket: used
+3:19  [OWNER CAST]   360995 → 3
+3:19  [OWNER CAST]   361195 → 3
+3:20  [STATE]   friends 1:99 2:89 3:92 / enemies 4:85 5:52 6:100
+3:20  [TRINKET]   3 used PvP trinket
+3:20  [OWNER CAST]   364343 → 3
+3:20  [CLEANSE]   3 dispelled Consecration off 3
+3:21  [STATE]   friends 1:100 2:90 3:95 / enemies 4:70 5:54 6:100
+3:22  [STATE]   friends 1:100 2:91 3:100 / enemies 4:68 5:52 6:100
+3:22  [OWNER CAST]   431443 → 5
+3:23  [STATE]   friends 1:92 2:91 3:97 / enemies 4:66 5:66 6:100
+3:24  [STATE]   friends 1:97 2:92 3:100 / enemies 4:65 5:56 6:100
+3:24  [OWNER CAST]   Sleep Walk → 6
+3:24  [OWNER CAST]   1256581 → 3
+3:25  [STATE]   friends 1:100 2:93 3:99 / enemies 4:64 5:50 6:99
+3:25  [OWNER CAST]   356995 → 5
+3:26  [STATE]   friends 1:100 2:100 3:100 / enemies 4:63 5:47 6:99
+3:27  [STATE]   friends 1:100 2:100 3:92 / enemies 4:63 5:41 6:99
+3:28  [STATE]   friends 1:99 2:100 3:92 / enemies 4:62 5:54 6:99
+3:28  [OWNER CAST]   364343 → 3
+3:29  [STATE]   friends 1:99 2:100 3:82 / enemies 4:62 5:57 6:100
+3:29  [OWNER CAST]   357208
+3:30  [STATE]   friends 1:99 2:100 3:68
+3:32  [OWNER CAST]   358733
+3:32  [ENEMY CD]   4 (Retribution Paladin): Execution Sentence
+3:32  [OWNER CAST]   431443 → 5
+3:33  [STATE]   friends 1:100 2:100 3:60
+3:34  [OWNER CAST]   360995 → 3
+3:34  [OWNER CAST]   361195 → 3
+3:35  [OWNER CAST]   356995 → 6
+3:36  [STATE]   friends 1:100 2:100 3:82
+3:36  [CC ON TEAM]   2 ← Intimidating Shout (Bigtastybacn-Blackrock-EU) | 1s | trinket: ON CD (43s left)
+3:37  [STATE]   friends 1:98 2:97 3:84 / enemies 4:82 5:87 6:87
+3:37  [OWNER CAST]   356995 → 5
+3:38  [STATE]   friends 1:99 2:92 3:85 / enemies 4:77 5:74 6:87
+3:38  [OWNER CAST]   360995 → self
+3:38  [OWNER CAST]   361195 → self
+3:39  [STATE]   friends 1:100 2:100 3:83 / enemies 4:65 5:49 6:77
+3:39  [TEAMMATE CD]   3 (Affliction Warlock): Dark Pact
+      [RES] rdy:Δ+Deep Breath,2:Exhilaration-2:Roar of Sacrifice  cd:2:Roar of Sacrifice(94s)  enemy:Execution Sentence/Retribution Paladin(7s)
+3:39  [TEAMMATE CD]   3 (Affliction Warlock): Howl of Terror
+      [RES] rdy:Δ+Deep Breath,2:Exhilaration,3:Dark Pact-2:Roar of Sacrifice  cd:2:Roar of Sacrifice(94s)  enemy:Execution Sentence/Retribution Paladin(7s)
+3:39  [CC CAST]   Howl of Terror (by 3) → nil [non-player target]
+3:39  [CC CAST]   Howl of Terror (by 3) → 5, 4 [2 enemies]
+3:40  [STATE]   friends 1:99 2:99 3:66 / enemies 4:64 5:65 6:94
+3:40  [OWNER CAST]   364343 → 3
+3:41  [STATE]   friends 1:100 2:99 3:71 / enemies 4:65 5:51 6:93
+3:42  [STATE]   friends 1:99 2:94 3:72 / enemies 4:67 5:57 6:92
+3:42  [OWNER CAST]   355936
+3:42  [CC ON TEAM]   2 ← Shockwave (Bigtastybacn-Blackrock-EU) | 3s | trinket: ON CD (37s left)
+3:42  [CC ON TEAM]   3 ← Shockwave (Bigtastybacn-Blackrock-EU) | 3s | trinket: ON CD (98s left)
+3:43  [STATE]   friends 1:100 2:99 3:94 / enemies 4:68 5:71 6:100
+3:43  [OWNER CD]   Deep Breath
+      [RES] rdy:Δ-Emerald Communion,Stasis,3:Dark Pact  cd:Emerald Communion(115s),Stasis(56s),3:Dark Pact(9s)  enemy:Execution Sentence/Retribution Paladin(11s)  cc:2/Shockwave-2s[stun],3/Shockwave-2s[stun]
+3:44  [STATE]   friends 1:100 2:100 3:95 / enemies 4:92 5:65 6:100
+3:44  [CC ON TEAM]   2 ← Champion's Spear (Bigtastybacn-Blackrock-EU) | 6s | trinket: ON CD (35s left)
+3:44  [CC ON TEAM]   1 ← Champion's Spear (Bigtastybacn-Blackrock-EU) | 6s
+3:44  [CC ON TEAM]   3 ← Champion's Spear (Bigtastybacn-Blackrock-EU) | 6s | trinket: ON CD (96s left)
+3:45  [STATE]   friends 1:100 2:97 3:100 / enemies 4:86 5:74 6:97
+3:45  [BUFF FADED]   Deep Breath
+3:46  [STATE]   friends 1:99 2:100 3:100 / enemies 4:100 5:83 6:100
+3:46  [OWNER CAST]   364343 → 3
+3:47  [STATE]   friends 1:100 2:99 3:100 / enemies 4:94 5:93 6:99
+3:47  [OWNER CAST]   431443 → 5
+3:48  [STATE]   friends 1:95 2:85 3:100 / enemies 4:96 5:81 6:100
+3:49  [STATE]   friends 1:95 2:83 3:97 / enemies 4:98 5:88 6:99
+3:49  [OWNER CAST]   431443 → 5
+3:49  [OWNER CAST]   355941
+3:49  [OWNER CAST]   364343 → 3 [completed before CC landed]
+3:50  [STATE]   friends 1:100 2:79 3:90 / enemies 4:99 5:100 6:100
+3:50  [OWNER CAST]   361195 → 3 [completed before CC landed]
+3:50  [OWNER CAST]   356995 → 5 [completed before CC landed]
+3:50  [CC ON TEAM]   1 ← Hammer of Justice (Thelronis-Kel'Thuzad-EU) | 5s | trinket: used
+3:51  [STATE]   friends 1:97 2:84 3:97 / enemies 4:98 5:100 6:100
+3:52  [STATE]   friends 1:98 2:84 3:88 / enemies 4:98 5:100 6:99
+3:53  [STATE]   friends 1:99 2:84 3:78 / enemies 4:96 5:92 6:99
+3:53  [CLEANSE]   2 dispelled 3 effects: Judgment of Justice off 2, Consecration off 2, Divine Hammer off 2
+3:54  [STATE]   friends 1:98 2:83 3:64 / enemies 4:91 5:91 6:100
+3:54  [ENEMY CD]   6 (Preservation Evoker): Oppressing Roar
+3:54  [CC ON TEAM]   1 ← Sleep Walk (Vynrock-Ravencrest-EU) | 1s | trinket: used
+3:54  [MISSED CLEANSE]   Oppressing Roar on 2 | 10s | 23k taken during | dispel: Magic
+3:55  [STATE]   friends 1:99 2:82 3:56 / enemies 4:90 5:93 6:99
+3:55  [TRINKET]   1 used PvP trinket
+3:55  [OWNER CAST]   360995 → 3
+3:55  [CLEANSE]   3 dispelled 2 effects: Consecration off 3, Divine Hammer off 3
+3:55  [OWNER CAST]   361195 → 3
+3:56  [STATE]   friends 1:100 2:82 3:49 / enemies 4:86 5:88 6:99
+3:56  [CLEANSE]   1 dispelled 2 effects: Oppressing Roar off 1, Fire Breath off 1
+3:56  [OWNER CAST]   360823 → self
+3:57  [STATE]   friends 1:98 2:82 3:50 / enemies 4:82 5:87 6:99
+3:57  [OWNER CAST]   364343 → 3
+3:58  [STATE]   friends 1:100 2:83 3:49 / enemies 4:59 5:78 6:88
+3:58  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ+2:Exhilaration-2:Roar of Sacrifice,3:Mortal Coil  cd:2:Roar of Sacrifice(76s),3:Mortal Coil(2s)  enemy:Execution Sentence/Retribution Paladin(25s),Oppressing Roar/Preservation Evoker(4s)
+3:58  [OWNER CAST]   1256581 → 3
+3:59  [STATE]   friends 1:100 2:83 3:64 / enemies 4:70 5:78 6:99
+3:59  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Execution Sentence/Retribution Paladin(26s),Oppressing Roar/Preservation Evoker(5s)
+4:00  [STATE]   friends 1:95 2:87 3:65 / enemies 4:64 5:89 6:96
+4:00  [OWNER CAST]   357208
+4:01  [STATE]   friends 1:92 2:86 3:66 / enemies 4:65 5:91 6:100
+4:01  [CC ON TEAM]   2 ← Storm Bolt (Bigtastybacn-Blackrock-EU) | 4s | trinket: ON CD (18s left)
+4:01  [OWNER CAST]   358733
+4:02  [STATE]   friends 1:92 2:83 3:67 / enemies 4:63 5:93 6:100
+4:03  [STATE]   friends 1:87 2:61 3:70 / enemies 4:79 5:100 6:100
+4:03  [OWNER CAST]   Sleep Walk → 6
+4:03  [OWNER CAST]   364343 → 2
+4:04  [STATE]   friends 1:84 2:61 3:69 / enemies 4:83 5:92 6:100
+4:04  [OWNER CAST]   355936
+4:05  [STATE]   friends 1:84 2:46 3:72 / enemies 4:87 5:84 6:99
+4:05  [TEAMMATE CD]   2 (Marksmanship Hunter): Exhilaration
+      [RES] rdy:Δ+2:Exhilaration,3:Mortal Coil-Emerald Communion,2:Roar of Sacrifice,3:Howl of Terror  cd:Emerald Communion(93s),2:Roar of Sacrifice(68s),3:Howl of Terror(14s)  enemy:Oppressing Roar/Preservation Evoker(11s)
+4:06  [STATE]   friends 1:100 2:76 3:74 / enemies 4:99 5:100 6:100
+4:06  [OWNER CAST]   364343 → 2
+4:07  [STATE]   friends 1:100 2:70 3:74 / enemies 4:100 5:96 6:99
+4:07  [OWNER CAST]   357208
+4:08  [STATE]   friends 1:99 2:68 3:75 / enemies 4:100 5:99 6:70
+4:09  [STATE]   friends 1:99 2:74 3:82 / enemies 4:95 5:81 6:63
+4:09  [OWNER CAST]   431443 → 5
+4:09  [OWNER CD]   Oppressing Roar
+      [RES] rdy:Δ+3:Mortal Coil-2:Exhilaration  cd:2:Exhilaration(29s)  enemy:Oppressing Roar/Preservation Evoker(16s)
+4:10  [STATE]   friends 1:100 2:74 3:82 / enemies 4:86 5:90 6:52
+4:10  [OWNER CAST]   356995 → 5
+4:11  [STATE]   friends 1:98 2:68 3:99 / enemies 4:75 5:72 6:39
+4:12  [STATE]   friends 1:98 2:68 3:99
+4:12  [OWNER CAST]   356995 → 5
+4:13  [OWNER CAST]   1256581 → 2
+4:15  [STATE]   friends 1:100 2:74 3:99
+4:15  [OWNER CAST]   360995 → 2
+4:15  [OWNER CAST]   361195 → 2
+4:15  [OWNER CD]   Obsidian Scales → 2
+      [RES] rdy:Δ  cd:—  enemy:Oppressing Roar/Preservation Evoker(22s)
+4:17  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Oppressing Roar/Preservation Evoker(23s)
+4:18  [STATE]   friends 1:100 2:89 3:100
+4:18  [OWNER CAST]   374968
+4:18  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Oppressing Roar/Preservation Evoker(25s)
+4:18  [CLEANSE]   2 dispelled Judgment of Justice off 2
+4:21  [STATE]   friends 1:96 2:92 3:100
+4:21  [OWNER CAST]   Sleep Walk → 6
+4:22  [OWNER CAST]   Sleep Walk → 6
+4:22  [OWNER CAST]   431443 → 5
+4:24  [STATE]   friends 1:87 2:95 3:100
+4:24  [OWNER CAST]   364343 → self
+4:25  [OWNER CAST]   360995 → self
+4:25  [OWNER CAST]   361195 → self
+4:26  [OWNER CAST]   364343 → self
+4:26  [OWNER CD]   Hover
+      [RES] rdy:Δ+3:Howl of Terror  cd:—
+4:27  [STATE]   friends 1:100 2:95 3:100
+4:30  [STATE]   friends 1:100 2:92 3:100
+4:30  [OWNER CAST]   355936
+4:33  [STATE]   friends 1:100 2:92 3:100
+4:33  [OWNER CAST]   1256581 → 2
+4:33  [CC ON TEAM]   3 ← Storm Bolt (Bigtastybacn-Blackrock-EU) | 3s | trinket: ON CD (47s left)
+4:34  [STATE]   friends 1:100 2:96 3:100 / enemies 4:71 5:87 6:71
+4:35  [STATE]   friends 1:100 2:93 / enemies 4:69 5:88 6:72
+4:36  [STATE]   friends 1:100 2:98 / enemies 4:65 5:88 6:73
+4:36  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ  cd:—
+4:37  [STATE]   friends 1:100 2:75 / enemies 4:76 5:88 6:76
+4:37  [OWNER CAST]   360995 → self
+4:37  [OWNER CAST]   361195 → self
+4:38  [STATE]   friends 1:100 2:68 3:100 / enemies 4:73 5:88 6:75
+4:38  [OWNER CAST]   357208
+4:39  [STATE]   friends 1:99 2:68 3:100 / enemies 4:59 5:92 6:69
+4:39  [OWNER CAST]   358733
+4:39  [DMG SPIKE]   1 (Preservation Evoker): 0.75M in 10s
+4:39  [OWNER CAST]   364343 → self
+4:39  [OFFENSIVE WINDOW]   4:39–4:59 | Critical | 0.75M on 1 (Preservation Evoker) | CDs: Avatar + Deep Breath
+4:39  [ENEMY CD]   5 (Arms Warrior): Avatar
+4:40  [STATE]   friends 1:92 2:67 3:100 / enemies 4:50 5:91 6:62
+4:41  [STATE]   friends 1:82 2:66 3:100 / enemies 4:57 5:94 6:74
+4:41  [OWNER CAST]   360995 → self
+4:41  [OWNER CAST]   361195 → self
+4:42  [STATE]   friends 1:100 2:66 3:100 / enemies 4:71 5:99 6:91
+4:42  [OWNER CAST]   358733
+4:42  [OWNER CAST]   364343 → self
+4:42  [ENEMY CD]   6 (Preservation Evoker): Deep Breath
+4:43  [STATE]   friends 1:92 2:66 3:100 / enemies 4:68 5:84 6:91
+4:44  [STATE]   friends 1:97 2:66 3:100 / enemies 4:74 5:84 6:99
+4:44  [OWNER CAST]   1256581 → self [completed before CC landed]
+4:44  [OWNER CD]   Obsidian Scales → self
+      [RES] rdy:Δ+Stasis,2:Exhilaration  cd:—  enemy:Avatar/Arms Warrior(5s),Deep Breath/Preservation Evoker(2s)
+4:44  [CC ON TEAM]   1 ← Hammer of Justice (Thelronis-Kel'Thuzad-EU) | 5s | trinket: ON CD (41s left)
+4:45  [STATE]   friends 1:93 2:70 3:100 / enemies 4:71 5:74 6:97
+4:46  [STATE]   friends 1:90 2:74 3:100 / enemies 4:71 5:75 6:100
+4:47  [STATE]   friends 1:72 2:73 3:100 / enemies 4:100 5:98 6:100
+4:48  [STATE]   friends 1:59 2:65 3:100 / enemies 4:100 5:100 6:100
+4:48  [TEAMMATE CD]   3 (Affliction Warlock): Mortal Coil
+      [RES] rdy:Δ+Stasis,2:Exhilaration,3:Howl of Terror  cd:—  enemy:Avatar/Arms Warrior(9s),Deep Breath/Preservation Evoker(6s)  cc:1/Hammer of Justice-1s[stun]
+4:49  [STATE]   friends 1:44 2:51 3:100 / enemies 4:100 5:100 6:99
+4:49  [OWNER CD]   Rewind
+      [RES] rdy:Δ+3:Dark Pact,3:Howl of Terror-Deep Breath,Rewind,Emerald Communion  cd:Deep Breath(54s),Rewind(6s),Emerald Communion(49s)  enemy:Avatar/Arms Warrior(10s),Deep Breath/Preservation Evoker(7s)
+4:50  [STATE]   friends 1:52 2:50 3:100 / enemies 4:100 5:99 6:99
+4:50  [OWNER CAST]   431443 → 5
+4:51  [STATE]   friends 1:100 2:65 3:100 / enemies 4:89 5:89 6:99
+4:51  [OWNER CAST]   364343 → 2
+4:52  [STATE]   friends 1:100 2:77 3:100 / enemies 4:90 5:90 6:100
+4:52  [BUFF FADED]   Rewind
+4:52  [OWNER CD]   Stasis
+      [RES] rdy:Δ+2:Exhilaration,3:Howl of Terror-2:Roar of Sacrifice,3:Mortal Coil  cd:2:Roar of Sacrifice(22s),3:Mortal Coil(42s)  enemy:Avatar/Arms Warrior(12s),Deep Breath/Preservation Evoker(9s)
+4:52  [OWNER CAST]   355936
+4:53  [STATE]   friends 1:100 2:85 3:99 / enemies 4:85 5:85 6:97
+4:53  [CC ON TEAM]   2 ← Intimidating Shout (Bigtastybacn-Blackrock-EU) | 1s
+4:54  [STATE]   friends 1:99 2:66 3:99 / enemies 4:79 5:81 6:99
+4:54  [OWNER CD]   Hover
+      [RES] rdy:Δ-Stasis,3:Mortal Coil  cd:Stasis(88s),3:Mortal Coil(40s)  enemy:Avatar/Arms Warrior(14s),Deep Breath/Preservation Evoker(11s)  cc:2/Intimidating Shout-1s
+4:54  [OWNER CAST]   364343 → 2
+4:55  [STATE]   friends 1:100 2:70 3:99 / enemies 4:76 5:74 6:99
+4:55  [OWNER CAST]   356995 → 5
+4:56  [STATE]   friends 1:93 2:63 3:99 / enemies 4:72 5:75 6:100
+4:56  [OWNER CAST]   360995 → 2
+4:56  [OWNER CAST]   361195 → 2
+4:57  [STATE]   friends 1:82 2:78 3:99 / enemies 4:74 5:69 6:99
+4:58  [STATE]   friends 1:59 2:77 3:99 / enemies 4:72 5:68 6:100
+4:58  [OWNER CAST]   1256581 → self
+4:59  [STATE]   friends 1:68 2:87 3:100 / enemies 4:85 5:83 6:100
+4:59  [OWNER CAST]   360995 → self
+4:59  [OWNER CAST]   361195 → self
+4:59  [OWNER CD]   Time Dilation → self
+      [RES] rdy:Δ+Rewind  cd:—  enemy:Avatar/Arms Warrior(20s),Deep Breath/Preservation Evoker(17s)  cc:2/Disarm-1s[disarm]
+5:00  [STATE]   friends 1:78 2:93 3:100 / enemies 4:100 5:100 6:100
+5:00  [OWNER CAST]   356995 → 5
+5:00  [ENEMY CD]   4 (Retribution Paladin): Execution Sentence
+5:01  [STATE]   friends 1:86 2:92 3:100 / enemies 4:100 5:100 6:100
+5:01  [OWNER CAST]   357208
+5:02  [STATE]   friends 1:82 2:92 3:100 / enemies 4:94 5:86 6:99
+5:03  [STATE]   friends 1:79 2:94 3:100 / enemies 4:84 5:48 6:80
+5:03  [CC ON TEAM]   3 ← Storm Bolt (Bigtastybacn-Blackrock-EU) | 3s | trinket: ON CD (17s left)
+5:03  [OWNER CAST]   431443 → 5
+5:04  [STATE]   friends 1:100 2:100 3:100 / enemies 4:64 5:24 6:65
+5:04  [OWNER CD]   Wing Buffet
+      [RES] rdy:Δ+Wing Buffet,Rescue,3:Howl of Terror-Deep Breath,Emerald Communion,3:Mortal Coil  cd:Deep Breath(39s),Emerald Communion(34s),3:Mortal Coil(29s)  enemy:Execution Sentence/Retribution Paladin(4s),Avatar/Arms Warrior(25s),Deep Breath/Preservation Evoker(22s)  cc:3/Storm Bolt-2s[stun]
+5:05  [STATE]   friends 1:100 2:100 / enemies 4:58 5:14 6:45
+5:05  [OWNER CAST]   360823 → 3
+5:05  [CLEANSE]   1 dispelled Searing Glare off 3
+5:06  [STATE]   friends 1:94 2:100 3:100 / enemies 4:51 5:16 6:40
+5:06  [OWNER CAST]   360995 → self
+5:06  [OWNER CAST]   361195 → self
+5:07  [STATE]   friends 1:100 2:100 3:100 / enemies 4:47 5:35 6:39
+5:08  [STATE]   friends 1:99 2:100 3:99 / enemies 4:64 5:64 6:69
+5:08  [OWNER CD]   Hover
+      [RES] rdy:Δ-Wing Buffet  cd:Wing Buffet(176s)  enemy:Execution Sentence/Retribution Paladin(8s),Avatar/Arms Warrior(28s),Deep Breath/Preservation Evoker(25s)
+5:08  [TEAMMATE CD]   3 (Affliction Warlock): Dark Pact
+      [RES] rdy:Δ+Rewind-Deep Breath,Wing Buffet  cd:Deep Breath(35s),Wing Buffet(176s)  enemy:Execution Sentence/Retribution Paladin(8s),Avatar/Arms Warrior(29s),Deep Breath/Preservation Evoker(26s)
+5:09  [STATE]   friends 1:85 2:100 3:67 / enemies 4:63 5:67 6:73
+5:09  [OWNER CAST]   356995 → 5
+5:10  [STATE]   friends 1:79 2:100 3:67 / enemies 4:56 5:59 6:73
+5:10  [OWNER CAST]   364343 → self
+5:10  [OWNER CD]   Time Dilation → self
+      [RES] rdy:Δ  cd:—  enemy:Execution Sentence/Retribution Paladin(10s),Deep Breath/Preservation Evoker(28s)
+5:11  [STATE]   friends 1:71 2:100 3:68 / enemies 4:47 5:64 6:68
+5:11  [OWNER CAST]   1256581 → self
+5:12  [STATE]   friends 1:85 2:100 3:70 / enemies 4:46 5:63 6:69
+5:12  [TEAMMATE CD]   3 (Affliction Warlock): Howl of Terror
+      [RES] rdy:Δ+Rewind-Deep Breath,Wing Buffet  cd:Deep Breath(31s),Wing Buffet(173s)  enemy:Execution Sentence/Retribution Paladin(12s),Deep Breath/Preservation Evoker(29s)
+5:12  [CC CAST]   Howl of Terror (by 3) → 5
+5:12  [CC CAST]   Howl of Terror (by 3) → nil [non-player target]
+5:12  [OWNER CAST]   356995 → 6
+5:13  [STATE]   friends 1:85 2:100 3:77 / enemies 4:66 5:73 6:81
+5:13  [TEAMMATE CD]   2 (Marksmanship Hunter): Roar of Sacrifice
+      [RES] rdy:Δ+Rewind,2:Exhilaration-Wing Buffet,3:Mortal Coil  cd:Wing Buffet(171s),3:Mortal Coil(20s)  enemy:Execution Sentence/Retribution Paladin(14s)  cc:1/Disintegrate-3s[kick]
+5:14  [OWNER CD]   Rescue → 3 (78% HP)
+      [RES] rdy:Δ+Rewind-Wing Buffet,Stasis,3:Howl of Terror  cd:Wing Buffet(170s),Stasis(68s),3:Howl of Terror(38s)  enemy:Execution Sentence/Retribution Paladin(14s)  cc:1/Disintegrate-2s[kick]
+5:14  [CLEANSE]   1 dispelled 3 effects: Permeating Chill off 1, Judgment of Justice off 1, Consecration off 3
+5:14  [CC ON TEAM]   2 ← Shockwave (Bigtastybacn-Blackrock-EU) | 1s | trinket: used
+5:14  [BUFF FADED]   Rescue
+5:15  [STATE]   friends 1:78 2:100 3:78 / enemies 4:98 5:77 6:99
+5:15  [TRINKET]   2 used PvP trinket
+5:16  [STATE]   friends 1:75 2:100 3:78 / enemies 4:100 5:73 6:94
+5:16  [CC ON TEAM]   1 ← Hammer of Justice (Thelronis-Kel'Thuzad-EU) | 5s | trinket: ON CD (9s left)
+5:16  [OWNER CAST]   355941 [succeeded after CC arrived — within 1s in log]
+5:17  [STATE]   friends 1:83 2:100 3:83 / enemies 4:100 5:78 6:100
+5:17  [OWNER CAST]   361195 → 2 [completed before CC landed]
+5:17  [CC ON TEAM]   1 ← Champion's Spear (Bigtastybacn-Blackrock-EU) | 6s | trinket: ON CD (8s left)
+5:17  [CC ON TEAM]   3 ← Champion's Spear (Bigtastybacn-Blackrock-EU) | 6s | trinket: ON CD (3s left)
+5:18  [STATE]   friends 1:93 2:100 3:88 / enemies 4:99 5:85 6:100
+5:18  [OWNER CD]   Emerald Communion
+      [RES] rdy:Δ+Rewind,2:Exhilaration-Wing Buffet,Emerald Communion,Rescue,2:Roar of Sacrifice  cd:Wing Buffet(166s),Emerald Communion(20s),Rescue(56s),2:Roar of Sacrifice(116s)  enemy:Execution Sentence/Retribution Paladin(18s)  cc:1/Hammer of Justice-3s[stun],3/Champion's Spear-5s
+5:19  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:67 6:95
+5:19  [DMG SPIKE]   1 (Preservation Evoker): 1.20M in 10s
+5:20  [STATE]   friends 1:91 2:100 3:100 / enemies 4:100 5:62 6:95
+5:21  [STATE]   friends 1:99 2:100 3:100 / enemies 4:100 5:75 6:100
+5:21  [BUFF FADED]   Emerald Communion
+5:22  [STATE]   friends 1:87 2:100 3:100 / enemies 4:100 5:81 6:100
+5:22  [OWNER CAST]   364343 → self
+5:23  [STATE]   friends 1:70 2:98 3:96 / enemies 4:100 5:81 6:100
+5:23  [OWNER CAST]   1256581 → self
+5:24  [STATE]   friends 1:63 2:100 3:83 / enemies 4:100 5:75 6:99
+5:24  [OWNER CAST]   364343 → self
+5:25  [STATE]   friends 1:34 2:99 3:56 / enemies 4:100 5:68 6:99
+5:25  [OWNER CAST]   366155 → self
+5:26  [STATE]   friends 1:44 2:100 3:48 / enemies 4:100 5:52 6:100
+5:26  [OWNER CAST]   360995 → self
+5:26  [OWNER CAST]   361195 → self
+5:27  [STATE]   friends 1:37 2:100 3:48 / enemies 4:100 5:36 6:96
+5:27  [OWNER CAST]   361509 → self
+5:27  [OWNER CAST]   431443 → self
+5:28  [OWNER CAST]   360995 → self
+5:28  [OWNER CAST]   361195 → self
+5:29  [OWNER CAST]   366155 → self
+5:29  [OWNER CD]   Hover
+      [RES] rdy:Δ-Rescue,3:Howl of Terror  cd:Rescue(45s),3:Howl of Terror(22s)  enemy:Execution Sentence/Retribution Paladin(30s)
+5:30  [STATE]   friends 1:39 2:100 3:43
+5:30  [OWNER CAST]   364343 → self
+5:31  [OWNER CAST]   355936
+5:32  [OWNER CAST]   364343 → self
+5:33  [STATE]   friends 1:73 2:99 3:38
+5:33  [OWNER CAST]   1256581 → self
+5:35  [CC ON TEAM]   3 ← Storm Bolt (Bigtastybacn-Blackrock-EU) | 1s | trinket: used
+5:35  [OWNER CAST]   357208
+5:36  [STATE]   friends 1:97 2:99 3:38 / enemies 4:97 5:86 6:99
+5:36  [TRINKET]   3 used PvP trinket
+5:37  [STATE]   friends 1:89 2:99 3:35 / enemies 4:97 5:86 6:99
+5:38  [STATE]   friends 1:98 2:95 3:34 / enemies 4:97 5:82 6:100
+5:38  [OWNER CAST]   361509 → 3
+5:38  [OWNER CAST]   431443 → 3
+5:38  [OWNER CAST]   356995 → 5
+5:39  [STATE]   friends 1:99 2:96 3:47 / enemies 4:99 5:82 6:100
+5:40  [STATE]   friends 1:99 2:87 3:46 / enemies 4:100 5:76 6:100
+5:40  [OWNER CAST]   356995 → 5
+5:41  [STATE]   friends 1:96 2:81 3:46 / enemies 4:100 5:69 6:100
+5:41  [OWNER CAST]   360995 → 3
+5:42  [STATE]   friends 1:91 2:75 3:45 / enemies 4:100 5:58 6:100
+5:42  [OWNER CAST]   361195 → 3
+5:42  [OWNER CAST]   361509 → 3
+5:42  [OWNER CAST]   431443 → 3
+5:43  [STATE]   friends 1:91 2:85 3:64 / enemies 4:98 5:40 6:100
+5:44  [STATE]   friends 1:96 2:85 3:67 / enemies 4:99 5:45 6:100
+5:45  [STATE]   friends 1:92 2:85 3:68 / enemies 4:100 5:55 6:100
+5:45  [OWNER CD]   Deep Breath
+      [RES] rdy:Δ+Rewind,Emerald Communion,3:Mortal Coil,3:Dark Pact-Wing Buffet,Rescue  cd:Wing Buffet(139s),Rescue(29s)  cc:1/Sleep Walk-2s[kick],2/Disarm-2s[disarm]
+5:45  [CLEANSE]   1 dispelled Judgment of Justice off 1
+5:46  [BUFF FADED]   Deep Breath
+5:48  [STATE]   friends 1:96 2:90 3:85
+5:49  [STATE]   friends 1:99 2:91 3:91 / enemies 4:84 5:58 6:91
+5:49  [OWNER CAST]   356995 → 4 [completed before CC landed]
+5:50  [STATE]   friends 1:99 2:92 3:91 / enemies 4:79 5:59 6:90
+5:50  [CC ON TEAM]   1 ← Hammer of Justice (Thelronis-Kel'Thuzad-EU) | 1s | trinket: used
+5:51  [STATE]   friends 1:99 2:92 3:93 / enemies 4:74 5:55 6:88
+5:51  [TRINKET]   1 used PvP trinket
+5:52  [STATE]   friends 1:97 2:91 3:93 / enemies 4:75 5:48 6:86
+5:52  [OWNER CAST]   431443 → 4
+5:53  [STATE]   friends 1:94 2:90 3:93 / enemies 4:63 5:49 6:79
+5:53  [OWNER CAST]   431443 → 4
+5:54  [STATE]   friends 1:77 2:90 3:93 / enemies 4:78 5:60 6:73
+5:54  [OWNER CAST]   360995 → self
+5:54  [OWNER CAST]   361195 → self
+5:54  [ENEMY CD]   5 (Arms Warrior): Avatar
+5:54  [OWNER CD]   Obsidian Scales → 4
+      [RES] rdy:Δ+Emerald Communion,3:Mortal Coil,3:Howl of Terror  cd:—  enemy:Avatar/Arms Warrior(0s)
+5:55  [STATE]   friends 1:77 2:90 3:88 / enemies 4:77 5:64 6:79
+5:56  [STATE]   friends 1:63 2:90 3:89 / enemies 4:64 5:47 6:77
+5:56  [OWNER CAST]   364343 → self
+5:57  [STATE]   friends 1:61 2:89 3:89 / enemies 4:60 5:32 6:76
+5:57  [OWNER CAST]   355936
+5:58  [STATE]   friends 1:70 2:95 3:95 / enemies 4:57 5:dead 6:75
+5:58  [DEATH]  5 (Arms Warrior — enemy)
+5:58  [ROSTER]  enemy 5 removed (dead)
+5:59  [STATE]   friends 1:89 2:94 3:95 / enemies 4:54 5:dead 6:74
+6:00  [STATE]   friends 1:84 2:95 3:95 / enemies 4:51 5:dead 6:74
+6:00  [OWNER CAST]   356995 → 4
+6:01  [STATE]   friends 1:91 2:95 3:96 / enemies 4:41 5:dead 6:74
+6:02  [STATE]   friends 1:89 2:95 3:96 / enemies 4:24 5:dead 6:74
+6:02  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ  cd:—  enemy:Avatar/Arms Warrior(8s)
+6:02  [OWNER CAST]   357208
+6:03  [STATE]   friends 1:96 2:99 3:100 / enemies 4:dead 5:dead 6:65
+6:03  [DEATH]  4 (Retribution Paladin — enemy)
+6:03  [ROSTER]  enemy 4 removed (dead)
+6:04  [OWNER CAST]   356995 → 6
+
+6:05  [MATCH END]   damp: 29%
+  friends 1:99% 2:97% 3:100% / enemies 4:dead(6:03) 5:dead(5:58) 6:39%

@@ -1,0 +1,517 @@
+[ARCHETYPE: Mistweaver Monk — long_sustained_swap]
+This Mistweaver plays extended matches (~302s) with moderate burst frequency (3.4 windows) and the highest offensive participation rate of any cluster (75%), maintaining near-complete cooldown utilization with 0% never-used. CC output remains active at 10.14/min with a high p75 ceiling of 19 events, and purge usage (0.49/min) appears consistently. Setup style splits evenly between CC-then-burst and flat dampening pressure, reflecting adaptation across long attrition games.
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Affliction Warlock | Bracket: 3v3 | Result: Loss | Duration: 5:24
+  My team: Mistweaver Monk, Affliction Warlock, Frost Mage
+  Enemy team: Arms Warrior, Preservation Evoker, Retribution Paladin
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Affliction Warlock): CAN offensive purge
+  Team purgers: Frost Mage
+
+DAMPENING (3v3): started at 10%, ended at 25% at match end
+  Note: Reached 25% dampening — healing was meaningfully impaired in the late game.
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Reithalon-ArgentDawn-EU (Affliction Warlock — log owner):
+    Mortal Coil [45s], Shadowfury [60s, 2 Charges], Dark Pact [60s, 2 Charges]
+  2: Sethtroxler-Aegwynn-EU (Mistweaver Monk):
+    Paralysis [45s, 2 Charges], Leg Sweep [60s, 2 Charges], Life Cocoon [120s, 2 Charges]
+  3: Skylê-Blackrock-EU (Frost Mage):
+    Ice Block [240s, 2 Charges], Dragon's Breath [45s]
+  4: Mojiwaa-Suramar-EU (Arms Warrior — enemy):
+    Avatar [90s]
+  5: Zygumy-Hyjal-EU (Preservation Evoker — enemy):
+    Deep Breath [120s]
+  6: Poporfour-Archimonde-EU (Retribution Paladin — enemy):
+    Execution Sentence [60s]
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100 2:100 3:100
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:09  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:99
+0:09  [CC ON TEAM]   1 ← Champion's Spear (Mojiwaa-Suramar-EU) | 6s
+0:09  [CC ON TEAM]   3 ← Champion's Spear (Mojiwaa-Suramar-EU) | 6s
+0:10  [STATE]   friends 1:100 2:100 3:95 / enemies 4:99 5:100 6:95
+0:10  [OWNER CD]   Dark Pact
+      [RES] rdy:Δ+Mortal Coil,3:Ice Block  cd:—  cc:1/Champion's Spear-5s,3/Champion's Spear-5s
+0:10  [TEAMMATE CD]   2 (Mistweaver Monk): Leg Sweep
+      [RES] rdy:Δ+Mortal Coil,Dark Pact,2:Life Cocoon,3:Ice Block  cd:—  cc:1/Champion's Spear-5s,3/Champion's Spear-5s
+0:10  [CC CAST]   Leg Sweep (by 2) → nil [non-player target]
+0:10  [CC CAST]   Leg Sweep (by 2) → 5, 6 [2 enemies]
+0:11  [STATE]   friends 1:80 2:100 3:86 / enemies 4:97 5:90 6:81
+0:11  [OFFENSIVE WINDOW]   0:11–0:31 | High | 0.71M on 3 (Frost Mage) | CDs: Avatar + Execution Sentence + Deep Breath
+0:11  [ENEMY CD]   4 (Arms Warrior): Avatar
+0:11  [OWNER CD]   Mortal Coil → Mojiwaa-Suramar-EU (95% HP)
+      [RES] rdy:Mortal Coil,Shadowfury,2:Paralysis,2:Life Cocoon,3:Ice Block,3:Dragon's Breath  cd:Dark Pact(59s),2:Leg Sweep(59s)  enemy:Avatar/Arms Warrior(0s)  cc:1/Champion's Spear-4s,3/Champion's Spear-4s
+0:11  [CC ON TEAM]   2 ← Hammer of Justice (Poporfour-Archimonde-EU) | 5s
+0:12  [STATE]   friends 1:92 2:100 3:89 / enemies 4:94 5:88 6:79
+0:13  [STATE]   friends 1:93 3:91 / enemies 4:91 5:86 6:75
+0:13  [DMG SPIKE]   3 (Frost Mage): 0.71M in 10s
+0:14  [STATE]   friends 1:93 3:92 / enemies 4:75 5:87 6:81
+0:15  [STATE]   friends 1:94 3:93 / enemies 4:58 5:86 6:81
+0:16  [STATE]   friends 1:94 2:100 3:85 / enemies 4:33 5:90 6:87
+0:16  [CC ON TEAM]   2 ← Sleep Walk (Zygumy-Hyjal-EU) | 1s
+0:16  [ENEMY CD]   6 (Retribution Paladin): Execution Sentence
+0:17  [STATE]   friends 1:95 2:100 3:83 / enemies 4:27 5:89 6:78
+0:18  [STATE]   friends 1:96 2:100 3:69 / enemies 4:54 5:100 6:97
+0:18  [TEAMMATE CD]   2 (Mistweaver Monk): Paralysis
+      [RES] rdy:Δ+2:Life Cocoon,3:Ice Block,3:Dragon's Breath-Dark Pact,2:Leg Sweep  cd:Dark Pact(52s),2:Leg Sweep(52s)  enemy:Avatar/Arms Warrior(7s),Execution Sentence/Retribution Paladin(2s)
+0:19  [STATE]   friends 1:96 2:100 3:57 / enemies 4:77 5:100 6:98
+0:20  [STATE]   friends 1:97 2:100 3:55 / enemies 4:79 5:98 6:93
+0:20  [ENEMY CD]   5 (Preservation Evoker): Deep Breath
+0:21  [STATE]   friends 1:98 2:100 3:80 / enemies 4:95 5:100 6:84
+0:21  [CC ON TEAM]   3 ← Terror of the Skies (Zygumy-Hyjal-EU) | 1s | trinket: used
+0:22  [STATE]   friends 1:100 2:100 3:76 / enemies 4:93 5:93 6:80
+0:23  [STATE]   friends 1:100 2:81 3:31 / enemies 4:100 5:95 6:72
+0:23  [TEAMMATE CD]   2 (Mistweaver Monk): Life Cocoon
+      [RES] rdy:Δ+2:Life Cocoon,3:Ice Block,3:Dragon's Breath-Dark Pact,2:Paralysis,2:Leg Sweep  cd:Dark Pact(47s),2:Paralysis(41s),2:Leg Sweep(48s)  enemy:Avatar/Arms Warrior(11s),Deep Breath/Preservation Evoker(2s),Execution Sentence/Retribution Paladin(6s)  cc:3/Terror of the Skies-0s[stun][trinketed]
+0:23  [TRINKET]   3 used PvP trinket
+0:24  [STATE]   friends 1:100 2:75 3:43 / enemies 4:94 5:100 6:70
+0:25  [STATE]   friends 1:100 2:75 3:50 / enemies 4:100 5:100 6:81
+0:26  [STATE]   friends 1:100 2:75 3:53 / enemies 4:100 5:100 6:90
+0:27  [STATE]   friends 1:100 2:73 3:65 / enemies 4:97 5:93 6:74
+0:28  [STATE]   friends 2:73 3:73 / enemies 4:83 5:92 6:54
+0:29  [STATE]   friends 2:74 3:78 / enemies 4:86 5:100 6:71
+0:30  [STATE]   friends 2:84 3:99 / enemies 4:96 5:100 6:87
+0:30  [BUFF FADED]   Dark Pact
+0:31  [STATE]   friends 1:100 2:82 3:100 / enemies 4:100 5:100 6:90
+0:33  [STATE]   friends 1:100 2:95 3:100
+0:33  [CC ON TEAM]   1 ← Blinding Light (Poporfour-Archimonde-EU) | 4s
+0:33  [CC ON TEAM]   2 ← Blinding Light (Poporfour-Archimonde-EU) | 3s
+0:34  [STATE]   friends 2:95 3:100 / enemies 4:61 5:99 6:100
+0:35  [STATE]   friends 2:98 3:100 / enemies 4:58 5:99 6:99
+0:36  [STATE]   friends 2:100 3:100 / enemies 4:62 5:99 6:99
+0:36  [TEAMMATE CD]   3 (Frost Mage): Dragon's Breath
+      [RES] rdy:Δ+3:Ice Block,3:Dragon's Breath-Mortal Coil,2:Paralysis,2:Leg Sweep  cd:Mortal Coil(21s),2:Paralysis(28s),2:Leg Sweep(35s)  enemy:Avatar/Arms Warrior(24s),Deep Breath/Preservation Evoker(15s),Execution Sentence/Retribution Paladin(19s)  cc:1/Blinding Light-2s,2/Blinding Light-0s
+0:36  [CC CAST]   Dragon's Breath (by 3) → nil [non-player target]
+0:37  [STATE]   friends 1:100 2:100 3:100 / enemies 4:65 5:99 6:100
+0:38  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:99 6:100
+0:39  [STATE]   friends 1:100 2:100 3:87 / enemies 4:92 5:99 6:92
+0:40  [STATE]   friends 1:100 2:100 3:81 / enemies 4:98 5:99 6:94
+0:41  [STATE]   friends 1:100 2:100 3:98 / enemies 4:98 5:99 6:95
+0:41  [CC ON TEAM]   2 ← Hammer of Justice (Poporfour-Archimonde-EU) | 5s
+0:42  [STATE]   friends 1:100 2:99 3:100 / enemies 4:99 5:100 6:97
+0:43  [STATE]   friends 1:100 2:99 3:99 / enemies 4:99 5:99 6:99
+0:43  [CC ON TEAM]   3 ← Storm Bolt (Mojiwaa-Suramar-EU) | 3s | trinket: ON CD (100s left)
+0:44  [STATE]   friends 1:100 2:99 3:100 / enemies 4:99 5:100 6:100
+0:44  [OWNER CD]   Shadowfury
+      [RES] rdy:Δ+3:Ice Block-Mortal Coil,Dark Pact,2:Paralysis,2:Leg Sweep,2:Life Cocoon  cd:Mortal Coil(13s),Dark Pact(26s),2:Paralysis(19s),2:Leg Sweep(27s),2:Life Cocoon(99s)  enemy:Deep Breath/Preservation Evoker(23s),Execution Sentence/Retribution Paladin(27s)  cc:2/Hammer of Justice-3s[stun],3/Storm Bolt-2s[stun]
+0:44  [CC CAST]   Shadowfury (by 1) → nil [non-player target]
+0:45  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:100 6:100
+0:46  [STATE]   friends 1:100 3:99 / enemies 4:99 5:100 6:100
+0:47  [STATE]   friends 3:91 / enemies 4:100 5:100 6:99
+0:48  [STATE]   friends 1:100 3:79 / enemies 4:98 5:100 6:100
+0:48  [CC ON TEAM]   2 ← Sleep Walk (Zygumy-Hyjal-EU) | 3s
+0:49  [STATE]   friends 1:100 3:73 / enemies 4:95 5:100 6:100
+0:50  [STATE]   friends 1:100 3:75 / enemies 4:87 5:100 6:100
+0:51  [STATE]   friends 1:100 2:100 3:76 / enemies 4:92 5:100 6:100
+0:52  [STATE]   friends 1:100 2:100 3:71 / enemies 4:77 5:100 6:91
+0:53  [STATE]   friends 1:100 2:100 3:69 / enemies 4:42 5:100 6:76
+0:54  [STATE]   friends 1:100 2:95 3:59 / enemies 4:33 5:100 6:75
+0:55  [STATE]   friends 1:100 2:93 3:63 / enemies 4:55 5:100 6:97
+0:55  [OWNER CD]   Dark Pact
+      [RES] rdy:Δ-Mortal Coil,Shadowfury,Dark Pact,2:Paralysis,2:Leg Sweep,2:Life Cocoon,3:Dragon's Breath  cd:Mortal Coil(1s),Shadowfury(48s),Dark Pact(15s),2:Paralysis(8s),2:Leg Sweep(15s),2:Life Cocoon(87s),3:Dragon's Breath(25s)  cc:3/Charge-0s[root]
+0:56  [STATE]   friends 1:80 2:85 3:67 / enemies 4:76 5:99 6:97
+0:57  [STATE]   friends 1:80 2:87 3:70 / enemies 4:90 5:99 6:98
+0:58  [STATE]   friends 1:82 2:92 3:70 / enemies 4:92 5:99 6:100
+0:59  [CC ON TEAM]   1 ← Sleep Walk (Zygumy-Hyjal-EU) | 1s | trinket: used
+0:59  [TRINKET]   1 used PvP trinket
+1:00  [STATE]   friends 1:100 2:100 3:77 / enemies 4:76 5:98 6:92
+1:01  [STATE]   friends 1:100 2:100 3:83 / enemies 4:66 5:97 6:88
+1:02  [STATE]   friends 1:100 2:99 3:94 / enemies 4:88 5:100 6:77
+1:02  [OWNER CD]   Mortal Coil → Poporfour-Archimonde-EU (81% HP)
+      [RES] rdy:Δ-Shadowfury,2:Paralysis,2:Life Cocoon,3:Dragon's Breath  cd:Shadowfury(42s),2:Paralysis(1s),2:Life Cocoon(81s),3:Dragon's Breath(19s)
+1:03  [STATE]   friends 1:100 2:96 3:80 / enemies 4:95 5:100 6:99
+1:03  [TEAMMATE CD]   2 (Mistweaver Monk): Leg Sweep
+      [RES] rdy:Δ-Mortal Coil,Shadowfury,Dark Pact,2:Leg Sweep,2:Life Cocoon,3:Dragon's Breath  cd:Mortal Coil(44s),Shadowfury(40s),Dark Pact(7s),2:Leg Sweep(7s),2:Life Cocoon(79s),3:Dragon's Breath(17s)  cc:3/Gletscherstachel-2s[kick]
+1:03  [CC CAST]   Leg Sweep (by 2) → nil [non-player target]
+1:03  [CC CAST]   Leg Sweep (by 2) → 4, 6 [2 enemies]
+1:04  [STATE]   friends 1:100 2:96 3:80 / enemies 4:96 5:100 6:95
+1:04  [TEAMMATE CD]   2 (Mistweaver Monk): Paralysis
+      [RES] rdy:Δ-Shadowfury,2:Life Cocoon,3:Dragon's Breath  cd:Shadowfury(39s),2:Life Cocoon(78s),3:Dragon's Breath(16s)  cc:3/Gletscherstachel-1s[kick]
+1:05  [STATE]   friends 1:100 2:95 3:82 / enemies 4:98 5:100 6:98
+1:06  [STATE]   friends 1:100 2:95 3:81 / enemies 4:99 5:100 6:99
+1:07  [STATE]   friends 1:100 2:95 3:83 / enemies 4:71 5:92 6:89
+1:08  [STATE]   friends 1:100 2:94 3:82 / enemies 4:43 5:97 6:85
+1:09  [STATE]   friends 1:100 2:98 3:84 / enemies 4:60 5:100 6:95
+1:12  [STATE]   friends 1:100 2:94 3:87
+1:12  [CC ON TEAM]   2 ← Hammer of Justice (Poporfour-Archimonde-EU) | 5s
+1:13  [STATE]   friends 1:100 2:93 3:87 / enemies 4:98 5:100 6:89
+1:14  [STATE]   friends 1:100 2:94 3:87 / enemies 4:93 5:100 6:82
+1:15  [STATE]   friends 1:100 2:94 3:88 / enemies 4:93 5:100 6:81
+1:15  [BUFF FADED]   Dark Pact
+1:16  [STATE]   friends 1:100 2:94 3:79 / enemies 4:92 5:98 6:77
+1:17  [STATE]   friends 1:100 2:93 3:80 / enemies 4:99 5:100 6:91
+1:18  [STATE]   friends 1:100 2:93 3:89 / enemies 4:95 5:100 6:81
+1:19  [STATE]   friends 1:100 2:91 3:81 / enemies 4:84 5:95 6:62
+1:19  [ENEMY CD]   6 (Retribution Paladin): Execution Sentence
+1:20  [STATE]   friends 1:99 2:91 3:85 / enemies 4:80 5:93 6:47
+1:21  [STATE]   friends 1:97 2:91 3:86 / enemies 4:83 5:95 6:43
+1:22  [STATE]   friends 1:97 2:92 3:100 / enemies 4:71 5:94 6:48
+1:24  [STATE]   friends 1:98 2:92 3:98
+1:26  [CC ON TEAM]   3 ← Storm Bolt (Mojiwaa-Suramar-EU) | 3s | trinket: ON CD (57s left)
+1:27  [STATE]   friends 1:95 2:95 3:72 / enemies 4:66 5:100 6:70
+1:27  [ENEMY CD]   4 (Arms Warrior): Avatar
+1:28  [STATE]   friends 1:95 2:95 3:52 / enemies 4:75 5:100 6:92
+1:28  [TEAMMATE CD]   2 (Mistweaver Monk): Life Cocoon
+      [RES] rdy:Δ+Dark Pact,2:Paralysis,2:Leg Sweep-Shadowfury,2:Life Cocoon  cd:Shadowfury(15s),2:Life Cocoon(54s)  enemy:Avatar/Arms Warrior(1s),Execution Sentence/Retribution Paladin(9s)  cc:3/Storm Bolt-1s[stun]
+1:29  [STATE]   friends 1:91 2:90 3:46 / enemies 4:69 5:100 6:96
+1:30  [STATE]   friends 1:91 2:97 3:56 / enemies 4:48 5:100 6:90
+1:31  [STATE]   friends 1:91 2:97 3:70 / enemies 4:36 5:100 6:86
+1:32  [STATE]   friends 1:91 2:97 3:75 / enemies 4:24 5:100 6:84
+1:32  [OWNER CD]   Shadowfury
+      [RES] rdy:Δ+Dark Pact,2:Paralysis,2:Leg Sweep,3:Dragon's Breath-Shadowfury  cd:Shadowfury(11s)  enemy:Avatar/Arms Warrior(5s),Execution Sentence/Retribution Paladin(13s)
+1:32  [CC CAST]   Shadowfury (by 1) → nil [non-player target]
+1:32  [CC CAST]   Shadowfury (by 1) → 5
+1:33  [STATE]   friends 1:93 2:100 3:82 / enemies 4:21 5:100 6:80
+1:34  [STATE]   friends 1:96 2:100 3:94 / enemies 4:6 5:100 6:72
+1:35  [STATE]   friends 1:96 2:99 3:97 / enemies 4:95 5:100 6:69
+1:36  [STATE]   friends 1:97 2:98 3:99 / enemies 4:93 6:66
+1:36  [CC ON TEAM]   2 ← Intimidating Shout (Mojiwaa-Suramar-EU) | 1s | trinket: used
+1:36  [CC ON TEAM]   3 ← Intimidating Shout (Mojiwaa-Suramar-EU) | 2s | trinket: ON CD (47s left)
+1:37  [STATE]   friends 1:99 2:100 3:100 / enemies 4:92 5:89 6:65
+1:37  [TRINKET]   2 used PvP trinket
+1:38  [STATE]   friends 1:99 2:100 3:100 / enemies 4:64 5:89 6:63
+1:39  [STATE]   friends 1:100 2:100 3:91 / enemies 4:59 5:96 6:79
+1:40  [STATE]   friends 1:100 2:100 3:90 / enemies 4:56 5:100 6:76
+1:41  [STATE]   friends 1:100 2:100 3:93 / enemies 4:55 5:88 6:49
+1:42  [STATE]   friends 1:100 2:99 3:95 / enemies 4:43 5:75 6:31
+1:42  [TEAMMATE CD]   2 (Mistweaver Monk): Paralysis
+      [RES] rdy:Δ+Dark Pact,2:Leg Sweep,3:Dragon's Breath  cd:—  enemy:Avatar/Arms Warrior(15s),Execution Sentence/Retribution Paladin(23s)
+1:42  [CC ON TEAM]   3 ← Champion's Spear (Mojiwaa-Suramar-EU) | 6s | trinket: ON CD (41s left)
+1:43  [STATE]   friends 1:80 2:100 3:91 / enemies 4:54 5:81 6:24
+1:43  [OWNER CD]   Dark Pact
+      [RES] rdy:Δ+Dark Pact,2:Leg Sweep,3:Dragon's Breath  cd:—  enemy:Avatar/Arms Warrior(16s),Execution Sentence/Retribution Paladin(24s)  cc:3/Champion's Spear-6s
+1:44  [STATE]   friends 1:83 2:100 3:99 / enemies 4:46 5:99 6:43
+1:45  [STATE]   friends 1:85 2:100 3:98 / enemies 4:86 5:100 6:80
+1:45  [CC ON TEAM]   2 ← Hammer of Justice (Poporfour-Archimonde-EU) | 5s | trinket: ON CD (82s left)
+1:46  [STATE]   friends 1:85 2:100 3:100 / enemies 4:99 5:100 6:99
+1:47  [STATE]   friends 1:87 2:100 3:100 / enemies 4:97 5:98 6:98
+1:47  [CC ON TEAM]   1 ← Sleep Walk (Zygumy-Hyjal-EU) | 1s | trinket: ON CD (73s left)
+1:48  [STATE]   friends 1:87 2:100 3:97 / enemies 4:95 5:96 6:95
+1:49  [STATE]   friends 1:88 2:100 3:99 / enemies 4:91 5:95 6:95
+1:50  [STATE]   friends 1:88 2:100 3:96 / enemies 4:89 5:95 6:95
+1:50  [CC ON TEAM]   2 ← Sleep Walk (Zygumy-Hyjal-EU) | 3s | trinket: ON CD (77s left)
+1:51  [STATE]   friends 1:88 2:100 3:99 / enemies 4:87 5:95 6:93
+1:52  [STATE]   friends 1:88 2:100 3:100 / enemies 4:84 5:100 6:94
+1:53  [STATE]   friends 1:88 2:100 3:100 / enemies 4:81 5:99 6:94
+1:54  [STATE]   friends 1:88 2:100 3:97 / enemies 4:78 5:100 6:100
+1:55  [STATE]   friends 1:89 2:100 3:99 / enemies 4:91 5:99 6:100
+1:56  [STATE]   friends 1:89 2:99 3:99 / enemies 4:97 5:100 6:99
+1:57  [STATE]   friends 1:89 2:99 3:98 / enemies 4:96 5:100 6:96
+1:58  [STATE]   friends 1:89 2:99 3:96 / enemies 4:98 5:100 6:100
+1:58  [CLEANSE]   2 dispelled 2 effects: Urteil der Gerechtigkeit off 3, Weihe off 3
+1:58  [DMG SPIKE]   3 (Frost Mage): 0.61M in 10s
+1:59  [STATE]   friends 1:89 2:99 3:90 / enemies 4:100 5:100 6:97
+1:59  [CC ON TEAM]   3 ← Storm Bolt (Mojiwaa-Suramar-EU) | 3s | trinket: ON CD (24s left)
+2:00  [STATE]   friends 1:89 2:100 3:99 / enemies 4:99 5:99 6:94
+2:01  [STATE]   friends 1:89 2:95 3:60 / enemies 4:100 5:99 6:95
+2:01  [TEAMMATE CD]   2 (Mistweaver Monk): Leg Sweep
+      [RES] rdy:Δ+Mortal Coil,Shadowfury,Dark Pact,2:Leg Sweep,3:Dragon's Breath  cd:—  cc:3/Storm Bolt-0s[stun]
+2:01  [CC CAST]   Leg Sweep (by 2) → nil [non-player target]
+2:01  [CC CAST]   Leg Sweep (by 2) → 5
+2:01  [TEAMMATE CD]   3 (Frost Mage): Ice Block
+      [RES] rdy:Δ+Mortal Coil,3:Ice Block,3:Dragon's Breath-2:Life Cocoon  cd:2:Life Cocoon(21s)
+2:02  [STATE]   friends 1:90 2:94 3:46 / enemies 4:100 5:99 6:93
+2:03  [STATE]   friends 1:92 2:94 3:87 / enemies 4:96 5:98 6:92
+2:03  [BUFF FADED]   Dark Pact
+2:04  [STATE]   friends 1:94 2:93 3:90 / enemies 4:94 5:98 6:89
+2:05  [STATE]   friends 1:98 2:95 3:99 / enemies 4:89 5:96 6:87
+2:06  [STATE]   friends 1:99 2:98 3:100 / enemies 4:85 5:93 6:84
+2:07  [STATE]   friends 1:99 2:89 3:92 / enemies 4:84 5:92 6:82
+2:08  [STATE]   friends 1:99 2:80 3:71 / enemies 4:95 5:93 6:89
+2:09  [STATE]   friends 1:99 2:79 3:64 / enemies 4:100 5:100 6:99
+2:11  [CC ON TEAM]   3 ← Shockwave (Mojiwaa-Suramar-EU) | 1s | trinket: ON CD (12s left)
+2:12  [STATE]   friends 1:100 2:82 3:93 / enemies 4:92 5:100 6:84
+2:13  [STATE]   friends 1:100 2:82 3:100 / enemies 4:81 5:100 6:68
+2:13  [TEAMMATE CD]   3 (Frost Mage): Dragon's Breath
+      [RES] rdy:Δ+Mortal Coil,Dark Pact,2:Paralysis,2:Leg Sweep-3:Ice Block  cd:3:Ice Block(228s)
+2:13  [CC CAST]   Dragon's Breath (by 3) → nil [non-player target]
+2:14  [STATE]   friends 1:100 2:87 3:100 / enemies 4:75 5:100 6:62
+2:15  [STATE]   friends 1:100 2:98 3:100 / enemies 4:73 5:85 6:49
+2:16  [STATE]   friends 1:100 2:100 3:100 / enemies 4:67 5:94 6:61
+2:17  [STATE]   friends 1:100 2:100 3:93 / enemies 4:85 5:99 6:66
+2:17  [CC ON TEAM]   2 ← Hammer of Justice (Poporfour-Archimonde-EU) | 5s | trinket: ON CD (51s left)
+2:18  [STATE]   friends 1:100 2:100 3:86 / enemies 4:83 5:100 6:69
+2:19  [STATE]   friends 1:100 2:100 3:88 / enemies 4:89 5:100 6:90
+2:20  [STATE]   friends 1:100 2:100 3:89 / enemies 4:100 5:100 6:98
+2:20  [CC ON TEAM]   2 ← Sleep Walk (Zygumy-Hyjal-EU) | 2s | trinket: ON CD (48s left)
+2:21  [STATE]   friends 1:100 2:100 3:89 / enemies 4:99 5:100 6:100
+2:21  [ENEMY CD]   6 (Retribution Paladin): Execution Sentence
+2:22  [STATE]   friends 1:100 2:100 3:90 / enemies 4:99 5:100 6:99
+2:23  [STATE]   friends 1:100 2:100 3:97 / enemies 4:98 5:100 6:100
+2:24  [STATE]   friends 1:100 2:100 3:100 / enemies 4:98 5:100 6:100
+2:25  [STATE]   friends 1:100 2:100 3:100 / enemies 4:96 5:100 6:100
+2:25  [CC ON TEAM]   1 ← Blinding Light (Poporfour-Archimonde-EU) | 1s | trinket: ON CD (34s left)
+2:26  [STATE]   friends 1:100 2:100 3:100 / enemies 4:95 5:91 6:95
+2:26  [CLEANSE]   2 dispelled Blinding Light off 1
+2:27  [STATE]   friends 1:100 2:100 3:100 / enemies 4:97 5:97 6:99
+2:28  [STATE]   friends 1:100 2:100 3:100 / enemies 4:95 5:100 6:100
+2:29  [STATE]   friends 1:100 2:100 3:92 / enemies 4:80 5:98 6:100
+2:29  [CC ON TEAM]   1 ← Sleep Walk (Zygumy-Hyjal-EU) | 3s | trinket: ON CD (31s left)
+2:30  [STATE]   friends 1:100 2:100 3:88 / enemies 4:79 5:99 6:100
+2:30  [OWNER CD]   Dark Pact
+      [RES] rdy:Δ+Mortal Coil,Shadowfury,2:Paralysis,2:Life Cocoon-3:Ice Block,3:Dragon's Breath  cd:3:Ice Block(211s),3:Dragon's Breath(28s)  enemy:Execution Sentence/Retribution Paladin(9s)  cc:1/Sleep Walk-2s
+2:31  [STATE]   friends 1:82 2:96 3:91 / enemies 4:71 5:98 6:98
+2:31  [ENEMY CD]   5 (Preservation Evoker): Deep Breath
+2:32  [STATE]   friends 1:83 2:91 3:60 / enemies 4:66 5:93 6:79
+2:32  [CC ON TEAM]   2 ← Terror of the Skies (Zygumy-Hyjal-EU) | 2s | trinket: ON CD (36s left)
+2:33  [STATE]   friends 1:85 2:93 3:49 / enemies 4:69 5:98 6:86
+2:33  [CC ON TEAM]   3 ← Terror of the Skies (Zygumy-Hyjal-EU) | 3s
+2:34  [STATE]   friends 1:100 2:100 3:74 / enemies 4:70 5:99 6:87
+2:35  [STATE]   friends 1:100 2:100 3:92 / enemies 4:67 5:98 6:86
+2:36  [STATE]   friends 1:100 2:100 3:83 / enemies 4:77 5:99 6:90
+2:36  [OWNER CD]   Shadowfury
+      [RES] rdy:Δ+Mortal Coil,Shadowfury,2:Life Cocoon-Dark Pact,3:Ice Block,3:Dragon's Breath  cd:Dark Pact(6s),3:Ice Block(205s),3:Dragon's Breath(22s)  enemy:Deep Breath/Preservation Evoker(5s),Execution Sentence/Retribution Paladin(15s)
+2:36  [CC CAST]   Shadowfury (by 1) → nil [non-player target]
+2:36  [CC CAST]   Shadowfury (by 1) → 6, 4 [2 enemies]
+2:37  [STATE]   friends 1:100 2:99 3:89 / enemies 4:79 5:99 6:88
+2:38  [STATE]   friends 1:100 2:99 3:100 / enemies 4:73 5:95 6:85
+2:38  [TEAMMATE CD]   2 (Mistweaver Monk): Paralysis
+      [RES] rdy:Δ+Mortal Coil,Shadowfury,2:Life Cocoon-Dark Pact,3:Ice Block,3:Dragon's Breath  cd:Dark Pact(5s),3:Ice Block(203s),3:Dragon's Breath(20s)  enemy:Deep Breath/Preservation Evoker(7s),Execution Sentence/Retribution Paladin(17s)
+2:39  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:100 6:100
+2:40  [STATE]   friends 1:100 2:99 3:100 / enemies 4:96 5:100 6:97
+2:41  [STATE]   friends 1:100 2:99 3:94 / enemies 4:68 5:100 6:82
+2:42  [STATE]   friends 1:100 2:99 3:93 / enemies 4:58 5:100 6:76
+2:42  [OWNER CD]   Mortal Coil → Mojiwaa-Suramar-EU (58% HP)
+      [RES] rdy:Δ+Shadowfury,2:Paralysis,2:Leg Sweep,2:Life Cocoon-3:Ice Block  cd:3:Ice Block(200s)  enemy:Deep Breath/Preservation Evoker(10s),Execution Sentence/Retribution Paladin(21s)
+2:43  [STATE]   friends 1:100 2:99 3:90 / enemies 4:54 5:99 6:65
+2:45  [STATE]   friends 1:100 2:100 3:100
+2:47  [CLEANSE]   2 dispelled Urteil der Gerechtigkeit off 3
+2:47  [ENEMY CD]   4 (Arms Warrior): Avatar
+2:48  [STATE]   friends 1:100 2:100 3:100
+2:50  [BUFF FADED]   Dark Pact
+2:51  [STATE]   friends 1:100 2:99 3:94
+2:51  [CC ON TEAM]   2 ← Hammer of Justice (Poporfour-Archimonde-EU) | 5s | trinket: ON CD (17s left)
+2:52  [STATE]   friends 1:100 2:99 3:94 / enemies 4:99 5:94 6:88
+2:53  [STATE]   friends 2:99 3:94 / enemies 4:93 5:85 6:69
+2:54  [STATE]   friends 1:100 2:99 3:80 / enemies 4:98 5:90 6:58
+2:54  [CC ON TEAM]   2 ← Sleep Walk (Zygumy-Hyjal-EU) | 4s | trinket: ON CD (14s left)
+2:55  [STATE]   friends 1:100 2:99 3:62 / enemies 4:89 5:90 6:49
+2:56  [STATE]   friends 1:100 2:99 3:36 / enemies 4:95 5:93 6:67
+2:56  [TEAMMATE CD]   3 (Frost Mage): Ice Block
+      [RES] rdy:Δ+2:Life Cocoon-Mortal Coil,3:Ice Block,3:Dragon's Breath  cd:Mortal Coil(31s),3:Ice Block(186s),3:Dragon's Breath(3s)  enemy:Avatar/Arms Warrior(9s),Deep Breath/Preservation Evoker(25s)  cc:2/Sleep Walk-2s
+2:57  [STATE]   friends 1:100 2:98 3:15 / enemies 4:97 5:93 6:79
+2:58  [STATE]   friends 1:100 2:91 3:16 / enemies 4:96 5:81 6:84
+2:59  [STATE]   friends 1:100 2:78 3:39 / enemies 4:97 5:82 6:86
+3:00  [STATE]   friends 1:100 2:73 3:41 / enemies 4:96 5:75 6:83
+3:01  [STATE]   friends 1:100 2:79 3:45 / enemies 4:90 5:61 6:74
+3:02  [STATE]   friends 1:100 2:82 3:46 / enemies 4:93 5:56 6:74
+3:02  [TEAMMATE CD]   2 (Mistweaver Monk): Leg Sweep
+      [RES] rdy:Δ+2:Life Cocoon-Mortal Coil,3:Ice Block  cd:Mortal Coil(24s),3:Ice Block(179s)  enemy:Avatar/Arms Warrior(15s)  cc:2/Beruhigender Nebel-2s[kick]
+3:02  [CC CAST]   Leg Sweep (by 2) → 6, 4 [2 enemies]
+3:02  [CC CAST]   Leg Sweep (by 2) → nil [non-player target]
+3:03  [STATE]   friends 1:100 2:83 3:48 / enemies 4:93 5:41 6:73
+3:04  [STATE]   friends 1:100 2:83 3:51 / enemies 4:93 5:41 6:76
+3:06  [STATE]   friends 1:100 2:97 3:31
+3:09  [STATE]   friends 1:100 2:100 3:100
+3:10  [CC ON TEAM]   3 ← Intimidating Shout (Mojiwaa-Suramar-EU) | 2s
+3:11  [STATE]   friends 1:100 2:100 3:100 / enemies 4:89 5:100 6:91
+3:12  [STATE]   friends 1:100 2:100 3:99 / enemies 4:94 5:100 6:99
+3:13  [STATE]   friends 1:100 2:100 3:84 / enemies 4:100 5:100 6:100
+3:14  [STATE]   friends 1:100 2:100 3:64 / enemies 4:99 5:100 6:100
+3:15  [STATE]   friends 1:100 2:100 3:69 / enemies 4:96 5:100 6:100
+3:15  [CC ON TEAM]   2 ← Sleep Walk (Zygumy-Hyjal-EU) | 3s | trinket: used
+3:16  [STATE]   friends 1:100 2:100 3:70 / enemies 4:82 5:100 6:100
+3:16  [OWNER CD]   Dark Pact
+      [RES] rdy:Δ+3:Dragon's Breath-Mortal Coil  cd:Mortal Coil(10s)  enemy:Avatar/Arms Warrior(29s)  cc:2/Sleep Walk-2s,3/Wasserelementar beschwören-2s[kick]
+3:17  [STATE]   friends 1:80 2:100 3:58 / enemies 4:76 5:100 6:100
+3:18  [STATE]   friends 1:86 2:100 3:42 / enemies 4:80 5:95 6:89
+3:18  [TRINKET]   2 used PvP trinket
+3:18  [TEAMMATE CD]   2 (Mistweaver Monk): Life Cocoon
+      [RES] rdy:Δ+Shadowfury,2:Life Cocoon-Dark Pact,3:Ice Block  cd:Dark Pact(12s),3:Ice Block(163s)
+3:19  [STATE]   friends 1:93 2:100 3:28 / enemies 4:70 5:94 6:88
+3:19  [CC ON TEAM]   3 ← Shockwave (Mojiwaa-Suramar-EU) | 2s
+3:20  [STATE]   friends 1:98 2:100 3:54 / enemies 4:65 5:95 6:88
+3:21  [STATE]   friends 1:100 2:100 3:71 / enemies 4:59 5:100 6:82
+3:22  [STATE]   friends 1:100 2:100 3:85 / enemies 4:53 5:96 6:85
+3:23  [STATE]   friends 1:100 2:100 3:87 / enemies 4:50 5:100 6:81
+3:24  [STATE]   friends 1:100 2:100 3:97 / enemies 4:48 5:100 6:84
+3:25  [STATE]   friends 1:100 2:100 3:100 / enemies 4:72 5:100 6:90
+3:25  [TEAMMATE CD]   2 (Mistweaver Monk): Paralysis
+      [RES] rdy:Δ+3:Dragon's Breath-Mortal Coil,2:Life Cocoon  cd:Mortal Coil(2s),2:Life Cocoon(3s)
+3:26  [STATE]   friends 1:100 2:100 3:100 / enemies 4:61 5:97 6:93
+3:26  [CC ON TEAM]   2 ← Hammer of Justice (Poporfour-Archimonde-EU) | 5s | trinket: ON CD (83s left)
+3:27  [STATE]   friends 1:100 2:99 3:100 / enemies 4:62 5:95 6:91
+3:27  [OWNER CD]   Mortal Coil → Mojiwaa-Suramar-EU (60% HP)
+      [RES] rdy:Δ+3:Dragon's Breath-2:Life Cocoon  cd:2:Life Cocoon(1s)  cc:2/Hammer of Justice-4s[stun]
+3:28  [STATE]   friends 1:100 2:99 3:100 / enemies 4:89 5:100 6:94
+3:29  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:99 6:96
+3:29  [CC ON TEAM]   1 ← Sleep Walk (Zygumy-Hyjal-EU) | 1s | trinket: used
+3:29  [ENEMY CD]   6 (Retribution Paladin): Execution Sentence
+3:29  [TRINKET]   1 used PvP trinket
+3:30  [STATE]   friends 1:100 2:100 3:100 / enemies 4:96 5:94 6:80
+3:31  [STATE]   friends 1:100 2:100 3:100 / enemies 4:93 5:48 6:77
+3:31  [OWNER CD]   Shadowfury
+      [RES] rdy:Δ+Dark Pact,3:Dragon's Breath-Mortal Coil  cd:Mortal Coil(40s)  enemy:Execution Sentence/Retribution Paladin(2s)
+3:31  [CC CAST]   Shadowfury (by 1) → nil [non-player target]
+3:31  [CC CAST]   Shadowfury (by 1) → 4
+3:32  [STATE]   friends 1:100 2:100 3:100 / enemies 4:98 5:48 6:79
+3:33  [STATE]   friends 1:100 2:100 3:100 / enemies 4:98 5:51 6:77
+3:34  [STATE]   friends 1:100 2:100 3:100 / enemies 4:98 5:50 6:73
+3:34  [DMG SPIKE]   3 (Frost Mage): 0.60M in 10s
+3:35  [STATE]   friends 1:100 2:94 3:78 / enemies 4:100 5:51 6:69
+3:36  [STATE]   friends 1:100 2:100 3:47 / enemies 4:100 5:65 6:47
+3:36  [BUFF FADED]   Dark Pact
+3:37  [STATE]   friends 1:100 2:99 3:46 / enemies 4:97 5:65 6:43
+3:38  [STATE]   friends 1:100 2:100 3:51 / enemies 4:94 5:68 6:33
+3:39  [STATE]   friends 1:100 2:100 3:50 / enemies 4:96 5:70 6:38
+3:41  [TEAMMATE CD]   3 (Frost Mage): Dragon's Breath
+      [RES] rdy:Δ+2:Life Cocoon-Mortal Coil  cd:Mortal Coil(31s)  enemy:Execution Sentence/Retribution Paladin(12s)
+3:41  [CC CAST]   Dragon's Breath (by 3) → nil [non-player target]
+3:42  [STATE]   friends 1:100 2:100 3:100
+3:44  [CLEANSE]   2 dispelled Urteil der Gerechtigkeit off 3
+3:45  [STATE]   friends 1:100 2:100 3:97
+3:45  [CC ON TEAM]   3 ← Storm Bolt (Mojiwaa-Suramar-EU) | 1s | trinket: used
+3:46  [STATE]   friends 1:100 2:100 3:100 / enemies 4:95 5:99 6:47
+3:46  [TRINKET]   3 used PvP trinket
+3:47  [STATE]   friends 1:100 2:100 3:94 / enemies 4:91 5:100 6:47
+3:48  [STATE]   friends 1:100 2:99 3:77 / enemies 4:95 5:100 6:98
+3:49  [STATE]   friends 1:100 2:100 3:82 / enemies 4:91 5:99 6:99
+3:50  [STATE]   friends 1:100 2:100 3:86 / enemies 4:65 5:90 6:85
+3:51  [STATE]   friends 1:100 2:99 3:80 / enemies 4:64 5:91 6:84
+3:52  [STATE]   friends 1:100 2:100 3:82 / enemies 4:64 5:99 6:86
+3:53  [STATE]   friends 1:100 2:100 3:81 / enemies 4:64 5:99 6:83
+3:53  [TEAMMATE CD]   2 (Mistweaver Monk): Leg Sweep
+      [RES] rdy:Δ-3:Dragon's Breath  cd:3:Dragon's Breath(33s)  enemy:Execution Sentence/Retribution Paladin(24s)
+3:53  [CC CAST]   Leg Sweep (by 2) → 5
+3:53  [CC CAST]   Leg Sweep (by 2) → nil [non-player target]
+3:54  [STATE]   friends 1:100 2:100 3:79 / enemies 4:66 5:99 6:75
+3:55  [STATE]   friends 1:100 2:100 3:83 / enemies 4:67 5:83 6:78
+3:57  [STATE]   friends 1:100 2:100 3:75
+3:58  [CC ON TEAM]   2 ← Hammer of Justice (Poporfour-Archimonde-EU) | 5s | trinket: ON CD (51s left)
+3:59  [STATE]   friends 1:100 2:92 3:100 / enemies 4:80 5:44 6:90
+4:00  [STATE]   friends 1:100 2:98 3:98 / enemies 4:82 5:38 6:85
+4:01  [STATE]   friends 1:100 2:98 3:95 / enemies 4:84 5:36 6:87
+4:02  [STATE]   friends 1:100 3:87 / enemies 4:79 5:17 6:83
+4:02  [CC ON TEAM]   2 ← Blinding Light (Poporfour-Archimonde-EU) | 4s | trinket: ON CD (47s left)
+4:02  [CC ON TEAM]   3 ← Blinding Light (Poporfour-Archimonde-EU) | 1s | trinket: ON CD (104s left)
+4:02  [ENEMY CD]   4 (Arms Warrior): Avatar
+4:03  [STATE]   friends 1:100 3:86 / enemies 4:78 5:21 6:81
+4:04  [STATE]   friends 1:100 3:84 / enemies 4:80 5:23 6:81
+4:05  [STATE]   friends 1:100 3:83 / enemies 4:81 5:13 6:81
+4:06  [STATE]   friends 1:100 2:100 3:80 / enemies 4:82 5:15 6:82
+4:07  [STATE]   friends 1:100 2:100 3:67 / enemies 4:89 5:47 6:82
+4:08  [STATE]   friends 1:100 2:100 3:52 / enemies 4:82 5:55 6:75
+4:08  [DMG SPIKE]   3 (Frost Mage): 0.91M in 10s
+4:09  [STATE]   friends 1:80 2:96 3:37 / enemies 4:84 5:71 6:71
+4:09  [OWNER CD]   Dark Pact
+      [RES] rdy:Δ-3:Dragon's Breath  cd:3:Dragon's Breath(17s)  enemy:Avatar/Arms Warrior(7s)
+4:10  [STATE]   friends 1:82 2:97 3:25 / enemies 4:73 5:100 6:63
+4:11  [STATE]   friends 1:89 2:100 3:30 / enemies 4:73 5:100 6:55
+4:12  [STATE]   friends 1:94 2:100 3:46 / enemies 4:68 5:94 6:50
+4:13  [STATE]   friends 1:99 2:100 3:50 / enemies 4:71 5:94 6:45
+4:15  [STATE]   friends 1:100 2:100 3:45
+4:18  [STATE]   friends 1:100 2:100 3:40
+4:19  [OWNER CD]   Mortal Coil → Mojiwaa-Suramar-EU (61% HP)
+      [RES] rdy:Δ+Dark Pact,2:Life Cocoon-3:Dragon's Breath  cd:3:Dragon's Breath(7s)  enemy:Avatar/Arms Warrior(17s)
+4:21  [STATE]   friends 1:100 2:100 3:37
+4:23  [CLEANSE]   1 dispelled Weihe off 1
+4:24  [STATE]   friends 1:100 2:100 3:66
+4:27  [STATE]   friends 1:100 2:100 3:70
+4:27  [OWNER CD]   Shadowfury
+      [RES] rdy:Δ  cd:—  enemy:Avatar/Arms Warrior(25s)
+4:27  [CC CAST]   Shadowfury (by 1) → nil [non-player target]
+4:27  [CC CAST]   Shadowfury (by 1) → 4, 6, 5 [3 enemies]
+4:28  [CC ON TEAM]   3 ← Storm Bolt (Mojiwaa-Suramar-EU) | 3s | trinket: ON CD (78s left)
+4:29  [STATE]   friends 1:100 2:100 3:71 / enemies 4:100 5:100 6:98
+4:29  [BUFF FADED]   Dark Pact
+4:30  [STATE]   friends 1:100 2:100 3:72 / enemies 4:100 5:100 6:99
+4:30  [CC ON TEAM]   2 ← Hammer of Justice (Poporfour-Archimonde-EU) | 5s | trinket: ON CD (18s left)
+4:31  [STATE]   friends 1:100 2:100 3:68 / enemies 4:100 5:99 6:98
+4:32  [STATE]   friends 1:100 2:100 3:66 / enemies 4:98 5:100 6:94
+4:33  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:99
+4:33  [ENEMY CD]   6 (Retribution Paladin): Execution Sentence
+4:34  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:99
+4:35  [STATE]   friends 1:100 2:100 3:99 / enemies 4:99 5:100 6:99
+4:35  [CC ON TEAM]   2 ← Sleep Walk (Zygumy-Hyjal-EU) | 0s | trinket: ON CD (14s left)
+4:36  [STATE]   friends 1:100 2:100 3:95 / enemies 4:85 5:100 6:98
+4:36  [TEAMMATE CD]   3 (Frost Mage): Dragon's Breath
+      [RES] rdy:Δ  cd:—  enemy:Execution Sentence/Retribution Paladin(4s)
+4:36  [CC CAST]   Dragon's Breath (by 3) → nil [non-player target]
+4:37  [STATE]   friends 2:100 3:84 / enemies 4:87 5:100 6:100
+4:37  [TEAMMATE CD]   2 (Mistweaver Monk): Life Cocoon
+      [RES] rdy:Δ+Dark Pact-3:Dragon's Breath  cd:3:Dragon's Breath(44s)  enemy:Execution Sentence/Retribution Paladin(5s)
+4:38  [STATE]   friends 1:100 2:100 3:83 / enemies 4:92 5:100 6:99
+4:39  [STATE]   friends 1:100 2:100 3:87 / enemies 4:100 5:100 6:100
+4:40  [STATE]   friends 1:100 2:100 3:91 / enemies 4:100 5:97 6:100
+4:41  [STATE]   friends 1:100 2:100 3:96 / enemies 4:97 5:99 6:100
+4:42  [STATE]   friends 1:100 2:100 3:99 / enemies 4:96 5:99 6:96
+4:43  [STATE]   friends 1:100 2:100 3:100 / enemies 4:95 5:100 6:95
+4:43  [ENEMY CD]   5 (Preservation Evoker): Deep Breath
+4:43  [TEAMMATE CD]   2 (Mistweaver Monk): Leg Sweep
+      [RES] rdy:Δ-2:Life Cocoon  cd:2:Life Cocoon(35s)  enemy:Deep Breath/Preservation Evoker(0s),Execution Sentence/Retribution Paladin(10s)
+4:43  [CC CAST]   Leg Sweep (by 2) → nil [non-player target]
+4:43  [CC CAST]   Leg Sweep (by 2) → 6, 4 [2 enemies]
+4:44  [STATE]   friends 1:100 2:100 3:100 / enemies 4:91 5:100 6:94
+4:44  [CC ON TEAM]   2 ← Terror of the Skies (Zygumy-Hyjal-EU) | 2s | trinket: ON CD (5s left)
+4:44  [CC ON TEAM]   3 ← Terror of the Skies (Zygumy-Hyjal-EU) | 2s | trinket: ON CD (62s left)
+4:45  [STATE]   friends 1:100 2:96 3:94 / enemies 4:87 5:100 6:97
+4:46  [STATE]   friends 1:100 2:91 3:70 / enemies 4:79 5:100 6:95
+4:47  [STATE]   friends 1:100 2:87 3:59 / enemies 4:78 5:100 6:100
+4:48  [STATE]   friends 1:100 2:100 3:84 / enemies 4:84 5:92 6:95
+4:48  [CC ON TEAM]   3 ← Intimidating Shout (Mojiwaa-Suramar-EU) | 1s | trinket: ON CD (58s left)
+4:48  [CC ON TEAM]   1 ← Intimidating Shout (Mojiwaa-Suramar-EU) | 6s | trinket: ON CD (42s left)
+4:48  [CC ON TEAM]   2 ← Intimidating Shout (Mojiwaa-Suramar-EU) | 2s | trinket: ON CD (1s left)
+4:49  [STATE]   friends 1:100 2:98 3:85 / enemies 4:84 5:98 6:97
+4:50  [STATE]   friends 1:100 2:94 3:82 / enemies 4:100 5:100 6:97
+4:51  [STATE]   friends 2:86 3:72 / enemies 4:100 5:100 6:99
+4:52  [STATE]   friends 2:79 3:58 / enemies 4:99 5:100 6:99
+4:53  [STATE]   friends 1:80 2:78 3:61 / enemies 4:100 5:100 6:99
+4:54  [STATE]   friends 1:80 2:79 3:64 / enemies 4:99 5:100 6:99
+4:54  [OWNER CD]   Dark Pact
+      [RES] rdy:Δ-2:Life Cocoon  cd:2:Life Cocoon(25s)  enemy:Deep Breath/Preservation Evoker(11s),Execution Sentence/Retribution Paladin(21s)  cc:1/Intimidating Shout-0s,2/Beruhigender Nebel-2s[kick]
+4:55  [STATE]   friends 1:80 2:68 3:58 / enemies 4:100 5:100 6:100
+4:56  [STATE]   friends 2:68 3:56 / enemies 4:100 5:100 6:100
+4:57  [STATE]   friends 2:69 3:56 / enemies 4:100 5:100 6:97
+4:58  [STATE]   friends 1:80 2:71 3:22 / enemies 4:95 5:92 6:92
+5:00  [STATE]   friends 1:80 2:71 3:33
+5:02  [CC ON TEAM]   2 ← Hammer of Justice (Poporfour-Archimonde-EU) | 5s
+5:03  [STATE]   friends 1:80 2:58 3:49 / enemies 4:93 5:99 6:93
+5:04  [STATE]   friends 1:80 2:58 3:48 / enemies 4:95 5:97 6:92
+5:05  [STATE]   friends 1:80 2:57 3:37 / enemies 4:97 5:97 6:93
+5:06  [STATE]   friends 1:80 2:59 3:28 / enemies 4:98 5:97 6:92
+5:06  [CC ON TEAM]   3 ← Storm Bolt (Mojiwaa-Suramar-EU) | 1s | trinket: ON CD (40s left)
+5:07  [STATE]   friends 1:80 2:58 3:27 / enemies 4:100 5:97 6:100
+5:07  [TEAMMATE CD]   3 (Frost Mage): Ice Block
+      [RES] rdy:Δ+Mortal Coil-Dark Pact,2:Life Cocoon  cd:Dark Pact(1s),2:Life Cocoon(11s)  enemy:Deep Breath/Preservation Evoker(25s)
+5:08  [STATE]   friends 2:57 3:17 / enemies 4:100 5:96 6:100
+5:09  [STATE]   friends 2:60 3:19 / enemies 4:100 5:96 6:100
+5:10  [STATE]   friends 1:81 2:59 3:21 / enemies 4:100 5:100 6:100
+5:11  [STATE]   friends 1:81 2:60 3:40 / enemies 4:100 5:99 6:100
+5:12  [STATE]   friends 1:81 2:61 3:18 / enemies 4:100 5:98 6:100
+5:13  [STATE]   friends 1:81 2:61 3:dead / enemies 4:100 5:98 6:100
+5:13  [DEATH]  3 (Frost Mage — friendly)
+               HP: 22% at T-15s → 48% at T-10s → 19% at T-5s → 21% at T-3s → dead
+               Top damage in final 10s: Poporfour-Archimonde-EU — Innewohnendes Licht (87k), Mojiwaa-Suramar-EU — Schlächterschlag (46k), Mojiwaa-Suramar-EU — Hinrichten (44k)
+5:14  [STATE]   friends 1:69 2:55 3:dead / enemies 4:100 5:97 6:85
+5:14  [BUFF FADED]   Dark Pact
+5:14  [DMG SPIKE]   1 (Affliction Warlock): 0.71M in 10s
+5:15  [STATE]   friends 1:66 2:52 3:dead / enemies 4:100 5:97 6:80
+5:16  [STATE]   friends 1:57 2:46 3:dead / enemies 4:100 5:95 6:65
+5:16  [CC ON TEAM]   1 ← Shockwave (Mojiwaa-Suramar-EU) | 2s | trinket: ON CD (14s left)
+5:17  [STATE]   friends 1:53 2:43 3:dead / enemies 4:100 5:98 6:63
+5:18  [STATE]   friends 1:45 2:42 3:dead / enemies 4:100 5:98 6:68
+5:18  [ENEMY CD]   4 (Arms Warrior): Avatar
+5:19  [STATE]   friends 1:28 2:32 3:dead / enemies 4:100 5:100 6:72
+5:20  [STATE]   friends 1:41 2:31 3:dead / enemies 4:100 5:99 6:72
+5:21  [STATE]   friends 1:23 2:29 3:dead / enemies 4:100 5:98 6:73
+5:22  [STATE]   friends 1:7 2:16 3:dead / enemies 4:100 5:97 6:74
+5:23  [STATE]   friends 1:dead 2:14 3:dead / enemies 4:100 5:97 6:75
+5:23  [DEATH]  1 (Affliction Warlock — friendly)
+               HP: 80% at T-15s → 81% at T-10s → 39% at T-5s → 41% at T-3s → dead
+               Top damage in final 10s: Mojiwaa-Suramar-EU — Hinrichten (159k), Poporfour-Archimonde-EU — Letztes Urteil (98k), Mojiwaa-Suramar-EU — Überwältigen (66k)
+5:24  [STATE]   friends 1:dead 2:dead 3:dead / enemies 4:100 5:96 6:75
+5:24  [DEATH]  2 (Mistweaver Monk — friendly)
+               HP: 60% at T-15s → 55% at T-10s → 32% at T-5s → 29% at T-3s → dead
+               Top damage in final 10s: Poporfour-Archimonde-EU — Letztes Urteil (74k), Zygumy-Hyjal-EU — Lebende Flamme (61k), Mojiwaa-Suramar-EU — Tödlicher Stoß (38k)
+
+5:24  [MATCH END]   damp: 25%
+  friends 1:dead(5:23) 2:dead(5:24) 3:dead(5:13) / enemies 4:100% 5:96% 6:75%

@@ -1,0 +1,9 @@
+This is a short-tunnel loss where the Restoration Druid was killed in the second major burst window after spending their defensive toolkit too early. The structural problem is classic for this match type: the Druid used both Incarnation: Tree of Life charges and both Ironbark plus Barkskin in the first 33 seconds, leaving nothing available when Ascendance plus Bloodlust fired at 0:57.
+
+The opening pressure from 0:09 to 0:33 was real but survivable. The first Incarnation charge at 0:12 came when the Shaman was at 92% HP — that's a very early commitment for a 180-second cooldown, especially with no confirmed high-damage spike at that point. The second Incarnation charge at 0:33 came while the Druid was immobilized by Champion's Spear — not an ideal deployment timing but understandable given the Avatar window. By 0:33, both Incarnation charges were spent. Ironbark had been used at 0:18, Barkskin at 0:30.
+
+At 0:57, Ascendance and Bloodlust activated simultaneously on the enemy Enhancement Shaman — the most dangerous kill window in this matchup. The Druid had Barkskin on a 31-second cooldown, Ironbark on a 49-second cooldown, trinket gone (62 seconds remaining). Frenzied Regeneration was available but had no major defensive multipliers backing it up. The Druid took 0.98M damage in 10 seconds and died.
+
+The cleanse activity was solid throughout — Scorpid Venom removed at 0:30, Earthen Chains twice during the burst window at 1:00 and 1:04. Those were correct responses. The Incapacitating Roar at 1:04 targeting the Warrior was creative but misdirected; the Ascendance Shaman was the kill threat, and a brief attempt to disrupt the Warrior didn't address the source of the damage.
+
+In short-tunnel matches against Enhancement Shamans with Bloodlust, treat Ascendance-plus-Bloodlust as the match-defining kill window and budget your defensive cooldowns accordingly. The early windows are designed to drain your resources before that moment arrives.
