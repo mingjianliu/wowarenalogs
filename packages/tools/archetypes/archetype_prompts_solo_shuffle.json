@@ -1,0 +1,1653 @@
+{
+  "Restoration Druid": {
+    "cluster_0": {
+      "label": "fast_tunnel_swap",
+      "matchCount": 140,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.048Z",
+      "dynamics": {
+        "burstWindowCount": 0.4,
+        "ccEventsPerMinute": 6.66,
+        "tunnelScore": 0.688,
+        "peakBurstScore": 4,
+        "durationSeconds": 59
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.446,
+          "Early": 0.154,
+          "Late": 0.014,
+          "Reactive": 0.025,
+          "Unknown": 0.318
+        },
+        "cdNeverUsedRate": 0.615,
+        "cdResponseLatencyMs": {
+          "median": 6510,
+          "p90": 17962
+        },
+        "ccOffensivePerMatch": {
+          "mean": 4.96,
+          "p75": 6
+        },
+        "drChainsCausedPerMatch": 0.13,
+        "purgeRatePerMin": null,
+        "missedCleanseRate": 0.305,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.336,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.086,
+          "flat_dampening": 0,
+          "unknown": 0.914
+        },
+        "positioningBreakdown": {
+          "mobile": 0.129,
+          "spread": 0.871
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Barkskin": 1.52,
+          "Tranquility": 1,
+          "Incarnation: Tree of Life": 1.33,
+          "Ironbark": 1.28,
+          "Mighty Bash": 1.33,
+          "Incapacitating Roar": 1.7,
+          "Frenzied Regeneration": 1.92,
+          "Stampeding Roar": 1
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "In these short 59-second rounds, the enemy team is applying focused tunnel pressure (tunnelScore 0.688) but burst windows are infrequent (0.4 per round) and shallow (peakBurstScore 4.0). Restoration Druids in this cluster play heavily spread (87.1% spread positioning) and rely on passive HoT coverage rather than active cooldown deployment \u2014 61.5% of cooldowns go unused entirely, and offensive participation is low at 33.6%. Cleanse response is partial (30.5% missed cleanse rate) and CC output is modest at ~5 offensive events per match, consistent with a reactive, field-control style in quick rounds."
+    },
+    "cluster_1": {
+      "label": "cc_heavy_passive",
+      "matchCount": 114,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.048Z",
+      "dynamics": {
+        "burstWindowCount": 0.1,
+        "ccEventsPerMinute": 7.52,
+        "tunnelScore": 0.5,
+        "peakBurstScore": 0.7,
+        "durationSeconds": 132
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.307,
+          "Early": 0.061,
+          "Late": 0.135,
+          "Reactive": 0.061,
+          "Unknown": 0.437
+        },
+        "cdNeverUsedRate": 0.408,
+        "cdResponseLatencyMs": {
+          "median": 8955,
+          "p90": 14401
+        },
+        "ccOffensivePerMatch": {
+          "mean": 9.95,
+          "p75": 13
+        },
+        "drChainsCausedPerMatch": 0.16,
+        "purgeRatePerMin": null,
+        "missedCleanseRate": 0.241,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.829,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.158,
+          "flat_dampening": 0.158,
+          "unknown": 0.684
+        },
+        "positioningBreakdown": {
+          "spread": 1
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Incapacitating Roar": 1.75,
+          "Tranquility": 1,
+          "Ironbark": 1.5,
+          "Barkskin": 1.4,
+          "Frenzied Regeneration": 3,
+          "Mighty Bash": 1.33,
+          "Stampeding Roar": 1
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "These long 132-second rounds feature no meaningful burst (peakBurstScore 0.7, burstWindowCount 0.1) and elevated CC density at 7.52 events per minute, with dampening-style pressure common (flat_dampening at 15.8%). Restoration Druids in this cluster are highly offensively engaged \u2014 participation rate reaches 82.9% and they generate nearly 10 offensive CC events per match \u2014 suggesting they leverage long rounds to contribute to enemy pressure chains. Cooldown usage is delayed rather than absent (late timing at 13.5%, median latency ~9 seconds), and cdNeverUsedRate drops to 40.8%, reflecting that long rounds create more opportunities to deploy defensives reactively."
+    },
+    "cluster_2": {
+      "label": "cc_heavy_swap",
+      "matchCount": 50,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.048Z",
+      "dynamics": {
+        "burstWindowCount": 1.6,
+        "ccEventsPerMinute": 13.1,
+        "tunnelScore": 0.523,
+        "peakBurstScore": 8.6,
+        "durationSeconds": 78
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.792,
+          "Early": 0.16,
+          "Late": 0.048,
+          "Reactive": 0,
+          "Unknown": 0
+        },
+        "cdNeverUsedRate": 0.536,
+        "cdResponseLatencyMs": {
+          "median": 12167,
+          "p90": 19648
+        },
+        "ccOffensivePerMatch": {
+          "mean": 6.48,
+          "p75": 8
+        },
+        "drChainsCausedPerMatch": 0.12,
+        "purgeRatePerMin": null,
+        "missedCleanseRate": 0.481,
+        "healingGapRate": 0.12,
+        "offensiveParticipationRate": 0.376,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.12,
+          "flat_dampening": 0,
+          "unknown": 0.88
+        },
+        "positioningBreakdown": {
+          "spread": 0.88,
+          "stationary": 0.12
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Tranquility": 1,
+          "Ironbark": 1.28,
+          "Barkskin": 1.22,
+          "Incapacitating Roar": 1.5,
+          "Incarnation: Tree of Life": 1.5,
+          "Stampeding Roar": 1,
+          "Frenzied Regeneration": 1
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "These 78-second rounds are defined by high CC density (13.1 events per minute) and moderate burst windows (1.6 per round, peakBurstScore 8.6), creating a chaotic mid-length fight environment. Restoration Druids in this cluster achieve the highest optimal CD timing rate in the spec at 79.2%, suggesting experienced read of burst windows despite the CC noise \u2014 though healingGapRate of 12% and a missed cleanse rate of 48.1% indicate the CC volume creates genuine coverage failures. Offensive participation is low (37.6%) relative to CC events per minute, reflecting that Druids are primarily occupied managing their own team's survival against the frequent CC and swap patterns."
+    },
+    "cluster_3": {
+      "label": "tunnel_sustained_pressure",
+      "matchCount": 98,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.049Z",
+      "dynamics": {
+        "burstWindowCount": 1,
+        "ccEventsPerMinute": 8.95,
+        "tunnelScore": 0.754,
+        "peakBurstScore": 4.5,
+        "durationSeconds": 143
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.65,
+          "Early": 0.019,
+          "Late": 0.074,
+          "Reactive": 0.027,
+          "Unknown": 0.232
+        },
+        "cdNeverUsedRate": 0.403,
+        "cdResponseLatencyMs": {
+          "median": 9167,
+          "p90": 16351
+        },
+        "ccOffensivePerMatch": {
+          "mean": 11.8,
+          "p75": 15
+        },
+        "drChainsCausedPerMatch": 0.31,
+        "purgeRatePerMin": null,
+        "missedCleanseRate": 0.236,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.778,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.122,
+          "flat_dampening": 0.061,
+          "unknown": 0.816
+        },
+        "positioningBreakdown": {
+          "spread": 1
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Barkskin": 1.41,
+          "Tranquility": 1,
+          "Incarnation: Tree of Life": 1.5,
+          "Ironbark": 1.42,
+          "Mighty Bash": 1.33,
+          "Incapacitating Roar": 1.8,
+          "Frenzied Regeneration": 1,
+          "Stampeding Roar": 1
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "These are long 143-second rounds with sustained tunnel pressure (tunnelScore 0.754) and recurring burst windows (1.0 per round, peakBurstScore 4.5), generating a slow-grind attrition dynamic common in dampening-era Solo Shuffle rounds. Restoration Druids in this cluster show high cooldown efficiency \u2014 65.0% optimal timing, cdNeverUsedRate of only 40.3% \u2014 and heavy offensive engagement with 11.8 CC events per match and 77.8% offensive participation rate. The combination of long duration and tunnel pressure appears to reward Druid's ability to sustain HoTs on a targeted ally while contributing defensively-rooted CC into enemy kill windows."
+    }
+  },
+  "Restoration Shaman": {
+    "cluster_0": {
+      "label": "heavy_burst_swap",
+      "matchCount": 46,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.051Z",
+      "dynamics": {
+        "burstWindowCount": 2.3,
+        "ccEventsPerMinute": 7.85,
+        "tunnelScore": 0.562,
+        "peakBurstScore": 15.6,
+        "durationSeconds": 119
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.471,
+          "Early": 0.08,
+          "Late": 0.058,
+          "Reactive": 0,
+          "Unknown": 0.13
+        },
+        "cdNeverUsedRate": 0.348,
+        "cdResponseLatencyMs": {
+          "median": 8906,
+          "p90": 15474
+        },
+        "ccOffensivePerMatch": {
+          "mean": 2.22,
+          "p75": 3
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": 0.839,
+        "missedCleanseRate": 0.737,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.52,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.13,
+          "flat_dampening": 0.13,
+          "unknown": 0.739
+        },
+        "positioningBreakdown": {
+          "spread": 0.87,
+          "stationary": 0.13
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Hex": 2.11,
+          "Spiritwalker's Grace": 1,
+          "Healing Tide Totem": 1.19
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "In this cluster, Restoration Shaman healers face 2.3 burst windows per round with a peakBurstScore of 15.6, producing the highest burst intensity in the spec. CD timing is predominantly Optimal (47.1%) but with a high cdNeverUsedRate of 34.8% and a median response latency of 8906ms, suggesting healers are selective about major cooldown deployment across these 119-second rounds. Offensive participation reaches 52% but purgeRatePerMin is low at 0.839, and the 73.9% unknown setupStyle reflects rounds where opponent patterns are irregular rather than structured."
+    },
+    "cluster_1": {
+      "label": "fast_cc_heavy_tunnel",
+      "matchCount": 23,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.051Z",
+      "dynamics": {
+        "burstWindowCount": 0.3,
+        "ccEventsPerMinute": 9.36,
+        "tunnelScore": 0.842,
+        "peakBurstScore": 0.9,
+        "durationSeconds": 51
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.261,
+          "Early": 0,
+          "Late": 0,
+          "Reactive": 0.13,
+          "Unknown": 0.609
+        },
+        "cdNeverUsedRate": 0.239,
+        "cdResponseLatencyMs": {
+          "median": 19265,
+          "p90": 24199
+        },
+        "ccOffensivePerMatch": {
+          "mean": 0,
+          "p75": 0
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": 2.369,
+        "missedCleanseRate": null,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.261,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.261,
+          "flat_dampening": 0,
+          "unknown": 0.739
+        },
+        "positioningBreakdown": {
+          "clustered": 0.522,
+          "stationary": 0.261,
+          "mobile": 0.217
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Spiritwalker's Grace": 1,
+          "Healing Tide Totem": 1.16,
+          "Hex": 1.48
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "This cluster contains only 23 matches and carries the highest tunnelScore in the entire dataset at 0.842, with rounds ending in a median of 51 seconds \u2014 indicating opponents focus a single target relentlessly rather than swapping. Purge activity surges to 2.369 purges per minute, the highest across all clusters, likely reflecting Shaman attempting to strip defensive buffs off tunneled targets under extreme pressure. Despite the CC-heavy environment (9.36 CC events per minute), healers register zero offensive CC contribution per match, and 60.9% of CD timing entries are unknown, consistent with rounds too short or chaotic for structured cooldown rotation."
+    },
+    "cluster_2": {
+      "label": "cc_heavy_swap",
+      "matchCount": 81,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.051Z",
+      "dynamics": {
+        "burstWindowCount": 0.5,
+        "ccEventsPerMinute": 7.76,
+        "tunnelScore": 0.608,
+        "peakBurstScore": 4.7,
+        "durationSeconds": 80
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.414,
+          "Early": 0.062,
+          "Late": 0.049,
+          "Reactive": 0,
+          "Unknown": 0.401
+        },
+        "cdNeverUsedRate": 0.148,
+        "cdResponseLatencyMs": {
+          "median": 12564,
+          "p90": 13662
+        },
+        "ccOffensivePerMatch": {
+          "mean": 0.44,
+          "p75": 1
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": 2.234,
+        "missedCleanseRate": 0.545,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.088,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.42,
+          "flat_dampening": 0.074,
+          "unknown": 0.506
+        },
+        "positioningBreakdown": {
+          "spread": 0.852,
+          "clustered": 0.148
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Spiritwalker's Grace": 1,
+          "Healing Tide Totem": 1.17,
+          "Hex": 1.75
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "Across 81 rounds averaging 80 seconds, Restoration Shaman healers operate in a moderate-burst, swap-oriented environment with a tunnelScore of 0.608 and a low peakBurstScore of 4.7. Purge activity is elevated at 2.234 per minute \u2014 second only to cluster_1 \u2014 while offensive CC contribution averages just 0.44 per match, indicating healers are more invested in stripping enemy buffs than generating their own crowd control. The cdNeverUsedRate of 14.8% is the lowest in the spec, suggesting these mid-length rounds reliably create windows where major cooldowns see deployment."
+    },
+    "cluster_3": {
+      "label": "heavy_burst_tunnel",
+      "matchCount": 39,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.051Z",
+      "dynamics": {
+        "burstWindowCount": 0.9,
+        "ccEventsPerMinute": 8.19,
+        "tunnelScore": 0.724,
+        "peakBurstScore": 9.5,
+        "durationSeconds": 149
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.256,
+          "Early": 0.346,
+          "Late": 0.186,
+          "Reactive": 0,
+          "Unknown": 0.212
+        },
+        "cdNeverUsedRate": 0.103,
+        "cdResponseLatencyMs": {
+          "median": 1563,
+          "p90": 10989
+        },
+        "ccOffensivePerMatch": {
+          "mean": 3.85,
+          "p75": 6
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": 0.988,
+        "missedCleanseRate": 0.329,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.56,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.41,
+          "flat_dampening": 0.154,
+          "unknown": 0.436
+        },
+        "positioningBreakdown": {
+          "spread": 1
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Spiritwalker's Grace": 1,
+          "Healing Tide Totem": 1.22,
+          "Hex": 1.6
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "In this cluster, Restoration Shaman healers play the longest rounds in the spec at 149 seconds, with a tunnelScore of 0.724 and 3.85 offensive CC actions per match \u2014 the highest in the spec \u2014 indicating active participation in sustained kill attempts. The median CD response latency of 1563ms is remarkably fast, the lowest in the dataset, reflecting proactive rather than reactive cooldown usage; however, Early timing comprises 34.6% of CD events, the highest of any cluster, suggesting healers are committing cooldowns ahead of confirmed damage spikes across these extended engagements. The missedCleanseRate of 32.9% is the lowest in the spec, consistent with healers maintaining dispel discipline during long attrition rounds."
+    }
+  },
+  "Discipline Priest": {
+    "cluster_0": {
+      "label": "fast_nuke_cc_heavy",
+      "matchCount": 18,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.054Z",
+      "dynamics": {
+        "burstWindowCount": 1,
+        "ccEventsPerMinute": 11.07,
+        "tunnelScore": 0.528,
+        "peakBurstScore": 51,
+        "durationSeconds": 104
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.667,
+          "Early": 0.167,
+          "Late": 0.083,
+          "Reactive": 0,
+          "Unknown": 0.083
+        },
+        "cdNeverUsedRate": 0,
+        "cdResponseLatencyMs": {
+          "median": 8744,
+          "p90": 19832
+        },
+        "ccOffensivePerMatch": {
+          "mean": 1.67,
+          "p75": 2
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": 0.527,
+        "missedCleanseRate": 0.58,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.667,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.333,
+          "flat_dampening": 0,
+          "unknown": 0.667
+        },
+        "positioningBreakdown": {
+          "spread": 1
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Psychic Scream": 1,
+          "Power Infusion": 1.5,
+          "Pain Suppression": 1.5
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "In this cluster, Discipline Priests face a single explosive burst window (peakBurstScore 51) embedded in high CC pressure (11.07 CC events/min) across 104-second rounds. CD timing is predominantly optimal (66.7%) with no missed CD usage, and priests engage offensively in 66.7% of rounds \u2014 a notably high rate reflecting the cc_then_burst setup style present in 33.3% of matches. The missed cleanse rate of 58% and purge rate of 0.53/min suggest the priest is occupied managing the burst threat rather than proactively dispelling."
+    },
+    "cluster_1": {
+      "label": "fast_passive_tunnel",
+      "matchCount": 252,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.055Z",
+      "dynamics": {
+        "burstWindowCount": 0.7,
+        "ccEventsPerMinute": 7.09,
+        "tunnelScore": 0.694,
+        "peakBurstScore": 8.9,
+        "durationSeconds": 55
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.544,
+          "Early": 0.139,
+          "Late": 0.046,
+          "Reactive": 0.012,
+          "Unknown": 0.188
+        },
+        "cdNeverUsedRate": 0.306,
+        "cdResponseLatencyMs": {
+          "median": 8158,
+          "p90": 19353
+        },
+        "ccOffensivePerMatch": {
+          "mean": 0.62,
+          "p75": 1
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": 1.935,
+        "missedCleanseRate": 0.68,
+        "healingGapRate": 0.048,
+        "offensiveParticipationRate": 0.165,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.19,
+          "flat_dampening": 0,
+          "unknown": 0.81
+        },
+        "positioningBreakdown": {
+          "mobile": 0.024,
+          "spread": 0.643,
+          "clustered": 0.262,
+          "stationary": 0.071
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Psychic Scream": 1.58,
+          "Power Infusion": 1.89,
+          "Pain Suppression": 1.65,
+          "Power Word: Barrier": 1
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "These are very short rounds averaging 55 seconds with a tunnelScore of 0.694, low burst (peakBurstScore 8.9), and limited CC volume (7.09 events/min) \u2014 a pattern where damage is steady and opponents focus a single target without explosive setups. Discipline Priests use CDs optimally 54.4% of the time but never pop them in 30.6% of rounds, consistent with short matches ending before major cooldowns become necessary. Offensive participation is low at 16.5% and purge rate leads all clusters at 1.94/min, indicating priests prioritize reactive healing and dispel work over applying pressure."
+    },
+    "cluster_2": {
+      "label": "heavy_burst_tunnel",
+      "matchCount": 123,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.056Z",
+      "dynamics": {
+        "burstWindowCount": 2.7,
+        "ccEventsPerMinute": 8.13,
+        "tunnelScore": 0.649,
+        "peakBurstScore": 17.3,
+        "durationSeconds": 138
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.496,
+          "Early": 0.124,
+          "Late": 0.189,
+          "Reactive": 0,
+          "Unknown": 0.191
+        },
+        "cdNeverUsedRate": 0.049,
+        "cdResponseLatencyMs": {
+          "median": 4499,
+          "p90": 19685
+        },
+        "ccOffensivePerMatch": {
+          "mean": 3.2,
+          "p75": 5
+        },
+        "drChainsCausedPerMatch": 0.15,
+        "purgeRatePerMin": 1.557,
+        "missedCleanseRate": 0.534,
+        "healingGapRate": 0.03,
+        "offensiveParticipationRate": 0.743,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.423,
+          "flat_dampening": 0.049,
+          "unknown": 0.528
+        },
+        "positioningBreakdown": {
+          "spread": 0.984,
+          "stationary": 0.016
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Psychic Scream": 1.82,
+          "Power Infusion": 2.13,
+          "Pain Suppression": 1.78,
+          "Power Word: Barrier": 1
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "This cluster features the longest rounds (138 seconds) with repeated burst windows (burstWindowCount 2.7, peakBurstScore 17.3) and heavy tunnel pressure (tunnelScore 0.649), producing a sustained high-demand healing environment. Discipline Priests respond with the highest offensive participation rate (74.3%) and the most CC offensive actions per match (mean 3.2, p75 5), reflecting active engagement in cc_then_burst setups which appear in 42.3% of rounds. CD response latency is fastest here (median 4,499 ms) and the missed cleanse rate drops to 53.4%, suggesting priests are more proactive when the match runs long enough to reward cooldown investment."
+    },
+    "cluster_3": {
+      "label": "cc_heavy_swap",
+      "matchCount": 192,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.056Z",
+      "dynamics": {
+        "burstWindowCount": 0.6,
+        "ccEventsPerMinute": 8.51,
+        "tunnelScore": 0.575,
+        "peakBurstScore": 6,
+        "durationSeconds": 121
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.474,
+          "Early": 0.12,
+          "Late": 0.095,
+          "Reactive": 0.029,
+          "Unknown": 0.282
+        },
+        "cdNeverUsedRate": 0.125,
+        "cdResponseLatencyMs": {
+          "median": 5208,
+          "p90": 15813
+        },
+        "ccOffensivePerMatch": {
+          "mean": 2.11,
+          "p75": 3
+        },
+        "drChainsCausedPerMatch": 0.03,
+        "purgeRatePerMin": 1.289,
+        "missedCleanseRate": 0.48,
+        "healingGapRate": 0.047,
+        "offensiveParticipationRate": 0.618,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.208,
+          "flat_dampening": 0.01,
+          "unknown": 0.781
+        },
+        "positioningBreakdown": {
+          "spread": 0.833,
+          "clustered": 0.156,
+          "stationary": 0.01
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Psychic Scream": 1.63,
+          "Power Infusion": 1.89,
+          "Pain Suppression": 1.68,
+          "Power Word: Barrier": 1
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "Rounds average 121 seconds with moderate CC volume (8.51 events/min), a low tunnelScore of 0.575 indicating frequent target swaps, and soft burst (peakBurstScore 6) spread across fewer than one burst window per round. Discipline Priests miss CD usage in 12.5% of rounds and show the highest Unknown CD timing share (28.2%), suggesting cooldown decisions are less clear-cut when pressure is diffuse and targets shift. Offensive participation sits at 61.8% with 2.11 CC offensive actions per match, reflecting moderate proactivity in a format where swap-driven damage reduces the urgency of any single defensive response."
+    }
+  },
+  "Mistweaver Monk": {
+    "cluster_0": {
+      "label": "cc_tunnel_reactive",
+      "matchCount": 53,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.058Z",
+      "dynamics": {
+        "burstWindowCount": 1.1,
+        "ccEventsPerMinute": 9.65,
+        "tunnelScore": 0.717,
+        "peakBurstScore": 11,
+        "durationSeconds": 136
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.17,
+          "Early": 0,
+          "Late": 0.283,
+          "Reactive": 0,
+          "Unknown": 0.434
+        },
+        "cdNeverUsedRate": 0.113,
+        "cdResponseLatencyMs": {
+          "median": 6258,
+          "p90": 7347
+        },
+        "ccOffensivePerMatch": {
+          "mean": 6.04,
+          "p75": 7
+        },
+        "drChainsCausedPerMatch": 0.11,
+        "purgeRatePerMin": null,
+        "missedCleanseRate": 0.409,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.732,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.34,
+          "flat_dampening": 0.113,
+          "unknown": 0.547
+        },
+        "positioningBreakdown": {
+          "spread": 1
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Paralysis": 1.69,
+          "Leg Sweep": 1.73,
+          "Life Cocoon": 1.34
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "In these 136-second rounds, Mistweaver Monks face a tunneled target (tunnelScore 0.717) with moderate CC pressure at 9.65 events per minute, while only producing one meaningful burst window (burstWindowCount 1.1, peakBurstScore 11). CD usage is heavily skewed toward late or unknown timing (0.283 late, 0.434 unknown), with a 41% missed cleanse rate suggesting the monk is frequently caught responding to damage rather than setting the pace. Offensive participation remains high at 73%, with cc_then_burst accounting for 34% of setups despite the reactive healing posture."
+    },
+    "cluster_1": {
+      "label": "cc_heavy_swap",
+      "matchCount": 40,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.058Z",
+      "dynamics": {
+        "burstWindowCount": 0.4,
+        "ccEventsPerMinute": 10.08,
+        "tunnelScore": 0.479,
+        "peakBurstScore": 2.8,
+        "durationSeconds": 139
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.425,
+          "Early": 0,
+          "Late": 0.075,
+          "Reactive": 0,
+          "Unknown": 0.5
+        },
+        "cdNeverUsedRate": 0,
+        "cdResponseLatencyMs": {
+          "median": 5803,
+          "p90": 5803
+        },
+        "ccOffensivePerMatch": {
+          "mean": 5.58,
+          "p75": 7
+        },
+        "drChainsCausedPerMatch": 0.15,
+        "purgeRatePerMin": null,
+        "missedCleanseRate": 0.306,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.772,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.75,
+          "flat_dampening": 0.125,
+          "unknown": 0.125
+        },
+        "positioningBreakdown": {
+          "spread": 1
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Leg Sweep": 1.48,
+          "Life Cocoon": 1.28,
+          "Paralysis": 1.43
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "These 139-second rounds feature the highest CC density of any cluster at 10.08 events per minute, with opponents swapping targets frequently (tunnelScore 0.479) and nearly three-quarters of setups following a cc_then_burst pattern. Mistweaver Monks in this environment show the strongest CD discipline \u2014 42.5% optimal usage, 0% unused CDs \u2014 and maintain a 77% offensive participation rate despite managing the swap pressure. Cleanse miss rate sits at 31%, the lowest among the longer-duration clusters, consistent with more proactive healing management."
+    },
+    "cluster_2": {
+      "label": "fast_burst_swap",
+      "matchCount": 102,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.058Z",
+      "dynamics": {
+        "burstWindowCount": 0.7,
+        "ccEventsPerMinute": 8.67,
+        "tunnelScore": 0.54,
+        "peakBurstScore": 7.2,
+        "durationSeconds": 53
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.353,
+          "Early": 0,
+          "Late": 0,
+          "Reactive": 0,
+          "Unknown": 0
+        },
+        "cdNeverUsedRate": 0.647,
+        "cdResponseLatencyMs": {
+          "median": 5106,
+          "p90": 18059
+        },
+        "ccOffensivePerMatch": {
+          "mean": 2.88,
+          "p75": 4
+        },
+        "drChainsCausedPerMatch": 0.06,
+        "purgeRatePerMin": null,
+        "missedCleanseRate": 0.309,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.569,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.118,
+          "flat_dampening": 0,
+          "unknown": 0.882
+        },
+        "positioningBreakdown": {
+          "spread": 0.765,
+          "clustered": 0.235
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Leg Sweep": 1.42,
+          "Life Cocoon": 1.14,
+          "Paralysis": 1.61
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "At 53 seconds average duration, these rounds end before most cooldown sequences can fully develop \u2014 64.7% of tracked CDs are never used, and offensive CC contribution drops to a mean of 2.88 per match. When CDs are used the timing is predominantly optimal (35.3%), indicating Mistweavers commit early rather than waiting, though the p90 CD latency of 18 seconds suggests a wide variance in when that commitment happens. Offensive participation falls to 57%, reflecting that the short round length leaves little room for the monk to contribute beyond immediate triage healing."
+    },
+    "cluster_3": {
+      "label": "heavy_burst_swap",
+      "matchCount": 36,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.058Z",
+      "dynamics": {
+        "burstWindowCount": 3,
+        "ccEventsPerMinute": 5.1,
+        "tunnelScore": 0.513,
+        "peakBurstScore": 21.2,
+        "durationSeconds": 160
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.5,
+          "Early": 0,
+          "Late": 0,
+          "Reactive": 0,
+          "Unknown": 0.5
+        },
+        "cdNeverUsedRate": 0,
+        "cdResponseLatencyMs": {
+          "median": 9436,
+          "p90": 14690
+        },
+        "ccOffensivePerMatch": {
+          "mean": 8.5,
+          "p75": 12
+        },
+        "drChainsCausedPerMatch": 0.33,
+        "purgeRatePerMin": null,
+        "missedCleanseRate": 0.482,
+        "healingGapRate": 0.056,
+        "offensiveParticipationRate": 0.736,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0,
+          "flat_dampening": 0.333,
+          "unknown": 0.667
+        },
+        "positioningBreakdown": {
+          "spread": 1
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Paralysis": 2.29,
+          "Leg Sweep": 1.8,
+          "Life Cocoon": 1.11
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "These 160-second rounds generate the most sustained pressure of any cluster, with 3.0 burst windows and a peak burst score of 21.2 \u2014 well above the heavy_burst threshold. Mistweavers show 50% optimal CD timing and 0% unused CDs, but also the highest CD response latency (median 9.4 seconds, p90 14.7 seconds), indicating they absorb initial burst before committing cooldowns. Offensive participation holds at 74% with a mean of 8.5 CC events per match (p75 of 12), and a 48% missed cleanse rate reflects the difficulty of maintaining proactive utility under repeated burst waves in long rounds."
+    }
+  },
+  "Preservation Evoker": {
+    "cluster_0": {
+      "label": "cc_tunnel_fast",
+      "matchCount": 98,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.061Z",
+      "dynamics": {
+        "burstWindowCount": 1.5,
+        "ccEventsPerMinute": 10.14,
+        "tunnelScore": 0.772,
+        "peakBurstScore": 14.8,
+        "durationSeconds": 77
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.45,
+          "Early": 0.028,
+          "Late": 0.116,
+          "Reactive": 0.036,
+          "Unknown": 0.309
+        },
+        "cdNeverUsedRate": 0.49,
+        "cdResponseLatencyMs": {
+          "median": 9920,
+          "p90": 19283
+        },
+        "ccOffensivePerMatch": {
+          "mean": 2.37,
+          "p75": 3
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": 2.732,
+        "missedCleanseRate": 0.497,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.551,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.327,
+          "flat_dampening": 0,
+          "unknown": 0.673
+        },
+        "positioningBreakdown": {
+          "spread": 0.816,
+          "mobile": 0.184
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Deep Breath": 1.17,
+          "Stasis": 1.44,
+          "Emerald Communion": 1,
+          "Tail Swipe": 1,
+          "Wing Buffet": 1.5,
+          "Cauterizing Flame": 1.11,
+          "Rewind": 1,
+          "Rescue": 1.33
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "In these short (77-second) rounds with sustained tunnel pressure (tunnelScore 0.772) and elevated CC density (10.14 per minute), Preservation Evokers display a reactive-leaning defensive posture with 81.6% spread positioning and a purge rate of 2.73 per minute \u2014 among the lower purge outputs across clusters. Nearly half of all cooldowns go unused (cdNeverUsedRate 0.49), and the median CD response latency of ~9.9 seconds suggests healers are absorbing pressure rather than proactively cycling defensives. Offensive participation sits at 55.1%, reflecting that the tunneled format leaves limited windows for Evokers to contribute CC of their own (2.37 offensive CC per match)."
+    },
+    "cluster_1": {
+      "label": "cc_heavy_swap",
+      "matchCount": 137,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.061Z",
+      "dynamics": {
+        "burstWindowCount": 0.6,
+        "ccEventsPerMinute": 7.31,
+        "tunnelScore": 0.488,
+        "peakBurstScore": 4.9,
+        "durationSeconds": 88
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.412,
+          "Early": 0.036,
+          "Late": 0.073,
+          "Reactive": 0.069,
+          "Unknown": 0.409
+        },
+        "cdNeverUsedRate": 0.568,
+        "cdResponseLatencyMs": {
+          "median": 7206,
+          "p90": 15825
+        },
+        "ccOffensivePerMatch": {
+          "mean": 4.22,
+          "p75": 6
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": 3.413,
+        "missedCleanseRate": 0.366,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.635,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.175,
+          "flat_dampening": 0.036,
+          "unknown": 0.788
+        },
+        "positioningBreakdown": {
+          "mobile": 0.131,
+          "spread": 0.869
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Deep Breath": 1.16,
+          "Wing Buffet": 1.31,
+          "Rewind": 1,
+          "Emerald Communion": 1,
+          "Rescue": 1.31,
+          "Tail Swipe": 1,
+          "Cauterizing Flame": 1.76,
+          "Stasis": 1.62
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "These 88-second rounds feature low burst peaks (peakBurstScore 4.9) and moderate swap pressure (tunnelScore 0.488) paired with the highest offensive CC output among all clusters at 4.22 per match (p75: 6), with Evokers maintaining a purge rate of 3.41 per minute. The spread positioning rate of 86.9% and a relatively fast median CD response of ~7.2 seconds suggest healers are staying proactively engaged despite limited singular burst threats. The high unknown setup style rate (78.8%) and elevated ccOffensivePerMatch reflect rounds where Evokers are contributing meaningfully to pressure creation rather than purely reacting."
+    },
+    "cluster_2": {
+      "label": "heavy_burst_tunnel",
+      "matchCount": 102,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.062Z",
+      "dynamics": {
+        "burstWindowCount": 2,
+        "ccEventsPerMinute": 9.21,
+        "tunnelScore": 0.615,
+        "peakBurstScore": 17.4,
+        "durationSeconds": 152
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.481,
+          "Early": 0.091,
+          "Late": 0.099,
+          "Reactive": 0,
+          "Unknown": 0.329
+        },
+        "cdNeverUsedRate": 0.367,
+        "cdResponseLatencyMs": {
+          "median": 12796,
+          "p90": 29403
+        },
+        "ccOffensivePerMatch": {
+          "mean": 5.58,
+          "p75": 7
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": 4.271,
+        "missedCleanseRate": 0.424,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.718,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.373,
+          "flat_dampening": 0.108,
+          "unknown": 0.52
+        },
+        "positioningBreakdown": {
+          "spread": 1
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Deep Breath": 1.31,
+          "Stasis": 1.76,
+          "Emerald Communion": 1,
+          "Tail Swipe": 1,
+          "Wing Buffet": 1.27,
+          "Cauterizing Flame": 1.52,
+          "Rewind": 1,
+          "Rescue": 1.48
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "At 152 seconds, these are the longest rounds in the dataset, with the highest burst parameters (burstWindowCount 2.0, peakBurstScore 17.4) and a tunnelScore of 0.615, producing the most demanding sustained healing environment. Preservation Evokers respond with the highest purge rate (4.27 per minute), the highest offensive participation (71.8%), and the most offensive CC (5.58 per match, p75: 7), indicating active dual-role engagement across the extended fight. CD usage is strongest here \u2014 cdNeverUsedRate drops to 0.367 and optimal timing at 48.1% \u2014 though the long p90 latency of ~29.4 seconds reflects that multiple distinct burst windows force staggered defensive decisions across the round."
+    },
+    "cluster_3": {
+      "label": "passive_tunnel",
+      "matchCount": 134,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.062Z",
+      "dynamics": {
+        "burstWindowCount": 0.4,
+        "ccEventsPerMinute": 5.74,
+        "tunnelScore": 0.675,
+        "peakBurstScore": 2.6,
+        "durationSeconds": 119
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.279,
+          "Early": 0.046,
+          "Late": 0.085,
+          "Reactive": 0.038,
+          "Unknown": 0.462
+        },
+        "cdNeverUsedRate": 0.469,
+        "cdResponseLatencyMs": {
+          "median": 4384,
+          "p90": 20701
+        },
+        "ccOffensivePerMatch": {
+          "mean": 5.27,
+          "p75": 7
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": 3.569,
+        "missedCleanseRate": 0.355,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.723,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.149,
+          "flat_dampening": 0.09,
+          "unknown": 0.761
+        },
+        "positioningBreakdown": {
+          "spread": 0.866,
+          "mobile": 0.134
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Deep Breath": 1.13,
+          "Wing Buffet": 1.4,
+          "Rewind": 1,
+          "Emerald Communion": 1,
+          "Stasis": 1.4,
+          "Rescue": 1.33,
+          "Cauterizing Flame": 1.33,
+          "Tail Swipe": 1
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "These 119-second rounds feature very low burst activity (burstWindowCount 0.4, peakBurstScore 2.6) with moderate tunnel pressure (tunnelScore 0.675) and the lowest CC rate of any cluster at 5.74 per minute. Preservation Evokers in this dynamic show the weakest optimal CD timing rate (27.9%) and an unusually wide latency spread (median 4.4 seconds but p90 at 20.7 seconds), suggesting inconsistent defensive cycling against steady but undramatic pressure. Despite low burst threat, offensive participation remains high at 72.3% with 5.27 CC per match and a purge rate of 3.57 per minute, pointing to Evokers filling time proactively while their teammates slowly grind out the win."
+    }
+  },
+  "Holy Paladin": {
+    "cluster_0": {
+      "label": "passive_swap",
+      "matchCount": 54,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.063Z",
+      "dynamics": {
+        "burstWindowCount": 0.3,
+        "ccEventsPerMinute": 7.62,
+        "tunnelScore": 0.504,
+        "peakBurstScore": 1.1,
+        "durationSeconds": 95
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.369,
+          "Early": 0.037,
+          "Late": 0.161,
+          "Reactive": 0.037,
+          "Unknown": 0.396
+        },
+        "cdNeverUsedRate": 0.472,
+        "cdResponseLatencyMs": {
+          "median": 8347,
+          "p90": 19384
+        },
+        "ccOffensivePerMatch": {
+          "mean": 2.44,
+          "p75": 4
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": null,
+        "missedCleanseRate": 0.372,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.463,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.222,
+          "flat_dampening": 0.111,
+          "unknown": 0.667
+        },
+        "positioningBreakdown": {
+          "spread": 0.778,
+          "clustered": 0.222
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Hammer of Justice": 2.26,
+          "Avenging Crusader": 1.88,
+          "Blessing of Sacrifice": 1.37,
+          "Aura Mastery": 1.19,
+          "Divine Shield": 1,
+          "Blessing of Spellwarding": 1,
+          "Avenging Wrath": 1.38,
+          "Divine Protection": 2.38,
+          "Blessing of Protection": 1
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "In these 95-second rounds, Holy Paladin healers operate in low-intensity environments with virtually no burst windows (0.3 per match) and a peak burst score of only 1.1. Cooldown usage is highly passive \u2014 47.2% of tracked cooldowns go unused entirely, and 39.6% of timing observations are unclassifiable, suggesting healers are largely reacting to diffuse pressure rather than organized kill attempts. Offensive participation sits at 46.3% with a modest 2.44 CC contributions per match, consistent with rounds that never develop into structured kill setups."
+    },
+    "cluster_1": {
+      "label": "heavy_burst_cc_swap",
+      "matchCount": 78,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.063Z",
+      "dynamics": {
+        "burstWindowCount": 3.8,
+        "ccEventsPerMinute": 10.93,
+        "tunnelScore": 0.577,
+        "peakBurstScore": 23.3,
+        "durationSeconds": 170
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.691,
+          "Early": 0.118,
+          "Late": 0.133,
+          "Reactive": 0,
+          "Unknown": 0.057
+        },
+        "cdNeverUsedRate": 0.24,
+        "cdResponseLatencyMs": {
+          "median": 11541,
+          "p90": 17921
+        },
+        "ccOffensivePerMatch": {
+          "mean": 3.08,
+          "p75": 3
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": null,
+        "missedCleanseRate": 0.504,
+        "healingGapRate": 0.065,
+        "offensiveParticipationRate": 0.531,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.462,
+          "flat_dampening": 0.231,
+          "unknown": 0.308
+        },
+        "positioningBreakdown": {
+          "spread": 1
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Hammer of Justice": 2.27,
+          "Blessing of Protection": 1,
+          "Avenging Wrath": 1.42,
+          "Divine Protection": 2.64,
+          "Blessing of Sacrifice": 1.33,
+          "Aura Mastery": 1.14,
+          "Divine Shield": 1,
+          "Avenging Crusader": 2.33,
+          "Blessing of Spellwarding": 1
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "These are the longest and most demanding rounds (170 seconds average), featuring 3.8 burst windows per match, a peak burst score of 23.3, and 10.93 CC events per minute \u2014 placing them at the intersection of heavy burst and heavy CC thresholds. Holy Paladin healers respond with their highest cooldown efficiency: 69.1% optimal timing and only 24% of cooldowns going unused, though the missed cleanse rate of 50.4% and a 6.5% healing gap rate indicate that the volume of pressure still creates coverage lapses. The cc_then_burst setup style appears in 46.2% of matches, the highest proportion across all clusters, reflecting structured coordination from opponents that forces healers into reactive defensive decisions throughout the round."
+    },
+    "cluster_2": {
+      "label": "heavy_burst_tunnel",
+      "matchCount": 66,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.064Z",
+      "dynamics": {
+        "burstWindowCount": 1.7,
+        "ccEventsPerMinute": 9.69,
+        "tunnelScore": 0.571,
+        "peakBurstScore": 15.3,
+        "durationSeconds": 90
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.585,
+          "Early": 0.052,
+          "Late": 0.064,
+          "Reactive": 0,
+          "Unknown": 0.209
+        },
+        "cdNeverUsedRate": 0.505,
+        "cdResponseLatencyMs": {
+          "median": 5832,
+          "p90": 21272
+        },
+        "ccOffensivePerMatch": {
+          "mean": 2.45,
+          "p75": 4
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": null,
+        "missedCleanseRate": 0.484,
+        "healingGapRate": 0.136,
+        "offensiveParticipationRate": 0.485,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.182,
+          "flat_dampening": 0,
+          "unknown": 0.818
+        },
+        "positioningBreakdown": {
+          "spread": 1
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Divine Shield": 1,
+          "Blessing of Spellwarding": 1,
+          "Avenging Wrath": 1.35,
+          "Divine Protection": 2.38,
+          "Blessing of Sacrifice": 1.32,
+          "Aura Mastery": 1.15,
+          "Hammer of Justice": 2.26,
+          "Blessing of Protection": 1,
+          "Avenging Crusader": 2.5
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "At 90 seconds with a peak burst score of 15.3 and a tunnel score of 0.571, these rounds feature concentrated damage on a single target alongside 1.7 burst windows and 9.69 CC events per minute. Holy Paladin healers achieve 58.5% optimal cooldown timing with a relatively low median response latency of 5,832ms, but 50.5% of cooldowns go unused \u2014 likely because many rounds resolve before a second defensive rotation is needed. The 13.6% healing gap rate is the highest across all clusters, indicating that despite efficient timing, the speed and focus of incoming damage creates identifiable windows where healing output falls behind."
+    },
+    "cluster_3": {
+      "label": "fast_passive_tunnel",
+      "matchCount": 36,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.064Z",
+      "dynamics": {
+        "burstWindowCount": 0,
+        "ccEventsPerMinute": 7.83,
+        "tunnelScore": 0.689,
+        "peakBurstScore": 0,
+        "durationSeconds": 70
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.389,
+          "Early": 0.056,
+          "Late": 0.167,
+          "Reactive": 0,
+          "Unknown": 0.056
+        },
+        "cdNeverUsedRate": 0.692,
+        "cdResponseLatencyMs": null,
+        "ccOffensivePerMatch": {
+          "mean": 2,
+          "p75": 3
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": null,
+        "missedCleanseRate": 0.347,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.167,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0,
+          "flat_dampening": 0,
+          "unknown": 1
+        },
+        "positioningBreakdown": {
+          "spread": 0.833,
+          "mobile": 0.167
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Hammer of Justice": 2.31,
+          "Avenging Crusader": 1.75,
+          "Blessing of Sacrifice": 1,
+          "Aura Mastery": 1,
+          "Divine Shield": 1,
+          "Blessing of Spellwarding": 1,
+          "Avenging Wrath": 1.14,
+          "Divine Protection": 1.5,
+          "Blessing of Protection": 1
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "These 70-second rounds end quickly with zero recorded burst windows and a peak burst score of 0.0, yet carry the highest tunnel score (0.689), suggesting opponents lock onto a target without executing structured burst sequences. Holy Paladin healers use the fewest cooldowns of any cluster \u2014 69.2% go unused \u2014 and offensive participation drops to just 16.7%, the lowest observed, consistent with healers spending the round exclusively managing sustained tunnel pressure on one target. The setup style breakdown is entirely unclassified, reflecting that these rounds lack recognizable offensive patterns and end before conventional kill setups can develop."
+    }
+  },
+  "Holy Priest": {
+    "cluster_0": {
+      "label": "heavy_burst_tunnel",
+      "matchCount": 60,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.065Z",
+      "dynamics": {
+        "burstWindowCount": 2.4,
+        "ccEventsPerMinute": 9.5,
+        "tunnelScore": 0.71,
+        "peakBurstScore": 22.4,
+        "durationSeconds": 133
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.69,
+          "Early": 0.083,
+          "Late": 0.094,
+          "Reactive": 0.033,
+          "Unknown": 0.1
+        },
+        "cdNeverUsedRate": 0.26,
+        "cdResponseLatencyMs": {
+          "median": 11496,
+          "p90": 24435
+        },
+        "ccOffensivePerMatch": {
+          "mean": 6,
+          "p75": 6
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": 2.386,
+        "missedCleanseRate": 0.383,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.625,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.2,
+          "flat_dampening": 0.2,
+          "unknown": 0.6
+        },
+        "positioningBreakdown": {
+          "spread": 1
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Psychic Scream": 2.5,
+          "Power Infusion": 1.83,
+          "Guardian Spirit": 1.33,
+          "Divine Hymn": 1,
+          "Apotheosis": 1,
+          "Desperate Prayer": 1
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "In these 133-second Solo Shuffle rounds, Holy Priest operates under sustained tunnel pressure with moderate-to-heavy burst windows (burstWindowCount 2.4, peakBurstScore 22.4). CD usage is largely optimal (69%) with a median response latency around 11.5 seconds, though 26% of cooldowns go entirely unused, suggesting rounds that resolve before all tools are needed. Purge activity runs at 2.4 per minute and offensive participation sits at 62.5%, reflecting active pressure engagement alongside the defensive load."
+    },
+    "cluster_1": {
+      "label": "cc_heavy_swap",
+      "matchCount": 84,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.066Z",
+      "dynamics": {
+        "burstWindowCount": 1,
+        "ccEventsPerMinute": 11.01,
+        "tunnelScore": 0.52,
+        "peakBurstScore": 11.6,
+        "durationSeconds": 82
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.689,
+          "Early": 0.029,
+          "Late": 0.087,
+          "Reactive": 0,
+          "Unknown": 0.195
+        },
+        "cdNeverUsedRate": 0.343,
+        "cdResponseLatencyMs": {
+          "median": 5730,
+          "p90": 15190
+        },
+        "ccOffensivePerMatch": {
+          "mean": 4.29,
+          "p75": 5
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": 3.148,
+        "missedCleanseRate": 0.259,
+        "healingGapRate": 0.071,
+        "offensiveParticipationRate": 0.554,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.286,
+          "flat_dampening": 0,
+          "unknown": 0.714
+        },
+        "positioningBreakdown": {
+          "clustered": 0.071,
+          "spread": 0.857,
+          "stationary": 0.071
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Psychic Scream": 2.67,
+          "Power Infusion": 2.5,
+          "Guardian Spirit": 1.33,
+          "Divine Hymn": 1,
+          "Apotheosis": 1,
+          "Desperate Prayer": 1.25
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "These fast 82-second rounds feature the highest CC density of any cluster at 11 events per minute with a swap-oriented tunnelScore of 0.52, keeping Holy Priest constantly reacting to target switches rather than sustained tunnel damage. Purge rate peaks at 3.1 per minute \u2014 the highest among these clusters \u2014 indicating active dispel priority even in short, chaotic rounds. CD response latency is quick (median 5.7 seconds) and 34% of cooldowns are never spent, consistent with rounds that end before full toolkit deployment."
+    },
+    "cluster_2": {
+      "label": "fast_low_burst_tunnel",
+      "matchCount": 102,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.066Z",
+      "dynamics": {
+        "burstWindowCount": 0.8,
+        "ccEventsPerMinute": 6.63,
+        "tunnelScore": 0.76,
+        "peakBurstScore": 7.5,
+        "durationSeconds": 69
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.612,
+          "Early": 0.136,
+          "Late": 0.081,
+          "Reactive": 0.024,
+          "Unknown": 0.088
+        },
+        "cdNeverUsedRate": 0.388,
+        "cdResponseLatencyMs": {
+          "median": 6005,
+          "p90": 15153
+        },
+        "ccOffensivePerMatch": {
+          "mean": 3.76,
+          "p75": 5
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": 2.168,
+        "missedCleanseRate": 0.364,
+        "healingGapRate": 0,
+        "offensiveParticipationRate": 0.385,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.353,
+          "flat_dampening": 0,
+          "unknown": 0.647
+        },
+        "positioningBreakdown": {
+          "spread": 0.765,
+          "stationary": 0.118,
+          "clustered": 0.118
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Psychic Scream": 2.13,
+          "Power Infusion": 1.89,
+          "Guardian Spirit": 1.22,
+          "Divine Hymn": 1,
+          "Apotheosis": 1,
+          "Desperate Prayer": 1
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "At a median of 69 seconds these are the shortest rounds, with low burst pressure (peakBurstScore 7.5, burstWindowCount 0.8) but high tunnel focus (tunnelScore 0.76), meaning damage is steady and concentrated rather than spikey. Holy Priest shows the lowest offensive participation rate at 38.5% and a purge rate of 2.2 per minute, consistent with a primarily defensive posture across brief engagements. CD never-used rate reaches 38.8%, the second-highest of the clusters, as rounds conclude before escalating to phases that would demand major cooldown investment."
+    },
+    "cluster_3": {
+      "label": "heavy_burst_cc_tunnel",
+      "matchCount": 42,
+      "minRating": 2400,
+      "generatedAt": "2026-05-19T19:31:56.066Z",
+      "dynamics": {
+        "burstWindowCount": 4.3,
+        "ccEventsPerMinute": 10.86,
+        "tunnelScore": 0.701,
+        "peakBurstScore": 21.6,
+        "durationSeconds": 166
+      },
+      "behaviors": {
+        "cdTiming": {
+          "Optimal": 0.512,
+          "Early": 0.141,
+          "Late": 0.225,
+          "Reactive": 0,
+          "Unknown": 0.123
+        },
+        "cdNeverUsedRate": 0.171,
+        "cdResponseLatencyMs": {
+          "median": 7134,
+          "p90": 24707
+        },
+        "ccOffensivePerMatch": {
+          "mean": 6.86,
+          "p75": 9
+        },
+        "drChainsCausedPerMatch": 0,
+        "purgeRatePerMin": 4.456,
+        "missedCleanseRate": 0.487,
+        "healingGapRate": 0.036,
+        "offensiveParticipationRate": 0.631,
+        "setupStyleBreakdown": {
+          "one_shot_burst": 0,
+          "cc_then_burst": 0.286,
+          "flat_dampening": 0.143,
+          "unknown": 0.571
+        },
+        "positioningBreakdown": {
+          "stationary": 0.143,
+          "spread": 0.857
+        }
+      },
+      "enemyHealerPartial": {
+        "note": "lower fidelity \u2014 cast events only, no HP/resource context",
+        "cdCastsObserved": {
+          "Psychic Scream": 2.17,
+          "Power Infusion": 2.67,
+          "Guardian Spirit": 1.67,
+          "Divine Hymn": 1,
+          "Apotheosis": 1,
+          "Desperate Prayer": 1.33
+        },
+        "ccOffensivePerMatch": 0
+      },
+      "promptText": "These are the longest and most demanding rounds at 166 seconds, combining heavy burst (burstWindowCount 4.3, peakBurstScore 21.6), high CC rate (10.9 per minute), and tunnel pressure (tunnelScore 0.70). Holy Priest purge output reaches 4.5 per minute \u2014 the highest of any cluster \u2014 while offensive participation holds at 63%, indicating active involvement in the tempo of the fight even as defensive demands accumulate through dampening. CD timing degrades noticeably with 22.5% late usage and a p90 response latency of nearly 25 seconds, reflecting the difficulty of prioritizing cooldown windows across repeated burst cycles in extended rounds."
+    }
+  }
+}
