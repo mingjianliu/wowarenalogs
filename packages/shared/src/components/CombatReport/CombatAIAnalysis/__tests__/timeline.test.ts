@@ -2067,8 +2067,8 @@ describe('buildMatchTimeline — [CC CAST] events', () => {
     expect(castLines).toHaveLength(2);
   });
 
-  // B46: CC targeting non-player units
-  it('B46: emits [CC CAST] with [non-player target] when a friendly player CCs a Guardian unit', () => {
+  // B105: CC targeting non-player units should be suppressed
+  it('B105: does NOT emit [CC CAST] when a friendly player CCs a Guardian unit (suppress noise)', () => {
     const GUARDIAN_FLAGS = 0x00002000;
     // Spell 118 = Polymorph — a CC spell in ccSpellIds
     const result = buildMatchTimeline(
@@ -2081,12 +2081,11 @@ describe('buildMatchTimeline — [CC CAST] events', () => {
         } as any,
       }),
     );
-    expect(result).toContain('[CC CAST]');
-    expect(result).toContain('[non-player target]');
-    expect(result).toContain('Tremor Totem');
+    expect(result).not.toContain('[CC CAST]');
+    expect(result).not.toContain('[non-player target]');
   });
 
-  it('B46: does NOT emit [non-player target] for CC cast on an enemy player', () => {
+  it('B46/B105: does NOT emit [non-player target] for CC cast on an enemy player', () => {
     // Spell 118 = Polymorph, targeting a player (no guardian flags)
     const result = buildMatchTimeline(
       makeBaseParams({
@@ -2104,7 +2103,7 @@ describe('buildMatchTimeline — [CC CAST] events', () => {
     expect(nonPlayerLines).toHaveLength(0);
   });
 
-  it('B46: does NOT emit [CC CAST] for non-CC spells cast at a Guardian', () => {
+  it('B46/B105: does NOT emit [CC CAST] for non-CC spells cast at a Guardian', () => {
     const GUARDIAN_FLAGS = 0x00002000;
     // Spell ID '1' is not a CC spell
     const result = buildMatchTimeline(
