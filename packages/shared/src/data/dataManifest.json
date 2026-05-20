@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-04-30T05:39:34.696Z",
-  "gitCommit": "7e0a59b2acbee319916e71bf34ee12deddc6fefb",
+  "generatedAt": "2026-05-13T20:48:49.002Z",
+  "gitCommit": "972a22d19dbf1f103828defe1b78b16421a5697a",
   "files": {
     "spellEffects.json": {
       "description": "Per-spell cooldown, duration, dispelType from Wago.tools DB2",
       "generatedBy": "npm run start:refreshSpellMetadata (packages/tools)",
       "wowDataDependent": true,
-      "entryCount": 772,
-      "sha256": "a20dcab143e76d467840b048ed3bc8b9c54ed5bb140e1686bca236b9568e3e11",
+      "entryCount": 776,
+      "sha256": "ce026a1b811a252944898b8b8b23bbcf5c2ffd730a603d08835a0638b8a69951",
       "lastCommit": {
-        "hash": "5c81d9c6b7584f8edd0eebedb78f01543bea541d",
-        "date": "2026-04-15T18:28:38-07:00",
-        "subject": "chore(data): update WoW spell data to build 12.0.5.66741"
+        "hash": "053ea6835d28b8a62ab6c40eecddeb30434afb1e",
+        "date": "2026-05-12T23:32:05-07:00",
+        "subject": "feat(F100): add Lay on Hands, Power Word: Barrier, Weapons of Order to spellEffects"
       }
     },
     "spells.json": {
@@ -19,11 +19,11 @@
       "generatedBy": "npm run start:generateSpellsData (packages/tools)",
       "wowDataDependent": true,
       "entryCount": 543,
-      "sha256": "67fbf7a1b3d34b2ddbb7468c36b2753573ca9efa0af55814b9a80e5297ea9db6",
+      "sha256": "9ac8ad2e9cb9baf565c30eb66125e544a4e292f413a709649449318bac2c81f9",
       "lastCommit": {
-        "hash": "69a9756ad900078977b294599956aa16f20e5dee",
-        "date": "2026-04-02T12:12:43-07:00",
-        "subject": "fix(ai): correct data quality issues from Antigravity refactor"
+        "hash": "6d104028373a87df424a30bc523ec364e76ca0ef",
+        "date": "2026-04-30T20:56:29-07:00",
+        "subject": "fix(enemyCDs): track Havoc Meta (191427) and Feral Spirit (51533) as offensive CDs (F44)"
       }
     },
     "spellIdLists.json": {

@@ -42,10 +42,12 @@ const EVAL_COUNT = parseInt(process.env.EVAL_COUNT ?? '30', 10);
 const MIN_RATING = parseInt(process.env.MIN_RATING ?? '2000', 10);
 const BRACKET = process.env.BRACKET ?? '3v3';
 
+const BRACKET_SLUG = BRACKET.toLowerCase().includes('solo') ? 'solo_shuffle' : '3v3';
+
 const ARCHETYPES_DIR = path.join(__dirname, '../archetypes');
-const EVAL_DIR = path.join(ARCHETYPES_DIR, 'eval');
-const PROMPTS_FILE = path.join(ARCHETYPES_DIR, 'archetype_prompts.json');
-const MODEL_FILE = path.join(ARCHETYPES_DIR, 'archetype_model.json');
+const EVAL_DIR = path.join(ARCHETYPES_DIR, `eval_${BRACKET_SLUG}`);
+const PROMPTS_FILE = path.join(ARCHETYPES_DIR, `archetype_prompts_${BRACKET_SLUG}.json`);
+const MODEL_FILE = path.join(ARCHETYPES_DIR, `archetype_model_${BRACKET_SLUG}.json`);
 
 export const VARIANTS = ['baseline', 'label_only', 'narrative', 'narrative_stats'] as const;
 export type Variant = (typeof VARIANTS)[number];
@@ -55,7 +57,7 @@ export type Variant = (typeof VARIANTS)[number];
 interface IArchetypeModel {
   normParams: { min: number[]; max: number[] };
   featureNames: string[];
-  specModels: Record<string, { centroids: number[][] }>;
+  centroids: number[][];
 }
 
 interface IEvalIndexEntry {
@@ -77,9 +79,10 @@ function toFeatureVector(d: IMatchDynamicFeatures): number[] {
     d.burstWindowCount,
     d.ccEventsPerMinute,
     d.tunnelScore,
-    d.peakBurstScore,
+    Math.log1p(d.peakBurstScore),
     d.criticalOrExposedBurstWindows ?? 0,
-    d.durationSeconds,
+    Math.log1p(d.durationSeconds),
+    d.ownTeamCCPerMin,
   ];
 }
 
@@ -96,16 +99,12 @@ function euclidean(a: number[], b: number[]): number {
 
 function classifyCluster(
   matchDynamic: IMatchDynamicFeatures,
-  healerSpec: string,
   model: IArchetypeModel,
-): { clusterKey: string; clusterIdx: number } | null {
-  const specModel = model.specModels[healerSpec];
-  if (!specModel) return null;
-
+): { clusterKey: string; clusterIdx: number } {
   const vec = normalize(toFeatureVector(matchDynamic), model.normParams);
   let bestIdx = 0;
   let bestDist = Infinity;
-  specModel.centroids.forEach((centroid, idx) => {
+  model.centroids.forEach((centroid, idx) => {
     const dist = euclidean(vec, centroid);
     if (dist < bestDist) {
       bestDist = dist;
@@ -195,7 +194,7 @@ function buildVariantPrompt(
 ): string {
   if (variant === 'baseline') return baselinePrompt;
 
-  const header = `[ARCHETYPE: ${spec} — ${cluster.label}]`;
+  const header = `[MATCH TYPE: ${cluster.label}]`;
 
   if (variant === 'label_only') {
     return `${header}\n\n${baselinePrompt}`;
@@ -262,7 +261,11 @@ async function main() {
         continue;
       }
 
+      const IS_SOLO_SHUFFLE = BRACKET.toLowerCase().includes('solo');
       for (const combat of combats) {
+        // Enforce bracket — never mix IArenaMatch and IShuffleRound
+        if (IS_SOLO_SHUFFLE ? combat.dataType !== 'ShuffleRound' : combat.dataType !== 'ArenaMatch') continue;
+
         const allUnits = Object.values(combat.units);
         const friends = allUnits.filter(
           (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
@@ -278,16 +281,11 @@ async function main() {
         const dynamics = extractMatchDynamics(combat, friends, enemies);
         if (!dynamics) continue;
 
-        const classification = classifyCluster(dynamics, spec, model);
-        if (!classification) {
-          console.log(`  No cluster model for ${spec}, skipping`);
-          continue;
-        }
-
+        const classification = classifyCluster(dynamics, model);
         const { clusterKey } = classification;
-        const cluster = archetypePrompts[spec]?.[clusterKey];
+        const cluster = archetypePrompts[clusterKey];
         if (!cluster) {
-          console.log(`  No archetype for ${spec}/${clusterKey}`);
+          console.log(`  No archetype for ${clusterKey}`);
           continue;
         }
 

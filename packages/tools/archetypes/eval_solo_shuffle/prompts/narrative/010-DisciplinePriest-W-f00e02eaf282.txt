@@ -1,0 +1,94 @@
+[ARCHETYPE: Discipline Priest — fast_passive_tunnel]
+These are very short rounds averaging 55 seconds with a tunnelScore of 0.694, low burst (peakBurstScore 8.9), and limited CC volume (7.09 events/min) — a pattern where damage is steady and opponents focus a single target without explosive setups. Discipline Priests use CDs optimally 54.4% of the time but never pop them in 30.6% of rounds, consistent with short matches ending before major cooldowns become necessary. Offensive participation is low at 16.5% and purge rate leads all clusters at 1.94/min, indicating priests prioritize reactive healing and dispel work over applying pressure.
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Enhancement Shaman | Bracket: Rated Solo Shuffle | Result: Win | Duration: 0:46
+  My team: Fury Warrior, Enhancement Shaman, Discipline Priest
+  Enemy team: Beast Mastery Hunter, Discipline Priest, Retribution Paladin
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Enhancement Shaman): CAN offensive purge
+  Team purgers: Discipline Priest
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Letsgoflyers-Proudmoore-US (Enhancement Shaman — log owner):
+    Hex [30s], Ascendance (Enhancement) [180s]
+  2: Dintrax-Tichondrius-US (Fury Warrior):
+    Avatar [90s], Intimidating Shout [90s]
+  3: Liallivia-Sen'jin-US (Discipline Priest):
+    Psychic Scream [40s], Power Infusion [120s, 2 Charges], Pain Suppression [180s]
+  4: Diapermaxxer-Area52-US (Beast Mastery Hunter — enemy):
+    Bestial Wrath [90s]
+  5: Skeemzin-Tichondrius-US (Discipline Priest — enemy):
+    Power Infusion [120s]
+  6: Immapriest-Sargeras-US (Retribution Paladin — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:03  [STATE]   friends 2:99
+0:06  [STATE]   friends 2:100
+0:09  [STATE]   friends 1:99 2:98
+0:12  [STATE]   friends 1:100 2:88
+0:15  [STATE]   friends 1:99 2:87
+0:18  [STATE]   friends 1:100 2:88
+0:21  [STATE]   friends 1:99 2:89
+0:22  [CC ON TEAM]   2 ← Psychic Scream (Skeemzin-Tichondrius-US) | 5s
+0:22  [CC ON TEAM]   1 ← Psychic Scream (Skeemzin-Tichondrius-US) | 3s
+0:23  [STATE]   friends 1:98 2:86 3:99 / enemies 4:100 5:100 6:100
+0:24  [STATE]   friends 1:95 2:86 3:99 / enemies 4:100 5:100 6:100
+0:24  [CC ON TEAM]   3 ← Freezing Trap (Diapermaxxer-Area52-US) | 6s
+0:25  [STATE]   friends 1:94 2:86 3:99 / enemies 4:100 5:100 6:100
+0:26  [STATE]   friends 1:88 / enemies 4:100 5:100 6:100
+0:27  [STATE]   friends 1:86 / enemies 4:100 5:100 6:100
+0:28  [STATE]   friends 1:82 2:87 / enemies 4:100 5:100 6:100
+0:28  [OFFENSIVE WINDOW]   0:28–0:49 | High | 0.45M on 1 (Enhancement Shaman) | CDs: Bestial Wrath + Power Infusion
+0:28  [ENEMY CD]   4 (Beast Mastery Hunter): Bestial Wrath
+0:29  [STATE]   friends 1:68 2:87 / enemies 4:100 5:100 6:100
+0:30  [STATE]   friends 1:61 2:83 3:99 / enemies 4:100 5:100 6:100
+0:30  [TEAMMATE CD]   2 (Fury Warrior): Avatar
+      [RES] rdy:Δ+Hex,2:Avatar,3:Power Infusion,3:Pain Suppression  cd:—  enemy:Bestial Wrath/Beast Mastery Hunter(2s)  cc:3/Freezing Trap-0s
+0:30  [TEAMMATE CD]   3 (Discipline Priest): Pain Suppression
+      [RES] rdy:Δ+Hex,3:Pain Suppression  cd:—  enemy:Bestial Wrath/Beast Mastery Hunter(2s)
+0:31  [STATE]   friends 1:60 2:83 3:99 / enemies 4:100 5:100 6:100
+0:31  [OWNER CD]   Hex → Skeemzin-Tichondrius-US (100% HP)
+      [RES] rdy:Hex,Ascendance (Enhancement),2:Intimidating Shout,3:Psychic Scream,3:Power Infusion  cd:2:Avatar(89s),3:Pain Suppression(179s)  enemy:Bestial Wrath/Beast Mastery Hunter(3s)
+0:32  [STATE]   friends 1:72 2:91 3:100 / enemies 4:100 5:100 6:100
+0:32  [CC ON TEAM]   1 ← Blinding Light (Immapriest-Sargeras-US) | 1s
+0:32  [CC ON TEAM]   2 ← Blinding Light (Immapriest-Sargeras-US) | 2s
+0:32  [TEAMMATE CD]   3 (Discipline Priest): Power Infusion
+      [RES] rdy:Δ-Hex,2:Avatar,3:Pain Suppression  cd:Hex(29s),2:Avatar(87s),3:Pain Suppression(178s)  enemy:Bestial Wrath/Beast Mastery Hunter(5s)  cc:1/Blinding Light-1s,2/Blinding Light-2s
+0:32  [TEAMMATE CD]   3 (Discipline Priest): Power Infusion
+      [RES] rdy:Δ  cd:—  enemy:Bestial Wrath/Beast Mastery Hunter(5s)  cc:1/Blinding Light-1s,2/Blinding Light-2s
+0:33  [STATE]   friends 1:74 2:92 3:100 / enemies 4:100 5:100 6:100
+0:34  [STATE]   friends 1:76 2:92 3:100 / enemies 4:97 5:95 6:100
+0:34  [ENEMY BUFF]   4: Power Infusion (purgeable)
+0:34  [ENEMY BUFF]   5: Power Infusion (purgeable)
+0:34  [ENEMY CD]   5 (Discipline Priest): Power Infusion
+0:35  [STATE]   friends 1:92 2:95 3:100 / enemies 4:84 5:92 6:100
+0:35  [DMG SPIKE]   1 (Enhancement Shaman): 0.45M in 10s
+0:36  [STATE]   friends 1:96 2:97 3:100 / enemies 4:84 5:100 6:100
+0:36  [OWNER CD]   Ascendance (Enhancement)
+      [RES] rdy:Δ-Hex,3:Power Infusion  cd:Hex(25s),3:Power Infusion(116s)  enemy:Bestial Wrath/Beast Mastery Hunter(8s),Power Infusion/Discipline Priest(2s)
+0:37  [STATE]   friends 1:94 2:98 3:100 / enemies 4:80 5:98 6:100
+0:38  [STATE]   friends 1:99 2:100 3:100 / enemies 4:55 5:70 6:96
+0:39  [STATE]   friends 1:100 2:100 3:100 / enemies 4:54 5:59 6:72
+0:40  [STATE]   friends 1:100 2:100 3:100 / enemies 4:53 5:38 6:57
+0:41  [STATE]   friends 1:95 2:100 3:100 / enemies 4:43 5:52 6:28
+0:41  [ENEMY BUFF END]   5: Power Infusion
+0:42  [STATE]   friends 1:100 2:100 3:100 / enemies 4:61 5:40 6:27
+0:43  [STATE]   friends 1:99 2:100 3:100 / enemies 4:54 5:23 6:51
+0:44  [STATE]   friends 1:99 2:100 3:100 / enemies 4:45 5:12 6:52
+0:44  [CLEANSE]   3 dispelled 2 effects: Blaze of Light off 1, Hunter's Mark off 1
+0:45  [STATE]   friends 1:92 2:99 3:100 / enemies 4:39 5:3 6:52
+0:46  [STATE]   friends 1:84 2:99 3:100 / enemies 4:100 5:dead 6:57
+0:46  [DEATH]  5 (Discipline Priest — enemy)
+0:46  [ROSTER]  enemy 5 removed (dead)
+0:46  [CC ON TEAM]   3 ← Hammer of Justice (Immapriest-Sargeras-US) | 5s
+0:49  [ENEMY BUFF END]   4: Power Infusion
+
+0:46  [MATCH END]   damp: 10%
+  friends 1:84% 2:100% 3:100% / enemies 4:100% 5:dead(0:46) 6:58%

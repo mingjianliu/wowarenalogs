@@ -1,0 +1,482 @@
+[
+  {
+    "ordinal": 1,
+    "matchId": "1da7d5431499515932f74fdd823c705a",
+    "spec": "Mistweaver Monk",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Loss",
+    "durationSec": 114,
+    "clusterKey": "cluster_0",
+    "clusterLabel": "cc_tunnel_reactive",
+    "files": {
+      "baseline": "001-MistweaverMonk-L-1da7d5431499.txt",
+      "label_only": "001-MistweaverMonk-L-1da7d5431499.txt",
+      "narrative": "001-MistweaverMonk-L-1da7d5431499.txt",
+      "narrative_stats": "001-MistweaverMonk-L-1da7d5431499.txt"
+    }
+  },
+  {
+    "ordinal": 2,
+    "matchId": "1da7d5431499515932f74fdd823c705a",
+    "spec": "Holy Paladin",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Loss",
+    "durationSec": 35,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "fast_passive_tunnel",
+    "files": {
+      "baseline": "002-HolyPaladin-L-1da7d5431499.txt",
+      "label_only": "002-HolyPaladin-L-1da7d5431499.txt",
+      "narrative": "002-HolyPaladin-L-1da7d5431499.txt",
+      "narrative_stats": "002-HolyPaladin-L-1da7d5431499.txt"
+    }
+  },
+  {
+    "ordinal": 3,
+    "matchId": "1da7d5431499515932f74fdd823c705a",
+    "spec": "Mistweaver Monk",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Win",
+    "durationSec": 42,
+    "clusterKey": "cluster_2",
+    "clusterLabel": "fast_burst_swap",
+    "files": {
+      "baseline": "003-MistweaverMonk-W-1da7d5431499.txt",
+      "label_only": "003-MistweaverMonk-W-1da7d5431499.txt",
+      "narrative": "003-MistweaverMonk-W-1da7d5431499.txt",
+      "narrative_stats": "003-MistweaverMonk-W-1da7d5431499.txt"
+    }
+  },
+  {
+    "ordinal": 4,
+    "matchId": "1da7d5431499515932f74fdd823c705a",
+    "spec": "Holy Paladin",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Win",
+    "durationSec": 136,
+    "clusterKey": "cluster_0",
+    "clusterLabel": "passive_swap",
+    "files": {
+      "baseline": "004-HolyPaladin-W-1da7d5431499.txt",
+      "label_only": "004-HolyPaladin-W-1da7d5431499.txt",
+      "narrative": "004-HolyPaladin-W-1da7d5431499.txt",
+      "narrative_stats": "004-HolyPaladin-W-1da7d5431499.txt"
+    }
+  },
+  {
+    "ordinal": 5,
+    "matchId": "1da7d5431499515932f74fdd823c705a",
+    "spec": "Holy Paladin",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Loss",
+    "durationSec": 160,
+    "clusterKey": "cluster_1",
+    "clusterLabel": "heavy_burst_cc_swap",
+    "files": {
+      "baseline": "005-HolyPaladin-L-1da7d5431499.txt",
+      "label_only": "005-HolyPaladin-L-1da7d5431499.txt",
+      "narrative": "005-HolyPaladin-L-1da7d5431499.txt",
+      "narrative_stats": "005-HolyPaladin-L-1da7d5431499.txt"
+    }
+  },
+  {
+    "ordinal": 6,
+    "matchId": "1da7d5431499515932f74fdd823c705a",
+    "spec": "Mistweaver Monk",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Loss",
+    "durationSec": 164,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "heavy_burst_swap",
+    "files": {
+      "baseline": "006-MistweaverMonk-L-1da7d5431499.txt",
+      "label_only": "006-MistweaverMonk-L-1da7d5431499.txt",
+      "narrative": "006-MistweaverMonk-L-1da7d5431499.txt",
+      "narrative_stats": "006-MistweaverMonk-L-1da7d5431499.txt"
+    }
+  },
+  {
+    "ordinal": 7,
+    "matchId": "f00e02eaf2822c9201f4473530ee2b28",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Loss",
+    "durationSec": 110,
+    "clusterKey": "cluster_2",
+    "clusterLabel": "heavy_burst_tunnel",
+    "files": {
+      "baseline": "007-DisciplinePriest-L-f00e02eaf282.txt",
+      "label_only": "007-DisciplinePriest-L-f00e02eaf282.txt",
+      "narrative": "007-DisciplinePriest-L-f00e02eaf282.txt",
+      "narrative_stats": "007-DisciplinePriest-L-f00e02eaf282.txt"
+    }
+  },
+  {
+    "ordinal": 8,
+    "matchId": "f00e02eaf2822c9201f4473530ee2b28",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Loss",
+    "durationSec": 84,
+    "clusterKey": "cluster_1",
+    "clusterLabel": "fast_passive_tunnel",
+    "files": {
+      "baseline": "008-DisciplinePriest-L-f00e02eaf282.txt",
+      "label_only": "008-DisciplinePriest-L-f00e02eaf282.txt",
+      "narrative": "008-DisciplinePriest-L-f00e02eaf282.txt",
+      "narrative_stats": "008-DisciplinePriest-L-f00e02eaf282.txt"
+    }
+  },
+  {
+    "ordinal": 9,
+    "matchId": "f00e02eaf2822c9201f4473530ee2b28",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Loss",
+    "durationSec": 112,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "cc_heavy_swap",
+    "files": {
+      "baseline": "009-DisciplinePriest-L-f00e02eaf282.txt",
+      "label_only": "009-DisciplinePriest-L-f00e02eaf282.txt",
+      "narrative": "009-DisciplinePriest-L-f00e02eaf282.txt",
+      "narrative_stats": "009-DisciplinePriest-L-f00e02eaf282.txt"
+    }
+  },
+  {
+    "ordinal": 10,
+    "matchId": "f00e02eaf2822c9201f4473530ee2b28",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Win",
+    "durationSec": 46,
+    "clusterKey": "cluster_1",
+    "clusterLabel": "fast_passive_tunnel",
+    "files": {
+      "baseline": "010-DisciplinePriest-W-f00e02eaf282.txt",
+      "label_only": "010-DisciplinePriest-W-f00e02eaf282.txt",
+      "narrative": "010-DisciplinePriest-W-f00e02eaf282.txt",
+      "narrative_stats": "010-DisciplinePriest-W-f00e02eaf282.txt"
+    }
+  },
+  {
+    "ordinal": 11,
+    "matchId": "f00e02eaf2822c9201f4473530ee2b28",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Win",
+    "durationSec": 50,
+    "clusterKey": "cluster_1",
+    "clusterLabel": "fast_passive_tunnel",
+    "files": {
+      "baseline": "011-DisciplinePriest-W-f00e02eaf282.txt",
+      "label_only": "011-DisciplinePriest-W-f00e02eaf282.txt",
+      "narrative": "011-DisciplinePriest-W-f00e02eaf282.txt",
+      "narrative_stats": "011-DisciplinePriest-W-f00e02eaf282.txt"
+    }
+  },
+  {
+    "ordinal": 12,
+    "matchId": "f00e02eaf2822c9201f4473530ee2b28",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Win",
+    "durationSec": 127,
+    "clusterKey": "cluster_2",
+    "clusterLabel": "heavy_burst_tunnel",
+    "files": {
+      "baseline": "012-DisciplinePriest-W-f00e02eaf282.txt",
+      "label_only": "012-DisciplinePriest-W-f00e02eaf282.txt",
+      "narrative": "012-DisciplinePriest-W-f00e02eaf282.txt",
+      "narrative_stats": "012-DisciplinePriest-W-f00e02eaf282.txt"
+    }
+  },
+  {
+    "ordinal": 13,
+    "matchId": "3c667a2a5451a37c2f8f4d16714ff1a3",
+    "spec": "Mistweaver Monk",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Loss",
+    "durationSec": 114,
+    "clusterKey": "cluster_0",
+    "clusterLabel": "cc_tunnel_reactive",
+    "files": {
+      "baseline": "013-MistweaverMonk-L-3c667a2a5451.txt",
+      "label_only": "013-MistweaverMonk-L-3c667a2a5451.txt",
+      "narrative": "013-MistweaverMonk-L-3c667a2a5451.txt",
+      "narrative_stats": "013-MistweaverMonk-L-3c667a2a5451.txt"
+    }
+  },
+  {
+    "ordinal": 14,
+    "matchId": "3c667a2a5451a37c2f8f4d16714ff1a3",
+    "spec": "Holy Paladin",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Loss",
+    "durationSec": 35,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "fast_passive_tunnel",
+    "files": {
+      "baseline": "014-HolyPaladin-L-3c667a2a5451.txt",
+      "label_only": "014-HolyPaladin-L-3c667a2a5451.txt",
+      "narrative": "014-HolyPaladin-L-3c667a2a5451.txt",
+      "narrative_stats": "014-HolyPaladin-L-3c667a2a5451.txt"
+    }
+  },
+  {
+    "ordinal": 15,
+    "matchId": "3c667a2a5451a37c2f8f4d16714ff1a3",
+    "spec": "Mistweaver Monk",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Win",
+    "durationSec": 42,
+    "clusterKey": "cluster_2",
+    "clusterLabel": "fast_burst_swap",
+    "files": {
+      "baseline": "015-MistweaverMonk-W-3c667a2a5451.txt",
+      "label_only": "015-MistweaverMonk-W-3c667a2a5451.txt",
+      "narrative": "015-MistweaverMonk-W-3c667a2a5451.txt",
+      "narrative_stats": "015-MistweaverMonk-W-3c667a2a5451.txt"
+    }
+  },
+  {
+    "ordinal": 16,
+    "matchId": "3c667a2a5451a37c2f8f4d16714ff1a3",
+    "spec": "Holy Paladin",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Win",
+    "durationSec": 136,
+    "clusterKey": "cluster_0",
+    "clusterLabel": "passive_swap",
+    "files": {
+      "baseline": "016-HolyPaladin-W-3c667a2a5451.txt",
+      "label_only": "016-HolyPaladin-W-3c667a2a5451.txt",
+      "narrative": "016-HolyPaladin-W-3c667a2a5451.txt",
+      "narrative_stats": "016-HolyPaladin-W-3c667a2a5451.txt"
+    }
+  },
+  {
+    "ordinal": 17,
+    "matchId": "3c667a2a5451a37c2f8f4d16714ff1a3",
+    "spec": "Holy Paladin",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Loss",
+    "durationSec": 160,
+    "clusterKey": "cluster_1",
+    "clusterLabel": "heavy_burst_cc_swap",
+    "files": {
+      "baseline": "017-HolyPaladin-L-3c667a2a5451.txt",
+      "label_only": "017-HolyPaladin-L-3c667a2a5451.txt",
+      "narrative": "017-HolyPaladin-L-3c667a2a5451.txt",
+      "narrative_stats": "017-HolyPaladin-L-3c667a2a5451.txt"
+    }
+  },
+  {
+    "ordinal": 18,
+    "matchId": "3c667a2a5451a37c2f8f4d16714ff1a3",
+    "spec": "Mistweaver Monk",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Loss",
+    "durationSec": 164,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "heavy_burst_swap",
+    "files": {
+      "baseline": "018-MistweaverMonk-L-3c667a2a5451.txt",
+      "label_only": "018-MistweaverMonk-L-3c667a2a5451.txt",
+      "narrative": "018-MistweaverMonk-L-3c667a2a5451.txt",
+      "narrative_stats": "018-MistweaverMonk-L-3c667a2a5451.txt"
+    }
+  },
+  {
+    "ordinal": 19,
+    "matchId": "ffd4c0c715646d3305e3f362eaa855ea",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Loss",
+    "durationSec": 110,
+    "clusterKey": "cluster_2",
+    "clusterLabel": "heavy_burst_tunnel",
+    "files": {
+      "baseline": "019-DisciplinePriest-L-ffd4c0c71564.txt",
+      "label_only": "019-DisciplinePriest-L-ffd4c0c71564.txt",
+      "narrative": "019-DisciplinePriest-L-ffd4c0c71564.txt",
+      "narrative_stats": "019-DisciplinePriest-L-ffd4c0c71564.txt"
+    }
+  },
+  {
+    "ordinal": 20,
+    "matchId": "ffd4c0c715646d3305e3f362eaa855ea",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Loss",
+    "durationSec": 84,
+    "clusterKey": "cluster_1",
+    "clusterLabel": "fast_passive_tunnel",
+    "files": {
+      "baseline": "020-DisciplinePriest-L-ffd4c0c71564.txt",
+      "label_only": "020-DisciplinePriest-L-ffd4c0c71564.txt",
+      "narrative": "020-DisciplinePriest-L-ffd4c0c71564.txt",
+      "narrative_stats": "020-DisciplinePriest-L-ffd4c0c71564.txt"
+    }
+  },
+  {
+    "ordinal": 21,
+    "matchId": "ffd4c0c715646d3305e3f362eaa855ea",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Loss",
+    "durationSec": 112,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "cc_heavy_swap",
+    "files": {
+      "baseline": "021-DisciplinePriest-L-ffd4c0c71564.txt",
+      "label_only": "021-DisciplinePriest-L-ffd4c0c71564.txt",
+      "narrative": "021-DisciplinePriest-L-ffd4c0c71564.txt",
+      "narrative_stats": "021-DisciplinePriest-L-ffd4c0c71564.txt"
+    }
+  },
+  {
+    "ordinal": 22,
+    "matchId": "ffd4c0c715646d3305e3f362eaa855ea",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Win",
+    "durationSec": 46,
+    "clusterKey": "cluster_1",
+    "clusterLabel": "fast_passive_tunnel",
+    "files": {
+      "baseline": "022-DisciplinePriest-W-ffd4c0c71564.txt",
+      "label_only": "022-DisciplinePriest-W-ffd4c0c71564.txt",
+      "narrative": "022-DisciplinePriest-W-ffd4c0c71564.txt",
+      "narrative_stats": "022-DisciplinePriest-W-ffd4c0c71564.txt"
+    }
+  },
+  {
+    "ordinal": 23,
+    "matchId": "ffd4c0c715646d3305e3f362eaa855ea",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Win",
+    "durationSec": 50,
+    "clusterKey": "cluster_1",
+    "clusterLabel": "fast_passive_tunnel",
+    "files": {
+      "baseline": "023-DisciplinePriest-W-ffd4c0c71564.txt",
+      "label_only": "023-DisciplinePriest-W-ffd4c0c71564.txt",
+      "narrative": "023-DisciplinePriest-W-ffd4c0c71564.txt",
+      "narrative_stats": "023-DisciplinePriest-W-ffd4c0c71564.txt"
+    }
+  },
+  {
+    "ordinal": 24,
+    "matchId": "ffd4c0c715646d3305e3f362eaa855ea",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Win",
+    "durationSec": 127,
+    "clusterKey": "cluster_2",
+    "clusterLabel": "heavy_burst_tunnel",
+    "files": {
+      "baseline": "024-DisciplinePriest-W-ffd4c0c71564.txt",
+      "label_only": "024-DisciplinePriest-W-ffd4c0c71564.txt",
+      "narrative": "024-DisciplinePriest-W-ffd4c0c71564.txt",
+      "narrative_stats": "024-DisciplinePriest-W-ffd4c0c71564.txt"
+    }
+  },
+  {
+    "ordinal": 25,
+    "matchId": "973fc535118ef02f73b1622377d319fc",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Loss",
+    "durationSec": 110,
+    "clusterKey": "cluster_2",
+    "clusterLabel": "heavy_burst_tunnel",
+    "files": {
+      "baseline": "025-DisciplinePriest-L-973fc535118e.txt",
+      "label_only": "025-DisciplinePriest-L-973fc535118e.txt",
+      "narrative": "025-DisciplinePriest-L-973fc535118e.txt",
+      "narrative_stats": "025-DisciplinePriest-L-973fc535118e.txt"
+    }
+  },
+  {
+    "ordinal": 26,
+    "matchId": "973fc535118ef02f73b1622377d319fc",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Loss",
+    "durationSec": 84,
+    "clusterKey": "cluster_1",
+    "clusterLabel": "fast_passive_tunnel",
+    "files": {
+      "baseline": "026-DisciplinePriest-L-973fc535118e.txt",
+      "label_only": "026-DisciplinePriest-L-973fc535118e.txt",
+      "narrative": "026-DisciplinePriest-L-973fc535118e.txt",
+      "narrative_stats": "026-DisciplinePriest-L-973fc535118e.txt"
+    }
+  },
+  {
+    "ordinal": 27,
+    "matchId": "973fc535118ef02f73b1622377d319fc",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Loss",
+    "durationSec": 112,
+    "clusterKey": "cluster_3",
+    "clusterLabel": "cc_heavy_swap",
+    "files": {
+      "baseline": "027-DisciplinePriest-L-973fc535118e.txt",
+      "label_only": "027-DisciplinePriest-L-973fc535118e.txt",
+      "narrative": "027-DisciplinePriest-L-973fc535118e.txt",
+      "narrative_stats": "027-DisciplinePriest-L-973fc535118e.txt"
+    }
+  },
+  {
+    "ordinal": 28,
+    "matchId": "973fc535118ef02f73b1622377d319fc",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Win",
+    "durationSec": 46,
+    "clusterKey": "cluster_1",
+    "clusterLabel": "fast_passive_tunnel",
+    "files": {
+      "baseline": "028-DisciplinePriest-W-973fc535118e.txt",
+      "label_only": "028-DisciplinePriest-W-973fc535118e.txt",
+      "narrative": "028-DisciplinePriest-W-973fc535118e.txt",
+      "narrative_stats": "028-DisciplinePriest-W-973fc535118e.txt"
+    }
+  },
+  {
+    "ordinal": 29,
+    "matchId": "973fc535118ef02f73b1622377d319fc",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Win",
+    "durationSec": 50,
+    "clusterKey": "cluster_1",
+    "clusterLabel": "fast_passive_tunnel",
+    "files": {
+      "baseline": "029-DisciplinePriest-W-973fc535118e.txt",
+      "label_only": "029-DisciplinePriest-W-973fc535118e.txt",
+      "narrative": "029-DisciplinePriest-W-973fc535118e.txt",
+      "narrative_stats": "029-DisciplinePriest-W-973fc535118e.txt"
+    }
+  },
+  {
+    "ordinal": 30,
+    "matchId": "973fc535118ef02f73b1622377d319fc",
+    "spec": "Discipline Priest",
+    "bracket": "Rated Solo Shuffle",
+    "result": "Win",
+    "durationSec": 127,
+    "clusterKey": "cluster_2",
+    "clusterLabel": "heavy_burst_tunnel",
+    "files": {
+      "baseline": "030-DisciplinePriest-W-973fc535118e.txt",
+      "label_only": "030-DisciplinePriest-W-973fc535118e.txt",
+      "narrative": "030-DisciplinePriest-W-973fc535118e.txt",
+      "narrative_stats": "030-DisciplinePriest-W-973fc535118e.txt"
+    }
+  }
+]

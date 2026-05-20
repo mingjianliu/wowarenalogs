@@ -115,6 +115,11 @@ npm run deploy:prod       # Deploy to production
 - **Parser size limit**: 200KB combined ESM + CJS (TSDX enforces this at build time).
 - Never import `@wowarenalogs/app` from `shared` or `web`.
 
+## Git Workflow
+
+- Always push to `origin` (mingjianliu's fork), never to `upstream`.
+- Never create PRs against the upstream repo (`wowarenalogs/wowarenalogs`). If a PR is needed, create it on origin. When commits land directly on `main`, a PR is usually unnecessary.
+
 ## Active Work
 
 - AI-powered cooldown analysis (`CombatAIAnalysis` component + `/api/analyze` endpoint)

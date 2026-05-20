@@ -2,22 +2,23 @@
 /**
  * buildArchetypePrompts.ts — Match Archetype Clustering (Phase 2)
  *
- * Reads features.jsonl produced by extractArchetypeFeatures.ts, clusters matches into
- * dynamic archetypes per healer spec via k-means, and aggregates behavioral stats per cluster.
+ * Reads features.jsonl produced by extractArchetypeFeatures.ts, clusters ALL matches
+ * across all healer specs into universal game-situation archetypes via k-means.
  *
- * Outputs a DRAFT JSON (promptText: "") — narrative generation is handled separately by
- * a Claude Code subagent reading archetype_prompts_draft.json.
+ * Archetypes describe what the ENEMY team is doing, not the healer's spec.
+ * A "cc_setup_nuke" game is that kind of game whether the healer is Disc Priest or Resto Druid.
  *
  * Outputs:
- *   packages/tools/archetypes/archetype_prompts_draft.json  (stats + empty promptText)
- *   packages/tools/archetypes/archetype_model.json          (centroids for future live lookup)
+ *   archetypes/archetype_prompts_{bracket}_draft.json  (stats + empty promptText)
+ *   archetypes/archetype_model_{bracket}.json          (global centroids for live lookup)
  *
  * Usage:
  *   npm run -w @wowarenalogs/tools start:buildArchetypePrompts
  *
  * Env vars:
- *   K=4             number of clusters per spec (default 4)
- *   MIN_MATCHES=10  minimum matches per cluster to include (default 10)
+ *   K=8             number of global clusters (default 8)
+ *   MIN_MATCHES=20  minimum matches per cluster to include (default 20)
+ *   BRACKET=3v3     bracket (default 3v3)
  */
 import fs from 'fs-extra';
 import { kmeans } from 'ml-kmeans';
@@ -34,28 +35,28 @@ import {
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
-const K = parseInt(process.env.K ?? '4', 10);
-const MIN_MATCHES = parseInt(process.env.MIN_MATCHES ?? '10', 10);
+const K = parseInt(process.env.K ?? '8', 10);
+const MIN_MATCHES = parseInt(process.env.MIN_MATCHES ?? '20', 10);
 const BRACKET = process.env.BRACKET ?? '3v3';
 const BRACKET_SLUG = BRACKET.toLowerCase().includes('solo') ? 'solo_shuffle' : '3v3';
 
 const ARCHETYPES_DIR = path.join(__dirname, '../archetypes');
 const FEATURES_FILE = path.join(ARCHETYPES_DIR, `features_${BRACKET_SLUG}.jsonl`);
-// Draft: stats only, promptText = "". Narratives are added by the Claude Code skill.
 const DRAFT_FILE = path.join(ARCHETYPES_DIR, `archetype_prompts_${BRACKET_SLUG}_draft.json`);
-// Final path — written by the Claude Code skill after narrative generation.
 export const PROMPTS_FILE = path.join(ARCHETYPES_DIR, `archetype_prompts_${BRACKET_SLUG}.json`);
 const MODEL_FILE = path.join(ARCHETYPES_DIR, `archetype_model_${BRACKET_SLUG}.json`);
 
 // ── Feature vector for clustering ────────────────────────────────────────────
 
-// Only own-healer rows are used for clustering. The 6 match-dynamic dimensions:
-//   0: burstWindowCount
-//   1: ccEventsPerMinute
-//   2: tunnelScore (friendlyDamageShare[0].share)
-//   3: peakBurstScore
-//   4: criticalOrExposedBurstWindows (0 when null)
-//   5: durationSeconds
+// 7 match-dynamic dimensions — all describe the game situation, not the healer's spec:
+//   0: burstWindowCount        — how many coordinated enemy pushes per round
+//   1: ccEventsPerMinute       — CC density landing on the friendly team
+//   2: tunnelScore             — 1.0 = pure tunnel, 0.0 = constant target swaps
+//   3: peakBurstScore (log)    — intensity of the most dangerous burst window
+//   4: criticalOrExposedBurstWindows — healer danger exposure
+//   5: durationSeconds (log)   — round length
+//   6: ownTeamCCPerMin         — how aggressively friendly team CCs enemies;
+//                                separates "healer under siege" from "healer coasting"
 const FEATURE_NAMES = [
   'burstWindowCount',
   'ccEventsPerMinute',
@@ -63,6 +64,7 @@ const FEATURE_NAMES = [
   'peakBurstScore',
   'criticalOrExposedBurstWindows',
   'durationSeconds',
+  'ownTeamCCPerMin',
 ] as const;
 
 function toFeatureVector(d: IMatchDynamicFeatures): number[] {
@@ -70,9 +72,10 @@ function toFeatureVector(d: IMatchDynamicFeatures): number[] {
     d.burstWindowCount,
     d.ccEventsPerMinute,
     d.tunnelScore,
-    d.peakBurstScore,
+    Math.log1p(d.peakBurstScore),
     d.criticalOrExposedBurstWindows ?? 0,
-    d.durationSeconds,
+    Math.log1p(d.durationSeconds),
+    d.ownTeamCCPerMin,
   ];
 }
 
@@ -158,6 +161,7 @@ export interface IArchetypeCluster {
   matchCount: number;
   minRating: number;
   generatedAt: string;
+  specDistribution: Record<string, number>;
   dynamics: IDynamicSummary;
   behaviors: IAggregatedBehaviors;
   enemyHealerPartial: {
@@ -168,13 +172,14 @@ export interface IArchetypeCluster {
   promptText: string;
 }
 
-export type IArchetypePrompts = Record<string, Record<string, IArchetypeCluster>>;
+// Flat map: cluster_key → cluster data (no longer nested by healer spec)
+export type IArchetypePrompts = Record<string, IArchetypeCluster>;
 
-interface IArchetypeModel {
+export interface IArchetypeModel {
   generatedAt: string;
   normParams: INormParams;
   featureNames: readonly string[];
-  specModels: Record<string, { centroids: number[][] }>;
+  centroids: number[][];
 }
 
 // ── Load JSONL ────────────────────────────────────────────────────────────────
@@ -197,7 +202,27 @@ async function loadFeatures(): Promise<IArchetypeFeatureRow[]> {
   return rows;
 }
 
-// ── Aggregate behaviors for a cluster of own-healer rows ─────────────────────
+// ── Aggregation ───────────────────────────────────────────────────────────────
+
+function aggregateDynamics(rows: IArchetypeFeatureRow[]): IDynamicSummary {
+  const own = rows.filter((r) => r.perspective === 'own');
+  return {
+    burstWindowCount: roundTo(mean(own.map((r) => r.matchDynamic.burstWindowCount)), 1),
+    ccEventsPerMinute: roundTo(mean(own.map((r) => r.matchDynamic.ccEventsPerMinute)), 2),
+    tunnelScore: roundTo(mean(own.map((r) => r.matchDynamic.tunnelScore)), 3),
+    peakBurstScore: roundTo(mean(own.map((r) => r.matchDynamic.peakBurstScore)), 1),
+    durationSeconds: roundTo(mean(own.map((r) => r.matchDynamic.durationSeconds)), 0),
+  };
+}
+
+function aggregateSpecDistribution(rows: IArchetypeFeatureRow[]): Record<string, number> {
+  const own = rows.filter((r) => r.perspective === 'own');
+  const counts: Record<string, number> = {};
+  for (const row of own) {
+    counts[row.healerSpec] = (counts[row.healerSpec] ?? 0) + 1;
+  }
+  return counts;
+}
 
 function aggregateBehaviors(rows: IArchetypeFeatureRow[]): IAggregatedBehaviors {
   const own = rows.filter((r) => r.perspective === 'own');
@@ -276,17 +301,6 @@ function aggregateBehaviors(rows: IArchetypeFeatureRow[]): IAggregatedBehaviors 
   };
 }
 
-function aggregateDynamics(rows: IArchetypeFeatureRow[]): IDynamicSummary {
-  const own = rows.filter((r) => r.perspective === 'own');
-  return {
-    burstWindowCount: roundTo(mean(own.map((r) => r.matchDynamic.burstWindowCount)), 1),
-    ccEventsPerMinute: roundTo(mean(own.map((r) => r.matchDynamic.ccEventsPerMinute)), 2),
-    tunnelScore: roundTo(mean(own.map((r) => r.matchDynamic.tunnelScore)), 3),
-    peakBurstScore: roundTo(mean(own.map((r) => r.matchDynamic.peakBurstScore)), 1),
-    durationSeconds: roundTo(mean(own.map((r) => r.matchDynamic.durationSeconds)), 0),
-  };
-}
-
 function aggregateEnemyHealer(rows: IArchetypeFeatureRow[]): IArchetypeCluster['enemyHealerPartial'] {
   const enemy = rows.filter((r) => r.perspective === 'enemy');
   if (enemy.length === 0) return null;
@@ -313,75 +327,94 @@ function aggregateEnemyHealer(rows: IArchetypeFeatureRow[]): IArchetypeCluster['
   };
 }
 
-// ── Narrative prompt builder (exported for Claude Code skill) ─────────────────
+// ── Narrative prompt builder ──────────────────────────────────────────────────
 
-export function buildNarrativePrompt(
-  spec: string,
-  clusterLabel: string,
-  dynamics: IDynamicSummary,
-  behaviors: IAggregatedBehaviors,
-): string {
+export function buildNarrativePrompt(clusterLabel: string, dynamics: IDynamicSummary): string {
+  // Translate raw dimensions into natural language for the generation prompt.
+  // The numbers stay in the generation prompt for Claude's reference but must not appear in the output.
+  const durationDesc =
+    dynamics.durationSeconds < 70
+      ? `very short rounds averaging ${dynamics.durationSeconds}s`
+      : dynamics.durationSeconds < 110
+        ? `medium-short rounds averaging ${dynamics.durationSeconds}s`
+        : dynamics.durationSeconds < 160
+          ? `medium-long rounds averaging ${dynamics.durationSeconds}s`
+          : `long rounds averaging ${dynamics.durationSeconds}s`;
+
+  const ccDesc =
+    dynamics.ccEventsPerMinute < 7
+      ? 'low CC — enemies rarely chain crowd control'
+      : dynamics.ccEventsPerMinute < 9.5
+        ? 'moderate CC — enemies use crowd control but not as a primary setup tool'
+        : 'high CC — enemies chain crowd control heavily as a core part of their strategy';
+
+  const focusDesc =
+    dynamics.tunnelScore > 0.7
+      ? 'enemies lock onto one target and do not switch'
+      : dynamics.tunnelScore > 0.58
+        ? 'enemies mostly focus one target with occasional swaps'
+        : 'enemies rotate targets frequently, switching pressure to find an opening';
+
+  const burstDesc =
+    dynamics.burstWindowCount < 0.5
+      ? 'no real coordinated kill windows — damage is steady and uncoordinated throughout'
+      : dynamics.burstWindowCount < 1.5
+        ? `one coordinated kill push per round, with a meaningful danger spike when it arrives`
+        : `${Math.round(dynamics.burstWindowCount)} coordinated kill pushes per round, each telegraphed by cooldown usage`;
+
   const lines: string[] = [
-    `You are summarizing observed behavioral patterns from high-rated (2400+ MMR) 3v3 arena matches.`,
-    `Write exactly 2-3 sentences describing how ${spec} healers actually play in this match dynamic.`,
-    `Be specific and factual. Describe what they do, not what they should do.`,
-    `Avoid "should", "must", "always", "never". Express only what the data shows.`,
-    `The cluster label is "${clusterLabel}" (may be "pending_review" — describe based on data, not the label).`,
+    `You are writing a game-situation description for an arena healer coaching tool.`,
     ``,
-    `Match dynamic (averages across ${spec} matches in this cluster):`,
-    `- Duration: ${dynamics.durationSeconds}s`,
-    `- Burst windows: ${dynamics.burstWindowCount} (peak danger score: ${dynamics.peakBurstScore})`,
-    `- CC events/min: ${dynamics.ccEventsPerMinute}`,
-    `- Tunnel score (damage concentration on one target): ${dynamics.tunnelScore} (1.0 = pure tunnel)`,
+    `Write a description with exactly TWO short paragraphs, clearly labeled:`,
     ``,
-    `Healer behavioral stats:`,
-    `- CD timing: ${Math.round(behaviors.cdTiming.Optimal * 100)}% Optimal, ${Math.round(behaviors.cdTiming.Early * 100)}% Early, ${Math.round(behaviors.cdTiming.Late * 100)}% Late, ${Math.round(behaviors.cdTiming.Reactive * 100)}% Reactive`,
-    `- CD never-used rate: ${Math.round(behaviors.cdNeverUsedRate * 100)}%`,
-    behaviors.cdResponseLatencyMs
-      ? `- CD response latency: ${behaviors.cdResponseLatencyMs.median}ms median, ${behaviors.cdResponseLatencyMs.p90}ms P90`
-      : `- CD response latency: insufficient data`,
-    `- Outgoing CC per match: ${behaviors.ccOffensivePerMatch.mean} mean, ${behaviors.ccOffensivePerMatch.p75} P75`,
-    `- DR chains caused per match: ${behaviors.drChainsCausedPerMatch}`,
-    behaviors.purgeRatePerMin !== null ? `- Purge rate: ${behaviors.purgeRatePerMin}/min` : '',
-    behaviors.missedCleanseRate !== null
-      ? `- Missed cleanse rate: ${Math.round(behaviors.missedCleanseRate * 100)}%`
-      : '',
-    `- Healing gap rate during burst windows: ${Math.round(behaviors.healingGapRate * 100)}%`,
-    `- Offensive participation rate: ${Math.round(behaviors.offensiveParticipationRate * 100)}%`,
-    `- Setup style breakdown: ${JSON.stringify(behaviors.setupStyleBreakdown)}`,
-    behaviors.positioningBreakdown ? `- Positioning: ${JSON.stringify(behaviors.positioningBreakdown)}` : '',
-  ].filter((l) => l !== '');
+    `**Opponents:** (1–2 sentences) Describe what the enemy team does in this type of game.`,
+    `Use plain arena language: do they tunnel one target or swap? Do they CC first and then burst,`,
+    `or just apply constant pressure? How dangerous are their kill windows and how predictable?`,
+    ``,
+    `**Your role:** (1–2 sentences) Describe the key decision the healer faces in this situation.`,
+    `What is the most important thing to get right — cooldown timing, trinket usage, dispel priority,`,
+    `staying alive through CC, etc.? What is the most common failure mode?`,
+    ``,
+    `STRICT RULES:`,
+    `- No metric names: do not write "tunnelScore", "burstWindowCount", "peakBurstScore", "ccEventsPerMinute" or any number from the data.`,
+    `- No prescriptive language like "you must", "always", "never". Describe the situation, not instructions.`,
+    `- Generic enough to apply to any healer spec — do not mention specific spells or class names.`,
+    `- The cluster label is "${clusterLabel}" — write based on the data description below, not the label name.`,
+    ``,
+    `Game situation (translate into natural language, do not quote these values directly):`,
+    `- Round length: ${durationDesc}`,
+    `- Enemy CC on your team: ${ccDesc}`,
+    `- Enemy target focus: ${focusDesc}`,
+    `- Enemy burst pattern: ${burstDesc}`,
+  ];
 
   return lines.join('\n');
 }
 
-// ── Print centroid summary ────────────────────────────────────────────────────
+// ── Print cluster summary ─────────────────────────────────────────────────────
 
-function printCentroidSummary(
-  spec: string,
+function printClusterSummary(
   clusterIdx: number,
   centroid: number[],
   normParams: INormParams,
   rows: IArchetypeFeatureRow[],
 ) {
-  // Denormalize centroid for display
   const denorm = centroid.map((x, i) => {
     const range = normParams.max[i] - normParams.min[i];
     return range > 0 ? x * range + normParams.min[i] : normParams.min[i];
   });
 
-  console.log(`\n  Cluster ${clusterIdx} (${rows.length} matches):`);
-  FEATURE_NAMES.forEach((name, i) => {
-    console.log(`    ${name}: ${roundTo(denorm[i], 2)}`);
-  });
+  const own = rows.filter((r) => r.perspective === 'own');
+  const specCounts = aggregateSpecDistribution(rows);
+  const specSummary = Object.entries(specCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([s, n]) => `${s.replace(/[a-z]/g, '')}:${n}`)
+    .join(' ');
 
-  // Sample compositions
-  const comps = rows
-    .filter((r) => r.perspective === 'own')
-    .slice(0, 5)
-    .map((r) => `${r.matchDynamic.ownTeamSpecs.join('+')} vs ${r.matchDynamic.enemyTeamSpecs.join('+')}`);
-  console.log(`    Sample comps:`);
-  comps.forEach((c) => console.log(`      ${c}`));
+  console.log(`\n  cluster_${clusterIdx} (N=${own.length})  specs: ${specSummary}`);
+  FEATURE_NAMES.forEach((name, i) => {
+    console.log(`    ${name.padEnd(32)}: ${roundTo(denorm[i], 2)}`);
+  });
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
@@ -389,102 +422,74 @@ function printCentroidSummary(
 async function main() {
   console.log(`Loading features from ${FEATURES_FILE}...`);
   const allRows = await loadFeatures();
-  console.log(`Loaded ${allRows.length} rows.`);
+  const ownRows = allRows.filter((r) => r.perspective === 'own');
+  console.log(`Loaded ${allRows.length} rows total, ${ownRows.length} own-healer.`);
 
-  // Group by spec, own perspective only for clustering
-  const bySpec = new Map<string, IArchetypeFeatureRow[]>();
-  for (const row of allRows) {
-    if (row.perspective !== 'own') continue;
-    const bucket = bySpec.get(row.healerSpec) ?? [];
-    bucket.push(row);
-    bySpec.set(row.healerSpec, bucket);
+  const specCounts: Record<string, number> = {};
+  for (const row of ownRows) specCounts[row.healerSpec] = (specCounts[row.healerSpec] ?? 0) + 1;
+  console.log('\nSpec distribution in corpus:');
+  for (const [spec, n] of Object.entries(specCounts).sort((a, b) => b[1] - a[1])) {
+    console.log(`  ${spec}: ${n}`);
+  }
+  console.log(`\nClustering into K=${K} global clusters (MIN_MATCHES=${MIN_MATCHES})...`);
+
+  if (ownRows.length < K * MIN_MATCHES) {
+    throw new Error(
+      `Not enough rows (${ownRows.length}) for K=${K} with MIN_MATCHES=${MIN_MATCHES}. Need at least ${K * MIN_MATCHES}.`,
+    );
   }
 
-  console.log('\nSpec counts (own-healer rows):');
-  for (const [spec, rows] of [...bySpec.entries()].sort((a, b) => b[1].length - a[1].length)) {
-    const ready = rows.length >= MIN_MATCHES * K ? '✓' : `(need ${MIN_MATCHES * K - rows.length} more)`;
-    console.log(`  ${spec}: ${rows.length} ${ready}`);
-  }
+  const vectors = ownRows.map((r) => toFeatureVector(r.matchDynamic));
+  const normParams = computeNormParams(vectors);
+  const normalized = vectors.map((v) => normalize(v, normParams));
 
-  // Compute global norm params across all own-healer rows
-  const allVectors = [...bySpec.values()].flat().map((r) => toFeatureVector(r.matchDynamic));
-  const normParams = computeNormParams(allVectors);
+  const result = kmeans(normalized, K, { initialization: 'kmeans++', maxIterations: 200 });
+
+  const clusterRows = Array.from({ length: K }, () => [] as IArchetypeFeatureRow[]);
+  result.clusters.forEach((clusterIdx: number, rowIdx: number) => {
+    clusterRows[clusterIdx].push(ownRows[rowIdx]);
+  });
+
+  console.log('\nCluster centroids:');
+  clusterRows.forEach((rows, idx) => printClusterSummary(idx, result.centroids[idx], normParams, rows));
+
+  // Load existing draft to preserve labels across re-runs
+  const existingDraft: IArchetypePrompts = (await fs.pathExists(DRAFT_FILE))
+    ? ((await fs.readJson(DRAFT_FILE)) as IArchetypePrompts)
+    : {};
 
   const prompts: IArchetypePrompts = {};
-  const specModels: Record<string, { centroids: number[][] }> = {};
 
-  // Load existing draft to preserve manually set labels across re-runs
-  if (await fs.pathExists(DRAFT_FILE)) {
-    const existing = (await fs.readJson(DRAFT_FILE)) as IArchetypePrompts;
-    for (const [spec, clusters] of Object.entries(existing)) {
-      prompts[spec] = clusters;
-    }
-  }
-
-  for (const [spec, ownRows] of bySpec.entries()) {
-    if (ownRows.length < MIN_MATCHES * K) {
-      console.log(`\nSkipping ${spec}: not enough matches (${ownRows.length} < ${MIN_MATCHES * K}).`);
+  for (let clusterIdx = 0; clusterIdx < K; clusterIdx++) {
+    const rows = clusterRows[clusterIdx];
+    if (rows.length < MIN_MATCHES) {
+      console.log(`\n  cluster_${clusterIdx}: skipped (${rows.length} < ${MIN_MATCHES}).`);
       continue;
     }
 
-    console.log(`\n=== ${spec} (${ownRows.length} matches) ===`);
+    const clusterKey = `cluster_${clusterIdx}`;
+    const existingLabel = existingDraft[clusterKey]?.label;
+    const label = existingLabel && existingLabel !== 'pending_review' ? existingLabel : 'pending_review';
 
-    const vectors = ownRows.map((r) => toFeatureVector(r.matchDynamic));
-    const normalized = vectors.map((v) => normalize(v, normParams));
+    const dynamics = aggregateDynamics(rows);
+    const specDistribution = aggregateSpecDistribution(rows);
+    const behaviors = aggregateBehaviors(rows);
 
-    const result = kmeans(normalized, K, { initialization: 'kmeans++', maxIterations: 100 });
+    const matchIds = new Set(rows.map((r) => r.matchId));
+    const enemyRows = allRows.filter((r) => r.perspective === 'enemy' && matchIds.has(r.matchId));
+    const enemyHealerPartial = aggregateEnemyHealer(enemyRows);
 
-    // Group rows by cluster assignment
-    const clusterRows = Array.from({ length: K }, () => [] as IArchetypeFeatureRow[]);
-    result.clusters.forEach((clusterIdx: number, rowIdx: number) => {
-      clusterRows[clusterIdx].push(ownRows[rowIdx]);
-    });
-
-    // Also add enemy-healer rows for the same matches (for enemy partial section)
-    const enemyRowsByMatchId = new Map<string, IArchetypeFeatureRow[]>();
-    for (const row of allRows.filter((r) => r.perspective === 'enemy' && r.healerSpec === spec)) {
-      const bucket = enemyRowsByMatchId.get(row.matchId) ?? [];
-      bucket.push(row);
-      enemyRowsByMatchId.set(row.matchId, bucket);
-    }
-
-    console.log('\n  Cluster centroids (inspect to assign labels):');
-    clusterRows.forEach((rows, idx) => printCentroidSummary(spec, idx, result.centroids[idx], normParams, rows));
-
-    // Store centroids for model file
-    specModels[spec] = { centroids: result.centroids };
-
-    if (!prompts[spec]) prompts[spec] = {};
-
-    for (let clusterIdx = 0; clusterIdx < K; clusterIdx++) {
-      const rows = clusterRows[clusterIdx];
-      if (rows.length < MIN_MATCHES) {
-        console.log(`\n  cluster_${clusterIdx}: skipped (${rows.length} < ${MIN_MATCHES} min).`);
-        continue;
-      }
-
-      const clusterKey = `cluster_${clusterIdx}`;
-      const existingLabel = prompts[spec]?.[clusterKey]?.label;
-      const label = existingLabel && existingLabel !== 'pending_review' ? existingLabel : 'pending_review';
-
-      const dynamics = aggregateDynamics(rows);
-      const behaviors = aggregateBehaviors(rows);
-
-      const matchIds = new Set(rows.map((r) => r.matchId));
-      const enemyRows = [...enemyRowsByMatchId.values()].flat().filter((r) => matchIds.has(r.matchId));
-      const enemyHealerPartial = aggregateEnemyHealer(enemyRows);
-
-      prompts[spec][clusterKey] = {
-        label,
-        matchCount: rows.length,
-        minRating: 2400,
-        generatedAt: new Date().toISOString(),
-        dynamics,
-        behaviors,
-        enemyHealerPartial,
-        promptText: prompts[spec]?.[clusterKey]?.promptText ?? '',
-      };
-    }
+    prompts[clusterKey] = {
+      label,
+      matchCount: rows.length,
+      minRating: 2000,
+      generatedAt: new Date().toISOString(),
+      specDistribution,
+      dynamics,
+      behaviors,
+      enemyHealerPartial,
+      promptText: existingDraft[clusterKey]?.promptText ?? '',
+    };
   }
 
   await fs.ensureDir(ARCHETYPES_DIR);
@@ -495,16 +500,25 @@ async function main() {
     generatedAt: new Date().toISOString(),
     normParams,
     featureNames: FEATURE_NAMES,
-    specModels,
+    centroids: result.centroids,
   };
   await fs.writeJson(MODEL_FILE, model, { spaces: 2 });
   console.log(`Wrote model: ${MODEL_FILE}`);
 
+  console.log('\nCluster summary table:');
+  console.log('  key        label                           N    dur   cc/min  tunnel  burst#  peak');
+  for (const [key, c] of Object.entries(prompts).sort()) {
+    const d = c.dynamics;
+    console.log(
+      `  ${key.padEnd(10)} ${c.label.padEnd(32)} ${String(c.matchCount).padStart(4)}  ${String(d.durationSeconds).padStart(4)}s  ${String(d.ccEventsPerMinute).padStart(5)}   ${d.tunnelScore.toFixed(2)}   ${d.burstWindowCount.toFixed(1)}    ${String(d.peakBurstScore).padStart(4)}`,
+    );
+  }
+
   console.log('\nNext steps:');
-  console.log('  1. Inspect cluster centroids and sample comps above.');
-  console.log('  2. Edit archetype_prompts_draft.json: rename "pending_review" labels.');
-  console.log('  3. Re-run /build-match-archetypes in Claude Code to generate narratives via subagent.');
-  console.log('  4. Review archetype_prompts.json and commit.');
+  console.log('  1. Inspect cluster centroids and spec distributions above.');
+  console.log('  2. Rename "pending_review" labels in the draft JSON.');
+  console.log('  3. Re-run /build-match-archetypes to generate narratives.');
+  console.log('  4. Commit archetype_prompts.json + archetype_model.json.');
 }
 
 main().catch((e) => {

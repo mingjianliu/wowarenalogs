@@ -153,6 +153,11 @@ _AI prompt data quality fixes (B11–B47, 2026):_
 | F91 | ✅ Done | Suppress 0-second CC duration events — `[CC ON TEAM] … \| 0s \| trinket: used` artifacts from instant-break or same-second trinket use. Zero-duration CCs are meaningless data; filter before emitting. Source: 2026-05-02 healer prompt audit (Q9), matches 003, 008. | `printMatchPrompts.ts` (buildMatchTimeline) |
 | F92 | ✅ Done | Annotate `[OWNER CAST]` when target is a totem/pet unit — e.g. `Holy Word: Chastise → Tremor Totem` should be marked `[absorbed by totem]` so Claude knows the cast was wasted. Without annotation, it looks identical to a successful player CC. Source: 2026-05-02 healer prompt audit (Q16), matches 014, 076. | `printMatchPrompts.ts` (buildMatchTimeline) |
 | F90 | ✅ Done | Death-driven `[ENEMY HP]` shape changes — added `[ROSTER] enemy N removed (dead)` marker immediately after each enemy `[DEATH]` event in `buildMatchTimeline`. Implemented via same-`addEntry` call for guaranteed adjacency. Source: healer prompt audit Q8. | `printMatchPrompts.ts` (buildMatchTimeline) |
+| F96 | ✅ Done | Final state summary missing — add a match-end snapshot of survivors and enemy deaths to help Claude reason about the closing seconds. | `printMatchPrompts.ts` |
+| F98 | ✅ Done | Baseline pressure-window context missing — damage spikes are shown but normal damage rate isn't. Add a `BASELINE` line to calibrate spike interpretation. | `printMatchPrompts.ts` |
+| F99 | ✅ Done | `[OFFENSIVE WINDOW]` marker missing — synthesize enemy CDs and damage spikes into explicit kill attempt windows (e.g. "kill attempt at 0:14–0:24"). | `printMatchPrompts.ts` |
+| F100 | ✅ Done | Healer-specific actions absent for non-healing utility — CDs like Devotion Aura, Vigilance, Aura Mastery are not appearing in the timeline. | `printMatchPrompts.ts` |
+| F101 | ✅ Done | Spec sample bias in healer feed — enforce spec quotas for prompt generation to avoid over-representing Paladins/Priests and under-representing Druids/Shamans. | `buildHealerPromptCorpus.ts` |
 
 ---
 

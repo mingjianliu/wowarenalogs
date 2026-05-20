@@ -1,0 +1,198 @@
+[ARCHETYPE: Discipline Priest — heavy_burst_tunnel]
+This cluster features the longest rounds (138 seconds) with repeated burst windows (burstWindowCount 2.7, peakBurstScore 17.3) and heavy tunnel pressure (tunnelScore 0.649), producing a sustained high-demand healing environment. Discipline Priests respond with the highest offensive participation rate (74.3%) and the most CC offensive actions per match (mean 3.2, p75 5), reflecting active engagement in cc_then_burst setups which appear in 42.3% of rounds. CD response latency is fastest here (median 4,499 ms) and the missed cleanse rate drops to 53.4%, suggesting priests are more proactive when the match runs long enough to reward cooldown investment.
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Enhancement Shaman | Bracket: Rated Solo Shuffle | Result: Loss | Duration: 1:50
+  My team: Beast Mastery Hunter, Enhancement Shaman, Discipline Priest
+  Enemy team: Retribution Paladin, Fury Warrior, Discipline Priest
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Enhancement Shaman): CAN offensive purge
+  Team purgers: Discipline Priest
+
+DAMPENING (Rated Solo Shuffle): started at 10%, ended at 31% at match end
+  Note: Reached 31% dampening — healing was meaningfully impaired in the late game.
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Letsgoflyers-Proudmoore-US (Enhancement Shaman — log owner):
+    Hex [30s], Ascendance (Enhancement) [180s]
+  2: Diapermaxxer-Area52-US (Beast Mastery Hunter):
+    Bestial Wrath [90s, 2 Charges]
+  3: Skeemzin-Tichondrius-US (Discipline Priest):
+    Psychic Scream [40s], Power Infusion [120s, 2 Charges], Pain Suppression [180s, 2 Charges]
+  4: Dintrax-Tichondrius-US (Fury Warrior — enemy):
+    Recklessness [90s], Avatar [90s]
+  5: Liallivia-Sen'jin-US (Discipline Priest — enemy):
+    Power Infusion [120s]
+  6: Immapriest-Sargeras-US (Retribution Paladin — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 2:100
+0:03  [STATE]   friends 2:100
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:08  [CC ON TEAM]   1 ← Storm Bolt (Dintrax-Tichondrius-US) | 3s
+0:09  [STATE]   friends 1:95 2:100 3:100 / enemies 6:99 4:100 5:99
+0:09  [OFFENSIVE WINDOW]   0:09–0:34 | Moderate | 0.72M on 1 (Enhancement Shaman) | CDs: Recklessness + Avatar + Power Infusion
+0:09  [ENEMY CD]   4 (Fury Warrior): Recklessness
+0:09  [ENEMY CD]   4 (Fury Warrior): Avatar
+0:10  [STATE]   friends 1:92 2:100 3:100 / enemies 6:98 4:100 5:99
+0:11  [STATE]   friends 1:85 2:100 3:100 / enemies 6:98 4:100 5:98
+0:12  [STATE]   friends 1:57 2:100 3:100 / enemies 6:97 4:100 5:98
+0:13  [STATE]   friends 1:55 2:100 3:100 / enemies 6:96 4:97 5:98
+0:14  [STATE]   friends 1:55 2:100 3:100 / enemies 6:90 4:96 5:97
+0:14  [OWNER CD]   Ascendance (Enhancement)
+      [RES] rdy:Δ+Ascendance (Enhancement),2:Bestial Wrath,3:Pain Suppression  cd:—  enemy:Recklessness/Fury Warrior(5s),Avatar/Fury Warrior(5s)
+0:14  [TEAMMATE CD]   2 (Beast Mastery Hunter): Bestial Wrath
+      [RES] rdy:Δ  cd:—  enemy:Recklessness/Fury Warrior(5s),Avatar/Fury Warrior(5s)
+0:15  [STATE]   friends 1:70 2:100 3:100 / enemies 6:75 4:92 5:97
+0:16  [STATE]   friends 1:73 2:100 3:100 / enemies 6:75 4:100 5:100
+0:17  [STATE]   friends 1:81 2:100 3:100 / enemies 6:91 4:100 5:98
+0:17  [TRINKET]   1 used PvP trinket
+0:18  [STATE]   friends 1:100 2:100 3:100 / enemies 6:91 4:95 5:95
+0:18  [CC ON TEAM]   3 ← Hammer of Justice (Immapriest-Sargeras-US) | 5s
+0:19  [STATE]   friends 1:100 2:100 3:100 / enemies 6:92 4:91 5:93
+0:19  [ENEMY BUFF]   4: Power Infusion (purgeable)
+0:19  [ENEMY CD]   5 (Discipline Priest): Power Infusion
+0:19  [ENEMY BUFF]   5: Power Infusion (purgeable)
+0:20  [STATE]   friends 1:100 2:100 3:100 / enemies 6:90 4:87 5:93
+0:21  [STATE]   friends 1:97 2:100 3:100 / enemies 6:88 4:88 5:93
+0:22  [STATE]   friends 1:74 2:100 3:100 / enemies 6:82 4:91 5:100
+0:22  [TEAMMATE CD]   3 (Discipline Priest): Pain Suppression
+      [RES] rdy:Δ+Hex,3:Pain Suppression  cd:—  enemy:Recklessness/Fury Warrior(13s),Avatar/Fury Warrior(13s),Power Infusion/Discipline Priest(3s)  cc:3/Hammer of Justice-1s[stun]
+0:23  [STATE]   friends 1:66 2:100 3:100 / enemies 6:75 4:90 5:100
+0:24  [STATE]   friends 1:60 2:100 3:99 / enemies 6:84 4:91 5:100
+0:25  [STATE]   friends 1:62 2:100 3:100 / enemies 6:56 4:87 5:100
+0:25  [CC ON TEAM]   2 ← Psychic Scream (Liallivia-Sen'jin-US) | 6s
+0:26  [STATE]   friends 1:67 2:100 3:100 / enemies 6:39 4:90 5:99
+0:27  [STATE]   friends 1:86 2:100 3:100 / enemies 6:43 4:94 5:100
+0:28  [STATE]   friends 1:85 2:100 3:100 / enemies 6:32 4:86 5:99
+0:29  [STATE]   friends 1:85 2:100 3:100 / enemies 6:34 4:88 5:100
+0:29  [BUFF FADED]   Ascendance (Enhancement)
+0:30  [STATE]   friends 1:91 3:100 / enemies 6:51 4:94 5:100
+0:30  [ENEMY BUFF END]   5: Power Infusion
+0:31  [STATE]   friends 1:100 2:100 3:100 / enemies 6:67 4:97 5:99
+0:32  [STATE]   friends 1:93 2:100 3:100 / enemies 6:73 4:100 5:100
+0:33  [STATE]   friends 1:98 2:100 3:100 / enemies 6:75 4:100 5:100
+0:34  [STATE]   friends 1:100 2:100 3:100 / enemies 6:93 4:100 5:100
+0:34  [ENEMY BUFF END]   4: Power Infusion
+0:34  [DMG SPIKE]   1 (Enhancement Shaman): 0.72M in 10s
+0:35  [STATE]   friends 1:97 2:100 3:100 / enemies 6:91 4:100 5:100
+0:36  [STATE]   friends 1:89 2:95 3:98 / enemies 6:88 4:100 5:100
+0:37  [STATE]   friends 1:80 2:87 3:96 / enemies 6:72 4:100 5:100
+0:38  [STATE]   friends 1:100 2:88 3:94 / enemies 6:76 4:100 5:100
+0:39  [STATE]   friends 1:84 2:89 3:94 / enemies 6:84 4:100 5:100
+0:40  [CC ON TEAM]   3 ← Blinding Light (Immapriest-Sargeras-US) | 3s
+0:40  [CC ON TEAM]   1 ← Blinding Light (Immapriest-Sargeras-US) | 1s | trinket: ON CD (97s left)
+0:41  [STATE]   friends 1:66 2:88 3:93 / enemies 6:68 4:98 5:99
+0:42  [STATE]   friends 1:60 2:88 3:93 / enemies 6:73 4:96 5:100
+0:43  [STATE]   friends 1:52 2:87 3:93 / enemies 6:80 4:96 5:100
+0:44  [STATE]   friends 1:61 2:86 3:95 / enemies 6:81 4:100 5:100
+0:45  [STATE]   friends 1:61 2:87 3:95 / enemies 6:81 4:99 5:100
+0:45  [CC ON TEAM]   3 ← Storm Bolt (Dintrax-Tichondrius-US) | 3s
+0:45  [OWNER CD]   Hex → Liallivia-Sen'jin-US (100% HP)
+      [RES] rdy:Hex,3:Psychic Scream,3:Power Infusion  cd:Ascendance (Enhancement)(148s),2:Bestial Wrath(59s),3:Pain Suppression(156s)  enemy:Power Infusion/Discipline Priest(27s)  cc:3/Storm Bolt-2s[stun]
+0:46  [STATE]   friends 1:64 2:90 3:99 / enemies 6:83 4:100 5:100
+0:46  [TEAMMATE CD]   2 (Beast Mastery Hunter): Bestial Wrath
+      [RES] rdy:Δ-Ascendance (Enhancement),2:Bestial Wrath,3:Pain Suppression  cd:Ascendance (Enhancement)(148s),2:Bestial Wrath(58s),3:Pain Suppression(156s)  enemy:Power Infusion/Discipline Priest(27s)  cc:3/Storm Bolt-2s[stun]
+0:47  [STATE]   friends 1:65 2:92 3:99 / enemies 6:62 4:92 5:100
+0:48  [STATE]   friends 1:66 2:93 3:100 / enemies 6:51 4:83 5:100
+0:48  [DMG SPIKE]   1 (Enhancement Shaman): 0.55M in 10s
+0:48  [TEAMMATE CD]   3 (Discipline Priest): Power Infusion
+      [RES] rdy:Δ+3:Power Infusion-Hex  cd:Hex(28s)  enemy:Power Infusion/Discipline Priest(29s)
+0:48  [TEAMMATE CD]   3 (Discipline Priest): Power Infusion
+      [RES] rdy:Δ  cd:—  enemy:Power Infusion/Discipline Priest(29s)
+0:49  [STATE]   friends 1:66 2:94 3:100 / enemies 6:56 4:82 5:100
+0:49  [OFFENSIVE WINDOW]   0:49–1:09 | High | 0.59M on 1 (Enhancement Shaman) | CDs: Recklessness + Avatar
+0:49  [ENEMY CD]   4 (Fury Warrior): Recklessness
+0:49  [ENEMY CD]   4 (Fury Warrior): Avatar
+0:50  [STATE]   friends 1:77 2:100 3:100 / enemies 6:45 4:85 5:100
+0:51  [STATE]   friends 1:83 2:100 3:100 / enemies 6:48 4:90 5:100
+0:52  [STATE]   friends 1:63 2:100 3:100 / enemies 6:50 4:93 5:100
+0:53  [STATE]   friends 1:58 2:100 3:100 / enemies 6:58 4:95 5:100
+0:53  [TEAMMATE CD]   3 (Discipline Priest): Pain Suppression
+      [RES] rdy:Δ-Hex,3:Power Infusion,3:Pain Suppression  cd:Hex(23s),3:Power Infusion(115s),3:Pain Suppression(149s)  enemy:Recklessness/Fury Warrior(4s),Avatar/Fury Warrior(4s)
+0:53  [CC ON TEAM]   1 ← Hammer of Justice (Immapriest-Sargeras-US) | 5s | trinket: ON CD (84s left)
+0:54  [STATE]   friends 1:67 2:100 3:100 / enemies 6:54 4:96 5:100
+0:55  [STATE]   friends 1:67 2:100 3:100 / enemies 6:48 4:99 5:100
+0:56  [STATE]   friends 1:51 2:100 3:100 / enemies 6:43 4:100 5:100
+0:57  [STATE]   friends 1:59 2:100 3:100 / enemies 6:43 4:100 5:100
+0:58  [STATE]   friends 1:59 2:100 3:100 / enemies 6:52 4:98 5:100
+0:58  [CC ON TEAM]   1 ← Intimidating Shout (Dintrax-Tichondrius-US) | 2s | trinket: ON CD (80s left)
+0:58  [CC ON TEAM]   3 ← Intimidating Shout (Dintrax-Tichondrius-US) | 1s
+0:59  [STATE]   friends 1:60 2:100 3:100 / enemies 6:60 4:99 5:100
+1:00  [STATE]   friends 1:62 2:100 3:100 / enemies 6:72 4:99 5:100
+1:00  [DMG SPIKE]   1 (Enhancement Shaman): 0.59M in 10s
+1:01  [STATE]   friends 1:67 2:100 3:100 / enemies 6:86 4:96 5:100
+1:02  [STATE]   friends 1:73 2:100 3:100 / enemies 6:72 4:96 5:100
+1:03  [STATE]   friends 1:70 2:100 3:100 / enemies 6:50 4:93 5:100
+1:04  [STATE]   friends 1:65 2:100 3:100 / enemies 6:55 4:100 5:100
+1:05  [STATE]   friends 1:76 2:100 3:100 / enemies 6:62 4:90 5:100
+1:06  [STATE]   friends 1:83 2:98 3:100 / enemies 6:79 4:85 5:100
+1:07  [STATE]   friends 1:76 2:96 3:100 / enemies 6:87 4:87 5:100
+1:08  [STATE]   friends 1:76 2:98 3:100 / enemies 6:87 4:86 5:100
+1:09  [STATE]   friends 1:66 2:98 3:100
+1:12  [STATE]   friends 1:69 2:100 3:100
+1:14  [CC ON TEAM]   1 ← Psychic Scream (Liallivia-Sen'jin-US) | 1s | trinket: ON CD (64s left)
+1:15  [STATE]   friends 1:50 2:100 3:100 / enemies 6:56 4:60 5:100
+1:16  [STATE]   friends 1:50 2:100 3:100 / enemies 6:48 4:43 5:97
+1:17  [STATE]   friends 1:54 2:100 3:100 / enemies 6:60 4:33 5:100
+1:18  [STATE]   friends 1:72 2:100 3:100 / enemies 6:70 4:60 5:100
+1:19  [STATE]   friends 1:65 2:100 3:100 / enemies 6:75 4:73 5:100
+1:19  [TEAMMATE CD]   3 (Discipline Priest): Psychic Scream
+      [RES] rdy:Δ+3:Psychic Scream  cd:—  enemy:Recklessness/Fury Warrior(30s),Avatar/Fury Warrior(30s)
+1:19  [CC CAST]   Psychic Scream (by 3) → nil [non-player target]
+1:19  [CC CAST]   Psychic Scream (by 3) → 5
+1:20  [STATE]   friends 1:56 2:100 3:100 / enemies 6:74 4:68 5:100
+1:20  [TEAMMATE CD]   2 (Beast Mastery Hunter): Bestial Wrath
+      [RES] rdy:Δ-3:Psychic Scream,3:Power Infusion  cd:3:Psychic Scream(39s),3:Power Infusion(88s)
+1:21  [STATE]   friends 1:54 2:100 3:100 / enemies 6:57 4:59 5:100
+1:22  [STATE]   friends 1:46 2:100 3:100 / enemies 6:47 4:60 5:100
+1:22  [DMG SPIKE]   1 (Enhancement Shaman): 0.44M in 10s
+1:23  [STATE]   friends 1:47 2:100 3:100 / enemies 6:44 4:51 5:100
+1:24  [STATE]   friends 1:43 2:100 3:100 / enemies 6:24 4:39 5:100
+1:24  [CC ON TEAM]   1 ← Champion's Spear (Dintrax-Tichondrius-US) | 6s | trinket: ON CD (53s left)
+1:25  [STATE]   friends 1:52 2:100 3:100 / enemies 6:36 4:21 5:100
+1:26  [STATE]   friends 1:56 2:100 3:100 / enemies 6:45 4:35 5:100
+1:27  [STATE]   friends 1:54 2:99 3:100 / enemies 6:46 4:34 5:100
+1:28  [STATE]   friends 1:54 2:99 3:100 / enemies 6:46 4:26 5:100
+1:28  [CC ON TEAM]   3 ← Hammer of Justice (Immapriest-Sargeras-US) | 5s
+1:29  [STATE]   friends 1:54 2:99 3:100 / enemies 6:55 4:17 5:100
+1:30  [STATE]   friends 1:53 2:100 3:100 / enemies 6:55 4:12 5:100
+1:31  [STATE]   friends 1:44 2:100 3:100 / enemies 6:57 4:79 5:99
+1:31  [OFFENSIVE WINDOW]   1:31–1:51 | High | 0.77M on 1 (Enhancement Shaman) | CDs: Recklessness + Avatar
+1:31  [ENEMY CD]   4 (Fury Warrior): Recklessness
+1:31  [ENEMY CD]   4 (Fury Warrior): Avatar
+1:32  [STATE]   friends 1:40 2:100 3:100 / enemies 6:60 4:83 5:100
+1:33  [STATE]   friends 1:26 2:100 3:100 / enemies 6:60 4:77 5:100
+1:33  [CLEANSE]   1 dispelled Judgment of Justice off 1
+1:34  [STATE]   friends 1:20 2:100 3:100 / enemies 6:67 4:81 5:100
+1:35  [STATE]   friends 1:38 2:98 3:100 / enemies 6:66 4:77 5:100
+1:36  [STATE]   friends 1:42 2:81 3:100 / enemies 6:60 4:77 5:100
+1:37  [STATE]   friends 1:54 2:73 3:100 / enemies 6:58 4:75 5:100
+1:38  [STATE]   friends 1:56 2:63 3:100 / enemies 6:56 4:75 5:100
+1:38  [CLEANSE]   1 dispelled Divine Hammer off 1
+1:38  [CC ON TEAM]   3 ← Storm Bolt (Dintrax-Tichondrius-US) | 2s
+1:39  [STATE]   friends 1:66 2:68 3:100 / enemies 6:58 4:65 5:100
+1:40  [STATE]   friends 1:69 2:67 3:100 / enemies 6:50 4:65 5:100
+1:41  [STATE]   friends 1:69 2:67 3:100 / enemies 6:46 4:67 5:100
+1:41  [DMG SPIKE]   1 (Enhancement Shaman): 0.77M in 10s
+1:42  [STATE]   friends 1:61 2:68 3:100 / enemies 6:33 4:66 5:100
+1:43  [STATE]   friends 1:61 2:68 3:100 / enemies 6:33 4:59 5:100
+1:44  [STATE]   friends 1:54 2:69 3:100 / enemies 6:45 4:54 5:100
+1:45  [STATE]   friends 1:39 2:70 3:100 / enemies 6:46 4:49 5:100
+1:46  [STATE]   friends 1:8 2:71 3:100 / enemies 6:46 4:44 5:100
+1:47  [STATE]   friends 1:27 2:71 3:100 / enemies 6:47 4:44 5:100
+1:48  [STATE]   friends 1:28 2:79 3:100 / enemies 6:53 4:39 5:100
+1:49  [STATE]   friends 1:26 2:88 3:100 / enemies 6:53 4:38 5:100
+1:50  [STATE]   friends 1:dead 2:88 3:100 / enemies 6:53 4:27 5:100
+1:50  [DEATH]  1 (Enhancement Shaman — friendly)
+               HP: 42% at T-15s → 69% at T-10s → 42% at T-5s → 28% at T-3s → dead
+               Top damage in final 10s: Dintrax-Tichondrius-US — Rampage (238k), Dintrax-Tichondrius-US — Execute (134k), Dintrax-Tichondrius-US — Bloodthirst (95k)
+
+1:50  [MATCH END]   damp: 31%
+  friends 1:dead(1:50) 2:88% 3:100% / enemies 6:53% 4:29% 5:100%

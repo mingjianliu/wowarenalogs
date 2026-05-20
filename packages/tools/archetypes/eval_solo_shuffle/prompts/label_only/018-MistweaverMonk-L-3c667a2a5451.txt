@@ -1,0 +1,276 @@
+[ARCHETYPE: Mistweaver Monk — heavy_burst_swap]
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Arms Warrior | Bracket: Rated Solo Shuffle | Result: Loss | Duration: 2:44
+  My team: Mistweaver Monk, Arms Warrior, Fire Mage
+  Enemy team: Holy Paladin, Marksmanship Hunter, Beast Mastery Hunter
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Arms Warrior): CANNOT offensive purge
+  Team purgers: Fire Mage
+
+DAMPENING (Rated Solo Shuffle): started at 10%, ended at 52% at match end
+  ⚠ Severe dampening (52%) — sustained healing was severely compromised; kill windows in the final phase required significantly less setup.
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Сноррег-Гордунни-EU (Arms Warrior — log owner):
+    Avatar [90s], Intimidating Shout [90s], Die by the Sword [120s], Bladestorm (Arms) [90s]
+  2: Tisza-ArgentDawn-EU (Mistweaver Monk):
+    Paralysis [45s], Leg Sweep [60s, 2 Charges], Life Cocoon [120s, 2 Charges]
+  3: Zivac-Kazzak-EU (Fire Mage):
+    Ice Block [240s], Dragon's Breath [45s], Combustion [120s, 2 Charges]
+  4: Dadeluxe-Aegwynn-EU (Holy Paladin — enemy):
+    Avenging Wrath [120s]
+  5: Avent-Neptulon-EU (Marksmanship Hunter — enemy):
+    Explosive Shot [30s], Trueshot [120s]
+  6: Thräd-Silvermoon-EU (Beast Mastery Hunter — enemy):
+    Bestial Wrath [90s]
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100 2:100 3:100
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:09  [STATE]   friends 1:100 2:100 3:100
+0:12  [STATE]   friends 1:100 2:100 3:100
+0:13  [CC ON TEAM]   2 ← Binding Shot (Thräd-Silvermoon-EU) | 3s
+0:14  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 6:100
+0:15  [STATE]   friends 1:100 2:100 3:100 / enemies 6:100
+0:16  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 6:100
+0:16  [CC ON TEAM]   2 ← Freezing Trap (Thräd-Silvermoon-EU) | 6s
+0:16  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath
+0:17  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 6:99
+0:18  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 6:99
+0:19  [STATE]   friends 1:94 2:100 3:100 / enemies 4:100 6:100
+0:19  [TEAMMATE CD]   3 (Fire Mage): Combustion
+      [RES] rdy:Δ+Avatar,2:Life Cocoon,3:Combustion  cd:—  enemy:Bestial Wrath/Beast Mastery Hunter(3s)  cc:2/Freezing Trap-3s
+0:20  [STATE]   friends 1:88 2:100 3:100 / enemies 6:100
+0:21  [STATE]   friends 1:88 2:100 3:100 / enemies 6:100
+0:21  [CC ON TEAM]   3 ← Scorpid Venom (Thräd-Silvermoon-EU) | 3s | trinket: used
+0:22  [STATE]   friends 1:88 2:100 3:100 / enemies 6:100
+0:22  [CC ON TEAM]   1 ← Intimidation (Avent-Neptulon-EU) | 2s | trinket: used
+0:23  [STATE]   friends 1:90 2:100 3:100 / enemies 4:99 6:85
+0:23  [TEAMMATE CD]   2 (Mistweaver Monk): Life Cocoon
+      [RES] rdy:Δ+Avatar,Intimidating Shout,3:Dragon's Breath-3:Combustion  cd:3:Combustion(116s)  enemy:Bestial Wrath/Beast Mastery Hunter(7s)  cc:1/Intimidation-1s[stun],3/Scorpid Venom-1s
+0:24  [STATE]   friends 1:91 2:100 3:100 / enemies 4:99 5:100 6:78
+0:24  [CC ON TEAM]   2 ← Scorpid Venom (Avent-Neptulon-EU) | 2s
+0:24  [CC ON TEAM]   3 ← Spider Venom (Thräd-Silvermoon-EU) | 1s | trinket: used
+0:25  [STATE]   friends 1:93 2:100 3:100 / enemies 4:100 5:99 6:82
+0:25  [TRINKET]   1 used PvP trinket
+0:25  [OWNER CD]   Intimidating Shout → Dadeluxe-Aegwynn-EU (100% HP)
+      [RES] rdy:Δ+Intimidating Shout,2:Paralysis,2:Leg Sweep,3:Dragon's Breath  cd:—  enemy:Bestial Wrath/Beast Mastery Hunter(9s)  cc:2/Scorpid Venom-2s,3/Spider Venom-1s
+0:25  [CC CAST]   Intimidating Shout (by 1) → 4
+0:26  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:98 6:82
+0:26  [TRINKET]   3 used PvP trinket
+0:27  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:96 6:82
+0:27  [CC ON TEAM]   2 ← Spider Venom (Avent-Neptulon-EU) | 3s
+0:28  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:96 6:82
+0:29  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:96 6:77
+0:30  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:96 6:70
+0:30  [TEAMMATE CD]   2 (Mistweaver Monk): Leg Sweep
+      [RES] rdy:Δ+2:Leg Sweep  cd:—  enemy:Bestial Wrath/Beast Mastery Hunter(14s)
+0:30  [CC CAST]   Leg Sweep (by 2) → 4
+0:30  [CC CAST]   Leg Sweep (by 2) → nil [non-player target]
+0:31  [STATE]   friends 1:100 2:100 3:99 / enemies 4:100 5:96 6:64
+0:31  [CC ON TEAM]   2 ← Freezing Trap (Avent-Neptulon-EU) | 2s
+0:32  [STATE]   friends 1:100 2:100 3:95 / enemies 4:100 5:96 6:58
+0:33  [STATE]   friends 1:100 2:98 3:95 / enemies 4:100 5:96 6:49
+0:34  [STATE]   friends 1:100 2:98 3:61 / enemies 4:100 5:96 6:36
+0:34  [ENEMY CD]   5 (Marksmanship Hunter): Explosive Shot
+0:35  [STATE]   friends 1:100 2:98 3:60 / enemies 4:100 5:96 6:30
+0:36  [STATE]   friends 1:100 2:100 3:70 / enemies 4:100 5:96 6:51
+0:37  [STATE]   friends 1:100 2:100 3:74 / enemies 4:100 5:100 6:81
+0:38  [STATE]   friends 1:95 2:100 3:78 / enemies 4:100 5:98 6:85
+0:39  [STATE]   friends 1:92 2:100 3:86 / enemies 4:100 5:88 6:98
+0:40  [STATE]   friends 1:93 2:100 3:91 / enemies 4:100 5:88 6:100
+0:41  [STATE]   friends 1:96 2:100 3:94 / enemies 4:100 5:88 6:100
+0:42  [STATE]   friends 1:98 2:100 3:100
+0:42  [TEAMMATE CD]   2 (Mistweaver Monk): Paralysis
+      [RES] rdy:Δ+Avatar-Intimidating Shout,2:Leg Sweep  cd:Intimidating Shout(73s),2:Leg Sweep(48s)  enemy:Explosive Shot/Marksmanship Hunter(8s),Bestial Wrath/Beast Mastery Hunter(26s)
+0:45  [STATE]   friends 1:85 2:100 3:100
+0:48  [STATE]   friends 1:100 2:100 3:100
+0:50  [CC ON TEAM]   2 ← Hammer of Justice (Dadeluxe-Aegwynn-EU) | 2s
+0:50  [STATE]   friends 1:100 2:98 3:100 / enemies 4:100 5:95 6:90
+0:51  [STATE]   friends 1:97 2:98 3:100 / enemies 4:100 5:96 6:60
+0:51  [CC ON TEAM]   2 ← Freezing Trap (Thräd-Silvermoon-EU) | 4s | trinket: used
+0:52  [STATE]   friends 1:94 2:98 3:100 / enemies 4:100 5:100 6:68
+0:52  [OFFENSIVE WINDOW]   0:52–1:08 | Critical | 0.70M on 3 (Fire Mage) | CDs: Trueshot + Bestial Wrath
+0:52  [ENEMY CD]   5 (Marksmanship Hunter): Trueshot
+0:53  [STATE]   friends 1:90 2:99 3:100 / enemies 4:100 5:100 6:94
+0:53  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath
+0:54  [STATE]   friends 1:84 2:99 3:100 / enemies 4:95 5:100 6:91
+0:55  [STATE]   friends 1:72 2:100 3:65 / enemies 4:95 5:100 6:91
+0:55  [TRINKET]   2 used PvP trinket
+0:56  [STATE]   friends 1:69 2:100 3:60 / enemies 4:95 5:100 6:91
+0:57  [STATE]   friends 1:66 2:100 3:56 / enemies 4:95 5:100 6:91
+0:58  [STATE]   friends 1:97 2:100 3:100 / enemies 4:93 5:100 6:100
+0:59  [STATE]   friends 1:94 2:100 3:99 / enemies 4:93 5:100 6:100
+1:00  [STATE]   friends 1:95 2:100 3:98 / enemies 4:93 5:95 6:99
+1:00  [DMG SPIKE]   3 (Fire Mage): 0.70M in 10s
+1:01  [STATE]   friends 1:96 2:100 3:100 / enemies 4:99 5:86 6:95
+1:02  [STATE]   friends 1:100 2:100 3:74 / enemies 4:100 5:84 6:95
+1:03  [STATE]   friends 1:99 2:100 3:53 / enemies 4:100 5:70 6:95
+1:03  [CLEANSE]   2 dispelled Освящение off 3
+1:04  [STATE]   friends 1:95 2:100 3:36 / enemies 4:100 5:79 6:96
+1:05  [STATE]   friends 1:92 2:100 3:40 / enemies 4:98 5:79 6:96
+1:06  [STATE]   friends 1:81 2:100 3:46
+1:06  [CC ON TEAM]   2 ← Blinding Light (Dadeluxe-Aegwynn-EU) | 4s | trinket: ON CD (79s left)
+1:07  [STATE]   friends 1:78 2:100 3:64 / enemies 4:98 5:79 6:97
+1:08  [STATE]   friends 1:77 2:100 3:55 / enemies 4:98 5:79 6:96
+1:09  [STATE]   friends 1:78 3:53 / enemies 5:78 6:96
+1:10  [STATE]   friends 1:81 3:45 / enemies 4:98 5:78 6:96
+1:11  [STATE]   friends 1:82 2:100 3:33 / enemies 4:98 5:77 6:97
+1:12  [STATE]   friends 1:83 2:100 3:37 / enemies 4:98 5:82 6:98
+1:12  [CC ON TEAM]   2 ← Intimidation (Avent-Neptulon-EU) | 3s | trinket: ON CD (73s left)
+1:13  [STATE]   friends 1:83 2:100 3:45 / enemies 4:98 5:89 6:100
+1:14  [STATE]   friends 1:83 2:100 3:49 / enemies 4:95 5:100 6:100
+1:14  [CC ON TEAM]   2 ← Freezing Trap (Avent-Neptulon-EU) | 6s | trinket: ON CD (72s left)
+1:15  [STATE]   friends 1:84 2:100 3:53 / enemies 4:96 5:97 6:99
+1:16  [STATE]   friends 1:87 2:100 3:52 / enemies 4:98 5:85 6:99
+1:16  [TEAMMATE CD]   3 (Fire Mage): Dragon's Breath
+      [RES] rdy:Δ+Avatar,3:Dragon's Breath-2:Paralysis,2:Leg Sweep,2:Life Cocoon  cd:2:Paralysis(11s),2:Leg Sweep(14s),2:Life Cocoon(67s)  enemy:Trueshot/Marksmanship Hunter(24s),Bestial Wrath/Beast Mastery Hunter(23s)  cc:2/Freezing Trap-4s
+1:16  [CC CAST]   Dragon's Breath (by 3) → nil [non-player target]
+1:17  [STATE]   friends 1:87 2:100 3:59 / enemies 4:100 5:85 6:100
+1:18  [STATE]   friends 1:90 2:100 3:56 / enemies 4:100 5:100 6:100
+1:18  [OWNER CD]   Avatar
+      [RES] rdy:Avatar,Die by the Sword,Bladestorm (Arms),3:Ice Block  cd:Intimidating Shout(37s),2:Paralysis(9s),2:Leg Sweep(12s),2:Life Cocoon(66s),3:Dragon's Breath(43s),3:Combustion(62s)  enemy:Trueshot/Marksmanship Hunter(25s),Bestial Wrath/Beast Mastery Hunter(25s)  cc:2/Freezing Trap-2s
+1:19  [STATE]   friends 1:91 2:100 3:60 / enemies 4:100 5:86 6:100
+1:19  [CC ON TEAM]   2 ← Freezing Trap (Thräd-Silvermoon-EU) | 3s | trinket: ON CD (66s left)
+1:20  [STATE]   friends 1:94 2:100 3:57 / enemies 4:100 5:95 6:100
+1:20  [CLEANSE]   1 dispelled Освящение off 1
+1:21  [STATE]   friends 1:98 2:100 3:58 / enemies 4:100 5:86 6:95
+1:21  [TEAMMATE CD]   3 (Fire Mage): Combustion
+      [RES] rdy:Δ-Avatar,Intimidating Shout,2:Paralysis,2:Leg Sweep,2:Life Cocoon,3:Dragon's Breath,3:Combustion  cd:Avatar(86s),Intimidating Shout(33s),2:Paralysis(6s),2:Leg Sweep(9s),2:Life Cocoon(62s),3:Dragon's Breath(40s),3:Combustion(58s)  enemy:Trueshot/Marksmanship Hunter(29s),Bestial Wrath/Beast Mastery Hunter(29s)  cc:2/Freezing Trap-1s,3/Кольцо мороза-0s[kick]
+1:22  [STATE]   friends 1:98 2:100 3:61 / enemies 4:100 5:68 6:98
+1:23  [STATE]   friends 1:79 2:94 3:39 / enemies 4:100 5:55 6:84
+1:23  [TEAMMATE CD]   2 (Mistweaver Monk): Leg Sweep
+      [RES] rdy:Δ-Avatar,2:Paralysis,2:Leg Sweep,3:Dragon's Breath  cd:Avatar(85s),2:Paralysis(4s),2:Leg Sweep(7s),3:Dragon's Breath(38s)  enemy:Bestial Wrath/Beast Mastery Hunter(30s)
+1:23  [CC CAST]   Leg Sweep (by 2) → nil [non-player target]
+1:23  [CC CAST]   Leg Sweep (by 2) → 5, 6 [2 enemies]
+1:24  [STATE]   friends 1:77 2:93 3:37 / enemies 4:100 5:58 6:71
+1:24  [OFFENSIVE WINDOW]   1:24–1:47 | Critical | 0.47M on 3 (Fire Mage) | CDs: Avenging Wrath + Explosive Shot + Bestial Wrath
+1:24  [ENEMY CD]   4 (Holy Paladin): Avenging Wrath
+1:25  [STATE]   friends 1:71 2:96 3:36 / enemies 4:100 5:69 6:47
+1:26  [STATE]   friends 1:70 2:94 3:43 / enemies 4:100 5:59 6:36
+1:27  [STATE]   friends 1:68 2:97 3:57 / enemies 4:100 5:67 6:55
+1:27  [DMG SPIKE]   3 (Fire Mage): 0.47M in 10s
+1:28  [STATE]   friends 1:70 2:95 3:69 / enemies 4:100 5:76 6:14
+1:28  [CC ON TEAM]   2 ← Scorpid Venom (Thräd-Silvermoon-EU) | 2s | trinket: ON CD (58s left)
+1:29  [STATE]   friends 1:71 2:97 3:81 / enemies 4:100 5:81 6:20
+1:30  [STATE]   friends 1:70 2:95 3:65 / enemies 4:100 5:80 6:19
+1:30  [CC ON TEAM]   2 ← Scorpid Venom (Avent-Neptulon-EU) | 2s | trinket: ON CD (55s left)
+1:31  [STATE]   friends 1:71 2:93 3:69 / enemies 4:100 5:83 6:29
+1:32  [STATE]   friends 1:73 2:94 3:73 / enemies 4:100 5:88 6:25
+1:32  [ENEMY CD]   5 (Marksmanship Hunter): Explosive Shot
+1:32  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath
+1:33  [STATE]   friends 1:76 2:82 3:79 / enemies 4:100 5:90 6:24
+1:34  [STATE]   friends 1:71 2:81 3:64 / enemies 4:97 5:89 6:96
+1:35  [STATE]   friends 1:70 2:59 3:62 / enemies 4:97 5:100 6:99
+1:36  [STATE]   friends 1:65 2:55 3:56 / enemies 4:97 5:100 6:87
+1:37  [STATE]   friends 1:65 2:53 3:49 / enemies 4:97 5:76 6:86
+1:38  [STATE]   friends 1:64 2:51 3:47 / enemies 4:97 5:75 6:93
+1:38  [BUFF FADED]   Avatar
+1:39  [STATE]   friends 1:65 2:50 3:46 / enemies 4:97 5:73 6:88
+1:40  [STATE]   friends 1:65 2:51 3:47 / enemies 4:95 5:59 6:79
+1:42  [STATE]   friends 1:68 2:59 3:63
+1:45  [STATE]   friends 1:76 2:65 3:71
+1:48  [STATE]   friends 1:80 2:72 3:40
+1:48  [CC ON TEAM]   2 ← Freezing Trap (Thräd-Silvermoon-EU) | 5s | trinket: ON CD (37s left)
+1:49  [STATE]   friends 1:81 2:73 3:40 / enemies 4:98 5:88 6:100
+1:50  [STATE]   friends 1:82 2:74 3:35 / enemies 4:98 5:100 6:100
+1:51  [STATE]   friends 1:83 2:76 3:53 / enemies 4:98 5:96 6:100
+1:52  [STATE]   friends 1:86 2:76 3:54 / enemies 4:99 5:100 6:100
+1:53  [STATE]   friends 1:86 2:77 3:55 / enemies 4:100 5:97 6:100
+1:53  [CC ON TEAM]   2 ← Hammer of Justice (Dadeluxe-Aegwynn-EU) | 3s | trinket: ON CD (32s left)
+1:53  [DMG SPIKE]   1 (Arms Warrior): 0.40M in 10s
+1:54  [STATE]   friends 1:86 2:76 3:53 / enemies 4:100 5:97 6:100
+1:55  [STATE]   friends 1:67 2:81 3:52 / enemies 4:99 5:90 6:100
+1:55  [CC ON TEAM]   1 ← Binding Shot (Thräd-Silvermoon-EU) | 3s | trinket: ON CD (31s left)
+1:56  [STATE]   friends 1:65 2:82 3:52 / enemies 4:100 5:100 6:100
+1:57  [STATE]   friends 1:59 2:81 3:47 / enemies 4:100 5:100 6:100
+1:58  [STATE]   friends 1:61 2:83 3:47 / enemies 4:100 5:100 6:100
+1:59  [STATE]   friends 1:63 2:84 3:47 / enemies 4:100 5:100 6:89
+2:00  [STATE]   friends 1:68 2:86 3:47 / enemies 4:100 5:100 6:96
+2:01  [STATE]   friends 1:69 2:86 3:49 / enemies 4:100 5:100 6:91
+2:02  [STATE]   friends 1:53 2:85 3:77 / enemies 4:100 5:100 6:100
+2:03  [STATE]   friends 1:48 2:89 3:82 / enemies 5:100 6:100
+2:03  [OFFENSIVE WINDOW]   2:03–2:18 | High | 0.74M on 3 (Fire Mage) | CDs: Bestial Wrath + Explosive Shot
+2:03  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath
+2:04  [STATE]   friends 1:40 2:89 3:87 / enemies 5:100 6:100
+2:04  [DMG SPIKE]   3 (Fire Mage): 0.74M in 10s
+2:05  [STATE]   friends 1:32 2:90 3:80 / enemies 5:100 6:100
+2:05  [ENEMY CD]   5 (Marksmanship Hunter): Explosive Shot
+2:05  [TEAMMATE CD]   2 (Mistweaver Monk): Life Cocoon
+      [RES] rdy:Δ-Avatar,2:Life Cocoon  cd:Avatar(42s),2:Life Cocoon(18s)  enemy:Explosive Shot/Marksmanship Hunter(0s),Bestial Wrath/Beast Mastery Hunter(3s)
+2:06  [STATE]   friends 1:28 2:91 3:69 / enemies 5:100 6:100
+2:07  [STATE]   friends 1:32 2:95 3:70 / enemies 5:98 6:100
+2:08  [STATE]   friends 1:36 2:98 3:46 / enemies 4:100 5:96 6:100
+2:09  [STATE]   friends 1:41 2:99 3:34 / enemies 4:100 5:100 6:100
+2:12  [STATE]   friends 1:48 2:97 3:36
+2:14  [CC ON TEAM]   2 ← Intimidation (Avent-Neptulon-EU) | 3s | trinket: ON CD (12s left)
+2:15  [STATE]   friends 1:53 2:97 3:56 / enemies 4:100 5:100 6:100
+2:16  [STATE]   friends 1:53 2:97 3:56 / enemies 4:100 5:100 6:100
+2:16  [CC ON TEAM]   2 ← Freezing Trap (Avent-Neptulon-EU) | 6s | trinket: ON CD (9s left)
+2:17  [STATE]   friends 1:57 2:97 3:58 / enemies 4:100 5:100 6:100
+2:18  [STATE]   friends 1:57 2:97 3:53 / enemies 5:100 6:99
+2:18  [TEAMMATE CD]   3 (Fire Mage): Dragon's Breath
+      [RES] rdy:Δ+Intimidating Shout,2:Paralysis,2:Leg Sweep-Avatar  cd:Avatar(29s)  enemy:Explosive Shot/Marksmanship Hunter(13s),Bestial Wrath/Beast Mastery Hunter(16s)  cc:2/Freezing Trap-4s
+2:18  [CC CAST]   Dragon's Breath (by 3) → nil [non-player target]
+2:18  [OWNER CD]   Intimidating Shout → Dadeluxe-Aegwynn-EU (100% HP)
+      [RES] rdy:Δ-Avatar  cd:Avatar(29s)  enemy:Explosive Shot/Marksmanship Hunter(13s),Bestial Wrath/Beast Mastery Hunter(16s)  cc:2/Freezing Trap-4s
+2:18  [CC CAST]   Intimidating Shout (by 1) → 4, 6 [2 enemies]
+2:19  [STATE]   friends 1:59 2:98 3:47 / enemies 4:100 5:100 6:99
+2:20  [STATE]   friends 1:60 2:98 3:44 / enemies 4:100 5:100 6:99
+2:20  [CC ON TEAM]   1 ← Freezing Trap (Thräd-Silvermoon-EU) | 6s | trinket: ON CD (6s left)
+2:21  [STATE]   friends 1:60 2:98 3:45 / enemies 4:100 5:100 6:99
+2:22  [STATE]   friends 1:61 2:100 3:37 / enemies 4:100 5:100 6:100
+2:23  [STATE]   friends 1:63 2:100 3:37 / enemies 4:100 5:100 6:100
+2:24  [STATE]   friends 1:63 2:100 3:27 / enemies 4:100 5:100 6:100
+2:25  [STATE]   friends 1:64 2:100 3:46 / enemies 4:100 5:100 6:100
+2:26  [STATE]   friends 1:66 2:100 3:52 / enemies 4:100 5:100 6:100
+2:26  [TEAMMATE CD]   2 (Mistweaver Monk): Leg Sweep
+      [RES] rdy:Δ+2:Paralysis,2:Leg Sweep,2:Life Cocoon,3:Combustion  cd:—  enemy:Explosive Shot/Marksmanship Hunter(21s),Bestial Wrath/Beast Mastery Hunter(23s)
+2:26  [CC CAST]   Leg Sweep (by 2) → nil [non-player target]
+2:26  [CC CAST]   Leg Sweep (by 2) → 5
+2:27  [STATE]   friends 1:66 2:100 3:56 / enemies 4:100 5:100 6:100
+2:28  [STATE]   friends 1:67 2:100 3:58 / enemies 4:100 5:100 6:95
+2:29  [STATE]   friends 1:67 2:100 3:60 / enemies 4:100 5:100 6:96
+2:29  [CC ON TEAM]   2 ← Scorpid Venom (Thräd-Silvermoon-EU) | 2s
+2:30  [STATE]   friends 1:69 2:100 3:63 / enemies 4:100 5:99 6:87
+2:31  [STATE]   friends 1:69 2:100 3:61 / enemies 4:100 5:99 6:87
+2:32  [STATE]   friends 1:68 2:100 3:62 / enemies 4:100 5:100 6:89
+2:33  [STATE]   friends 1:68 2:99 3:54 / enemies 4:100 5:100 6:89
+2:33  [OFFENSIVE WINDOW]   2:33–2:56 | High | 0.42M on 3 (Fire Mage) | CDs: Bestial Wrath + Trueshot
+2:33  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath
+2:33  [DMG SPIKE]   3 (Fire Mage): 0.42M in 10s
+2:33  [TEAMMATE CD]   3 (Fire Mage): Combustion
+      [RES] rdy:Δ+2:Paralysis,2:Leg Sweep,2:Life Cocoon,3:Combustion  cd:—  enemy:Explosive Shot/Marksmanship Hunter(28s),Bestial Wrath/Beast Mastery Hunter(0s)
+2:34  [STATE]   friends 1:69 2:99 3:48 / enemies 4:100 5:100 6:100
+2:35  [STATE]   friends 1:70 2:99 3:46 / enemies 4:100 5:100 6:93
+2:35  [CC ON TEAM]   2 ← Blinding Light (Dadeluxe-Aegwynn-EU) | 4s
+2:35  [CC ON TEAM]   2 ← Scorpid Venom (Avent-Neptulon-EU) | 2s
+2:36  [STATE]   friends 1:71 2:99 3:20 / enemies 4:100 5:100 6:84
+2:36  [TEAMMATE CD]   3 (Fire Mage): Ice Block
+      [RES] rdy:Δ+2:Life Cocoon-Intimidating Shout,3:Dragon's Breath  cd:Intimidating Shout(72s),3:Dragon's Breath(27s)  enemy:Bestial Wrath/Beast Mastery Hunter(3s)  cc:2/Blinding Light-3s
+2:37  [STATE]   friends 1:71 2:100 3:15 / enemies 4:99 5:100 6:76
+2:38  [STATE]   friends 1:73 2:100 3:17 / enemies 4:99 5:100 6:97
+2:38  [CC ON TEAM]   2 ← Spider Venom (Avent-Neptulon-EU) | 3s | trinket: used
+2:39  [STATE]   friends 1:74 2:100 3:18 / enemies 4:97 5:100 6:96
+2:40  [STATE]   friends 1:76 2:100 3:19 / enemies 4:96 5:100 6:94
+2:41  [STATE]   friends 1:78 2:100 3:20 / enemies 4:92 5:100 6:88
+2:41  [CC ON TEAM]   3 ← Binding Shot (Avent-Neptulon-EU) | 1s
+2:41  [ENEMY CD]   5 (Marksmanship Hunter): Trueshot
+2:41  [TRINKET]   2 used PvP trinket
+2:42  [STATE]   friends 1:78 2:100 3:22 / enemies 4:92 5:100 6:82
+2:43  [STATE]   friends 1:80 2:100 3:dead / enemies 4:89 5:100 6:85
+2:43  [DEATH]  3 (Fire Mage — friendly)
+               HP: 60% at T-15s → 57% at T-10s → 17% at T-5s → 20% at T-3s → dead
+               Top damage in final 10s: Avent-Neptulon-EU — Стенающая стрела (119k), [pet] — Команда Взять! (118k), [pet] — Звериный гнев (37k)
+2:43  [CC ON TEAM]   2 ← Binding Shot (Avent-Neptulon-EU) | 1s | trinket: ON CD (89s left)
+2:44  [STATE]   friends 1:75 2:100 3:dead / enemies 4:97 5:100 6:80
+
+2:44  [MATCH END]   damp: 52%
+  friends 1:75% 2:99% 3:dead(2:43) / enemies 4:93% 5:100% 6:73%

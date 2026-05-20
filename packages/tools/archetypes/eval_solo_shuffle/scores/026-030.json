@@ -1,0 +1,147 @@
+{
+  "026": {
+    "spec": "Discipline Priest",
+    "cluster": "fast_passive_tunnel",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 3,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false
+    },
+    "label_only": {
+      "focusCalibration": 3,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false
+    },
+    "narrative": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false
+    }
+  },
+  "027": {
+    "spec": "Discipline Priest",
+    "cluster": "cc_heavy_swap",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 3,
+      "outcomeAlignment": 3,
+      "accuracy": 4,
+      "hallucination_risk": false
+    },
+    "label_only": {
+      "focusCalibration": 3,
+      "outcomeAlignment": 3,
+      "accuracy": 4,
+      "hallucination_risk": false
+    },
+    "narrative": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false
+    }
+  },
+  "028": {
+    "spec": "Discipline Priest",
+    "cluster": "fast_passive_tunnel",
+    "result": "Win",
+    "baseline": {
+      "focusCalibration": 3,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false
+    },
+    "label_only": {
+      "focusCalibration": 3,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false
+    },
+    "narrative": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false
+    }
+  },
+  "029": {
+    "spec": "Discipline Priest",
+    "cluster": "fast_passive_tunnel",
+    "result": "Win",
+    "baseline": {
+      "focusCalibration": 3,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false
+    },
+    "label_only": {
+      "focusCalibration": 3,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false
+    },
+    "narrative": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false
+    }
+  },
+  "030": {
+    "spec": "Discipline Priest",
+    "cluster": "heavy_burst_tunnel",
+    "result": "Win",
+    "baseline": {
+      "focusCalibration": 3,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false
+    },
+    "label_only": {
+      "focusCalibration": 3,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false
+    },
+    "narrative": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false
+    }
+  }
+}
