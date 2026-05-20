@@ -1736,6 +1736,108 @@ describe('buildMatchTimeline — F65 [OWNER CAST] target labels', () => {
   });
 });
 
+describe('buildMatchTimeline — F95 [OWNER CC]', () => {
+  it('emits [OWNER CC] for offensive CC casts by the owner when isHealer=true', () => {
+    // Mind Control = spellId 605
+    const owner = makeUnit('unit-1', {
+      name: 'Feramonk',
+      spellCastEvents: [makeSpellCastEvent('605', 10000, 'enemy-1', 'Natjkis')],
+    });
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        isHealer: true,
+        ownerCDs: [makeCD('Psychic Scream', 40)],
+        matchStartMs: 0,
+        matchEndMs: 60000,
+      }),
+    );
+    expect(result).toContain('[OWNER CC]');
+    expect(result).toContain('Mind Control');
+    expect(result).toContain('0:10');
+    expect(result).toContain('[RES]');
+  });
+
+  it('emits [OWNER CC] for Hex (30s CD) even though it would normally be promoted to [OWNER CD]', () => {
+    // Hex = spellId 51514, CD 30s
+    const owner = makeUnit('unit-1', {
+      name: 'Feramonk',
+      spellCastEvents: [makeSpellCastEvent('51514', 10000, 'enemy-1', 'Natjkis')],
+    });
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        isHealer: true,
+        ownerCDs: [makeCD('Healing Stream Totem', 30)],
+        matchStartMs: 0,
+        matchEndMs: 60000,
+      }),
+    );
+    expect(result).toContain('[OWNER CC]');
+    expect(result).not.toContain('[OWNER CD]   Hex');
+    expect(result).toContain('Hex');
+  });
+
+  it('does NOT emit [OWNER CC] for non-healers (currently scoped to healer gap-filler)', () => {
+    const owner = makeUnit('unit-1', {
+      name: 'Feramonk',
+      spellCastEvents: [makeSpellCastEvent('605', 10000, 'enemy-1', 'Natjkis')],
+    });
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        isHealer: false,
+        matchStartMs: 0,
+        matchEndMs: 60000,
+      }),
+    );
+    expect(result).not.toContain('[OWNER CC]');
+  });
+
+  it('emits [OWNER CC] for a major CC in ownerCDs (e.g. Psychic Scream)', () => {
+    const owner = makeUnit('unit-1', { name: 'Feramonk' });
+    const screamCD: IMajorCooldownInfo = {
+      spellId: '8122',
+      spellName: 'Psychic Scream',
+      tag: 'Control',
+      cooldownSeconds: 60,
+      maxChargesDetected: 1,
+      casts: [{ timeSeconds: 20 }],
+      availableWindows: [],
+      neverUsed: false,
+    };
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        ownerCDs: [screamCD],
+      }),
+    );
+    expect(result).toContain('[OWNER CC]');
+    expect(result).toContain('Psychic Scream');
+  });
+
+  it('emits [TEAMMATE CC] for a major CC in teammateCDs (e.g. Hammer of Justice)', () => {
+    const teammate = makeUnit('unit-2', { name: 'Simplesauce' });
+    const hojCD: IMajorCooldownInfo = {
+      spellId: '853',
+      spellName: 'Hammer of Justice',
+      tag: 'Control',
+      cooldownSeconds: 60,
+      maxChargesDetected: 1,
+      casts: [{ timeSeconds: 30 }],
+      availableWindows: [],
+      neverUsed: false,
+    };
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        teammateCDs: [{ player: teammate, spec: 'Holy Paladin', cds: [hojCD] }],
+      }),
+    );
+    expect(result).toContain('[TEAMMATE CC]');
+    expect(result).toContain('Hammer of Justice');
+  });
+});
+
 describe('buildMatchTimeline — F62 dense HP ticks in critical windows', () => {
   function makeUnitWithHp(
     id: string,
@@ -4139,8 +4241,14 @@ describe('buildMatchTimeline — [RES] deduplication (F115/F104)', () => {
   it('suppresses redundant [RES] snapshots within 2s of each other', () => {
     const matchStartMs = 1000000;
     const matchEndMs = 1060000;
-    const owner = { id: '1', name: 'Player1', spec: CombatUnitSpec.Paladin_Holy, advancedActions: [], spellCastEvents: [] } as any;
-    
+    const owner = {
+      id: '1',
+      name: 'Player1',
+      spec: CombatUnitSpec.Paladin_Holy,
+      advancedActions: [],
+      spellCastEvents: [],
+    } as any;
+
     const result = buildMatchTimeline({
       owner,
       ownerSpec: 'Holy Paladin',
@@ -4154,7 +4262,7 @@ describe('buildMatchTimeline — [RES] deduplication (F115/F104)', () => {
           casts: [
             { timeSeconds: 10 },
             { timeSeconds: 11.5 }, // within 2s
-            { timeSeconds: 14 },   // > 2s after 10
+            { timeSeconds: 14 }, // > 2s after 10
           ],
           availableWindows: [],
           neverUsed: false,
@@ -4163,7 +4271,14 @@ describe('buildMatchTimeline — [RES] deduplication (F115/F104)', () => {
       teammateCDs: [],
       enemyCDTimeline: { players: [], alignedBurstWindows: [] },
       ccTrinketSummaries: [],
-      dispelSummary: { allyCleanse: [], ourPurges: [], hostilePurges: [], missedCleanseWindows: [], ccEfficiency: [], missedPurgeWindows: [] } as any,
+      dispelSummary: {
+        allyCleanse: [],
+        ourPurges: [],
+        hostilePurges: [],
+        missedCleanseWindows: [],
+        ccEfficiency: [],
+        missedPurgeWindows: [],
+      } as any,
       friendlyDeaths: [],
       enemyDeaths: [],
       pressureWindows: [],
@@ -4175,17 +4290,17 @@ describe('buildMatchTimeline — [RES] deduplication (F115/F104)', () => {
     });
 
     const resLines = result.split('\n').filter((l) => l.includes('[RES]'));
-    
+
     // Snapshot at 10.0 (emitted)
     // Snapshot at 11.5 (suppressed: 11.5 - 10.0 < 2)
     // Snapshot at 14.0 (emitted: 14.0 - 10.0 > 2)
     expect(resLines.length).toBe(2);
-    
-    const lines = result.split('\n').map(l => l.trim());
-    const bubbleIdx = lines.findIndex(l => l.includes('0:10  [OWNER CD]   Bubble'));
-    const otherIdx = lines.findIndex(l => l.includes('0:11  [OWNER CD]   Bubble'));
-    const nextIdx = lines.findIndex(l => l.includes('0:14  [OWNER CD]   Bubble'));
-    
+
+    const lines = result.split('\n').map((l) => l.trim());
+    const bubbleIdx = lines.findIndex((l) => l.includes('0:10  [OWNER CD]   Bubble'));
+    const otherIdx = lines.findIndex((l) => l.includes('0:11  [OWNER CD]   Bubble'));
+    const nextIdx = lines.findIndex((l) => l.includes('0:14  [OWNER CD]   Bubble'));
+
     expect(lines[bubbleIdx + 1]).toContain('[RES]');
     expect(lines[otherIdx + 1]).not.toContain('[RES]');
     expect(lines[nextIdx + 1]).toContain('[RES]');

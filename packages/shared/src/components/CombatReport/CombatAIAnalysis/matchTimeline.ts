@@ -1,6 +1,7 @@
 import { CombatUnitType, getUnitType, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
 import { getEnglishSpellName, spellEffectData } from '../../../data/spellEffectData';
+import { ccSpellIds } from '../../../data/spellTags';
 import { IPlayerCCTrinketSummary } from '../../../utils/ccTrinketAnalysis';
 import { fmtTime, getUnitHpAtTimestamp, IDamageBucket, IMajorCooldownInfo } from '../../../utils/cooldowns';
 import { getDampeningPercentage } from '../../../utils/dampening';
@@ -288,9 +289,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         }
       }
 
+      const prefix = ccSpellIds.has(cd.spellId) ? '[OWNER CC]' : '[OWNER CD]';
       addEntry(
         cast.timeSeconds,
-        `${fmtTime(cast.timeSeconds)}  [OWNER CD]   ${cd.spellName}${targetPart}`,
+        `${fmtTime(cast.timeSeconds)}  ${prefix}   ${cd.spellName}${targetPart}`,
         ...extraLines,
       );
     }
@@ -373,6 +375,16 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
             : ' [totem/pet]';
       }
 
+      // F95: Offensive CC casts should carry a CC annotation or use an [OWNER CC] prefix.
+      if (ccSpellIds.has(e.spellId)) {
+        addEntry(
+          timeSeconds,
+          `${fmtTime(timeSeconds)}  [OWNER CC]   ${displayName}${targetPart}${totemNote}${orderNote}`,
+          resourceSnapshot(timeSeconds),
+        );
+        continue;
+      }
+
       // B38: promote major-CD spells (CD ≥ 30s) to [OWNER CD] format when extractMajorCooldowns
       // missed them (e.g. missing talent data). This keeps Avenging Crusader etc. from appearing
       // as filler casts when they are significant cooldown activations.
@@ -399,9 +411,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   for (const { player, spec, cds } of teammateCDs) {
     for (const cd of cds) {
       for (const cast of cd.casts) {
+        const prefix = ccSpellIds.has(cd.spellId) ? '[TEAMMATE CC]' : '[TEAMMATE CD]';
         addEntry(
           cast.timeSeconds,
-          `${fmtTime(cast.timeSeconds)}  [TEAMMATE CD]   ${pid(player.name)} (${spec}): ${cd.spellName}`,
+          `${fmtTime(cast.timeSeconds)}  ${prefix}   ${pid(player.name)} (${spec}): ${cd.spellName}`,
           resourceSnapshot(cast.timeSeconds),
         );
       }
