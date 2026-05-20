@@ -149,8 +149,14 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   let prevReadyNamesState: string[] | null = null;
   let prevOnCDNamesState: string[] | null = null;
+  let lastSnapshotTime = -100;
 
   function resourceSnapshot(timeSeconds: number): string {
+    if (timeSeconds - lastSnapshotTime < 2.0) {
+      return '';
+    }
+    lastSnapshotTime = timeSeconds;
+
     // B34: compute attributed names (pid:SpellName for teammates)
     const teammateCDsWithLabel = teammateCDs.map(({ player, cds, spec }) => ({
       cds,

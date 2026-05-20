@@ -4134,3 +4134,60 @@ describe('buildMatchTimeline — B42: dead players shown as :dead in [STATE] tic
     expect(linesAfterDeath.every((l) => l.includes('Dzinked:dead'))).toBe(true);
   });
 });
+
+describe('buildMatchTimeline — [RES] deduplication (F115/F104)', () => {
+  it('suppresses redundant [RES] snapshots within 2s of each other', () => {
+    const matchStartMs = 1000000;
+    const matchEndMs = 1060000;
+    const owner = { id: '1', name: 'Player1', spec: CombatUnitSpec.Paladin_Holy, advancedActions: [], spellCastEvents: [] } as any;
+    
+    const result = buildMatchTimeline({
+      owner,
+      ownerSpec: 'Holy Paladin',
+      ownerCDs: [
+        {
+          spellId: '1',
+          spellName: 'Bubble',
+          tag: 'Defensive',
+          cooldownSeconds: 300,
+          maxChargesDetected: 1,
+          casts: [
+            { timeSeconds: 10 },
+            { timeSeconds: 11.5 }, // within 2s
+            { timeSeconds: 14 },   // > 2s after 10
+          ],
+          availableWindows: [],
+          neverUsed: false,
+        },
+      ],
+      teammateCDs: [],
+      enemyCDTimeline: { players: [], alignedBurstWindows: [] },
+      ccTrinketSummaries: [],
+      dispelSummary: { allyCleanse: [], ourPurges: [], hostilePurges: [], missedCleanseWindows: [], ccEfficiency: [], missedPurgeWindows: [] } as any,
+      friendlyDeaths: [],
+      enemyDeaths: [],
+      pressureWindows: [],
+      healingGaps: [],
+      friends: [owner],
+      matchStartMs,
+      matchEndMs,
+      isHealer: false,
+    });
+
+    const resLines = result.split('\n').filter((l) => l.includes('[RES]'));
+    
+    // Snapshot at 10.0 (emitted)
+    // Snapshot at 11.5 (suppressed: 11.5 - 10.0 < 2)
+    // Snapshot at 14.0 (emitted: 14.0 - 10.0 > 2)
+    expect(resLines.length).toBe(2);
+    
+    const lines = result.split('\n').map(l => l.trim());
+    const bubbleIdx = lines.findIndex(l => l.includes('0:10  [OWNER CD]   Bubble'));
+    const otherIdx = lines.findIndex(l => l.includes('0:11  [OWNER CD]   Bubble'));
+    const nextIdx = lines.findIndex(l => l.includes('0:14  [OWNER CD]   Bubble'));
+    
+    expect(lines[bubbleIdx + 1]).toContain('[RES]');
+    expect(lines[otherIdx + 1]).not.toContain('[RES]');
+    expect(lines[nextIdx + 1]).toContain('[RES]');
+  });
+});
