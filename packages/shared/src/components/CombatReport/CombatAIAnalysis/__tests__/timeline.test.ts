@@ -1461,6 +1461,31 @@ describe('buildMatchTimeline — [OWNER CAST] (F61 healer gap-filler)', () => {
     // spellName echoes spellId in the mock (makeSpellCastEvent sets spellName = spellId)
     expect(result).toContain('9999');
   });
+
+  it('B104: uses the log spellName when the spell ID is absent from curated metadata', () => {
+    // Spell ID '47540' (Penance) is not in spellEffects.json nor HEALER_CAST_SPELL_ID_TO_NAME.
+    // Pre-fix, the [OWNER CAST] line emitted the raw numeric ID. Now it must fall back to
+    // the spellName attached to the log event.
+    const owner = makeUnit('unit-1', {
+      name: 'Feramonk',
+      spellCastEvents: [makeSpellCastEvent('47540', 30_000, 'unit-1', 'Feramonk', 'unit-1', 'Feramonk', 0, 'Penance')],
+    });
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        isHealer: true,
+        ownerCDs: [],
+        matchStartMs: 0,
+        matchEndMs: 60_000,
+      }),
+    );
+    const ownerCastLine = result.split('\n').find((l) => l.includes('[OWNER CAST]'));
+    expect(ownerCastLine).toBeDefined();
+    expect(ownerCastLine).toContain('Penance');
+    // The raw spell ID must NOT appear as the cast label (it may still appear elsewhere
+    // in the line as part of a target/source name, so we anchor on the cast token position).
+    expect(ownerCastLine).not.toMatch(/\[OWNER CAST\]\s+47540\b/);
+  });
 });
 
 describe('buildMatchTimeline — F65 [OWNER CAST] target labels', () => {

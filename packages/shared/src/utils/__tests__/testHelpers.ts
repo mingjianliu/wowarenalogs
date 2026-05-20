@@ -68,12 +68,13 @@ export function makeSpellCastEvent(
   srcUnitId = 'player-1',
   srcUnitName = 'Player',
   destUnitFlags = 0,
+  spellName?: string,
 ): AnyObj {
   return {
     logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp, parameters: [] },
     timestamp,
     spellId,
-    spellName: spellId,
+    spellName: spellName ?? spellId,
     srcUnitId,
     srcUnitName,
     destUnitId,
