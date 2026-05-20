@@ -325,7 +325,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     for (const e of owner.spellCastEvents ?? []) {
       if (e.logLine.event !== LogEvent.SPELL_CAST_SUCCESS) continue;
       if (!e.spellId) continue;
-      const englishName = getEnglishSpellName(e.spellId) ?? e.spellName;
+      const englishName = getEnglishSpellName(e.spellId, e.spellName);
       if (e.spellName && PASSIVE_SPELL_BLOCKLIST.has(e.spellName)) continue;
 
       const displayName = HEALER_CAST_SPELL_ID_TO_NAME[e.spellId] ?? englishName;
@@ -486,9 +486,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     // B16: only emit if the log owner's spec can actually remove this debuff type
     if (!canDefensiveCleanse(owner, miss.dispelType)) continue;
     const dmgK = Math.round(miss.postCcDamage / 1000);
+    const spellName = getEnglishSpellName(miss.spellId, miss.spellName);
     addEntry(
       miss.timeSeconds,
-      `${fmtTime(miss.timeSeconds)}  [MISSED CLEANSE]   ${miss.spellName} on ${pid(miss.targetName)} | ${miss.durationSeconds.toFixed(0)}s | ${dmgK}k taken during | dispel: ${miss.dispelType}`,
+      `${fmtTime(miss.timeSeconds)}  [MISSED CLEANSE]   ${spellName} on ${pid(miss.targetName)} | ${miss.durationSeconds.toFixed(0)}s | ${dmgK}k taken during | dispel: ${miss.dispelType}`,
     );
   }
 
@@ -504,13 +505,16 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     for (const group of cleanseGroups.values()) {
       const first = group[0];
       const petTag = group.some((c) => c.isPetDispel) ? ' (pet)' : '';
+      const removedSpellName = getEnglishSpellName(first.removedSpellId, first.removedSpellName);
       if (group.length === 1) {
         addEntry(
           first.timeSeconds,
-          `${fmtTime(first.timeSeconds)}  [CLEANSE]   ${pid(first.sourceName)} dispelled ${first.removedSpellName} off ${pid(first.targetName)}${petTag}`,
+          `${fmtTime(first.timeSeconds)}  [CLEANSE]   ${pid(first.sourceName)} dispelled ${removedSpellName} off ${pid(first.targetName)}${petTag}`,
         );
       } else {
-        const effects = group.map((c) => `${c.removedSpellName} off ${pid(c.targetName)}`).join(', ');
+        const effects = group
+          .map((c) => `${getEnglishSpellName(c.removedSpellId, c.removedSpellName)} off ${pid(c.targetName)}`)
+          .join(', ');
         addEntry(
           first.timeSeconds,
           `${fmtTime(first.timeSeconds)}  [CLEANSE]   ${pid(first.sourceName)} dispelled ${group.length} effects: ${effects}${petTag}`,

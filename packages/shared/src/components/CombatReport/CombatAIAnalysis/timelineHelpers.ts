@@ -7,7 +7,7 @@ import {
   LogEvent,
 } from '@wowarenalogs/parser';
 
-import { spellEffectData } from '../../../data/spellEffectData';
+import { getEnglishSpellName, spellEffectData } from '../../../data/spellEffectData';
 import { IMajorCooldownInfo } from '../../../utils/cooldowns';
 
 // ── Shared helpers ─────────────────────────────────────────────────────────
@@ -344,7 +344,8 @@ export function getTopDamageSourcesInWindow(unit: ICombatUnit, endMs: number, wi
     const srcType = getUnitType(d.srcUnitFlags);
     const isPet = srcType === CombatUnitType.Pet || srcType === CombatUnitType.Guardian;
     const srcName = isPet ? '[pet]' : d.srcUnitName || 'Unknown';
-    const key = `${srcName} — ${d.spellName ?? 'melee'}`;
+    const spellLabel = d.spellId ? getEnglishSpellName(d.spellId, d.spellName) : d.spellName ?? 'melee';
+    const key = `${srcName} — ${spellLabel}`;
     buckets.set(key, (buckets.get(key) ?? 0) + dmg);
   }
   return [...buckets.entries()]
