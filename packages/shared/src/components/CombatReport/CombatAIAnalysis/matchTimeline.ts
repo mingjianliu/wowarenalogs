@@ -480,8 +480,9 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       } else if (cc.trinketState === 'on_cooldown') {
         const cdLeft = cc.trinketCDSecondsLeft !== undefined ? `${cc.trinketCDSecondsLeft}s left` : 'on CD';
         trinketNote = ` | trinket: ON CD (${cdLeft})`;
+      } else if (cc.trinketState === 'available_unused') {
+        trinketNote = ' | trinket: available';
       }
-      // available_unused → implicit default, no annotation
       // passive_trinket → player has no active trinket, no annotation
       addEntry(
         cc.atSeconds,
