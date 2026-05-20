@@ -455,12 +455,23 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   }
 
   // ── [ENEMY CD] events ──────────────────────────────────────────────────────
+  // B107: annotate each cast with a per-spell sequence index (e.g. `Bestial Wrath [2/4]`)
+  // so the model can't collapse short-interval repeats of the same CD into one window.
 
   for (const player of enemyCDTimeline.players) {
+    const totalBySpell = new Map<string, number>();
     for (const cd of player.offensiveCDs) {
+      totalBySpell.set(cd.spellName, (totalBySpell.get(cd.spellName) ?? 0) + 1);
+    }
+    const seqBySpell = new Map<string, number>();
+    for (const cd of player.offensiveCDs) {
+      const total = totalBySpell.get(cd.spellName) ?? 1;
+      const seq = (seqBySpell.get(cd.spellName) ?? 0) + 1;
+      seqBySpell.set(cd.spellName, seq);
+      const seqAnnotation = total > 1 ? ` [${seq}/${total}]` : '';
       addEntry(
         cd.castTimeSeconds,
-        `${fmtTime(cd.castTimeSeconds)}  [ENEMY CD]   ${enemyPid(player.playerName)} (${player.specName}): ${cd.spellName}`,
+        `${fmtTime(cd.castTimeSeconds)}  [ENEMY CD]   ${enemyPid(player.playerName)} (${player.specName}): ${cd.spellName}${seqAnnotation}`,
       );
     }
   }

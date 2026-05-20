@@ -641,9 +641,99 @@ describe('buildMatchTimeline — CD events', () => {
     // Both casts should appear individually
     const matches = result.match(/\[ENEMY CD\]/g) ?? [];
     expect(matches.length).toBe(2);
-    expect(result).toContain('Dzinked (Holy Paladin): Avenging Crusader');
+    // B107: repeated casts of the same spell are annotated with a per-spell sequence index
+    expect(result).toContain('Dzinked (Holy Paladin): Avenging Crusader [1/2]');
+    expect(result).toContain('Dzinked (Holy Paladin): Avenging Crusader [2/2]');
     expect(result).toContain('0:33');
     expect(result).toContain('2:33');
+  });
+
+  it('B107: does not annotate single-cast enemy CDs with sequence index', () => {
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        enemyCDTimeline: makeEnemyTimeline([
+          {
+            playerName: 'Dzinked',
+            specName: 'Holy Paladin',
+            offensiveCDs: [
+              {
+                spellId: '31884',
+                spellName: 'Avenging Crusader',
+                castTimeSeconds: 33,
+                cooldownSeconds: 120,
+                availableAgainAtSeconds: 153,
+                buffEndSeconds: 51,
+              },
+            ],
+          },
+        ]),
+      }),
+    );
+    expect(result).toContain('Dzinked (Holy Paladin): Avenging Crusader');
+    expect(result).not.toMatch(/Avenging Crusader \[\d+\/\d+\]/);
+  });
+
+  it('B107: tracks sequence per spell per player independently', () => {
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        enemyCDTimeline: makeEnemyTimeline([
+          {
+            playerName: 'Ruminator',
+            specName: 'Beast Mastery Hunter',
+            offensiveCDs: [
+              {
+                spellId: '19574',
+                spellName: 'Bestial Wrath',
+                castTimeSeconds: 10,
+                cooldownSeconds: 90,
+                availableAgainAtSeconds: 100,
+                buffEndSeconds: 25,
+              },
+              {
+                spellId: '19574',
+                spellName: 'Bestial Wrath',
+                castTimeSeconds: 77,
+                cooldownSeconds: 90,
+                availableAgainAtSeconds: 167,
+                buffEndSeconds: 92,
+              },
+              {
+                spellId: '19574',
+                spellName: 'Bestial Wrath',
+                castTimeSeconds: 145,
+                cooldownSeconds: 90,
+                availableAgainAtSeconds: 235,
+                buffEndSeconds: 160,
+              },
+              {
+                spellId: '19574',
+                spellName: 'Bestial Wrath',
+                castTimeSeconds: 215,
+                cooldownSeconds: 90,
+                availableAgainAtSeconds: 305,
+                buffEndSeconds: 230,
+              },
+              // Different spell on the same player must have its own counter
+              {
+                spellId: '193530',
+                spellName: 'Aspect of the Wild',
+                castTimeSeconds: 60,
+                cooldownSeconds: 120,
+                availableAgainAtSeconds: 180,
+                buffEndSeconds: 80,
+              },
+            ],
+          },
+        ]),
+      }),
+    );
+    expect(result).toContain('Bestial Wrath [1/4]');
+    expect(result).toContain('Bestial Wrath [2/4]');
+    expect(result).toContain('Bestial Wrath [3/4]');
+    expect(result).toContain('Bestial Wrath [4/4]');
+    // Single-cast spell on the same player is not annotated
+    expect(result).toContain('Aspect of the Wild');
+    expect(result).not.toMatch(/Aspect of the Wild \[\d+\/\d+\]/);
   });
 
   it('sorts all CD events chronologically', () => {
