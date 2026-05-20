@@ -611,12 +611,38 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   const HP_SAMPLE_WINDOW_CRITICAL_MS = 1_500; // ±1.5s for 1s dense ticks
   const HP_SAMPLE_WINDOW_BASELINE_MS = 3_000; // ±3s for 3s baseline ticks
 
-  const friendlyHpUnits: Array<{ unit: ICombatUnit; label: (name: string) => string }> = [
-    ...friends.filter((u) => u.name === owner.name),
-    ...friends.filter((u) => u.name !== owner.name),
-  ].map((u) => ({ unit: u, label: (name: string) => pid(name) }));
+  // B106: when a numeric ID map is present, sort HP tokens by player ID so the model
+  // can align HP readings with class labels listed elsewhere in player-ID order.
+  // Owner is always assigned ID 1 in buildPlayerLoadout, so sorting by ID also satisfies
+  // the "owner first" property; fall back to owner-first ordering when no map is provided.
+  const friendlyOrdered: ICombatUnit[] = playerIdMap
+    ? [...friends].sort((a, b) => {
+        const aId = playerIdMap.get(a.name);
+        const bId = playerIdMap.get(b.name);
+        if (aId === undefined && bId === undefined) return 0;
+        if (aId === undefined) return 1;
+        if (bId === undefined) return -1;
+        return aId - bId;
+      })
+    : [...friends.filter((u) => u.name === owner.name), ...friends.filter((u) => u.name !== owner.name)];
 
-  const enemyHpUnits: Array<{ unit: ICombatUnit; label: (name: string) => string }> = (enemies ?? []).map((u) => ({
+  const friendlyHpUnits: Array<{ unit: ICombatUnit; label: (name: string) => string }> = friendlyOrdered.map((u) => ({
+    unit: u,
+    label: (name: string) => pid(name),
+  }));
+
+  const enemiesOrdered: ICombatUnit[] = enemyIdMap
+    ? [...(enemies ?? [])].sort((a, b) => {
+        const aId = enemyIdMap.get(a.name);
+        const bId = enemyIdMap.get(b.name);
+        if (aId === undefined && bId === undefined) return 0;
+        if (aId === undefined) return 1;
+        if (bId === undefined) return -1;
+        return aId - bId;
+      })
+    : [...(enemies ?? [])];
+
+  const enemyHpUnits: Array<{ unit: ICombatUnit; label: (name: string) => string }> = enemiesOrdered.map((u) => ({
     unit: u,
     label: (name: string) => enemyPid(name),
   }));

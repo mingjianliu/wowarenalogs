@@ -1284,6 +1284,94 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     );
     expect(result).not.toContain('[STATE]');
   });
+
+  it('B106: sorts [STATE] enemy HP tokens by player ID when enemyIdMap is provided', () => {
+    // Three enemies, intentionally fed in non-ID order to mimic the bug example
+    // where the prompt emitted `enemies 4:100 6:42 5:22`.
+    const enemyA = makeUnit('enemy-A', {
+      name: 'EnemyA',
+      reaction: CombatUnitReaction.Hostile,
+      advancedActions: [{ ...makeAdvancedAction(6_000, 0, 0, 500_000, 500_000), advancedActorId: 'enemy-A' }], // 100%
+    }) as ICombatUnit;
+    const enemyB = makeUnit('enemy-B', {
+      name: 'EnemyB',
+      reaction: CombatUnitReaction.Hostile,
+      advancedActions: [{ ...makeAdvancedAction(6_000, 0, 0, 500_000, 210_000), advancedActorId: 'enemy-B' }], // 42%
+    }) as ICombatUnit;
+    const enemyC = makeUnit('enemy-C', {
+      name: 'EnemyC',
+      reaction: CombatUnitReaction.Hostile,
+      advancedActions: [{ ...makeAdvancedAction(6_000, 0, 0, 500_000, 110_000), advancedActorId: 'enemy-C' }], // 22%
+    }) as ICombatUnit;
+
+    // Map IDs out of input order: input is A, B, C but IDs are 4, 6, 5.
+    const enemyIdMap = new Map<string, number>([
+      ['EnemyA', 4],
+      ['EnemyB', 6],
+      ['EnemyC', 5],
+    ]);
+    const playerIdMap = new Map<string, number>([['Feramonk', 1]]);
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        friends: [makeUnit('unit-1', { name: 'Feramonk', advancedActions: [] }) as ICombatUnit],
+        enemies: [enemyA, enemyB, enemyC],
+        enemyDeaths: [{ spec: 'Affliction Warlock', name: 'EnemyC', atSeconds: 10 }],
+        playerIdMap,
+        enemyIdMap,
+        matchStartMs: 0,
+        matchEndMs: 12_000,
+      }),
+    );
+
+    const stateLine = result.split('\n').find((l) => l.includes('[STATE]') && l.includes('enemies '));
+    expect(stateLine).toBeDefined();
+    if (stateLine) {
+      const enemiesSection = stateLine.split('enemies ')[1];
+      // Tokens must appear in player-ID order (4, 5, 6), not input order (4, 6, 5)
+      const idOrder = (enemiesSection.match(/\b(\d+):/g) ?? []).map((s) => parseInt(s, 10));
+      expect(idOrder).toEqual([4, 5, 6]);
+    }
+  });
+
+  it('B106: sorts [STATE] friendly HP tokens by player ID when playerIdMap is provided', () => {
+    const owner = makeUnit('unit-1', {
+      name: 'Feramonk',
+      advancedActions: [makeAdvancedAction(3_000, 0, 0, 500_000, 400_000)], // 80%
+    }) as ICombatUnit;
+    const dps = makeUnit('unit-2', {
+      name: 'DPS',
+      advancedActions: [{ ...makeAdvancedAction(3_000, 0, 0, 500_000, 350_000), advancedActorId: 'unit-2' }], // 70%
+    }) as ICombatUnit;
+    const other = makeUnit('unit-3', {
+      name: 'Other',
+      advancedActions: [{ ...makeAdvancedAction(3_000, 0, 0, 500_000, 250_000), advancedActorId: 'unit-3' }], // 50%
+    }) as ICombatUnit;
+
+    // Owner=1, DPS=2, Other=3. Feed friends in scrambled order to verify sort.
+    const playerIdMap = new Map<string, number>([
+      ['Feramonk', 1],
+      ['DPS', 2],
+      ['Other', 3],
+    ]);
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        friends: [other, dps, owner],
+        playerIdMap,
+        matchStartMs: 0,
+        matchEndMs: 6_000,
+      }),
+    );
+
+    const stateLine = result.split('\n').find((l) => l.includes('[STATE]') && l.includes('friends '));
+    expect(stateLine).toBeDefined();
+    if (stateLine) {
+      const friendsSection = stateLine.split('friends ')[1].split(' / enemies')[0];
+      const idOrder = (friendsSection.match(/\b(\d+):/g) ?? []).map((s) => parseInt(s, 10));
+      expect(idOrder).toEqual([1, 2, 3]);
+    }
+  });
 });
 
 describe('buildMatchTimeline — [OWNER CAST] (F61 healer gap-filler)', () => {
