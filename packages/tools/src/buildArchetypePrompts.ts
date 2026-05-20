@@ -158,6 +158,11 @@ interface IDynamicSummary {
 
 export interface IArchetypeCluster {
   label: string;
+  /**
+   * True for clusters that represent one-sided / fast-win rounds with no coaching
+   * value (e.g., 3v3 cluster_2, SS cluster_7). Production skips injection for these.
+   */
+  isNoise?: boolean;
   matchCount: number;
   minRating: number;
   generatedAt: string;

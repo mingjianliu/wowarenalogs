@@ -1,6 +1,7 @@
 import { CombatUnitReaction, CombatUnitType, ICombatUnit } from '@wowarenalogs/parser';
 import { useEffect, useState } from 'react';
 
+import { buildArchetypeInjectionHeader } from '../../../utils/archetypeInjection';
 import { analyzePlayerCCAndTrinket, formatCCTrinketForContext } from '../../../utils/ccTrinketAnalysis';
 import {
   annotateDefensiveTimings,
@@ -163,6 +164,21 @@ export function buildMatchContext(
     healerExposures,
   );
 
+  // ── ARCHETYPE INJECTION ──────────────────────────────────────────────────
+  // Classify this match into a global game-situation archetype and produce a
+  // [MATCH TYPE: label] header. Returns '' for unsupported brackets, short
+  // rounds (<30s), or noise clusters (one-sided fast wins).
+  const ownTeamCCEventsTotal = outgoingCCChains.reduce((s, c) => s + c.applications.length, 0);
+  const archetypeHeader = buildArchetypeInjectionHeader(combat.startInfo.bracket, {
+    burstWindowCount: matchArchetype.burstWindowCount,
+    ccEventsPerMinute: matchArchetype.ccEventsPerMinute,
+    tunnelScore: matchArchetype.friendlyDamageShare[0]?.share ?? 0,
+    peakBurstScore: matchArchetype.peakBurstScore,
+    criticalOrExposedBurstWindows: matchArchetype.criticalOrExposedBurstWindows ?? 0,
+    durationSeconds,
+    ownTeamCCPerMin: durationSeconds > 0 ? (ownTeamCCEventsTotal / durationSeconds) * 60 : 0,
+  });
+
   // Identify top critical moments; constrainedTrade flag reused for CC section framing
   const { moments: criticalMoments, constrainedTrade: hasConstrainedTrade } = identifyCriticalMoments(
     healer,
@@ -193,6 +209,10 @@ export function buildMatchContext(
     }));
 
     const tLines: string[] = [];
+    if (archetypeHeader) {
+      tLines.push(archetypeHeader);
+      tLines.push('');
+    }
     tLines.push('ARENA MATCH — ANALYSIS REQUEST');
     tLines.push('');
     tLines.push('MATCH FACTS');
@@ -276,6 +296,11 @@ export function buildMatchContext(
   }
 
   const lines: string[] = [];
+
+  if (archetypeHeader) {
+    lines.push(archetypeHeader);
+    lines.push('');
+  }
 
   // ── MATCH SUMMARY ──────────────────────────────────────────────────────────
   lines.push('ARENA MATCH — DECISION ANALYSIS REQUEST');

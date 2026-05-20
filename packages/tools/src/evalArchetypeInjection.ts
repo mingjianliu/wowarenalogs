@@ -29,6 +29,7 @@ import path from 'path';
 
 import { analyzePlayerCCAndTrinket } from '../../shared/src/utils/ccTrinketAnalysis';
 import { isHealerSpec, specToString } from '../../shared/src/utils/cooldowns';
+import { analyzeOutgoingCCChains } from '../../shared/src/utils/drAnalysis';
 import { reconstructEnemyCDTimeline } from '../../shared/src/utils/enemyCDs';
 import { analyzeHealerExposureAtBurst } from '../../shared/src/utils/healerExposureAnalysis';
 import { computeMatchArchetype } from '../../shared/src/utils/matchArchetype';
@@ -41,6 +42,9 @@ import { buildMatchPromptNew, fetchStubs, ParsedCombat, parseLogText } from './p
 const EVAL_COUNT = parseInt(process.env.EVAL_COUNT ?? '30', 10);
 const MIN_RATING = parseInt(process.env.MIN_RATING ?? '2000', 10);
 const BRACKET = process.env.BRACKET ?? '3v3';
+// Production injection skips short rounds — mirror that here so eval results
+// reflect what users will actually see in CombatAIAnalysis.
+const MIN_DURATION_SECONDS = 30;
 
 const BRACKET_SLUG = BRACKET.toLowerCase().includes('solo') ? 'solo_shuffle' : '3v3';
 
@@ -151,6 +155,13 @@ function extractMatchDynamics(
     healerExposures,
   );
 
+  // Must match extractArchetypeFeatures.ts and archetypeInjection.ts — both clustering
+  // and classification depend on ownTeamCCPerMin being computed identically.
+  const ownTeamOutgoing = analyzeOutgoingCCChains(friends, enemies, combat);
+  const enemyTeamOutgoing = analyzeOutgoingCCChains(enemies, friends, combat);
+  const ownTeamCCEvents = ownTeamOutgoing.reduce((s, c) => s + c.applications.length, 0);
+  const enemyTeamCCEvents = enemyTeamOutgoing.reduce((s, c) => s + c.applications.length, 0);
+
   return {
     durationSeconds: archetype.durationSeconds,
     burstWindowCount: archetype.burstWindowCount,
@@ -162,8 +173,8 @@ function extractMatchDynamics(
     enemyMeleeCount: archetype.enemyMeleeCount,
     enemyRangedCount: archetype.enemyRangedCount,
     setupStyle: 'unknown',
-    ownTeamCCPerMin: 0,
-    enemyTeamCCPerMin: 0,
+    ownTeamCCPerMin: durationSeconds > 0 ? (ownTeamCCEvents / durationSeconds) * 60 : 0,
+    enemyTeamCCPerMin: durationSeconds > 0 ? (enemyTeamCCEvents / durationSeconds) * 60 : 0,
     ownTeamSpecs: friends.map((p) => specToString(p.spec)),
     enemyTeamSpecs: enemies.map((p) => specToString(p.spec)),
   };
@@ -286,6 +297,19 @@ async function main() {
         const cluster = archetypePrompts[clusterKey];
         if (!cluster) {
           console.log(`  No archetype for ${clusterKey}`);
+          continue;
+        }
+
+        // Mirror production guards: skip noise clusters and short rounds so the
+        // eval corpus only contains matches we'd actually inject for.
+        if (cluster.isNoise) {
+          console.log(`  [skip] ${clusterKey} (${cluster.label}) is a noise cluster`);
+          continue;
+        }
+        if (dynamics.durationSeconds < MIN_DURATION_SECONDS) {
+          console.log(
+            `  [skip] duration ${Math.round(dynamics.durationSeconds)}s below ${MIN_DURATION_SECONDS}s floor`,
+          );
           continue;
         }
 
