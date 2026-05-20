@@ -157,3 +157,5 @@ packages/parser/perf/results/
 packages/tools/local-batch/
 .claude/
 .worktrees/
+.agent/
+.antigravitycli/
