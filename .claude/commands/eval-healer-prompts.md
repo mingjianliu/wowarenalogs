@@ -43,6 +43,8 @@ In snapshot mode, read `packages/tools/local-batch/healer-eval/prompts-snapshot/
 
 ## Step 2: Generate Responses (Parallel Sub-Agents)
 
+> **Execution model:** This step uses the AI session's built-in Agent tool to spawn sub-agents. No external API key, no external scripts, no new `.ts` files. If you do not have an `Agent` tool, perform this step yourself: read each prompt file, generate coaching advice, and write the response file directly. Do NOT create wrapper scripts to call an external AI API — you ARE the AI.
+
 Read `packages/tools/local-batch/healer-eval/index.json` (fresh mode) or `packages/tools/local-batch/healer-eval/prompts-snapshot/index.json` (snapshot mode) to get the full list of entries. Each entry has: `ordinal`, `file`, `matchId`, `spec`, `bracket`, `result`, `durationSec`.
 
 Before spawning each sub-agent, resolve the actual prompt file path based on the current mode and substitute it into the template — do not pass mode-conditional logic to the sub-agent. In fresh mode the path is `packages/tools/local-batch/healer-eval/prompts/FILENAME`; in snapshot mode it is `packages/tools/local-batch/healer-eval/prompts-snapshot/prompts/FILENAME` (where FILENAME comes from the entry's `file` field).
@@ -197,7 +199,8 @@ After writing the report, print: "Eval complete. Report written to packages/tool
 
 ## Notes
 
-- Do not call any external AI API during Steps 3 or 4. You (this Claude Code session) are the judge.
-- Do not modify any source code files during this command.
+- **No external dependencies:** The entire pipeline (Steps 1–4) runs within this AI session. Step 1 uses an existing npm script. Steps 2–4 use only file I/O. No API keys, no new scripts, no external services.
+- Do not call any external AI API during any step. You (this AI session) generate responses in Step 2 and judge them in Steps 3–4.
+- Do not create new `.ts`, `.js`, or `.py` files. Do not modify any source code files during this command.
 - If `index.json` has more than 50 entries, only evaluate the first 50.
 - Score files are cumulative — if scores already exist from a prior run, overwrite them.
