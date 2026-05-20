@@ -307,6 +307,7 @@ function makeEmptyCCTrinketSummary(playerName: string): IPlayerCCTrinketSummary 
 }
 
 function makeBaseParams(overrides: Partial<BuildMatchTimelineParams> = {}): BuildMatchTimelineParams {
+  const matchStartMs = overrides.matchStartMs ?? 0;
   return {
     owner: makeOwner('Feramonk'),
     ownerSpec: 'Holy Paladin',
@@ -321,8 +322,8 @@ function makeBaseParams(overrides: Partial<BuildMatchTimelineParams> = {}): Buil
     healingGaps: [] as IHealingGap[],
     friends: [],
     enemies: [],
-    matchStartMs: 0,
-    matchEndMs: 0,
+    matchStartMs,
+    matchEndMs: matchStartMs + 600_000, // 10 minutes default to avoid filtering events
     isHealer: true,
     ...overrides,
   };

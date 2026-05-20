@@ -145,6 +145,8 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   const snapshotFn = resourceSnapshotFn ?? buildResourceSnapshot;
 
+  const matchEndSeconds = (matchEndMs - matchStartMs) / 1000;
+
   let prevReadyNamesState: string[] | null = null;
   let prevOnCDNamesState: string[] | null = null;
 
@@ -180,6 +182,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   const entries: Array<{ timeSeconds: number; lines: string[] }> = [];
 
   function addEntry(timeSeconds: number, ...lines: string[]) {
+    // B103: skip events that fall past match end — they're irrelevant post-game
+    // and would appear with timestamps after [MATCH END] confusing the timeline.
+    if (timeSeconds > matchEndSeconds) return;
+
     entries.push({ timeSeconds, lines: lines.filter(Boolean) });
   }
 
@@ -286,12 +292,8 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   // ── [BUFF FADED] events (F70, B31: renamed from [CD EXPIRED]) ──────────────
 
-  const matchDurationSEarly = (matchEndMs - matchStartMs) / 1000;
   const cdExpiryEvents = extractOwnerCDBuffExpiry(ownerCDs, owner.id, friends, matchStartMs);
   for (const expiry of cdExpiryEvents) {
-    // B33: skip estimated expiry events that fall past match end — they're irrelevant post-game
-    // and would appear chronologically after [MATCH END] confusing the timeline ordering.
-    if (expiry.expiresAtSeconds > matchDurationSEarly) continue;
     const estimatedNote = expiry.isEstimated ? ' (estimated)' : '';
     addEntry(
       expiry.expiresAtSeconds,
@@ -697,8 +699,6 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   }
 
   // ── [MATCH END] block ─────────────────────────────────────────────────────
-
-  const matchEndSeconds = (matchEndMs - matchStartMs) / 1000;
 
   // Final dampening — only when bracket is available
   const finalDampPct = bracket ? getDampeningPercentage(bracket, [...friends, ...(enemies ?? [])], matchEndMs) : null;
