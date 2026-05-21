@@ -1008,7 +1008,17 @@ export function buildMatchPromptNew(combat: ParsedCombat, forceHealer = false): 
       `  WARNING: only ${friends.length}/${bracketSize} friendly players recorded (likely disconnect or late-join). Do not evaluate team composition or teammate coordination — roster data is incomplete.`,
     );
   }
-  lines.push('  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)');
+  lines.push('');
+
+  lines.push('DATA DICTIONARY / UNITS');
+  lines.push('  Damage units: M = Million (1,000,000), k = Thousand (1,000)');
+  lines.push('  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage');
+  lines.push(
+    '  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).',
+  );
+  lines.push(
+    '  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).',
+  );
   lines.push('');
 
   lines.push('PURGE RESPONSIBILITY');
@@ -1179,7 +1189,17 @@ function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false): string
       `  WARNING: only ${friends.length}/${bracketSize} friendly players recorded (likely disconnect or late-join). Do not evaluate team composition or teammate coordination — roster data is incomplete.`,
     );
   }
-  lines.push('  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)');
+  lines.push('');
+
+  lines.push('DATA DICTIONARY / UNITS');
+  lines.push('  Damage units: M = Million (1,000,000), k = Thousand (1,000)');
+  lines.push('  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage');
+  lines.push(
+    '  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).',
+  );
+  lines.push(
+    '  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).',
+  );
   lines.push('');
 
   lines.push('PURGE RESPONSIBILITY');

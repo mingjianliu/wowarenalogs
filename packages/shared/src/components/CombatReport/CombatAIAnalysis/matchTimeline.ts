@@ -1,15 +1,22 @@
-import { CombatUnitType, getUnitType, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
+import { CombatAbsorbAction, CombatUnitType, getUnitType, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
 import { getEnglishSpellName, spellEffectData } from '../../../data/spellEffectData';
 import { ccSpellIds } from '../../../data/spellTags';
 import { IPlayerCCTrinketSummary } from '../../../utils/ccTrinketAnalysis';
-import { fmtTime, getUnitHpAtTimestamp, IDamageBucket, IMajorCooldownInfo } from '../../../utils/cooldowns';
-import { getDampeningPercentage } from '../../../utils/dampening';
+import {
+  fmtTime,
+  getUnitHpAtTimestamp,
+  IDamageBucket,
+  IMajorCooldownInfo,
+  specToBenchmarkKey,
+} from '../../../utils/cooldowns';
+import { dampeningDangerMultiplier, getDampeningPercentage } from '../../../utils/dampening';
 import { canDefensiveCleanse, IDispelEvent, IDispelSummary } from '../../../utils/dispelAnalysis';
 import { extractAoeCCEvents, IOutgoingCCChain } from '../../../utils/drAnalysis';
 import { IEnemyCDTimeline } from '../../../utils/enemyCDs';
 import { IHealingGap } from '../../../utils/healingGaps';
 import { getHpPercentAtTime } from '../../../utils/killWindowTargetSelection';
+import { benchmarks } from '../../../utils/specBaselines';
 import {
   buildResourceSnapshot,
   computeOnCDDisplayNames,
@@ -548,9 +555,54 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     if (pw.totalDamage < DMG_SPIKE_THRESHOLD) continue;
     const dmgM = (pw.totalDamage / 1_000_000).toFixed(2);
     const windowSec = Math.round(pw.toSeconds - pw.fromSeconds);
+
+    const targetUnit = friends.find((f) => f.name === pw.targetName);
+    const hpFrom = targetUnit ? getUnitHpAtTimestamp(targetUnit, matchStartMs + pw.fromSeconds * 1000, 2000) : null;
+    const hpTo = targetUnit ? getUnitHpAtTimestamp(targetUnit, matchStartMs + pw.toSeconds * 1000, 2000) : null;
+    const hpStr = hpFrom !== null && hpTo !== null ? ` (${hpFrom}% -> ${hpTo}% HP)` : '';
+
+    const benchmarkKey = targetUnit ? specToBenchmarkKey(targetUnit.spec) : '';
+    let b = benchmarks.bySpec[benchmarkKey];
+
+    // Fallback logic for missing specs: try generic spec for same class (e.g. Shadow -> Holy Priest baseline)
+    if (!b && targetUnit) {
+      const className = benchmarkKey.split(' ')[0];
+      const fallbackKey = Object.keys(benchmarks.bySpec).find((k) => k.startsWith(className));
+      if (fallbackKey) b = benchmarks.bySpec[fallbackKey];
+    }
+
+    let dangerLabel = '';
+    if (b?.pressureWindows) {
+      const currentDampeningPct = bracket
+        ? getDampeningPercentage(bracket, [...friends, ...(enemies ?? [])], matchStartMs + pw.fromSeconds * 1000) / 100
+        : 0;
+      const dangerMult = dampeningDangerMultiplier(currentDampeningPct);
+      const effectiveDamage = pw.totalDamage * dangerMult;
+
+      if (effectiveDamage >= b.pressureWindows.p95) dangerLabel = ' [P95 Danger]';
+      else if (effectiveDamage >= b.pressureWindows.p90) dangerLabel = ' [P90 High]';
+      else if (effectiveDamage >= b.pressureWindows.p75) dangerLabel = ' [P75 Elevated]';
+      else if (effectiveDamage >= b.pressureWindows.p50) dangerLabel = ' [P50 Normal]';
+    }
+
+    const fromMs = matchStartMs + pw.fromSeconds * 1000;
+    const toMs = matchStartMs + pw.toSeconds * 1000;
+    const windowEvents =
+      targetUnit?.damageIn.filter((d) => d.logLine.timestamp >= fromMs && d.logLine.timestamp <= toMs) ?? [];
+    const sources = new Set(windowEvents.map((d) => d.srcUnitName));
+    const totalAbsorbed = windowEvents.reduce((sum, d) => {
+      if (d.logLine.event === LogEvent.SPELL_ABSORBED) {
+        return sum + ((d as unknown as CombatAbsorbAction).absorbedAmount ?? 0);
+      }
+      return sum;
+    }, 0);
+
+    const sourceLabel = sources.size <= 4 ? ' [BURST]' : ' [ROT]';
+    const absorbStr = totalAbsorbed > 100_000 ? ` (${(totalAbsorbed / 1_000_000).toFixed(2)}M absorbed)` : '';
+
     addEntry(
       pw.fromSeconds,
-      `${fmtTime(pw.fromSeconds)}  [DMG SPIKE]   ${pid(pw.targetName)} (${pw.targetSpec}): ${dmgM}M in ${windowSec}s`,
+      `${fmtTime(pw.fromSeconds)}  [DMG SPIKE]   ${pid(pw.targetName)} (${pw.targetSpec}): ${dmgM}M in ${windowSec}s${dangerLabel}${sourceLabel}${hpStr}${absorbStr}`,
     );
   }
 
@@ -568,7 +620,6 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   // ── [STATE] ticks — 1s resolution in critical windows, 3s elsewhere (F62) ──────
 
   const matchDurationS = (matchEndMs - matchStartMs) / 1000;
-
   const criticalWindowSet = new Set<number>(); // which tick-seconds are in a critical window
   for (const d of friendlyDeaths) {
     // [T-10, T] window before death
@@ -716,7 +767,11 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   entries.sort((a, b) => a.timeSeconds - b.timeSeconds);
 
-  const outputLines: string[] = ['MATCH TIMELINE', ''];
+  const outputLines: string[] = [
+    'MATCH TIMELINE',
+    '  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)',
+    '',
+  ];
   for (const entry of entries) {
     outputLines.push(...entry.lines);
   }

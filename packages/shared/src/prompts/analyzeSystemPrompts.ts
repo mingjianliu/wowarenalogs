@@ -63,6 +63,8 @@ Your goal is **resource optimization, not survival confirmation**. Do not explai
 
 You are given a PLAYER LOADOUT (all major CDs available this match) and a MATCH TIMELINE (raw chronological events). Each [OWNER CD] and [TEAMMATE CD] event is followed by a [RES] line showing ground-truth state at that exact moment. Fields: rdy = friendly CDs ready now; cd = friendly CDs on cooldown with seconds remaining; enemy = enemy offensive CDs cast in the last 30s with seconds since cast (field absent = none active); cc = friendly players currently CC'd with seconds remaining (field absent = all players free). A [stun] tag means the player is cast-locked; [trinketed] means they used their PvP trinket at this exact moment.
 
+[DMG SPIKE] and [UNCLEANSED DEBUFF] events include damage values. Units are: M = Million (1,000,000), k = Thousand (1,000). e.g., "0.84M" = 840,000 damage.
+
 Identify the most important decision points yourself. Read the full timeline, build your own causal narrative about what happened and why, then evaluate the decisions that most affected match outcome.
 
 For each decision point, apply these four mandatory checks before writing your finding:

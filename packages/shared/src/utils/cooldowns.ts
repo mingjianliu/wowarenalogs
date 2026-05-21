@@ -646,6 +646,14 @@ export function isMeleeSpec(spec: CombatUnitSpec): boolean {
   return MELEE_SPECS.has(spec);
 }
 
+/**
+ * Returns the key used for this spec in benchmarks.json (e.g. "DeathKnight Frost").
+ */
+export function specToBenchmarkKey(spec: CombatUnitSpec): string {
+  const key = Object.keys(CombatUnitSpec).find((k) => CombatUnitSpec[k as keyof typeof CombatUnitSpec] === spec);
+  return key?.replace('_', ' ') ?? 'Unknown';
+}
+
 /** Format seconds as m:ss string */
 export function fmtTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
