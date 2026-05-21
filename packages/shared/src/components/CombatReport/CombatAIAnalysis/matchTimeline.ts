@@ -499,7 +499,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     }
   }
 
-  // ── [MISSED CLEANSE] and [CLEANSE] events ──────────────────────────────────
+  // ── [UNCLEANSED DEBUFF] and [CLEANSE] events ──────────────────────────────────
 
   for (const miss of dispelSummary.missedCleanseWindows) {
     // B16: only emit if the log owner's spec can actually remove this debuff type
@@ -508,7 +508,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     const spellName = getEnglishSpellName(miss.spellId, miss.spellName);
     addEntry(
       miss.timeSeconds,
-      `${fmtTime(miss.timeSeconds)}  [MISSED CLEANSE]   ${spellName} on ${pid(miss.targetName)} | ${miss.durationSeconds.toFixed(0)}s | ${dmgK}k taken during | dispel: ${miss.dispelType}`,
+      `${fmtTime(miss.timeSeconds)}  [UNCLEANSED DEBUFF]   ${spellName} on ${pid(miss.targetName)} | ${miss.durationSeconds.toFixed(0)}s | ${dmgK}k taken during | dispel: ${miss.dispelType}`,
     );
   }
 
@@ -554,13 +554,13 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     );
   }
 
-  // ── [HEALING GAP] events (healer only) ────────────────────────────────────
+  // ── [HEALER INACTIVITY] events (healer only) ────────────────────────────────────
 
   if (isHealer) {
     for (const gap of healingGaps) {
       addEntry(
         gap.fromSeconds,
-        `${fmtTime(gap.fromSeconds)}  [HEALING GAP]   ${pid(owner.name)} inactive ${gap.durationSeconds.toFixed(1)}s (${gap.freeCastSeconds.toFixed(1)}s free) while ${pid(gap.mostDamagedName)} under pressure`,
+        `${fmtTime(gap.fromSeconds)}  [HEALER INACTIVITY]   ${pid(owner.name)} inactive ${gap.durationSeconds.toFixed(1)}s (${gap.freeCastSeconds.toFixed(1)}s free) while ${pid(gap.mostDamagedName)} under pressure`,
       );
     }
   }

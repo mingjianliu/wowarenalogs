@@ -925,7 +925,7 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     expect(result).toContain('1:08');
   });
 
-  it('emits [MISSED CLEANSE] with damage amount and dispel type', () => {
+  it('emits [UNCLEANSED DEBUFF] with damage amount and dispel type', () => {
     const result = buildMatchTimeline(
       makeBaseParams({
         owner: makeOwner('Feramonk', CombatUnitSpec.Paladin_Holy), // B16: owner must be able to Magic-dispel
@@ -948,14 +948,14 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
         },
       }),
     );
-    expect(result).toContain('[MISSED CLEANSE]');
+    expect(result).toContain('[UNCLEANSED DEBUFF]');
     expect(result).toContain('Vampiric Touch on Simplesauce');
     expect(result).toContain('212k');
     expect(result).toContain('dispel: Magic');
   });
 
-  it('B16: suppresses [MISSED CLEANSE] when owner spec cannot dispel the debuff type', () => {
-    // Mistweaver cannot remove Curse — should NOT emit [MISSED CLEANSE] for a Curse debuff
+  it('B16: suppresses [UNCLEANSED DEBUFF] when owner spec cannot dispel the debuff type', () => {
+    // Mistweaver cannot remove Curse — should NOT emit [UNCLEANSED DEBUFF] for a Curse debuff
     const result = buildMatchTimeline(
       makeBaseParams({
         owner: makeOwner('Feramonk', CombatUnitSpec.Monk_Mistweaver),
@@ -978,7 +978,7 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
         },
       }),
     );
-    expect(result).not.toContain('[MISSED CLEANSE]');
+    expect(result).not.toContain('[UNCLEANSED DEBUFF]');
   });
 
   it('emits [CLEANSE] for successful dispels', () => {
@@ -1180,7 +1180,7 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     expect(legend).toContain('840,000 dmg');
   });
 
-  it('emits [HEALING GAP] only when isHealer is true', () => {
+  it('emits [HEALER INACTIVITY] only when isHealer is true', () => {
     const gap: IHealingGap = {
       fromSeconds: 82,
       toSeconds: 86.2,
@@ -1193,9 +1193,9 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     const healerResult = buildMatchTimeline(makeBaseParams({ healingGaps: [gap], isHealer: true }));
     const dpsResult = buildMatchTimeline(makeBaseParams({ healingGaps: [gap], isHealer: false }));
 
-    expect(healerResult).toContain('[HEALING GAP]');
+    expect(healerResult).toContain('[HEALER INACTIVITY]');
     expect(healerResult).toContain('Feramonk inactive 4.2s');
-    expect(dpsResult).not.toContain('[HEALING GAP]');
+    expect(dpsResult).not.toContain('[HEALER INACTIVITY]');
   });
 
   it('emits [HP] ticks every 3s when friends have HP data', () => {

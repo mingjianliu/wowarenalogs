@@ -230,7 +230,7 @@ export function detectHealingGaps(
 
 export function formatHealingGapsForContext(gaps: IHealingGap[]): string[] {
   const lines: string[] = [];
-  lines.push('HEALING GAPS (healer was inactive for >3.5s while a teammate was under pressure and healer was free):');
+  lines.push('HEALER INACTIVITY (intervals >3.5s where healer cast no spells while a teammate was under pressure):');
 
   if (gaps.length === 0) {
     lines.push('  None detected.');
@@ -242,7 +242,7 @@ export function formatHealingGapsForContext(gaps: IHealingGap[]): string[] {
     const dur = g.durationSeconds.toFixed(1);
     const free = g.freeCastSeconds.toFixed(1);
     lines.push(
-      `  ⚠ Free-Cast Gap: From ${fmtTime(g.fromSeconds)} to ${fmtTime(g.toSeconds)} (${dur}s gap, ${free}s free to cast), you cast no heals or spells while your ${g.mostDamagedSpec} (${g.mostDamagedName}) took ${dmgK}k damage. You were not CC'd.`,
+      `  [HEALER INACTIVITY] From ${fmtTime(g.fromSeconds)} to ${fmtTime(g.toSeconds)} (${dur}s duration, ${free}s free window), no heals or spells cast while ${g.mostDamagedSpec} (${g.mostDamagedName}) took ${dmgK}k damage.`,
     );
   }
 

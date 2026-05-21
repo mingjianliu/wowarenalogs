@@ -179,9 +179,9 @@ export function buildDeathRootCauseTrace(
       const endAt = cc.atSeconds + cc.durationSeconds;
       const avoidNote =
         cc.losBlocked === true
-          ? ' — LoS was available (avoidable)'
+          ? ` — Positioning: X yd from Pillar LoS — Positioning: ${cc.distanceYards?.toFixed(0) ?? 'X'} yd from Pillar LoS`
           : cc.distanceYards !== null && cc.distanceYards <= 8
-            ? ` — applied at ${cc.distanceYards.toFixed(0)}yd (melee range, possible positioning mistake)`
+            ? ` — applied at ${cc.distanceYards.toFixed(0)}yd (melee range)`
             : '';
       traces.push(
         `CC on dying player: ${cc.spellName} by ${cc.sourceSpec} (${cc.sourceName}) at ${fmtTime(cc.atSeconds)}–${fmtTime(endAt)} — trinket: ${cc.trinketState}${avoidNote}`,
@@ -487,15 +487,15 @@ export function identifyCriticalMoments(
         impactScore: score,
         impactLabel: score >= 70 ? 'High' : 'Moderate',
         roleLabel: gapContributingDeath ? 'Setup' : 'Trade',
-        title: `Healing gap — ${gap.mostDamagedSpec} took ${dmgK}k while healer had free-cast time`,
+        title: `Healer inactivity — ${gap.mostDamagedSpec} took ${dmgK}k while healer was free to cast`,
         enemyState,
-        friendlyState: `Healer had ${gap.freeCastSeconds.toFixed(1)}s free-cast time in a ${gap.durationSeconds.toFixed(1)}s gap. ${cdState}`,
+        friendlyState: `Healer had ${gap.freeCastSeconds.toFixed(1)}s free-cast time in a ${gap.durationSeconds.toFixed(1)}s window. ${cdState}`,
         whatHappened: `Healer cast no heals or spells from ${fmtTime(gap.fromSeconds)} to ${fmtTime(gap.toSeconds)} (${gap.durationSeconds.toFixed(1)}s total, ${gap.freeCastSeconds.toFixed(1)}s free). ${gap.mostDamagedSpec} (${gap.mostDamagedName}) took ${dmgK}k damage.`,
         mechanicalAvailability: [],
         interpretation: [],
-        availableOptions: `Healer had free-cast time — instant-cast heals and available CDs were options. ${cdState}`,
+        availableOptions: `Healer was free to cast — instant-cast heals and available CDs were options. ${cdState}`,
         uncertainty:
-          'Log cannot confirm healer position or LoS. Mana state is not tracked. The gap may reflect intentional repositioning not visible in combat events.',
+          'Log cannot confirm healer position or LoS. Mana state is not tracked. This window may reflect intentional repositioning not visible in combat events.',
         contributingDeathSpec: gapContributingDeath?.spec,
         contributingDeathAtSeconds: gapContributingDeath?.atSeconds,
       });
@@ -513,16 +513,16 @@ export function identifyCriticalMoments(
       impactScore: 60,
       impactLabel: 'High',
       roleLabel: panicContributingDeath ? 'Setup' : 'Trade',
-      title: `Panic defensive — ${panic.spellName} used with no enemy burst detected`,
+      title: `Defensive commit — ${panic.spellName} used with no coordinated enemy burst detected`,
       enemyState,
       friendlyState: cdState,
-      whatHappened: `${panic.casterSpec} (${panic.casterName}) cast ${panic.spellName} on ${panic.targetSpec} (${panic.targetName})${panicTargetHpNote} at ${fmtTime(panic.timeSeconds)}, but no significant enemy pressure was detected in the surrounding 7-second window.`,
+      whatHappened: `${panic.casterSpec} (${panic.casterName}) cast ${panic.spellName} on ${panic.targetSpec} (${panic.targetName})${panicTargetHpNote} at ${fmtTime(panic.timeSeconds)}, but no coordinated enemy offensive CDs were active in the surrounding 7-second window.`,
       mechanicalAvailability: [],
       interpretation: [],
-      availableOptions: `Holding ${panic.spellName} for a confirmed burst window would provide stronger coverage at the cost of a potentially risky undefended interval.`,
+      availableOptions: `Holding ${panic.spellName} for an aligned burst window would provide stronger coverage at the cost of a potentially risky undefended interval.`,
       uncertainty: panicTargetHpNote
-        ? 'Log may miss absorbed damage that preceded the cast. Enemy intent cannot be fully confirmed from combat log events alone.'
-        : 'Log may miss absorbed damage that preceded the cast. Enemy intent and exact HP% cannot be confirmed from combat log events alone.',
+        ? 'Log may miss absorbed damage or individual enemy pressure that preceded the cast. Enemy intent cannot be fully confirmed from combat log events alone.'
+        : 'Log may miss absorbed damage or individual enemy pressure that preceded the cast. Enemy intent and exact HP% cannot be confirmed from combat log events alone.',
       contributingDeathSpec: panicContributingDeath?.spec,
       contributingDeathAtSeconds: panicContributingDeath?.atSeconds,
     });
