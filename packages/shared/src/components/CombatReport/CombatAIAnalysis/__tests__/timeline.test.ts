@@ -1872,6 +1872,73 @@ describe('buildMatchTimeline — F95 [OWNER CC]', () => {
     const eventMatches = result.match(/\[OWNER (CC|CD|CAST)\] {3}Psychic Scream/g);
     expect(eventMatches?.length).toBe(1);
   });
+  it('F105: merges AoE target info into [OWNER CC] and suppresses redundant [CC CAST]', () => {
+    const owner = makeUnit('unit-1', { name: 'Priest' });
+    const screamCD = {
+      spellId: '8122',
+      spellName: 'Psychic Scream',
+      tag: 'Control',
+      cooldownSeconds: 60,
+      maxChargesDetected: 1,
+      casts: [{ timeSeconds: 20 }],
+      availableWindows: [],
+      neverUsed: false,
+    };
+
+    // Create mock AoE CC chains
+    const outgoingCCChains = [
+      {
+        targetName: 'Enemy1',
+        targetSpec: 'Warrior',
+        applications: [
+          {
+            atSeconds: 20,
+            durationSeconds: 8,
+            spellId: '8122',
+            spellName: 'Psychic Scream',
+            casterName: 'Priest',
+            casterSpec: 'Discipline Priest',
+            drInfo: { category: 'Incapacitate', level: 'Full', sequenceIndex: 0 },
+          },
+        ],
+        hasWastedApplications: false,
+      },
+      {
+        targetName: 'Enemy2',
+        targetSpec: 'Mage',
+        applications: [
+          {
+            atSeconds: 20,
+            durationSeconds: 8,
+            spellId: '8122',
+            spellName: 'Psychic Scream',
+            casterName: 'Priest',
+            casterSpec: 'Discipline Priest',
+            drInfo: { category: 'Incapacitate', level: 'Full', sequenceIndex: 0 },
+          },
+        ],
+        hasWastedApplications: false,
+      },
+    ];
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        isHealer: true,
+        ownerCDs: [screamCD as any],
+        outgoingCCChains: outgoingCCChains as any,
+        matchStartMs: 0,
+        matchEndMs: 60000,
+        enemyIdMap: new Map([
+          ['Enemy1', 2],
+          ['Enemy2', 3],
+        ]),
+      }),
+    );
+
+    expect(result).toContain('[OWNER CC]   Psychic Scream → 2, 3 [2 enemies]');
+    expect(result).not.toContain('[CC CAST]   Psychic Scream');
+  });
 });
 
 describe('buildMatchTimeline — F62 dense HP ticks in critical windows', () => {

@@ -13,7 +13,6 @@ export {
   HEALING_WINDOW_EARLY_CD_SECONDS,
   HEALING_WINDOW_MIN_HPS,
   lastCastBefore,
-  PASSIVE_SPELL_BLOCKLIST,
   type ICDExpiryEvent,
   type IEnemyBuffInterval,
 } from './timelineHelpers';
@@ -41,3 +40,5 @@ export {
 } from './resourceSnapshot';
 
 export { buildMatchTimeline, type BuildMatchTimelineParams } from './matchTimeline';
+
+export { PASSIVE_SPELL_BLOCKLIST } from '../../../utils/cooldowns';

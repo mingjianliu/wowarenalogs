@@ -263,6 +263,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     );
   }
 
+  // Extract all AoE CC events upfront so we can consume them
+  const aoeCCEvents = outgoingCCChains && outgoingCCChains.length > 0 ? extractAoeCCEvents(outgoingCCChains) : [];
+  const consumedAoeCCEvents = new Set<number>(); // Track indices of consumed events
+
   // ── [OWNER CD] events ───────────────────────────────────────────────────────
 
   for (const cd of ownerCDs) {
@@ -271,6 +275,25 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         cast.targetName !== undefined
           ? ` → ${pid(cast.targetName)}${cast.targetHpPct !== undefined ? ` (${cast.targetHpPct}% HP)` : ''}`
           : '';
+
+      let aoeTargetPart = targetPart;
+
+      // Look for a matching AoE CC event
+      const matchedAoeIndex = aoeCCEvents.findIndex(
+        (evt, idx) =>
+          !consumedAoeCCEvents.has(idx) &&
+          evt.casterName === owner.name &&
+          evt.spellName === cd.spellName &&
+          Math.abs(evt.atSeconds - cast.timeSeconds) <= 1.0,
+      );
+
+      if (matchedAoeIndex !== -1) {
+        const evt = aoeCCEvents[matchedAoeIndex];
+        consumedAoeCCEvents.add(matchedAoeIndex);
+        const targetLabels = evt.targets.map((t) => enemyPid(t.name)).join(', ');
+        const countNote = evt.targets.length > 1 ? ` [${evt.targets.length} enemies]` : '';
+        aoeTargetPart = ` → ${targetLabels}${countNote}`;
+      }
 
       const extraLines: string[] = [resourceSnapshot(cast.timeSeconds)];
 
@@ -299,7 +322,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       const prefix = ccSpellIds.has(cd.spellId) ? '[OWNER CC]' : '[OWNER CD]';
       addEntry(
         cast.timeSeconds,
-        `${fmtTime(cast.timeSeconds)}  ${prefix}   ${cd.spellName}${targetPart}`,
+        `${fmtTime(cast.timeSeconds)}  ${prefix}   ${cd.spellName}${aoeTargetPart}`,
         ...extraLines,
       );
     }
@@ -438,8 +461,9 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   // ── [CC CAST] events — AoE CC cast by friendly players on enemies ──────────
 
-  if (outgoingCCChains && outgoingCCChains.length > 0) {
-    for (const event of extractAoeCCEvents(outgoingCCChains)) {
+  if (aoeCCEvents.length > 0) {
+    aoeCCEvents.forEach((event, idx) => {
+      if (consumedAoeCCEvents.has(idx)) return;
       const casterLabel = pid(event.casterName);
       const targetLabels = event.targets.map((t) => enemyPid(t.name)).join(', ');
       const countNote = event.targets.length > 1 ? ` [${event.targets.length} enemies]` : '';
@@ -447,7 +471,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         event.atSeconds,
         `${fmtTime(event.atSeconds)}  [CC CAST]   ${event.spellName} (by ${casterLabel}) → ${targetLabels}${countNote}`,
       );
-    }
+    });
   }
 
   // ── [ENEMY BUFF] / [ENEMY BUFF END] events (F67b) ─────────────────────────
