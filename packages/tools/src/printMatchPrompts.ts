@@ -1052,6 +1052,12 @@ export function buildMatchPromptNew(combat: ParsedCombat, forceHealer = false): 
     lines.push('');
   }
 
+  const ccLines = formatOutgoingCCChainsForContext(outgoingCCChains);
+  if (ccLines.length > 0) {
+    lines.push(...ccLines);
+    lines.push('');
+  }
+
   // Player loadout
   const {
     text: loadoutText,
@@ -1093,7 +1099,7 @@ export function buildMatchPromptNew(combat: ParsedCombat, forceHealer = false): 
 // Build JSON snapshot prompt — same as buildMatchPromptNew() but uses [SIT] JSON format
 // ---------------------------------------------------------------------------
 
-function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false): string {
+export function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false): string {
   const allUnits = Object.values(combat.units);
   const friends = allUnits.filter(
     (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
@@ -1230,6 +1236,12 @@ function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false): string
   );
   if (dampeningLines.length > 0) {
     lines.push(...dampeningLines);
+    lines.push('');
+  }
+
+  const ccLines = formatOutgoingCCChainsForContext(outgoingCCChains);
+  if (ccLines.length > 0) {
+    lines.push(...ccLines);
     lines.push('');
   }
 
