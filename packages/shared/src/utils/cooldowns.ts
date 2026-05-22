@@ -26,6 +26,21 @@ const OFFENSIVE_SPELL_IDS = new Set<string>(
 const MIN_CD_SECONDS = 30;
 
 /**
+ * Passive proc spells that emit SPELL_CAST_SUCCESS but are not intentional player casts.
+ * Filtering these removes noise from the [OWNER CAST] timeline.
+ */
+export const PASSIVE_SPELL_BLOCKLIST = new Set([
+  'Reclamation',
+  'Infusion of Light',
+  "Ysera's Gift",
+  "Nature's Vigor",
+  'Resounding Voice',
+  'Eminence',
+  'Awakening',
+  'Divine Purpose',
+]);
+
+/**
  * Spec-exclusive spells: if a spell ID appears here, it is only valid for the listed specs.
  * Any other spec that shares the same class will have this spell filtered out.
  * Covers all tagged (Offensive/Defensive/Control) spells in classMetadata that are
@@ -272,7 +287,8 @@ export function extractMajorCooldowns(unit: ICombatUnit, combat: AtomicArenaComb
     const isDefOrExternal = spell.tags.includes(SpellTag.Defensive) || (spell.tags as string[]).includes('External');
     const isControl = spell.tags.includes(SpellTag.Control);
 
-    const casts: ICooldownCast[] = castEvents
+    const rawCasts: ICooldownCast[] = castEvents
+      .filter((e) => !e.spellName || !PASSIVE_SPELL_BLOCKLIST.has(e.spellName))
       .map((e) => {
         const timeSeconds = (e.logLine.timestamp - matchStartMs) / 1000;
         const cast: ICooldownCast = { timeSeconds };
@@ -287,6 +303,14 @@ export function extractMajorCooldowns(unit: ICombatUnit, combat: AtomicArenaComb
         return cast;
       })
       .sort((a, b) => a.timeSeconds - b.timeSeconds);
+
+    const casts: ICooldownCast[] = [];
+    for (const c of rawCasts) {
+      const last = casts[casts.length - 1];
+      if (!last || c.timeSeconds - last.timeSeconds > 2) {
+        casts.push(c);
+      }
+    }
 
     const availableWindows: IAvailableWindow[] = [];
 

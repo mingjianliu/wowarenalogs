@@ -8,7 +8,9 @@ import {
 } from '@wowarenalogs/parser';
 
 import { getEnglishSpellName, spellEffectData } from '../../../data/spellEffectData';
-import { IMajorCooldownInfo } from '../../../utils/cooldowns';
+import { IMajorCooldownInfo, PASSIVE_SPELL_BLOCKLIST } from '../../../utils/cooldowns';
+
+export { PASSIVE_SPELL_BLOCKLIST };
 
 // ── Shared helpers ─────────────────────────────────────────────────────────
 
@@ -53,21 +55,6 @@ export const HEALER_CAST_SPELL_ID_TO_NAME: Record<string, string> = {
   '363534': 'Rewind', // Preservation — rewind time
   '370537': 'Stasis', // Preservation — store heals
 };
-
-/**
- * Passive proc spells that emit SPELL_CAST_SUCCESS but are not intentional player casts.
- * Filtering these removes noise from the [OWNER CAST] timeline.
- */
-export const PASSIVE_SPELL_BLOCKLIST = new Set([
-  'Reclamation',
-  'Infusion of Light',
-  "Ysera's Gift",
-  "Nature's Vigor",
-  'Resounding Voice',
-  'Eminence',
-  'Awakening',
-  'Divine Purpose',
-]);
 
 // ── Enemy major buff tracking (F67) ──────────────────────────────────────────
 

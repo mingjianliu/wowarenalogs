@@ -954,4 +954,41 @@ describe('extractMajorCooldowns', () => {
     const cds = extractMajorCooldowns(owner, combat);
     expect(cds.find((c) => c.spellId === '740')).toBeUndefined();
   });
+
+  it('B102: deduplicates consecutive casts of the same major cooldown within 2 seconds', () => {
+    const owner = makeUnit('player-1', {
+      class: CombatUnitClass.DeathKnight,
+      spec: CombatUnitSpec.DeathKnight_Frost,
+      spellCastEvents: [
+        makeSpellCastEvent('47568', T0 + 10_000, 'player-1', 'Target', 'player-1', 'Empower Rune Weapon'), // Manual cast
+        makeSpellCastEvent('47568', T0 + 10_500, 'player-1', 'Target', 'player-1', 'Empower Rune Weapon'), // Duplicate at +0.5s
+        makeSpellCastEvent('47568', T0 + 11_500, 'player-1', 'Target', 'player-1', 'Empower Rune Weapon'), // Duplicate at +1.5s
+        makeSpellCastEvent('47568', T0 + 30_000, 'player-1', 'Target', 'player-1', 'Empower Rune Weapon'), // Separate cast > 2s
+      ] as any,
+    });
+    const combat = makeCombatFull({ 'player-1': owner });
+
+    const cds = extractMajorCooldowns(owner, combat);
+    const erw = cds.find((c) => c.spellId === '47568');
+    expect(erw).toBeDefined();
+    expect(erw?.casts).toHaveLength(2); // Should only keep 10s and 30s
+    expect(erw?.casts[0].timeSeconds).toBe(10);
+    expect(erw?.casts[1].timeSeconds).toBe(30);
+  });
+
+  it('B102: filters out casts that match the PASSIVE_SPELL_BLOCKLIST', () => {
+    const owner = makeUnit('player-1', {
+      class: CombatUnitClass.DeathKnight,
+      spec: CombatUnitSpec.DeathKnight_Frost,
+      spellCastEvents: [
+        makeSpellCastEvent('47568', T0 + 10_000, 'player-1', 'Target', 'player-1', 'Player', 0, 'Divine Purpose'),
+      ] as any,
+    });
+    const combat = makeCombatFull({ 'player-1': owner });
+
+    const cds = extractMajorCooldowns(owner, combat);
+    const erw = cds.find((c) => c.spellId === '47568');
+    expect(erw).toBeDefined();
+    expect(erw?.casts).toHaveLength(0); // Filtered out by name
+  });
 });
