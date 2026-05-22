@@ -27,14 +27,9 @@ import { CombatUnitReaction, CombatUnitType, ICombatUnit } from '@wowarenalogs/p
 import fs from 'fs-extra';
 import path from 'path';
 
-import { analyzePlayerCCAndTrinket } from '../../shared/src/utils/ccTrinketAnalysis';
+import { classifyCluster, extractMatchDynamics, IArchetypeModel } from '../../shared/src/utils/archetypeInference';
 import { isHealerSpec, specToString } from '../../shared/src/utils/cooldowns';
-import { analyzeOutgoingCCChains } from '../../shared/src/utils/drAnalysis';
-import { reconstructEnemyCDTimeline } from '../../shared/src/utils/enemyCDs';
-import { analyzeHealerExposureAtBurst } from '../../shared/src/utils/healerExposureAnalysis';
-import { computeMatchArchetype } from '../../shared/src/utils/matchArchetype';
 import { IArchetypeCluster, IArchetypePrompts } from './buildArchetypePrompts';
-import { IMatchDynamicFeatures } from './extractArchetypeFeatures';
 import { buildMatchPromptNew, fetchStubs, ParsedCombat, parseLogText } from './printMatchPrompts';
 
 // ── Config ────────────────────────────────────────────────────────────────────
@@ -58,12 +53,6 @@ export type Variant = (typeof VARIANTS)[number];
 
 // ── Model types ───────────────────────────────────────────────────────────────
 
-interface IArchetypeModel {
-  normParams: { min: number[]; max: number[] };
-  featureNames: string[];
-  centroids: number[][];
-}
-
 interface IEvalIndexEntry {
   ordinal: number;
   matchId: string;
@@ -74,110 +63,6 @@ interface IEvalIndexEntry {
   clusterKey: string;
   clusterLabel: string;
   files: Record<Variant, string>;
-}
-
-// ── Cluster classification ────────────────────────────────────────────────────
-
-function toFeatureVector(d: IMatchDynamicFeatures): number[] {
-  return [
-    d.burstWindowCount,
-    d.ccEventsPerMinute,
-    d.tunnelScore,
-    Math.log1p(d.peakBurstScore),
-    d.criticalOrExposedBurstWindows ?? 0,
-    Math.log1p(d.durationSeconds),
-    d.ownTeamCCPerMin,
-  ];
-}
-
-function normalize(v: number[], params: IArchetypeModel['normParams']): number[] {
-  return v.map((x, i) => {
-    const range = params.max[i] - params.min[i];
-    return range > 0 ? (x - params.min[i]) / range : 0;
-  });
-}
-
-function euclidean(a: number[], b: number[]): number {
-  return Math.sqrt(a.reduce((s, x, i) => s + (x - b[i]) ** 2, 0));
-}
-
-function classifyCluster(
-  matchDynamic: IMatchDynamicFeatures,
-  model: IArchetypeModel,
-): { clusterKey: string; clusterIdx: number } {
-  const vec = normalize(toFeatureVector(matchDynamic), model.normParams);
-  let bestIdx = 0;
-  let bestDist = Infinity;
-  model.centroids.forEach((centroid, idx) => {
-    const dist = euclidean(vec, centroid);
-    if (dist < bestDist) {
-      bestDist = dist;
-      bestIdx = idx;
-    }
-  });
-  return { clusterKey: `cluster_${bestIdx}`, clusterIdx: bestIdx };
-}
-
-// ── Match dynamic feature extraction ─────────────────────────────────────────
-
-function extractMatchDynamics(
-  combat: ParsedCombat,
-  friends: ICombatUnit[],
-  enemies: ICombatUnit[],
-): IMatchDynamicFeatures | null {
-  const durationSeconds = (combat.endTime - combat.startTime) / 1000;
-  if (durationSeconds < 10) return null;
-
-  const healerUnit = friends.find((u) => isHealerSpec(u.spec)) ?? null;
-  const ccTrinketSummaries = friends.map((p) => analyzePlayerCCAndTrinket(p, enemies, combat));
-  const enemyCDTimeline = reconstructEnemyCDTimeline(enemies, combat, healerUnit ?? undefined, friends);
-
-  const healerCCSummary = healerUnit ? ccTrinketSummaries.find((s) => s.playerName === healerUnit.name) : undefined;
-  const healerExposures =
-    healerUnit && healerCCSummary
-      ? analyzeHealerExposureAtBurst(
-          enemyCDTimeline.alignedBurstWindows,
-          enemies,
-          healerUnit,
-          healerCCSummary,
-          ccTrinketSummaries,
-          combat.startInfo.zoneId,
-          combat.startTime,
-        )
-      : [];
-
-  const archetype = computeMatchArchetype(
-    friends,
-    enemies,
-    combat,
-    ccTrinketSummaries,
-    enemyCDTimeline.alignedBurstWindows,
-    healerExposures,
-  );
-
-  // Must match extractArchetypeFeatures.ts and archetypeInjection.ts — both clustering
-  // and classification depend on ownTeamCCPerMin being computed identically.
-  const ownTeamOutgoing = analyzeOutgoingCCChains(friends, enemies, combat);
-  const enemyTeamOutgoing = analyzeOutgoingCCChains(enemies, friends, combat);
-  const ownTeamCCEvents = ownTeamOutgoing.reduce((s, c) => s + c.applications.length, 0);
-  const enemyTeamCCEvents = enemyTeamOutgoing.reduce((s, c) => s + c.applications.length, 0);
-
-  return {
-    durationSeconds: archetype.durationSeconds,
-    burstWindowCount: archetype.burstWindowCount,
-    peakBurstScore: archetype.peakBurstScore,
-    burstWindowQuality: { low: 0, moderate: 0, high: 0, critical: 0 },
-    ccEventsPerMinute: archetype.ccEventsPerMinute,
-    tunnelScore: archetype.friendlyDamageShare[0]?.share ?? 0,
-    criticalOrExposedBurstWindows: archetype.criticalOrExposedBurstWindows,
-    enemyMeleeCount: archetype.enemyMeleeCount,
-    enemyRangedCount: archetype.enemyRangedCount,
-    setupStyle: 'unknown',
-    ownTeamCCPerMin: durationSeconds > 0 ? (ownTeamCCEvents / durationSeconds) * 60 : 0,
-    enemyTeamCCPerMin: durationSeconds > 0 ? (enemyTeamCCEvents / durationSeconds) * 60 : 0,
-    ownTeamSpecs: friends.map((p) => specToString(p.spec)),
-    enemyTeamSpecs: enemies.map((p) => specToString(p.spec)),
-  };
 }
 
 // ── Variant prompt builders ───────────────────────────────────────────────────

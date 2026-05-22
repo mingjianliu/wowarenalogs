@@ -15,31 +15,15 @@ import model3v3 from '../data/archetypes/archetype_model_3v3.json';
 import modelSoloShuffle from '../data/archetypes/archetype_model_solo_shuffle.json';
 import prompts3v3 from '../data/archetypes/archetype_prompts_3v3.json';
 import promptsSoloShuffle from '../data/archetypes/archetype_prompts_solo_shuffle.json';
+import { classifyCluster, IArchetypeModel, IMatchDynamicFeatures } from './archetypeInference';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
-
-export interface IArchetypeModelData {
-  normParams: { min: number[]; max: number[] };
-  featureNames: string[];
-  centroids: number[][];
-}
 
 export interface IArchetypeClusterPrompt {
   label: string;
   isNoise: boolean;
   promptText: string;
   matchCount: number;
-}
-
-export interface IMatchDynamicsForInjection {
-  burstWindowCount: number;
-  ccEventsPerMinute: number;
-  /** Damage share on the most-targeted friendly. 1.0 = pure tunnel; 0.33 = perfect 3-way split. */
-  tunnelScore: number;
-  peakBurstScore: number;
-  criticalOrExposedBurstWindows: number;
-  durationSeconds: number;
-  ownTeamCCPerMin: number;
 }
 
 export interface IArchetypeClassification {
@@ -70,60 +54,10 @@ export function bracketToArchetypeSlug(bracket: string | undefined | null): Arch
   return null;
 }
 
-// ── Feature vector + classification ───────────────────────────────────────────
-
-/**
- * Build the 7-dimension feature vector for classification.
- *
- * MUST match buildArchetypePrompts.ts::toFeatureVector exactly — including the
- * log transforms on peakBurstScore and durationSeconds. Drift between the two
- * means new matches classify against centroids built from a different feature space.
- */
-function toFeatureVector(d: IMatchDynamicsForInjection): number[] {
-  return [
-    d.burstWindowCount,
-    d.ccEventsPerMinute,
-    d.tunnelScore,
-    Math.log1p(d.peakBurstScore),
-    d.criticalOrExposedBurstWindows,
-    Math.log1p(d.durationSeconds),
-    d.ownTeamCCPerMin,
-  ];
-}
-
-function normalize(v: number[], params: { min: number[]; max: number[] }): number[] {
-  return v.map((x, i) => {
-    const range = params.max[i] - params.min[i];
-    return range > 0 ? (x - params.min[i]) / range : 0;
-  });
-}
-
-function euclidean(a: number[], b: number[]): number {
-  let sum = 0;
-  for (let i = 0; i < a.length; i++) {
-    const d = a[i] - b[i];
-    sum += d * d;
-  }
-  return Math.sqrt(sum);
-}
-
-function nearestCentroid(vec: number[], centroids: number[][]): { clusterKey: string; distance: number } {
-  let bestIdx = 0;
-  let bestDist = Infinity;
-  for (let i = 0; i < centroids.length; i++) {
-    const dist = euclidean(vec, centroids[i]);
-    if (dist < bestDist) {
-      bestDist = dist;
-      bestIdx = i;
-    }
-  }
-  return { clusterKey: `cluster_${bestIdx}`, distance: bestDist };
-}
-
 // ── Data accessors ────────────────────────────────────────────────────────────
 
-function getModel(slug: ArchetypeBracket): IArchetypeModelData {
-  return (slug === 'solo_shuffle' ? modelSoloShuffle : model3v3) as IArchetypeModelData;
+function getModel(slug: ArchetypeBracket): IArchetypeModel {
+  return (slug === 'solo_shuffle' ? modelSoloShuffle : model3v3) as IArchetypeModel;
 }
 
 function getPrompts(slug: ArchetypeBracket): Record<string, IArchetypeClusterPrompt> {
@@ -142,7 +76,7 @@ function getPrompts(slug: ArchetypeBracket): Record<string, IArchetypeClusterPro
  */
 export function classifyMatchArchetype(
   bracket: string | undefined | null,
-  dynamics: IMatchDynamicsForInjection,
+  dynamics: IMatchDynamicFeatures,
 ): IArchetypeClassification | null {
   const slug = bracketToArchetypeSlug(bracket);
   if (!slug) return null;
@@ -150,8 +84,7 @@ export function classifyMatchArchetype(
   const model = getModel(slug);
   const prompts = getPrompts(slug);
 
-  const vec = normalize(toFeatureVector(dynamics), model.normParams);
-  const { clusterKey } = nearestCentroid(vec, model.centroids);
+  const { clusterKey } = classifyCluster(dynamics, model);
 
   const cluster = prompts[clusterKey];
   if (!cluster) return null;
@@ -174,7 +107,7 @@ export function classifyMatchArchetype(
  */
 export function buildArchetypeInjectionHeader(
   bracket: string | undefined | null,
-  dynamics: IMatchDynamicsForInjection,
+  dynamics: IMatchDynamicFeatures,
 ): string {
   if (dynamics.durationSeconds < MIN_DURATION_SECONDS_FOR_INJECTION) return '';
 
