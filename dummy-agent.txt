@@ -1,0 +1,1 @@
+This is an agent-generated verification file for test-agent-worktree.
