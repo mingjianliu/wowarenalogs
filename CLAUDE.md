@@ -120,6 +120,16 @@ npm run deploy:prod       # Deploy to production
 - Always push to `origin` (mingjianliu's fork), never to `upstream`.
 - Never create PRs against the upstream repo (`wowarenalogs/wowarenalogs`). If a PR is needed, create it on origin. When commits land directly on `main`, a PR is usually unnecessary.
 
+## Git Worktree Workflow (AI Agent Guidelines)
+
+- The project has local Git commands for worktree management:
+  - `git start-dev <branch>`: Creates a worktree in `.worktrees/<branch>` and runs `npm install`.
+  - `git push-clean`: Run inside a worktree to push to origin.
+- Interactive slash commands and natural language triggers are available in Claude, Gemini, and Antigravity:
+  - **Start Development**: Triggered by `/start-dev <branch>` or when the user says "develop <branch>". The agent MUST run `git start-dev <branch>` and switch its context to `.worktrees/<branch>/` for subsequent edits.
+  - **Commit, Push, and Clean Up**: Triggered by `/push-clean` or when the user says "commit and push" (or implicitly when the task is done). The agent MUST commit changes inside the worktree, run `git push-clean` inside the worktree, and then run `git worktree remove --force .worktrees/<branch>` and `git worktree prune` from the main repository root directory to clean up.
+- As an AI agent, when you start developing a task, you MUST automate this worktree isolation and clean it up completely when done.
+
 ## Active Work
 
 - AI-powered cooldown analysis (`CombatAIAnalysis` component + `/api/analyze` endpoint)

@@ -1,11 +1,4 @@
-import {
-  CombatUnitReaction,
-  CombatUnitType,
-  getUnitReaction,
-  getUnitType,
-  ICombatUnit,
-  LogEvent,
-} from '@wowarenalogs/parser';
+import { CombatUnitType, getUnitReaction, getUnitType, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
 import { getEnglishSpellName, spellEffectData } from '../../../data/spellEffectData';
 import { IMajorCooldownInfo, PASSIVE_SPELL_BLOCKLIST } from '../../../utils/cooldowns';
@@ -324,8 +317,8 @@ export function getTopDamageSourcesInWindow(unit: ICombatUnit, endMs: number, wi
     if (d.logLine.timestamp < startMs || d.logLine.timestamp > endMs) continue;
     const dmg = Math.abs(d.effectiveAmount);
     if (dmg <= 0) continue;
-    // B20: exclude friendly sources (e.g. Time Dilation from Preservation Evoker buff)
-    if (getUnitReaction(d.srcUnitFlags) !== CombatUnitReaction.Hostile) continue;
+    // B20: exclude same-team sources (e.g. Time Dilation from Preservation Evoker buff)
+    if (getUnitReaction(d.srcUnitFlags) === unit.reaction) continue;
     // B24: pet/guardian units may have localized (non-ASCII) names from non-en-US clients;
     // replace with "[pet]" to keep attribution readable without localization noise.
     const srcType = getUnitType(d.srcUnitFlags);

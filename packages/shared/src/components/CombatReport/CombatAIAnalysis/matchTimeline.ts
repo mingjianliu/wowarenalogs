@@ -8,7 +8,9 @@ import {
   getUnitHpAtTimestamp,
   IDamageBucket,
   IMajorCooldownInfo,
+  isHealerSpec,
   specToBenchmarkKey,
+  specToString,
 } from '../../../utils/cooldowns';
 import { dampeningDangerMultiplier, getDampeningPercentage } from '../../../utils/dampening';
 import { canDefensiveCleanse, IDispelEvent, IDispelSummary } from '../../../utils/dispelAnalysis';
@@ -33,6 +35,7 @@ import {
   HEALING_AMPLIFIER_SPELL_IDS,
   HEALING_WINDOW_EARLY_CD_SECONDS,
   HEALING_WINDOW_MIN_HPS,
+  lastCastBefore,
   PASSIVE_SPELL_BLOCKLIST,
 } from './timelineHelpers';
 
@@ -265,6 +268,61 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   // ── [OWNER CD] events ───────────────────────────────────────────────────────
 
+  // F114 (Variant C + Pressure): precompute which amplifier-spell casts get a [HEALING] block.
+  // Per spell: emit the first eligible cast, the worst subsequent eligible cast
+  // (score = overhealPct * 1000 - maxBucketHps; higher = worse), AND any eligible cast
+  // that falls within an [OFFENSIVE WINDOW] (aligned enemy burst + damage spike).
+  // Casts suppressed by the early-low-activity gate are never eligible.
+
+  // Precompute offensive-window time ranges using the same filter as the
+  // [OFFENSIVE WINDOW] header emission above: aligned burst window overlapping a
+  // pressureWindow whose totalDamage >= DMG_SPIKE_THRESHOLD.
+  const offensiveWindowRanges: { fromSeconds: number; toSeconds: number }[] = [];
+  for (const burst of enemyCDTimeline.alignedBurstWindows) {
+    const hasSpike = pressureWindows.some(
+      (pw) =>
+        pw.totalDamage >= DMG_SPIKE_THRESHOLD &&
+        pw.fromSeconds >= burst.fromSeconds - 5 &&
+        pw.fromSeconds <= burst.toSeconds + 5,
+    );
+    if (hasSpike) offensiveWindowRanges.push({ fromSeconds: burst.fromSeconds, toSeconds: burst.toSeconds });
+  }
+  const inOffensiveWindow = (timeSeconds: number): boolean =>
+    offensiveWindowRanges.some((w) => timeSeconds >= w.fromSeconds && timeSeconds <= w.toSeconds);
+
+  const healingEmissionTimes = new Map<string, Set<number>>();
+  for (const cd of ownerCDs) {
+    if (!HEALING_AMPLIFIER_SPELL_IDS.has(cd.spellId)) continue;
+    const duration = spellEffectData[cd.spellId]?.durationSeconds;
+    if (!duration) continue;
+    const eligible: { timeSeconds: number; score: number }[] = [];
+    for (const cast of cd.casts) {
+      const fromMs = matchStartMs + cast.timeSeconds * 1000;
+      const toMs = fromMs + duration * 1000;
+      const healStats = computeHealingInWindow(owner.healOut, fromMs, toMs);
+      const maxBucketHps = healStats ? Math.max(...healStats.buckets.map((b) => b.hps)) : 0;
+      const isEarlyLowActivity =
+        cast.timeSeconds < HEALING_WINDOW_EARLY_CD_SECONDS && maxBucketHps < HEALING_WINDOW_MIN_HPS;
+      if (isEarlyLowActivity) continue;
+      const score = (healStats?.overhealPct ?? 0) * 1000 - maxBucketHps;
+      eligible.push({ timeSeconds: cast.timeSeconds, score });
+    }
+    if (eligible.length === 0) continue;
+    const emit = new Set<number>([eligible[0].timeSeconds]);
+    if (eligible.length > 1) {
+      let worstIdx = 1;
+      for (let i = 2; i < eligible.length; i++) {
+        if (eligible[i].score > eligible[worstIdx].score) worstIdx = i;
+      }
+      emit.add(eligible[worstIdx].timeSeconds);
+    }
+    // Pressure extension: any eligible cast during an offensive window also emits.
+    for (const e of eligible) {
+      if (inOffensiveWindow(e.timeSeconds)) emit.add(e.timeSeconds);
+    }
+    healingEmissionTimes.set(cd.spellId, emit);
+  }
+
   for (const cd of ownerCDs) {
     for (const cast of cd.casts) {
       const targetPart =
@@ -274,24 +332,19 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
       const extraLines: string[] = [resourceSnapshot(cast.timeSeconds)];
 
-      if (HEALING_AMPLIFIER_SPELL_IDS.has(cd.spellId)) {
+      if (HEALING_AMPLIFIER_SPELL_IDS.has(cd.spellId) && healingEmissionTimes.get(cd.spellId)?.has(cast.timeSeconds)) {
         const duration = spellEffectData[cd.spellId]?.durationSeconds;
         if (duration) {
           const fromMs = matchStartMs + cast.timeSeconds * 1000;
           const toMs = fromMs + duration * 1000;
           const healStats = computeHealingInWindow(owner.healOut, fromMs, toMs);
-          const maxBucketHps = healStats ? Math.max(...healStats.buckets.map((b) => b.hps)) : 0;
-          const isEarlyLowActivity =
-            cast.timeSeconds < HEALING_WINDOW_EARLY_CD_SECONDS && maxBucketHps < HEALING_WINDOW_MIN_HPS;
-          if (!isEarlyLowActivity) {
-            if (healStats) {
-              const bucketParts = healStats.buckets.map(
-                (b) => `${b.fromSeconds}–${b.toSeconds}s: ${(b.hps / 1000).toFixed(1)}k HPS`,
-              );
-              extraLines.push(`      [HEALING]    ${bucketParts.join(' | ')} | Overheal: ${healStats.overhealPct}%`);
-            } else {
-              extraLines.push(`      [HEALING]    No healing logged during this window`);
-            }
+          if (healStats) {
+            const bucketParts = healStats.buckets.map(
+              (b) => `${b.fromSeconds}–${b.toSeconds}s: ${(b.hps / 1000).toFixed(1)}k HPS`,
+            );
+            extraLines.push(`      [HEALING]    ${bucketParts.join(' | ')} | Overheal: ${healStats.overhealPct}%`);
+          } else {
+            extraLines.push(`      [HEALING]    No healing logged during this window`);
           }
         }
       }
@@ -776,7 +829,138 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     outputLines.push(...entry.lines);
   }
 
-  // ── [MATCH END] block ─────────────────────────────────────────────────────
+  // ── [KILL SEQUENCE] block (F113) ──────────────────────────────────────────
+
+  if (matchEndSeconds < 90) {
+    const firstFriendlyDeath = friendlyDeaths[0];
+    const firstEnemyDeath = enemyDeaths[0];
+    const firstDeath = !firstFriendlyDeath
+      ? firstEnemyDeath
+      : !firstEnemyDeath
+        ? firstFriendlyDeath
+        : firstFriendlyDeath.atSeconds < firstEnemyDeath.atSeconds
+          ? firstFriendlyDeath
+          : firstEnemyDeath;
+
+    if (firstDeath) {
+      const deathTime = firstDeath.atSeconds;
+      const killSeqEntries: Array<{ timeSeconds: number; label: string; text: string }> = [];
+
+      // 1. Healer CC
+      const isFriendlyDeath = friends.some((f) => f.name === firstDeath.name);
+      const dyingTeam = isFriendlyDeath ? friends : (enemies ?? []);
+      const dyingHealer = dyingTeam.find((u) => isHealerSpec(u.spec));
+
+      if (dyingHealer) {
+        // Detailed CC summary is available for friends.
+        const healerSummary = ccTrinketSummaries.find((s) => s.playerName === dyingHealer.name);
+        if (healerSummary) {
+          const relevantCC = [...healerSummary.ccInstances]
+            .filter((cc) => cc.atSeconds <= deathTime && cc.atSeconds + cc.durationSeconds >= deathTime - 12)
+            .sort((a, b) => b.atSeconds - a.atSeconds)[0];
+          if (relevantCC) {
+            killSeqEntries.push({
+              timeSeconds: relevantCC.atSeconds,
+              label: '[HEALER CC]',
+              text: `${pid(dyingHealer.name)} (${specToString(dyingHealer.spec)}) ← ${relevantCC.spellName} (by ${pid(relevantCC.sourceName)})`,
+            });
+          }
+        }
+      }
+
+      // 2. Enemy CD active
+      if (isFriendlyDeath) {
+        const activeBurst = enemyCDTimeline.alignedBurstWindows.find(
+          (w) => w.fromSeconds <= deathTime && w.toSeconds >= deathTime - 12,
+        );
+        if (activeBurst) {
+          const cdNames = activeBurst.activeCDs.map((c) => c.spellName).join(' + ');
+          killSeqEntries.push({
+            timeSeconds: activeBurst.fromSeconds,
+            label: '[ENEMY CD]',
+            text: `${cdNames} active`,
+          });
+        } else {
+          const individualCDs = enemyCDTimeline.players.flatMap((p) =>
+            p.offensiveCDs.filter((cd) => cd.castTimeSeconds <= deathTime && cd.castTimeSeconds >= deathTime - 15),
+          );
+          if (individualCDs.length > 0) {
+            const latest = [...individualCDs].sort((a, b) => b.castTimeSeconds - a.castTimeSeconds)[0];
+            killSeqEntries.push({
+              timeSeconds: latest.castTimeSeconds,
+              label: '[ENEMY CD]',
+              text: `${latest.spellName} active`,
+            });
+          }
+        }
+      }
+
+      // 3. Defensive available but unused (only for friendly deaths)
+      if (isFriendlyDeath) {
+        const dyingUnit = friends.find((f) => f.name === firstDeath.name);
+        if (dyingUnit) {
+          const allFriendlyCDs = [
+            ...ownerCDs.map((cd) => ({ player: owner, cd })),
+            ...teammateCDs.flatMap((t) => t.cds.map((cd) => ({ player: t.player, cd }))),
+          ];
+          const unusedDefensives = allFriendlyCDs.filter(({ player, cd }) => {
+            if (cd.tag !== 'Defensive' && cd.tag !== 'External') return false;
+
+            // Relevant if: own CD, or an external, or any healer defensive CD (usually team-relevant)
+            const isDyingPlayer = player.name === dyingUnit.name;
+            const isExternal = cd.tag === 'External';
+            const isHealerCD = isHealerSpec(player.spec);
+
+            const isRelevant = isDyingPlayer || isExternal || isHealerCD;
+            if (!isRelevant) return false;
+
+            const lastCast = lastCastBefore(cd, deathTime);
+            return !lastCast || lastCast.timeSeconds + cd.cooldownSeconds <= deathTime;
+          });
+
+          if (unusedDefensives.length > 0) {
+            const topUnused = [...unusedDefensives]
+              .sort((a, b) => b.cd.cooldownSeconds - a.cd.cooldownSeconds)
+              .slice(0, 2);
+            topUnused.forEach((u) => {
+              killSeqEntries.push({
+                timeSeconds: Math.max(0, deathTime - 1),
+                label: '[DEFENSIVE AVAILABLE]',
+                text: `${pid(u.player.name)}: ${u.cd.spellName} available but unused`,
+              });
+            });
+          }
+        }
+      }
+
+      // 4. Kill source
+      const dyingUnit = isFriendlyDeath
+        ? friends.find((f) => f.name === firstDeath.name)
+        : (enemies ?? []).find((e) => e.name === firstDeath.name);
+      if (dyingUnit) {
+        const topSources = getTopDamageSourcesInWindow(dyingUnit, matchStartMs + deathTime * 1000, 5000);
+        if (topSources.length > 0) {
+          killSeqEntries.push({
+            timeSeconds: deathTime,
+            label: '[KILL]',
+            text: `${pid(firstDeath.name)} (${firstDeath.spec}) dead (Killer: ${topSources[0]})`,
+          });
+        }
+      }
+
+      if (killSeqEntries.length > 0) {
+        outputLines.push('');
+        outputLines.push('KILL SEQUENCE');
+        killSeqEntries
+          .sort((a, b) => a.timeSeconds - b.timeSeconds)
+          .forEach((e) => {
+            outputLines.push(`${fmtTime(e.timeSeconds)}  ${e.label.padEnd(22)} ${e.text}`);
+          });
+      }
+    }
+  }
+
+  // ── [MATCH END] block (F96) ─────────────────────────────────────────────────
 
   // Final dampening — only when bracket is available
   const finalDampPct = bracket ? getDampeningPercentage(bracket, [...friends, ...(enemies ?? [])], matchEndMs) : null;
