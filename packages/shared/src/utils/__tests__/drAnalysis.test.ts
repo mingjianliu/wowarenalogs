@@ -3,6 +3,7 @@ import {
   computeIncomingDR,
   DR_RESET_MS,
   extractAoeCCEvents,
+  formatOutgoingCCChainsForContext,
   getDRCategory,
   getDRLevel,
   getDRLevelAtTime,
@@ -491,5 +492,86 @@ describe('extractAoeCCEvents', () => {
     expect(result).toHaveLength(2);
     expect(result[0].atSeconds).toBe(10.0);
     expect(result[1].atSeconds).toBe(10.6);
+  });
+});
+
+describe('formatOutgoingCCChainsForContext', () => {
+  it('returns an empty array if there are no notable (non-Full duration) DR applications', () => {
+    const chains: IOutgoingCCChain[] = [
+      {
+        targetName: 'Enemy1',
+        targetSpec: 'Retribution Paladin',
+        hasWastedApplications: false,
+        applications: [
+          {
+            atSeconds: 10,
+            durationSeconds: 6,
+            spellId: '33786',
+            spellName: 'Cyclone',
+            casterName: 'DruidPlayer',
+            casterSpec: 'Restoration Druid',
+            drInfo: { category: 'Cyclone', level: 'Full', sequenceIndex: 0 },
+          },
+        ],
+      },
+    ];
+
+    // Note: formatOutgoingCCChainsForContext is intentionally NOT imported yet to fail compile/run.
+    const result = formatOutgoingCCChainsForContext(chains);
+    expect(result).toEqual([]);
+  });
+
+  it('formats notable DR applications with reduced or immune levels', () => {
+    const chains: IOutgoingCCChain[] = [
+      {
+        targetName: 'RetPal',
+        targetSpec: 'Retribution Paladin',
+        hasWastedApplications: true,
+        applications: [
+          {
+            atSeconds: 10,
+            durationSeconds: 6,
+            spellId: '33786',
+            spellName: 'Cyclone',
+            casterName: 'DruidPlayer',
+            casterSpec: 'Restoration Druid',
+            drInfo: { category: 'Cyclone', level: 'Full', sequenceIndex: 0 },
+          },
+          {
+            atSeconds: 20,
+            durationSeconds: 3,
+            spellId: '33786',
+            spellName: 'Cyclone',
+            casterName: 'DruidPlayer',
+            casterSpec: 'Restoration Druid',
+            drInfo: { category: 'Cyclone', level: '50%', sequenceIndex: 1 },
+          },
+          {
+            atSeconds: 30,
+            durationSeconds: 1.5,
+            spellId: '33786',
+            spellName: 'Cyclone',
+            casterName: 'DruidPlayer',
+            casterSpec: 'Restoration Druid',
+            drInfo: { category: 'Cyclone', level: '25%', sequenceIndex: 2 },
+          },
+          {
+            atSeconds: 40,
+            durationSeconds: 0,
+            spellId: '33786',
+            spellName: 'Cyclone',
+            casterName: 'DruidPlayer',
+            casterSpec: 'Restoration Druid',
+            drInfo: { category: 'Cyclone', level: 'Immune', sequenceIndex: 3 },
+          },
+        ],
+      },
+    ];
+
+    const result = formatOutgoingCCChainsForContext(chains);
+    expect(result).toEqual([
+      'CC APPLIED ON ENEMIES (DR summary):',
+      '  Retribution Paladin (RetPal): 4 CC — 4× Cyclone | 2 reduced, 1 immune ⚠ 1 hit immune — switch CC category or target after 2 applications',
+    ]);
   });
 });
