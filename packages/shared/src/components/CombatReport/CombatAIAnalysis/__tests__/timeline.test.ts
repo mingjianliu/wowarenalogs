@@ -1836,42 +1836,6 @@ describe('buildMatchTimeline — F95 [OWNER CC]', () => {
     expect(result).toContain('[TEAMMATE CC]');
     expect(result).toContain('Hammer of Justice');
   });
-
-  it('F105: skips [OWNER CAST] fallback if the spell name matches a tracked ownerCD, even if spellId differs', () => {
-    // spellId '123' represents the base ID in the cooldown tracker, but '9041' (same name) fires in the combat log
-    const owner = makeUnit('unit-1', {
-      name: 'Priest',
-      spellCastEvents: [
-        makeSpellCastEvent('9041', 20000, 'enemy-1', 'Natjkis', 'unit-1', 'Priest', 0, 'Psychic Scream'),
-      ],
-    });
-    const screamCD: IMajorCooldownInfo = {
-      spellId: '8122',
-      spellName: 'Psychic Scream',
-      tag: 'Control',
-      cooldownSeconds: 60,
-      maxChargesDetected: 1,
-      casts: [{ timeSeconds: 20 }],
-      availableWindows: [],
-      neverUsed: false,
-    };
-    const result = buildMatchTimeline(
-      makeBaseParams({
-        owner,
-        isHealer: true,
-        ownerCDs: [screamCD],
-        matchStartMs: 0,
-        matchEndMs: 60000,
-      }),
-    );
-    expect(result).toContain('[OWNER CC]   Psychic Scream');
-    expect(result).not.toContain('[OWNER CAST]   Psychic Scream');
-    expect(result).not.toContain('[OWNER CD]   Psychic Scream');
-
-    // Verify it only appears once as an event prefix (to avoid confusion with [RES] line)
-    const eventMatches = result.match(/\[OWNER (CC|CD|CAST)\] {3}Psychic Scream/g);
-    expect(eventMatches?.length).toBe(1);
-  });
 });
 
 describe('buildMatchTimeline — F62 dense HP ticks in critical windows', () => {

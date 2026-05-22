@@ -8,7 +8,6 @@ import {
   getUnitHpAtTimestamp,
   IDamageBucket,
   IMajorCooldownInfo,
-  PASSIVE_SPELL_BLOCKLIST,
   specToBenchmarkKey,
 } from '../../../utils/cooldowns';
 import { dampeningDangerMultiplier, getDampeningPercentage } from '../../../utils/dampening';
@@ -34,6 +33,7 @@ import {
   HEALING_AMPLIFIER_SPELL_IDS,
   HEALING_WINDOW_EARLY_CD_SECONDS,
   HEALING_WINDOW_MIN_HPS,
+  PASSIVE_SPELL_BLOCKLIST,
 } from './timelineHelpers';
 
 // ── buildMatchTimeline ─────────────────────────────────────────────────────
@@ -320,11 +320,11 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   if (isHealer) {
     const trackedCastsBySpellId = new Map<string, Set<number>>();
-    const trackedCastsByName = new Map<string, Set<number>>();
     for (const cd of ownerCDs) {
-      const timestamps = new Set(cd.casts.map((c) => matchStartMs + Math.round(c.timeSeconds * 1000)));
-      trackedCastsBySpellId.set(cd.spellId, timestamps);
-      trackedCastsByName.set(cd.spellName, timestamps);
+      trackedCastsBySpellId.set(
+        cd.spellId,
+        new Set(cd.casts.map((c) => matchStartMs + Math.round(c.timeSeconds * 1000))),
+      );
     }
     const trinketUseTimesMs = new Set(
       ccTrinketSummaries.flatMap((s) => s.trinketUseTimes.map((t) => Math.round(matchStartMs + t * 1000))),
@@ -348,14 +348,6 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       const tsMs = e.logLine.timestamp;
       const trackedSet = trackedCastsBySpellId.get(e.spellId);
       if (trackedSet && (trackedSet.has(tsMs) || trackedSet.has(tsMs - 1000) || trackedSet.has(tsMs + 1000))) continue;
-
-      const trackedSetName = trackedCastsByName.get(displayName);
-      if (
-        trackedSetName &&
-        (trackedSetName.has(tsMs) || trackedSetName.has(tsMs - 1000) || trackedSetName.has(tsMs + 1000))
-      )
-        continue;
-
       if (trinketUseTimesMs.has(tsMs) || trinketUseTimesMs.has(tsMs - 1000) || trinketUseTimesMs.has(tsMs + 1000))
         continue;
       const timeSeconds = (tsMs - matchStartMs) / 1000;
