@@ -264,8 +264,13 @@ export function buildResourceSnapshot({
   const enemyActiveParts: string[] = [];
   for (const player of enemyCDTimeline.players) {
     for (const cd of player.offensiveCDs) {
+      // If the buff duration is known, show it until it expires (capped at 30s to prevent bugs).
+      // If duration is 0 (instant cast), show it for 8 seconds to ensure AI has context.
+      const buffDuration = cd.buffEndSeconds - cd.castTimeSeconds;
+      const displayWindowSeconds = buffDuration > 0 ? Math.min(buffDuration, 30) : 8;
+
       const agoSeconds = timeSeconds - cd.castTimeSeconds;
-      if (agoSeconds >= 0 && agoSeconds <= 30) {
+      if (agoSeconds >= 0 && agoSeconds <= displayWindowSeconds) {
         enemyActiveParts.push(`${cd.spellName}/${player.specName}(${Math.round(agoSeconds)}s)`);
       }
     }
@@ -332,7 +337,8 @@ export function buildResourceSnapshot({
   }
 
   // Suppress empty lines that contribute no information
-  if (readyNames.length === 0 && onCDParts.length === 0 && enemyActiveParts.length === 0 && ccParts.length === 0) {
+  const isRdyEmpty = rdyPart === 'rdy:Δ' || readyNames.length === 0;
+  if (isRdyEmpty && onCDParts.length === 0 && enemyActiveParts.length === 0 && ccParts.length === 0) {
     return '';
   }
 

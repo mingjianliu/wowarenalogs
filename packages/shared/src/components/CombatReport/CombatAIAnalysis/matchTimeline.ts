@@ -795,13 +795,19 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
     if (friendlyParts.length === 0 && enemyParts.length === 0) continue;
 
-    // B15: deduplicate — suppress tick if HP readings are identical to previous AND
-    // this is not an anchor. In critical windows always emit (1s dense ticks are the point);
-    // outside critical windows use the 3s baseline interval as the anchor.
+    // B15: Option 2 (Event-Gating) - strictly emit ONLY inside critical windows, or if a player died.
     const currentHpKey = `${friendlyParts.join('|')}||${enemyParts.join('|')}`;
     const isInCritical = criticalWindowSet.has(t);
-    const isAnchorTick = isInCritical || t % 3 === 0;
-    if (currentHpKey === prevHpKey && !isAnchorTick) continue;
+    const someoneDied = friendlyParts.some((p) => p.includes('dead')) || enemyParts.some((p) => p.includes('dead'));
+
+    // Allow immediate tick if someone just died to capture precise timing.
+    const isFirstDeathTick = someoneDied && !prevHpKey.includes('dead');
+
+    // Only emit if inside critical window, or death. No time anchors!
+    if (!isInCritical && !isFirstDeathTick) continue;
+
+    // Deduplicate within critical windows to avoid per-second spam if nothing changed
+    if (currentHpKey === prevHpKey && !isInCritical) continue;
     prevHpKey = currentHpKey;
 
     let stateParts: string;
