@@ -1,5 +1,5 @@
 import { CombatUnitReaction, CombatUnitType, ICombatUnit } from '@wowarenalogs/parser';
-import { useEffect, useState } from 'react';
+import { CSSProperties, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { buildArchetypeInjectionHeader } from '../../../utils/archetypeInjection';
 import { analyzePlayerCCAndTrinket, formatCCTrinketForContext } from '../../../utils/ccTrinketAnalysis';
@@ -38,6 +38,13 @@ import { buildOffensiveWasteSummary, formatOffensiveWasteForContext } from '../.
 import { computeOffensiveWindows, formatOffensiveWindowsForContext } from '../../../utils/offensiveWindows';
 import { benchmarks, formatDTPSBaselines, formatSpecBaselines } from '../../../utils/specBaselines';
 import { useCombatReportContext } from '../CombatReportContext';
+import { AIFinding } from './aiFindings';
+import { FindingsList } from './components/FindingsList';
+import { RefreshIcon, SparkleIcon } from './components/icons';
+import { MatchHero } from './components/MatchHero';
+import { SupportingRail } from './components/SupportingRail';
+import { TimelineStrip } from './components/TimelineStrip';
+import { computeMatchAnalysisData } from './matchAnalysisData';
 import {
   buildMatchArc,
   buildMatchTimeline,
@@ -177,6 +184,13 @@ export function buildMatchContext(
     criticalOrExposedBurstWindows: matchArchetype.criticalOrExposedBurstWindows ?? 0,
     durationSeconds,
     ownTeamCCPerMin: durationSeconds > 0 ? (ownTeamCCEventsTotal / durationSeconds) * 60 : 0,
+    burstWindowQuality: { low: 0, moderate: 0, high: 0, critical: 0 },
+    enemyMeleeCount: matchArchetype.enemyMeleeCount,
+    enemyRangedCount: matchArchetype.enemyRangedCount,
+    setupStyle: 'unknown',
+    enemyTeamCCPerMin: 0,
+    ownTeamSpecs: [],
+    enemyTeamSpecs: [],
   });
 
   // Identify top critical moments; constrainedTrade flag reused for CC section framing
@@ -671,24 +685,51 @@ function renderInline(text: string): string {
     .replace(/`(.+?)`/g, '<code class="text-xs bg-base-300 px-1 rounded">$1</code>');
 }
 
+interface AnalysisResult {
+  findings: AIFinding[];
+  /** Raw prose fallback shown when JSON parsing failed server-side. */
+  raw: string;
+}
+
 // Session-level cache: persists across tab switches and match switches without a server round-trip.
-const analysisCache = new Map<string, string>();
+const analysisCache = new Map<string, AnalysisResult>();
 // In-flight requests: allows re-attaching to an ongoing fetch after a tab switch.
-const inFlightRequests = new Map<string, Promise<string>>();
+const inFlightRequests = new Map<string, Promise<AnalysisResult>>();
+
+// Scoped design tokens — fonts + near-black palette applied only inside the AI tab.
+const AI_VIEW_STYLE = {
+  '--ai-font-display': '"Space Grotesk", "IBM Plex Sans", system-ui, sans-serif',
+  '--ai-font-sans': '"IBM Plex Sans", system-ui, sans-serif',
+  '--ai-font-mono': '"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace',
+  fontFamily: 'var(--ai-font-sans)',
+  background: '#08080a',
+  color: '#e4e4e7',
+} as CSSProperties;
 
 export function CombatAIAnalysis() {
   const { combat, friends, enemies } = useCombatReportContext();
-  const [analysis, setAnalysis] = useState<string | null>(() => analysisCache.get(combat?.id ?? '') ?? null);
+  const [result, setResult] = useState<AnalysisResult | null>(() => analysisCache.get(combat?.id ?? '') ?? null);
   const [loading, setLoading] = useState(() => inFlightRequests.has(combat?.id ?? ''));
   const [error, setError] = useState<string | null>(null);
+  const [expandedRanks, setExpandedRanks] = useState<Set<number>>(() => new Set());
+  const [focused, setFocused] = useState(0);
+
+  const data = useMemo(
+    () => (combat ? computeMatchAnalysisData(combat, friends, enemies) : null),
+    [combat, friends, enemies],
+  );
 
   // When the combat changes (or on mount): sync cached result or re-attach to an in-flight request.
   useEffect(() => {
     if (!combat) return;
+    setExpandedRanks(new Set());
+    setFocused(0);
 
     const cached = analysisCache.get(combat.id);
     if (cached) {
-      setAnalysis(cached);
+      setResult(cached);
+      setExpandedRanks(new Set(cached.findings.length > 0 ? [cached.findings[0].rank] : []));
+      setFocused(cached.findings[0]?.rank ?? 0);
       setLoading(false);
       setError(null);
       return;
@@ -696,12 +737,12 @@ export function CombatAIAnalysis() {
 
     const inFlight = inFlightRequests.get(combat.id);
     if (inFlight) {
-      setAnalysis(null);
+      setResult(null);
       setLoading(true);
       setError(null);
       inFlight
-        .then((result) => {
-          setAnalysis(result);
+        .then((r) => {
+          setResult(r);
           setLoading(false);
         })
         .catch((e: unknown) => {
@@ -711,10 +752,70 @@ export function CombatAIAnalysis() {
       return;
     }
 
-    setAnalysis(null);
+    setResult(null);
     setLoading(false);
     setError(null);
   }, [combat?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const toggle = useCallback((rank: number) => {
+    setExpandedRanks((prev) => {
+      const next = new Set(prev);
+      if (next.has(rank)) next.delete(rank);
+      else next.add(rank);
+      return next;
+    });
+    setFocused(rank);
+  }, []);
+
+  const onTimelineClick = useCallback((rank: number) => {
+    setFocused(rank);
+    setExpandedRanks((prev) => new Set(prev).add(rank));
+    const el = document.getElementById(`ai-finding-${rank}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, []);
+
+  const handleAnalyze = useCallback(async () => {
+    if (!combat) return;
+    const combatId = combat.id;
+    setLoading(true);
+    setError(null);
+    setResult(null);
+
+    const fetchPromise: Promise<AnalysisResult> = (async () => {
+      const matchContext = buildMatchContext(combat, friends, enemies);
+      const apiKey = (await window.wowarenalogs?.settings?.getAnthropicApiKey?.()) ?? undefined;
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ matchContext, apiKey, findingsJson: true }),
+      });
+      const body = (await res.json()) as {
+        analysis?: string;
+        findings?: AIFinding[];
+        error?: string;
+      };
+      if (!res.ok || body.error) throw new Error(body.error ?? 'Analysis failed');
+      const analysisResult: AnalysisResult = { findings: body.findings ?? [], raw: body.analysis ?? '' };
+      analysisCache.set(combatId, analysisResult);
+      return analysisResult;
+    })();
+
+    inFlightRequests.set(combatId, fetchPromise);
+    fetchPromise.finally(() => inFlightRequests.delete(combatId));
+
+    try {
+      const r = await fetchPromise;
+      if (combat.id !== combatId) return;
+      setResult(r);
+      setExpandedRanks(new Set(r.findings.length > 0 ? [r.findings[0].rank] : []));
+      setFocused(r.findings[0]?.rank ?? 0);
+    } catch (e) {
+      if (combat.id !== combatId) return;
+      setError(e instanceof Error ? e.message : 'Network error');
+    } finally {
+      if (combat.id === combatId) setLoading(false);
+    }
+  }, [combat, friends, enemies]);
 
   if (!combat) return null;
 
@@ -722,92 +823,172 @@ export function CombatAIAnalysis() {
   const hasPlayers = allPlayers.some(
     (p) => p.type === CombatUnitType.Player && p.reaction === CombatUnitReaction.Friendly,
   );
-  if (!hasPlayers) {
+  if (!hasPlayers || !data) {
     return <div className="p-4 text-base-content opacity-60">No player data available for analysis.</div>;
   }
 
-  const handleAnalyze = async () => {
-    const combatId = combat.id;
-    setLoading(true);
-    setError(null);
-    setAnalysis(null);
-
-    const fetchPromise: Promise<string> = (async () => {
-      const matchContext = buildMatchContext(combat, friends, enemies);
-      const apiKey = (await window.wowarenalogs?.settings?.getAnthropicApiKey?.()) ?? undefined;
-      const res = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ matchContext, apiKey }),
-      });
-      const data = (await res.json()) as { analysis?: string; error?: string };
-      if (!res.ok || data.error) throw new Error(data.error ?? 'Analysis failed');
-      const result = data.analysis ?? '';
-      analysisCache.set(combatId, result);
-      return result;
-    })();
-
-    inFlightRequests.set(combatId, fetchPromise);
-    fetchPromise.finally(() => inFlightRequests.delete(combatId));
-
-    try {
-      const result = await fetchPromise;
-      // Ignore result if the user switched to a different match while this was in flight
-      if (combat.id !== combatId) return;
-      setAnalysis(result);
-    } catch (e) {
-      if (combat.id !== combatId) return;
-      setError(e instanceof Error ? e.message : 'Network error');
-    } finally {
-      if (combat.id === combatId) setLoading(false);
-    }
-  };
-
-  const owner = friends.find((p) => p.id === combat.playerId) ?? friends[0];
-  const ownerSpec = owner ? specToString(owner.spec) : 'Unknown';
+  const findings = result?.findings ?? [];
+  const parseFailed = result !== null && findings.length === 0 && result.raw.length > 0;
 
   return (
-    <div className="flex flex-col gap-4 max-w-3xl">
-      <div className="flex flex-col gap-1">
-        <h3 className="text-lg font-bold">AI Cooldown Analysis</h3>
-        <p className="text-sm opacity-60">
-          Analyzing <span className="font-semibold">{ownerSpec}</span> — reviews your major cooldown usage and gives
-          specific recommendations.
-        </p>
-      </div>
+    <div className="rounded-xl overflow-hidden" style={AI_VIEW_STYLE}>
+      <div className="max-w-[1480px] mx-auto pb-10">
+        <MatchHero data={data} />
 
-      {!analysis && !loading && (
-        <button className="btn btn-primary w-fit" onClick={handleAnalyze} disabled={loading}>
-          Analyse this match
-        </button>
-      )}
-
-      {loading && (
-        <div className="flex items-center gap-3">
-          <span className="loading loading-spinner loading-sm text-primary" />
-          <span className="text-sm opacity-60">Analysing your cooldown usage…</span>
-        </div>
-      )}
-
-      {error && (
-        <div className="alert alert-error">
-          <span>{error}</span>
-          <button className="btn btn-sm btn-ghost ml-auto" onClick={handleAnalyze}>
-            Retry
-          </button>
-        </div>
-      )}
-
-      {analysis && (
-        <div className="flex flex-col gap-3">
-          <div className="card bg-base-200 p-4">
-            <MarkdownBlock text={analysis} />
+        <div className="px-5">
+          {/* AI hero strip */}
+          <div className="flex items-end justify-between gap-4 mt-6 mb-3">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-9 h-9 rounded-lg flex items-center justify-center text-[#f9b13a]"
+                style={{
+                  background: 'radial-gradient(circle at 30% 30%, rgba(242,140,24,0.25), rgba(242,140,24,0.05))',
+                  border: '1px solid rgba(242,140,24,0.3)',
+                  boxShadow: '0 0 32px rgba(242,140,24,0.12), inset 0 0 16px rgba(242,140,24,0.08)',
+                }}
+              >
+                <SparkleIcon size={18} />
+              </div>
+              <div>
+                <h1
+                  className="text-[22px] font-bold tracking-tight leading-tight text-zinc-50"
+                  style={{ fontFamily: 'var(--ai-font-display)' }}
+                >
+                  AI cooldown analysis
+                </h1>
+                <p className="text-[12.5px] text-zinc-500 mt-0.5 max-w-[640px]">
+                  {findings.length > 0
+                    ? `${findings.length} findings, ranked by estimated match impact. Reviewed against your spec baseline, enemy CD timeline, and burst-window alignment.`
+                    : `Reviews ${data.ownerSpec} cooldown decisions against the enemy CD timeline and burst-window alignment.`}
+                </p>
+              </div>
+            </div>
+            {findings.length > 0 && (
+              <button
+                onClick={handleAnalyze}
+                className="flex items-center gap-1.5 text-[12px] text-zinc-100 px-3 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition"
+              >
+                <RefreshIcon /> Re-analyze
+              </button>
+            )}
           </div>
-          <button className="btn btn-ghost btn-sm w-fit" onClick={handleAnalyze}>
-            Re-analyse
-          </button>
+
+          <TimelineStrip data={data} findings={findings} activeFinding={focused} onFindingClick={onTimelineClick} />
         </div>
-      )}
+
+        <div className="px-5 mt-5 grid gap-5" style={{ gridTemplateColumns: 'minmax(0, 1fr) 340px' }}>
+          <div className="min-w-0">
+            {!result && !loading && !error && (
+              <div className="rounded-lg border border-zinc-900 bg-[#0e0e10] p-8 flex flex-col items-center gap-4 text-center">
+                <div className="text-[13px] text-zinc-400 max-w-md">
+                  Run Claude over this match to get ranked findings on your cooldown decisions, with evidence drawn from
+                  the timeline above.
+                </div>
+                <button
+                  onClick={handleAnalyze}
+                  className="flex items-center gap-2 text-[13px] font-semibold text-[#1a0d00] px-4 py-2 rounded-md"
+                  style={{ background: 'linear-gradient(135deg, #f9b13a, #f28c18)' }}
+                >
+                  <SparkleIcon size={14} /> Analyse this match
+                </button>
+              </div>
+            )}
+
+            {loading && (
+              <div className="rounded-lg border border-zinc-900 bg-[#0e0e10] p-8 flex items-center justify-center gap-3">
+                <span className="loading loading-spinner loading-sm" style={{ color: '#f28c18' }} />
+                <span className="text-[13px] text-zinc-400">Analysing your cooldown decisions…</span>
+              </div>
+            )}
+
+            {error && (
+              <div className="rounded-lg border border-red-900/50 bg-red-950/20 p-4 flex items-center gap-3">
+                <span className="text-[13px] text-red-300 flex-1">{error}</span>
+                <button
+                  className="text-[12px] px-3 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-200"
+                  onClick={handleAnalyze}
+                >
+                  Retry
+                </button>
+              </div>
+            )}
+
+            {result && findings.length > 0 && (
+              <>
+                <div className="flex items-center justify-between mb-3 px-1">
+                  <h2 className="text-[12px] uppercase tracking-[0.14em] text-zinc-500 font-semibold">
+                    Findings · ranked by match impact
+                  </h2>
+                  <div className="flex items-center gap-3 text-[11px] text-zinc-500">
+                    <button
+                      className="hover:text-zinc-300 transition"
+                      onClick={() => setExpandedRanks(new Set(findings.map((f) => f.rank)))}
+                    >
+                      Expand all
+                    </button>
+                    <span className="text-zinc-800">·</span>
+                    <button className="hover:text-zinc-300 transition" onClick={() => setExpandedRanks(new Set())}>
+                      Collapse all
+                    </button>
+                  </div>
+                </div>
+                <FindingsList
+                  findings={findings}
+                  data={data}
+                  expandedRanks={expandedRanks}
+                  focused={focused}
+                  onToggle={toggle}
+                />
+                <div className="mt-6 rounded-lg border border-zinc-900 bg-[#0c0c0e] p-4 text-[11.5px] text-zinc-500 leading-relaxed">
+                  <span className="text-zinc-300 font-medium">Analyzer notes:</span> Findings exclude rule-based flags
+                  with no causal link to a moment. Confidence reflects log-coverage gaps — exact HP, healer mana, and
+                  positioning are not always in the combat log. Evidence timestamps are pulled from the parsed log, not
+                  generated. Claude Sonnet 4.6.
+                </div>
+              </>
+            )}
+
+            {parseFailed && (
+              <div className="flex flex-col gap-3">
+                <div className="rounded-md border border-amber-900/40 bg-amber-950/15 px-3 py-2 text-[11.5px] text-amber-300/90">
+                  Couldn’t structure the findings for this run — showing the raw analysis below. The match timeline and
+                  source-data panels are computed from the log and remain accurate.
+                </div>
+                <div className="rounded-lg border border-zinc-900 bg-[#0c0c0e] p-4 text-zinc-200">
+                  <MarkdownBlock text={result.raw} />
+                </div>
+                <button
+                  className="text-[12px] px-3 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-200 w-fit"
+                  onClick={handleAnalyze}
+                >
+                  Re-analyse
+                </button>
+              </div>
+            )}
+
+            {result && findings.length === 0 && !parseFailed && (
+              <div className="rounded-lg border border-zinc-900 bg-[#0e0e10] p-6 flex flex-col gap-3">
+                <div className="text-[13px] text-zinc-300 font-medium">No actionable findings for this match.</div>
+                <div className="text-[12px] text-zinc-500 leading-relaxed">
+                  The analyzer didn’t surface a ranked cooldown decision worth flagging — often the case for very short
+                  rounds or clean execution. The match timeline and source-data panels above are computed directly from
+                  the log and remain accurate.
+                </div>
+                <button
+                  className="text-[12px] px-3 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-200 w-fit"
+                  onClick={handleAnalyze}
+                >
+                  Re-analyse
+                </button>
+              </div>
+            )}
+          </div>
+
+          <aside className="hidden lg:block">
+            <SupportingRail data={data} />
+          </aside>
+        </div>
+      </div>
     </div>
   );
 }
