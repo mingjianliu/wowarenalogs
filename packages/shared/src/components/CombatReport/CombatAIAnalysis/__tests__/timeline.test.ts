@@ -4306,3 +4306,189 @@ describe('buildMatchTimeline — [RES] deduplication (F115/F104)', () => {
     expect(lines[nextIdx + 1]).toContain('[RES]');
   });
 });
+
+describe('buildMatchTimeline — B106/F84: [STATE] ordering', () => {
+  it('pins the log owner first in [STATE] friendly sections', () => {
+    const matchStartMs = 0;
+    const matchEndMs = 60_000;
+    const owner = makeUnit('unit-owner', {
+      name: 'Feramonk',
+      advancedActions: [makeAdvancedAction(0, 0, 0, 500_000, 500_000)],
+    });
+    // Align ID to make getUnitHpAtTimestamp work
+    (owner.advancedActions[0] as any).advancedActorId = 'unit-owner';
+
+    const friend = makeUnit('unit-friend', {
+      name: 'Simplesauce',
+      advancedActions: [makeAdvancedAction(0, 0, 0, 500_000, 500_000)],
+    });
+    (friend.advancedActions[0] as any).advancedActorId = 'unit-friend';
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [friend, owner], // out of order
+        // trigger critical window to emit [STATE]
+        friendlyDeaths: [{ spec: 'Mistweaver Monk', name: 'Feramonk', atSeconds: 5 }],
+        matchStartMs,
+        matchEndMs,
+      }),
+    );
+
+    const stateLine = result.split('\n').find((l) => l.includes('[STATE]'));
+    expect(stateLine).toContain('friends Feramonk:100 Simplesauce:100');
+  });
+
+  it('sorts [STATE] by playerIdMap when provided', () => {
+    const matchStartMs = 0;
+    const matchEndMs = 60_000;
+    const p1 = makeUnit('p1', { name: 'Player1', advancedActions: [makeAdvancedAction(0, 0, 0)] });
+    (p1.advancedActions[0] as any).advancedActorId = 'p1';
+    const p2 = makeUnit('p2', { name: 'Player2', advancedActions: [makeAdvancedAction(0, 0, 0)] });
+    (p2.advancedActions[0] as any).advancedActorId = 'p2';
+    const p3 = makeUnit('p3', { name: 'Player3', advancedActions: [makeAdvancedAction(0, 0, 0)] });
+    (p3.advancedActions[0] as any).advancedActorId = 'p3';
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner: p1,
+        friends: [p3, p1, p2],
+        playerIdMap: new Map([
+          ['Player1', 1],
+          ['Player2', 2],
+          ['Player3', 3],
+        ]),
+        // trigger critical window
+        friendlyDeaths: [{ spec: 'Spec', name: 'Player1', atSeconds: 5 }],
+        matchStartMs,
+        matchEndMs,
+      }),
+    );
+
+    const stateLine = result.split('\n').find((l) => l.includes('[STATE]'));
+    expect(stateLine).toContain('friends 1:100 2:100 3:100');
+  });
+});
+
+describe('buildMatchTimeline — B38: Healer CD promotion', () => {
+  it('promotes untagged healer casts with CD >= 30s to [OWNER CD]', () => {
+    const matchStartMs = 0;
+    const matchEndMs = 60_000;
+    const owner = makeUnit('u1', {
+      name: 'Feramonk',
+      spec: CombatUnitSpec.Priest_Holy,
+      spellCastEvents: [
+        // Pain Suppression (33206) has 180s CD in spellEffects.json
+        makeSpellCastEvent('33206', matchStartMs + 10_000, 'u1', 'self', 'u1', 'Feramonk'),
+      ],
+    });
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        isHealer: true,
+        ownerCDs: [], // Empty, so it must be found in spellCastEvents and promoted
+        matchStartMs,
+        matchEndMs,
+      }),
+    );
+
+    expect(result).toContain('0:10  [OWNER CD]   Pain Suppression');
+  });
+
+  it('does NOT promote untagged casts with CD < 30s', () => {
+    const matchStartMs = 0;
+    const matchEndMs = 60_000;
+    const owner = makeUnit('u1', {
+      name: 'Feramonk',
+      spec: CombatUnitSpec.Priest_Holy,
+      spellCastEvents: [
+        // Flash Heal (2061) is not in metadata or has no CD
+        makeSpellCastEvent('2061', matchStartMs + 10_000, 'u2', 'Friend', 'u1', 'Feramonk', 0, 'Flash Heal'),
+      ],
+    });
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        isHealer: true,
+        ownerCDs: [],
+        matchStartMs,
+        matchEndMs,
+      }),
+    );
+
+    expect(result).toContain('0:10  [OWNER CAST]   Flash Heal');
+    expect(result).not.toContain('[OWNER CD]   Flash Heal');
+  });
+});
+
+describe('buildMatchTimeline — F113/F114: Event-Gating and [STATE] pruning', () => {
+  it('suppresses all [STATE] ticks in a low-activity game (no critical windows)', () => {
+    const matchStartMs = 0;
+    const matchEndMs = 60_000;
+    const owner = makeUnit('u1', {
+      name: 'Player1',
+      advancedActions: [makeAdvancedAction(0, 0, 0)],
+    });
+    (owner.advancedActions[0] as any).advancedActorId = 'u1';
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        matchStartMs,
+        matchEndMs,
+      }),
+    );
+
+    const hasState = result.split('\n').some((l) => l.includes('[STATE]'));
+    expect(hasState).toBe(false);
+  });
+
+  it('emits [STATE] ticks only during a critical window (DMG SPIKE)', () => {
+    const matchStartMs = 0;
+    const matchEndMs = 60_000;
+    const owner = makeUnit('u1', {
+      name: 'Player1',
+      advancedActions: [
+        makeAdvancedAction(0, 0, 0),
+        makeAdvancedAction(30_000, 0, 0), // at spike
+        makeAdvancedAction(60_000, 0, 0),
+      ],
+    });
+    owner.advancedActions.forEach((a) => ((a as any).advancedActorId = 'u1'));
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        // Spike at 30s (±5s critical window)
+        pressureWindows: [
+          {
+            targetName: 'Player1',
+            targetSpec: 'Spec',
+            totalDamage: 2_000_000, // Above threshold
+            fromSeconds: 30,
+            toSeconds: 32,
+          } as any,
+        ],
+        matchStartMs,
+        matchEndMs,
+      }),
+    );
+
+    const stateLines = result.split('\n').filter((l) => l.includes('[STATE]'));
+    expect(stateLines.length).toBeGreaterThan(0);
+
+    // Check that all state ticks are within [25s, 37s] (window is ±5s around 30-32)
+    stateLines.forEach((l) => {
+      const m = l.match(/^(\d+):(\d+)/);
+      if (m) {
+        const sec = parseInt(m[1]) * 60 + parseInt(m[2]);
+        expect(sec).toBeGreaterThanOrEqual(25);
+        expect(sec).toBeLessThanOrEqual(37);
+      }
+    });
+  });
+});

@@ -76,7 +76,7 @@ The generator also pulls related DB2 tables required for reconstruction (SpellCo
 From the wowarenalogs repo root, run:
 
 ```
-npm run start:generateSpellsData
+npm run -w @wowarenalogs/tools start:generateSpellsData
 ```
 
 This downloads fresh DB2 CSV data from wago.tools and writes a brand new `packages/shared/src/data/spellEffects.json`.
@@ -86,7 +86,7 @@ This downloads fresh DB2 CSV data from wago.tools and writes a brand new `packag
 From the wowarenalogs repo root, run:
 
 ```
-npm run start:generateSpellIdLists
+npm run -w @wowarenalogs/tools start:generateSpellIdLists
 ```
 
 This downloads `Spell.csv` and `SpellMisc.csv` and writes `packages/shared/src/data/spellIdLists.json` with:
@@ -111,7 +111,7 @@ CHUNK_SIZE=1000
 Make the appropriate changes for your local file system!
 
 ```
-npm run start:simlog
+npm run -w @wowarenalogs/tools start:simlog
 ```
 
 CHUNK_SIZE determines how many lines will be written per chunk of file

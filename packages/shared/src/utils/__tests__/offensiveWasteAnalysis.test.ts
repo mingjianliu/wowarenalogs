@@ -118,4 +118,57 @@ describe('buildOffensiveWasteSummary', () => {
     const result = buildOffensiveWasteSummary(makeCombat() as any, [friend], [enemy1, enemy2]);
     expect(result.events).toHaveLength(0);
   });
+
+  it('flags high-value CC/utility casts into immunity even if they do zero damage (B28)', () => {
+    const enemy = makeUnit(enemyId, {
+      reaction: CombatUnitReaction.Hostile,
+      spec: CombatUnitSpec.Paladin_Retribution,
+      auraEvents: [
+        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '642', MATCH_START + 30_000, enemyId, enemyId, 'BUFF'),
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '642', MATCH_START + 38_000, enemyId, enemyId, 'BUFF'),
+      ],
+    });
+    // HoJ (853) and Mindgames (323673) - both are in ccSpellIds or considered high-value
+    const cast1 = makeDamageCast('853', 'Hammer of Justice', MATCH_START + 32_000, 'f1', enemyId);
+    (cast1 as any).effectiveAmount = 0; // No damage
+    const cast2 = makeDamageCast('323673', 'Mindgames', MATCH_START + 34_000, 'f1', enemyId);
+    (cast2 as any).effectiveAmount = 0; // No damage
+
+    const friend = withDamageOut(makeUnit('f1', { spec: CombatUnitSpec.Paladin_Holy }), []);
+    friend.spellCastEvents = [cast1, cast2];
+    const result = buildOffensiveWasteSummary(makeCombat() as any, [friend], [enemy]);
+
+    expect(result.events).toHaveLength(1);
+    expect(result.events[0].wasteCasts).toHaveLength(2);
+    expect(result.events[0].wasteCasts[0].spellName).toBe('Hammer of Justice');
+    expect(result.events[0].wasteCasts[1].spellName).toBe('Mindgames');
+  });
+
+  it('filters out low-value/passive procs from waste counts', () => {
+    const enemy = makeUnit(enemyId, {
+      reaction: CombatUnitReaction.Hostile,
+      spec: CombatUnitSpec.Warrior_Arms,
+      auraEvents: [
+        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '642', MATCH_START + 30_000, enemyId, enemyId, 'BUFF'),
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '642', MATCH_START + 38_000, enemyId, enemyId, 'BUFF'),
+      ],
+    });
+    // One big hit (100k) and one tiny hit (1k) - tiny hit should be filtered
+    const bigHit = makeDamageCast('1', 'Big Hit', MATCH_START + 32_000, 'f1', enemyId);
+    (bigHit as any).effectiveAmount = 100_000;
+    const tinyHit = makeDamageCast('2', 'Tiny Proc', MATCH_START + 34_000, 'f1', enemyId);
+    (tinyHit as any).effectiveAmount = 1_000;
+
+    // Total damage out = 101k. Threshold (5%) = 5.05k. Tiny hit (1k) is below threshold.
+    const friend = withDamageOut(makeUnit('f1', { spec: CombatUnitSpec.Warrior_Arms }), [
+      { spellId: '1', effectiveAmount: 100_000 },
+      { spellId: '2', effectiveAmount: 1_000 },
+    ]);
+    friend.spellCastEvents = [bigHit, tinyHit];
+
+    const result = buildOffensiveWasteSummary(makeCombat() as any, [friend], [enemy]);
+
+    // Should NOT flag because only 1 high-value cast hit the immunity (threshold=2)
+    expect(result.events).toHaveLength(0);
+  });
 });

@@ -2,7 +2,7 @@
 import { CombatUnitSpec, LogEvent } from '@wowarenalogs/parser';
 
 import { buildDeathOutcomeSummary } from '../deathOutcomeAnalysis';
-import { makeAuraEvent, makeSpellCastEvent, makeUnit } from './testHelpers';
+import { makeAdvancedAction, makeAuraEvent, makeSpellCastEvent, makeUnit } from './testHelpers';
 
 const MATCH_START = 1_000_000;
 const MATCH_END = 1_300_000;
@@ -52,6 +52,21 @@ describe('buildDeathOutcomeSummary — immunity checks', () => {
     });
     const result = buildDeathOutcomeSummary(makeCombat() as any, [dead], [makeCCSummary('p1')]);
     expect(result.events[0]?.availableImmunities ?? []).toHaveLength(0);
+  });
+
+  it('flags Ice Block available when Cold Snap reset the cooldown (B30)', () => {
+    const dead = makeDeadUnit('p1', MATCH_START + 40_000, {
+      spec: CombatUnitSpec.Mage_Frost,
+      spellCastEvents: [
+        // Ice Block cast at t=10s (CD=240s)
+        makeSpellCastEvent('45438', MATCH_START + 10_000, 'p1', 'Self', 'p1', 'Mage'),
+        // Cold Snap cast at t=20s (Resets Ice Block)
+        makeSpellCastEvent('235219', MATCH_START + 20_000, 'p1', 'Self', 'p1', 'Mage'),
+      ],
+    });
+    const result = buildDeathOutcomeSummary(makeCombat() as any, [dead], [makeCCSummary('p1')]);
+    expect(result.events[0].availableImmunities).toHaveLength(1);
+    expect(result.events[0].availableImmunities[0].spellName).toBe('Ice Block');
   });
 
   it('flags wasInCC=true when CC was active at death and no trinket available', () => {
@@ -116,6 +131,32 @@ describe('buildDeathOutcomeSummary — immunity checks', () => {
     });
     const result = buildDeathOutcomeSummary(makeCombat() as any, [dead], [makeCCSummary('p1')]);
     expect(result.events).toHaveLength(0);
+  });
+
+  it('correctly handles multiple lockout intervals via binary search (B29)', () => {
+    // Mage with two Hypothermia (41425) intervals: [10s, 20s] and [40s, 50s]
+    const dead = makeUnit('p1', {
+      spec: CombatUnitSpec.Mage_Frost,
+      auraEvents: [
+        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '41425', MATCH_START + 10_000, 'p1', 'p1', 'DEBUFF'),
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '41425', MATCH_START + 20_000, 'p1', 'p1', 'DEBUFF'),
+        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '41425', MATCH_START + 40_000, 'p1', 'p1', 'DEBUFF'),
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '41425', MATCH_START + 50_000, 'p1', 'p1', 'DEBUFF'),
+      ],
+    }) as any;
+    // Three deaths: 15s (locked), 30s (free), 45s (locked)
+    dead.deathRecords = [
+      { timestamp: MATCH_START + 15_000, event: LogEvent.UNIT_DIED, parameters: [] },
+      { timestamp: MATCH_START + 30_000, event: LogEvent.UNIT_DIED, parameters: [] },
+      { timestamp: MATCH_START + 45_000, event: LogEvent.UNIT_DIED, parameters: [] },
+    ];
+
+    const result = buildDeathOutcomeSummary(makeCombat() as any, [dead], [makeCCSummary('p1')]);
+
+    // Should only have 1 event (the 30s one) because the other two were locked out
+    expect(result.events).toHaveLength(1);
+    expect(result.events[0].atSeconds).toBe(30);
+    expect(result.events[0].availableImmunities[0].spellName).toBe('Ice Block');
   });
 });
 
@@ -198,6 +239,46 @@ describe('buildDeathOutcomeSummary — external defensive checks', () => {
     });
     const result = buildDeathOutcomeSummary(
       makeCombat() as any,
+      [warrior, druid],
+      [makeCCSummary('Warrior'), makeCCSummary('Druid')],
+    );
+    expect(result.events[0]?.missedExternals ?? []).toHaveLength(0);
+  });
+
+  it('skips Ironbark when Druid was too far away (>40 yards) at death time (B27)', () => {
+    const warrior = makeDeadUnit('w1', MATCH_START + 90_000, {
+      spec: CombatUnitSpec.Warrior_Arms,
+      name: 'Warrior',
+      advancedActions: [makeAdvancedAction(MATCH_START + 90_000, 0, 0)],
+    });
+    const druid = makeUnit('d1', {
+      spec: CombatUnitSpec.Druid_Restoration,
+      name: 'Druid',
+      advancedActions: [makeAdvancedAction(MATCH_START + 90_000, 50, 0)], // 50 yards away
+    });
+    const result = buildDeathOutcomeSummary(
+      makeCombat() as any,
+      [warrior, druid],
+      [makeCCSummary('Warrior'), makeCCSummary('Druid')],
+    );
+    expect(result.events[0]?.missedExternals ?? []).toHaveLength(0);
+  });
+
+  it('skips Ironbark when Druid was LoS-blocked by a pillar at death time (B27)', () => {
+    const warrior = makeDeadUnit('w1', MATCH_START + 90_000, {
+      spec: CombatUnitSpec.Warrior_Arms,
+      name: 'Warrior',
+      advancedActions: [makeAdvancedAction(MATCH_START + 90_000, -2050, 6621)],
+    });
+    const druid = makeUnit('d1', {
+      spec: CombatUnitSpec.Druid_Restoration,
+      name: 'Druid',
+      advancedActions: [makeAdvancedAction(MATCH_START + 90_000, -2035, 6621)],
+    });
+    // Nagrand (1505) north pillar is at (-2043, 6621) r=2.5 — blocks the line from -2050 to -2035
+    const combat = { startTime: MATCH_START, endTime: MATCH_END, zoneId: '1505' };
+    const result = buildDeathOutcomeSummary(
+      combat as any,
       [warrior, druid],
       [makeCCSummary('Warrior'), makeCCSummary('Druid')],
     );
