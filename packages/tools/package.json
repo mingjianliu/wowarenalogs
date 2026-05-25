@@ -22,7 +22,8 @@
     "start:buildHealerPromptCorpusFromRawLogs": "ts-node --files ./src/buildHealerPromptCorpus.ts",
     "start:extractArchetypeFeatures": "ts-node --files ./src/extractArchetypeFeatures.ts",
     "start:buildArchetypePrompts": "dotenv -- ts-node --files ./src/buildArchetypePrompts.ts",
-    "start:evalArchetypeInjection": "ts-node --files ./src/evalArchetypeInjection.ts"
+    "start:evalArchetypeInjection": "ts-node --files ./src/evalArchetypeInjection.ts",
+    "test:integration": "ts-node --files ./src/__tests__/realDataIntegration.ts"
   },
   "devDependencies": {
     "@types/node": "^22",
