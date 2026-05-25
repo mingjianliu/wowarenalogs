@@ -130,8 +130,8 @@ function isAvailableAt(
     for (const resetId of resetSpellIds) {
       const resetCast = lastCastSeconds(unit, resetId, matchStartMs);
       if (resetCast !== null && resetCast > lastCast && resetCast <= atSeconds) {
-        // Reset happened after the last use — cooldown starts over from the reset
-        return atSeconds >= resetCast + cooldownSeconds;
+        // Reset happened after the last use — it is now available
+        return true;
       }
     }
   }
