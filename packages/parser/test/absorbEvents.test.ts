@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CombatAbsorbAction } from '../src';
 import { LoaderResults, loadLogFile } from './testLogLoader';
 

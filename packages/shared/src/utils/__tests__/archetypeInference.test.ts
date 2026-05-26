@@ -1,4 +1,15 @@
-import { classifyCluster, euclidean, IMatchDynamicFeatures, normalize, toFeatureVector } from '../archetypeInference';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { CombatUnitReaction, CombatUnitSpec, LogEvent } from '@wowarenalogs/parser';
+
+import {
+  classifyCluster,
+  euclidean,
+  extractMatchDynamics,
+  IMatchDynamicFeatures,
+  normalize,
+  toFeatureVector,
+} from '../archetypeInference';
+import { makeAuraEvent, makeUnit } from './testHelpers';
 
 describe('archetypeInference — math helpers', () => {
   it('toFeatureVector converts match dynamics to fixed-length array', () => {
@@ -96,5 +107,60 @@ describe('classifyCluster', () => {
     const res2 = classifyCluster(highActivity, mockModel);
     expect(res2.clusterIdx).toBe(1);
     expect(res2.clusterKey).toBe('cluster_1');
+  });
+});
+
+describe('extractMatchDynamics', () => {
+  it('returns null for very short matches', () => {
+    const combat = { startTime: 1000, endTime: 5000 } as any; // 4s
+    expect(extractMatchDynamics(combat, [], [])).toBeNull();
+  });
+
+  it('extracts features from a valid match (B51)', () => {
+    const MATCH_START = 1_000_000;
+    const combat = {
+      startTime: MATCH_START,
+      endTime: MATCH_START + 60_000,
+      startInfo: { zoneId: '1505' },
+    } as any;
+    const friend = makeUnit('f1', { spec: CombatUnitSpec.Priest_Discipline });
+    const enemy = makeUnit('e1', { spec: CombatUnitSpec.Warrior_Arms, reaction: CombatUnitReaction.Hostile });
+
+    const res = extractMatchDynamics(combat, [friend], [enemy]);
+
+    expect(res).not.toBeNull();
+    expect(res?.durationSeconds).toBe(60);
+    expect(res?.ownTeamSpecs).toContain('Discipline Priest');
+    expect(res?.enemyTeamSpecs).toContain('Arms Warrior');
+  });
+
+  it('handles matches with no CC events (B52)', () => {
+    const combat = { startTime: 0, endTime: 60000, startInfo: { zoneId: '1672' } } as any;
+    const res = extractMatchDynamics(
+      combat,
+      [makeUnit('f')],
+      [makeUnit('e', { reaction: CombatUnitReaction.Hostile })],
+    );
+    expect(res?.ownTeamCCPerMin).toBe(0);
+    expect(res?.enemyTeamCCPerMin).toBe(0);
+  });
+
+  it('calculates CC per minute correctly when events exist (B53)', () => {
+    const ccOnFriend = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '118', 10000, 'e1', 'f1');
+    const ccOnEnemy = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '853', 20000, 'f1', 'e1');
+    // For the swap call in extractMatchDynamics to work, BOTH units must be "hostile"
+    // when they are being checked as the target of CC.
+    const f1 = makeUnit('f1', { reaction: CombatUnitReaction.Hostile, auraEvents: [ccOnFriend] });
+    const e1 = makeUnit('e1', { reaction: CombatUnitReaction.Hostile, auraEvents: [ccOnEnemy] });
+
+    const combat = {
+      startTime: 0,
+      endTime: 60000,
+      startInfo: { zoneId: '1672' },
+      auraEvents: [ccOnFriend, ccOnEnemy],
+    } as any;
+    const res = extractMatchDynamics(combat, [f1], [e1]);
+    expect(res?.ownTeamCCPerMin).toBeGreaterThan(0);
+    expect(res?.enemyTeamCCPerMin).toBeGreaterThan(0);
   });
 });

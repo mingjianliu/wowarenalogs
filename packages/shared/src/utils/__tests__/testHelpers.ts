@@ -159,12 +159,13 @@ export function makeUnit(
     healOut?: AnyObj[];
     advancedActions?: AnyObj[];
     info?: AnyObj | undefined;
+    ownerId?: string;
   } = {},
 ): ICombatUnit {
   return {
     id,
     name: overrides.name ?? id,
-    ownerId: '',
+    ownerId: overrides.ownerId ?? '',
     isWellFormed: true,
     reaction: overrides.reaction ?? CombatUnitReaction.Friendly,
     affiliation: CombatUnitAffiliation.Mine,

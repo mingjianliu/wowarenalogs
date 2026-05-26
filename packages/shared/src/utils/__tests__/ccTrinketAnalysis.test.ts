@@ -255,3 +255,204 @@ describe('analyzePlayerCCAndTrinket — trinketCDSecondsLeft', () => {
     expect(result.ccInstances[0].trinketCDSecondsLeft).toBeUndefined();
   });
 });
+
+describe('analyzePlayerCCAndTrinket — edge cases and corner branches', () => {
+  const MATCH_START = 1_000_000;
+  const MATCH_END = 1_300_000;
+
+  function makeCombat() {
+    return { startTime: MATCH_START, endTime: MATCH_END, startInfo: { zoneId: '1672' } };
+  }
+
+  function makeEnemy(id: string) {
+    return makeUnit(id, {
+      name: 'Enemy',
+      reaction: CombatUnitReaction.Hostile,
+      spec: CombatUnitSpec.Paladin_Retribution,
+    });
+  }
+
+  it('closes CCs still pending at match end', () => {
+    // HoJ (853) applied at T+10s, never removed
+    const ccApply = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '853', MATCH_START + 10_000, 'enemy-1', 'player-1');
+    const player = makeUnit('player-1', { auraEvents: [ccApply] });
+    const result = analyzePlayerCCAndTrinket(player, [makeEnemy('enemy-1')], makeCombat());
+
+    expect(result.ccInstances).toHaveLength(1);
+    expect(result.ccInstances[0].durationSeconds).toBe(290); // (1,300,000 - 1,010,000) / 1000
+  });
+
+  it('tracks roots/disarms broken by damage or spell', () => {
+    const rootApply = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '339', MATCH_START + 5_000, 'enemy-1', 'player-1');
+    const rootBroken = makeAuraEvent(LogEvent.SPELL_AURA_BROKEN, '339', MATCH_START + 7_000, 'enemy-1', 'player-1');
+    const disarmApply = makeAuraEvent(
+      LogEvent.SPELL_AURA_APPLIED,
+      '236077',
+      MATCH_START + 10_000,
+      'enemy-1',
+      'player-1',
+    );
+    const disarmBrokenSpell = makeAuraEvent(
+      LogEvent.SPELL_AURA_BROKEN_SPELL,
+      '236077',
+      MATCH_START + 12_000,
+      'enemy-1',
+      'player-1',
+    );
+
+    const player = makeUnit('player-1', { auraEvents: [rootApply, rootBroken, disarmApply, disarmBrokenSpell] });
+    const result = analyzePlayerCCAndTrinket(player, [makeEnemy('enemy-1')], makeCombat());
+
+    expect(result.rootInstances).toHaveLength(1);
+    expect(result.rootInstances[0].durationSeconds).toBe(2);
+    expect(result.disarmInstances).toHaveLength(1);
+    expect(result.disarmInstances[0].durationSeconds).toBe(2);
+  });
+
+  it('flags trinketState="used" when trinket used within response window', () => {
+    const ccApply = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '853', MATCH_START + 10_000, 'enemy-1', 'player-1');
+    const trinketCast = {
+      logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: MATCH_START + 11_000, parameters: [] },
+      spellId: '336126',
+      spellName: "Gladiator's Medallion",
+      srcUnitId: 'player-1',
+    };
+
+    const player = makeUnit('player-1', {
+      auraEvents: [ccApply],
+      spellCastEvents: [trinketCast] as any,
+    });
+    const result = analyzePlayerCCAndTrinket(player, [makeEnemy('enemy-1')], makeCombat());
+
+    expect(result.ccInstances[0].trinketState).toBe('used');
+  });
+
+  it('correctly calculates missedTrinketWindows based on damage threshold', () => {
+    const cc1 = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '853', MATCH_START + 10_000, 'enemy-1', 'player-1');
+    const cc1Rem = makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '853', MATCH_START + 15_000, 'enemy-1', 'player-1');
+    const dmg1 = {
+      srcUnitId: 'enemy-1',
+      effectiveAmount: -20_000, // Below 30k threshold
+      logLine: { timestamp: MATCH_START + 12_000 },
+    };
+
+    const cc2 = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '853', MATCH_START + 30_000, 'enemy-1', 'player-1');
+    const cc2Rem = makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '853', MATCH_START + 35_000, 'enemy-1', 'player-1');
+    const dmg2 = {
+      srcUnitId: 'enemy-1',
+      effectiveAmount: -40_000, // Above 30k threshold
+      logLine: { timestamp: MATCH_START + 32_000 },
+    };
+
+    const player = makeUnit('player-1', {
+      auraEvents: [cc1, cc1Rem, cc2, cc2Rem],
+      damageIn: [dmg1, dmg2] as any,
+    });
+    const result = analyzePlayerCCAndTrinket(player, [makeEnemy('enemy-1')], makeCombat());
+
+    expect(result.missedTrinketWindows).toHaveLength(1);
+    expect(result.missedTrinketWindows[0].atSeconds).toBe(30);
+  });
+});
+
+import { formatCCTrinketForContext } from '../ccTrinketAnalysis';
+
+describe('formatCCTrinketForContext', () => {
+  const summaryBase: any = {
+    playerName: 'PlayerA',
+    playerSpec: 'Frost Mage',
+    trinketType: 'Gladiator',
+    ccInstances: [],
+    trinketUseTimes: [],
+    missedTrinketWindows: [],
+  };
+
+  it('returns empty message when no CC detected', () => {
+    const res = formatCCTrinketForContext([summaryBase]);
+    expect(res).toContain('  No hard CC events detected on your team.');
+  });
+
+  it('formats multiple CCs and trinket usage correctly', () => {
+    const summary: any = {
+      ...summaryBase,
+      ccInstances: [
+        { atSeconds: 10, spellName: 'Polymorph', drInfo: { level: 'Full' }, distanceYards: 30 },
+        { atSeconds: 50, spellName: 'Polymorph', drInfo: { level: 'Half' }, distanceYards: 5 },
+        { atSeconds: 90, spellName: 'Kidney Shot', drInfo: { level: 'Full' }, distanceYards: 2 },
+      ],
+      trinketUseTimes: [10, 150], // 10s is during a CC window (±5s), 150s is off-CC
+      missedTrinketWindows: [{ damageTakenDuring: 50000 }],
+    };
+
+    const res = formatCCTrinketForContext([summary]);
+    const line = res[1];
+
+    expect(line).toContain('Frost Mage (PlayerA): 3 CC');
+    expect(line).toContain('2× Polymorph, 1× Kidney Shot');
+    expect(line).toContain('Gladiator trinket used off-CC at 2:30'); // 150s = 2:30
+    expect(line).toContain('1 reduced/immune DR');
+    expect(line).toContain('2 at melee range');
+    expect(line).toContain('⚠ 1 missed trinket window(s) (50k dmg total)');
+  });
+
+  it('handles Relentless and Unknown trinket types', () => {
+    const s1 = { ...summaryBase, trinketType: 'Relentless', ccInstances: [{ spellName: 'Fear' }] };
+    const s2 = { ...summaryBase, trinketType: 'Unknown', ccInstances: [{ spellName: 'Fear' }] };
+
+    const res = formatCCTrinketForContext([s1, s2]);
+    expect(res[1]).toContain('| Relentless');
+    expect(res[2]).toContain('| Unknown');
+  });
+});
+
+describe('analyzePlayerCCAndTrinket — further branches', () => {
+  const MATCH_START = 1_000_000;
+  const MATCH_END = 1_300_000;
+
+  it('handles Adaptation trinket (B35)', () => {
+    const equipment: any[] = [];
+    equipment[12] = { id: 'TEST_ADAPT_1' };
+    const player = makeUnit('p1', {
+      spec: CombatUnitSpec.Warrior_Arms,
+      info: { equipment } as any,
+      spellCastEvents: [
+        {
+          logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: MATCH_START + 6100 },
+          spellId: '195756', // Adaptation
+          spellName: 'Adaptation',
+          srcUnitId: 'p1',
+        },
+      ] as any,
+      auraEvents: [makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '853', MATCH_START + 6000, 'e1', 'p1')],
+    });
+    const enemy = makeUnit('e1', { reaction: CombatUnitReaction.Hostile });
+    const result = analyzePlayerCCAndTrinket(player, [enemy], {
+      startTime: MATCH_START,
+      endTime: MATCH_END,
+      startInfo: { zoneId: '1672' },
+    });
+
+    expect(result.trinketType).toBe('Adaptation');
+    expect(result.ccInstances[0].trinketState).toBe('used');
+  });
+
+  it('handles null LoS correctly (B36)', () => {
+    const player = makeUnit('p1', {
+      advancedActions: [{ timestamp: MATCH_START + 5000, advancedActorPositionX: 0, advancedActorPositionY: 0 }] as any,
+      auraEvents: [makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '853', MATCH_START + 5000, 'e1', 'p1')],
+    });
+    const enemy = makeUnit('e1', {
+      reaction: CombatUnitReaction.Hostile,
+      advancedActions: [
+        { timestamp: MATCH_START + 5000, advancedActorPositionX: 10, advancedActorPositionY: 0 },
+      ] as any,
+    });
+    // zoneId '999' is not in arenaGeometry, so hasLineOfSight returns null
+    const result = analyzePlayerCCAndTrinket(player, [enemy], {
+      startTime: MATCH_START,
+      endTime: MATCH_END,
+      startInfo: { zoneId: '999' },
+    });
+    expect(result.ccInstances[0].losBlocked).toBeNull();
+  });
+});

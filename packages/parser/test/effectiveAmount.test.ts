@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { LoaderResults, loadLogFile } from './testLogLoader';
 
 describe('parsing a log with overheals and pets', () => {

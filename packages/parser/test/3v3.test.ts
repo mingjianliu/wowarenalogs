@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import _ from 'lodash';
 
 import { CombatResult, CombatUnitAffiliation, CombatUnitClass, CombatUnitSpec, CombatUnitType } from '../src/types';

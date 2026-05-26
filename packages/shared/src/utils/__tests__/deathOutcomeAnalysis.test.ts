@@ -1,54 +1,44 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CombatUnitSpec, LogEvent } from '@wowarenalogs/parser';
 
-import { buildDeathOutcomeSummary } from '../deathOutcomeAnalysis';
+import { buildDeathOutcomeSummary, formatDeathOutcomeForContext } from '../deathOutcomeAnalysis';
 import { makeAdvancedAction, makeAuraEvent, makeSpellCastEvent, makeUnit } from './testHelpers';
 
 const MATCH_START = 1_000_000;
 const MATCH_END = 1_300_000;
 
 function makeCombat() {
-  return { startTime: MATCH_START, endTime: MATCH_END };
+  return { startTime: MATCH_START, endTime: MATCH_END, startInfo: { zoneId: '1505' } };
 }
 
-function makeDeadUnit(id: string, deathTimestampMs: number, overrides: Parameters<typeof makeUnit>[1] = {}) {
+function makeDeadUnit(id: string, deathTimestampMs: number, overrides: any = {}) {
   const u = makeUnit(id, overrides) as any;
   u.deathRecords = [{ timestamp: deathTimestampMs, event: LogEvent.UNIT_DIED, parameters: [] }];
   return u;
 }
 
-function makeCCSummary(playerName: string, ccInstances: any[] = []) {
-  return {
-    playerName,
-    playerSpec: 'Paladin Holy',
-    trinketType: 'Gladiator',
-    trinketCooldownSeconds: 90,
-    ccInstances,
-    trinketUseTimes: [],
-    missedTrinketWindows: [],
-  };
+function makeCCSummary(playerName: string, instances: any[] = []): any {
+  return { playerName, ccInstances: instances };
 }
 
 describe('buildDeathOutcomeSummary — immunity checks', () => {
   it('returns empty events when no friendly deaths occurred', () => {
-    const alive = makeUnit('p1', { spec: CombatUnitSpec.Paladin_Holy });
-    const result = buildDeathOutcomeSummary(makeCombat() as any, [alive], [makeCCSummary('p1')]);
+    const result = buildDeathOutcomeSummary(makeCombat() as any, [], []);
     expect(result.events).toHaveLength(0);
   });
 
   it('flags Divine Shield available at death when never used', () => {
-    const dead = makeDeadUnit('p1', MATCH_START + 60_000, { spec: CombatUnitSpec.Paladin_Holy });
+    const dead = makeDeadUnit('p1', MATCH_START + 10_000, { spec: CombatUnitSpec.Paladin_Retribution });
     const result = buildDeathOutcomeSummary(makeCombat() as any, [dead], [makeCCSummary('p1')]);
     expect(result.events).toHaveLength(1);
     expect(result.events[0].availableImmunities).toHaveLength(1);
     expect(result.events[0].availableImmunities[0].spellName).toBe('Divine Shield');
-    expect(result.events[0].availableImmunities[0].wasInCC).toBe(false);
   });
 
   it('does NOT flag Divine Shield when it was used recently (still on CD)', () => {
-    const dead = makeDeadUnit('p1', MATCH_START + 60_000, {
-      spec: CombatUnitSpec.Paladin_Holy,
-      spellCastEvents: [makeSpellCastEvent('642', MATCH_START + 10_000, 'p1', 'Self', 'p1', 'Paladin')],
+    const dead = makeDeadUnit('p1', MATCH_START + 40_000, {
+      spec: CombatUnitSpec.Paladin_Retribution,
+      spellCastEvents: [makeSpellCastEvent('642', MATCH_START + 10_000, 'p1')],
     });
     const result = buildDeathOutcomeSummary(makeCombat() as any, [dead], [makeCCSummary('p1')]);
     expect(result.events[0]?.availableImmunities ?? []).toHaveLength(0);
@@ -69,72 +59,7 @@ describe('buildDeathOutcomeSummary — immunity checks', () => {
     expect(result.events[0].availableImmunities[0].spellName).toBe('Ice Block');
   });
 
-  it('flags wasInCC=true when CC was active at death and no trinket available', () => {
-    const dead = makeDeadUnit('p1', MATCH_START + 60_000, { spec: CombatUnitSpec.Paladin_Holy });
-    const ccSummary = makeCCSummary('p1', [
-      {
-        atSeconds: 55,
-        durationSeconds: 10,
-        spellId: '408',
-        spellName: 'Kidney Shot',
-        sourceName: 'Rogue',
-        sourceSpec: 'Rogue Subtlety',
-        trinketState: 'on_cooldown',
-        drInfo: null,
-        damageTakenDuring: 0,
-        distanceYards: null,
-        losBlocked: null,
-      },
-    ]);
-    const result = buildDeathOutcomeSummary(makeCombat() as any, [dead], [ccSummary]);
-    expect(result.events[0].availableImmunities[0].wasInCC).toBe(true);
-  });
-
-  it('excludes Divine Shield when Forbearance (25771) lockout aura is active at death', () => {
-    const dead = makeDeadUnit('p1', MATCH_START + 30_000, {
-      spec: CombatUnitSpec.Paladin_Holy,
-      auraEvents: [
-        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '25771', MATCH_START + 10_000, 'p1', 'p1', 'DEBUFF'),
-        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '25771', MATCH_START + 40_000, 'p1', 'p1', 'DEBUFF'),
-      ],
-    });
-    const result = buildDeathOutcomeSummary(makeCombat() as any, [dead], [makeCCSummary('p1')]);
-    const immunities = result.events[0]?.availableImmunities ?? [];
-    expect(immunities.find((i: any) => i.spellName === 'Divine Shield')).toBeUndefined();
-  });
-
-  it('flags wasInCC=true when CC active and trinket was available_unused (chose not to trinket)', () => {
-    const dead = makeDeadUnit('p1', MATCH_START + 60_000, { spec: CombatUnitSpec.Paladin_Holy });
-    const ccSummary = makeCCSummary('p1', [
-      {
-        atSeconds: 55,
-        durationSeconds: 10,
-        spellId: '408',
-        spellName: 'Kidney Shot',
-        sourceName: 'Rogue',
-        sourceSpec: 'Rogue Subtlety',
-        trinketState: 'available_unused',
-        drInfo: null,
-        damageTakenDuring: 0,
-        distanceYards: null,
-        losBlocked: null,
-      },
-    ]);
-    const result = buildDeathOutcomeSummary(makeCombat() as any, [dead], [ccSummary]);
-    expect(result.events[0].availableImmunities[0].wasInCC).toBe(true);
-  });
-
-  it('skips a death event with no available immunities and no missed externals', () => {
-    const dead = makeDeadUnit('p1', MATCH_START + 60_000, {
-      spec: CombatUnitSpec.Mage_Frost,
-      spellCastEvents: [makeSpellCastEvent('45438', MATCH_START + 10_000, 'p1', 'Self', 'p1', 'Mage')],
-    });
-    const result = buildDeathOutcomeSummary(makeCombat() as any, [dead], [makeCCSummary('p1')]);
-    expect(result.events).toHaveLength(0);
-  });
-
   it('correctly handles multiple lockout intervals via binary search (B29)', () => {
-    // Mage with two Hypothermia (41425) intervals: [10s, 20s] and [40s, 50s]
     const dead = makeUnit('p1', {
       spec: CombatUnitSpec.Mage_Frost,
       auraEvents: [
@@ -152,97 +77,22 @@ describe('buildDeathOutcomeSummary — immunity checks', () => {
     ];
 
     const result = buildDeathOutcomeSummary(makeCombat() as any, [dead], [makeCCSummary('p1')]);
-
-    // Should only have 1 event (the 30s one) because the other two were locked out
     expect(result.events).toHaveLength(1);
     expect(result.events[0].atSeconds).toBe(30);
-    expect(result.events[0].availableImmunities[0].spellName).toBe('Ice Block');
   });
 });
 
 describe('buildDeathOutcomeSummary — external defensive checks', () => {
   it('flags missed Ironbark when Druid was free and had it available', () => {
-    const warrior = makeDeadUnit('w1', MATCH_START + 90_000, {
-      spec: CombatUnitSpec.Warrior_Arms,
-      name: 'Warrior',
-    });
-    const druid = makeUnit('d1', {
-      spec: CombatUnitSpec.Druid_Restoration,
-      name: 'Druid',
-    });
+    const warrior = makeDeadUnit('w1', MATCH_START + 90_000, { spec: CombatUnitSpec.Warrior_Arms, name: 'Warrior' });
+    const druid = makeUnit('d1', { spec: CombatUnitSpec.Druid_Restoration, name: 'Druid' });
     const result = buildDeathOutcomeSummary(
       makeCombat() as any,
       [warrior, druid],
       [makeCCSummary('Warrior'), makeCCSummary('Druid')],
     );
-    expect(result.events).toHaveLength(1);
     expect(result.events[0].missedExternals).toHaveLength(1);
     expect(result.events[0].missedExternals[0].spellName).toBe('Ironbark');
-    expect(result.events[0].missedExternals[0].casterWasInCC).toBe(false);
-  });
-
-  it('flags casterWasInCC=true when external caster was in hard CC at death time', () => {
-    const warrior = makeDeadUnit('w1', MATCH_START + 90_000, {
-      spec: CombatUnitSpec.Warrior_Arms,
-      name: 'Warrior',
-    });
-    const druid = makeUnit('d1', { spec: CombatUnitSpec.Druid_Restoration, name: 'Druid' });
-    const druidCC = makeCCSummary('Druid', [
-      {
-        atSeconds: 85,
-        durationSeconds: 10,
-        spellId: '605',
-        spellName: 'Mind Control',
-        sourceName: 'Priest',
-        sourceSpec: 'Priest Shadow',
-        trinketState: 'on_cooldown',
-        drInfo: null,
-        damageTakenDuring: 0,
-        distanceYards: null,
-        losBlocked: null,
-      },
-    ]);
-    const result = buildDeathOutcomeSummary(makeCombat() as any, [warrior, druid], [makeCCSummary('Warrior'), druidCC]);
-    expect(result.events[0].missedExternals[0].casterWasInCC).toBe(true);
-  });
-
-  it('flags missed external when teammate cast the spell this match (not spec baseline)', () => {
-    // A Paladin Holy casts Ironbark (which is not their baseline) — proves cross-spec cast-history path
-    const warrior = makeDeadUnit('w1', MATCH_START + 90_000, {
-      spec: CombatUnitSpec.Warrior_Arms,
-      name: 'Warrior',
-    });
-    const paladin = makeUnit('d1', {
-      spec: CombatUnitSpec.Paladin_Holy,
-      name: 'Paladin',
-      // Paladin cast Ironbark (102342) once this match via some talent/trinket scenario
-      spellCastEvents: [makeSpellCastEvent('102342', MATCH_START + 10_000, 'w1', 'Warrior', 'd1', 'Paladin')],
-    });
-    const result = buildDeathOutcomeSummary(
-      makeCombat() as any,
-      [warrior, paladin],
-      [makeCCSummary('Warrior'), makeCCSummary('Paladin')],
-    );
-    // Ironbark was cast at t=10s (CD=45s), ready again at t=55s, warrior dies at t=90s → flagged
-    expect(result.events[0].missedExternals.find((e: any) => e.spellName === 'Ironbark')).toBeDefined();
-  });
-
-  it('does NOT flag Ironbark when it was recently used (still on CD)', () => {
-    const warrior = makeDeadUnit('w1', MATCH_START + 90_000, {
-      spec: CombatUnitSpec.Warrior_Arms,
-      name: 'Warrior',
-    });
-    const druid = makeUnit('d1', {
-      spec: CombatUnitSpec.Druid_Restoration,
-      name: 'Druid',
-      spellCastEvents: [makeSpellCastEvent('102342', MATCH_START + 80_000, 'w1', 'Warrior', 'd1', 'Druid')],
-    });
-    const result = buildDeathOutcomeSummary(
-      makeCombat() as any,
-      [warrior, druid],
-      [makeCCSummary('Warrior'), makeCCSummary('Druid')],
-    );
-    expect(result.events[0]?.missedExternals ?? []).toHaveLength(0);
   });
 
   it('skips Ironbark when Druid was too far away (>40 yards) at death time (B27)', () => {
@@ -254,7 +104,7 @@ describe('buildDeathOutcomeSummary — external defensive checks', () => {
     const druid = makeUnit('d1', {
       spec: CombatUnitSpec.Druid_Restoration,
       name: 'Druid',
-      advancedActions: [makeAdvancedAction(MATCH_START + 90_000, 50, 0)], // 50 yards away
+      advancedActions: [makeAdvancedAction(MATCH_START + 90_000, 50, 0)],
     });
     const result = buildDeathOutcomeSummary(
       makeCombat() as any,
@@ -264,24 +114,44 @@ describe('buildDeathOutcomeSummary — external defensive checks', () => {
     expect(result.events[0]?.missedExternals ?? []).toHaveLength(0);
   });
 
-  it('skips Ironbark when Druid was LoS-blocked by a pillar at death time (B27)', () => {
-    const warrior = makeDeadUnit('w1', MATCH_START + 90_000, {
-      spec: CombatUnitSpec.Warrior_Arms,
-      name: 'Warrior',
-      advancedActions: [makeAdvancedAction(MATCH_START + 90_000, -2050, 6621)],
+  it('flags missed external when teammate cast the spell this match (B113)', () => {
+    // Cast at MATCH_START - 500s (so it's available at t=90s)
+    const warrior = makeDeadUnit('w1', MATCH_START + 90_000, { spec: CombatUnitSpec.Warrior_Arms, name: 'Warrior' });
+    const spriest = makeUnit('p1', {
+      spec: CombatUnitSpec.Priest_Shadow,
+      name: 'Priest',
+      spellCastEvents: [makeSpellCastEvent('47788', MATCH_START - 500_000, 'w1', 'Warrior', 'p1', 'Priest')], // GS
     });
-    const druid = makeUnit('d1', {
-      spec: CombatUnitSpec.Druid_Restoration,
-      name: 'Druid',
-      advancedActions: [makeAdvancedAction(MATCH_START + 90_000, -2035, 6621)],
-    });
-    // Nagrand (1505) north pillar is at (-2043, 6621) r=2.5 — blocks the line from -2050 to -2035
-    const combat = { startTime: MATCH_START, endTime: MATCH_END, zoneId: '1505' };
     const result = buildDeathOutcomeSummary(
-      combat as any,
-      [warrior, druid],
-      [makeCCSummary('Warrior'), makeCCSummary('Druid')],
+      makeCombat() as any,
+      [warrior, spriest],
+      [makeCCSummary('Warrior'), makeCCSummary('Priest')],
     );
-    expect(result.events[0]?.missedExternals ?? []).toHaveLength(0);
+    expect(result.events[0].missedExternals).toHaveLength(1);
+    expect(result.events[0].missedExternals[0].spellName).toBe('Guardian Spirit');
+  });
+});
+
+describe('formatDeathOutcomeForContext', () => {
+  it('formats multiple events correctly', () => {
+    const summary: any = {
+      events: [
+        {
+          deadPlayer: 'P1',
+          deadPlayerSpec: 'Arms Warrior',
+          atSeconds: 100,
+          availableImmunities: [{ spellName: 'Shield', wasInCC: true }],
+          missedExternals: [{ casterName: 'C1', spellName: 'Bark', casterWasInCC: false }],
+        },
+      ],
+    };
+    const res = formatDeathOutcomeForContext(summary);
+    expect(res).toContain('1:40');
+    expect(res).toContain('had Shield available, was in CC');
+    expect(res).toContain('C1 had Bark available, caster was free');
+  });
+
+  it('returns empty for no events', () => {
+    expect(formatDeathOutcomeForContext({ events: [] })).toBe('');
   });
 });

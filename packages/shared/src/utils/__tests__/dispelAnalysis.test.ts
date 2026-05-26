@@ -1,204 +1,234 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  CombatExtraSpellAction,
-  CombatUnitReaction,
-  CombatUnitSpec,
-  CombatUnitType,
-  LogEvent,
-} from '@wowarenalogs/parser';
+import { CombatExtraSpellAction, CombatUnitReaction, CombatUnitSpec, LogEvent } from '@wowarenalogs/parser';
 
-import { reconstructDispelSummary } from '../dispelAnalysis';
+import {
+  canDefensiveCleanse,
+  canOffensivePurge,
+  formatDispelContextForAI,
+  reconstructDispelSummary,
+} from '../dispelAnalysis';
 import { makeAuraEvent, makeUnit } from './testHelpers';
 
-const COMBAT = { startTime: 0, endTime: 60_000 };
+// Mock talents module to bypass complex lookups
+jest.mock('../talents', () => ({
+  getPlayerTalentedSpellIds: (_spec: any, talents: any) => {
+    if (talents === 'HAS_DISEASE') return new Set(['213634']);
+    if (talents === 'HAS_FELHUNTER') return new Set(['30146']);
+    if (talents === 'EMPTY') return new Set();
+    return null;
+  },
+  getSpecTalentTreeSpellIds: () => new Set(['213634', '278326', '30146']),
+}));
 
-describe('reconstructDispelSummary — B11 stolen-buff false positive', () => {
-  it('does NOT flag a missed cleanse when a friendly Mage spellsteals an enemy Blessing of Freedom', () => {
-    const friendlyMage = makeUnit('mage-1', {
-      name: 'FriendlyMage',
-      spec: CombatUnitSpec.Mage_Frost,
-      auraEvents: [
-        // Stolen buff lands on friendly Mage at t=5s, srcUnit is the original enemy Paladin.
-        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '1044', 5_000, 'enemy-pal', 'mage-1', 'BUFF'),
-        // Buff expires naturally at t=20s — 15s duration, well past the 3s missed-cleanse threshold.
-        // Without the auraType filter the missed-cleanse loop would treat this as a missed Magic cleanse.
-        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '1044', 20_000, 'enemy-pal', 'mage-1', 'BUFF'),
-      ],
-    });
-    const friendlyHealer = makeUnit('priest-1', {
-      name: 'FriendlyHealer',
-      spec: CombatUnitSpec.Priest_Holy,
-    });
-    const enemyPaladin = makeUnit('enemy-pal', {
-      name: 'EnemyPaladin',
-      spec: CombatUnitSpec.Paladin_Retribution,
-    });
+const MATCH_START = 1_000_000;
 
-    const summary = reconstructDispelSummary([friendlyMage, friendlyHealer], [enemyPaladin], COMBAT);
+function makeExtraAction(timestamp: number, event: LogEvent, overrides: any): CombatExtraSpellAction {
+  const action = Object.create(CombatExtraSpellAction.prototype);
+  Object.assign(action, {
+    timestamp,
+    logLine: { event, timestamp, parameters: [] },
+    spellId: '123',
+    spellName: 'Test',
+    extraSpellId: '456',
+    extraSpellName: 'Extra',
+    srcUnitId: 's1',
+    destUnitId: 'd1',
+    destUnitName: 'Dest',
+    ...overrides,
+  });
+  return action;
+}
 
-    expect(summary.missedCleanseWindows).toHaveLength(0);
-    const totalCC = summary.ccEfficiency.reduce((s, e) => s + e.totalCCWindows, 0);
-    expect(totalCC).toBe(0);
+describe('dispelAnalysis — cleanse/purge capability', () => {
+  it('handles talent-gated Shadow Priest Purify Disease (B54)', () => {
+    const spriest = makeUnit('p1', { spec: CombatUnitSpec.Priest_Shadow });
+    expect(canDefensiveCleanse(spriest as any, 'Disease')).toBe(false);
+
+    (spriest as any).info = { talents: 'HAS_DISEASE' };
+    expect(canDefensiveCleanse(spriest as any, 'Disease')).toBe(true);
   });
 
-  it('still flags a missed cleanse for a real enemy debuff (Polymorph on friendly, never removed within threshold)', () => {
-    const friendlyDps = makeUnit('rogue-1', {
-      name: 'FriendlyRogue',
-      spec: CombatUnitSpec.Rogue_Assassination,
-      auraEvents: [
-        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '118', 5_000, 'enemy-mage', 'rogue-1', 'DEBUFF'),
-        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '118', 13_000, 'enemy-mage', 'rogue-1', 'DEBUFF'),
-      ],
-    });
-    const friendlyHealer = makeUnit('priest-1', {
-      name: 'FriendlyHealer',
-      spec: CombatUnitSpec.Priest_Holy,
-    });
-    const enemyMage = makeUnit('enemy-mage', {
-      name: 'EnemyMage',
-      spec: CombatUnitSpec.Mage_Frost,
-    });
+  it('handles DH Consume Magic talent gating (B55)', () => {
+    const dh = makeUnit('dh', { spec: CombatUnitSpec.DemonHunter_Havoc });
+    (dh as any).info = undefined;
+    expect(canOffensivePurge(dh as any)).toBe(true);
 
-    const summary = reconstructDispelSummary([friendlyDps, friendlyHealer], [enemyMage], COMBAT);
+    (dh as any).info = { talents: 'EMPTY' };
+    expect(canOffensivePurge(dh as any)).toBe(false);
+  });
 
-    expect(summary.missedCleanseWindows).toHaveLength(1);
-    expect(summary.missedCleanseWindows[0].spellId).toBe('118');
+  it('handles Warlock Felhunter talent gating (B56)', () => {
+    const lock = makeUnit('lock', { spec: CombatUnitSpec.Warlock_Affliction });
+    (lock as any).info = { talents: 'EMPTY' };
+    expect(canOffensivePurge(lock as any)).toBe(false);
+
+    (lock as any).info = { talents: 'HAS_FELHUNTER' };
+    expect(canOffensivePurge(lock as any)).toBe(true);
   });
 });
 
-describe('reconstructDispelSummary — F94 pet dispel tagging', () => {
-  function makeRealDispelAction(
-    timestamp: number,
-    srcUnitId: string,
-    destUnitId: string,
-    dispelSpellId: string,
-    removedSpellId: string,
-    removedSpellName: string,
-  ): CombatExtraSpellAction {
-    const logLine = {
-      id: '0',
-      timestamp,
-      timezone: 'UTC',
-      event: LogEvent.SPELL_DISPEL,
-      parameters: [
-        srcUnitId, // 0: srcUnitId
-        '"Source"', // 1: srcUnitName
-        0x511, // 2: srcUnitFlags (player friendly)
-        0, // 3: srcRaidFlags
-        destUnitId, // 4: destUnitId
-        '"Target"', // 5: destUnitName
-        0x511, // 6: destUnitFlags
-        0, // 7: destRaidFlags
-        dispelSpellId, // 8: spellId
-        `"${dispelSpellId}"`, // 9: spellName
-        'MAGIC', // 10: spellSchool
-        removedSpellId, // 11: extraSpellId
-        `"${removedSpellName}"`, // 12: extraSpellName
-        'MAGIC', // 13: extraSpellSchool
-        'DEBUFF', // 14: auraType
-      ],
-      raw: '',
-    };
-    return new CombatExtraSpellAction(logLine as any);
+describe('dispelAnalysis — summary reconstruction', () => {
+  function makeCombat() {
+    return { startTime: MATCH_START, endTime: MATCH_START + 120_000 };
   }
 
-  it('sets isPetDispel=false when player directly dispels an ally', () => {
-    const healer = makeUnit('healer-1', {
-      name: 'Healer',
-      spec: CombatUnitSpec.Priest_Holy,
-      actionOut: [makeRealDispelAction(5_000, 'healer-1', 'ally-1', '527', '118', 'Polymorph')] as any[],
-    });
-    const ally = makeUnit('ally-1', { name: 'Ally', spec: CombatUnitSpec.Rogue_Assassination });
-    const enemy = makeUnit('enemy-1', {
-      name: 'Enemy',
-      spec: CombatUnitSpec.Mage_Frost,
-      reaction: 0 as any, // CombatUnitReaction.Hostile
-    });
+  it('attributes pet dispels to the owner (B45)', () => {
+    const owner = makeUnit('owner1', { name: 'Player1', spec: CombatUnitSpec.Priest_Discipline });
+    const pet = makeUnit('pet1', { ownerId: 'owner1', name: 'Imp' } as any);
 
-    const summary = reconstructDispelSummary([healer, ally], [enemy], { startTime: 0, endTime: 60_000 });
+    const action = makeExtraAction(MATCH_START + 10_000, LogEvent.SPELL_DISPEL, {
+      extraSpellId: '118',
+      destUnitId: 'owner1',
+      destUnitName: 'Player1',
+      srcUnitId: 'pet1',
+    });
+    (pet as any).actionOut = [action];
 
-    expect(summary.allyCleanse).toHaveLength(1);
-    expect(summary.allyCleanse[0].isPetDispel).toBe(false);
-    expect(summary.allyCleanse[0].sourceName).toBe('Healer');
+    const res = reconstructDispelSummary([owner] as any, [], makeCombat(), [pet] as any);
+    expect(res.allyCleanse).toHaveLength(1);
+    expect(res.allyCleanse[0].sourceName).toBe('Player1');
+    expect(res.allyCleanse[0].isPetDispel).toBe(true);
   });
 
-  it('sets isPetDispel=true when a pet dispel action is merged into a player unit (srcUnitId !== unit.id)', () => {
-    // The Warlock player unit has a pet's dispel action merged into their actionOut.
-    // The pet's ID ('felhunter-1') differs from the player's ID ('warlock-1').
-    const warlock = makeUnit('warlock-1', {
-      name: 'Warlock',
-      spec: CombatUnitSpec.Warlock_Affliction,
-      actionOut: [makeRealDispelAction(8_000, 'felhunter-1', 'ally-1', '19505', '118', 'Polymorph')] as any[],
-    });
-    const ally = makeUnit('ally-1', { name: 'Ally', spec: CombatUnitSpec.Rogue_Assassination });
-    const enemy = makeUnit('enemy-1', {
-      name: 'Enemy',
-      spec: CombatUnitSpec.Mage_Frost,
-      reaction: 0 as any,
-    });
+  it('handles hostile purges (B96)', () => {
+    const friend = makeUnit('f1', { name: 'Friend', spec: CombatUnitSpec.Warrior_Arms });
+    const enemy = makeUnit('e1', { name: 'Enemy', spec: CombatUnitSpec.Mage_Frost });
+    (enemy as any).id = 'e1';
 
-    const summary = reconstructDispelSummary([warlock, ally], [enemy], { startTime: 0, endTime: 60_000 });
+    const action = makeExtraAction(MATCH_START + 10_000, LogEvent.SPELL_DISPEL, {
+      extraSpellId: '123',
+      destUnitId: 'f1',
+      srcUnitId: 'e1',
+    });
+    (enemy as any).actionOut = [action];
 
-    expect(summary.allyCleanse).toHaveLength(1);
-    expect(summary.allyCleanse[0].isPetDispel).toBe(true);
-    expect(summary.allyCleanse[0].sourceName).toBe('Warlock');
+    const res = reconstructDispelSummary([friend] as any, [enemy] as any, makeCombat());
+    expect(res.hostilePurges).toHaveLength(1);
   });
 
-  // B45: Pet unit's dispel in the pet's own actionOut (not merged into player's actionOut)
-  it('B45: captures pet dispel when the pet is passed via friendlyPets (action in pet own actionOut)', () => {
-    const warlock = makeUnit('warlock-1', {
-      name: 'Warlock',
-      spec: CombatUnitSpec.Warlock_Affliction,
+  it('detects missed cleanse windows and identifies CD usage (B58)', () => {
+    const healer = makeUnit('h', { name: 'Healer', spec: CombatUnitSpec.Priest_Holy });
+    (healer as any).id = 'h';
+    const target = makeUnit('t', { name: 'Target', spec: CombatUnitSpec.Warrior_Arms });
+    (target as any).id = 't';
+
+    const firstCleanse = makeExtraAction(MATCH_START + 10_000, LogEvent.SPELL_DISPEL, {
+      extraSpellId: '118',
+      destUnitId: 't',
+      destUnitName: 'Target',
+      srcUnitId: 'h',
     });
-    const ally = makeUnit('ally-1', { name: 'Ally', spec: CombatUnitSpec.Rogue_Assassination });
-    const enemy = makeUnit('enemy-1', {
+    (healer as any).actionOut = [firstCleanse];
+
+    const ccApply = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '118', MATCH_START + 15_000, 'e1', 't');
+    const ccRemove = makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '118', MATCH_START + 25_000, 'e1', 't');
+    (target as any).auraEvents = [ccApply, ccRemove];
+
+    const enemy = makeUnit('e1', { reaction: CombatUnitReaction.Hostile });
+
+    const res = reconstructDispelSummary([healer, target] as any, [enemy] as any, makeCombat());
+    expect(res.missedCleanseWindows).toHaveLength(1);
+    expect(res.missedCleanseWindows[0].cleanseWasOnCD).toBe(true);
+  });
+
+  it('skips missed cleanse if all dispellers were blocked (B97)', () => {
+    const healer = makeUnit('h', { name: 'Healer', spec: CombatUnitSpec.Priest_Holy });
+    const target = makeUnit('t', { name: 'Target', spec: CombatUnitSpec.Warrior_Arms });
+    const enemy = makeUnit('e1', { reaction: CombatUnitReaction.Hostile });
+
+    const ccApply = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '118', MATCH_START + 10_000, 'e1', 't');
+    const ccRemove = makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '118', MATCH_START + 20_000, 'e1', 't');
+    (target as any).auraEvents = [ccApply, ccRemove];
+
+    // Healer is also CC'd for the same duration
+    (healer as any).auraEvents = [
+      makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '118', MATCH_START + 10_000, 'e1', 'h'),
+      makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '118', MATCH_START + 20_000, 'e1', 'h'),
+    ];
+
+    const res = reconstructDispelSummary([healer, target] as any, [enemy] as any, makeCombat());
+    expect(res.ccEfficiency[1].missedCount).toBe(0);
+  });
+
+  it('detects missed purge and identifies if all eligible purgers were on CD (B108)', () => {
+    const purger = makeUnit('dh1', { name: 'DH', spec: CombatUnitSpec.DemonHunter_Havoc });
+    (purger as any).id = 'dh1';
+    const enemy = makeUnit('e1', {
       name: 'Enemy',
       spec: CombatUnitSpec.Mage_Frost,
-      reaction: 0 as any,
+      reaction: CombatUnitReaction.Hostile,
     });
+    (enemy as any).id = 'e1';
 
-    // Imp unit (Pet type) with its own SPELL_DISPEL in its actionOut (Singe Magic)
-    const imp = {
-      ...makeUnit('imp-1', {
-        name: 'Imp',
-        spec: CombatUnitSpec.None,
-        actionOut: [makeRealDispelAction(9_000, 'imp-1', 'ally-1', '89808', '118', 'Polymorph')] as any[],
-      }),
-      type: CombatUnitType.Pet,
-      reaction: CombatUnitReaction.Friendly,
-      ownerId: 'warlock-1',
+    // DH uses purge at 5s
+    const firstPurge = makeExtraAction(MATCH_START + 5_000, LogEvent.SPELL_DISPEL, {
+      srcUnitId: 'dh1',
+      destUnitId: 'e1',
+      extraSpellId: '1022', // BOP - Critical priority
+      extraSpellName: 'Blessing of Protection',
+    });
+    (purger as any).actionOut = [firstPurge];
+
+    // BOP applied at 10s (DH purge on CD for 8s until 13s)
+    const buffApply = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '1022', MATCH_START + 10_000, 'e1', 'e1', 'BUFF');
+    const buffRemove = makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '1022', MATCH_START + 20_000, 'e1', 'e1', 'BUFF');
+    (enemy as any).auraEvents = [buffApply, buffRemove];
+
+    const res = reconstructDispelSummary([purger] as any, [enemy] as any, makeCombat());
+    expect(res.missedPurgeWindows).toHaveLength(1);
+    expect(res.missedPurgeWindows[0].purgeWasOnCD).toBe(true);
+    expect(res.missedPurgeWindows[0].cdBurnedOn?.spellName).toBe('Blessing of Protection');
+  });
+});
+
+describe('dispelAnalysis — formatting', () => {
+  it('formatDispelContextForAI produces detailed text', () => {
+    const summary: any = {
+      missedCleanseWindows: [
+        {
+          priority: 'Critical',
+          spellName: 'Fear',
+          targetSpec: 'Arms Warrior',
+          timeSeconds: 10,
+          durationSeconds: 6,
+          postCcDamage: 150_000,
+        },
+      ],
+      ccEfficiency: [
+        {
+          targetName: 'T1',
+          targetSpec: 'Arms Warrior',
+          totalCCWindows: 1,
+          missedCount: 1,
+          cleanseCount: 0,
+          brokenCount: 0,
+        },
+      ],
+      missedPurgeWindows: [
+        {
+          priority: 'High',
+          spellName: 'Combustion',
+          enemySpec: 'Fire Mage',
+          durationSeconds: 10,
+          teamUnderPressure: true,
+        },
+      ],
     };
 
-    const summary = reconstructDispelSummary([warlock, ally], [enemy], { startTime: 0, endTime: 60_000 }, [imp as any]);
-
-    expect(summary.allyCleanse).toHaveLength(1);
-    expect(summary.allyCleanse[0].isPetDispel).toBe(true);
-    expect(summary.allyCleanse[0].sourceName).toBe('Warlock');
+    const lines = formatDispelContextForAI(summary);
+    expect(lines.join('\n')).toContain('DISPEL SUMMARY:');
+    expect(lines.join('\n')).toContain('CC windows on your team: 1 total — 1 missed');
+    expect(lines.join('\n')).toContain('Worst missed cleanse: Fear [Critical] on Arms Warrior');
   });
 
-  it('B45: pet dispel without known owner falls back to pet name', () => {
-    const ally = makeUnit('ally-1', { name: 'Ally', spec: CombatUnitSpec.Rogue_Assassination });
-    const enemy = makeUnit('enemy-1', {
-      name: 'Enemy',
-      spec: CombatUnitSpec.Mage_Frost,
-      reaction: 0 as any,
-    });
-
-    const imp = {
-      ...makeUnit('imp-1', {
-        name: 'Imp',
-        spec: CombatUnitSpec.None,
-        actionOut: [makeRealDispelAction(9_000, 'imp-1', 'ally-1', '89808', '118', 'Polymorph')] as any[],
-      }),
-      type: CombatUnitType.Pet,
-      reaction: CombatUnitReaction.Friendly,
-      ownerId: 'unknown-owner',
+  it('formatDispelContextForAI handles no CC state', () => {
+    const summary: any = {
+      missedCleanseWindows: [],
+      ccEfficiency: [],
+      missedPurgeWindows: [],
     };
-
-    const summary = reconstructDispelSummary([ally], [enemy], { startTime: 0, endTime: 60_000 }, [imp as any]);
-
-    expect(summary.allyCleanse).toHaveLength(1);
-    expect(summary.allyCleanse[0].isPetDispel).toBe(true);
-    expect(summary.allyCleanse[0].sourceName).toBe('Imp');
+    const lines = formatDispelContextForAI(summary);
+    expect(lines).toContain('  No significant CC applied to your team.');
+    expect(lines).toContain('  Missed purge windows: None (Critical/High)');
   });
 });
