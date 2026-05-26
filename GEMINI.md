@@ -4,6 +4,17 @@ WoW arena combat logging and analysis platform. Desktop Electron app records loc
 
 See [docs/repo-overview.md](docs/repo-overview.md) for monorepo structure, core commands, engineering standards, and tech stack.
 
+<engineering_standards>
+## Engineering Standards
+
+### Research Boundary
+For any task involving an "Audit," "Investigation," "Check," or "Research," the agent MUST:
+1.  Complete the requested investigation.
+2.  Provide a clear summary of findings and a proposed implementation plan.
+3.  **STOP and wait for user approval** before modifying any files or proceeding with implementation.
+4.  Do not take "proactive liberties" to fix identified bugs unless the user has issued an explicit **Directive** to implement the fix (e.g., "Fix it," "Go ahead," "Implement that").
+</engineering_standards>
+
 <architecture_highlights>
 ## Architecture Highlights
 
