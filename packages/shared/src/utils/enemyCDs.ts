@@ -283,7 +283,7 @@ export function reconstructEnemyCDTimeline(
 export function formatEnemyCDTimelineForContext(timeline: IEnemyCDTimeline, matchDurationSeconds: number): string[] {
   const lines: string[] = [];
 
-  lines.push('ENEMY BURST WINDOWS:');
+  lines.push('## Enemy Cooldown Timeline');
 
   if (timeline.alignedBurstWindows.length === 0) {
     lines.push(
@@ -351,10 +351,10 @@ export function formatKillAttemptWindowsForContext(
   pressureWindows: IDamageBucket[],
 ): string[] {
   if (alignedBurstWindows.length === 0) {
-    return ['KILL ATTEMPT WINDOWS: None detected (no aligned enemy burst windows).'];
+    return ['## Kill Attempt Windows', '  None detected (no aligned enemy burst windows).'];
   }
 
-  const lines: string[] = ['KILL ATTEMPT WINDOWS (enemy burst CDs + confirmed damage spike):'];
+  const lines: string[] = ['## Kill Attempt Windows'];
   let unconfirmedCount = 0;
 
   for (const burst of alignedBurstWindows) {

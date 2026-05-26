@@ -1058,6 +1058,12 @@ export function buildMatchPromptNew(combat: ParsedCombat, forceHealer = false): 
     lines.push('');
   }
 
+  lines.push(...formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds));
+  lines.push('');
+
+  lines.push(...formatKillAttemptWindowsForContext(enemyCDTimeline.alignedBurstWindows, pressureWindows));
+  lines.push('');
+
   // Player loadout
   const {
     text: loadoutText,
@@ -1244,6 +1250,12 @@ export function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false):
     lines.push(...ccLines);
     lines.push('');
   }
+
+  lines.push(...formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds));
+  lines.push('');
+
+  lines.push(...formatKillAttemptWindowsForContext(enemyCDTimeline.alignedBurstWindows, pressureWindows));
+  lines.push('');
 
   // Player loadout
   const {

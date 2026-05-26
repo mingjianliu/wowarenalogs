@@ -391,13 +391,11 @@ export const DR_LEVEL_LABEL: Record<DRLevel, string> = {
 export function formatOutgoingCCChainsForContext(chains: IOutgoingCCChain[]): string[] {
   const lines: string[] = [];
 
-  // Only output if there are notable DR interactions (reduced or immune applications)
-  const notable = chains.filter((c) => c.applications.some((a) => a.drInfo.level !== 'Full'));
-  if (notable.length === 0) return lines;
+  if (chains.length === 0) return lines;
 
-  lines.push('CC APPLIED ON ENEMIES (DR summary):');
+  lines.push('## CC Chains');
 
-  for (const chain of notable) {
+  for (const chain of chains) {
     const total = chain.applications.length;
     const immuneCount = chain.applications.filter((a) => a.drInfo.level === 'Immune').length;
     const reducedCount = chain.applications.filter(
