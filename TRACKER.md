@@ -46,7 +46,6 @@ Active work items. Completed/N/A items archived in `TRACKER_ARCHIVE.md`.
 | F118 | Backlog | Archetype Normalization Robustness — Replace Min-Max scaling in K-Means clustering with Z-Score Normalization (or percentile clipping) to prevent extreme outliers (e.g., very long dampening games or quick stomps in Solo Shuffle) from skewing the centroid calculations. | `evalArchetypeInjection.ts` |
 | F119 | Backlog | Confidence Thresholds for Prompt Injection — Add a Max Euclidean Distance fallback when classifying matches for archetypes. If a match is too anomalous (distance to nearest centroid is too high), fallback to the `baseline` prompt rather than forcing an inaccurate narrative. | `evalArchetypeInjection.ts` |
 | F120 | S5      | Timeline Noise Reduction (`[STATE]` Emission) — change per-second resource readiness `[STATE]` lines to be delta-based (only log when a resource changes) or key-moment snapshots (start of kill windows, after deaths/major CDs). This addresses the heavy timeline noise identified in the 05/24 eval report, particularly affecting Holy Paladins. | `matchTimeline.ts`, `packages/shared/src/utils/` |
-| F121 | S5      | Prompt Sufficiency (Missing Sections) — ensure structured `## CC Chains` and `## Enemy Cooldown Timeline` sections are emitted for all specs. The 05/24 eval found these critical sections missing from Discipline Priest and Holy Paladin prompts, forcing Claude to infer causality from raw timeline events. | `printMatchPrompts.ts`, `buildMatchPromptNew` |
 
 ---
 
