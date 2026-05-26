@@ -1814,5 +1814,8 @@
   "410598": {
     "type": "debuffs_offensive",
     "nonameplates": true
+  },
+  "205180": {
+    "type": "buffs_offensive"
   }
 }

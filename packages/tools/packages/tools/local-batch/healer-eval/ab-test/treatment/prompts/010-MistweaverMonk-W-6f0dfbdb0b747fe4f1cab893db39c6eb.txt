@@ -1,0 +1,762 @@
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Mistweaver Monk (Healer) | Bracket: 3v3 | Result: Win | Duration: 6:38
+  My team: Mistweaver Monk, Elemental Shaman, Arms Warrior
+  Enemy team: Elemental Shaman, Frost Mage, Discipline Priest
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Mistweaver Monk): CANNOT offensive purge
+  Team purgers: Elemental Shaman
+
+DAMPENING (3v3): started at 10%, ended at 32% at match end
+  Note: Reached 32% dampening — healing was meaningfully impaired in the late game.
+
+CC APPLIED ON ENEMIES (DR summary):
+  Elemental Shaman (Hevestarvey-Tichondrius-US): 16 CC — 2× Stun, 11× Unknown, 2× Disorient, 1× Incapacitate | 1 reduced, 0 immune
+  Discipline Priest (Rhuk-Tichondrius-US): 11 CC — 3× Unknown, 4× Stun, 1× Incapacitate, 3× Disorient | 1 reduced, 0 immune
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Chinutty-BurningLegion-US (Mistweaver Monk — log owner):
+    Paralysis [45s, 2 Charges], Leg Sweep [60s, 2 Charges], Life Cocoon [120s]
+  2: Giblie-Kel'Thuzad-US (Elemental Shaman):
+    Hex [30s], Ascendance (Elemental) [180s, 2 Charges], Stormkeeper [60s, 2 Charges], Spiritwalker's Grace [120s]
+  3: Bigbadmitch-BurningLegion-US (Arms Warrior):
+    Avatar [90s], Intimidating Shout [90s], Die by the Sword [120s], Bladestorm (Arms) [90s]
+  4: Hevestarvey-Tichondrius-US (Elemental Shaman — enemy):
+    Stormkeeper [60s], Bloodlust [60s], Ascendance [180s]
+  5: Rhuk-Tichondrius-US (Discipline Priest — enemy):
+    Power Infusion [120s]
+  6: Biillionaire-Frostmourne-US (Frost Mage — enemy):
+    none tracked
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:00  [STATE]   friends 1:100
+0:01  [OWNER CAST]   Transcendence
+0:03  [STATE]   friends 1:100 2:100
+0:04  [OWNER CAST]   Summon Jade Serpent Statue
+0:05  [OWNER CAST]   Detox → 2
+0:05  [CLEANSE]   1 dispelled 2 effects: Flame Shock off 2, Earthgrab off 2
+0:06  [STATE]   friends 1:80 2:100 3:100
+0:06  [OWNER CAST]   Renewing Mist → self
+0:07  [TEAMMATE CD]   2 (Elemental Shaman): Spiritwalker's Grace
+0:07  [OWNER CAST]   Renewing Mist → 3
+0:08  [TEAMMATE CD]   2 (Elemental Shaman): Stormkeeper
+0:09  [STATE]   friends 1:84 2:100 3:100
+0:09  [OWNER CAST]   Renewing Mist → 2
+0:10  [OFFENSIVE WINDOW]   0:10–0:29 | Critical | 0.50M on 2 (Elemental Shaman) | CDs: Power Infusion + Stormkeeper + Bloodlust
+0:10  [ENEMY CD]   5 (Discipline Priest): Power Infusion [1/3]
+0:10  [ENEMY BUFF]   4: Power Infusion (purgeable)
+0:10  [ENEMY BUFF]   5: Power Infusion (purgeable)
+0:12  [STATE]   friends 1:86 2:99 3:100
+0:14  [ENEMY CD]   4 (Elemental Shaman): Stormkeeper [1/7]
+0:15  [STATE]   friends 1:91 2:99 3:95
+0:15  [TEAMMATE CD]   2 (Elemental Shaman): Ascendance (Elemental)
+0:16  [OWNER CAST]   Detox → self
+0:16  [CLEANSE]   1 dispelled 2 effects: Earthbind off 1, Earthgrab off 1
+0:16  [OWNER CAST]   Chi Torpedo
+0:18  [STATE]   friends 1:94 2:98 3:96
+0:18  [OWNER CAST]   Rushing Wind Kick
+0:19  [ENEMY CD]   4 (Elemental Shaman): Bloodlust [1/5]
+0:19  [TEAMMATE CD]   3 (Arms Warrior): Avatar
+0:19  [OWNER CAST]   Spinning Crane Kick
+0:21  [STATE]   friends 1:96 2:95 3:100
+0:21  [OWNER CAST]   Spinning Crane Kick
+0:21  [TEAMMATE CD]   3 (Arms Warrior): Die by the Sword
+0:22  [CC ON TEAM]   3 ← Dragon's Breath (Biillionaire-Frostmourne-US) | 2s | trinket: used
+0:23  [STATE]   friends 1:100 2:88 3:100 / enemies 4:94 5:90 6:73
+0:23  [OWNER CAST]   Spinning Crane Kick
+0:24  [STATE]   friends 1:100 2:91 3:100 / enemies 4:91 5:89 6:69
+0:24  [OWNER CC]   Leg Sweep
+0:24  [CC CAST]   Leg Sweep (by 1) → 4
+0:24  [TRINKET]   3 used PvP trinket
+0:25  [STATE]   friends 1:100 2:89 3:95 / enemies 4:94 5:81 6:73
+0:25  [ENEMY BUFF END]   4: Power Infusion
+0:25  [ENEMY BUFF END]   5: Power Infusion
+0:25  [OWNER CAST]   Spinning Crane Kick
+0:26  [STATE]   friends 1:100 2:87 3:92 / enemies 4:97 5:72 6:83
+0:27  [STATE]   friends 1:100 2:88 3:94 / enemies 4:96 5:67 6:70
+0:27  [OWNER CAST]   Chi Torpedo
+0:28  [STATE]   friends 1:100 2:86 3:96 / enemies 4:99 5:74 6:67
+0:28  [OWNER CAST]   Spinning Crane Kick
+0:29  [STATE]   friends 1:100 2:89 3:100 / enemies 4:100 5:89 6:69
+0:30  [STATE]   friends 1:100 2:98 3:100 / enemies 4:100 5:89 6:70
+0:30  [CC ON TEAM]   1 ← Hex (Hevestarvey-Tichondrius-US) | 2s | trinket: available
+0:30  [DMG SPIKE]   2 (Elemental Shaman): 0.50M in 10s [P90 High] [ROT] (96% -> 98% HP)
+0:31  [STATE]   friends 1:100 2:95 3:99 / enemies 4:100 5:94 6:85
+0:31  [ENEMY CD]   4 (Elemental Shaman): Ascendance [1/3]
+0:31  [UNCLEANSED DEBUFF]   Flame Shock on 2 | 59s | 413k taken during | dispel: Magic
+0:31  [TRINKET]   2 used PvP trinket
+0:31  [CLEANSE]   2 dispelled Hex off 1
+0:32  [STATE]   friends 1:92 2:93 3:98 / enemies 4:100 5:98 6:94
+0:32  [OWNER CAST]   Spinning Crane Kick
+0:33  [STATE]   friends 1:92 2:70 3:92 / enemies 4:100 5:100 6:100
+0:33  [OWNER CAST]   Renewing Mist → self
+0:34  [STATE]   friends 1:100 2:61 3:95 / enemies 4:100 5:100 6:100
+0:34  [OWNER CAST]   Renewing Mist → 2
+0:35  [STATE]   friends 1:100 2:52 3:94 / enemies 4:100 5:100 6:100
+0:36  [STATE]   friends 1:100 2:39 3:82 / enemies 4:100 5:100 6:90
+0:36  [OWNER CAST]   Soothing Mist → 2
+0:37  [STATE]   friends 1:100 2:88 3:81 / enemies 4:100 5:100 6:71
+0:37  [OWNER CAST]   Enveloping Mist → 2
+0:38  [STATE]   friends 1:100 2:92 3:79 / enemies 4:100 5:100 6:77
+0:38  [OWNER CAST]   Spinning Crane Kick
+0:39  [STATE]   friends 1:100 2:100 3:95 / enemies 4:100 5:100 6:100
+0:39  [OWNER CAST]   Spinning Crane Kick
+0:40  [STATE]   friends 1:89 2:100 3:96 / enemies 4:100 5:100 6:100
+0:41  [OWNER CAST]   Rushing Wind Kick
+0:42  [STATE]   friends 1:92 2:100 3:89
+0:42  [OWNER CAST]   Spinning Crane Kick
+0:43  [CC ON TEAM]   3 ← Psychic Scream (Rhuk-Tichondrius-US) | 1s | trinket: ON CD (101s left)
+0:43  [CC ON TEAM]   1 ← Psychic Scream (Rhuk-Tichondrius-US) | 1s | trinket: available
+0:44  [STATE]   friends 1:100 2:100 3:94 / enemies 4:100 5:80 6:88
+0:44  [CLEANSE]   3 dispelled 2 effects: Chilled off 3, Arctic Snowstorm off 3
+0:45  [STATE]   friends 1:100 2:100 3:97 / enemies 4:100 5:80 6:88
+0:45  [OWNER CAST]   Will of the Forsaken
+0:46  [STATE]   friends 1:100 2:100 3:98 / enemies 4:100 5:87 6:88
+0:46  [OWNER CAST]   Renewing Mist → 3
+0:47  [STATE]   friends 1:100 2:95 3:98 / enemies 4:100 5:100 6:95
+0:47  [OWNER CAST]   Renewing Mist → self
+0:48  [STATE]   friends 1:100 2:98 3:95 / enemies 4:100 5:100 6:96
+0:49  [STATE]   friends 1:100 2:98 3:74 / enemies 4:100 5:100 6:94
+0:49  [OWNER CAST]   Detox → 3
+0:49  [CLEANSE]   1 dispelled 3 effects: Ice Nova off 3, Flame Shock off 3, Chilled off 3
+0:50  [STATE]   friends 1:82 2:94 3:75 / enemies 4:100 5:100 6:94
+0:50  [OWNER CAST]   Spinning Crane Kick
+0:51  [STATE]   friends 1:84 2:85 3:76 / enemies 4:100 5:100 6:94
+0:51  [OWNER CAST]   Transcendence
+0:52  [STATE]   friends 1:84 2:86 3:75 / enemies 4:100 5:100 6:100
+0:53  [STATE]   friends 1:84 2:87 3:74 / enemies 4:100 5:100 6:93
+0:53  [OWNER CAST]   Chi Torpedo
+0:54  [STATE]   friends 1:85 2:87 3:76
+0:54  [OWNER CAST]   Spinning Crane Kick
+0:55  [OWNER CAST]   Rushing Wind Kick
+0:57  [STATE]   friends 1:94 2:97 3:87
+0:57  [CC ON TEAM]   1 ← Hex (Hevestarvey-Tichondrius-US) | 2s | trinket: available
+0:58  [STATE]   friends 1:96 2:98 3:88 / enemies 4:98 5:100 6:82
+0:58  [TEAMMATE CD]   2 (Elemental Shaman): Stormkeeper
+0:58  [UNCLEANSED DEBUFF]   Flame Shock on 3 | 18s | 50k taken during | dispel: Magic
+0:59  [STATE]   friends 1:98 2:100 3:88 / enemies 4:98 5:100 6:99
+0:59  [CLEANSE]   2 dispelled Hex off 1
+1:00  [STATE]   friends 1:98 2:98 3:100 / enemies 4:99 5:100 6:100
+1:01  [STATE]   friends 1:99 2:100 3:100 / enemies 4:99 5:100 6:100
+1:01  [OWNER CD]   Tiger's Lust → 3
+1:02  [STATE]   friends 1:99 2:96 3:100 / enemies 4:95 5:100 6:100
+1:03  [STATE]   friends 1:100 2:99 3:100 / enemies 4:94 5:100 6:100
+1:03  [OWNER CAST]   Spinning Crane Kick
+1:04  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:100
+1:04  [ENEMY CD]   4 (Elemental Shaman): Stormkeeper [2/7]
+1:04  [DMG SPIKE]   2 (Elemental Shaman): 0.86M in 10s [P95 Danger] [ROT] (89% -> 81% HP)
+1:04  [OWNER CAST]   Renewing Mist → 2
+1:05  [STATE]   friends 1:100 2:90 3:100 / enemies 4:100 5:100 6:100
+1:05  [OWNER CAST]   Renewing Mist → self
+1:06  [STATE]   friends 1:100 2:71 3:100 / enemies 4:100 5:100 6:86
+1:07  [STATE]   friends 1:100 2:35 3:100 / enemies 4:100 5:100 6:81
+1:07  [OWNER CAST]   Soothing Mist → 2
+1:07  [CLEANSE]   2 dispelled Chilled off 2
+1:08  [STATE]   friends 1:100 2:89 3:100 / enemies 4:100 5:100 6:78
+1:08  [OWNER CAST]   Sheilun's Gift → 2
+1:09  [STATE]   friends 1:100 2:94 3:94 / enemies 4:100 5:100 6:86
+1:09  [OWNER CAST]   Spinning Crane Kick
+1:11  [OWNER CAST]   Soothing Mist → 2
+1:12  [STATE]   friends 1:100 2:57 3:82
+1:12  [OWNER CAST]   Enveloping Mist → 2
+1:13  [OWNER CAST]   Sheilun's Gift → 2
+1:15  [STATE]   friends 1:100 2:83 3:66
+1:15  [OWNER CAST]   Renewing Mist → 3
+1:16  [OWNER CAST]   Soothing Mist → 3
+1:17  [OWNER CAST]   Sheilun's Gift → 3
+1:18  [STATE]   friends 1:100 2:95 3:62
+1:18  [OWNER CAST]   Chi Torpedo
+1:18  [CC ON TEAM]   3 ← Dragon's Breath (Biillionaire-Frostmourne-US) | 2s | trinket: ON CD (67s left)
+1:19  [STATE]   friends 1:100 2:97 3:64 / enemies 4:100 5:100 6:98
+1:19  [OWNER CAST]   Spinning Crane Kick
+1:20  [STATE]   friends 1:100 2:97 3:67 / enemies 4:100 5:100 6:98
+1:21  [STATE]   friends 1:99 2:97 3:68 / enemies 4:100 5:100 6:98
+1:21  [CC ON TEAM]   3 ← Snowdrift (Biillionaire-Frostmourne-US) | 4s | trinket: ON CD (64s left)
+1:21  [UNCLEANSED DEBUFF]   Snowdrift on 3 | 4s | 308k taken during | dispel: Magic
+1:21  [OWNER CAST]   Spinning Crane Kick [completed before CC landed]
+1:22  [STATE]   friends 1:92 2:92 3:60 / enemies 4:100 5:100 6:100
+1:22  [CC ON TEAM]   1 ← Hex (Hevestarvey-Tichondrius-US) | 1s | trinket: available
+1:22  [CLEANSE]   2 dispelled Hex off 1
+1:23  [STATE]   friends 1:88 2:90 3:44 / enemies 4:100 5:100 6:100
+1:24  [STATE]   friends 1:87 2:89 3:19 / enemies 4:100 5:100 6:100
+1:24  [OWNER CD]   Life Cocoon → 3 (18% HP)
+1:24  [OWNER CAST]   Spinning Crane Kick
+1:25  [STATE]   friends 1:85 2:88 3:28 / enemies 4:100 5:100 6:100
+1:26  [STATE]   friends 1:84 2:82 3:37 / enemies 4:100 5:100 6:100
+1:26  [OWNER CAST]   Chi Torpedo
+1:27  [STATE]   friends 1:78 2:78 3:42 / enemies 4:100 5:100 6:100
+1:27  [OWNER CAST]   Detox → self
+1:27  [CLEANSE]   1 dispelled 2 effects: Earthgrab off 1, Chilled off 1
+1:28  [STATE]   friends 1:78 2:76 3:45 / enemies 4:100 5:100 6:100
+1:28  [OWNER CAST]   Renewing Mist → 2 [completed before CC landed]
+1:29  [STATE]   friends 1:79 2:75 3:49 / enemies 4:100 5:100 6:100
+1:29  [CC ON TEAM]   2 ← Psychic Scream (Rhuk-Tichondrius-US) | 1s | trinket: ON CD (63s left)
+1:29  [CC ON TEAM]   1 ← Psychic Scream (Rhuk-Tichondrius-US) | 6s | trinket: available
+1:29  [CC ON TEAM]   3 ← Psychic Scream (Rhuk-Tichondrius-US) | 1s | trinket: ON CD (56s left)
+1:30  [STATE]   friends 1:81 2:65 3:52 / enemies 4:100 5:100 6:100
+1:30  [CLEANSE]   3 dispelled Chilled off 3
+1:31  [STATE]   friends 1:81 2:58 3:61 / enemies 4:100 5:100 6:100
+1:32  [STATE]   friends 1:82 2:52 3:69 / enemies 4:100 5:100 6:100
+1:32  [ENEMY CD]   4 (Elemental Shaman): Bloodlust [2/5]
+1:33  [STATE]   friends 1:83 2:50 3:77 / enemies 4:100 5:100 6:100
+1:34  [STATE]   friends 1:90 2:50 3:89 / enemies 4:100 5:100 6:100
+1:35  [STATE]   friends 1:90 2:46 3:89 / enemies 4:100 5:100 6:100
+1:36  [STATE]   friends 1:90 2:16 3:96 / enemies 4:100 5:100 6:100
+1:36  [OWNER CAST]   Soothing Mist → 2
+1:36  [BUFF FADED]   Life Cocoon
+1:36  [OWNER CAST]   Enveloping Mist → 2
+1:37  [STATE]   friends 1:90 2:9 3:100 / enemies 4:100 5:100 6:100
+1:37  [CLEANSE]   2 dispelled 2 effects: Blaze of Light off 2, Chilled off 2
+1:38  [STATE]   friends 1:94 2:62 3:100 / enemies 4:100 5:100 6:100
+1:38  [OWNER CAST]   Sheilun's Gift → 2
+1:39  [STATE]   friends 1:97 2:86 3:100 / enemies 4:100 5:100 6:100
+1:41  [CC ON TEAM]   1 ← Mind Control (Rhuk-Tichondrius-US) | 3s | trinket: available
+1:42  [STATE]   friends 1:100 2:100 3:98 / enemies 4:100 5:100 6:100
+1:42  [UNCLEANSED DEBUFF]   Flame Shock on 3 | 33s | 31k taken during | dispel: Magic
+1:43  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:99 6:100
+1:44  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:99 6:100
+1:45  [STATE]   friends 1:100 2:100 3:97 / enemies 4:100 5:98 6:99
+1:45  [CC ON TEAM]   2 ← Ring of Frost (Biillionaire-Frostmourne-US) | 1s | trinket: ON CD (46s left)
+1:46  [STATE]   friends 1:100 2:100 3:98 / enemies 4:100 5:98 6:99
+1:47  [STATE]   friends 1:100 2:100 3:99 / enemies 4:100 5:98 6:100
+1:47  [OWNER CAST]   Detox → 2
+1:47  [CLEANSE]   1 dispelled 2 effects: Ring of Frost off 2, Flame Shock off 2
+1:48  [STATE]   friends 1:93 2:100 3:100 / enemies 4:100 5:98 6:99
+1:49  [STATE]   friends 1:93 2:100 3:89 / enemies 4:100 5:97 6:86
+1:49  [OWNER CAST]   Spinning Crane Kick
+1:50  [STATE]   friends 1:96 2:100 3:90 / enemies 4:100 5:97 6:85
+1:50  [OWNER CC]   Leg Sweep
+1:50  [CC CAST]   Leg Sweep (by 1) → 6
+1:51  [STATE]   friends 1:100 2:100 3:90 / enemies 4:100 5:97 6:83
+1:51  [OWNER CAST]   Rushing Wind Kick
+1:52  [STATE]   friends 1:100 2:99 3:95 / enemies 4:100 5:99 6:76
+1:53  [STATE]   friends 1:100 2:98 3:97 / enemies 4:100 5:99 6:76
+1:53  [TEAMMATE CD]   2 (Elemental Shaman): Stormkeeper
+1:53  [OWNER CAST]   Renewing Mist → 3
+1:54  [STATE]   friends 1:100 2:95 3:87 / enemies 4:100 5:99 6:76
+1:55  [STATE]   friends 1:100 2:93 3:86 / enemies 4:100 5:100 6:78
+1:55  [OWNER CAST]   Summon Jade Serpent Statue
+1:56  [OWNER CAST]   Soothing Mist → 3
+1:57  [STATE]   friends 1:100 2:97 3:85
+1:57  [ENEMY CD]   4 (Elemental Shaman): Stormkeeper [3/7]
+1:57  [OWNER CAST]   Enveloping Mist → 3
+2:00  [STATE]   friends 1:100 2:98 3:90
+2:00  [OWNER CAST]   Detox → 2
+2:00  [CLEANSE]   1 dispelled Chilled off 2
+2:02  [OWNER CAST]   Renewing Mist → self
+2:03  [STATE]   friends 1:99 2:97 3:96
+2:06  [STATE]   friends 1:100 2:98 3:100
+2:09  [STATE]   friends 1:100 2:93 3:100
+2:09  [OWNER CAST]   Renewing Mist → 2
+2:09  [CLEANSE]   2 dispelled Earthbind off 2
+2:10  [OWNER CAST]   Renewing Mist → self
+2:10  [CC ON TEAM]   3 ← Mind Control (Rhuk-Tichondrius-US) | 5s | trinket: ON CD (15s left)
+2:10  [UNCLEANSED DEBUFF]   Mind Control on 3 | 5s | 3k taken during | dispel: Magic
+2:11  [STATE]   friends 1:100 2:97 3:100 / enemies 4:98 5:100 6:97
+2:11  [OWNER CAST]   Summon Jade Serpent Statue
+2:12  [STATE]   friends 1:100 2:97 3:98 / enemies 4:98 5:100 6:97
+2:12  [UNCLEANSED DEBUFF]   Flame Shock on 2 | 18s | 120k taken during | dispel: Magic
+2:13  [STATE]   friends 1:100 2:100 3:98 / enemies 4:98 6:97
+2:14  [STATE]   friends 1:100 2:87 3:99 / enemies 4:98 6:97
+2:14  [OWNER CAST]   Chi Torpedo
+2:15  [STATE]   friends 1:100 2:86 3:100 / enemies 4:98 6:98
+2:15  [OWNER CC]   Paralysis → Rhuk-Tichondrius-US
+      [RES] rdy:Paralysis,Leg Sweep,2:Hex,2:Stormkeeper,2:Spiritwalker's Grace,3:Avatar,3:Intimidating Shout,3:Bladestorm (Arms)  cd:Life Cocoon(69s),2:Ascendance (Elemental)(61s),3:Die by the Sword(6s)  enemy:Stormkeeper/Elemental Shaman(18s)  cc:3/Mind Control-0s
+2:16  [STATE]   friends 1:100 2:87 3:100 / enemies 4:97 6:98
+2:16  [OWNER CAST]   Transcendence: Transfer
+2:17  [STATE]   friends 1:100 2:83 3:94 / enemies 4:92 5:100 6:98
+2:17  [OWNER CAST]   Transcendence
+2:18  [STATE]   friends 1:100 2:83 3:84 / enemies 4:85 5:100 6:99
+2:19  [STATE]   friends 1:100 2:84 3:66 / enemies 4:85 5:100 6:100
+2:20  [STATE]   friends 1:100 2:82 3:55 / enemies 4:85 5:100 6:100
+2:20  [OWNER CD]   Restoral
+2:21  [STATE]   friends 1:100 2:100 3:81
+2:24  [STATE]   friends 1:100 2:99 3:64
+2:24  [OWNER CAST]   Soothing Mist → 3
+2:24  [OWNER CAST]   Enveloping Mist → 3
+2:26  [OWNER CAST]   Spinning Crane Kick
+2:27  [STATE]   friends 1:98 2:100 3:88
+2:28  [OWNER CAST]   Rushing Wind Kick
+2:30  [STATE]   friends 1:100 2:100 3:100
+2:30  [OWNER CAST]   Song of Chi-Ji
+2:32  [OWNER CAST]   Renewing Mist → 2
+2:32  [CC ON TEAM]   3 ← Dragon's Breath (Biillionaire-Frostmourne-US) | 3s | trinket: used
+2:33  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:95 6:100
+2:34  [STATE]   friends 1:100 2:100 3:100 / enemies 5:95 6:100
+2:34  [TEAMMATE CD]   2 (Elemental Shaman): Ascendance (Elemental)
+2:35  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 6:96
+2:35  [OWNER CAST]   Chi Torpedo
+2:35  [CC ON TEAM]   3 ← Snowdrift (Biillionaire-Frostmourne-US) | 0s | trinket: used
+2:36  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 6:92
+2:36  [TRINKET]   3 used PvP trinket
+2:36  [OWNER CAST]   Transcendence
+2:37  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 6:83
+2:38  [STATE]   friends 1:100 2:100 3:94 / enemies 4:99 5:96 6:80
+2:38  [OWNER CAST]   Renewing Mist → self
+2:39  [STATE]   friends 1:100 2:100 3:78 / enemies 4:99 5:96 6:72
+2:39  [OFFENSIVE WINDOW]   2:39–3:00 | Critical | 0.60M on 2 (Elemental Shaman) | CDs: Bloodlust + Ascendance + Power Infusion
+2:39  [ENEMY CD]   4 (Elemental Shaman): Bloodlust [3/5]
+2:40  [STATE]   friends 1:100 2:100 3:73 / enemies 4:99 5:97 6:61
+2:40  [OWNER CAST]   Renewing Mist → 3
+2:41  [STATE]   friends 1:100 2:96 3:72 / enemies 4:96 5:97 6:61
+2:42  [STATE]   friends 1:100 2:96 3:72 / enemies 4:93 5:97 6:76
+2:42  [ENEMY CD]   4 (Elemental Shaman): Ascendance [2/3]
+2:42  [UNCLEANSED DEBUFF]   Flame Shock on 1 | 31s | 54k taken during | dispel: Magic
+2:42  [UNCLEANSED DEBUFF]   Flame Shock on 2 | 54s | 33k taken during | dispel: Magic
+2:43  [STATE]   friends 1:100 2:98 3:62 / enemies 4:92 5:97 6:63
+2:44  [STATE]   friends 1:97 2:95 3:38 / enemies 4:86 5:97 6:57
+2:44  [OWNER CAST]   Soothing Mist → 3
+2:44  [TEAMMATE CD]   3 (Arms Warrior): Die by the Sword
+2:45  [STATE]   friends 1:94 2:95 3:31 / enemies 4:85 5:97 6:56
+2:45  [ENEMY CD]   5 (Discipline Priest): Power Infusion [2/3]
+2:45  [ENEMY BUFF]   4: Power Infusion (purgeable)
+2:45  [ENEMY BUFF]   5: Power Infusion (purgeable)
+2:45  [OWNER CAST]   Sheilun's Gift → 3
+2:45  [TEAMMATE CD]   2 (Elemental Shaman): Stormkeeper
+2:46  [OWNER CAST]   Invoke Chi-Ji, the Red Crane
+2:47  [OWNER CAST]   Soothing Mist → 3
+2:48  [STATE]   friends 1:100 2:100 3:51
+2:48  [OWNER CAST]   Sheilun's Gift → 3
+2:49  [OWNER CAST]   Spinning Crane Kick
+2:51  [STATE]   friends 1:100 2:95 3:72
+2:51  [OWNER CAST]   Rushing Wind Kick
+2:52  [OWNER CAST]   Spinning Crane Kick
+2:54  [STATE]   friends 1:100 2:94 3:64
+2:54  [OWNER CAST]   Renewing Mist → 3
+2:55  [STATE]   friends 1:100 2:95 3:46 / enemies 4:100 5:100 6:97
+2:55  [OWNER CAST]   Spinning Crane Kick
+2:56  [STATE]   friends 1:100 2:100 3:58 / enemies 4:100 5:100 6:99
+2:56  [OWNER CC]   Paralysis → Hevestarvey-Tichondrius-US (100% HP)
+      [RES] rdy:Δ-Paralysis  cd:Paralysis(3s)  enemy:Bloodlust/Elemental Shaman(17s),Ascendance/Elemental Shaman(14s),Power Infusion/Discipline Priest(12s)
+2:57  [STATE]   friends 1:99 2:87 3:64 / enemies 4:100 5:100 6:100
+2:58  [STATE]   friends 1:100 2:86 3:66 / enemies 4:100 5:100 6:100
+2:58  [CC ON TEAM]   1 ← Psychic Scream (Rhuk-Tichondrius-US) | 1s | trinket: used
+2:59  [STATE]   friends 1:100 2:82 3:68 / enemies 4:100 5:100 6:100
+2:59  [TRINKET]   1 used PvP trinket
+2:59  [DMG SPIKE]   2 (Elemental Shaman): 0.60M in 10s [P95 Danger] [ROT] (80% -> 52% HP)
+3:00  [STATE]   friends 1:100 2:71 3:68 / enemies 4:100 5:100 6:100
+3:00  [ENEMY BUFF END]   4: Power Infusion
+3:00  [ENEMY BUFF END]   5: Power Infusion
+3:00  [OWNER CC]   Leg Sweep
+3:00  [CC CAST]   Leg Sweep (by 1) → 4
+3:01  [STATE]   friends 1:100 2:55 3:68 / enemies 4:100 5:100 6:100
+3:02  [STATE]   friends 1:100 2:43 3:63 / enemies 4:100 5:100 6:100
+3:03  [STATE]   friends 1:100 2:38 3:60 / enemies 4:100 5:100 6:100
+3:04  [STATE]   friends 1:100 2:36 3:60 / enemies 4:100 5:100 6:99
+3:04  [OWNER CAST]   Sheilun's Gift → 2
+3:05  [STATE]   friends 1:100 2:95 3:61 / enemies 4:100 5:100 6:97
+3:05  [TEAMMATE CC]   3 (Arms Warrior): Intimidating Shout
+3:05  [CC ON TEAM]   1 ← Hex (Hevestarvey-Tichondrius-US) | 1s | trinket: ON CD (85s left)
+3:06  [STATE]   friends 1:100 2:92 3:62 / enemies 4:100 5:100 6:97
+3:06  [CLEANSE]   2 dispelled Hex off 1
+3:06  [ENEMY CD]   4 (Elemental Shaman): Stormkeeper [4/7]
+3:07  [STATE]   friends 1:100 2:94 3:66 / enemies 4:100 5:100 6:98
+3:07  [OWNER CAST]   Soothing Mist → 3
+3:07  [OWNER CAST]   Enveloping Mist → 3
+3:08  [STATE]   friends 1:100 2:78 3:69 / enemies 4:100 5:100 6:98
+3:08  [CC CAST]   Intimidating Shout (by 3) → 5
+3:09  [STATE]   friends 1:100 2:68 3:70 / enemies 4:100 5:100 6:99
+3:09  [OWNER CAST]   Soothing Mist → 2
+3:09  [OWNER CAST]   Enveloping Mist → 2
+3:10  [STATE]   friends 1:100 2:54 3:71 / enemies 4:100 5:100 6:100
+3:11  [STATE]   friends 1:100 2:53 3:72 / enemies 4:100 5:100 6:100
+3:11  [OWNER CAST]   Rushing Wind Kick
+3:11  [OWNER CAST]   Thunder Focus Tea
+3:12  [STATE]   friends 1:100 2:68 3:87 / enemies 4:100 5:100 6:99
+3:12  [OWNER CAST]   Rushing Wind Kick
+3:13  [STATE]   friends 1:100 2:92 3:100 / enemies 4:100 5:100 6:98
+3:13  [OWNER CAST]   Spinning Crane Kick [completed before CC landed]
+3:13  [CC ON TEAM]   1 ← Polymorph (Biillionaire-Frostmourne-US) | 3s | trinket: ON CD (77s left)
+3:14  [STATE]   friends 1:100 2:93 3:100 / enemies 4:100 5:100 6:90
+3:15  [STATE]   friends 1:100 2:97 3:99 / enemies 4:96 5:100 6:100
+3:16  [STATE]   friends 1:100 2:100 3:100 / enemies 4:98 5:100 6:100
+3:17  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:100 6:100
+3:17  [OWNER CAST]   Spinning Crane Kick
+3:18  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:94 6:100
+3:19  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:90 6:99
+3:20  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:89 6:99
+3:20  [OWNER CAST]   Detox → 3
+3:20  [CLEANSE]   1 dispelled 2 effects: Flame Shock off 3, Freeze off 3
+3:21  [STATE]   friends 1:79 2:100 3:100 / enemies 5:88 6:91
+3:21  [OWNER CAST]   Spinning Crane Kick
+3:22  [STATE]   friends 1:77 2:100 3:78 / enemies 4:100 5:87 6:77
+3:22  [OWNER CAST]   Renewing Mist → self
+3:23  [STATE]   friends 1:78 2:100 3:75 / enemies 4:100 5:87 6:81
+3:24  [STATE]   friends 1:79 2:100 3:72 / enemies 4:100 5:87 6:100
+3:24  [OWNER CAST]   Renewing Mist → 3
+3:24  [CC ON TEAM]   3 ← Hex (Hevestarvey-Tichondrius-US) | 1s | trinket: ON CD (72s left)
+3:24  [TEAMMATE CD]   2 (Elemental Shaman): Stormkeeper
+3:25  [STATE]   friends 1:81 2:100 3:75 / enemies 4:100 5:87 6:100
+3:25  [CLEANSE]   2 dispelled Hex off 3
+3:26  [STATE]   friends 1:79 2:100 3:77 / enemies 4:100 5:87 6:100
+3:26  [OWNER CAST]   Chi Torpedo
+3:27  [STATE]   friends 1:81 2:88 3:79 / enemies 4:100 5:88 6:100
+3:27  [DMG SPIKE]   3 (Arms Warrior): 0.51M in 10s [ROT] (79% -> 65% HP)
+3:28  [STATE]   friends 1:84 2:89 3:74 / enemies 4:100 5:88 6:100
+3:29  [STATE]   friends 1:84 2:89 3:73 / enemies 4:100 5:90 6:100
+3:30  [STATE]   friends 1:87 2:89 3:56 / enemies 4:100 5:91 6:100
+3:30  [OWNER CD]   Tiger's Lust → 3
+3:30  [CLEANSE]   1 dispelled Chilled off 3
+3:31  [STATE]   friends 1:90 2:89 3:34 / enemies 4:100 5:92 6:100
+3:31  [CC ON TEAM]   1 ← Psychic Scream (Rhuk-Tichondrius-US) | 1s | trinket: ON CD (59s left)
+3:31  [CC ON TEAM]   3 ← Psychic Scream (Rhuk-Tichondrius-US) | 1s | trinket: ON CD (66s left)
+3:31  [CLEANSE]   3 dispelled Chilled off 3
+3:32  [STATE]   friends 1:88 2:88 3:26 / enemies 4:93 5:92 6:100
+3:32  [OWNER CAST]   Will of the Forsaken
+3:32  [OWNER CAST]   Spinning Crane Kick
+3:33  [STATE]   friends 1:88 2:89 3:26 / enemies 4:92 5:95 6:100
+3:33  [OWNER CAST]   Spinning Crane Kick
+3:34  [STATE]   friends 1:95 2:94 3:20 / enemies 4:92 5:100 6:100
+3:35  [STATE]   friends 1:97 2:96 3:30 / enemies 4:96 5:100 6:100
+3:35  [OWNER CD]   Life Cocoon → 3 (30% HP)
+3:35  [OWNER CAST]   Spinning Crane Kick
+3:36  [STATE]   friends 1:99 2:100 3:36 / enemies 4:97 5:100 6:100
+3:37  [STATE]   friends 1:99 2:100 3:45 / enemies 4:97 5:100 6:100
+3:37  [OWNER CAST]   Rushing Wind Kick
+3:38  [STATE]   friends 1:98 2:100 3:67 / enemies 4:98 5:100 6:100
+3:38  [OWNER CAST]   Spinning Crane Kick [completed before CC landed]
+3:38  [CC ON TEAM]   1 ← Polymorph (Biillionaire-Frostmourne-US) | 1s | trinket: ON CD (52s left)
+3:39  [STATE]   friends 1:99 2:100 3:72 / enemies 4:99 5:100 6:100
+3:39  [TEAMMATE CD]   2 (Elemental Shaman): Spiritwalker's Grace
+3:40  [STATE]   friends 1:98 2:100 3:73 / enemies 4:100 5:99 6:100
+3:40  [OWNER CAST]   Thunder Focus Tea
+3:40  [OWNER CAST]   Rushing Wind Kick
+3:41  [STATE]   friends 1:99 2:99 3:100 / enemies 4:100 5:78 6:100
+3:41  [OWNER CAST]   Spinning Crane Kick
+3:42  [STATE]   friends 1:99 2:100 3:100 / enemies 4:100 5:78 6:100
+3:42  [OWNER CAST]   Rushing Wind Kick
+3:43  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:83 6:100
+3:43  [OWNER CAST]   Thunder Focus Tea
+3:44  [STATE]   friends 1:100 2:88 3:100 / enemies 4:100 5:87 6:100
+3:44  [OWNER CAST]   Rushing Wind Kick
+3:44  [CC ON TEAM]   3 ← Dragon's Breath (Biillionaire-Frostmourne-US) | 1s | trinket: ON CD (52s left)
+3:45  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:84 6:100
+3:45  [OWNER CAST]   Chi Torpedo
+3:46  [STATE]   friends 1:100 2:92 3:100 / enemies 4:100 5:84 6:100
+3:46  [OWNER CAST]   Detox → 3
+3:46  [CLEANSE]   1 dispelled 3 effects: Earthgrab off 3, Chilled off 3, Flame Shock off 3
+3:47  [STATE]   friends 1:82 2:86 3:100 / enemies 4:100 5:83 6:100
+3:47  [CC ON TEAM]   3 ← Snowdrift (Biillionaire-Frostmourne-US) | 2s | trinket: ON CD (49s left)
+3:47  [BUFF FADED]   Life Cocoon
+3:47  [OWNER CAST]   Spinning Crane Kick [completed before CC landed]
+3:48  [STATE]   friends 1:89 2:85 3:100 / enemies 4:100 5:83 6:98
+3:48  [CC ON TEAM]   1 ← Snowdrift (Biillionaire-Frostmourne-US) | 4s | trinket: ON CD (42s left)
+3:49  [STATE]   friends 1:91 2:87 3:100 / enemies 4:100 5:90 6:98
+3:50  [STATE]   friends 1:93 2:88 3:100 / enemies 4:100 5:94 6:95
+3:51  [STATE]   friends 1:93 2:90 3:100 / enemies 4:100 5:100 6:95
+3:52  [STATE]   friends 1:94 2:93 3:100 / enemies 4:100 5:100 6:78
+3:52  [OWNER CAST]   Renewing Mist → 3
+3:53  [STATE]   friends 1:95 2:95 3:100 / enemies 4:100 5:100 6:80
+3:53  [OWNER CAST]   Renewing Mist → self
+3:54  [STATE]   friends 1:96 2:92 3:100 / enemies 4:100 5:100 6:80
+3:54  [OWNER CAST]   Mana Tea
+3:55  [STATE]   friends 1:96 2:90 3:100 / enemies 4:100 5:100 6:93
+3:56  [STATE]   friends 1:97 2:88 3:100 / enemies 4:100 5:100 6:100
+3:57  [STATE]   friends 1:99 2:88 3:100 / enemies 4:100 5:100 6:100
+3:58  [STATE]   friends 1:99 2:88 / enemies 4:100
+4:00  [STATE]   friends 1:100 2:89 3:100
+4:00  [ENEMY CD]   4 (Elemental Shaman): Stormkeeper [5/7]
+4:00  [ENEMY CD]   4 (Elemental Shaman): Bloodlust [4/5]
+4:03  [STATE]   friends 1:100 2:66 3:100
+4:03  [OWNER CC]   Paralysis → Rhuk-Tichondrius-US (100% HP)
+      [RES] rdy:Δ+Paralysis,2:Ascendance (Elemental)-2:Spiritwalker's Grace,3:Intimidating Shout  cd:2:Spiritwalker's Grace(97s),3:Intimidating Shout(32s)  enemy:Stormkeeper/Elemental Shaman(3s),Bloodlust/Elemental Shaman(3s)
+4:03  [CC ON TEAM]   1 ← Psychic Scream (Rhuk-Tichondrius-US) | 1s | trinket: ON CD (27s left)
+4:03  [TEAMMATE CD]   3 (Arms Warrior): Avatar
+4:04  [STATE]   friends 1:100 2:66 3:100 / enemies 4:75 5:100
+4:05  [STATE]   friends 1:100 2:64 3:100 / enemies 4:70 5:100 6:100
+4:05  [OWNER CAST]   Renewing Mist → 2
+4:06  [STATE]   friends 1:100 2:62 3:100 / enemies 4:58 5:100 6:100
+4:07  [STATE]   friends 1:100 2:62 3:99 / enemies 4:60 5:100 6:100
+4:07  [OWNER CAST]   Soothing Mist → 2 [completed before CC landed]
+4:07  [OWNER CAST]   Enveloping Mist → 2 [completed before CC landed]
+4:07  [CC ON TEAM]   1 ← Polymorph (Biillionaire-Frostmourne-US) | 8s | trinket: ON CD (22s left)
+4:07  [UNCLEANSED DEBUFF]   Flame Shock on 2 | 18s | 83k taken during | dispel: Magic
+4:08  [STATE]   friends 1:100 2:65 3:100 / enemies 4:61 5:100 6:100
+4:09  [STATE]   friends 1:100 2:62 3:99 / enemies 4:86 5:100 6:100
+4:10  [STATE]   friends 2:64 3:85 / enemies 4:92 5:100 6:100
+4:11  [STATE]   friends 2:64 3:66 / enemies 4:100 5:100 6:100
+4:12  [STATE]   friends 2:67 3:53 / enemies 4:100 5:100 6:100
+4:12  [CC ON TEAM]   3 ← Hex (Hevestarvey-Tichondrius-US) | 5s | trinket: ON CD (24s left)
+4:13  [STATE]   friends 2:71 3:49 / enemies 4:100 5:100 6:100
+4:14  [STATE]   friends 2:68 3:50 / enemies 4:100 5:100 6:100
+4:15  [STATE]   friends 2:72 3:51 / enemies 4:100 5:100 6:100
+4:16  [STATE]   friends 1:100 2:72 3:52 / enemies 4:100 5:100 6:100
+4:16  [OWNER CAST]   Spinning Crane Kick
+4:17  [STATE]   friends 1:100 2:77 3:52 / enemies 4:100 5:98 6:100
+4:18  [STATE]   friends 1:100 2:86 3:56 / enemies 4:100 5:97 6:100
+4:18  [CC ON TEAM]   1 ← Mind Control (Rhuk-Tichondrius-US) | 1s | trinket: ON CD (12s left)
+4:19  [STATE]   friends 1:100 2:100 3:47 / enemies 4:100 5:97 6:100
+4:19  [UNCLEANSED DEBUFF]   Flame Shock on 3 | 18s | 94k taken during | dispel: Magic
+4:20  [STATE]   friends 1:100 2:100 3:45 / enemies 4:100 5:97 6:100
+4:20  [OWNER CAST]   Spinning Crane Kick
+4:21  [STATE]   friends 1:100 2:100 3:54 / enemies 4:100 5:96 6:100
+4:21  [OWNER CAST]   Spinning Crane Kick
+4:22  [STATE]   friends 1:100 2:100 3:86 / enemies 4:100 5:93 6:99
+4:22  [OWNER CAST]   Rushing Wind Kick
+4:23  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:91 6:90
+4:23  [OWNER CC]   Leg Sweep
+      [RES] rdy:Δ-3:Avatar  cd:3:Avatar(70s)  enemy:Stormkeeper/Elemental Shaman(24s),Bloodlust/Elemental Shaman(24s)
+4:23  [CC CAST]   Leg Sweep (by 1) → 5, 6 [2 enemies]
+4:24  [STATE]   friends 1:100 2:99 3:88 / enemies 4:100 5:86 6:86
+4:24  [OWNER CAST]   Thunder Focus Tea
+4:25  [STATE]   friends 1:100 2:97 3:72 / enemies 4:100 5:85 6:88
+4:26  [STATE]   friends 1:100 2:99 3:72 / enemies 4:100 5:83 6:80
+4:26  [TEAMMATE CD]   2 (Elemental Shaman): Stormkeeper
+4:26  [CC ON TEAM]   3 ← Dragon's Breath (Biillionaire-Frostmourne-US) | 3s | trinket: ON CD (10s left)
+4:27  [STATE]   friends 1:100 2:94 3:69 / enemies 4:100 5:89 6:86
+4:27  [OWNER CAST]   Song of Chi-Ji
+4:28  [STATE]   friends 1:100 2:90 3:70 / enemies 4:100 5:89 6:87
+4:29  [STATE]   friends 1:98 2:90 3:72 / enemies 4:100 5:92 6:100
+4:29  [OWNER CAST]   Renewing Mist → 3
+4:30  [STATE]   friends 1:95 2:90 3:72 / enemies 4:100 5:96 6:100
+4:30  [CC ON TEAM]   2 ← Hex (Hevestarvey-Tichondrius-US) | 2s | trinket: used
+4:31  [STATE]   friends 1:94 2:92 3:73 / enemies 4:100 5:97 6:100
+4:31  [OWNER CAST]   Renewing Mist → self
+4:31  [TRINKET]   2 used PvP trinket
+4:32  [STATE]   friends 1:93 2:90 3:74 / enemies 4:100 5:97 6:100
+4:32  [OWNER CAST]   Soothing Mist → 3
+4:33  [STATE]   friends 1:92 2:92 3:68 / enemies 4:98 5:97 6:100
+4:33  [OWNER CAST]   Enveloping Mist → 3
+4:34  [STATE]   friends 1:96 2:94 3:71 / enemies 4:97 5:97 6:100
+4:34  [OWNER CAST]   Chi Torpedo [completed before CC landed]
+4:35  [STATE]   friends 1:96 2:91 3:72 / enemies 4:82 5:91 6:96
+4:35  [CC ON TEAM]   1 ← Polymorph (Biillionaire-Frostmourne-US) | 2s | trinket: available
+4:36  [STATE]   friends 1:99 2:92 3:74 / enemies 4:70 5:86 6:95
+4:37  [STATE]   friends 1:100 2:91 3:77 / enemies 4:66 5:86 6:95
+4:37  [OWNER CAST]   Spinning Crane Kick
+4:38  [STATE]   friends 1:100 2:92 3:83 / enemies 4:63 5:86
+4:38  [OWNER CAST]   Rushing Wind Kick
+4:39  [STATE]   friends 1:100 2:96 3:99 / enemies 4:57 5:86 6:95
+4:39  [OWNER CAST]   Spinning Crane Kick [completed before CC landed]
+4:40  [CC ON TEAM]   1 ← Polymorph (Biillionaire-Frostmourne-US) | 3s | trinket: available
+4:40  [STATE]   friends 1:100 2:100 3:100 / enemies 4:56 5:86 6:95
+4:41  [STATE]   friends 1:100 2:100 3:100 / enemies 4:66 5:86 6:97
+4:41  [TEAMMATE CD]   2 (Elemental Shaman): Ascendance (Elemental)
+4:42  [STATE]   friends 1:100 2:96 3:100 / enemies 4:73 5:84 6:99
+4:43  [STATE]   friends 1:100 2:97 3:100 / enemies 4:100 5:83 6:100
+4:43  [OWNER CAST]   Renewing Mist → 2
+4:44  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:83 6:100
+4:45  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:83 6:100
+4:45  [OWNER CAST]   Transcendence
+4:46  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:84 6:94
+4:46  [OWNER CAST]   Chi Torpedo
+4:47  [STATE]   friends 1:100 2:100 3:99 / enemies 4:100 5:82 6:94
+4:48  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:81 6:93
+4:48  [OWNER CAST]   Spinning Crane Kick
+4:48  [OFFENSIVE WINDOW]   4:48–5:07 | Moderate | 0.53M on 2 (Elemental Shaman) | CDs: Power Infusion + Stormkeeper
+4:48  [ENEMY BUFF]   4: Power Infusion (purgeable)
+4:48  [ENEMY CD]   5 (Discipline Priest): Power Infusion [3/3]
+4:48  [ENEMY BUFF]   5: Power Infusion (purgeable)
+4:49  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:82 6:94
+4:49  [UNCLEANSED DEBUFF]   Flame Shock on 3 | 18s | 15k taken during | dispel: Magic
+4:50  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:83 6:95
+4:51  [STATE]   friends 1:100 2:100 3:100
+4:51  [OWNER CAST]   Spinning Crane Kick
+4:52  [ENEMY CD]   4 (Elemental Shaman): Stormkeeper [6/7]
+4:52  [OWNER CAST]   Spinning Crane Kick
+4:54  [STATE]   friends 1:100 2:100 3:100
+4:55  [OWNER CAST]   Renewing Mist → 2
+4:56  [UNCLEANSED DEBUFF]   Flame Shock on 2 | 71s | 108k taken during | dispel: Magic
+4:57  [STATE]   friends 1:100 2:93 3:96
+4:58  [OWNER CD]   Tiger's Lust → self
+4:59  [UNCLEANSED DEBUFF]   Frost Nova on 3 | 4s | 13k taken during | dispel: Magic
+5:00  [STATE]   friends 1:100 2:83 3:100
+5:01  [OWNER CAST]   Song of Chi-Ji
+5:03  [STATE]   friends 1:100 2:81 3:100
+5:03  [ENEMY BUFF END]   4: Power Infusion
+5:03  [ENEMY BUFF END]   5: Power Infusion
+5:03  [CLEANSE]   2 dispelled 2 effects: Chilled off 2, Blaze of Light off 2
+5:04  [STATE]   friends 1:100 2:71 3:100 / enemies 4:100 5:100 6:100
+5:04  [OWNER CAST]   Spinning Crane Kick [completed before CC landed]
+5:04  [CC ON TEAM]   1 ← Psychic Scream (Rhuk-Tichondrius-US) | 2s | trinket: available
+5:05  [STATE]   friends 1:98 2:68 3:100 / enemies 4:100 5:97 6:100
+5:06  [STATE]   friends 1:100 2:64 3:100 / enemies 4:100 5:96 6:100
+5:07  [STATE]   friends 1:100 2:65 3:100 / enemies 4:100 5:96 6:100
+5:07  [OWNER CAST]   Soothing Mist → 2
+5:07  [OFFENSIVE WINDOW]   5:07–5:17 | Critical | 0.53M on 2 (Elemental Shaman) | CDs: Bloodlust + Ascendance
+5:07  [ENEMY CD]   4 (Elemental Shaman): Bloodlust [5/5]
+5:07  [OWNER CAST]   Enveloping Mist → 2
+5:08  [STATE]   friends 1:100 2:69 3:100 / enemies 4:100 5:96 6:97
+5:08  [ENEMY CD]   4 (Elemental Shaman): Ascendance [3/3]
+5:08  [UNCLEANSED DEBUFF]   Flame Shock on 1 | 4s | 20k taken during | dispel: Magic
+5:08  [UNCLEANSED DEBUFF]   Flame Shock on 3 | 12s | 48k taken during | dispel: Magic
+5:08  [DMG SPIKE]   2 (Elemental Shaman): 0.53M in 10s [P95 Danger] [ROT] (68% -> 68% HP)
+5:08  [OWNER CAST]   Rushing Wind Kick
+5:08  [CC ON TEAM]   3 ← Dragon's Breath (Biillionaire-Frostmourne-US) | 2s | trinket: available
+5:09  [STATE]   friends 1:100 2:78 3:99 / enemies 4:100 5:97 6:72
+5:09  [OWNER CAST]   Thunder Focus Tea
+5:09  [OWNER CAST]   Rushing Wind Kick
+5:10  [STATE]   friends 1:100 2:89 3:100 / enemies 4:100 5:97 6:55
+5:10  [OWNER CAST]   Spinning Crane Kick
+5:11  [STATE]   friends 1:100 2:93 3:100 / enemies 4:100 5:97 6:39
+5:12  [STATE]   friends 1:100 2:87 3:100 / enemies 4:100 5:99 6:29
+5:12  [CC ON TEAM]   1 ← Polymorph (Biillionaire-Frostmourne-US) | 6s | trinket: available
+5:12  [CC ON TEAM]   1 ← Snowdrift (Biillionaire-Frostmourne-US) | 4s | trinket: available
+5:13  [STATE]   friends 1:100 2:83 3:96 / enemies 4:100 5:100 6:72
+5:14  [STATE]   friends 1:100 2:86 3:96 / enemies 4:100 5:100 6:66
+5:15  [STATE]   friends 1:100 2:77 3:95 / enemies 4:100 5:100 6:66
+5:16  [STATE]   friends 1:100 2:79 3:96 / enemies 4:100 5:100 6:75
+5:16  [CC ON TEAM]   2 ← Hex (Hevestarvey-Tichondrius-US) | 1s | trinket: ON CD (76s left)
+5:17  [STATE]   friends 1:100 2:72 3:94 / enemies 4:100 5:100 6:76
+5:18  [STATE]   friends 1:100 2:67 3:93 / enemies 4:100 5:100 6:76
+5:19  [STATE]   friends 1:100 2:68 3:72 / enemies 4:100 5:100 6:93
+5:19  [OWNER CAST]   Chi Torpedo
+5:20  [STATE]   friends 1:100 2:73 3:68 / enemies 4:100 5:100 6:100
+5:20  [OWNER CD]   Restoral
+5:20  [CC ON TEAM]   3 ← Polymorph (Biillionaire-Frostmourne-US) | 1s | trinket: available
+5:21  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:100
+5:21  [OWNER CAST]   Detox → 3
+5:21  [CLEANSE]   1 dispelled 3 effects: Frost Shock off 3, Polymorph off 3, Chilled off 3
+5:22  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:89
+5:22  [TEAMMATE CD]   2 (Elemental Shaman): Stormkeeper
+5:22  [OWNER CAST]   Soothing Mist → 2
+5:23  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:100 6:96
+5:23  [OWNER CAST]   Enveloping Mist → 2
+5:24  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:96
+5:24  [OWNER CAST]   Rushing Wind Kick
+5:25  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:96
+5:25  [OWNER CAST]   Spinning Crane Kick
+5:26  [STATE]   friends 1:100 2:98 3:100 / enemies 4:100 5:100 6:84
+5:27  [STATE]   friends 1:99 2:100 3:96 / enemies 4:100 5:100 6:89
+5:27  [OWNER CAST]   Spinning Crane Kick
+5:28  [STATE]   friends 1:99 2:100 3:95 / enemies 4:100 5:100 6:89
+5:29  [STATE]   friends 1:96 2:99 3:97 / enemies 4:100 5:100 6:88
+5:29  [OWNER CAST]   Renewing Mist → 2
+5:30  [STATE]   friends 1:99 2:96 3:97 / enemies 4:100 5:100 6:90
+5:30  [OWNER CAST]   Renewing Mist → self
+5:31  [CLEANSE]   2 dispelled Chilled off 2
+5:31  [OWNER CAST]   Mana Tea
+5:33  [STATE]   friends 1:98 2:94 3:100
+5:36  [STATE]   friends 1:100 2:100 3:100
+5:36  [UNCLEANSED DEBUFF]   Frost Nova on 1 | 6s | 0k taken during | dispel: Magic
+5:37  [OWNER CAST]   Detox → 3
+5:37  [CLEANSE]   1 dispelled Frost Nova off 3
+5:38  [OWNER CAST]   Renewing Mist → self
+5:39  [STATE]   friends 1:100 2:100 3:98
+5:39  [CC ON TEAM]   1 ← Psychic Scream (Rhuk-Tichondrius-US) | 1s | trinket: available
+5:39  [CC ON TEAM]   3 ← Psychic Scream (Rhuk-Tichondrius-US) | 1s | trinket: available
+5:40  [STATE]   friends 1:100 2:98 3:98 / enemies 4:100 5:100 6:100
+5:41  [STATE]   friends 1:100 2:94 3:99 / enemies 4:100 5:100 6:100
+5:41  [OWNER CAST]   Will of the Forsaken
+5:41  [OWNER CAST]   Spinning Crane Kick
+5:42  [STATE]   friends 1:100 2:95 3:99 / enemies 4:100 5:100 6:100
+5:43  [STATE]   friends 1:100 2:94 3:100 / enemies 4:100 5:100 6:100
+5:43  [OWNER CD]   Tiger's Lust → self
+5:43  [CLEANSE]   1 dispelled Earthbind off 1
+5:44  [STATE]   friends 1:100 2:95 3:100 / enemies 4:100 5:100 6:100
+5:45  [STATE]   friends 1:100 2:95 3:100 / enemies 4:100 5:100 6:98
+5:45  [OWNER CC]   Leg Sweep
+      [RES] rdy:Δ+Life Cocoon,2:Spiritwalker's Grace,3:Avatar,3:Intimidating Shout,3:Die by the Sword  cd:—
+5:45  [CC CAST]   Leg Sweep (by 1) → 6, 5 [2 enemies]
+5:46  [STATE]   friends 1:100 2:95 3:99 / enemies 4:100 5:100 6:97
+5:46  [OWNER CAST]   Spinning Crane Kick
+5:47  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:96
+5:48  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:100 6:95
+5:48  [OWNER CAST]   Spinning Crane Kick
+5:49  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:99 6:100
+5:49  [CC ON TEAM]   2 ← Hex (Hevestarvey-Tichondrius-US) | 6s | trinket: ON CD (43s left)
+5:50  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:100
+5:50  [OWNER CAST]   Rushing Wind Kick [completed before CC landed]
+5:50  [CC ON TEAM]   1 ← Polymorph (Biillionaire-Frostmourne-US) | 6s | trinket: available
+5:51  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:98 6:100
+5:52  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:99 6:100
+5:53  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:99 6:100
+5:53  [TEAMMATE CC]   3 (Arms Warrior): Intimidating Shout
+5:53  [CC CAST]   Intimidating Shout (by 3) → 5
+5:54  [STATE]   friends 1:100 2:100 3:99 / enemies 4:100 5:95 6:100
+5:55  [STATE]   friends 1:100 2:100 3:98 / enemies 4:100 5:96 6:100
+5:56  [STATE]   friends 1:100 2:100 3:91 / enemies 4:100 5:95 6:100
+5:57  [STATE]   friends 1:100 2:99 3:91 / enemies 4:100 5:95 6:100
+5:57  [OWNER CAST]   Renewing Mist → 3
+5:57  [ENEMY CD]   4 (Elemental Shaman): Stormkeeper [7/7]
+5:58  [STATE]   friends 1:100 2:99 3:87 / enemies 4:100 5:94 6:100
+5:58  [OWNER CAST]   Soothing Mist → 3
+5:59  [STATE]   friends 1:100 2:99 3:87 / enemies 4:100 5:95 6:90
+5:59  [CC ON TEAM]   3 ← Dragon's Breath (Biillionaire-Frostmourne-US) | 2s | trinket: available
+5:59  [OWNER CAST]   Enveloping Mist → 3
+6:00  [STATE]   friends 1:100 2:99 3:91 / enemies 4:100 5:94 6:77
+6:00  [OWNER CAST]   Chi Torpedo
+6:01  [STATE]   friends 1:100 2:100 3:95 / enemies 4:100 5:95 6:77
+6:01  [OWNER CAST]   Spinning Crane Kick
+6:02  [STATE]   friends 1:100 2:100 3:95 / enemies 4:99 5:95 6:77
+6:02  [CC ON TEAM]   3 ← Snowdrift (Biillionaire-Frostmourne-US) | 2s | trinket: available
+6:02  [OWNER CAST]   Spinning Crane Kick
+6:03  [STATE]   friends 1:99 2:100 3:97 / enemies 4:99 5:94 6:85
+6:04  [STATE]   friends 1:100 2:100 3:86 / enemies 4:98 5:94 6:99
+6:05  [STATE]   friends 1:100 2:100 3:86 / enemies 4:97 5:94 6:100
+6:05  [OWNER CAST]   Renewing Mist → 3
+6:05  [TEAMMATE CD]   3 (Arms Warrior): Avatar
+6:06  [STATE]   friends 1:100 2:100 3:90 / enemies 4:100 5:100 6:100
+6:06  [OWNER CAST]   Thunder Focus Tea
+6:07  [STATE]   friends 1:100 2:99 3:84 / enemies 4:100 5:100 6:70
+6:07  [OWNER CAST]   Rushing Wind Kick
+6:08  [STATE]   friends 1:100 2:100 3:93 / enemies 4:99 5:100 6:71
+6:08  [OWNER CAST]   Spinning Crane Kick
+6:09  [STATE]   friends 1:100 2:99 3:93 / enemies 4:99 5:100 6:71
+6:09  [OWNER CAST]   Rushing Wind Kick
+6:10  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:100 6:68
+6:10  [OWNER CAST]   Spinning Crane Kick
+6:11  [STATE]   friends 1:100 2:98 3:100 / enemies 4:100 5:100 6:66
+6:11  [OWNER CAST]   Chi Torpedo
+6:12  [STATE]   friends 1:100 2:98 3:100 / enemies 4:100 5:100 6:89
+6:12  [OWNER CAST]   Spinning Crane Kick [completed before CC landed]
+6:12  [CC ON TEAM]   1 ← Hex (Hevestarvey-Tichondrius-US) | 3s | trinket: available
+6:13  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:100
+6:13  [TEAMMATE CD]   2 (Elemental Shaman): Stormkeeper
+6:14  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:99
+6:15  [STATE]   friends 1:99 2:100 3:97 / enemies 4:98 6:99
+6:16  [STATE]   friends 1:98 2:100 3:100 / enemies 4:98 5:100 6:99
+6:16  [OWNER CAST]   Spinning Crane Kick
+6:17  [STATE]   friends 1:100 2:100 3:92 / enemies 4:97 5:100 6:99
+6:17  [OWNER CD]   Tiger's Lust → 3
+6:17  [CLEANSE]   1 dispelled Chilled off 3
+6:18  [STATE]   friends 1:96 2:100 3:88 / enemies 4:98 5:100 6:74
+6:18  [OWNER CAST]   Spinning Crane Kick
+6:19  [STATE]   friends 1:96 2:100 3:81 / enemies 4:100 5:100 6:63
+6:19  [OWNER CAST]   Thunder Focus Tea
+6:20  [STATE]   friends 1:92 2:100 3:72 / enemies 4:100 5:100 6:56
+6:20  [OWNER CAST]   Rushing Wind Kick
+6:21  [STATE]   friends 1:97 2:98 3:79 / enemies 4:100 5:100 6:11
+6:22  [STATE]   friends 1:95 2:97 3:76 / enemies 4:100 5:100 6:9
+6:22  [OWNER CAST]   Rushing Wind Kick
+6:23  [STATE]   friends 1:99 2:100 3:84 / enemies 4:100 5:100 6:dead
+6:23  [DEATH]  6 (Frost Mage — enemy)
+6:23  [ROSTER]  enemy 6 removed (dead)
+6:23  [OWNER CAST]   Spinning Crane Kick
+6:24  [STATE]   friends 1:99 2:100 3:85
+6:27  [STATE]   friends 1:100 2:100 3:90
+6:27  [TEAMMATE CD]   2 (Elemental Shaman): Spiritwalker's Grace
+6:27  [OWNER CAST]   Renewing Mist → self
+6:28  [STATE]   friends 1:100 2:100 3:88 / enemies 4:100 5:100 6:dead
+6:28  [OWNER CAST]   Soothing Mist → 3
+6:29  [STATE]   friends 1:100 2:100 3:90 / enemies 4:90 5:100 6:dead
+6:29  [OWNER CAST]   Enveloping Mist → 3
+6:30  [STATE]   friends 1:100 2:100 3:92 / enemies 4:82 5:100 6:dead
+6:30  [OWNER CAST]   Spinning Crane Kick
+6:31  [STATE]   friends 1:100 2:100 3:98 / enemies 4:71 5:100 6:dead
+6:32  [STATE]   friends 1:100 2:100 3:100 / enemies 4:58 5:98 6:dead
+6:32  [OWNER CAST]   Spinning Crane Kick
+6:33  [STATE]   friends 1:100 2:100 3:100 / enemies 4:39 5:85 6:dead
+6:34  [STATE]   friends 1:100 2:100 3:100 / enemies 4:37 5:75 6:dead
+6:34  [OWNER CAST]   Rushing Wind Kick
+6:35  [STATE]   friends 1:100 2:100 3:100 / enemies 4:36 5:57 6:dead
+6:35  [OWNER CAST]   Spinning Crane Kick
+6:36  [STATE]   friends 1:100 2:100 3:100 / enemies 4:35 5:38 6:dead
+6:37  [STATE]   friends 1:100 2:100 3:100 / enemies 4:35 5:dead 6:dead
+6:37  [DEATH]  5 (Discipline Priest — enemy)
+6:37  [ROSTER]  enemy 5 removed (dead)
+6:38  [OWNER CC]   Leg Sweep
+      [RES] rdy:Δ-2:Spiritwalker's Grace,3:Avatar,3:Intimidating Shout  cd:2:Spiritwalker's Grace(109s),3:Avatar(58s),3:Intimidating Shout(45s)
+
+6:38  [MATCH END]   damp: 32%
+  friends 1:100% 2:100% 3:100% / enemies 4:54% 6:dead(6:23) 5:dead(6:37)

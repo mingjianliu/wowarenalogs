@@ -24,10 +24,10 @@ import fs from 'fs-extra';
 import { kmeans } from 'ml-kmeans';
 import path from 'path';
 
+import { IMatchDynamicFeatures } from '../../shared/src/utils/archetypeInference';
 import {
   IArchetypeFeatureRow,
   IFullBehavioralFeatures,
-  IMatchDynamicFeatures,
   IPositioningStats,
   IResponseLatency,
   ITimingDistribution,
@@ -82,28 +82,35 @@ function toFeatureVector(d: IMatchDynamicFeatures): number[] {
 // ── Normalization ─────────────────────────────────────────────────────────────
 
 interface INormParams {
-  min: number[];
-  max: number[];
+  mean: number[];
+  std: number[];
 }
 
 function computeNormParams(vectors: number[][]): INormParams {
   const dim = vectors[0].length;
-  const min = Array(dim).fill(Infinity) as number[];
-  const max = Array(dim).fill(-Infinity) as number[];
+  const means = Array(dim).fill(0) as number[];
+  const stds = Array(dim).fill(0) as number[];
+
+  for (const v of vectors) {
+    for (let i = 0; i < dim; i++) means[i] += v[i];
+  }
+  for (let i = 0; i < dim; i++) means[i] /= vectors.length;
+
   for (const v of vectors) {
     for (let i = 0; i < dim; i++) {
-      if (v[i] < min[i]) min[i] = v[i];
-      if (v[i] > max[i]) max[i] = v[i];
+      stds[i] += Math.pow(v[i] - means[i], 2);
     }
   }
-  return { min, max };
+  for (let i = 0; i < dim; i++) {
+    stds[i] = Math.sqrt(stds[i] / vectors.length);
+    if (stds[i] === 0) stds[i] = 1; // avoid division by zero
+  }
+
+  return { mean: means, std: stds };
 }
 
 function normalize(v: number[], params: INormParams): number[] {
-  return v.map((x, i) => {
-    const range = params.max[i] - params.min[i];
-    return range > 0 ? (x - params.min[i]) / range : 0;
-  });
+  return v.map((x, i) => (x - params.mean[i]) / params.std[i]);
 }
 
 // ── Stat helpers ──────────────────────────────────────────────────────────────
@@ -274,7 +281,11 @@ function aggregateBehaviors(rows: IArchetypeFeatureRow[]): IAggregatedBehaviors 
   const ccP75 = ccSorted.length > 0 ? ccSorted[Math.ceil(0.75 * ccSorted.length) - 1] : 0;
 
   const setupBreakdown = { one_shot_burst: 0, cc_then_burst: 0, flat_dampening: 0, unknown: 0 };
-  for (const s of setupStyles) setupBreakdown[s]++;
+  for (const s of setupStyles) {
+    if (s in setupBreakdown) {
+      setupBreakdown[s as keyof typeof setupBreakdown]++;
+    }
+  }
   const styleTotal = setupStyles.length || 1;
   for (const k of Object.keys(setupBreakdown) as (keyof typeof setupBreakdown)[]) {
     setupBreakdown[k] = roundTo(setupBreakdown[k] / styleTotal, 3);
@@ -404,10 +415,7 @@ function printClusterSummary(
   normParams: INormParams,
   rows: IArchetypeFeatureRow[],
 ) {
-  const denorm = centroid.map((x, i) => {
-    const range = normParams.max[i] - normParams.min[i];
-    return range > 0 ? x * range + normParams.min[i] : normParams.min[i];
-  });
+  const denorm = centroid.map((x, i) => x * normParams.std[i] + normParams.mean[i]);
 
   const own = rows.filter((r) => r.perspective === 'own');
   const specCounts = aggregateSpecDistribution(rows);

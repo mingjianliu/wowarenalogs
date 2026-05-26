@@ -1,0 +1,407 @@
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Restoration Shaman (Healer) | Bracket: 3v3 | Result: Win | Duration: 3:07
+  My team: Restoration Shaman, Shadow Priest, Arms Warrior
+  Enemy team: Preservation Evoker, Enhancement Shaman, Arms Warrior
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Restoration Shaman): CAN offensive purge
+  Team purgers: Shadow Priest
+
+DAMPENING (3v3): started at 10%, ended at 11% at match end
+
+CC APPLIED ON ENEMIES (DR summary):
+  Preservation Evoker (Dwagonyup-Illidan-US): 16 CC — 3× Stun, 5× Silence, 2× Disorient, 6× Unknown | 2 reduced, 0 immune
+  Enhancement Shaman (Rsha-Tichondrius-US): 21 CC — 7× Stun, 7× Unknown, 7× Disorient | 6 reduced, 0 immune
+  Arms Warrior (Areusure-Tichondrius-US): 20 CC — 5× Stun, 9× Unknown, 6× Disorient | 3 reduced, 3 immune ⚠ 3 hit immune — switch CC category or target after 2 applications
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Tival-Tichondrius-US (Restoration Shaman — log owner):
+    Hex [30s], Spiritwalker's Grace [120s], Healing Tide Totem [180s, 2 Charges]
+  2: Suire-Tichondrius-US (Shadow Priest):
+    Psychic Scream [40s, 2 Charges], Power Infusion [120s]
+  3: Dageumbari-Tichondrius-US (Arms Warrior):
+    Avatar [90s, 2 Charges], Intimidating Shout [90s], Die by the Sword [120s], Bladestorm (Arms) [90s]
+  4: Dwagonyup-Illidan-US (Preservation Evoker — enemy):
+    Deep Breath [120s]
+  5: Rsha-Tichondrius-US (Enhancement Shaman — enemy):
+    Heroism [60s], Ascendance [180s]
+  6: Areusure-Tichondrius-US (Arms Warrior — enemy):
+    Avatar [90s]
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:03  [STATE]   friends 1:100 2:100
+0:05  [OWNER CAST]   구속의 토템
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:06  [TEAMMATE CD]   3 (Arms Warrior): Bladestorm (Arms)
+0:06  [OWNER CAST]   영혼 정화 → 3 [completed before CC landed]
+0:07  [CC ON TEAM]   1 ← Champion's Spear (Areusure-Tichondrius-US) | 6s | trinket: available
+0:07  [CC ON TEAM]   3 ← Champion's Spear (Areusure-Tichondrius-US) | 6s | trinket: available
+0:07  [OWNER CAST]   성난 해일 → 3 [succeeded after CC arrived — within 1s in log]
+0:08  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:100
+0:08  [UNCLEANSED DEBUFF]   Flame Shock on 1 | 37s | 130k taken during | dispel: Magic
+0:08  [UNCLEANSED DEBUFF]   Flame Shock on 3 | 23s | 101k taken during | dispel: Magic
+0:09  [STATE]   friends 1:94 2:100 3:92 / enemies 4:100 5:100 6:100
+0:10  [STATE]   friends 1:88 2:100 3:89 / enemies 4:100 5:100 6:94
+0:11  [STATE]   friends 1:85 2:100 3:87 / enemies 4:100 5:100 6:97
+0:11  [OWNER CAST]   치유의 비
+0:11  [OWNER CAST]   쇄도하는 토템
+0:12  [STATE]   friends 1:83 2:98 3:85 / enemies 4:100 5:100 6:88
+0:12  [OWNER CAST]   물의 보호막
+0:12  [TEAMMATE CD]   2 (Shadow Priest): Power Infusion
+0:13  [STATE]   friends 1:79 2:95 3:85 / enemies 4:100 5:100 6:100
+0:13  [ENEMY CD]   6 (Arms Warrior): Avatar [1/3]
+0:14  [STATE]   friends 1:82 2:89 3:89 / enemies 4:100 5:89 6:100
+0:14  [OWNER CAST]   성난 해일 → 3
+0:14  [CLEANSE]   2 dispelled 대지의 속박 off 2
+0:15  [STATE]   friends 1:79 2:85 3:83 / enemies 4:100 5:98 6:100
+0:15  [OWNER CAST]   성난 해일 → 2
+0:16  [STATE]   friends 1:87 2:93 3:79 / enemies 4:100 5:99 6:97
+0:16  [OWNER CAST]   마법흡수 토템
+0:17  [STATE]   friends 1:85 2:81 3:82 / enemies 4:98 5:99 6:96
+0:17  [OWNER CAST]   자연의 신속함
+0:17  [OWNER CAST]   치유의 물결 → 2
+0:18  [STATE]   friends 1:86 2:99 3:99
+0:19  [TEAMMATE CD]   3 (Arms Warrior): Avatar
+0:19  [OWNER CAST]   토템 재배치
+0:20  [OWNER CAST]   축전 토템
+0:21  [STATE]   friends 1:91 2:100 3:99
+0:23  [OWNER CAST]   폭풍의 흐름 토템
+0:23  [OWNER CAST]   연쇄 치유 → self
+0:24  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:89 6:98
+0:24  [OWNER CAST]   성난 해일 → 2
+0:25  [STATE]   friends 1:100 2:100 3:96 / enemies 4:100 5:93 6:95
+0:26  [STATE]   friends 1:100 2:97 3:96 / enemies 4:99 5:86 6:96
+0:26  [OWNER CAST]   생명 폭발 → 2
+0:26  [TEAMMATE CC]   2 (Shadow Priest): Psychic Scream
+0:26  [CC CAST]   Psychic Scream (by 2) → 5, 6 [2 enemies]
+0:27  [STATE]   friends 1:100 2:100 3:99 / enemies 4:97 5:87 6:94
+0:28  [STATE]   friends 1:100 2:88 3:100 / enemies 4:99 5:86 6:95
+0:28  [OWNER CAST]   진동의 토템 [completed before CC landed]
+0:28  [CC ON TEAM]   1 ← Sleep Walk (Dwagonyup-Illidan-US) | 1s | trinket: available
+0:28  [OFFENSIVE WINDOW]   0:28–0:43 | Critical | 0.81M on 3 (Arms Warrior) | CDs: Heroism + Ascendance
+0:28  [ENEMY CD]   5 (Enhancement Shaman): Heroism [1/2]
+0:28  [ENEMY CD]   5 (Enhancement Shaman): Ascendance [1/2]
+0:28  [DMG SPIKE]   3 (Arms Warrior): 0.81M in 10s [BURST] (99% -> 81% HP)
+0:29  [STATE]   friends 1:97 2:91 3:94 / enemies 4:92 5:86 6:92
+0:29  [OWNER CAST]   성난 해일 → 2
+0:30  [STATE]   friends 1:90 2:86 3:88 / enemies 4:89 5:84 6:88
+0:31  [STATE]   friends 1:76 2:64 3:76 / enemies 4:86 5:85 6:86
+0:31  [OWNER CAST]   치유의 토템 [completed before CC landed]
+0:31  [OWNER CAST]   연쇄 치유 → self [completed before CC landed]
+0:31  [CC ON TEAM]   1 ← Shockwave (Areusure-Tichondrius-US) | 3s | trinket: available
+0:31  [CC ON TEAM]   2 ← Shockwave (Areusure-Tichondrius-US) | 3s | trinket: available
+0:32  [STATE]   friends 1:92 2:84 3:89 / enemies 4:76 5:82 6:83
+0:32  [CC ON TEAM]   1 ← Sleep Walk (Dwagonyup-Illidan-US) | 0s | trinket: available
+0:33  [STATE]   friends 1:87 2:86 3:70 / enemies 4:75 5:76 6:72
+0:34  [STATE]   friends 1:79 2:77 3:56 / enemies 4:71 5:64 6:73
+0:34  [CC ON TEAM]   2 ← Intimidating Shout (Areusure-Tichondrius-US) | 1s | trinket: available
+0:34  [CC ON TEAM]   3 ← Intimidating Shout (Areusure-Tichondrius-US) | 1s | trinket: available
+0:34  [OWNER CD]   Healing Tide Totem
+0:34  [OWNER CAST]   연쇄 치유 → 3
+0:35  [STATE]   friends 1:93 2:100 3:86 / enemies 4:74 5:63 6:73
+0:35  [TEAMMATE CD]   3 (Arms Warrior): Die by the Sword
+0:35  [OWNER CAST]   성난 해일 → 3
+0:36  [STATE]   friends 1:95 2:87 3:76 / enemies 4:76 5:70 6:93
+0:37  [STATE]   friends 1:93 2:91 3:67 / enemies 4:86 5:66 6:100
+0:37  [OWNER CAST]   치유의 토템
+0:37  [OWNER CAST]   연쇄 치유 → self
+0:38  [STATE]   friends 1:91 2:93 3:74 / enemies 4:81 5:55 6:93
+0:39  [STATE]   friends 1:89 2:100 3:82 / enemies 4:85 5:61 6:99
+0:39  [OWNER CAST]   치유의 비
+0:39  [OWNER CAST]   쇄도하는 토템
+0:40  [STATE]   friends 1:86 2:97 3:89 / enemies 4:82 5:51 6:98
+0:40  [OWNER CAST]   성난 해일 → 3
+0:41  [STATE]   friends 1:88 2:82 3:94 / enemies 4:87 5:50 6:99
+0:41  [TEAMMATE CC]   3 (Arms Warrior): Intimidating Shout
+0:41  [CC CAST]   Intimidating Shout (by 3) → 5, 4, 6 [3 enemies]
+0:42  [STATE]   friends 1:98 2:93 3:96 / enemies 4:83 5:49 6:99
+0:42  [OWNER CAST]   치유의 물결 → 2
+0:43  [STATE]   friends 1:100 2:100 3:100 / enemies 4:88 5:48 6:99
+0:44  [STATE]   friends 1:100 2:100 3:100 / enemies 4:87 5:42 6:99
+0:44  [OWNER CC]   Hex → 마법흡수 토템 (0% HP)
+      [RES] rdy:Hex,Spiritwalker's Grace  cd:Healing Tide Totem(170s),2:Psychic Scream(22s),2:Power Infusion(88s),3:Avatar(65s),3:Intimidating Shout(87s),3:Die by the Sword(111s),3:Bladestorm (Arms)(52s)  enemy:Heroism/Enhancement Shaman(16s),Ascendance/Enhancement Shaman(16s)
+0:44  [BUFF FADED]   Healing Tide Totem
+0:44  [CC ON TEAM]   3 ← Storm Bolt (Areusure-Tichondrius-US) | 3s | trinket: available
+0:44  [OWNER CAST]   구속의 토템
+0:45  [STATE]   friends 1:100 2:100 3:100 / enemies 4:87 5:40 6:99
+0:46  [STATE]   friends 1:99 2:95 3:100 / enemies 4:83 5:39 6:99
+0:47  [STATE]   friends 1:89 2:98 3:100 / enemies 4:82 5:60 6:95
+0:47  [OWNER CAST]   번개 올가미 → 5
+0:48  [STATE]   friends 1:97 2:98 3:98 / enemies 4:99 5:95 6:99
+0:49  [STATE]   friends 1:98 2:98 3:99 / enemies 4:97 5:85 6:99
+0:50  [STATE]   friends 1:99 2:96 3:100 / enemies 4:95 5:78 6:87
+0:50  [DMG SPIKE]   2 (Shadow Priest): 0.64M in 10s [P95 Danger] [BURST] (98% -> 41% HP)
+0:51  [STATE]   friends 1:85 2:98 3:87 / enemies 4:94 5:86 6:80
+0:52  [STATE]   friends 1:81 2:88 3:73 / enemies 4:89 5:83 6:69
+0:52  [OWNER CAST]   치유의 토템
+0:52  [OWNER CAST]   연쇄 치유 → self
+0:52  [UNCLEANSED DEBUFF]   Flame Shock on 1 | 19s | 90k taken during | dispel: Magic
+0:53  [STATE]   friends 1:82 2:90 3:75 / enemies 4:82 5:80 6:59
+0:53  [OWNER CAST]   성난 해일 → 3
+0:54  [STATE]   friends 1:84 2:91 3:75 / enemies 4:88 5:88 6:87
+0:54  [OWNER CAST]   생명 폭발 → 2
+0:55  [STATE]   friends 1:82 2:84 3:71 / enemies 4:92 5:90 6:87
+0:56  [OWNER CAST]   Ghost Wolf
+0:57  [STATE]   friends 1:79 2:75 3:71
+0:58  [TRINKET]   2 used PvP trinket
+0:58  [TRINKET]   3 used PvP trinket
+0:58  [OWNER CAST]   영혼 정화 → 2
+0:58  [CLEANSE]   1 dispelled Flame Shock off 2
+1:00  [STATE]   friends 1:62 2:43 3:67
+1:00  [TEAMMATE CC]   2 (Shadow Priest): Psychic Scream
+1:00  [CC CAST]   Psychic Scream (by 2) → 5, 6 [2 enemies]
+1:00  [OWNER CAST]   마법흡수 토템
+1:00  [OWNER CAST]   피의 격노
+1:01  [OWNER CD]   Spiritwalker's Grace
+      [RES] rdy:Δ-Hex  cd:Hex(13s)
+1:02  [OWNER CAST]   치유의 물결 → 2
+1:03  [STATE]   friends 1:62 2:81 3:86
+1:03  [OWNER CAST]   치유의 물결 → 2
+1:03  [OWNER CAST]   성난 해일 → self
+1:04  [OWNER CAST]   토템 재배치
+1:06  [STATE]   friends 1:74 2:88 3:89
+1:06  [OWNER CAST]   치유의 토템
+1:06  [OWNER CAST]   연쇄 치유 → self
+1:07  [OWNER CAST]   치유의 비
+1:07  [OWNER CAST]   쇄도하는 토템
+1:09  [STATE]   friends 1:97 2:100 3:97
+1:09  [OWNER CAST]   성난 해일 → 3
+1:10  [OWNER CAST]   구속의 토템
+1:12  [STATE]   friends 1:97 2:99 3:94
+1:12  [OWNER CAST]   성난 해일 → 2
+1:14  [OWNER CAST]   생명 폭발 → 2
+1:15  [STATE]   friends 1:97 2:77 3:87
+1:16  [OWNER CAST]   치유의 물결 → 2 [completed before CC landed]
+1:16  [CC ON TEAM]   1 ← Shockwave (Areusure-Tichondrius-US) | 3s | trinket: available
+1:16  [CC ON TEAM]   2 ← Shockwave (Areusure-Tichondrius-US) | 3s | trinket: ON CD (103s left)
+1:16  [CC ON TEAM]   3 ← Shockwave (Areusure-Tichondrius-US) | 3s | trinket: ON CD (103s left)
+1:16  [BUFF FADED]   Spiritwalker's Grace
+1:17  [STATE]   friends 1:99 2:97 3:91 / enemies 4:84 5:54 6:66
+1:18  [STATE]   friends 1:99 2:91 3:92 / enemies 4:82 5:60 6:66
+1:18  [CC ON TEAM]   1 ← Hex (Rsha-Tichondrius-US) | 5s | trinket: available
+1:19  [STATE]   friends 1:100 2:77 3:94 / enemies 4:74 5:51 6:58
+1:20  [STATE]   friends 1:98 2:78 3:93 / enemies 4:71 5:37 6:50
+1:21  [STATE]   friends 1:100 2:80 3:96 / enemies 4:95 5:40 6:48
+1:22  [STATE]   friends 1:99 2:75 3:93 / enemies 4:97 5:54 6:47
+1:23  [STATE]   friends 1:100 2:78 3:93 / enemies 4:98 5:83 6:46
+1:23  [ENEMY CD]   6 (Arms Warrior): Avatar [2/3]
+1:23  [OWNER CAST]   치유의 토템
+1:23  [OWNER CAST]   연쇄 치유 → 3
+1:24  [STATE]   friends 1:99 2:87 3:100 / enemies 4:100 5:73 6:89
+1:24  [CC ON TEAM]   2 ← Storm Bolt (Areusure-Tichondrius-US) | 2s | trinket: ON CD (94s left)
+1:24  [OWNER CAST]   토템 재배치
+1:25  [STATE]   friends 1:92 2:76 3:98 / enemies 4:100 5:84 6:90
+1:25  [OWNER CAST]   성난 해일 → 2
+1:26  [STATE]   friends 1:93 2:85 3:97 / enemies 4:100 5:77 6:89
+1:27  [STATE]   friends 1:93 2:77 3:100 / enemies 4:100 5:96 6:90
+1:27  [OWNER CAST]   마법흡수 토템
+1:28  [STATE]   friends 1:96 2:66 3:100 / enemies 4:98 5:97 6:91
+1:29  [STATE]   friends 1:95 2:64 3:100 / enemies 4:94 5:93 6:89
+1:29  [OWNER CAST]   상급 정화 → 5
+1:30  [STATE]   friends 1:94 2:58 3:97 / enemies 4:88 5:79 6:86
+1:31  [STATE]   friends 1:95 2:47 3:98 / enemies 4:85 5:85 6:94
+1:31  [OWNER CAST]   자연의 신속함
+1:31  [OWNER CAST]   치유의 물결 → 2
+1:32  [STATE]   friends 1:89 2:70 3:95 / enemies 4:82 5:81 6:97
+1:32  [OWNER CAST]   폭풍의 흐름 토템
+1:32  [OWNER CAST]   연쇄 치유 → self
+1:33  [STATE]   friends 1:97 2:99 3:99 / enemies 4:83 5:73 6:95
+1:33  [TEAMMATE CC]   2 (Shadow Priest): Psychic Scream
+1:33  [CC CAST]   Psychic Scream (by 2) → 5, 6 [2 enemies]
+1:33  [TEAMMATE CD]   3 (Arms Warrior): Avatar
+1:34  [STATE]   friends 1:99 2:100 3:100 / enemies 4:86 5:93 6:97
+1:34  [OWNER CAST]   성난 해일 → 2
+1:35  [OWNER CAST]   치유의 비
+1:35  [OWNER CAST]   쇄도하는 토템
+1:36  [STATE]   friends 1:99 2:89 3:100
+1:38  [CC ON TEAM]   1 ← Champion's Spear (Areusure-Tichondrius-US) | 6s | trinket: available
+1:38  [CC ON TEAM]   2 ← Champion's Spear (Areusure-Tichondrius-US) | 6s | trinket: ON CD (81s left)
+1:39  [STATE]   friends 1:90 2:81 3:100 / enemies 4:77 5:56 6:100
+1:40  [STATE]   friends 1:82 2:87 3:100 / enemies 4:81 5:97 6:99
+1:40  [OWNER CAST]   번개 올가미 → 6
+1:41  [STATE]   friends 1:76 2:81 3:99 / enemies 4:93 5:93 6:100
+1:41  [TEAMMATE CD]   3 (Arms Warrior): Bladestorm (Arms)
+1:42  [STATE]   friends 1:77 2:84 3:98 / enemies 4:96 5:96 6:98
+1:43  [STATE]   friends 1:78 2:86 3:100 / enemies 4:92 5:95 6:97
+1:43  [ENEMY CD]   4 (Preservation Evoker): Deep Breath
+1:44  [STATE]   friends 1:77 2:81 3:100 / enemies 4:76 5:72 6:96
+1:44  [CC ON TEAM]   1 ← Terror of the Skies (Dwagonyup-Illidan-US) | 3s | trinket: available
+1:44  [CC ON TEAM]   2 ← Terror of the Skies (Dwagonyup-Illidan-US) | 3s | trinket: ON CD (75s left)
+1:45  [STATE]   friends 1:66 2:70 3:93 / enemies 4:71 5:66 6:100
+1:46  [STATE]   friends 1:56 2:69 3:98 / enemies 4:62 5:58 6:98
+1:46  [OWNER CD]   Astral Shift
+1:47  [STATE]   friends 1:50 2:72 3:100 / enemies 4:56 5:37 6:83
+1:47  [CLEANSE]   2 dispelled 대지의 속박 off 2
+1:47  [OWNER CAST]   성난 해일 → 2
+1:48  [STATE]   friends 1:41 2:90 3:94 / enemies 4:55 5:48 6:63
+1:48  [OWNER CAST]   치유의 토템
+1:48  [OWNER CAST]   연쇄 치유 → self
+1:49  [STATE]   friends 1:44 2:95 3:100 / enemies 4:57 5:45 6:68
+1:49  [OWNER CAST]   생명 폭발 → self
+1:50  [STATE]   friends 1:63 2:86 3:89 / enemies 4:59 5:52 6:70
+1:51  [STATE]   friends 1:67 2:79 3:87 / enemies 4:57 5:48 6:71
+1:51  [OWNER CAST]   성난 해일 → self
+1:52  [STATE]   friends 1:79 2:84 3:96 / enemies 4:87 5:95 6:74
+1:52  [OWNER CAST]   토템 재배치
+1:52  [ENEMY CD]   5 (Enhancement Shaman): Heroism [2/2]
+1:53  [STATE]   friends 1:76 2:83 3:94 / enemies 4:100 5:80 6:65
+1:53  [OWNER CAST]   구속의 토템
+1:54  [STATE]   friends 1:77 2:77 3:92 / enemies 4:99 5:80 6:65
+1:54  [OWNER CAST]   성난 해일 → 2
+1:55  [CC ON TEAM]   2 ← Intimidating Shout (Areusure-Tichondrius-US) | 1s | trinket: ON CD (63s left)
+1:55  [CC ON TEAM]   3 ← Intimidating Shout (Areusure-Tichondrius-US) | 4s | trinket: ON CD (64s left)
+1:56  [STATE]   friends 1:77 2:91 3:95 / enemies 4:99 5:64 6:67
+1:57  [STATE]   friends 1:80 2:88 3:97 / enemies 4:99 5:63 6:66
+1:58  [STATE]   friends 1:76 2:89 3:97 / enemies 4:99 5:65 6:64
+1:59  [STATE]   friends 1:79 2:76 3:88 / enemies 4:100 5:96 6:71
+2:00  [STATE]   friends 1:76 2:81 3:97 / enemies 4:99 5:96 6:80
+2:01  [STATE]   friends 1:71 2:78 3:89 / enemies 4:100 5:91 6:71
+2:01  [OWNER CAST]   치유의 토템
+2:01  [OWNER CAST]   연쇄 치유 → self
+2:01  [CC ON TEAM]   3 ← Shockwave (Areusure-Tichondrius-US) | 2s | trinket: ON CD (57s left)
+2:02  [STATE]   friends 1:75 2:72 3:93 / enemies 4:99 5:87 6:69
+2:02  [OWNER CAST]   성난 해일 → 2
+2:03  [STATE]   friends 1:71 2:74 3:84 / enemies 4:98 5:87 6:68
+2:03  [OWNER CAST]   치유의 비
+2:03  [OWNER CAST]   쇄도하는 토템
+2:04  [STATE]   friends 1:72 2:66 3:82 / enemies 4:97 5:85 6:65
+2:05  [STATE]   friends 1:73 2:69 3:84 / enemies 4:97 5:81 6:63
+2:06  [STATE]   friends 1:76 2:100 3:94 / enemies 4:98 5:79 6:58
+2:06  [OWNER CAST]   치유의 물결 → 2
+2:06  [OWNER CAST]   상급 정화 → 5
+2:07  [STATE]   friends 1:78 2:99 3:95 / enemies 4:99 5:66 6:60
+2:08  [STATE]   friends 1:77 2:88 3:97 / enemies 4:96 5:75 6:69
+2:08  [TEAMMATE CC]   2 (Shadow Priest): Psychic Scream
+2:08  [CC CAST]   Psychic Scream (by 2) → 5, 6 [2 enemies]
+2:09  [STATE]   friends 1:78 2:90 3:94 / enemies 4:100 5:71 6:73
+2:09  [OWNER CAST]   축전 토템
+2:10  [STATE]   friends 1:78 2:91 3:96 / enemies 4:100 5:71 6:71
+2:11  [STATE]   friends 1:80 2:91 3:99 / enemies 4:100 5:90 6:62
+2:11  [OWNER CAST]   성난 해일 → 2
+2:11  [CC ON TEAM]   2 ← Storm Bolt (Areusure-Tichondrius-US) | 3s | trinket: ON CD (48s left)
+2:12  [STATE]   friends 1:85 2:99 3:97 / enemies 4:99 5:99 6:100
+2:13  [STATE]   friends 1:89 2:100 3:100 / enemies 4:87 5:93 6:98
+2:13  [OWNER CAST]   치유의 토템
+2:13  [OWNER CAST]   연쇄 치유 → self
+2:14  [STATE]   friends 1:100 2:99 3:100 / enemies 4:75 5:91 6:97
+2:14  [OWNER CAST]   Flame Shock → 마법흡수 토템 [totem/pet]
+2:14  [OWNER CAST]   화염 충격 → 마법흡수 토템 [totem/pet]
+2:14  [CLEANSE]   2 dispelled 대지의 속박 off 2
+2:15  [STATE]   friends 1:100 2:99 3:99 / enemies 4:96 5:100 6:100
+2:15  [TEAMMATE CD]   2 (Shadow Priest): Power Infusion
+2:16  [STATE]   friends 1:100 2:100 3:100 / enemies 4:95 5:99 6:100
+2:16  [OWNER CAST]   토템 재배치
+2:17  [STATE]   friends 1:98 2:100 3:92 / enemies 4:79 5:90 6:100
+2:17  [OWNER CAST]   마법흡수 토템
+2:18  [STATE]   friends 1:99 2:92 3:96 / enemies 4:62 5:88 6:99
+2:19  [STATE]   friends 1:97 2:77 3:94 / enemies 4:46 5:78 6:94
+2:20  [STATE]   friends 1:100 2:79 3:99 / enemies 4:38 5:62 6:85
+2:20  [OWNER CAST]   성난 해일 → 2
+2:21  [STATE]   friends 1:100 2:94 3:100 / enemies 4:61 5:42 6:79
+2:21  [OWNER CAST]   생명 폭발 → 2
+2:23  [OWNER CAST]   상급 정화 → 4
+2:24  [STATE]   friends 1:100 2:89 3:100
+2:25  [OWNER CAST]   성난 해일 → 2
+2:27  [STATE]   friends 1:99 2:97 3:100
+2:27  [OWNER CAST]   구속의 토템
+2:28  [OWNER CAST]   성난 해일 → 3
+2:30  [STATE]   friends 1:96 2:87 3:97
+2:32  [OWNER CAST]   치유의 물결 → 2
+2:33  [STATE]   friends 1:82 2:95 3:78 / enemies 4:100 5:93 6:64
+2:33  [OWNER CAST]   토템 재배치
+2:33  [OWNER CAST]   치유의 비
+2:33  [OWNER CAST]   쇄도하는 토템
+2:33  [UNCLEANSED DEBUFF]   Flame Shock on 2 | 19s | 203k taken during | dispel: Magic
+2:34  [STATE]   friends 1:78 2:93 3:72 / enemies 4:96 5:85 6:66
+2:34  [TEAMMATE CC]   3 (Arms Warrior): Intimidating Shout
+2:34  [CC CAST]   Intimidating Shout (by 3) → 5, 6 [2 enemies]
+2:34  [OWNER CAST]   성난 해일 → 3
+2:35  [STATE]   friends 1:77 2:94 3:77 / enemies 4:100 5:82 6:82
+2:35  [UNCLEANSED DEBUFF]   Flame Shock on 3 | 15s | 279k taken during | dispel: Magic
+2:36  [OWNER CAST]   치유의 토템
+2:36  [STATE]   friends 1:83 2:98 3:78 / enemies 4:97 5:72 6:92
+2:36  [OWNER CAST]   연쇄 치유 → self
+2:36  [OFFENSIVE WINDOW]   2:36–2:59 | Critical | 0.86M on 2 (Shadow Priest) | CDs: Avatar + Ascendance
+2:36  [ENEMY CD]   6 (Arms Warrior): Avatar [3/3]
+2:37  [STATE]   friends 1:100 2:89 3:71 / enemies 4:100 5:55 6:99
+2:37  [DMG SPIKE]   2 (Shadow Priest): 0.86M in 10s [P95 Danger] [ROT] (80% -> 61% HP)
+2:37  [DMG SPIKE]   3 (Arms Warrior): 0.64M in 10s [BURST] (66% -> 47% HP)
+2:38  [STATE]   friends 1:93 2:80 3:65 / enemies 4:97 5:46 6:99
+2:38  [TEAMMATE CC]   2 (Shadow Priest): Psychic Scream
+2:38  [CC CAST]   Psychic Scream (by 2) → 4, 5 [2 enemies]
+2:39  [STATE]   friends 1:93 2:81 3:85 / enemies 4:96 5:51 6:97
+2:39  [OWNER CAST]   치유의 물결 → 3
+2:39  [OWNER CAST]   성난 해일 → 2
+2:40  [STATE]   friends 1:99 2:91 3:70 / enemies 4:95 5:57 6:100
+2:41  [STATE]   friends 1:99 2:77 3:72 / enemies 4:94 5:43 6:100
+2:41  [OWNER CAST]   번개 올가미 → 5
+2:42  [STATE]   friends 1:96 2:77 3:56 / enemies 4:94 5:30 6:100
+2:44  [OWNER CAST]   마법흡수 토템
+2:44  [ENEMY CD]   5 (Enhancement Shaman): Ascendance [2/2]
+2:44  [OWNER CAST]   자연의 신속함
+2:45  [STATE]   friends 1:93 2:46 3:48
+2:45  [OWNER CAST]   치유의 물결 → 2
+2:46  [OWNER CAST]   폭풍의 흐름 토템
+2:46  [OWNER CAST]   연쇄 치유 → self
+2:47  [OWNER CAST]   치유의 토템
+2:47  [OWNER CAST]   연쇄 치유 → self
+2:48  [STATE]   friends 1:100 2:61 3:68 / enemies 4:99 5:50 6:99
+2:49  [STATE]   friends 1:100 2:61 3:77 / enemies 4:100 5:52 6:100
+2:49  [OWNER CD]   Healing Tide Totem
+      [RES] rdy:Δ+Hex,2:Psychic Scream,3:Avatar,3:Die by the Sword-Spiritwalker's Grace  cd:Spiritwalker's Grace(12s)  enemy:Ascendance/Enhancement Shaman(4s),Avatar/Arms Warrior(13s)
+2:49  [OWNER CAST]   연쇄 치유 → self
+2:50  [STATE]   friends 1:100 2:76 3:96 / enemies 4:100 5:46 6:98
+2:50  [OWNER CAST]   성난 해일 → 2
+2:50  [CC ON TEAM]   2 ← Storm Bolt (Areusure-Tichondrius-US) | 3s | trinket: ON CD (8s left)
+2:51  [STATE]   friends 1:95 2:84 3:91 / enemies 4:99 5:48 6:99
+2:51  [TEAMMATE CD]   3 (Arms Warrior): Avatar
+      [RES] rdy:Δ  cd:—  enemy:Ascendance/Enhancement Shaman(7s),Avatar/Arms Warrior(15s)  cc:2/Storm Bolt-2s[stun]
+2:51  [CC ON TEAM]   1 ← Shockwave (Areusure-Tichondrius-US) | 3s | trinket: available
+2:51  [CC ON TEAM]   3 ← Shockwave (Areusure-Tichondrius-US) | 3s | trinket: ON CD (7s left)
+2:51  [CC ON TEAM]   2 ← Shockwave (Areusure-Tichondrius-US) | 1s | trinket: ON CD (7s left)
+2:52  [STATE]   friends 1:98 2:90 3:98 / enemies 4:99 5:73 6:100
+2:52  [DMG SPIKE]   2 (Shadow Priest): 0.62M in 10s [P95 Danger] [BURST] (88% -> 84% HP)
+2:53  [STATE]   friends 1:100 2:95 3:89 / enemies 4:96 5:69 6:98
+2:54  [STATE]   friends 1:84 2:83 3:94 / enemies 4:95 5:68 6:99
+2:54  [OWNER CAST]   구속의 토템
+2:55  [STATE]   friends 1:92 2:70 3:97 / enemies 4:94 5:60 6:95
+2:56  [STATE]   friends 1:89 2:66 3:98 / enemies 4:91 5:60 6:97
+2:56  [OWNER CAST]   성난 해일 → 2
+2:57  [STATE]   friends 1:97 2:100 3:99 / enemies 4:90 5:52 6:95
+2:58  [STATE]   friends 1:93 2:83 3:92 / enemies 4:89 5:38 6:93
+2:58  [OWNER CAST]   생명 폭발 → 2
+2:59  [STATE]   friends 1:100 2:96 3:99 / enemies 4:86 5:34 6:80
+2:59  [BUFF FADED]   Healing Tide Totem
+3:00  [STATE]   friends 1:94 2:89 3:99 / enemies 4:78 5:21 6:71
+3:01  [STATE]   friends 1:96 2:87 3:100 / enemies 4:68 5:dead 6:56
+3:01  [DEATH]  5 (Enhancement Shaman — enemy)
+3:01  [ROSTER]  enemy 5 removed (dead)
+3:02  [STATE]   friends 1:94 2:83 3:100 / enemies 4:62 5:dead 6:61
+3:02  [OWNER CAST]   영혼 정화 → 3
+3:02  [CLEANSE]   1 dispelled 3 effects: Earthgrab off 3, Flame Shock off 3, 대지의 속박 off 3
+3:03  [STATE]   friends 1:91 2:84 3:100 / enemies 4:57 5:dead 6:52
+3:03  [OWNER CAST]   성난 해일 → 2
+3:04  [STATE]   friends 1:92 2:90 3:100 / enemies 4:52 5:dead 6:50
+3:05  [STATE]   friends 1:93 2:91 3:99 / enemies 4:39 5:dead 6:30
+3:05  [OWNER CAST]   치유의 토템
+3:05  [OWNER CAST]   연쇄 치유 → self
+3:06  [STATE]   friends 1:99 2:95 3:100 / enemies 4:20 5:dead 6:dead
+3:06  [DEATH]  6 (Arms Warrior — enemy)
+3:06  [ROSTER]  enemy 6 removed (dead)
+3:07  [STATE]   friends 1:100 2:97 3:100 / enemies 4:dead 5:dead 6:dead
+3:07  [DEATH]  4 (Preservation Evoker — enemy)
+3:07  [ROSTER]  enemy 4 removed (dead)
+3:07  [OWNER CAST]   성난 해일 → 2
+
+3:07  [MATCH END]   damp: 11%
+  friends 1:100% 2:100% 3:100% / enemies 4:dead(3:07) 5:dead(3:01) 6:dead(3:06)

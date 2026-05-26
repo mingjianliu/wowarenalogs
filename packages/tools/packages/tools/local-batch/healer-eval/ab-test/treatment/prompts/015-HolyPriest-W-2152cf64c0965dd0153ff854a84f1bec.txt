@@ -1,0 +1,384 @@
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Holy Priest (Healer) | Bracket: 3v3 | Result: Win | Duration: 2:43
+  My team: Holy Priest, Arcane Mage, Assassination Rogue
+  Enemy team: Restoration Druid, Frost Mage, Outlaw Rogue
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Holy Priest): CAN offensive purge
+  Team purgers: Arcane Mage
+
+DAMPENING (3v3): started at 10%, ended at 10% at match end
+
+CC APPLIED ON ENEMIES (DR summary):
+  Restoration Druid (Bøøms-Sargeras-US): 8 CC — 2× Incapacitate, 2× Disorient, 1× Silence, 3× Stun | 1 reduced, 0 immune
+  Frost Mage (Xaxnn-Tichondrius-US): 12 CC — 3× Silence, 4× Stun, 4× Disorient, 1× Incapacitate | 1 reduced, 0 immune
+  Outlaw Rogue (Sgtbubbly-Illidan-US): 14 CC — 4× Disorient, 4× Incapacitate, 3× Stun, 3× Disarm | 2 reduced, 0 immune
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Jinglers-Tichondrius-US (Holy Priest — log owner):
+    Psychic Scream [40s], Power Infusion [120s], Desperate Prayer [90s], Guardian Spirit [180s, 2 Charges], Divine Hymn [180s], Apotheosis [120s]
+  2: Brentburns-Whisperwind-US (Arcane Mage):
+    Ice Block [240s], Presence of Mind [45s], Dragon's Breath [45s]
+  3: Brunarr-Sargeras-US (Assassination Rogue):
+    Cloak of Shadows [120s], Kidney Shot [30s], Evasion [120s]
+  4: Bøøms-Sargeras-US (Restoration Druid — enemy):
+    Incarnation: Tree of Life [180s], Innervate [180s], Nature's Swiftness [60s]
+  5: Sgtbubbly-Illidan-US (Outlaw Rogue — enemy):
+    Adrenaline Rush [180s]
+  6: Xaxnn-Tichondrius-US (Frost Mage — enemy):
+    none tracked
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:00  [STATE]   friends 1:100 2:100 3:100
+0:00  [OWNER CAST]   Prayer of Mending → 2
+0:01  [OWNER CAST]   Prayer of Mending → 3
+0:02  [CC ON TEAM]   2 ← Sap (Sgtbubbly-Illidan-US) | 2s | trinket: available
+0:03  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100
+0:04  [STATE]   friends 2:100 3:100
+0:04  [CC ON TEAM]   1 ← Sap (Sgtbubbly-Illidan-US) | 6s | trinket: available
+0:05  [STATE]   friends 2:100 3:100 / enemies 5:100 6:100
+0:06  [STATE]   friends 2:100 3:100 / enemies 5:100 6:100
+0:06  [ENEMY CD]   5 (Outlaw Rogue): Adrenaline Rush [1/3]
+0:06  [TEAMMATE CC]   2 (Arcane Mage): Dragon's Breath
+0:07  [STATE]   friends 2:95 3:100 / enemies 5:100 6:100
+0:08  [STATE]   friends 2:93 3:100 / enemies 4:100 5:100 6:100
+0:08  [CC ON TEAM]   3 ← Rake (Bøøms-Sargeras-US) | 4s | trinket: available
+0:09  [STATE]   friends 2:90 3:100 / enemies 4:100 5:100 6:99
+0:09  [ENEMY CD]   4 (Restoration Druid): Incarnation: Tree of Life [1/2]
+0:10  [STATE]   friends 1:100 2:87 / enemies 4:100 5:100 6:100
+0:10  [OWNER CAST]   Prayer of Mending → 2
+0:11  [STATE]   friends 1:99 2:93 3:94 / enemies 4:100 5:100 6:99
+0:12  [STATE]   friends 1:97 2:94 3:97 / enemies 4:100 5:100 6:100
+0:12  [OWNER CAST]   Holy Word: Chastise → 5
+0:13  [STATE]   friends 1:97 2:93 3:97 / enemies 4:100 5:98 6:100
+0:13  [OWNER CD]   Power Infusion → 2 (90% HP)
+      [HEALING]    0–5s: 69.4k HPS | 5–10s: 28.0k HPS | 10–15s: 41.2k HPS | Overheal: 40%
+0:13  [OWNER CD]   Power Infusion → self
+0:13  [OWNER CAST]   Prayer of Mending → 2
+0:14  [STATE]   friends 1:98 2:100 3:98 / enemies 4:100 5:98 6:99
+0:14  [ENEMY CD]   4 (Restoration Druid): Innervate
+0:14  [OWNER CAST]   Fade
+0:14  [CLEANSE]   1 dispelled Chilled off 1
+0:15  [STATE]   friends 1:99 2:95 3:99 / enemies 4:99 5:100 6:100
+0:16  [STATE]   friends 1:98 2:97 3:91 / enemies 4:99 5:100 6:95
+0:16  [OWNER CC]   Psychic Scream
+      [RES] rdy:Psychic Scream,Desperate Prayer,Guardian Spirit,Divine Hymn,Apotheosis,2:Ice Block,2:Presence of Mind,3:Cloak of Shadows,3:Kidney Shot,3:Evasion  cd:Power Infusion(117s),2:Dragon's Breath(35s)  enemy:Incarnation: Tree of Life/Restoration Druid(7s),Innervate/Restoration Druid(2s),Adrenaline Rush/Outlaw Rogue(10s)
+0:16  [CC CAST]   Psychic Scream (by 1) → 6, 5 [2 enemies]
+0:17  [STATE]   friends 1:99 2:97 3:88 / enemies 4:100 5:100 6:96
+0:17  [OWNER CAST]   Benediction → 3
+0:18  [STATE]   friends 1:99 2:99 3:100 / enemies 4:100 5:100 6:96
+0:18  [OWNER CAST]   Dispel Magic → 6
+0:19  [BUFF FADED]   Power Infusion
+0:19  [ENEMY BUFF]   6: Power Infusion (purgeable)
+0:20  [OWNER CAST]   Dispel Magic → 6
+0:21  [STATE]   friends 1:99 2:94 3:99
+0:21  [OWNER CAST]   Dispel Magic → 6
+0:21  [ENEMY BUFF END]   6: Power Infusion
+0:23  [OWNER CAST]   Dispel Magic → 6
+0:24  [STATE]   friends 1:100 2:85 3:100
+0:24  [OWNER CAST]   Dispel Magic → 6
+0:25  [TEAMMATE CD]   2 (Arcane Mage): Presence of Mind
+0:25  [OWNER CAST]   Dispel Magic → 6
+0:26  [OWNER CAST]   Holy Word: Serenity → 2
+0:27  [STATE]   friends 1:100 2:93 3:100
+0:27  [OWNER CAST]   Benediction → 2 [completed before CC landed]
+0:27  [CC ON TEAM]   1 ← Blind (Sgtbubbly-Illidan-US) | 5s | trinket: available
+0:28  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:59
+0:29  [STATE]   friends 1:100 2:87 3:100 / enemies 4:100 5:100 6:46
+0:29  [CC ON TEAM]   1 ← Polymorph (Xaxnn-Tichondrius-US) | 6s | trinket: available
+0:30  [STATE]   friends 1:100 2:72 3:100 / enemies 4:100 5:100 6:40
+0:31  [STATE]   friends 1:100 2:66 3:100 / enemies 4:100 5:100 6:44
+0:31  [OFFENSIVE WINDOW]   0:31–0:46 | Critical | 0.72M on 2 (Arcane Mage) | CDs: Adrenaline Rush + Nature's Swiftness
+0:31  [ENEMY CD]   5 (Outlaw Rogue): Adrenaline Rush [2/3]
+0:32  [STATE]   friends 1:100 2:54 3:100 / enemies 4:100 5:100 6:51
+0:33  [STATE]   friends 1:100 2:59 3:100 / enemies 4:100 5:93 6:55
+0:34  [STATE]   friends 1:100 2:56 3:98 / enemies 4:100 5:94 6:62
+0:35  [STATE]   friends 1:100 2:56 3:97 / enemies 4:100 5:93 6:57
+0:36  [STATE]   friends 1:100 2:56 3:95 / enemies 4:100 5:91 6:55
+0:36  [OWNER CAST]   Prayer of Mending → 2
+0:36  [DMG SPIKE]   2 (Arcane Mage): 0.72M in 10s [P95 Danger] [BURST] (71% -> 100% HP)
+0:37  [STATE]   friends 1:100 2:68 3:93 / enemies 4:100 5:92 6:47
+0:37  [OWNER CAST]   Prayer of Mending → 2
+0:38  [STATE]   friends 1:100 2:62 3:94 / enemies 4:100 5:97 6:48
+0:38  [ENEMY CD]   4 (Restoration Druid): Nature's Swiftness [1/2]
+0:38  [CC ON TEAM]   3 ← Cyclone (Bøøms-Sargeras-US) | 1s | trinket: used
+0:38  [OWNER CD]   Guardian Spirit → 2 (77% HP)
+0:38  [OWNER CAST]   Benediction → 2
+0:39  [STATE]   friends 1:100 2:78 3:99 / enemies 4:100 5:98 6:40
+0:39  [TRINKET]   3 used PvP trinket
+0:40  [STATE]   friends 1:100 2:40 3:100 / enemies 4:100 5:98 6:29
+0:41  [STATE]   friends 1:100 2:27 3:99 / enemies 4:100 5:100 6:21
+0:41  [OWNER CAST]   Flash Heal → 2 [completed before CC landed]
+0:41  [OWNER CAST]   Holy Word: Serenity → 2 [completed before CC landed]
+0:41  [CC ON TEAM]   1 ← Kidney Shot (Sgtbubbly-Illidan-US) | 1s | trinket: used
+0:42  [STATE]   friends 1:97 2:86 3:100 / enemies 4:100 5:100 6:11
+0:43  [STATE]   friends 1:97 2:90 3:100 / enemies 4:98 5:100 6:13
+0:43  [TRINKET]   1 used PvP trinket
+0:43  [OWNER CD]   Spirit of Redemption
+0:43  [OWNER CAST]   Divine Hymn
+0:43  [OWNER CD]   Divine Hymn
+0:44  [STATE]   friends 1:97 2:73 3:100 / enemies 4:100 5:99 6:17
+0:44  [OWNER CAST]   Divine Hymn
+0:45  [STATE]   friends 1:98 2:76 3:100 / enemies 4:98 5:99 6:21
+0:45  [BUFF FADED]   Divine Hymn
+0:45  [TEAMMATE CC]   3 (Assassination Rogue): Kidney Shot
+0:46  [STATE]   friends 1:98 2:86 3:100 / enemies 4:96 5:98 6:57
+0:46  [OWNER CAST]   Mass Dispel
+0:46  [OWNER CAST]   Prayer of Mending → 2
+0:46  [CC ON TEAM]   2 ← Cheap Shot (Sgtbubbly-Illidan-US) | 1s | trinket: available
+0:47  [STATE]   friends 1:98 2:100 3:100 / enemies 4:96 5:100 6:59
+0:48  [STATE]   friends 1:98 2:100 3:95 / enemies 4:94 5:100 6:64
+0:49  [STATE]   friends 1:98 2:100 3:100 / enemies 4:94 5:100 6:67
+0:49  [OWNER CAST]   Flash Heal → 2
+0:50  [STATE]   friends 1:98 2:100 3:100 / enemies 4:93 5:100 6:70
+0:50  [OWNER CAST]   Flash Heal → 3
+0:50  [BUFF FADED]   Guardian Spirit
+0:51  [STATE]   friends 1:98 2:100 3:100 / enemies 4:94 5:100 6:76
+0:51  [OWNER CAST]   Flash Heal → 2
+0:52  [STATE]   friends 1:98 2:100 3:100 / enemies 4:100 5:100 6:98
+0:52  [CC ON TEAM]   3 ← Polymorph (Xaxnn-Tichondrius-US) | 1s | trinket: ON CD (107s left)
+0:52  [OWNER CAST]   Flash Heal → 3
+0:53  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:96 6:100
+0:53  [OWNER CAST]   Fade
+0:53  [CC ON TEAM]   3 ← Dismantle (Sgtbubbly-Illidan-US) | 5s | trinket: ON CD (106s left)
+0:53  [OWNER CAST]   Purify → 3
+0:53  [CLEANSE]   1 dispelled 3 effects: Polymorph off 3, Frost Nova off 3, Chilled off 3
+0:54  [STATE]   friends 1:100 2:98 3:99 / enemies 4:100 5:93 6:92
+0:55  [STATE]   friends 1:100 2:95 3:100 / enemies 4:100 5:92 6:90
+0:55  [OWNER CAST]   Prayer of Mending → 3 [completed before CC landed]
+0:55  [DMG SPIKE]   2 (Arcane Mage): 0.82M in 10s [P95 Danger] [BURST] (94% -> 82% HP)
+0:55  [CC ON TEAM]   1 ← Gouge (Sgtbubbly-Illidan-US) | 1s | trinket: ON CD (78s left)
+0:56  [STATE]   friends 1:98 2:95 3:100 / enemies 4:100 5:93 6:93
+0:57  [STATE]   friends 1:97 2:70 3:100 / enemies 4:100 5:94 6:95
+0:57  [OWNER CAST]   Holy Word: Chastise → 4
+0:58  [STATE]   friends 1:94 2:35 3:89 / enemies 4:96 5:94 6:97
+0:58  [OWNER CAST]   Holy Word: Serenity → 2
+0:59  [STATE]   friends 1:90 2:74 3:92 / enemies 4:97 5:96 6:99
+1:00  [STATE]   friends 1:79 2:83 3:93 / enemies 4:98 5:96 6:95
+1:00  [OWNER CAST]   Flash Heal → 2
+1:01  [STATE]   friends 1:70 2:76 3:98 / enemies 4:98 5:96 6:97
+1:01  [OWNER CAST]   Prayer of Mending → self
+1:01  [OWNER CD]   Desperate Prayer
+1:02  [STATE]   friends 1:100 2:70 3:98 / enemies 4:98 5:98 6:95
+1:02  [OWNER CAST]   Benediction → self
+1:03  [STATE]   friends 1:100 2:61 3:100 / enemies 4:98 5:98 6:85
+1:03  [OWNER CAST]   Holy Word: Serenity → 2
+1:04  [STATE]   friends 1:100 2:85 3:100 / enemies 4:98 5:95 6:82
+1:05  [STATE]   friends 1:100 2:83 3:100 / enemies 4:99 5:95 6:79
+1:05  [OWNER CAST]   Prayer of Mending → 2
+1:06  [STATE]   friends 1:100 2:84 3:97
+1:09  [STATE]   friends 1:100 2:81 3:100
+1:10  [STATE]   friends 1:100 2:81 3:100 / enemies 4:100 5:100 6:98
+1:10  [OWNER CAST]   Purify → 3
+1:10  [CLEANSE]   1 dispelled 2 effects: Freeze off 3, Chilled off 3
+1:11  [STATE]   friends 1:100 2:88 3:100 / enemies 4:100 5:100 6:100
+1:11  [CC ON TEAM]   3 ← Cyclone (Bøøms-Sargeras-US) | 5s | trinket: ON CD (89s left)
+1:11  [BUFF FADED]   Desperate Prayer
+1:12  [STATE]   friends 1:99 2:89 3:100 / enemies 4:100 5:100 6:100
+1:13  [STATE]   friends 1:100 2:88 / enemies 4:100 5:100 6:100
+1:13  [CC ON TEAM]   2 ← Kidney Shot (Sgtbubbly-Illidan-US) | 5s | trinket: available
+1:14  [STATE]   friends 1:100 2:79 / enemies 4:100 5:100 6:94
+1:14  [OWNER CAST]   Prayer of Mending → 2
+1:14  [DMG SPIKE]   2 (Arcane Mage): 0.69M in 10s [P95 Danger] [BURST] (82% -> 43% HP)
+1:15  [STATE]   friends 1:100 2:77 3:99 / enemies 4:100 5:100 6:96
+1:16  [STATE]   friends 1:100 2:63 3:99 / enemies 4:100 5:100 6:100
+1:16  [OWNER CAST]   Holy Word: Sanctify
+1:16  [CC ON TEAM]   3 ← Rake (Bøøms-Sargeras-US) | 4s | trinket: ON CD (84s left)
+1:17  [STATE]   friends 1:100 2:64 3:99 / enemies 4:100 5:100 6:99
+1:17  [OWNER CAST]   Holy Word: Serenity → 2
+1:18  [STATE]   friends 1:100 2:80 3:95 / enemies 4:100 5:100 6:100
+1:19  [STATE]   friends 1:100 2:79 3:95 / enemies 4:100 5:100 6:100
+1:19  [OWNER CAST]   Fade
+1:19  [CLEANSE]   1 dispelled Crippling Poison off 1
+1:20  [STATE]   friends 1:98 2:67 3:95 / enemies 4:100 5:99 6:94
+1:20  [OWNER CC]   Psychic Scream
+      [RES] rdy:Δ+2:Dragon's Breath-Desperate Prayer,Guardian Spirit,Divine Hymn  cd:Desperate Prayer(71s),Guardian Spirit(139s),Divine Hymn(144s)  cc:3/Rake-0s[stun]
+1:20  [CC ON TEAM]   3 ← Ursol's Vortex (Bøøms-Sargeras-US) | 1s | trinket: ON CD (80s left)
+1:20  [CC CAST]   Psychic Scream (by 1) → 6, 5 [2 enemies]
+1:21  [STATE]   friends 1:99 2:70 3:95 / enemies 4:100 5:98 6:95
+1:21  [CC ON TEAM]   3 ← Ursol's Vortex (Bøøms-Sargeras-US) | 2s | trinket: ON CD (78s left)
+1:21  [OWNER CAST]   Prayer of Mending → 2
+1:22  [STATE]   friends 1:98 2:73 3:96 / enemies 4:100 5:98 6:95
+1:22  [OWNER CAST]   Prayer of Mending → 2
+1:23  [STATE]   friends 1:98 2:60 3:96 / enemies 4:100 5:99 6:96
+1:24  [STATE]   friends 1:100 2:57 3:99 / enemies 4:100 5:100 6:98
+1:24  [OWNER CD]   Apotheosis
+1:25  [STATE]   friends 1:100 2:40 3:100 / enemies 4:100 5:99 6:98
+1:26  [STATE]   friends 1:100 2:29 3:100 / enemies 4:100 5:100 6:93
+1:26  [OWNER CAST]   Holy Word: Serenity → 2
+1:27  [STATE]   friends 1:100 2:60 3:100 / enemies 4:100 5:100 6:98
+1:28  [STATE]   friends 1:100 2:54 3:100 / enemies 4:100 5:100 6:93
+1:28  [OWNER CAST]   Benediction → 2
+1:28  [OWNER CAST]   Holy Word: Sanctify
+1:29  [STATE]   friends 1:100 2:92 3:100 / enemies 4:100 5:100 6:95
+1:29  [OWNER CAST]   Benediction → 2
+1:30  [STATE]   friends 1:100 2:93 3:100 / enemies 4:100 5:100 6:92
+1:31  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:100 6:97
+1:31  [OWNER CAST]   Dispel Magic → 6
+1:32  [OWNER CAST]   Dispel Magic → 6
+1:32  [TEAMMATE CC]   3 (Assassination Rogue): Kidney Shot
+1:33  [STATE]   friends 1:100 2:88 3:100
+1:33  [TEAMMATE CD]   2 (Arcane Mage): Presence of Mind
+1:33  [OWNER CAST]   Prayer of Mending → 2
+1:34  [STATE]   friends 1:100 2:94 3:100 / enemies 4:100 5:100 6:95
+1:35  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:99 6:78
+1:35  [CC ON TEAM]   3 ← Gouge (Sgtbubbly-Illidan-US) | 3s | trinket: ON CD (65s left)
+1:35  [OWNER CAST]   Holy Word: Chastise → 5
+1:36  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:97 6:72
+1:37  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:98 6:99
+1:37  [CC ON TEAM]   1 ← Ring of Frost (Xaxnn-Tichondrius-US) | 1s | trinket: ON CD (37s left)
+1:38  [STATE]   friends 1:97 2:100 3:100 / enemies 4:100 5:99 6:98
+1:38  [DMG SPIKE]   2 (Arcane Mage): 0.61M in 10s [P95 Danger] [BURST] (100% -> 82% HP)
+1:39  [STATE]   friends 1:96 2:99 3:100 / enemies 4:100 5:100 6:91
+1:40  [STATE]   friends 1:97 2:81 3:100 / enemies 4:100 5:100 6:93
+1:40  [OWNER CAST]   Holy Word: Serenity → 2
+1:40  [CC ON TEAM]   2 ← Cheap Shot (Sgtbubbly-Illidan-US) | 1s | trinket: used
+1:41  [STATE]   friends 1:99 2:96 3:100 / enemies 4:100 5:100 6:100
+1:41  [TRINKET]   2 used PvP trinket
+1:41  [TEAMMATE CC]   2 (Arcane Mage): Dragon's Breath
+1:41  [OWNER CAST]   Prayer of Mending → 2
+1:41  [OWNER CAST]   Leap of Faith → 2
+1:42  [STATE]   friends 1:98 2:79 3:90 / enemies 4:100 5:100 6:99
+1:43  [STATE]   friends 1:98 2:88 3:92 / enemies 4:100 5:100 6:98
+1:43  [CC ON TEAM]   2 ← Ring of Frost (Xaxnn-Tichondrius-US) | 1s | trinket: ON CD (119s left)
+1:43  [OWNER CAST]   Angelic Feather
+1:44  [STATE]   friends 1:97 2:86 3:95 / enemies 4:100 5:100 6:100
+1:44  [BUFF FADED]   Apotheosis
+1:44  [OWNER CAST]   Purify → 2
+1:44  [CLEANSE]   1 dispelled 3 effects: Chilled off 2, Ring of Frost off 2, Moonfire off 2
+1:45  [STATE]   friends 1:100 2:80 3:90 / enemies 4:100 5:100 6:98
+1:45  [CC ON TEAM]   3 ← Maim (Bøøms-Sargeras-US) | 5s | trinket: ON CD (54s left)
+1:46  [STATE]   friends 1:96 2:63 3:93 / enemies 4:100 5:98 6:77
+1:46  [OWNER CAST]   Holy Word: Serenity → 2
+1:47  [STATE]   friends 1:93 2:78 3:96 / enemies 4:97 5:97 6:77
+1:48  [STATE]   friends 1:93 2:82 3:96 / enemies 4:97 5:96 6:80
+1:48  [OWNER CAST]   Prayer of Mending → 2
+1:49  [STATE]   friends 1:90 2:88 3:92 / enemies 4:98 5:98 6:87
+1:50  [STATE]   friends 1:88 2:88 3:94 / enemies 4:100 5:91 6:100
+1:50  [OWNER CAST]   Prayer of Mending → self
+1:51  [STATE]   friends 1:97 2:94 3:94 / enemies 4:100 5:91 6:100
+1:52  [STATE]   friends 1:94 2:98 3:86 / enemies 4:100 5:93 6:100
+1:52  [OWNER CAST]   Smite → 5
+1:53  [STATE]   friends 1:97 2:100 3:76 / enemies 4:100 5:91 6:100
+1:53  [ENEMY CD]   4 (Restoration Druid): Incarnation: Tree of Life [2/2]
+1:54  [STATE]   friends 1:97 2:100 3:72 / enemies 4:100 5:89 6:98
+1:54  [CC ON TEAM]   3 ← Kidney Shot (Sgtbubbly-Illidan-US) | 3s | trinket: ON CD (46s left)
+1:54  [OWNER CAST]   Angelic Feather
+1:55  [STATE]   friends 1:99 2:98 3:60 / enemies 4:100 5:93 6:99
+1:56  [STATE]   friends 1:99 2:94 3:59 / enemies 4:100 5:95 6:99
+1:56  [OWNER CAST]   Fade
+1:56  [CLEANSE]   1 dispelled 2 effects: Crippling Poison off 1, Chilled off 1
+1:56  [ENEMY CD]   5 (Outlaw Rogue): Adrenaline Rush [3/3]
+1:57  [STATE]   friends 1:100 2:91 3:55 / enemies 4:100 5:93 6:100
+1:57  [OWNER CD]   Guardian Spirit → 3 (45% HP)
+1:57  [TEAMMATE CD]   3 (Assassination Rogue): Evasion
+1:58  [STATE]   friends 1:100 2:91 3:39 / enemies 4:100 5:93 6:100
+1:59  [STATE]   friends 1:100 2:93 3:43 / enemies 4:100 5:94 6:100
+1:59  [OWNER CAST]   Holy Word: Sanctify
+2:00  [STATE]   friends 1:100 2:100 3:62 / enemies 4:100 5:93 6:99
+2:00  [OWNER CAST]   Benediction → 3
+2:01  [STATE]   friends 1:100 2:100 3:88 / enemies 4:100 5:83 6:92
+2:01  [OWNER CAST]   Prayer of Mending → 3
+2:02  [STATE]   friends 1:100 2:84 3:100 / enemies 4:100 5:75 6:92
+2:02  [ENEMY CD]   4 (Restoration Druid): Nature's Swiftness [2/2]
+2:02  [CC ON TEAM]   2 ← Cyclone (Bøøms-Sargeras-US) | 5s | trinket: ON CD (99s left)
+2:03  [STATE]   friends 1:100 2:79 3:100 / enemies 4:100 5:68 6:95
+2:03  [CC ON TEAM]   3 ← Polymorph (Xaxnn-Tichondrius-US) | 3s | trinket: ON CD (36s left)
+2:03  [UNCLEANSED DEBUFF]   Polymorph on 3 | 3s | 33k taken during | dispel: Magic
+2:04  [STATE]   friends 1:100 2:79 3:100 / enemies 4:100 5:63 6:100
+2:04  [OWNER CAST]   Smite → 5
+2:05  [STATE]   friends 1:100 2:81 3:100 / enemies 4:100 5:53 6:95
+2:05  [OWNER CAST]   Smite → 5
+2:06  [STATE]   friends 1:100 2:81 3:100 / enemies 4:100 5:64 6:96
+2:06  [OWNER CAST]   Smite → 5
+2:07  [STATE]   friends 1:100 2:82 3:100 / enemies 4:100 5:67 6:100
+2:07  [OWNER CAST]   Smite → 5
+2:08  [STATE]   friends 1:100 2:82 3:98 / enemies 4:100 5:73 6:100
+2:08  [CC ON TEAM]   3 ← Dismantle (Sgtbubbly-Illidan-US) | 5s | trinket: ON CD (31s left)
+2:08  [OWNER CAST]   Prayer of Mending → 2
+2:09  [STATE]   friends 1:100 2:91 3:97 / enemies 4:100 5:71 6:98
+2:09  [BUFF FADED]   Guardian Spirit
+2:10  [STATE]   friends 1:100 2:93 3:99 / enemies 4:100 5:72 6:100
+2:10  [OWNER CAST]   Angelic Feather
+2:11  [STATE]   friends 1:100 2:90 3:81 / enemies 4:100 5:79 6:100
+2:12  [STATE]   friends 1:100 2:67 3:85 / enemies 4:100 5:80 6:98
+2:12  [OWNER CAST]   Holy Word: Serenity → 2
+2:13  [STATE]   friends 1:100 2:87 3:78 / enemies 4:100 5:83 6:99
+2:13  [OWNER CAST]   Holy Word: Chastise → 4
+2:14  [STATE]   friends 1:100 2:86 3:72 / enemies 4:95 5:73 6:96
+2:15  [STATE]   friends 1:100 2:89 3:69 / enemies 4:95 5:74 6:94
+2:15  [OWNER CD]   Power Infusion → 2 (79% HP)
+      [HEALING]    0–5s: 17.4k HPS | 5–10s: 45.0k HPS | 10–15s: 103.4k HPS | Overheal: 2%
+2:15  [OWNER CD]   Power Infusion → self
+2:15  [OWNER CC]   Psychic Scream
+      [RES] rdy:Δ+Power Infusion-Apotheosis,2:Presence of Mind,2:Dragon's Breath,3:Evasion  cd:Apotheosis(69s),2:Presence of Mind(3s),2:Dragon's Breath(11s),3:Evasion(102s)  enemy:Incarnation: Tree of Life/Restoration Druid(23s),Nature's Swiftness/Restoration Druid(13s),Adrenaline Rush/Outlaw Rogue(19s)
+2:15  [CC CAST]   Psychic Scream (by 1) → 4
+2:15  [TEAMMATE CC]   3 (Assassination Rogue): Kidney Shot
+2:16  [STATE]   friends 1:100 2:79 3:71 / enemies 4:92 5:65 6:96
+2:17  [STATE]   friends 1:100 2:78 3:71 / enemies 4:86 5:48 6:98
+2:18  [STATE]   friends 1:99 2:75 3:75 / enemies 4:86 5:44 6:100
+2:18  [OWNER CC]   Mind Control → 6
+      [RES] rdy:Δ+2:Presence of Mind-Psychic Scream,Power Infusion,3:Kidney Shot  cd:Psychic Scream(37s),Power Infusion(117s),3:Kidney Shot(27s)  enemy:Incarnation: Tree of Life/Restoration Druid(26s),Nature's Swiftness/Restoration Druid(16s),Adrenaline Rush/Outlaw Rogue(22s)
+2:19  [STATE]   friends 1:99 2:75 3:74 / enemies 4:87 5:57 6:100
+2:20  [STATE]   friends 1:99 2:78 3:75 / enemies 4:87 5:58 6:100
+2:21  [STATE]   friends 1:100 2:78 3:76 / enemies 4:87 5:55 6:100
+2:21  [OWNER CAST]   Prayer of Mending → 3
+2:22  [STATE]   friends 1:98 2:72 3:85 / enemies 4:88 5:56 6:100
+2:22  [OWNER CAST]   Prayer of Mending → 2 [completed before CC landed]
+2:23  [STATE]   friends 1:99 2:80 3:88 / enemies 4:89 5:57 6:100
+2:23  [TEAMMATE CD]   2 (Arcane Mage): Presence of Mind
+      [RES] rdy:Δ  cd:—  enemy:Nature's Swiftness/Restoration Druid(21s),Adrenaline Rush/Outlaw Rogue(27s)  cc:1/Mind Control-0s[kick]
+2:23  [CC ON TEAM]   1 ← Polymorph (Xaxnn-Tichondrius-US) | 2s | trinket: used
+2:24  [STATE]   friends 1:99 2:71 3:88 / enemies 4:90 5:54 6:100
+2:25  [STATE]   friends 1:99 2:67 3:83 / enemies 4:90 5:34 6:100
+2:25  [DMG SPIKE]   2 (Arcane Mage): 0.66M in 10s [P95 Danger] [BURST] (56% -> 70% HP)
+2:26  [STATE]   friends 1:99 2:28 3:83 / enemies 4:90 5:12 6:97
+2:26  [TRINKET]   1 used PvP trinket
+2:26  [OWNER CAST]   Holy Word: Serenity → 2
+2:27  [STATE]   friends 1:98 2:30 3:86 / enemies 4:91 5:14 6:97
+2:27  [OWNER CAST]   Prayer of Mending → 2
+2:28  [STATE]   friends 1:96 2:43 3:84 / enemies 4:92 5:dead 6:97
+2:28  [DEATH]  5 (Outlaw Rogue — enemy)
+2:28  [ROSTER]  enemy 5 removed (dead)
+2:28  [OWNER CAST]   Benediction → 2
+2:29  [STATE]   friends 1:100 2:73 3:88 / enemies 4:92 5:dead 6:97
+2:30  [STATE]   friends 1:99 2:79 3:89 / enemies 4:93 5:dead 6:92
+2:30  [BUFF FADED]   Power Infusion
+2:31  [STATE]   friends 1:100 2:78 3:89 / enemies 4:93 5:dead 6:94
+2:31  [OWNER CAST]   Flash Heal → 2
+2:32  [STATE]   friends 1:99 2:88 3:91 / enemies 4:93 5:dead 6:91
+2:32  [OWNER CAST]   Purify → 2
+2:32  [CLEANSE]   1 dispelled 2 effects: Chilled off 2, Ice Nova off 2
+2:33  [STATE]   friends 1:98 2:81 3:93 / enemies 5:dead 6:92
+2:33  [OWNER CAST]   Holy Word: Sanctify
+2:34  [STATE]   friends 1:83 2:61 3:100 / enemies 5:dead 6:92
+2:35  [STATE]   friends 1:73 2:53 3:100 / enemies 5:dead 6:89
+2:35  [OWNER CAST]   Benediction → 2
+2:36  [STATE]   friends 1:80 2:70 3:100 / enemies 5:dead 6:87
+2:36  [OWNER CAST]   Prayer of Mending → 2
+2:37  [STATE]   friends 1:78 2:66 3:100 / enemies 5:dead 6:77
+2:37  [OWNER CAST]   Dispel Magic → 6
+2:38  [STATE]   friends 1:79 2:63 3:100 / enemies 5:dead 6:65
+2:39  [STATE]   friends 1:79 2:57 3:99 / enemies 5:dead 6:65
+2:39  [OWNER CAST]   Prayer of Mending → 2
+2:40  [STATE]   friends 1:84 2:70 3:100 / enemies 5:dead 6:39
+2:40  [OWNER CAST]   Holy Word: Serenity → 2
+2:41  [STATE]   friends 1:86 2:100 3:100 / enemies 5:dead 6:35
+2:41  [OWNER CAST]   Dispel Magic → 6
+2:42  [STATE]   friends 1:87 2:100 3:100 / enemies 5:dead 6:35
+2:43  [STATE]   friends 1:91 2:98 3:98 / enemies 5:dead 6:dead
+2:43  [DEATH]  6 (Frost Mage — enemy)
+2:43  [ROSTER]  enemy 6 removed (dead)
+
+2:43  [MATCH END]   damp: 10%
+  friends 1:93% 2:97% 3:98% / enemies 4:92% 6:dead(2:43) 5:dead(2:28)

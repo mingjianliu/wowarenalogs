@@ -1,0 +1,275 @@
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Affliction Warlock | Bracket: 3v3 | Result: Loss | Duration: 2:26
+  My team: Affliction Warlock, Mistweaver Monk, Feral Druid
+  Enemy team: Holy Priest, Feral Druid, Beast Mastery Hunter
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Affliction Warlock): CAN offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 10% at match end
+
+CC APPLIED ON ENEMIES (DR summary):
+  Holy Priest (Zélay-Zul'jin-US): 9 CC — 6× Unknown, 2× Disorient, 1× Cyclone | 1 reduced, 2 immune ⚠ 2 hit immune — switch CC category or target after 2 applications
+  Feral Druid (Fabricated-Illidan-US): 11 CC — 3× Stun, 4× Disorient, 4× Cyclone | 2 reduced, 0 immune
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Salnazno-Tichondrius-US (Affliction Warlock — log owner):
+    Mortal Coil [45s], Unending Resolve [180s], Dark Pact [60s, 2 Charges], Howl of Terror [40s], Summon Darkglare [120s]
+  2: Drdabz-Illidan-US (Mistweaver Monk):
+    Paralysis [45s], Leg Sweep [60s], Life Cocoon [120s]
+  3: Bamd-Korgath-US (Feral Druid):
+    Mass Entanglement [30s], Incarnation: King of the Jungle [180s, 2 Charges], Stampeding Roar [120s], Incapacitating Roar [30s], Frenzied Regeneration [36s]
+  4: Zélay-Zul'jin-US (Holy Priest — enemy):
+    Power Infusion [120s]
+  5: Fabricated-Illidan-US (Feral Druid — enemy):
+    Incarnation: Avatar of Ashamane [180s], Tiger's Fury [30s]
+  6: Rèezx-Illidan-US (Beast Mastery Hunter — enemy):
+    Bestial Wrath [90s]
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:00  [STATE]   friends 1:100 2:100
+0:06  [CC ON TEAM]   1 ← Rake (Fabricated-Illidan-US) | 4s | trinket: available
+0:06  [CC ON TEAM]   2 ← Binding Shot (Rèezx-Illidan-US) | 3s | trinket: available
+0:07  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:100 6:100
+0:07  [OWNER CD]   Dark Pact
+0:08  [STATE]   friends 1:80 2:100 3:100 / enemies 4:99 5:100 6:100
+0:09  [STATE]   friends 1:80 2:95 3:100 / enemies 4:98 5:100 6:100
+0:09  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath [1/5]
+0:09  [TEAMMATE CD]   3 (Feral Druid): Incarnation: King of the Jungle
+0:10  [STATE]   friends 1:80 2:89 3:100 / enemies 4:97 5:100 6:100
+0:11  [STATE]   friends 1:80 2:80 3:92 / enemies 4:100 5:100 6:98
+0:12  [STATE]   friends 1:84 2:84 3:97 / enemies 4:100 5:92 6:98
+0:12  [OWNER CC]   Howl of Terror
+0:12  [CC CAST]   Howl of Terror (by 1) → 5
+0:12  [CC ON TEAM]   3 ← Binding Shot (Rèezx-Illidan-US) | 3s | trinket: available
+0:13  [STATE]   friends 1:84 2:81 3:97 / enemies 4:99 5:95 6:94
+0:14  [STATE]   friends 1:85 2:84 3:98 / enemies 4:99 5:92 6:88
+0:14  [TEAMMATE CC]   2 (Mistweaver Monk): Leg Sweep
+0:14  [CC CAST]   Leg Sweep (by 2) → 5
+0:15  [STATE]   friends 1:86 2:90 3:98 / enemies 4:100 5:92 6:78
+0:16  [STATE]   friends 1:91 2:93 3:100 / enemies 4:100 5:95 6:80
+0:16  [OWNER CD]   Summon Darkglare
+0:17  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:97 6:81
+0:17  [CC ON TEAM]   3 ← Freezing Trap (Rèezx-Illidan-US) | 4s | trinket: available
+0:18  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:99 6:100
+0:19  [STATE]   friends 1:100 2:100 / enemies 4:100 5:96 6:93
+0:20  [STATE]   friends 1:100 2:98 3:100 / enemies 4:100 5:91 6:88
+0:21  [STATE]   friends 1:100 2:98 3:100 / enemies 4:100 5:90 6:98
+0:22  [STATE]   friends 1:100 2:95 3:100 / enemies 4:100 5:98 6:95
+0:23  [STATE]   friends 1:100 2:99 3:100 / enemies 4:95 5:99 6:84
+0:23  [ENEMY BUFF]   5: Power Infusion (purgeable)
+0:23  [ENEMY CD]   4 (Holy Priest): Power Infusion [1/2]
+0:23  [ENEMY BUFF]   4: Power Infusion (purgeable)
+0:24  [STATE]   friends 1:100 2:100 3:100 / enemies 4:92 5:88 6:69
+0:25  [STATE]   friends 1:100 2:100 3:100 / enemies 4:92 5:88 6:63
+0:26  [STATE]   friends 1:100 2:100 3:100 / enemies 4:95 5:83 6:49
+0:27  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:100 6:95
+0:27  [CC ON TEAM]   3 ← Maim (Fabricated-Illidan-US) | 2s | trinket: available
+0:27  [BUFF FADED]   Dark Pact
+0:28  [STATE]   friends 1:99 2:100 3:99 / enemies 4:96 5:98 6:80
+0:29  [STATE]   friends 1:100 2:100 3:98 / enemies 4:92 5:100 6:81
+0:30  [STATE]   friends 1:98 2:100 3:100 / enemies 4:92 5:99 6:76
+0:30  [CLEANSE]   3 dispelled Entangling Roots off 3
+0:31  [STATE]   friends 1:95 2:95 3:100 / enemies 4:89 5:100 6:78
+0:32  [STATE]   friends 1:89 2:95 3:98 / enemies 4:87 5:98 6:78
+0:33  [STATE]   friends 1:92 2:95 3:97 / enemies 4:85 5:97 6:77
+0:33  [OWNER CC]   Mortal Coil → Rèezx-Illidan-US (77% HP)
+      [RES] rdy:Mortal Coil,Unending Resolve,2:Paralysis,2:Life Cocoon,3:Mass Entanglement,3:Stampeding Roar,3:Incapacitating Roar,3:Frenzied Regeneration  cd:Dark Pact(35s),Howl of Terror(19s),Summon Darkglare(104s),2:Leg Sweep(42s),3:Incarnation: King of the Jungle(157s)  enemy:Power Infusion/Holy Priest(10s),Bestial Wrath/Beast Mastery Hunter(24s)
+0:34  [STATE]   friends 1:100 2:95 3:95 / enemies 4:86 5:100 6:100
+0:34  [TEAMMATE CD]   3 (Feral Druid): Mass Entanglement
+0:35  [STATE]   friends 1:100 2:100 3:99 / enemies 4:85 5:97 6:79
+0:36  [STATE]   friends 1:100 2:100 3:98 / enemies 4:93 5:99 6:73
+0:36  [CLEANSE]   3 dispelled Infected Wounds off 3
+0:36  [BUFF FADED]   Summon Darkglare
+0:36  [CC ON TEAM]   3 ← Cyclone (Fabricated-Illidan-US) | 5s | trinket: available
+0:37  [STATE]   friends 1:100 2:100 3:99 / enemies 4:94 5:95 6:70
+0:38  [STATE]   friends 1:100 2:100 3:99 / enemies 4:96 5:96 6:65
+0:38  [CC ON TEAM]   2 ← Freezing Trap (Rèezx-Illidan-US) | 4s | trinket: available
+0:38  [ENEMY BUFF END]   5: Power Infusion
+0:38  [ENEMY BUFF END]   4: Power Infusion
+0:39  [STATE]   friends 1:100 2:100 / enemies 4:96 5:95 6:65
+0:39  [OFFENSIVE WINDOW]   0:39–0:59 | Critical | 0.66M on 1 (Affliction Warlock) | CDs: Bestial Wrath + Incarnation: Avatar of Ashamane + Tiger's Fury
+0:39  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath [2/5]
+0:39  [DMG SPIKE]   1 (Affliction Warlock): 0.66M in 10s [P95 Danger] [ROT] (96% -> 27% HP)
+0:39  [ENEMY CD]   5 (Feral Druid): Incarnation: Avatar of Ashamane [1/2]
+0:39  [CC ON TEAM]   1 ← Rake (Fabricated-Illidan-US) | 4s | trinket: available
+0:40  [STATE]   friends 1:88 / enemies 4:96 5:96 6:74
+0:40  [ENEMY CD]   5 (Feral Druid): Tiger's Fury [1/5]
+0:40  [OWNER CD]   Unending Resolve
+0:41  [STATE]   friends 1:73 2:100 3:99 / enemies 4:94 5:95 6:81
+0:42  [STATE]   friends 1:69 2:100 3:99 / enemies 4:98 5:94 6:83
+0:42  [CC ON TEAM]   2 ← Mighty Bash (Fabricated-Illidan-US) | 4s | trinket: available
+0:43  [STATE]   friends 1:81 2:100 3:99 / enemies 4:95 5:94 6:94
+0:43  [CC ON TEAM]   2 ← Psychic Scream (Zélay-Zul'jin-US) | 6s | trinket: available
+0:43  [CC ON TEAM]   1 ← Psychic Scream (Zélay-Zul'jin-US) | 1s | trinket: used
+0:44  [STATE]   friends 1:75 2:98 3:98 / enemies 4:99 5:100 6:98
+0:44  [TRINKET]   1 used PvP trinket
+0:45  [STATE]   friends 1:66 2:97 3:96 / enemies 4:100 5:100 6:99
+0:46  [STATE]   friends 1:62 2:96 3:93 / enemies 4:100 5:100 6:99
+0:47  [STATE]   friends 1:54 2:92 3:94 / enemies 4:99 5:100 6:92
+0:48  [STATE]   friends 1:45 2:91 3:96 / enemies 4:99 5:100 6:72
+0:48  [BUFF FADED]   Unending Resolve
+0:49  [STATE]   friends 1:35 2:91 3:96 / enemies 4:99 5:100 6:87
+0:49  [TEAMMATE CD]   2 (Mistweaver Monk): Life Cocoon
+0:50  [STATE]   friends 1:21 2:92 3:96 / enemies 4:99 5:95 6:74
+0:51  [STATE]   friends 1:53 2:92 3:95 / enemies 4:99 5:94 6:65
+0:51  [TEAMMATE CC]   3 (Feral Druid): Incapacitating Roar
+0:51  [CC CAST]   Incapacitating Roar (by 3) → 5, 6 [2 enemies]
+0:52  [STATE]   friends 1:75 2:99 3:99 / enemies 4:100 5:79 6:62
+0:53  [STATE]   friends 1:100 2:100 3:99 / enemies 4:98 5:68 6:53
+0:53  [OWNER CC]   Howl of Terror
+0:55  [CC ON TEAM]   3 ← Rake (Fabricated-Illidan-US) | 4s | trinket: available
+0:56  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:76 6:61
+0:57  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:77 6:62
+0:58  [STATE]   friends 1:100 2:100 3:98 / enemies 4:98 5:75 6:63
+0:59  [STATE]   friends 1:100 2:100 3:95 / enemies 4:100 5:95 6:100
+0:59  [CLEANSE]   3 dispelled Infected Wounds off 3
+1:00  [STATE]   friends 1:100 2:99 3:93 / enemies 4:99 5:98 6:84
+1:00  [CC ON TEAM]   3 ← Cyclone (Fabricated-Illidan-US) | 1s | trinket: used
+1:00  [OWNER CD]   Dark Pact
+1:01  [STATE]   friends 1:90 2:100 3:93 / enemies 4:77 5:100 6:83
+1:01  [TRINKET]   3 used PvP trinket
+1:02  [STATE]   friends 1:94 2:100 3:94 / enemies 4:75 5:100 6:81
+1:02  [OFFENSIVE WINDOW]   1:02–1:24 | Low | 0.54M on 1 (Affliction Warlock) | CDs: Tiger's Fury + Bestial Wrath
+1:02  [ENEMY CD]   5 (Feral Druid): Tiger's Fury [2/5]
+1:03  [STATE]   friends 1:98 2:100 3:89 / enemies 4:74 5:100 6:84
+1:04  [STATE]   friends 1:100 2:100 3:94 / enemies 4:71 5:100 6:83
+1:04  [CC ON TEAM]   3 ← Holy Word: Chastise (Zélay-Zul'jin-US) | 2s | trinket: ON CD (118s left)
+1:05  [STATE]   friends 1:100 2:100 3:97 / enemies 4:67 5:100 6:82
+1:06  [STATE]   friends 1:100 2:100 3:98 / enemies 4:64 5:98 6:81
+1:07  [STATE]   friends 1:100 2:100 3:99 / enemies 4:58 5:100 6:81
+1:07  [CC ON TEAM]   2 ← Binding Shot (Rèezx-Illidan-US) | 3s | trinket: available
+1:08  [STATE]   friends 1:100 2:100 3:100 / enemies 4:72 5:99 6:72
+1:08  [CC ON TEAM]   2 ← Freezing Trap (Rèezx-Illidan-US) | 4s | trinket: available
+1:09  [STATE]   friends 1:100 2:100 3:98 / enemies 4:76 5:100 6:87
+1:09  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath [3/5]
+1:09  [BUFF FADED]   Dark Pact
+1:10  [STATE]   friends 1:97 3:98 / enemies 4:76 5:99 6:86
+1:10  [DMG SPIKE]   1 (Affliction Warlock): 0.54M in 10s [P95 Danger] [ROT] (97% -> 95% HP)
+1:11  [STATE]   friends 1:91 3:98 / enemies 4:57 5:100 6:89
+1:11  [CLEANSE]   1 dispelled Infected Wounds off 1
+1:12  [STATE]   friends 1:68 2:100 3:89 / enemies 4:57 5:100 6:90
+1:13  [STATE]   friends 1:63 2:100 3:85 / enemies 4:56 5:100 6:93
+1:14  [STATE]   friends 1:59 2:100 3:80 / enemies 4:54 5:100 6:93
+1:15  [STATE]   friends 1:75 2:100 3:85 / enemies 4:66 5:100 6:96
+1:16  [STATE]   friends 1:87 2:100 3:97 / enemies 4:68 5:100 6:97
+1:17  [STATE]   friends 1:96 2:100 3:100 / enemies 4:68 5:94 6:95
+1:17  [TEAMMATE CC]   2 (Mistweaver Monk): Leg Sweep
+1:17  [CC CAST]   Leg Sweep (by 2) → 5, 6 [2 enemies]
+1:18  [STATE]   friends 1:96 2:100 3:97 / enemies 4:88 5:100 6:93
+1:28  [ENEMY CD]   5 (Feral Druid): Tiger's Fury [3/5]
+1:29  [TEAMMATE CC]   3 (Feral Druid): Incapacitating Roar
+1:29  [CC CAST]   Incapacitating Roar (by 3) → 6, 5 [2 enemies]
+1:29  [CLEANSE]   3 dispelled Infected Wounds off 3
+1:30  [STATE]   friends 1:99 2:100 3:100
+1:32  [STATE]   friends 1:87 2:100 3:100 / enemies 4:100 5:100 6:93
+1:33  [STATE]   friends 1:80 2:100 3:100 / enemies 4:99 5:100 6:92
+1:33  [OWNER CC]   Howl of Terror
+1:33  [CC CAST]   Howl of Terror (by 1) → 4
+1:34  [STATE]   friends 1:77 2:100 3:100 / enemies 4:100 5:100 6:91
+1:35  [STATE]   friends 1:74 2:100 3:98 / enemies 4:99 5:100 6:88
+1:36  [STATE]   friends 1:99 2:100 3:95 / enemies 4:99 5:100 6:82
+1:36  [DMG SPIKE]   1 (Affliction Warlock): 0.44M in 10s [P90 High] [ROT] (99% -> 84% HP)
+1:37  [STATE]   friends 1:100 2:100 3:99 / enemies 4:96 5:100 6:74
+1:38  [STATE]   friends 1:98 2:100 3:98 / enemies 4:96 5:100 6:68
+1:39  [STATE]   friends 1:94 2:100 3:97 / enemies 4:95 5:98 6:61
+1:40  [STATE]   friends 1:88 2:100 3:94 / enemies 4:94 5:100 6:55
+1:40  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath [4/5]
+1:40  [OWNER CC]   Mortal Coil → Rèezx-Illidan-US (62% HP)
+      [RES] rdy:Δ+Dark Pact-Unending Resolve,2:Life Cocoon,3:Incapacitating Roar  cd:Unending Resolve(120s),2:Life Cocoon(69s),3:Incapacitating Roar(19s)  enemy:Tiger's Fury/Feral Druid(12s),Bestial Wrath/Beast Mastery Hunter(0s)
+1:41  [STATE]   friends 1:87 2:100 3:82 / enemies 4:92 5:98 6:66
+1:42  [CC ON TEAM]   3 ← Cyclone (Fabricated-Illidan-US) | 5s | trinket: ON CD (80s left)
+1:43  [STATE]   friends 1:83 2:100 3:79 / enemies 4:96 5:89 6:78
+1:44  [STATE]   friends 1:92 2:100 / enemies 4:97 5:86 6:77
+1:44  [CC ON TEAM]   2 ← Freezing Trap (Rèezx-Illidan-US) | 4s | trinket: available
+1:45  [STATE]   friends 1:91 2:100 / enemies 4:99 5:84 6:78
+1:46  [STATE]   friends 1:84 3:82 / enemies 4:98 5:84 6:74
+1:46  [CLEANSE]   1 dispelled Infected Wounds off 1
+1:46  [OWNER CD]   Dark Pact
+      [RES] rdy:Δ-Mortal Coil  cd:Mortal Coil(39s)  enemy:Tiger's Fury/Feral Druid(19s),Bestial Wrath/Beast Mastery Hunter(6s)  cc:2/Freezing Trap-1s,3/Cyclone-0s
+1:47  [STATE]   friends 1:69 2:100 3:82 / enemies 4:97 5:83 6:72
+1:48  [STATE]   friends 1:71 2:100 3:72 / enemies 4:98 5:82 6:88
+1:49  [STATE]   friends 1:72 2:100 3:71 / enemies 4:96 5:81 6:91
+1:50  [STATE]   friends 1:74 2:100 3:69 / enemies 4:99 5:82 6:89
+1:50  [CLEANSE]   2 dispelled Entangling Roots off 2
+1:51  [STATE]   friends 1:75 2:100 3:60 / enemies 4:98 5:81 6:90
+1:52  [STATE]   friends 1:76 2:100 3:60 / enemies 4:98 5:80 6:84
+1:52  [CC ON TEAM]   2 ← Cyclone (Fabricated-Illidan-US) | 2s | trinket: used
+1:52  [TEAMMATE CD]   3 (Feral Druid): Incarnation: King of the Jungle
+      [RES] rdy:Δ-Dark Pact  cd:Dark Pact(8s)  enemy:Tiger's Fury/Feral Druid(25s),Bestial Wrath/Beast Mastery Hunter(12s)  cc:2/Cyclone-1s
+1:53  [STATE]   friends 1:79 2:100 3:49 / enemies 4:98 5:78 6:83
+1:54  [STATE]   friends 1:80 2:100 3:46 / enemies 4:97 5:77 6:81
+1:54  [TRINKET]   2 used PvP trinket
+1:55  [STATE]   friends 1:81 2:100 3:61 / enemies 4:92 5:72 6:75
+1:56  [STATE]   friends 1:94 2:100 3:66 / enemies 4:89 5:55 6:72
+1:57  [STATE]   friends 1:100 2:100 3:92 / enemies 4:86 5:46 6:68
+1:57  [CC ON TEAM]   3 ← Holy Word: Chastise (Zélay-Zul'jin-US) | 3s | trinket: ON CD (65s left)
+1:57  [ENEMY CD]   5 (Feral Druid): Tiger's Fury [4/5]
+1:58  [STATE]   friends 1:100 2:100 3:100 / enemies 4:86 5:44 6:62
+1:59  [STATE]   friends 1:100 2:100 3:99 / enemies 4:92 5:81 6:79
+2:00  [STATE]   friends 1:100 2:100 3:97 / enemies 4:96 5:82 6:60
+2:01  [STATE]   friends 1:100 2:100 3:90 / enemies 4:95 5:77 6:54
+2:01  [BUFF FADED]   Dark Pact
+2:02  [STATE]   friends 1:99 2:100 3:85 / enemies 4:99 5:86 6:53
+2:03  [STATE]   friends 1:97 2:100 3:80 / enemies 4:95 5:84 6:49
+2:04  [STATE]   friends 1:92 2:100 3:74 / enemies 4:97 5:83 6:48
+2:05  [STATE]   friends 1:88 2:100 3:95 / enemies 4:91 5:80 6:50
+2:05  [CLEANSE]   3 dispelled Infected Wounds off 3
+2:06  [STATE]   friends 1:89 2:100 3:98 / enemies 4:91 5:77 6:47
+2:07  [STATE]   friends 1:94 2:100 3:94 / enemies 4:88 5:79 6:44
+2:07  [DMG SPIKE]   1 (Affliction Warlock): 0.91M in 10s [P95 Danger] [ROT] (94% -> 0% HP)
+2:07  [CC ON TEAM]   3 ← Binding Shot (Rèezx-Illidan-US) | 2s | trinket: ON CD (54s left)
+2:08  [STATE]   friends 1:97 2:100 3:92 / enemies 4:88 5:74 6:38
+2:09  [STATE]   friends 1:100 2:100 3:97 / enemies 4:90 5:65 6:100
+2:10  [STATE]   friends 1:100 2:100 3:98 / enemies 4:91 5:53 6:97
+2:10  [OFFENSIVE WINDOW]   2:10–2:34 | Critical | 0.91M on 1 (Affliction Warlock) | CDs: Bestial Wrath + Incarnation: Avatar of Ashamane + Tiger's Fury
+2:10  [ENEMY CD]   6 (Beast Mastery Hunter): Bestial Wrath [5/5]
+2:11  [STATE]   friends 1:100 2:100 3:100 / enemies 4:94 5:48 6:89
+2:12  [STATE]   friends 1:91 2:91 3:100 / enemies 4:93 5:46 6:81
+2:12  [CC ON TEAM]   1 ← Maim (Fabricated-Illidan-US) | 4s | trinket: ON CD (33s left)
+2:13  [STATE]   friends 1:92 2:99 3:98 / enemies 4:92 5:48 6:78
+2:13  [CC ON TEAM]   2 ← Freezing Trap (Rèezx-Illidan-US) | 4s | trinket: ON CD (71s left)
+2:14  [STATE]   friends 1:86 2:100 3:96 / enemies 4:92 5:80 6:78
+2:14  [ENEMY CD]   5 (Feral Druid): Incarnation: Avatar of Ashamane [2/2]
+2:15  [STATE]   friends 1:54 3:93 / enemies 4:92 5:89 6:79
+2:15  [DMG SPIKE]   3 (Feral Druid): 0.63M in 10s [P95 Danger] [ROT] (91% -> 0% HP)
+2:16  [STATE]   friends 1:36 3:89 / enemies 4:92 5:94 6:80
+2:16  [CC ON TEAM]   1 ← Rake (Fabricated-Illidan-US) | 1s | trinket: ON CD (29s left)
+2:17  [STATE]   friends 1:dead 2:99 3:83 / enemies 4:92 5:94 6:85
+2:17  [DEATH]  1 (Affliction Warlock — friendly)
+               HP: 99% at T-15s → 94% at T-10s → 99% at T-5s → 81% at T-3s → dead
+               Top damage in final 10s: [pet] — Bloodshed (125k), [pet] — Kill Command (118k), [pet] — Bestial Wrath (70k)
+2:18  [STATE]   friends 1:dead 2:97 3:69 / enemies 4:93 5:99 6:87
+2:18  [TEAMMATE CC]   3 (Feral Druid): Incapacitating Roar
+      [RES] rdy:Δ+Dark Pact,Howl of Terror,Summon Darkglare,2:Leg Sweep,3:Incapacitating Roar  cd:—  enemy:Tiger's Fury/Feral Druid(21s),Incarnation: Avatar of Ashamane/Feral Druid(5s),Bestial Wrath/Beast Mastery Hunter(8s)  cc:3/Cyclone-1s[kick]
+2:18  [CC CAST]   Incapacitating Roar (by 3) → 6, 5 [2 enemies]
+2:18  [CLEANSE]   3 dispelled Infected Wounds off 3
+2:19  [STATE]   friends 1:dead 2:95 3:51 / enemies 4:93 5:100 6:99
+2:20  [STATE]   friends 1:dead 2:95 3:44 / enemies 4:93 5:100 6:97
+2:20  [ENEMY CD]   5 (Feral Druid): Tiger's Fury [5/5]
+2:21  [STATE]   friends 1:dead 2:93 3:40 / enemies 4:93 5:98 6:97
+2:22  [STATE]   friends 1:dead 2:90 3:22 / enemies 4:93 5:100 6:100
+2:23  [STATE]   friends 1:dead 2:89 3:15 / enemies 4:93 5:99 6:99
+2:23  [ENEMY BUFF]   5: Power Infusion (purgeable)
+2:23  [ENEMY CD]   4 (Holy Priest): Power Infusion [2/2]
+2:24  [STATE]   friends 1:dead 2:89 3:11 / enemies 4:93 5:98 6:99
+2:25  [STATE]   friends 1:dead 2:85 3:dead / enemies 4:95 5:100 6:99
+2:25  [DEATH]  3 (Feral Druid — friendly)
+               HP: 98% at T-15s → 92% at T-10s → 44% at T-5s → 22% at T-3s → dead
+               Top damage in final 10s: [pet] — Kill Command (152k), Fabricated-Illidan-US — Rip (71k), Fabricated-Illidan-US — Ferocious Bite (64k)
+2:26  [STATE]   friends 1:dead 2:66 3:dead / enemies 4:95 5:100 6:98
+2:26  [ENEMY BUFF END]   5: Power Infusion
+
+2:26  [MATCH END]   damp: 10%
+  friends 1:dead(2:17) 2:59% 3:dead(2:25) / enemies 4:95% 5:100% 6:100%

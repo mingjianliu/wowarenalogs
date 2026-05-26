@@ -27,7 +27,7 @@ export interface IMatchDynamicFeatures {
 }
 
 export interface IArchetypeModel {
-  normParams: { min: number[]; max: number[] };
+  normParams: { mean: number[]; std: number[] };
   featureNames: string[];
   centroids: number[][];
 }
@@ -50,8 +50,8 @@ export function toFeatureVector(d: IMatchDynamicFeatures): number[] {
 
 export function normalize(v: number[], params: IArchetypeModel['normParams']): number[] {
   return v.map((x, i) => {
-    const range = params.max[i] - params.min[i];
-    return range > 0 ? (x - params.min[i]) / range : 0;
+    const std = params.std[i] || 1;
+    return (x - params.mean[i]) / std;
   });
 }
 
@@ -62,7 +62,7 @@ export function euclidean(a: number[], b: number[]): number {
 export function classifyCluster(
   matchDynamic: IMatchDynamicFeatures,
   model: IArchetypeModel,
-): { clusterKey: string; clusterIdx: number } {
+): { clusterKey: string; clusterIdx: number; distance: number } {
   const vec = normalize(toFeatureVector(matchDynamic), model.normParams);
   let bestIdx = 0;
   let bestDist = Infinity;
@@ -73,7 +73,7 @@ export function classifyCluster(
       bestIdx = idx;
     }
   });
-  return { clusterKey: `cluster_${bestIdx}`, clusterIdx: bestIdx };
+  return { clusterKey: `cluster_${bestIdx}`, clusterIdx: bestIdx, distance: bestDist };
 }
 
 // ── Match dynamic feature extraction ─────────────────────────────────────────

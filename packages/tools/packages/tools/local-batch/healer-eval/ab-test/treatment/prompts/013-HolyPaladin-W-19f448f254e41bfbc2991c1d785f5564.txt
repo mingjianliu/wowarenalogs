@@ -1,0 +1,378 @@
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Holy Paladin (Healer) | Bracket: 3v3 | Result: Win | Duration: 2:46
+  My team: Holy Paladin, Demonology Warlock, Frost Mage
+  Enemy team: Mistweaver Monk, Frost Mage, Subtlety Rogue
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Holy Paladin): CANNOT offensive purge
+  Team purgers: Demonology Warlock, Frost Mage
+
+DAMPENING (3v3): started at 10%, ended at 10% at match end
+
+CC APPLIED ON ENEMIES (DR summary):
+  Mistweaver Monk (Ttvslunkz-Tichondrius-US): 12 CC — 5× Disorient, 4× Unknown, 3× Stun | 2 reduced, 0 immune
+  Frost Mage (Pmake-Area52-US): 12 CC — 7× Disorient, 5× Unknown | 4 reduced, 0 immune
+  Subtlety Rogue (Flttsr-Sargeras-US): 10 CC — 5× Disorient, 4× Incapacitate, 1× Unknown | 3 reduced, 0 immune
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Howworhowtel-Tichondrius-US (Holy Paladin — log owner):
+    Lay on Hands [600s], Divine Shield [300s], Hammer of Justice [45s, 2 Charges], Blessing of Spellwarding [300s], Avenging Crusader [60s], Divine Protection [60s, 2 Charges], Blessing of Sacrifice [120s], Aura Mastery [180s]
+  2: Auntyroniqua-BleedingHollow-US (Demonology Warlock):
+    Mortal Coil [45s], Dark Pact [60s], Nether Ward [45s], Howl of Terror [40s, 2 Charges]
+  3: Techniquem-Tichondrius-US (Frost Mage):
+    Ice Block [240s], Dragon's Breath [45s]
+  4: Flttsr-Sargeras-US (Subtlety Rogue — enemy):
+    Shadow Blades [90s]
+  5: Ttvslunkz-Tichondrius-US (Mistweaver Monk — enemy):
+    none tracked
+  6: Pmake-Area52-US (Frost Mage — enemy):
+    none tracked
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:00  [STATE]   friends 2:100
+0:03  [STATE]   friends 2:100 3:100
+0:04  [CC ON TEAM]   1 ← Sap (Flttsr-Sargeras-US) | 6s | trinket: available
+0:05  [STATE]   friends 2:100 3:100 / enemies 5:99 6:99
+0:06  [STATE]   friends 2:100 3:100 / enemies 5:100 6:99
+0:06  [CC ON TEAM]   2 ← Cheap Shot (Flttsr-Sargeras-US) | 4s | trinket: available
+0:07  [STATE]   friends 2:100 3:100 / enemies 4:100 5:97 6:97
+0:08  [STATE]   friends 2:100 3:100 / enemies 4:100 5:95 6:96
+0:08  [TEAMMATE CC]   3 (Frost Mage): Dragon's Breath
+0:09  [STATE]   friends 1:98 2:91 3:100 / enemies 4:100 5:93 6:88
+0:10  [STATE]   friends 1:98 2:87 3:100 / enemies 4:100 5:92 6:100
+0:10  [OWNER CAST]   Holy Bulwark → 2
+0:11  [STATE]   friends 1:99 2:85 3:100 / enemies 4:100 5:91 6:100
+0:11  [TEAMMATE CC]   2 (Demonology Warlock): Howl of Terror
+0:11  [CC CAST]   Howl of Terror (by 2) → 6, 4 [2 enemies]
+0:12  [STATE]   friends 1:99 2:97 3:100 / enemies 4:100 5:91 6:94
+0:12  [OWNER CAST]   Word of Glory → 2
+0:13  [STATE]   friends 1:100 2:97 3:100 / enemies 4:100 5:90 6:88
+0:13  [OWNER CAST]   Holy Shock → 2
+0:14  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:90 6:94
+0:14  [CC ON TEAM]   3 ← Dragon's Breath (Pmake-Area52-US) | 2s | trinket: available
+0:14  [CC ON TEAM]   2 ← Dragon's Breath (Pmake-Area52-US) | 1s | trinket: available
+0:14  [OWNER CAST]   Divine Steed
+0:15  [STATE]   friends 1:100 2:100 / enemies 4:100 5:90 6:99
+0:16  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:92 6:100
+0:16  [OWNER CC]   Hammer of Justice → Ttvslunkz-Tichondrius-US (92% HP)
+0:17  [STATE]   friends 1:94 2:97 3:100 / enemies 4:99 5:94 6:96
+0:17  [OWNER CAST]   Flash of Light → 2 [completed before CC landed]
+0:17  [CLEANSE]   1 dispelled Wound Poison off 2
+0:18  [STATE]   friends 1:91 2:99 3:100 / enemies 4:93 5:95 6:100
+0:18  [CC ON TEAM]   1 ← Kidney Shot (Flttsr-Sargeras-US) | 5s | trinket: available
+0:19  [STATE]   friends 1:80 2:98 3:100 / enemies 4:83 5:99 6:100
+0:19  [OWNER CD]   Divine Protection
+0:19  [TEAMMATE CC]   2 (Demonology Warlock): Mortal Coil
+0:20  [STATE]   friends 1:71 2:97 3:100 / enemies 4:69 5:99 6:100
+0:20  [TEAMMATE CD]   2 (Demonology Warlock): Nether Ward
+0:21  [STATE]   friends 1:65 2:99 3:100 / enemies 4:68 5:99 6:100
+0:22  [STATE]   friends 1:61 2:98 3:100 / enemies 4:54 5:100 6:100
+0:22  [CLEANSE]   1 dispelled 2 effects: Wound Poison off 1, Crippling Poison off 1
+0:22  [OWNER CAST]   Flash of Light → self
+0:23  [STATE]   friends 1:74 2:99 3:100 / enemies 4:83 5:100 6:100
+0:23  [CC ON TEAM]   1 ← Cheap Shot (Flttsr-Sargeras-US) | 2s | trinket: available
+0:24  [STATE]   friends 1:72 2:100 3:100 / enemies 4:84 5:100 6:92
+0:25  [STATE]   friends 1:66 2:100 3:100 / enemies 4:96 5:100 6:99
+0:25  [OWNER CAST]   Word of Glory → self
+0:26  [STATE]   friends 1:83 2:100 3:100 / enemies 4:98 5:98 6:100
+0:26  [OWNER CD]   Avenging Crusader
+0:27  [STATE]   friends 1:97 2:93 3:100 / enemies 4:97 5:98 6:100
+0:27  [OWNER CAST]   Word of Glory → self
+0:27  [BUFF FADED]   Divine Protection
+0:28  [STATE]   friends 1:100 2:95 3:100 / enemies 4:100 5:99 6:90
+0:28  [OWNER CAST]   Hammer of Wrath → 4
+0:29  [STATE]   friends 1:86 2:100 3:100 / enemies 4:91 5:99 6:90
+0:29  [CC ON TEAM]   2 ← Cheap Shot (Flttsr-Sargeras-US) | 6s | trinket: available
+0:30  [STATE]   friends 1:86 2:100 3:100 / enemies 4:92 5:99 6:90
+0:30  [OWNER CAST]   Holy Shock → self
+0:30  [DMG SPIKE]   2 (Demonology Warlock): 0.55M in 10s [P95 Danger] [ROT] (96% -> 49% HP)
+0:31  [STATE]   friends 1:100 2:91 3:100 / enemies 4:95 5:100 6:90
+0:31  [CLEANSE]   1 dispelled 2 effects: Crippling Poison off 1, Wound Poison off 1
+0:31  [OWNER CAST]   Holy Light → self
+0:32  [STATE]   friends 1:100 2:88 3:100 / enemies 4:100 5:100 6:90
+0:32  [OWNER CAST]   Word of Glory → 2
+0:33  [STATE]   friends 1:95 2:89 3:100 / enemies 4:100 5:100 6:91
+0:34  [STATE]   friends 1:96 2:84 3:100 / enemies 4:100 5:100 6:93
+0:34  [OWNER CAST]   Sacred Weapon → 2
+0:35  [STATE]   friends 1:93 2:71 3:100 / enemies 4:92 5:100 6:100
+0:35  [OWNER CAST]   Hammer of Wrath → 4
+0:36  [STATE]   friends 1:100 2:73 3:100 / enemies 4:73 5:100 6:100
+0:36  [OWNER CAST]   Word of Glory → 2
+0:37  [STATE]   friends 1:95 2:79 3:100 / enemies 4:100 5:100 6:100
+0:37  [CC ON TEAM]   3 ← Polymorph (Pmake-Area52-US) | 1s | trinket: used
+0:38  [STATE]   friends 1:95 2:60 3:100 / enemies 4:100 5:100 6:98
+0:38  [OWNER CAST]   Holy Shock → 2
+0:39  [STATE]   friends 1:95 2:68 3:100 / enemies 4:84 5:100 6:99
+0:39  [TRINKET]   3 used PvP trinket
+0:39  [CC ON TEAM]   1 ← Paralysis (Ttvslunkz-Tichondrius-US) | 3s | trinket: available
+0:40  [STATE]   friends 1:93 2:54 3:100 / enemies 4:89 5:100 6:96
+0:41  [STATE]   friends 1:93 2:49 3:100 / enemies 4:82 5:100 6:81
+0:41  [CC ON TEAM]   1 ← Song of Chi-Ji (Ttvslunkz-Tichondrius-US) | 1s | trinket: available
+0:41  [CLEANSE]   2 dispelled Crippling Poison off 2
+0:42  [STATE]   friends 1:93 2:49 3:100 / enemies 4:80 5:97 6:77
+0:42  [CC ON TEAM]   2 ← Song of Chi-Ji (Ttvslunkz-Tichondrius-US) | 6s | trinket: available
+0:42  [UNCLEANSED DEBUFF]   Song of Chi-Ji on 2 | 6s | 1k taken during | dispel: Magic
+0:42  [CLEANSE]   2 dispelled Song of Chi-Ji off 1
+0:42  [OWNER CAST]   Word of Glory → 2
+0:43  [STATE]   friends 1:93 2:60 3:100 / enemies 4:100 5:98 6:97
+0:44  [STATE]   friends 1:93 2:61 3:100 / enemies 4:97 5:94 6:99
+0:44  [OWNER CAST]   Flash of Light → 2
+0:44  [CLEANSE]   1 dispelled Wound Poison off 2
+0:45  [STATE]   friends 1:93 2:76 3:100 / enemies 4:95 5:91 6:94
+0:45  [OWNER CAST]   Flash of Light → 2 [completed before CC landed]
+0:46  [STATE]   friends 1:93 2:96 3:100 / enemies 4:97 5:89 6:96
+0:46  [CC ON TEAM]   1 ← Cheap Shot (Flttsr-Sargeras-US) | 4s | trinket: available
+0:46  [CC ON TEAM]   3 ← Polymorph (Pmake-Area52-US) | 3s | trinket: ON CD (113s left)
+0:46  [UNCLEANSED DEBUFF]   Polymorph on 3 | 3s | 0k taken during | dispel: Magic
+0:47  [STATE]   friends 1:85 2:96 3:100 / enemies 4:100 5:89 6:96
+0:47  [DMG SPIKE]   1 (Holy Paladin): 0.69M in 10s [P95 Danger] [ROT] (85% -> 70% HP)
+0:48  [STATE]   friends 1:66 2:96 / enemies 4:100 5:90 6:98
+0:48  [BUFF FADED]   Avenging Crusader
+0:49  [STATE]   friends 1:35 2:97 / enemies 4:100 5:99 6:100
+0:49  [TEAMMATE CC]   2 (Demonology Warlock): Howl of Terror
+0:49  [CC CAST]   Howl of Terror (by 2) → 6, 5, 4 [3 enemies]
+0:49  [OWNER CAST]   Lay on Hands → self [completed before CC landed]
+0:50  [STATE]   friends 1:98 2:98 / enemies 4:100 5:100 6:100
+0:50  [CC ON TEAM]   1 ← Cheap Shot (Flttsr-Sargeras-US) | 2s | trinket: available
+0:51  [STATE]   friends 1:91 2:98 3:100 / enemies 4:100 5:100 6:100
+0:52  [STATE]   friends 1:69 2:98 3:100 / enemies 4:96 5:100 6:100
+0:52  [OWNER CAST]   Word of Glory → self
+0:53  [STATE]   friends 1:84 2:88 3:100 / enemies 4:86 5:100 6:100
+0:53  [OWNER CAST]   Blessing of Freedom → self
+0:54  [STATE]   friends 1:75 2:87 3:100 / enemies 4:82 5:100 6:100
+0:55  [STATE]   friends 1:75 2:82 3:100 / enemies 4:71 5:100 6:99
+0:55  [OWNER CAST]   Holy Shock → self
+0:55  [OWNER CAST]   Divine Steed
+0:56  [STATE]   friends 1:82 2:82 3:100 / enemies 4:55 6:98
+0:57  [STATE]   friends 1:70 2:82 3:94 / enemies 4:40 6:87
+0:57  [OWNER CC]   Hammer of Justice → Ttvslunkz-Tichondrius-US (100% HP)
+0:58  [STATE]   friends 1:69 2:82 3:89 / enemies 4:29 5:100 6:87
+0:58  [DMG SPIKE]   1 (Holy Paladin): 0.59M in 10s [P95 Danger] [BURST] (68% -> 71% HP)
+0:58  [OWNER CAST]   Judgment → 4
+0:59  [STATE]   friends 1:58 2:82 3:89 / enemies 4:23 5:100 6:100
+0:59  [OWNER CAST]   Word of Glory → self
+1:00  [STATE]   friends 1:65 2:84 3:91 / enemies 4:23 5:100 6:100
+1:01  [STATE]   friends 1:57 2:88 3:91 / enemies 4:57 5:100 6:99
+1:01  [OWNER CAST]   Holy Shock → self
+1:02  [STATE]   friends 1:59 2:88 3:84 / enemies 4:58 5:100 6:99
+1:02  [OWNER CAST]   Word of Glory → self
+1:03  [STATE]   friends 1:67 2:88 3:83 / enemies 4:100 5:100 6:99
+1:03  [CLEANSE]   1 dispelled Wound Poison off 1
+1:03  [OWNER CAST]   Flash of Light → self
+1:05  [OWNER CAST]   Flash of Light → self
+1:05  [CC ON TEAM]   2 ← Kidney Shot (Flttsr-Sargeras-US) | 5s | trinket: available
+1:06  [STATE]   friends 1:53 2:94 3:86 / enemies 4:99 5:100 6:99
+1:06  [OWNER CAST]   Beacon of Faith → self
+1:07  [STATE]   friends 1:43 2:95 3:86 / enemies 4:97 5:100 6:99
+1:08  [STATE]   friends 1:35 2:94 3:85 / enemies 4:94 5:100 6:99
+1:08  [OWNER CAST]   Healthstone
+1:08  [OWNER CAST]   Word of Glory → self
+1:09  [STATE]   friends 1:70 2:93 3:85 / enemies 4:92 5:99 6:100
+1:09  [OWNER CAST]   Holy Bulwark → self
+1:09  [TEAMMATE CD]   2 (Demonology Warlock): Dark Pact
+1:10  [STATE]   friends 1:72 2:84 3:86 / enemies 4:88 5:100 6:100
+1:10  [OWNER CAST]   Word of Glory → self
+1:11  [STATE]   friends 1:88 2:85 3:86 / enemies 4:85 5:100 6:100
+1:12  [STATE]   friends 1:85 2:85 3:86 / enemies 4:86 5:100 6:100
+1:12  [CC ON TEAM]   1 ← Cheap Shot (Flttsr-Sargeras-US) | 4s | trinket: available
+1:12  [CC ON TEAM]   2 ← Dragon's Breath (Pmake-Area52-US) | 1s | trinket: used
+1:12  [CC ON TEAM]   3 ← Dragon's Breath (Pmake-Area52-US) | 3s | trinket: ON CD (87s left)
+1:12  [ENEMY CD]   4 (Subtlety Rogue): Shadow Blades
+1:13  [STATE]   friends 1:73 2:85 3:86 / enemies 4:93 5:100 6:100
+1:13  [TRINKET]   2 used PvP trinket
+1:13  [OWNER CD]   Divine Protection
+1:14  [STATE]   friends 1:64 2:85 / enemies 4:90 5:100 6:100
+1:14  [TEAMMATE CC]   2 (Demonology Warlock): Mortal Coil
+1:15  [STATE]   friends 1:55 2:94 / enemies 4:100 5:100 6:100
+1:15  [CC ON TEAM]   3 ← Paralysis (Ttvslunkz-Tichondrius-US) | 3s | trinket: ON CD (84s left)
+1:15  [UNCLEANSED DEBUFF]   Paralysis on 3 | 3s | 0k taken during | dispel: Magic
+1:15  [OWNER CAST]   Holy Shock → self
+1:15  [TEAMMATE CD]   2 (Demonology Warlock): Nether Ward
+1:16  [STATE]   friends 1:55 2:95 / enemies 4:100 5:100 6:100
+1:17  [STATE]   friends 1:51 2:96 / enemies 4:100 5:100 6:99
+1:17  [OWNER CAST]   Holy Shock → self
+1:18  [STATE]   friends 1:58 2:96 / enemies 4:100 5:100 6:99
+1:18  [OWNER CAST]   Word of Glory → self
+1:19  [STATE]   friends 1:85 2:98 3:87 / enemies 4:98 5:100 6:100
+1:19  [CC ON TEAM]   3 ← Polymorph (Pmake-Area52-US) | 2s | trinket: ON CD (81s left)
+1:19  [OWNER CAST]   Sacred Weapon → self
+1:20  [STATE]   friends 1:80 2:99 3:87 / enemies 4:99 5:100 6:100
+1:21  [STATE]   friends 1:80 2:99 3:90 / enemies 4:84 5:100 6:96
+1:21  [OWNER CAST]   Cleanse → 3
+1:21  [CLEANSE]   1 dispelled 2 effects: Wound Poison off 3, Polymorph off 3
+1:21  [BUFF FADED]   Divine Protection
+1:22  [STATE]   friends 1:80 2:99 3:90 / enemies 4:73 5:100 6:97
+1:22  [CC ON TEAM]   1 ← Polymorph (Pmake-Area52-US) | 6s | trinket: available
+1:23  [STATE]   friends 1:80 2:99 3:92 / enemies 4:70 5:100 6:99
+1:24  [STATE]   friends 1:80 2:99 3:92 / enemies 4:59 5:100 6:100
+1:24  [CLEANSE]   2 dispelled Chilled off 1
+1:25  [STATE]   friends 2:99 / enemies 4:61 5:100 6:100
+1:26  [STATE]   friends 2:99 / enemies 4:66 5:100 6:100
+1:27  [STATE]   friends 2:99 3:92 / enemies 4:73 5:100 6:100
+1:28  [STATE]   friends 1:92 2:99 3:92 / enemies 4:100 5:100 6:100
+1:28  [OWNER CAST]   Word of Glory → self
+1:29  [STATE]   friends 1:92 2:100 3:92 / enemies 4:100 5:100 6:100
+1:30  [STATE]   friends 1:100 2:100 3:92 / enemies 4:100 5:100 6:100
+1:30  [OWNER CAST]   Holy Shock → self
+1:31  [STATE]   friends 1:100 2:95 3:96 / enemies 4:100 5:100 6:100
+1:31  [OWNER CAST]   Flash of Light → 2
+1:31  [CLEANSE]   1 dispelled 2 effects: Crippling Poison off 2, Wound Poison off 2
+1:32  [STATE]   friends 1:100 2:94 3:96 / enemies 4:97 5:100 6:100
+1:32  [OWNER CAST]   Judgment → 4
+1:33  [STATE]   friends 1:100 2:92 3:97
+1:34  [OWNER CAST]   Divine Steed
+1:34  [OWNER CAST]   Word of Glory → 2
+1:36  [STATE]   friends 1:100 2:100 3:97
+1:36  [OWNER CAST]   Holy Shock → 2
+1:38  [OWNER CAST]   Blinding Light
+1:39  [STATE]   friends 1:100 2:100 3:100
+1:39  [OWNER CC]   Hammer of Justice → Ttvslunkz-Tichondrius-US (100% HP)
+1:39  [CC ON TEAM]   1 ← Cheap Shot (Flttsr-Sargeras-US) | 5s | trinket: available
+1:40  [STATE]   friends 1:100 2:100 3:100 / enemies 4:58 5:100 6:99
+1:41  [STATE]   friends 1:99 2:100 3:100 / enemies 4:58 5:100 6:98
+1:42  [STATE]   friends 1:96 2:100 3:100 / enemies 4:54 5:100 6:98
+1:43  [STATE]   friends 1:80 2:100 3:100 / enemies 4:40 5:99 6:95
+1:44  [STATE]   friends 1:38 2:100 3:100 / enemies 4:40 5:96 6:93
+1:44  [OWNER CD]   Divine Shield
+      [RES] rdy:Lay on Hands,Divine Shield,Hammer of Justice,Blessing of Spellwarding,Avenging Crusader,Divine Protection,Blessing of Sacrifice,Aura Mastery,2:Howl of Terror,3:Ice Block,3:Dragon's Breath  cd:2:Mortal Coil(14s),2:Dark Pact(25s),2:Nether Ward(16s)
+1:45  [STATE]   friends 1:63 2:100 3:100 / enemies 4:53 5:92 6:89
+1:46  [STATE]   friends 1:81 2:100 3:100 / enemies 4:39 5:88 6:83
+1:46  [CLEANSE]   1 dispelled Crippling Poison off 1
+1:46  [OWNER CAST]   Flash of Light → self
+1:47  [STATE]   friends 1:96 2:93 3:100 / enemies 4:66 5:95 6:93
+1:47  [OWNER CAST]   Word of Glory → self
+1:48  [STATE]   friends 1:97 2:89 3:100 / enemies 4:75 5:84 6:86
+1:48  [DMG SPIKE]   2 (Demonology Warlock): 0.45M in 10s [P90 High] [BURST] (85% -> 63% HP)
+1:48  [OWNER CAST]   Flash of Light → 2
+1:49  [STATE]   friends 1:98 2:94 3:100 / enemies 4:95 5:96 6:100
+1:49  [OWNER CD]   Avenging Crusader
+1:50  [STATE]   friends 1:100 2:95 3:97 / enemies 4:100 5:99 6:100
+1:51  [STATE]   friends 1:100 2:84 3:97 / enemies 4:100 5:99 6:100
+1:51  [OWNER CAST]   Blessing of Freedom → 2
+1:52  [STATE]   friends 1:100 2:66 3:97 / enemies 4:100 5:100 6:100
+1:52  [OWNER CAST]   Word of Glory → 2
+1:52  [BUFF FADED]   Divine Shield
+1:53  [STATE]   friends 1:100 2:86 3:97 / enemies 4:99 5:100 6:93
+1:53  [OWNER CAST]   Holy Shock → 2
+1:53  [HEALER INACTIVITY]   1 inactive 4.9s (4.9s free) while 2 under pressure
+1:54  [STATE]   friends 1:100 2:92 3:97
+1:57  [STATE]   friends 1:90 2:72 3:97
+1:58  [OWNER CAST]   Divine Steed
+1:59  [OWNER CAST]   Holy Bulwark → 2
+1:59  [TEAMMATE CC]   2 (Demonology Warlock): Howl of Terror
+1:59  [CC CAST]   Howl of Terror (by 2) → 4, 5 [2 enemies]
+2:00  [STATE]   friends 1:90 2:62 3:98
+2:00  [OWNER CAST]   Word of Glory → 2 [completed before CC landed]
+2:01  [CC ON TEAM]   1 ← Polymorph (Pmake-Area52-US) | 2s | trinket: available
+2:02  [STATE]   friends 1:92 2:87 3:98 / enemies 4:100 5:100 6:98
+2:03  [STATE]   friends 1:92 2:81 3:98 / enemies 4:96 5:100 6:94
+2:03  [CLEANSE]   2 dispelled Polymorph off 1
+2:03  [OWNER CAST]   Hammer of Wrath → 4
+2:04  [STATE]   friends 1:94 2:82 3:98 / enemies 4:96 5:100 6:76
+2:04  [OWNER CAST]   Flash of Light → 2
+2:04  [CLEANSE]   1 dispelled Crippling Poison off 2
+2:04  [HEALER INACTIVITY]   1 inactive 7.0s (4.0s free) while 2 under pressure
+2:05  [STATE]   friends 1:100 2:100 3:100 / enemies 4:71 5:100 6:75
+2:05  [CC ON TEAM]   2 ← Cheap Shot (Flttsr-Sargeras-US) | 4s | trinket: ON CD (68s left)
+2:06  [STATE]   friends 1:100 2:98 3:100 / enemies 4:69 5:100 6:73
+2:07  [STATE]   friends 2:98 3:100 / enemies 4:69 5:100 6:73
+2:07  [CC ON TEAM]   1 ← Polymorph (Pmake-Area52-US) | 3s | trinket: available
+2:08  [STATE]   friends 2:94 3:100 / enemies 4:69 6:73
+2:09  [STATE]   friends 2:81 3:100 / enemies 4:66 6:73
+2:09  [TEAMMATE CC]   3 (Frost Mage): Dragon's Breath
+2:09  [TEAMMATE CD]   2 (Demonology Warlock): Nether Ward
+2:09  [TEAMMATE CC]   2 (Demonology Warlock): Mortal Coil
+2:10  [STATE]   friends 2:82 3:100 / enemies 4:65 6:72
+2:11  [STATE]   friends 1:100 2:81 3:100 / enemies 4:65 6:72
+2:11  [BUFF FADED]   Avenging Crusader
+2:12  [STATE]   friends 1:100 2:100 3:100 / enemies 4:63 6:72
+2:12  [OWNER CAST]   Flash of Light → 2
+2:12  [CLEANSE]   1 dispelled Crippling Poison off 2
+2:13  [STATE]   friends 1:100 2:100 3:100 / enemies 4:56 5:100 6:72
+2:13  [OWNER CAST]   Judgment → 4
+2:14  [STATE]   friends 1:100 3:100 / enemies 4:26 5:100 6:72
+2:14  [OWNER CC]   Hammer of Justice → Ttvslunkz-Tichondrius-US (100% HP)
+      [RES] rdy:Δ+2:Dark Pact-Divine Shield,Avenging Crusader,3:Dragon's Breath  cd:Divine Shield(270s),Avenging Crusader(35s),3:Dragon's Breath(40s)  cc:2/Summon Demonic Tyrant-2s[kick]
+2:14  [CC ON TEAM]   2 ← Dragon's Breath (Pmake-Area52-US) | 3s | trinket: ON CD (59s left)
+2:14  [UNCLEANSED DEBUFF]   Dragon's Breath on 2 | 3s | 0k taken during | dispel: Magic
+2:14  [CC ON TEAM]   1 ← Dragon's Breath (Pmake-Area52-US) | 3s | trinket: available
+2:15  [STATE]   friends 1:100 / enemies 4:24 5:100 6:72
+2:16  [STATE]   friends 1:100 / enemies 4:30 6:71
+2:16  [CC ON TEAM]   3 ← Blind (Flttsr-Sargeras-US) | 5s | trinket: ON CD (24s left)
+2:16  [UNCLEANSED DEBUFF]   Blind on 3 | 5s | 0k taken during | dispel: Magic
+2:17  [STATE]   friends 1:100 2:100 / enemies 4:35 5:100 6:71
+2:17  [OWNER CAST]   Cleanse → 2
+2:17  [CLEANSE]   1 dispelled Sphere of Despair off 2
+2:18  [STATE]   friends 1:100 2:100 / enemies 4:42 5:100 6:60
+2:19  [STATE]   friends 1:100 2:100 3:100 / enemies 4:47 5:100 6:56
+2:19  [CC ON TEAM]   3 ← Polymorph (Pmake-Area52-US) | 6s | trinket: ON CD (20s left)
+2:19  [UNCLEANSED DEBUFF]   Polymorph on 3 | 6s | 0k taken during | dispel: Magic
+2:19  [OWNER CAST]   Word of Glory → 2
+2:20  [STATE]   friends 1:100 2:100 3:100 / enemies 4:56 5:100 6:46
+2:20  [CC ON TEAM]   1 ← Kidney Shot (Flttsr-Sargeras-US) | 4s | trinket: available
+2:21  [STATE]   friends 1:99 2:90 3:100 / enemies 4:100 5:100 6:85
+2:22  [STATE]   friends 1:99 2:90 / enemies 4:100 5:100 6:100
+2:22  [DMG SPIKE]   1 (Holy Paladin): 0.56M in 10s [P95 Danger] [ROT] (99% -> 92% HP)
+2:23  [STATE]   friends 1:89 2:90 / enemies 4:100 5:100 6:97
+2:23  [CC ON TEAM]   2 ← Paralysis (Ttvslunkz-Tichondrius-US) | 3s | trinket: ON CD (51s left)
+2:24  [STATE]   friends 1:85 2:90 / enemies 4:100 5:99 6:97
+2:24  [CC ON TEAM]   1 ← Cheap Shot (Flttsr-Sargeras-US) | 2s | trinket: available
+2:25  [STATE]   friends 1:70 2:90 3:100 / enemies 4:100 5:99 6:95
+2:25  [CC ON TEAM]   2 ← Song of Chi-Ji (Ttvslunkz-Tichondrius-US) | 3s | trinket: ON CD (48s left)
+2:25  [UNCLEANSED DEBUFF]   Song of Chi-Ji on 2 | 3s | 27k taken during | dispel: Magic
+2:26  [STATE]   friends 1:67 2:90 3:100 / enemies 4:100 5:97 6:97
+2:26  [OWNER CAST]   Word of Glory → self
+2:27  [STATE]   friends 1:80 2:91 3:100 / enemies 4:100 5:97 6:94
+2:28  [STATE]   friends 1:45 2:92 3:100 / enemies 4:100 5:96 6:91
+2:28  [OWNER CAST]   Holy Shock → self [completed before CC landed]
+2:28  [CC ON TEAM]   1 ← Song of Chi-Ji (Ttvslunkz-Tichondrius-US) | 1s | trinket: available
+2:29  [STATE]   friends 1:37 2:92 3:100 / enemies 4:87 5:93 6:84
+2:29  [OWNER CAST]   Word of Glory → self [succeeded after CC arrived — within 1s in log]
+2:30  [STATE]   friends 1:51 2:90 3:100 / enemies 4:84 5:92 6:86
+2:30  [OWNER CD]   Divine Protection
+      [RES] rdy:Δ  cd:—
+2:30  [CLEANSE]   1 dispelled 2 effects: Wound Poison off 1, Crippling Poison off 1
+2:30  [OWNER CAST]   Flash of Light → self
+2:31  [STATE]   friends 1:60 2:92 3:100 / enemies 4:79 5:90 6:83
+2:32  [STATE]   friends 1:92 2:92 3:100 / enemies 4:80 5:91 6:80
+2:32  [OWNER CAST]   Flash of Light → self
+2:33  [STATE]   friends 1:92 2:95 3:100 / enemies 4:56 5:94 6:82
+2:33  [OWNER CAST]   Holy Shock → self
+2:33  [UNCLEANSED DEBUFF]   Frost Nova on 2 | 3s | 0k taken during | dispel: Magic
+2:34  [STATE]   friends 1:100 2:96 3:100 / enemies 4:52 5:95 6:70
+2:35  [STATE]   friends 1:100 2:96 3:100 / enemies 4:59 5:98 6:70
+2:35  [OWNER CAST]   Judgment → 4
+2:36  [STATE]   friends 1:100 2:96 3:100 / enemies 4:53 5:100 6:68
+2:36  [OWNER CAST]   Blessing of Freedom → 3
+2:37  [STATE]   friends 1:100 2:96 3:100 / enemies 4:48 5:100 6:67
+2:37  [OWNER CAST]   Holy Shock → 4
+2:38  [STATE]   friends 1:100 2:96 3:100 / enemies 4:39 5:100 6:65
+2:38  [BUFF FADED]   Divine Protection
+2:39  [STATE]   friends 1:100 2:96 3:100 / enemies 4:29 5:100 6:67
+2:39  [OWNER CAST]   Holy Shock → 4
+2:40  [STATE]   friends 1:100 2:96 3:100 / enemies 4:dead 5:100 6:67
+2:40  [DEATH]  4 (Subtlety Rogue — enemy)
+2:40  [ROSTER]  enemy 4 removed (dead)
+2:42  [STATE]   friends 1:100 2:98 3:100
+2:42  [OWNER CAST]   Judgment → 6
+2:42  [CC ON TEAM]   2 ← Polymorph (Pmake-Area52-US) | 1s | trinket: ON CD (31s left)
+2:43  [STATE]   friends 1:100 2:98 3:100 / enemies 4:dead 5:100 6:85
+2:43  [OWNER CAST]   Cleanse → 2
+2:43  [CLEANSE]   1 dispelled Polymorph off 2
+2:44  [STATE]   friends 1:100 2:100 3:100 / enemies 4:dead 5:100 6:98
+2:45  [STATE]   friends 1:100 2:100 / enemies 4:dead 5:100 6:99
+2:45  [OWNER CAST]   Word of Glory → 2
+2:46  [STATE]   friends 1:100 2:100 / enemies 4:dead 5:100 6:100
+
+2:46  [MATCH END]   damp: 10%
+  friends 1:100% 2:100% 3:100% / enemies 5:100% 6:100% 4:dead(2:40)

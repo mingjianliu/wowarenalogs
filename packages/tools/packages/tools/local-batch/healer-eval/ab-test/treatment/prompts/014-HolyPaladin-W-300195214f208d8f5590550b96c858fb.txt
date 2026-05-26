@@ -1,0 +1,133 @@
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Holy Paladin (Healer) | Bracket: 3v3 | Result: Win | Duration: 0:54
+  My team: Holy Paladin, Demonology Warlock, Frost Mage
+  Enemy team: Devourer Demon Hunter, Holy Paladin, Survival Hunter
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Holy Paladin): CANNOT offensive purge
+  Team purgers: Demonology Warlock, Frost Mage
+
+CC APPLIED ON ENEMIES (DR summary):
+  Devourer Demon Hunter (Vctrphs-Stormrage-US): 2 CC — 2× Disorient | 1 reduced, 0 immune
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Howworhowtel-Tichondrius-US (Holy Paladin — log owner):
+    Lay on Hands [600s], Hammer of Justice [45s], Blessing of Spellwarding [300s], Avenging Crusader [60s], Blessing of Sacrifice [120s], Aura Mastery [180s]
+  2: Auntyroniqua-BleedingHollow-US (Demonology Warlock):
+    Mortal Coil [45s], Dark Pact [60s], Howl of Terror [40s]
+  3: Techniquem-Tichondrius-US (Frost Mage):
+    Ice Block [240s], Dragon's Breath [45s]
+  4: Qwqgirl-Area52-US (Holy Paladin — enemy):
+    Avenging Crusader [60s]
+  5: Jaywaz-Tichondrius-US (Survival Hunter — enemy):
+    Aspect of the Eagle [90s]
+  6: Vctrphs-Stormrage-US (Devourer Demon Hunter — enemy):
+    none tracked
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:05  [OWNER CAST]   Holy Bulwark → 3
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:07  [OWNER CAST]   Word of Glory → 3
+0:08  [OWNER CAST]   Holy Shock → 3
+0:08  [HEALER INACTIVITY]   1 inactive 13.3s (7.2s free) while 3 under pressure
+0:09  [STATE]   friends 1:100 2:100 3:100
+0:12  [STATE]   friends 2:100 3:99
+0:12  [CC ON TEAM]   3 ← Scorpid Venom (Jaywaz-Tichondrius-US) | 1s | trinket: available
+0:13  [STATE]   friends 2:100 3:99 / enemies 4:100 5:100 6:84
+0:14  [STATE]   friends 2:99 3:99 / enemies 4:100 5:100 6:75
+0:14  [CC ON TEAM]   3 ← Spider Venom (Jaywaz-Tichondrius-US) | 3s | trinket: available
+0:14  [UNCLEANSED DEBUFF]   Spider Venom on 3 | 3s | 170k taken during | dispel: Poison
+0:15  [STATE]   friends 2:91 3:97 / enemies 4:100 5:100 6:83
+0:15  [CC ON TEAM]   3 ← Binding Shot (Jaywaz-Tichondrius-US) | 3s | trinket: available
+0:15  [CC ON TEAM]   1 ← Freezing Trap (Jaywaz-Tichondrius-US) | 6s | trinket: available
+0:16  [STATE]   friends 2:92 3:97 / enemies 4:100 5:100 6:82
+0:16  [TEAMMATE CC]   2 (Demonology Warlock): Mortal Coil
+0:17  [STATE]   friends 2:87 3:96 / enemies 4:100 5:100 6:77
+0:17  [TEAMMATE CD]   2 (Demonology Warlock): Dark Pact
+0:18  [STATE]   friends 2:93 3:69 / enemies 4:100 5:100 6:82
+0:19  [STATE]   friends 2:93 3:62 / enemies 4:100 5:100 6:78
+0:19  [TEAMMATE CC]   2 (Demonology Warlock): Howl of Terror
+0:19  [CC CAST]   Howl of Terror (by 2) → 6, 4 [2 enemies]
+0:20  [STATE]   friends 2:93 3:58 / enemies 4:100 5:100 6:79
+0:21  [STATE]   friends 1:100 2:93 3:58 / enemies 5:100 6:77
+0:22  [STATE]   friends 1:100 2:93 3:58 / enemies 5:100 6:71
+0:22  [OWNER CAST]   Sacred Weapon → 3
+0:23  [STATE]   friends 1:100 2:94 3:59 / enemies 5:100 6:71
+0:23  [OWNER CAST]   Word of Glory → 3
+0:24  [STATE]   friends 1:100 2:96 3:78 / enemies 5:99 6:69
+0:24  [OWNER CAST]   Holy Shock → 3
+0:25  [STATE]   friends 1:100 2:99 3:93 / enemies 5:83 6:74
+0:25  [OWNER CAST]   Divine Steed
+0:26  [STATE]   friends 1:100 2:99 3:100 / enemies 5:84 6:77
+0:26  [OWNER CAST]   Holy Shock → 3
+0:27  [STATE]   friends 1:100 2:100 3:100 / enemies 5:84 6:83
+0:28  [STATE]   friends 1:100 2:100 3:94 / enemies 5:84 6:86
+0:28  [OWNER CC]   Hammer of Justice → Qwqgirl-Area52-US
+      [RES] rdy:Lay on Hands,Hammer of Justice,Blessing of Spellwarding,Avenging Crusader,Blessing of Sacrifice,Aura Mastery,3:Ice Block,3:Dragon's Breath  cd:2:Mortal Coil(33s),2:Dark Pact(49s),2:Howl of Terror(31s)
+0:28  [DMG SPIKE]   3 (Frost Mage): 0.35M in 10s [P75 Elevated] [BURST] (93% -> 95% HP)
+0:29  [STATE]   friends 1:100 2:100 3:91 / enemies 5:84 6:82
+0:29  [OWNER CAST]   Flash of Light → 3
+0:30  [STATE]   friends 1:100 2:100 3:100 / enemies 5:84 6:90
+0:31  [STATE]   friends 1:100 2:100 3:89 / enemies 5:84 6:89
+0:31  [ENEMY CD]   5 (Survival Hunter): Aspect of the Eagle
+0:31  [OWNER CAST]   Word of Glory → 3
+0:32  [STATE]   friends 1:100 2:100 3:91 / enemies 5:83 6:76
+0:32  [OWNER CAST]   Flash of Light → 3
+0:33  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:83 6:82
+0:34  [STATE]   friends 1:100 2:100 3:96 / enemies 4:100 5:96 6:90
+0:34  [OWNER CD]   Avenging Crusader
+      [RES] rdy:Δ-Hammer of Justice  cd:Hammer of Justice(39s)  enemy:Aspect of the Eagle/Survival Hunter(3s)
+0:35  [STATE]   friends 1:100 2:100 3:86 / enemies 4:100 5:96 6:90
+0:35  [OWNER CAST]   Hammer of Wrath → 6
+0:36  [STATE]   friends 1:98 2:100 3:98 / enemies 4:100 5:97 6:89
+0:36  [OWNER CAST]   Word of Glory → 3
+0:37  [STATE]   friends 1:97 2:100 3:100 / enemies 4:100 5:87 6:89
+0:38  [STATE]   friends 1:97 2:100 3:89 / enemies 5:74 6:86
+0:38  [DMG SPIKE]   2 (Demonology Warlock): 0.39M in 10s [P90 High] [BURST] (100% -> 88% HP)
+0:38  [OWNER CAST]   Holy Shock → 3
+0:39  [STATE]   friends 1:99 2:79 3:94 / enemies 5:62 6:88
+0:39  [OWNER CAST]   Word of Glory → 3
+0:40  [STATE]   friends 1:99 2:80 3:100 / enemies 5:32 6:92
+0:40  [OWNER CAST]   Holy Light → 2
+0:41  [STATE]   friends 1:99 2:99 3:100 / enemies 5:31 6:93
+0:42  [STATE]   friends 1:95 2:94 3:99 / enemies 4:100 5:dead 6:93
+0:42  [OWNER CAST]   Hammer of Wrath → 5
+0:42  [DEATH]  5 (Survival Hunter — enemy)
+0:42  [ROSTER]  enemy 5 removed (dead)
+0:43  [STATE]   friends 1:96 2:90 3:98 / enemies 4:100 5:dead 6:99
+0:43  [ENEMY CD]   4 (Holy Paladin): Avenging Crusader
+0:43  [OWNER CAST]   Word of Glory → 2
+0:44  [STATE]   friends 1:96 2:100 3:100 / enemies 4:100 5:dead 6:96
+0:45  [OWNER CAST]   Holy Shock → 2
+0:45  [STATE]   friends 1:96 2:100 3:100 / enemies 4:100 5:dead 6:89
+0:46  [STATE]   friends 1:87 2:83 3:100 / enemies 4:100 5:dead 6:99
+0:46  [OWNER CAST]   Holy Bulwark → 2
+0:47  [STATE]   friends 1:86 2:84 3:100 / enemies 5:dead 6:85
+0:47  [OWNER CAST]   Word of Glory → self
+0:48  [STATE]   friends 1:100 2:88 3:100 / enemies 5:dead 6:72
+0:49  [STATE]   friends 1:100 2:85 3:100 / enemies 5:dead 6:55
+0:49  [BUFF FADED]   Avenging Crusader (estimated)
+0:49  [OWNER CAST]   Holy Shock → 2
+0:50  [STATE]   friends 1:100 2:89 3:100 / enemies 5:dead 6:47
+0:50  [OWNER CAST]   Hammer of Wrath → 6
+0:51  [STATE]   friends 1:100 2:90 3:100 / enemies 5:dead 6:26
+0:52  [STATE]   friends 1:100 2:100 3:100 / enemies 5:dead 6:23
+0:52  [OWNER CAST]   Crusader Strike → 6
+0:53  [STATE]   friends 1:100 2:100 3:100 / enemies 5:dead 6:dead
+0:53  [DEATH]  6 (Devourer Demon Hunter — enemy)
+0:53  [ROSTER]  enemy 6 removed (dead)
+0:54  [STATE]   friends 1:100 2:100 3:100
+
+0:54  [MATCH END]   damp: 10%
+  friends 1:100% 2:100% 3:100% / enemies 6:dead(0:53) 4:100% 5:dead(0:42)

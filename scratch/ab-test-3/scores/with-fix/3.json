@@ -1,0 +1,9 @@
+{
+  "prompt": {
+    "sufficiency": 5,
+    "noise": 3,
+    "labelBias": 5,
+    "inferenceScaffolding": 5,
+    "notes": "There are frequent duplicate casts for 青翠之拥 (Verdant Embrace) creating unnecessary noise in the log."
+  }
+}

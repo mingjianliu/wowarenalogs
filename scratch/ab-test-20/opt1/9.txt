@@ -1,0 +1,402 @@
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Restoration Druid (Healer) | Bracket: 3v3 | Result: Win | Duration: 3:07
+  My team: Beast Mastery Hunter, Restoration Druid, Arms Warrior
+  Enemy team: Holy Paladin, Devastation Evoker, Fury Warrior
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Restoration Druid): CANNOT offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 11% at match end
+
+CC APPLIED ON ENEMIES (DR summary):
+  Fury Warrior (Foolish-Thrall-US): 14 CC — 2× Unknown, 10× Stun, 2× Disorient | 5 reduced, 0 immune
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Restokina-Dreadmaul-US (Restoration Druid — log owner):
+    Mass Entanglement [30s], Barkskin [60s], Stampeding Roar [120s], Incapacitating Roar [30s], Frenzied Regeneration [36s], Tranquility [180s], Incarnation: Tree of Life [180s, 2 Charges], Ironbark [90s]
+  2: Popshottá-Area52-US (Beast Mastery Hunter):
+    Roar of Sacrifice [120s], Bestial Wrath [90s, 2 Charges]
+  3: Mechachomby-Stormrage-US (Arms Warrior):
+    Avatar [90s, 2 Charges], Intimidating Shout [90s, 2 Charges], Die by the Sword [120s], Bladestorm (Arms) [90s]
+  4: Rbzz-EmeraldDream-US (Holy Paladin — enemy):
+    Avenging Crusader [60s]
+  5: Unknown (Devastation Evoker — enemy):
+    Dragonrage [120s]
+  6: Foolish-Thrall-US (Fury Warrior — enemy):
+    Avatar [90s], Recklessness [90s]
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:00  [STATE]   friends 1:100 2:100 3:100
+0:00  [OWNER CAST]   Lifebloom → 3
+0:02  [OWNER CAST]   Rejuvenation → 3
+0:03  [OWNER CAST]   Rejuvenation → 2
+0:05  [OWNER CAST]   Rejuvenation [Germination] → 2
+0:05  [OWNER CAST]   Rejuvenation → 2
+0:05  [OWNER CAST]   Prowl
+0:06  [OFFENSIVE WINDOW]   0:06–0:28 | Critical | 0.73M on 3 (Arms Warrior) | CDs: Avatar + Recklessness + Dragonrage
+0:06  [ENEMY CD]   6 (Fury Warrior): Avatar [1/5]
+0:06  [ENEMY CD]   6 (Fury Warrior): Recklessness [1/5]
+0:09  [CC ON TEAM]   3 ← Terror of the Skies (Unknown) | 3s | trinket: available
+0:09  [CC ON TEAM]   2 ← Blinding Light (Rbzz-EmeraldDream-US) | 4s | trinket: available
+0:09  [UNCLEANSED DEBUFF]   Blinding Light on 2 | 4s | 0k taken during | dispel: Magic
+0:10  [STATE]   friends 1:100 2:100 3:98 / enemies 4:100 5:100 6:98
+0:10  [OWNER CAST]   Lifebloom → 3
+0:10  [ENEMY CD]   5 (Devastation Evoker): Dragonrage [1/2]
+0:11  [STATE]   friends 1:100 2:100 3:88 / enemies 4:100 5:100 6:98
+0:11  [OWNER CAST]   Rejuvenation [Germination] → 3
+0:11  [OWNER CAST]   Rejuvenation → 3
+0:12  [STATE]   friends 1:96 2:100 3:85 / enemies 5:100 6:98
+0:12  [OWNER CAST]   Swiftmend → 3
+0:13  [STATE]   friends 1:100 2:100 3:92 / enemies 5:100 6:96
+0:13  [OWNER CD]   Innervate → self
+0:13  [OWNER CD]   Incarnation: Tree of Life
+0:14  [STATE]   friends 1:100 2:100 3:87 / enemies 5:100 6:94
+0:14  [TEAMMATE CD]   3 (Arms Warrior): Avatar
+0:15  [STATE]   friends 1:100 2:100 3:83 / enemies 5:100 6:94
+0:15  [OWNER CAST]   Regrowth → 3
+0:16  [STATE]   friends 1:100 2:95 3:99 / enemies 5:100 6:89
+0:16  [OWNER CAST]   Rejuvenation → 3
+0:17  [STATE]   friends 1:100 2:95 3:98 / enemies 5:100 6:81
+0:18  [STATE]   friends 1:100 2:97 3:97 / enemies 5:100 6:69
+0:18  [TEAMMATE CD]   2 (Beast Mastery Hunter): Bestial Wrath
+0:18  [OWNER CAST]   Rejuvenation → 2
+0:19  [STATE]   friends 1:100 2:100 3:95 / enemies 5:97 6:57
+0:20  [OWNER CAST]   Rejuvenation [Germination] → 2
+0:20  [OWNER CAST]   Rejuvenation → 2
+0:21  [OWNER CAST]   Regrowth → 2
+0:22  [ENEMY CD]   4 (Holy Paladin): Avenging Crusader [1/3]
+0:22  [CC ON TEAM]   3 ← Storm Bolt (Foolish-Thrall-US) | 1s | trinket: available
+0:23  [STATE]   friends 1:100 2:99 3:53 / enemies 4:100 5:98 6:72
+0:23  [OWNER CAST]   Swiftmend → 3
+0:24  [STATE]   friends 1:100 2:100 3:72 / enemies 4:100 5:97 6:71
+0:25  [STATE]   friends 1:100 2:95 3:97 / enemies 4:100 5:91 6:70
+0:25  [OWNER CAST]   Regrowth → 3
+0:25  [CLEANSE]   2 dispelled 2 effects: Permeating Chill off 2, Consecration off 2
+0:26  [STATE]   friends 1:100 2:98 3:100 / enemies 4:98 5:82 6:69
+0:26  [OWNER CAST]   Lifebloom → 3 [completed before CC landed]
+0:26  [CC ON TEAM]   1 ← Hammer of Justice (Rbzz-EmeraldDream-US) | 5s | trinket: available
+0:27  [STATE]   friends 1:100 2:93 3:100 / enemies 4:97 5:78 6:67
+0:28  [STATE]   friends 1:100 2:100 3:100 / enemies 4:97 5:76 6:80
+0:28  [DMG SPIKE]   3 (Arms Warrior): 0.73M in 10s [BURST] (94% -> 82% HP)
+0:29  [STATE]   friends 1:100 2:99 3:94 / enemies 4:97 5:75 6:81
+0:30  [STATE]   friends 1:100 2:100 3:97 / enemies 4:91 5:75 6:81
+0:31  [STATE]   friends 1:100 2:100 3:85 / enemies 4:92 5:75 6:77
+0:31  [OWNER CAST]   Rejuvenation [Germination] → 3
+0:31  [OWNER CAST]   Rejuvenation → 3
+0:32  [STATE]   friends 1:100 2:100 3:82 / enemies 4:93 5:77 6:78
+0:32  [OWNER CAST]   Wild Growth
+0:33  [STATE]   friends 1:100 2:100 3:86 / enemies 4:93 5:88 6:79
+0:34  [STATE]   friends 1:100 2:100 3:81 / enemies 4:91 5:91 6:72
+0:34  [OWNER CAST]   Regrowth → 3
+0:35  [STATE]   friends 1:100 2:100 3:88 / enemies 4:89 5:90 6:73
+0:35  [OWNER CAST]   Rejuvenation → 3 [completed before CC landed]
+0:36  [STATE]   friends 1:100 2:100 3:97 / enemies 4:99 5:97 6:72
+0:36  [CC ON TEAM]   1 ← Sleep Walk (Ftr-Firetree-US) | 6s | trinket: available
+0:37  [STATE]   friends 1:100 2:100 3:96 / enemies 4:100 5:97 6:73
+0:38  [STATE]   friends 1:100 2:100 3:79 / enemies 4:100 5:99 6:71
+0:39  [STATE]   friends 1:100 2:100 3:83 / enemies 4:100 5:98 6:59
+0:40  [STATE]   friends 1:100 2:100 3:85 / enemies 4:100 5:100 6:71
+0:41  [STATE]   friends 1:85 2:85 3:80 / enemies 4:100 5:100 6:73
+0:41  [TEAMMATE CC]   3 (Arms Warrior): Intimidating Shout
+0:41  [CC CAST]   Intimidating Shout (by 3) → 5, 6 [2 enemies]
+0:42  [STATE]   friends 1:100 2:100 3:78 / enemies 4:100 5:100 6:71
+0:42  [DMG SPIKE]   3 (Arms Warrior): 0.86M in 10s [BURST] (80% -> 91% HP)
+0:42  [OWNER CAST]   Lifebloom → 3
+0:43  [STATE]   friends 1:100 2:100 3:87 / enemies 4:100 5:98 6:65
+0:43  [CC ON TEAM]   3 ← Champion's Spear (Foolish-Thrall-US) | 6s | trinket: available
+0:44  [STATE]   friends 1:100 2:100 3:66 / enemies 4:100 5:98 6:72
+0:44  [OWNER CAST]   Rejuvenation [Germination] → 3
+0:44  [OWNER CAST]   Rejuvenation → 3
+0:45  [STATE]   friends 1:100 2:100 3:66 / enemies 4:100 5:99 6:67
+0:45  [OWNER CAST]   Swiftmend → 3
+0:46  [STATE]   friends 1:100 2:100 3:94 / enemies 4:100 5:100 6:75
+0:46  [CC ON TEAM]   1 ← Sleep Walk (Ftr-Firetree-US) | 0s | trinket: used
+0:46  [OWNER CC]   Incapacitating Roar
+0:46  [TRINKET]   1 used PvP trinket
+0:46  [OWNER CD]   Nature's Swiftness
+0:47  [STATE]   friends 1:100 2:100 3:76 / enemies 4:100 5:100 6:72
+0:48  [STATE]   friends 1:100 2:100 3:74 / enemies 4:100 5:100 6:67
+0:48  [OWNER CC]   Cyclone → 4
+0:49  [STATE]   friends 1:100 2:100 3:57 / enemies 4:100 5:97 6:79
+0:50  [STATE]   friends 1:100 2:100 3:47 / enemies 5:97 6:80
+0:50  [OWNER CAST]   Rejuvenation → 3
+0:50  [OFFENSIVE WINDOW]   0:50–1:10 | Critical | 0.82M on 3 (Arms Warrior) | CDs: Avatar + Recklessness
+0:50  [ENEMY CD]   6 (Fury Warrior): Avatar [2/5]
+0:50  [ENEMY CD]   6 (Fury Warrior): Recklessness [2/5]
+0:51  [STATE]   friends 1:100 2:100 3:85 / enemies 5:96 6:80
+0:51  [TEAMMATE CD]   2 (Beast Mastery Hunter): Bestial Wrath
+0:51  [OWNER CAST]   Wild Growth
+0:52  [STATE]   friends 1:100 2:100 3:94 / enemies 5:97 6:80
+0:53  [STATE]   friends 1:100 2:100 3:92 / enemies 4:100 5:96 6:94
+0:53  [OWNER CAST]   Lifebloom → 3
+0:54  [STATE]   friends 1:100 2:100 3:94 / enemies 4:100 5:94 6:87
+0:55  [STATE]   friends 1:100 2:100 3:80 / enemies 4:100 5:86 6:84
+0:55  [OWNER CAST]   Rejuvenation [Germination] → 3
+0:55  [OWNER CAST]   Rejuvenation → 3
+0:56  [STATE]   friends 1:100 2:100 3:88 / enemies 4:100 5:81 6:80
+0:56  [CC ON TEAM]   2 ← Intimidating Shout (Foolish-Thrall-US) | 1s | trinket: used
+0:56  [OWNER CAST]   Rejuvenation → snow [totem/pet]
+0:56  [TRINKET]   2 used PvP trinket
+0:57  [STATE]   friends 1:99 2:100 3:68 / enemies 4:100 5:70 6:75
+0:58  [STATE]   friends 1:100 2:100 3:66 / enemies 4:100 5:61 6:67
+0:58  [OWNER CAST]   Swiftmend → 3 [completed before CC landed]
+0:59  [STATE]   friends 1:100 2:100 3:98 / enemies 4:100 5:60 6:54
+0:59  [CC ON TEAM]   1 ← Terror of the Skies (Ftr-Firetree-US) | 3s | trinket: ON CD (78s left)
+1:00  [STATE]   friends 1:92 2:100 3:97 / enemies 4:100 5:58 6:48
+1:01  [STATE]   friends 1:87 2:99 3:96 / enemies 4:100 5:54 6:53
+1:02  [STATE]   friends 1:88 2:100 3:88 / enemies 4:100 5:49 6:44
+1:02  [OWNER CD]   Mass Entanglement → Ftr-Firetree-US (44% HP)
+      [RES] rdy:Mass Entanglement,Barkskin,Stampeding Roar,Frenzied Regeneration,Tranquility,Ironbark,2:Roar of Sacrifice,3:Die by the Sword,3:Bladestorm (Arms)  cd:Incapacitating Roar(14s),Incarnation: Tree of Life(131s),2:Bestial Wrath(46s),3:Avatar(42s),3:Intimidating Shout(68s)  enemy:Avatar/Fury Warrior(12s),Recklessness/Fury Warrior(12s)
+1:03  [STATE]   friends 1:91 2:100 3:91 / enemies 4:100 5:42 6:32
+1:03  [DMG SPIKE]   3 (Arms Warrior): 0.82M in 10s [BURST] (87% -> 63% HP)
+1:04  [STATE]   friends 1:91 2:100 3:82 / enemies 4:94 5:70 6:31
+1:04  [OWNER CAST]   Regrowth → 3
+1:05  [STATE]   friends 1:100 2:100 3:100 / enemies 4:82 5:81 6:44
+1:05  [OWNER CAST]   Starsurge → 6 [completed before CC landed]
+1:06  [STATE]   friends 1:100 2:100 3:100 / enemies 4:81 5:80 6:55
+1:06  [CC ON TEAM]   1 ← Sleep Walk (Ftr-Firetree-US) | 1s | trinket: ON CD (71s left)
+1:07  [STATE]   friends 1:55 2:100 3:82 / enemies 4:80 5:77 6:53
+1:07  [OWNER CAST]   Rejuvenation → 3
+1:07  [CC ON TEAM]   2 ← Hammer of Justice (Rbzz-EmeraldDream-US) | 5s | trinket: ON CD (110s left)
+1:07  [UNCLEANSED DEBUFF]   Hammer of Justice on 2 | 5s | 0k taken during | dispel: Magic
+1:07  [OWNER CD]   Barkskin
+1:08  [STATE]   friends 1:46 2:100 3:75 / enemies 4:79 5:77 6:49
+1:08  [OWNER CAST]   Rejuvenation → self
+1:08  [CLEANSE]   1 dispelled Permeating Chill off 1
+1:09  [STATE]   friends 1:56 2:100 3:64 / enemies 4:79 5:77 6:56
+1:09  [OWNER CAST]   Wild Growth
+1:10  [STATE]   friends 1:62 2:100 3:58 / enemies 4:79 5:78 6:53
+1:11  [STATE]   friends 1:72 2:100 3:68 / enemies 4:80 5:78 6:62
+1:12  [STATE]   friends 1:75 2:100 3:56 / enemies 4:80 5:78 6:61
+1:12  [OWNER CAST]   Swiftmend → 3
+1:13  [STATE]   friends 1:78 2:100 3:78 / enemies 4:80 5:77 6:62
+1:14  [STATE]   friends 1:79 2:100 3:67 / enemies 5:77 6:59
+1:14  [OWNER CAST]   Lifebloom → 3
+1:15  [STATE]   friends 1:100 2:100 3:85 / enemies 5:71 6:54
+1:15  [OWNER CAST]   Starsurge → 6
+1:16  [STATE]   friends 1:100 2:98 3:90 / enemies 5:70 6:41
+1:16  [OWNER CD]   Stampeding Roar
+1:17  [STATE]   friends 1:100 2:98 3:100 / enemies 5:72 6:41
+1:19  [OWNER CC]   Incapacitating Roar
+1:19  [CC CAST]   Incapacitating Roar (by 1) → 4
+1:19  [CC ON TEAM]   3 ← Storm Bolt (Foolish-Thrall-US) | 3s | trinket: available
+1:19  [BUFF FADED]   Barkskin
+1:20  [STATE]   friends 1:100 2:100 3:99 / enemies 4:81 5:80 6:56
+1:21  [STATE]   friends 1:100 2:99 3:100 / enemies 4:81 5:79 6:58
+1:22  [STATE]   friends 1:100 2:94 3:100 / enemies 4:81 5:78 6:58
+1:22  [OWNER CC]   Cyclone → 4
+1:23  [STATE]   friends 1:100 2:95 3:99 / enemies 4:83 5:80 6:68
+1:24  [STATE]   friends 1:96 2:94 3:100 / enemies 4:83 5:79 6:67
+1:24  [TEAMMATE CD]   2 (Beast Mastery Hunter): Bestial Wrath
+1:24  [OWNER CAST]   Rejuvenation [Germination] → self
+1:24  [OWNER CAST]   Rejuvenation → self
+1:24  [BUFF FADED]   Stampeding Roar
+1:25  [STATE]   friends 1:100 2:100 3:100 / enemies 5:77 6:53
+1:25  [OFFENSIVE WINDOW]   1:25–1:46 | Critical | 0.94M on 3 (Arms Warrior) | CDs: Recklessness + Avatar + Avenging Crusader
+1:25  [ENEMY CD]   6 (Fury Warrior): Recklessness [3/5]
+1:26  [STATE]   friends 1:100 2:95 3:100 / enemies 5:76 6:31
+1:26  [OWNER CAST]   Rejuvenation → 2
+1:26  [ENEMY CD]   6 (Fury Warrior): Avatar [3/5]
+1:26  [TEAMMATE CD]   3 (Arms Warrior): Avatar
+1:27  [STATE]   friends 1:100 2:90 3:100 / enemies 4:83 5:75 6:23
+1:27  [OWNER CAST]   Rejuvenation [Germination] → 2
+1:27  [OWNER CAST]   Rejuvenation → 2
+1:28  [STATE]   friends 1:100 2:89 3:100 / enemies 4:83 5:75 6:11
+1:28  [OWNER CAST]   Starsurge → 6
+1:28  [DMG SPIKE]   3 (Arms Warrior): 0.94M in 10s [BURST] (100% -> 30% HP)
+1:29  [STATE]   friends 1:99 2:90 3:98 / enemies 4:86 5:74 6:70
+1:29  [ENEMY CD]   4 (Holy Paladin): Avenging Crusader [2/3]
+1:30  [STATE]   friends 1:100 2:92 3:89 / enemies 4:91 5:76 6:51
+1:30  [OWNER CAST]   Lifebloom → 3
+1:31  [STATE]   friends 1:100 2:93 3:71 / enemies 4:100 5:88 6:83
+1:31  [OWNER CAST]   Swiftmend → 3
+1:32  [STATE]   friends 1:100 2:97 3:100 / enemies 4:100 5:87 6:69
+1:32  [OWNER CAST]   Rejuvenation [Germination] → 3
+1:32  [OWNER CAST]   Rejuvenation → 3
+1:33  [STATE]   friends 1:100 2:91 3:98 / enemies 4:100 5:91 6:70
+1:34  [OWNER CAST]   Rejuvenation → 3
+1:35  [TEAMMATE CD]   3 (Arms Warrior): Die by the Sword
+1:36  [OWNER CD]   Nature's Swiftness
+1:36  [OWNER CAST]   Regrowth → 3
+1:37  [OWNER CAST]   Wild Growth
+1:38  [CC ON TEAM]   2 ← Hammer of Justice (Rbzz-EmeraldDream-US) | 1s | trinket: ON CD (79s left)
+1:38  [OWNER CAST]   Starsurge → 6
+1:39  [STATE]   friends 1:100 2:100 3:37 / enemies 4:100 5:92 6:53
+1:39  [OWNER CAST]   Nature's Cure → 2
+1:39  [CLEANSE]   1 dispelled 2 effects: Hammer of Justice off 2, Fire Breath off 2
+1:40  [STATE]   friends 1:100 2:100 3:49 / enemies 4:100 5:92 6:53
+1:41  [STATE]   friends 1:98 2:100 3:59 / enemies 4:100 5:95 6:57
+1:41  [OWNER CAST]   Rejuvenation [Germination] → 3
+1:41  [OWNER CAST]   Rejuvenation → 3
+1:42  [STATE]   friends 1:92 2:100 3:70 / enemies 4:100 5:94 6:57
+1:42  [OWNER CAST]   Lifebloom → 3
+1:43  [STATE]   friends 1:87 2:100 3:75 / enemies 4:100 5:93 6:55
+1:44  [STATE]   friends 1:82 2:100 3:81 / enemies 4:100 5:93 6:54
+1:45  [STATE]   friends 1:88 2:100 3:95 / enemies 4:100 5:87 6:54
+1:45  [OWNER CAST]   Rejuvenation → 3
+1:46  [STATE]   friends 1:94 2:83 3:100 / enemies 4:100 5:95 6:53
+1:46  [OWNER CAST]   Rejuvenation → self
+1:47  [STATE]   friends 1:95 2:85 3:100 / enemies 4:100 5:88 6:50
+1:48  [STATE]   friends 1:99 2:89 3:100 / enemies 4:100 5:95 6:63
+1:48  [OWNER CAST]   Rejuvenation → 2
+1:50  [OWNER CAST]   Rejuvenation [Germination] → 2
+1:50  [OWNER CAST]   Rejuvenation → 2
+1:51  [OWNER CD]   Incarnation: Tree of Life
+1:52  [OWNER CAST]   Regrowth → 3
+1:53  [OWNER CAST]   Lifebloom → 3
+1:54  [TEAMMATE CD]   2 (Beast Mastery Hunter): Bestial Wrath
+1:55  [CC ON TEAM]   1 ← Terror of the Skies (Ftr-Firetree-US) | 3s | trinket: ON CD (22s left)
+1:56  [STATE]   friends 1:95 2:100 3:59 / enemies 4:100 5:100 6:59
+1:57  [STATE]   friends 1:92 2:100 3:57 / enemies 4:100 5:100 6:56
+1:57  [CC ON TEAM]   1 ← Sleep Walk (Ftr-Firetree-US) | 6s | trinket: ON CD (19s left)
+1:58  [STATE]   friends 1:91 2:100 3:56 / enemies 4:100 5:99 6:49
+1:59  [STATE]   friends 1:93 2:100 3:60 / enemies 4:100 5:99 6:61
+2:00  [STATE]   friends 1:94 2:100 3:51 / enemies 4:100 5:98 6:53
+2:00  [CC ON TEAM]   2 ← Blinding Light (Rbzz-EmeraldDream-US) | 4s | trinket: ON CD (57s left)
+2:00  [UNCLEANSED DEBUFF]   Blinding Light on 2 | 4s | 0k taken during | dispel: Magic
+2:01  [STATE]   friends 1:100 2:100 3:47 / enemies 4:100 5:95 6:52
+2:02  [STATE]   friends 1:99 2:100 3:48 / enemies 4:100 5:96 6:62
+2:02  [TEAMMATE CC]   3 (Arms Warrior): Intimidating Shout
+2:02  [CC CAST]   Intimidating Shout (by 3) → 5, 6 [2 enemies]
+2:03  [STATE]   friends 1:98 2:100 3:51 / enemies 4:100 5:95 6:58
+2:03  [OWNER CD]   Ironbark → 3 (78% HP)
+2:04  [STATE]   friends 1:100 2:100 3:78 / enemies 4:100 5:99 6:78
+2:04  [OWNER CAST]   Rejuvenation [Germination] → 3
+2:04  [OWNER CAST]   Rejuvenation → 3
+2:04  [CC ON TEAM]   2 ← Sleep Walk (Ftr-Firetree-US) | 2s | trinket: ON CD (53s left)
+2:05  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:99 6:80
+2:06  [STATE]   friends 1:100 2:100 3:97 / enemies 4:100 5:96 6:77
+2:06  [OWNER CAST]   Nature's Cure → 2
+2:06  [CLEANSE]   1 dispelled Sleep Walk off 2
+2:07  [STATE]   friends 1:99 2:100 3:95 / enemies 5:96 6:63
+2:07  [OFFENSIVE WINDOW]   2:07–2:27 | Critical | 0.80M on 3 (Arms Warrior) | CDs: Avatar + Recklessness
+2:07  [ENEMY CD]   6 (Fury Warrior): Avatar [4/5]
+2:07  [ENEMY CD]   6 (Fury Warrior): Recklessness [4/5]
+2:08  [STATE]   friends 1:96 2:91 3:100 / enemies 4:100 5:96 6:61
+2:08  [OWNER CAST]   Rejuvenation → 2 [completed before CC landed]
+2:08  [CC ON TEAM]   1 ← Storm Bolt (Foolish-Thrall-US) | 2s | trinket: ON CD (8s left)
+2:09  [STATE]   friends 1:86 2:92 3:100 / enemies 4:100 5:97 6:59
+2:10  [STATE]   friends 1:79 2:94 3:99 / enemies 4:100 5:94 6:66
+2:10  [OWNER CAST]   Rejuvenation → self
+2:10  [OWNER CD]   Barkskin
+2:11  [STATE]   friends 1:74 2:95 3:92 / enemies 4:100 5:91 6:74
+2:12  [STATE]   friends 1:83 2:96 3:88 / enemies 4:100 5:92 6:74
+2:12  [OWNER CAST]   Regrowth → self
+2:13  [STATE]   friends 1:85 2:95 3:92 / enemies 4:100 5:89 6:72
+2:13  [OWNER CD]   Mass Entanglement → Ftr-Firetree-US (89% HP)
+      [RES] rdy:Δ+Incapacitating Roar,3:Avatar,3:Intimidating Shout-Barkskin,Stampeding Roar,Ironbark,3:Die by the Sword  cd:Barkskin(57s),Stampeding Roar(64s),Ironbark(81s),3:Die by the Sword(82s)  enemy:Avatar/Fury Warrior(6s),Recklessness/Fury Warrior(6s)
+2:13  [CC ON TEAM]   1 ← Champion's Spear (Foolish-Thrall-US) | 6s | trinket: ON CD (4s left)
+2:13  [CC ON TEAM]   3 ← Champion's Spear (Foolish-Thrall-US) | 6s | trinket: available
+2:14  [STATE]   friends 1:77 2:97 3:82 / enemies 4:100 5:81 6:62
+2:14  [OWNER CAST]   Rejuvenation [Germination] → self
+2:14  [OWNER CAST]   Rejuvenation → self
+2:15  [STATE]   friends 1:78 2:96 3:96 / enemies 4:100 5:82 6:80
+2:15  [DMG SPIKE]   3 (Arms Warrior): 0.80M in 10s [BURST] (89% -> 68% HP)
+2:15  [OWNER CAST]   Swiftmend → self
+2:16  [STATE]   friends 1:100 2:99 3:89 / enemies 4:100 5:82 6:72
+2:16  [BUFF FADED]   Ironbark
+2:17  [STATE]   friends 1:100 2:99 3:83 / enemies 4:100 5:85 6:74
+2:17  [OWNER CAST]   Lifebloom → 3
+2:18  [STATE]   friends 1:96 2:100 3:69 / enemies 4:100 5:83 6:68
+2:18  [OWNER CAST]   Rejuvenation → 3
+2:18  [ENEMY CD]   5 (Devastation Evoker): Dragonrage [2/2]
+2:19  [STATE]   friends 1:100 2:99 3:97 / enemies 4:100 5:82 6:66
+2:19  [OWNER CAST]   Rejuvenation [Germination] → 3
+2:19  [OWNER CAST]   Rejuvenation → 3
+2:20  [STATE]   friends 1:97 2:100 3:87 / enemies 4:100 5:81 6:66
+2:21  [STATE]   friends 1:100 2:100 3:94 / enemies 4:100 5:79 6:69
+2:21  [CLEANSE]   1 dispelled Consecration off 1
+2:22  [STATE]   friends 1:100 2:93 3:100 / enemies 5:75 6:68
+2:22  [BUFF FADED]   Barkskin
+2:23  [STATE]   friends 1:97 2:93 3:87 / enemies 5:73 6:61
+2:25  [OWNER CAST]   Bear Form
+2:26  [CLEANSE]   1 dispelled Permeating Chill off 1
+2:27  [OWNER CAST]   Rejuvenation → 3
+2:27  [CLEANSE]   2 dispelled Permeating Chill off 2
+2:29  [OWNER CAST]   Wild Growth
+2:30  [STATE]   friends 1:70 2:78 3:53
+2:30  [TEAMMATE CD]   2 (Beast Mastery Hunter): Bestial Wrath
+2:30  [OWNER CAST]   Bear Form
+2:30  [CLEANSE]   1 dispelled Permeating Chill off 1
+2:30  [ENEMY CD]   4 (Holy Paladin): Avenging Crusader [3/3]
+2:31  [OWNER CAST]   Swiftmend → 3
+2:33  [OWNER CAST]   Regrowth → self
+2:35  [OWNER CAST]   Lifebloom → 3
+2:36  [OWNER CAST]   Rejuvenation [Germination] → 3
+2:36  [OWNER CAST]   Rejuvenation → 3
+2:37  [OWNER CAST]   Starsurge → Ftr-Firetree-US
+2:39  [OWNER CAST]   Rejuvenation [Germination] → self
+2:39  [OWNER CAST]   Rejuvenation → self
+2:42  [OWNER CAST]   Entangling Roots → 6
+2:43  [STATE]   friends 1:99 2:89 3:98 / enemies 4:98 5:85 6:93
+2:43  [OWNER CAST]   Rejuvenation → 2
+2:44  [STATE]   friends 1:100 2:91 3:94 / enemies 4:97 5:83 6:93
+2:45  [STATE]   friends 1:100 2:91 3:96 / enemies 4:96 5:85 6:84
+2:45  [OWNER CAST]   Rejuvenation [Germination] → 2
+2:45  [OWNER CAST]   Rejuvenation → 2
+2:46  [STATE]   friends 1:100 2:95 3:100 / enemies 4:95 5:82 6:69
+2:47  [STATE]   friends 1:100 2:95 3:99 / enemies 4:96 5:82 6:65
+2:47  [OWNER CD]   Nature's Swiftness
+2:47  [OWNER CC]   Cyclone → 4
+2:48  [STATE]   friends 1:100 2:96 3:93 / enemies 4:97 5:83 6:52
+2:48  [TEAMMATE CD]   3 (Arms Warrior): Avatar
+2:48  [ENEMY CD]   6 (Fury Warrior): Avatar [5/5]
+2:48  [ENEMY CD]   6 (Fury Warrior): Recklessness [5/5]
+2:49  [STATE]   friends 1:100 2:97 3:91 / enemies 5:84 6:42
+2:49  [OWNER CAST]   Travel Form [completed before CC landed]
+2:49  [CC ON TEAM]   1 ← Sleep Walk (Ftr-Firetree-US) | 2s | trinket: used
+2:50  [STATE]   friends 1:100 2:98 3:84 / enemies 5:86 6:37
+2:51  [STATE]   friends 1:100 2:100 3:74 / enemies 5:86 6:26
+2:51  [TRINKET]   1 used PvP trinket
+2:52  [STATE]   friends 1:100 2:100 3:61 / enemies 4:97 5:85 6:dead
+2:52  [DEATH]  6 (Fury Warrior — enemy)
+2:52  [ROSTER]  enemy 6 removed (dead)
+2:52  [OWNER CAST]   Lifebloom → 3
+2:53  [STATE]   friends 1:100 2:100 3:63 / enemies 4:97 5:86 6:dead
+2:53  [OWNER CAST]   Rejuvenation → 3
+2:53  [CC ON TEAM]   3 ← Sleep Walk (Ftr-Firetree-US) | 2s | trinket: available
+2:54  [STATE]   friends 1:100 2:100 3:67 / enemies 4:97 5:92 6:dead
+2:54  [OWNER CAST]   Swiftmend → 3
+2:55  [STATE]   friends 1:100 2:100 3:100 / enemies 4:97 5:89 6:dead
+2:55  [CC ON TEAM]   2 ← Sleep Walk (Ftr-Firetree-US) | 2s | trinket: ON CD (2s left)
+2:56  [STATE]   friends 1:100 2:100 3:100 / enemies 4:97 5:88 6:dead
+2:56  [OWNER CAST]   Rejuvenation [Germination] → 3
+2:56  [OWNER CAST]   Rejuvenation → 3
+2:57  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:dead
+2:57  [OWNER CAST]   Nature's Cure → 2
+2:57  [CLEANSE]   1 dispelled Sleep Walk off 2
+2:58  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:83 6:dead
+2:59  [STATE]   friends 1:100 2:93 3:100 / enemies 4:100 5:76 6:dead
+2:59  [OWNER CAST]   Rejuvenation → 2
+3:00  [STATE]   friends 1:100 2:97 3:93 / enemies 4:100 5:73 6:dead
+3:00  [OWNER CAST]   Rejuvenation [Germination] → 2
+3:00  [OWNER CAST]   Rejuvenation → 2
+3:01  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:73 6:dead
+3:01  [OWNER CAST]   Rejuvenation → 3
+3:02  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:65 6:dead
+3:03  [STATE]   friends 1:100 2:99 3:100 / enemies 5:65 6:dead
+3:03  [OWNER CAST]   Lifebloom → 3 [completed before CC landed]
+3:03  [CC ON TEAM]   1 ← Terror of the Skies (Ftr-Firetree-US) | 3s | trinket: ON CD (79s left)
+3:03  [TEAMMATE CD]   2 (Beast Mastery Hunter): Bestial Wrath
+3:04  [STATE]   friends 1:93 2:100 3:100 / enemies 5:61 6:dead
+3:05  [STATE]   friends 1:87 2:100 3:100 / enemies 5:49 6:dead
+3:06  [STATE]   friends 1:87 2:100 3:100 / enemies 5:dead 6:dead
+3:06  [DEATH]  5 (Devastation Evoker — enemy)
+3:06  [ROSTER]  enemy 5 removed (dead)
+3:06  [OWNER CC]   Incapacitating Roar
+      [RES] rdy:Δ  cd:—  enemy:Avatar/Fury Warrior(18s),Recklessness/Fury Warrior(18s)
+3:07  [STATE]   friends 1:86 2:100 3:100 / enemies 5:dead 6:dead
+
+3:07  [MATCH END]   damp: 11%
+  friends 1:87% 2:100% 3:100% / enemies 4:100% 5:dead(3:06) 6:dead(2:52)

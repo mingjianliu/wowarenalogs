@@ -1,0 +1,119 @@
+[MATCH TYPE: chain_cc_burst_short]
+**Opponents:** Enemy chains CC hard while rotating targets, then commits all their cooldowns into one coordinated burst window before the round can develop. The CC and the burst arrive almost together.
+
+**Your role:** Save your strongest defensive for the moment enemy CDs stack, not for the individual CC hits that precede it. This round is decided in one window.
+
+Key behavioral patterns observed in this match type:
+CD timing: 51% Optimal / 7% Early / 6% Late / 1% Reactive
+CD never used: 57%
+CD response latency: 6377ms median
+Outgoing CC per match: 1.8 mean
+Healing gap rate during burst: 8%
+Offensive participation: 31%
+Purge rate: 3.00/min
+Missed cleanse rate: 53%
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Enhancement Shaman | Bracket: 3v3 | Result: Win | Duration: 0:34
+  My team: Restoration Druid, Enhancement Shaman, Windwalker Monk
+  Enemy team: Mistweaver Monk, Frost Mage, Assassination Rogue
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Enhancement Shaman): CAN offensive purge
+  Team purgers: none
+
+## CC Chains
+  Mistweaver Monk (Makefistory-Area52-US): 1 CC — 1× Unknown | 0 reduced, 0 immune
+  Frost Mage (Blãýsiêß-Tichondrius-US): 2 CC — 1× Incapacitate, 1× Stun | 0 reduced, 0 immune
+  Assassination Rogue (Jectr-Tichondrius-US): 1 CC — 1× Stun | 0 reduced, 0 immune
+
+## Enemy Cooldown Timeline
+  No coordinated enemy burst windows detected — sustained/individual pressure only.
+
+## Kill Attempt Windows
+  None detected (no aligned enemy burst windows).
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Paypigpapi-Illidan-US (Enhancement Shaman — log owner):
+    Hex [30s], Ascendance (Enhancement) [180s]
+  2: Kaperij-Cho'gall-US (Restoration Druid):
+    Mighty Bash [60s], Barkskin [60s], Stampeding Roar [120s], Frenzied Regeneration [36s], Tranquility [180s], Incarnation: Tree of Life [180s], Ironbark [90s]
+  3: Mahoraga-GrizzlyHills-US (Windwalker Monk):
+    Paralysis [45s], Leg Sweep [60s]
+  4: Jectr-Tichondrius-US (Assassination Rogue — enemy):
+    Deathmark [120s]
+  5: Makefistory-Area52-US (Mistweaver Monk — enemy):
+    none tracked
+  6: Blãýsiêß-Tichondrius-US (Frost Mage — enemy):
+    none tracked
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:03  [CC ON TEAM]   1 ← Sap (Jectr-Tichondrius-US) | 6s | trinket: available
+0:04  [STATE]   friends 1:100 2:100 3:100 / enemies 5:100
+0:04  [CC ON TEAM]   3 ← Cheap Shot (Jectr-Tichondrius-US) | 4s | trinket: available
+0:05  [STATE]   friends 2:100 3:100 / enemies 4:100
+0:05  [CC ON TEAM]   3 ← Garrote - Silence (Jectr-Tichondrius-US) | 3s | trinket: available
+0:06  [STATE]   friends 2:100 3:100 / enemies 4:100 5:100 6:100
+0:07  [STATE]   friends 2:100 3:92 / enemies 4:100 5:100 6:100
+0:08  [STATE]   friends 1:100 2:100 3:79 / enemies 4:98 5:100 6:100
+0:08  [TEAMMATE CD]   2 (Restoration Druid): Ironbark
+0:09  [STATE]   friends 1:100 2:85 3:69 / enemies 4:100 5:100
+0:09  [TEAMMATE CD]   2 (Restoration Druid): Incarnation: Tree of Life
+0:10  [STATE]   friends 1:100 2:88 3:91 / enemies 4:100 5:100
+0:10  [TEAMMATE CC]   3 (Windwalker Monk): Paralysis
+0:11  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:100
+0:11  [DMG SPIKE]   2 (Restoration Druid): 0.60M in 10s [P95 Danger] [BURST] (89% -> 63% HP)
+0:11  [CC ON TEAM]   2 ← Garrote - Silence (Jectr-Tichondrius-US) | 3s | trinket: available
+0:11  [TEAMMATE CC]   3 (Windwalker Monk): Leg Sweep
+0:11  [CC CAST]   Leg Sweep (by 3) → 6
+0:12  [STATE]   friends 1:100 2:88 3:100 / enemies 4:100 5:100 6:100
+0:12  [CC ON TEAM]   3 ← Dragon's Breath (Blãýsiêß-Tichondrius-US) | 3s | trinket: available
+0:13  [STATE]   friends 1:100 2:74 3:100 / enemies 4:100 5:100 6:86
+0:13  [OWNER CD]   Ascendance (Enhancement)
+      [RES] rdy:Hex,Ascendance (Enhancement),2:Mighty Bash,2:Barkskin,2:Stampeding Roar,2:Frenzied Regeneration,2:Tranquility  cd:2:Incarnation: Tree of Life(176s),2:Ironbark(86s),3:Paralysis(43s),3:Leg Sweep(59s)  cc:2/Garrote - Silence-2s,3/Dragon's Breath-3s
+0:13  [TEAMMATE CD]   2 (Restoration Druid): Barkskin
+0:14  [STATE]   friends 1:100 2:68 3:100 / enemies 4:100 5:100 6:77
+0:15  [STATE]   friends 1:100 2:53 3:100 / enemies 4:100 5:100 6:41
+0:15  [CC ON TEAM]   2 ← Kidney Shot (Jectr-Tichondrius-US) | 5s | trinket: available
+0:16  [STATE]   friends 1:100 2:47 3:100 / enemies 4:100 5:100 6:39
+0:16  [ENEMY CD]   4 (Assassination Rogue): Deathmark
+0:17  [STATE]   friends 1:100 2:39 3:100 / enemies 4:100 5:100 6:dead
+0:17  [DEATH]  6 (Frost Mage — enemy)
+0:17  [ROSTER]  enemy 6 removed (dead)
+0:18  [STATE]   friends 1:100 2:40 3:100 / enemies 4:100 5:100 6:dead
+0:19  [STATE]   friends 1:100 2:37 3:100 / enemies 4:100 5:96 6:dead
+0:20  [STATE]   friends 1:100 2:43 3:100 / enemies 4:100 5:91 6:dead
+0:21  [STATE]   friends 1:100 2:62 3:99 / enemies 4:100 5:96 6:dead
+0:21  [DMG SPIKE]   2 (Restoration Druid): 0.40M in 10s [P95 Danger] [BURST] (77% -> 79% HP)
+0:22  [STATE]   friends 1:100 2:89 3:100 / enemies 4:100 5:89 6:dead
+0:23  [STATE]   friends 1:100 2:100 3:98 / enemies 4:97 5:73 6:dead
+0:24  [STATE]   friends 1:100 2:99 3:99 / enemies 4:92 5:83 6:dead
+0:25  [STATE]   friends 1:100 2:100 3:98 / enemies 4:92 5:90 6:dead
+0:26  [STATE]   friends 1:100 2:99 3:100 / enemies 4:91 5:80 6:dead
+0:27  [STATE]   friends 1:100 2:94 3:100 / enemies 4:90 5:66 6:dead
+0:28  [STATE]   friends 1:100 2:88 3:100 / enemies 4:90 5:40 6:dead
+0:28  [BUFF FADED]   Ascendance (Enhancement)
+0:29  [STATE]   friends 1:100 2:91 3:99 / enemies 4:90 5:78 6:dead
+0:30  [STATE]   friends 1:100 2:91 3:100 / enemies 4:90 5:65 6:dead
+0:31  [STATE]   friends 1:100 2:91 3:100 / enemies 4:91 5:80 6:dead
+0:32  [STATE]   friends 1:100 2:81 3:100 / enemies 4:91 5:57 6:dead
+0:33  [STATE]   friends 1:100 2:85 3:100 / enemies 4:90 5:18 6:dead
+0:34  [STATE]   friends 1:100 2:92 3:100 / enemies 4:91 5:dead 6:dead
+0:34  [DEATH]  5 (Mistweaver Monk — enemy)
+0:34  [ROSTER]  enemy 5 removed (dead)
+
+KILL SEQUENCE
+0:17  [KILL]                 Blãýsiêß-Tichondrius-US (Frost Mage) dead (Killer: Paypigpapi-Illidan-US — Tempest (96k))
+
+0:34  [MATCH END]   damp: 10%
+  friends 1:100% 2:97% 3:100% / enemies 5:dead(0:34) 6:dead(0:17) 4:90%

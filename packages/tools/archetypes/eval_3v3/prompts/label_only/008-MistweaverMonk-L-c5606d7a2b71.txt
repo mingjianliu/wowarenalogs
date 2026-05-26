@@ -1,0 +1,139 @@
+[MATCH TYPE: passive_dampening]
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Frost Mage | Bracket: 3v3 | Result: Loss | Duration: 0:54
+  My team: Frost Mage, Mistweaver Monk, Subtlety Rogue
+  Enemy team: Mistweaver Monk, Marksmanship Hunter, Unholy Death Knight
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Frost Mage): CAN offensive purge
+  Team purgers: none
+
+## CC Chains
+  Mistweaver Monk (Drdabz-Illidan-US): 3 CC — 2× Incapacitate, 1× Disorient | 0 reduced, 0 immune
+  Marksmanship Hunter (Eazymøney-Azralon-US): 2 CC — 2× Stun | 1 reduced, 0 immune
+  Unholy Death Knight (Alotofpets-Tichondrius-US): 2 CC — 2× Stun | 0 reduced, 0 immune
+
+## Enemy Cooldown Timeline
+  #1 — 0:23–0:40 | Score: 3.9 [MODERATE] | Dampening: 10%
+    CDs: Explosive Shot (Eazymøney-Azralon-US) + Trueshot (Eazymøney-Azralon-US)
+    Damage: 1.43M (2.5× match avg) | healer free
+    Most pressured: Jectr-Tichondrius-US HP: 100% start → 77% mid → 0% end
+  CDs not recovered before match ended: Marksmanship Hunter: Trueshot — not used again after 0:25
+
+## Kill Attempt Windows
+  0:23–0:40  [MODERATE]  0.99M on Frost Mage | CDs: Explosive Shot + Trueshot
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Blãýsiêß-Tichondrius-US (Frost Mage — log owner):
+    Ice Block [240s], Dragon's Breath [45s]
+  2: Makefistory-Area52-US (Mistweaver Monk):
+    Paralysis [45s], Life Cocoon [120s]
+  3: Jectr-Tichondrius-US (Subtlety Rogue):
+    Cloak of Shadows [120s], Kidney Shot [30s], Shadow Blades [90s]
+  4: Eazymøney-Azralon-US (Marksmanship Hunter — enemy):
+    Explosive Shot [30s], Trueshot [120s]
+  5: Drdabz-Illidan-US (Mistweaver Monk — enemy):
+    none tracked
+  6: Alotofpets-Tichondrius-US (Unholy Death Knight — enemy):
+    none tracked
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:04  [CC ON TEAM]   1 ← Binding Shot (Eazymøney-Azralon-US) | 1s | trinket: used
+0:04  [CLEANSE]   2 dispelled Grip of the Dead off 2
+0:05  [STATE]   friends 1:100 2:100 3:100 / enemies 6:86
+0:05  [TEAMMATE CD]   3 (Subtlety Rogue): Shadow Blades
+0:05  [CC ON TEAM]   2 ← Binding Shot (Eazymøney-Azralon-US) | 3s | trinket: available
+0:05  [TRINKET]   1 used PvP trinket
+0:06  [STATE]   friends 1:99 2:99 3:100 / enemies 6:71
+0:06  [CC ON TEAM]   2 ← Freezing Trap (Eazymøney-Azralon-US) | 4s | trinket: available
+0:07  [STATE]   friends 1:99 2:99 3:100 / enemies 4:100 6:64
+0:08  [STATE]   friends 1:99 2:99 3:100 / enemies 4:100 5:100 6:64
+0:09  [STATE]   friends 1:96 2:99 3:99 / enemies 4:100 5:100 6:64
+0:10  [STATE]   friends 1:95 2:99 3:99 / enemies 4:100 5:100 6:64
+0:11  [STATE]   friends 1:95 2:97 3:99 / enemies 4:100 5:100
+0:11  [TEAMMATE CC]   3 (Subtlety Rogue): Kidney Shot
+0:12  [STATE]   friends 1:95 2:97 3:100 / enemies 4:100 5:100 6:64
+0:12  [CC ON TEAM]   1 ← Blinding Sleet (Alotofpets-Tichondrius-US) | 1s | trinket: ON CD (114s left)
+0:13  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:64
+0:14  [STATE]   friends 1:100 2:100 3:100 / enemies 4:65 5:100 6:64
+0:15  [STATE]   friends 1:100 2:100 3:100 / enemies 4:44 5:100 6:91
+0:16  [STATE]   friends 1:100 2:100 3:100 / enemies 4:69 5:100 6:91
+0:17  [STATE]   friends 1:100 2:100 3:100 / enemies 4:72 5:100 6:91
+0:18  [STATE]   friends 1:100 2:100 3:100 / enemies 4:80 5:100 6:92
+0:18  [CC ON TEAM]   2 ← Strangulate (Alotofpets-Tichondrius-US) | 4s | trinket: available
+0:18  [DMG SPIKE]   1 (Frost Mage): 0.99M in 10s [P95 Danger] [ROT] (100% -> 0% HP)
+0:19  [STATE]   friends 1:74 2:100 3:99 / enemies 4:85 5:100 6:93
+0:20  [STATE]   friends 1:82 2:100 3:100 / enemies 4:99 5:100 6:94
+0:21  [STATE]   friends 1:82 2:100 3:100 / enemies 4:95 5:99 6:96
+0:22  [STATE]   friends 1:82 2:99 3:100 / enemies 4:97 5:99 6:97
+0:23  [STATE]   friends 1:89 2:92 3:98 / enemies 4:98 5:100 6:98
+0:23  [OFFENSIVE WINDOW]   0:23–0:40 | Moderate | 0.99M on 1 (Frost Mage) | CDs: Explosive Shot + Trueshot
+0:23  [ENEMY CD]   4 (Marksmanship Hunter): Explosive Shot
+0:24  [STATE]   friends 1:76 2:94 3:98 / enemies 4:93 5:100 6:98
+0:25  [STATE]   friends 1:57 2:86 3:92 / enemies 4:97 5:100 6:99
+0:25  [ENEMY CD]   4 (Marksmanship Hunter): Trueshot
+0:25  [CLEANSE]   2 dispelled 8 effects: Virulent Plague off 2, Coil of Devastation off 2, Dread Plague off 1, Coil of Devastation off 1, Virulent Plague off 1, Undeath off 1, Coil of Devastation off 3, Virulent Plague off 3
+0:26  [STATE]   friends 1:39 2:100 3:100 / enemies 4:99 5:100 6:100
+0:26  [DMG SPIKE]   3 (Subtlety Rogue): 0.54M in 10s [P95 Danger] [ROT] (100% -> 0% HP)
+0:26  [CLEANSE]   2 dispelled 2 effects: Soul Reaper off 1, Sanctified Armaments off 1
+0:27  [STATE]   friends 1:dead 2:100 3:100 / enemies 4:99 5:100 6:86
+0:27  [DEATH]  1 (Frost Mage — friendly)
+               HP: 98% at T-15s → 100% at T-10s → 88% at T-5s → 57% at T-3s → dead
+               Top damage in final 10s: Eazymøney-Azralon-US — Aimed Shot (330k), Alotofpets-Tichondrius-US — Necrotic Coil (120k), Eazymøney-Azralon-US — Rapid Fire (98k)
+0:28  [STATE]   friends 1:dead 2:99 3:99 / enemies 4:100 5:100 6:85
+0:28  [TEAMMATE CC]   2 (Mistweaver Monk): Paralysis
+      [RES] rdy:Ice Block,Dragon's Breath,2:Paralysis,2:Life Cocoon,3:Cloak of Shadows  cd:3:Kidney Shot(13s),3:Shadow Blades(67s)  enemy:Trueshot/Marksmanship Hunter(3s)
+0:29  [STATE]   friends 1:dead 2:99 3:98 / enemies 4:100 5:100 6:87
+0:30  [STATE]   friends 1:dead 2:99 3:88 / enemies 4:100 5:100 6:89
+0:31  [STATE]   friends 1:dead 2:99 3:83 / enemies 4:100 5:100 6:92
+0:32  [STATE]   friends 1:dead 2:98 3:76 / enemies 4:96 5:100 6:100
+0:33  [STATE]   friends 1:dead 2:100 3:71 / enemies 4:94 5:100 6:100
+0:34  [STATE]   friends 1:dead 2:100 3:30 / enemies 4:95 5:100 6:100
+0:34  [CC ON TEAM]   2 ← Paralysis (Drdabz-Illidan-US) | 3s | trinket: available
+0:35  [STATE]   friends 1:dead 2:100 3:12 / enemies 4:96 5:100 6:93
+0:36  [STATE]   friends 1:dead 2:100 3:dead / enemies 4:97 5:100 6:96
+0:36  [CC ON TEAM]   2 ← Leg Sweep (Drdabz-Illidan-US) | 4s | trinket: available
+0:36  [DEATH]  3 (Subtlety Rogue — friendly)
+               HP: 100% at T-15s → 100% at T-10s → 77% at T-5s → 68% at T-3s → dead
+               Top damage in final 10s: Eazymøney-Azralon-US — Aimed Shot (124k), Eazymøney-Azralon-US — Arcane Shot (84k), Alotofpets-Tichondrius-US — Necrotic Coil (55k)
+0:37  [STATE]   friends 1:dead 2:94 3:dead / enemies 4:97 5:100 6:96
+0:38  [STATE]   friends 1:dead 2:92 3:dead / enemies 4:97 6:97
+0:39  [STATE]   friends 1:dead 2:88 3:dead / enemies 4:97 6:98
+0:39  [DMG SPIKE]   2 (Mistweaver Monk): 0.88M in 10s [P95 Danger] [ROT] (70% -> 59% HP)
+0:40  [STATE]   friends 1:dead 2:63 3:dead / enemies 4:97 6:98
+0:41  [STATE]   friends 1:dead 2:55 3:dead / enemies 4:100 5:100 6:99
+0:42  [STATE]   friends 1:dead 2:53 3:dead / enemies 4:100 5:100 6:99
+0:43  [STATE]   friends 1:dead 2:38 3:dead / enemies 4:100 5:94 6:100
+0:44  [STATE]   friends 1:dead 2:47 3:dead / enemies 4:100 5:97 6:92
+0:45  [STATE]   friends 1:dead 2:71 3:dead / enemies 4:100 5:100 6:98
+0:46  [STATE]   friends 1:dead 2:100 3:dead / enemies 4:100 5:100 6:97
+0:47  [STATE]   friends 1:dead 2:96 3:dead / enemies 4:100 5:98 6:100
+0:48  [STATE]   friends 1:dead 2:84 3:dead / enemies 4:100 5:100 6:100
+0:49  [STATE]   friends 1:dead 2:73 3:dead / enemies 4:100 5:100 6:100
+0:49  [DMG SPIKE]   2 (Mistweaver Monk): 0.35M in 10s [P95 Danger] [ROT]
+0:50  [STATE]   friends 1:dead 2:61 3:dead / enemies 4:100 5:100 6:100
+0:51  [STATE]   friends 1:dead 2:52 3:dead / enemies 5:100 6:100
+0:52  [STATE]   friends 1:dead 2:72 3:dead / enemies 4:100 5:100 6:100
+0:53  [STATE]   friends 1:dead 2:46 3:dead / enemies 4:100 5:100 6:100
+0:54  [STATE]   friends 1:dead 2:32 3:dead / enemies 4:100 6:100
+
+KILL SEQUENCE
+0:18  [HEALER CC]            2 (Mistweaver Monk) ← Strangulate (by Alotofpets-Tichondrius-US)
+0:23  [ENEMY CD]             Explosive Shot + Trueshot active
+0:26  [DEFENSIVE AVAILABLE]  1: Ice Block available but unused
+0:26  [DEFENSIVE AVAILABLE]  2: Life Cocoon available but unused
+0:27  [KILL]                 1 (Frost Mage) dead (Killer: Eazymøney-Azralon-US — Aimed Shot (214k))
+
+0:54  [MATCH END]   damp: 10%
+  friends 1:dead(0:27) 2:30% 3:dead(0:36) / enemies 5:100% 4:100% 6:100%

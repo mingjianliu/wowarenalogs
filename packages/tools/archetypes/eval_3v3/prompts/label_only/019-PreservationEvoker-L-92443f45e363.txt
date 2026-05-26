@@ -1,0 +1,214 @@
+[MATCH TYPE: cc_grind_single_push]
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Preservation Evoker (Healer) | Bracket: 3v3 | Result: Loss | Duration: 1:07
+  My team: Preservation Evoker, Beast Mastery Hunter, Unholy Death Knight
+  Enemy team: Discipline Priest, Unholy Death Knight, Arms Warrior
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Preservation Evoker): CANNOT offensive purge
+  Team purgers: none
+
+## CC Chains
+  Discipline Priest (Onlyfanzex-Ravencrest-EU): 5 CC — 2× Incapacitate, 1× Silence, 1× Disorient, 1× Stun | 0 reduced, 0 immune
+  Unholy Death Knight (Ledden-Kazzak-EU): 2 CC — 1× Disorient, 1× Stun | 0 reduced, 0 immune
+  Arms Warrior (Kiwilani-Draenor-EU): 2 CC — 1× Disorient, 1× Stun | 0 reduced, 0 immune
+
+## Enemy Cooldown Timeline
+  #1 — 0:04–0:32 | Score: 2.7 [MODERATE] | Dampening: 10%
+    CDs: Power Infusion (Onlyfanzex-Ravencrest-EU) + Avatar (Kiwilani-Draenor-EU)
+    Damage: 0.42M (0.5× match avg) | healer CCed
+    Most pressured: Woukullaka-TarrenMill-EU HP: 100% start → 74% mid → 29% end
+  CDs not recovered before match ended: Discipline Priest: Power Infusion — not used again after 0:04; Arms Warrior: Avatar — not used again after 0:12
+
+## Kill Attempt Windows
+  0:04–0:32  [MODERATE]  0.82M on Beast Mastery Hunter | CDs: Power Infusion + Avatar
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Abyssdrake-Draenor-EU (Preservation Evoker — log owner):
+    Deep Breath [120s], Cauterizing Flame [60s], Time Stop [45s], Rewind [240s], Emerald Communion [180s], Stasis [90s], Rescue [60s]
+  2: Woukullaka-TarrenMill-EU (Beast Mastery Hunter):
+    Roar of Sacrifice [120s], Exhilaration [120s], Aspect of the Turtle [180s], Bestial Wrath [90s, 2 Charges]
+  3: Militàry-TarrenMill-EU (Unholy Death Knight):
+    Icebound Fortitude [120s]
+  4: Onlyfanzex-Ravencrest-EU (Discipline Priest — enemy):
+    Power Infusion [120s]
+  5: Kiwilani-Draenor-EU (Arms Warrior — enemy):
+    Avatar [90s]
+  6: Ledden-Kazzak-EU (Unholy Death Knight — enemy):
+    none tracked
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:01  [OWNER CAST]   Echo → 2
+0:02  [OWNER CAST]   Merithra's Blessing → 3
+0:04  [OFFENSIVE WINDOW]   0:04–0:32 | Moderate | 0.82M on 2 (Beast Mastery Hunter) | CDs: Power Infusion + Avatar
+0:04  [ENEMY BUFF]   6: Power Infusion (purgeable)
+0:04  [ENEMY CD]   4 (Discipline Priest): Power Infusion
+0:04  [ENEMY BUFF]   4: Power Infusion (purgeable)
+0:05  [OWNER CAST]   Reversion → 3
+0:06  [OWNER CAST]   Echo → 3
+0:08  [CC ON TEAM]   3 ← Blinding Sleet (Ledden-Kazzak-EU) | 1s | trinket: available
+0:08  [OWNER CD]   Emerald Communion
+0:09  [STATE]   friends 1:100 2:100 3:95 / enemies 4:100 5:100 6:87
+0:10  [STATE]   friends 1:100 2:100 3:93 / enemies 4:100 5:100 6:100
+0:11  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:99 6:99
+0:12  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:94 6:95
+0:12  [TEAMMATE CD]   2 (Beast Mastery Hunter): Bestial Wrath
+0:12  [BUFF FADED]   Emerald Communion
+0:12  [ENEMY CD]   5 (Arms Warrior): Avatar
+0:12  [OWNER CAST]   Landslide [completed before CC landed]
+0:13  [STATE]   friends 1:98 2:93 3:100 / enemies 4:100 5:98 6:89
+0:13  [CC ON TEAM]   1 ← Champion's Spear (Kiwilani-Draenor-EU) | 6s | trinket: available
+0:13  [CC ON TEAM]   2 ← Champion's Spear (Kiwilani-Draenor-EU) | 6s | trinket: available
+0:13  [CC ON TEAM]   3 ← Champion's Spear (Kiwilani-Draenor-EU) | 6s | trinket: available
+0:14  [STATE]   friends 1:95 2:92 3:92 / enemies 5:91 6:76
+0:14  [OWNER CAST]   Verdant Embrace → 3
+0:14  [OWNER CAST]   Verdant Embrace → 3
+0:15  [STATE]   friends 1:99 2:91 3:97 / enemies 4:100 5:91 6:73
+0:15  [OWNER CD]   Stasis
+0:15  [CC ON TEAM]   1 ← Strangulate (Ledden-Kazzak-EU) | 4s | trinket: available
+0:16  [STATE]   friends 1:93 2:85 3:94 / enemies 4:100 5:90 6:68
+0:17  [STATE]   friends 1:91 2:84 3:90 / enemies 4:100 5:93 6:70
+0:18  [STATE]   friends 1:90 2:84 3:85 / enemies 4:100 5:100 6:96
+0:18  [TEAMMATE CD]   2 (Beast Mastery Hunter): Roar of Sacrifice
+0:19  [STATE]   friends 1:85 2:73 3:78 / enemies 4:100 5:100 6:100
+0:19  [OWNER CAST]   Dream Breath
+0:19  [ENEMY BUFF END]   4: Power Infusion
+0:19  [ENEMY BUFF END]   6: Power Infusion
+0:20  [STATE]   friends 1:79 2:64 3:74 / enemies 4:100 5:100 6:100
+0:20  [OWNER CAST]   Verdant Embrace → 2
+0:20  [OWNER CAST]   Verdant Embrace → 2
+0:21  [STATE]   friends 1:100 2:56 3:89 / enemies 4:100 5:100 6:100
+0:21  [OWNER CD]   Hover
+0:21  [CC ON TEAM]   2 ← Intimidating Shout (Kiwilani-Draenor-EU) | 1s | trinket: available
+0:21  [CC ON TEAM]   3 ← Intimidating Shout (Kiwilani-Draenor-EU) | 2s | trinket: available
+0:22  [STATE]   friends 1:100 2:51 3:88 / enemies 4:100 5:95 6:93
+0:22  [DMG SPIKE]   2 (Beast Mastery Hunter): 0.82M in 10s [P95 Danger] [ROT] (50% -> 29% HP)
+0:22  [OWNER CC]   Sleep Walk → 4
+0:23  [STATE]   friends 1:100 2:30 3:88 / enemies 4:100 5:100 6:100
+0:23  [OWNER CAST]   Merithra's Blessing → 2
+0:24  [STATE]   friends 1:100 2:36 3:89 / enemies 4:100 5:96 6:90
+0:24  [TEAMMATE CD]   2 (Beast Mastery Hunter): Exhilaration
+0:24  [OWNER CD]   Time Dilation → 2
+0:24  [OWNER CAST]   Stasis
+0:24  [OWNER CAST]   Dream Breath
+0:24  [OWNER CAST]   Verdant Embrace → 2
+0:25  [STATE]   friends 1:100 2:48 3:89 / enemies 4:100 5:94 6:90
+0:25  [OWNER CAST]   Merithra's Blessing → self
+0:26  [STATE]   friends 1:100 2:46 3:92 / enemies 4:100 5:99 6:88
+0:26  [OWNER CD]   Rescue → 2 (44% HP)
+0:26  [BUFF FADED]   Rescue
+0:27  [STATE]   friends 1:98 2:40 3:90 / enemies 4:100 5:97 6:88
+0:27  [OWNER CAST]   Verdant Embrace → 2
+0:27  [OWNER CAST]   Verdant Embrace → 2
+0:28  [STATE]   friends 1:100 2:44 3:90 / enemies 4:100 5:98 6:100
+0:28  [DMG SPIKE]   1 (Preservation Evoker): 0.51M in 10s [P95 Danger] [ROT] (87% -> 70% HP)
+0:28  [OWNER CAST]   Merithra's Blessing → 2
+0:29  [STATE]   friends 1:96 2:40 3:84 / enemies 4:100 5:100 6:100
+0:29  [OWNER CAST]   Echo → 2
+0:30  [STATE]   friends 1:95 2:34 3:87 / enemies 4:100 5:99 6:99
+0:30  [OWNER CAST]   Reversion → 2
+0:31  [STATE]   friends 1:100 2:52 3:88 / enemies 4:100 5:100 6:95
+0:31  [OWNER CAST]   Echo → 2
+0:32  [STATE]   friends 1:85 2:37 3:88 / enemies 4:100 5:99 6:91
+0:32  [DMG SPIKE]   2 (Beast Mastery Hunter): 0.51M in 10s [P90 High] [ROT] (28% -> 36% HP)
+0:33  [STATE]   friends 1:81 2:29 3:86 / enemies 4:100 5:99 6:89
+0:33  [TEAMMATE CD]   2 (Beast Mastery Hunter): Aspect of the Turtle
+0:33  [OWNER CAST]   Living Flame → 2 [completed before CC landed]
+0:33  [OWNER CAST]   Chrono Flames → 2 [completed before CC landed]
+0:34  [STATE]   friends 1:88 2:41 3:87 / enemies 4:100 5:99 6:86
+0:34  [OWNER CAST]   Merithra's Blessing → 2 [completed before CC landed]
+0:34  [CC ON TEAM]   1 ← Shockwave (Kiwilani-Draenor-EU) | 3s | trinket: available
+0:35  [STATE]   friends 1:94 2:37 3:84 / enemies 4:100 5:99 6:89
+0:36  [STATE]   friends 1:90 2:30 3:83 / enemies 4:100 5:100 6:100
+0:37  [STATE]   friends 1:81 2:25 3:81 / enemies 4:99 5:100 6:100
+0:38  [STATE]   friends 1:75 2:17 3:78 / enemies 4:96 5:100 6:100
+0:38  [OWNER CAST]   Verdant Embrace → 2
+0:38  [OWNER CAST]   Verdant Embrace → 2
+0:39  [STATE]   friends 1:63 2:17 3:73 / enemies 4:96 5:100 6:100
+0:39  [OWNER CD]   Obsidian Scales → 6
+0:39  [OWNER CAST]   Echo → self
+0:39  [OWNER CD]   Hover
+0:40  [STATE]   friends 1:61 2:16 3:69 / enemies 4:98 5:100 6:100
+0:40  [OWNER CAST]   Dream Breath
+0:41  [STATE]   friends 1:63 2:16 3:61 / enemies 4:99 5:100 6:100
+0:41  [OWNER CAST]   Merithra's Blessing → 2
+0:42  [STATE]   friends 1:93 2:43 3:59 / enemies 4:99 5:100 6:100
+0:43  [STATE]   friends 1:96 2:40 3:49 / enemies 4:99 5:100 6:100
+0:43  [OWNER CD]   Deep Breath
+      [RES] rdy:Deep Breath,Cauterizing Flame,Time Stop,Rewind,3:Icebound Fortitude  cd:Emerald Communion(145s),Stasis(62s),Rescue(43s),2:Roar of Sacrifice(95s),2:Exhilaration(101s),2:Aspect of the Turtle(170s),2:Bestial Wrath(59s)
+0:44  [STATE]   friends 1:93 2:27 3:56 / enemies 5:100 6:98
+0:44  [TEAMMATE CD]   2 (Beast Mastery Hunter): Bestial Wrath
+0:45  [BUFF FADED]   Deep Breath
+0:46  [OWNER CAST]   Echo → 2
+0:47  [STATE]   friends 1:98 2:36 3:48 / enemies 4:100 5:100 6:73
+0:47  [OWNER CAST]   Merithra's Blessing → 2
+0:48  [STATE]   friends 1:100 2:45 3:41 / enemies 4:100 5:100 6:84
+0:48  [OWNER CAST]   Echo → 3
+0:49  [STATE]   friends 1:99 2:28 3:46 / enemies 4:100 5:100 6:86
+0:49  [OWNER CAST]   Verdant Embrace → 2
+0:50  [STATE]   friends 1:99 2:23 3:44 / enemies 4:100 5:100 6:99
+0:50  [OWNER CAST]   Verdant Embrace → 2
+0:50  [OWNER CD]   Time Dilation → 2
+0:50  [OWNER CAST]   Echo → 2
+0:51  [STATE]   friends 1:95 2:25 3:44 / enemies 4:100 5:100 6:100
+0:51  [DMG SPIKE]   2 (Beast Mastery Hunter): 0.62M in 10s [P95 Danger] [ROT] (25% -> 0% HP)
+0:52  [STATE]   friends 1:100 2:21 3:43 / enemies 4:100 5:100 6:85
+0:52  [OWNER CD]   Tip the Scales
+0:52  [OWNER CAST]   Fire Breath
+0:53  [STATE]   friends 1:97 2:19 3:43 / enemies 4:100 5:99 6:80
+0:53  [OWNER CAST]   Living Flame → 2
+0:53  [OWNER CAST]   Chrono Flames → 2
+0:54  [STATE]   friends 1:100 2:26 3:55 / enemies 4:100 5:100 6:80
+0:54  [OWNER CAST]   Reversion → 2
+0:55  [STATE]   friends 1:100 2:35 3:49 / enemies 4:100 5:100 6:82
+0:55  [OWNER CAST]   Echo → 2
+0:55  [CC ON TEAM]   3 ← Storm Bolt (Kiwilani-Draenor-EU) | 1s | trinket: used
+0:55  [OWNER CAST]   Dream Breath [completed before CC landed]
+0:56  [STATE]   friends 1:99 2:31 3:48 / enemies 4:100 5:100 6:75
+0:56  [CC ON TEAM]   1 ← Mind Control (Onlyfanzex-Ravencrest-EU) | 2s | trinket: used
+0:56  [TRINKET]   3 used PvP trinket
+0:57  [STATE]   friends 1:100 2:52 3:61 / enemies 4:100 5:99 6:68
+0:58  [STATE]   friends 1:100 2:45 3:60 / enemies 4:100 5:100 6:63
+0:58  [DMG SPIKE]   3 (Unholy Death Knight): 0.42M in 10s [P75 Elevated] [ROT] (60% -> 0% HP)
+0:59  [STATE]   friends 1:98 2:33 3:60 / enemies 4:100 5:100 6:62
+0:59  [TRINKET]   1 used PvP trinket
+0:59  [OWNER CD]   Hover
+1:00  [STATE]   friends 1:99 2:21 3:59 / enemies 4:100 5:100 6:59
+1:00  [OWNER CAST]   Verdant Embrace → 2
+1:01  [STATE]   friends 1:98 2:dead 3:59 / enemies 4:100 5:100 6:57
+1:01  [DEATH]  2 (Beast Mastery Hunter — friendly)
+               HP: 34% at T-15s → 25% at T-10s → 32% at T-5s → 44% at T-3s → dead
+               Top damage in final 10s: Kiwilani-Draenor-EU — Mortal Strike (81k), Kiwilani-Draenor-EU — Execute (59k), Kiwilani-Draenor-EU — Deep Wounds (45k)
+1:01  [OWNER CD]   Rewind
+      [RES] rdy:Δ-Deep Breath  cd:Deep Breath(102s)
+1:02  [STATE]   friends 1:98 2:dead 3:60 / enemies 4:100 5:100 6:56
+1:03  [STATE]   friends 1:100 2:dead 3:48 / enemies 4:100 5:100 6:40
+1:03  [CC ON TEAM]   1 ← Strangulate (Ledden-Kazzak-EU) | 4s | trinket: ON CD (86s left)
+1:04  [STATE]   friends 1:99 2:dead 3:40 / enemies 4:100 5:99 6:45
+1:04  [BUFF FADED]   Rewind
+1:05  [STATE]   friends 1:98 2:dead 3:30 / enemies 4:100 5:99 6:60
+1:06  [STATE]   friends 1:98 2:dead 3:19 / enemies 4:100 5:100 6:84
+1:07  [STATE]   friends 1:98 2:dead 3:dead / enemies 4:100 5:100 6:100
+1:07  [DEATH]  3 (Unholy Death Knight — friendly)
+               HP: 46% at T-15s → 60% at T-10s → 46% at T-5s → 40% at T-3s → dead
+               Top damage in final 10s: Kiwilani-Draenor-EU — Overpower (171k), Kiwilani-Draenor-EU — Execute (56k), Kiwilani-Draenor-EU — Mortal Strike (44k)
+
+KILL SEQUENCE
+0:56  [HEALER CC]            1 (Preservation Evoker) ← Mind Control (by Onlyfanzex-Ravencrest-EU)
+1:00  [DEFENSIVE AVAILABLE]  1: Rewind available but unused
+1:00  [DEFENSIVE AVAILABLE]  1: Cauterizing Flame available but unused
+1:01  [KILL]                 2 (Beast Mastery Hunter) dead (Killer: Kiwilani-Draenor-EU — Mortal Strike (51k))
+
+1:07  [MATCH END]   damp: 10%
+  friends 1:97% 2:dead(1:01) 3:dead(1:07) / enemies 4:100% 6:99% 5:100%

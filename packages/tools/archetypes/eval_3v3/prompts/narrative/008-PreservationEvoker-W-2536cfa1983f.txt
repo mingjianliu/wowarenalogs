@@ -1,0 +1,186 @@
+[MATCH TYPE: passive_dampening]
+**Opponents:** Neither team escalates. Enemies apply moderate CC and steady pressure but never commit cooldowns to a kill window. The round drifts into deep dampening and is decided by accumulated mistakes rather than any moment of peak danger.
+
+**Your role:** With no real burst threat, offensive contribution matters more than defensive positioning. Your team's ability to CC the enemy healer and force them into poor decisions determines the outcome.
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Frost Mage | Bracket: 3v3 | Result: Win | Duration: 1:43
+  My team: Assassination Rogue, Preservation Evoker, Frost Mage
+  Enemy team: Preservation Evoker, Unholy Death Knight, Beast Mastery Hunter
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Frost Mage): CAN offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 10% at match end
+
+## CC Chains
+  Preservation Evoker (Ñet-TarrenMill-EU): 11 CC — 1× Incapacitate, 5× Silence, 5× Stun | 4 reduced, 0 immune
+  Unholy Death Knight (Âldrich-DunModr-EU): 5 CC — 1× Stun, 2× Silence, 2× Incapacitate | 0 reduced, 0 immune
+  Beast Mastery Hunter (Lenyh-DunModr-EU): 4 CC — 1× Stun, 2× Incapacitate, 1× Disorient | 0 reduced, 0 immune
+
+## Enemy Cooldown Timeline
+  #1 — 0:33–0:43 | Score: 10.3 [CRITICAL] | Dampening: 10%
+    CDs: Oppressing Roar (Ñet-TarrenMill-EU) + Deep Breath (Ñet-TarrenMill-EU)
+    Damage: 1.92M (3.2× match avg) | healer free
+    Most pressured: Aythusha-TwistingNether-EU HP: 90% start → 100% mid → 86% end
+  CDs not recovered before match ended: Preservation Evoker: Oppressing Roar — not used again after 0:33; Preservation Evoker: Deep Breath — not used again after 0:35; Beast Mastery Hunter: Bestial Wrath — not used again after 0:18; Beast Mastery Hunter: Bestial Wrath — not used again after 0:52; Beast Mastery Hunter: Bestial Wrath — not used again after 1:23
+
+## Kill Attempt Windows
+  0:33–0:43  [CRITICAL]  0.53M on Assassination Rogue | CDs: Oppressing Roar + Deep Breath
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Scalm-ShatteredHand-EU (Frost Mage — log owner):
+    Ice Block [240s], Dragon's Breath [45s]
+  2: Aythusha-TwistingNether-EU (Assassination Rogue):
+    Cloak of Shadows [120s], Kidney Shot [30s], Evasion [120s]
+  3: Drakbrampa-Ravencrest-EU (Preservation Evoker):
+    Deep Breath [120s], Cauterizing Flame [60s], Rewind [240s], Emerald Communion [180s], Stasis [90s], Rescue [60s]
+  4: Ñet-TarrenMill-EU (Preservation Evoker — enemy):
+    Oppressing Roar [120s], Deep Breath [120s]
+  5: Lenyh-DunModr-EU (Beast Mastery Hunter — enemy):
+    Bestial Wrath [90s]
+  6: Âldrich-DunModr-EU (Unholy Death Knight — enemy):
+    none tracked
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:14  [STATE]   friends 1:100 2:100 3:99 / enemies 4:100 5:100 6:100
+0:15  [STATE]   friends 1:100 2:100 3:97 / enemies 4:100 5:100 6:100
+0:15  [CC ON TEAM]   3 ← Freezing Trap (Lenyh-DunModr-EU) | 4s | trinket: available
+0:16  [STATE]   friends 1:100 2:99 3:97 / enemies 4:95 5:100 6:100
+0:17  [STATE]   friends 1:100 2:96 / enemies 4:85 5:100 6:100
+0:18  [STATE]   friends 1:100 2:95 3:97 / enemies 4:69 5:100 6:100
+0:18  [ENEMY CD]   5 (Beast Mastery Hunter): Bestial Wrath [1/3]
+0:18  [DMG SPIKE]   2 (Assassination Rogue): 0.63M in 10s [P95 Danger] [ROT] (88% -> 68% HP)
+0:19  [STATE]   friends 1:100 2:77 3:97 / enemies 4:68 5:100 6:100
+0:19  [CC ON TEAM]   1 ← Blinding Sleet (Âldrich-DunModr-EU) | 4s | trinket: available
+0:20  [STATE]   friends 1:100 2:80 3:100 / enemies 4:78 5:100 6:100
+0:20  [TEAMMATE CD]   3 (Preservation Evoker): Deep Breath
+0:21  [STATE]   friends 1:100 2:65 3:90 / enemies 4:100 5:100 6:100
+0:22  [STATE]   friends 1:99 2:56 3:88 / enemies 4:99 5:100 6:98
+0:23  [STATE]   friends 1:98 2:53 3:84 / enemies 4:96 5:97 6:98
+0:24  [STATE]   friends 1:98 2:62 3:96 / enemies 4:97 5:91 6:98
+0:25  [STATE]   friends 1:99 2:58 3:94 / enemies 4:98 5:93 6:99
+0:25  [CC ON TEAM]   3 ← Strangulate (Âldrich-DunModr-EU) | 1s | trinket: used
+0:26  [STATE]   friends 1:96 2:54 3:88 / enemies 4:97 5:93 6:100
+0:26  [CC ON TEAM]   1 ← Scorpid Venom (Lenyh-DunModr-EU) | 3s | trinket: available
+0:26  [TRINKET]   3 used PvP trinket
+0:26  [TEAMMATE CD]   3 (Preservation Evoker): Cauterizing Flame
+0:26  [CLEANSE]   3 dispelled 8 effects: Barbed Shot off 2, Bloodshed off 2, Bloodshed off 2, Bloodshed off 2, Virulent Plague off 2, Undeath off 2, Dread Plague off 2, Coil of Devastation off 2
+0:27  [STATE]   friends 1:95 2:47 3:89 / enemies 4:86 5:94 6:96
+0:28  [STATE]   friends 1:100 2:30 3:74 / enemies 4:83 5:94 6:93
+0:28  [TRINKET]   2 used PvP trinket
+0:28  [TEAMMATE CD]   2 (Assassination Rogue): Evasion
+0:28  [TEAMMATE CD]   3 (Preservation Evoker): Rewind
+0:29  [STATE]   friends 1:98 2:67 3:98 / enemies 4:92 5:95 6:92
+0:29  [CC ON TEAM]   1 ← Spider Venom (Lenyh-DunModr-EU) | 3s | trinket: available
+0:30  [STATE]   friends 1:100 2:85 3:100 / enemies 4:95 5:100 6:88
+0:30  [DMG SPIKE]   2 (Assassination Rogue): 0.53M in 10s [P95 Danger] [ROT] (99% -> 91% HP)
+0:30  [CC ON TEAM]   3 ← Sleep Walk (Ñet-TarrenMill-EU) | 5s | trinket: ON CD (86s left)
+0:31  [STATE]   friends 1:100 2:100 3:100 / enemies 4:95 5:100 6:87
+0:32  [STATE]   friends 1:100 2:98 3:100 / enemies 4:97 5:100 6:86
+0:33  [STATE]   friends 1:100 2:97 3:100 / enemies 4:97 5:100 6:96
+0:33  [DMG SPIKE]   1 (Frost Mage): 0.48M in 10s [P95 Danger] [ROT] (99% -> 92% HP)
+0:33  [OFFENSIVE WINDOW]   0:33–0:43 | Critical | 0.53M on 2 (Assassination Rogue) | CDs: Oppressing Roar + Deep Breath
+0:33  [ENEMY CD]   4 (Preservation Evoker): Oppressing Roar
+0:34  [STATE]   friends 1:98 2:90 3:100 / enemies 4:100 5:100 6:99
+0:35  [STATE]   friends 1:92 2:75 3:100 / enemies 4:100 5:100 6:99
+0:35  [ENEMY CD]   4 (Preservation Evoker): Deep Breath
+0:36  [STATE]   friends 1:99 2:99 3:100 / enemies 4:100 5:99 6:100
+0:36  [CC ON TEAM]   2 ← Terror of the Skies (Ñet-TarrenMill-EU) | 2s | trinket: ON CD (113s left)
+0:36  [CC ON TEAM]   1 ← Terror of the Skies (Ñet-TarrenMill-EU) | 3s | trinket: available
+0:37  [STATE]   friends 1:98 2:100 3:97 / enemies 4:100 5:100 6:100
+0:38  [STATE]   friends 1:99 2:100 3:96 / enemies 4:96 5:100 6:99
+0:39  [STATE]   friends 1:98 2:100 3:100 / enemies 4:100 5:100 6:98
+0:40  [STATE]   friends 1:94 2:95 3:100 / enemies 4:100 5:100 6:100
+0:41  [STATE]   friends 1:88 2:91 3:99 / enemies 4:96 5:100 6:99
+0:41  [CC ON TEAM]   3 ← Freezing Trap (Lenyh-DunModr-EU) | 5s | trinket: ON CD (76s left)
+0:42  [STATE]   friends 1:91 2:89 3:99 / enemies 4:96 5:100 6:96
+0:43  [STATE]   friends 1:92 2:86 / enemies 4:98 5:100 6:97
+0:44  [STATE]   friends 1:96 2:86 / enemies 4:96 5:99 6:100
+0:45  [STATE]   friends 1:96 2:79 3:98 / enemies 4:95 5:98 6:100
+0:46  [STATE]   friends 1:93 2:69 3:98 / enemies 4:94 5:95 6:100
+0:47  [STATE]   friends 1:99 2:72 3:100 / enemies 4:86 5:93 6:100
+0:48  [STATE]   friends 1:96 2:65 3:99 / enemies 4:97 5:92 6:98
+0:49  [STATE]   friends 1:97 2:90 3:100 / enemies 4:94 5:89 6:96
+0:50  [STATE]   friends 1:92 2:80 3:100 / enemies 4:94 5:88 6:90
+0:51  [STATE]   friends 1:92 2:77 3:100 / enemies 4:89 5:92 6:97
+0:51  [TEAMMATE CC]   2 (Assassination Rogue): Kidney Shot
+0:52  [STATE]   friends 1:88 2:73 3:100 / enemies 4:97 5:95 6:100
+0:52  [ENEMY CD]   5 (Beast Mastery Hunter): Bestial Wrath [2/3]
+0:53  [STATE]   friends 1:79 2:67 3:100 / enemies 4:86 5:99 6:100
+0:53  [DMG SPIKE]   2 (Assassination Rogue): 0.86M in 10s [P95 Danger] [ROT] (89% -> 66% HP)
+0:54  [STATE]   friends 1:94 2:59 3:100 / enemies 4:57 5:97 6:92
+0:55  [STATE]   friends 1:91 2:49 3:99 / enemies 4:58 5:97 6:92
+0:56  [STATE]   friends 1:87 2:39 3:97 / enemies 4:34 5:95 6:90
+0:57  [STATE]   friends 1:86 2:33 3:98 / enemies 4:56 5:95 6:82
+0:58  [STATE]   friends 1:87 2:38 3:97 / enemies 4:44 5:93 6:78
+1:05  [CC ON TEAM]   2 ← Binding Shot (Lenyh-DunModr-EU) | 2s | trinket: ON CD (83s left)
+1:06  [STATE]   friends 1:94 2:80 3:100 / enemies 4:53 5:96 6:78
+1:06  [CC ON TEAM]   1 ← Binding Shot (Lenyh-DunModr-EU) | 3s | trinket: available
+1:07  [STATE]   friends 1:91 2:78 3:100 / enemies 4:69 5:98 6:76
+1:08  [STATE]   friends 1:93 2:89 3:100 / enemies 4:63 5:95 6:73
+1:09  [STATE]   friends 1:95 2:91 3:100 / enemies 4:73 5:98 6:69
+1:10  [STATE]   friends 1:100 2:100 3:100 / enemies 4:75 5:100 6:68
+1:11  [STATE]   friends 1:99 2:99 3:100 / enemies 4:100 5:100 6:87
+1:11  [CC ON TEAM]   3 ← Freezing Trap (Lenyh-DunModr-EU) | 4s | trinket: ON CD (46s left)
+1:12  [STATE]   friends 1:100 2:95 3:100 / enemies 4:95 5:98 6:84
+1:12  [DMG SPIKE]   2 (Assassination Rogue): 0.56M in 10s [P95 Danger] [ROT] (91% -> 75% HP)
+1:13  [STATE]   friends 1:98 2:86 / enemies 4:92 5:99 6:88
+1:14  [STATE]   friends 1:91 2:80 / enemies 4:94 5:98 6:88
+1:15  [STATE]   friends 1:90 2:69 3:100 / enemies 4:87 5:98 6:87
+1:16  [STATE]   friends 1:91 2:60 3:100 / enemies 4:76 5:96 6:100
+1:17  [STATE]   friends 1:100 2:75 3:100 / enemies 4:61 5:96 6:100
+1:18  [STATE]   friends 1:100 2:99 3:100 / enemies 4:58 5:97 6:100
+1:18  [CC ON TEAM]   3 ← Strangulate (Âldrich-DunModr-EU) | 4s | trinket: ON CD (38s left)
+1:19  [STATE]   friends 1:100 2:97 3:100 / enemies 4:45 5:97 6:100
+1:19  [CC ON TEAM]   3 ← Sleep Walk (Ñet-TarrenMill-EU) | 6s | trinket: ON CD (38s left)
+1:20  [STATE]   friends 1:100 2:92 3:99 / enemies 4:62 5:100 6:100
+1:21  [STATE]   friends 1:99 2:90 3:100 / enemies 4:70 5:100 6:100
+1:22  [STATE]   friends 1:100 2:88 3:100 / enemies 4:61 5:100 6:100
+1:23  [STATE]   friends 1:98 2:75 3:99 / enemies 4:53 5:100 6:97
+1:23  [TEAMMATE CD]   2 (Assassination Rogue): Cloak of Shadows
+      [RES] rdy:Ice Block,Dragon's Breath,2:Cloak of Shadows,2:Kidney Shot,3:Emerald Communion,3:Stasis,3:Rescue  cd:2:Evasion(65s),3:Deep Breath(58s),3:Cauterizing Flame(3s),3:Rewind(185s)  cc:3/Sleep Walk-2s
+1:23  [ENEMY CD]   5 (Beast Mastery Hunter): Bestial Wrath [3/3]
+1:24  [STATE]   friends 1:100 2:74 3:100 / enemies 4:50 5:100 6:98
+1:25  [STATE]   friends 1:100 2:78 3:98 / enemies 4:44 5:100 6:97
+1:26  [STATE]   friends 1:100 2:71 3:99 / enemies 4:34 5:100 6:98
+1:27  [STATE]   friends 1:100 2:69 3:99 / enemies 4:22 5:100 6:100
+1:27  [CC ON TEAM]   1 ← Scorpid Venom (Lenyh-DunModr-EU) | 3s | trinket: available
+1:28  [STATE]   friends 1:99 2:65 3:99 / enemies 4:dead 5:100 6:100
+1:28  [DEATH]  4 (Preservation Evoker — enemy)
+1:28  [ROSTER]  enemy 4 removed (dead)
+1:28  [CC ON TEAM]   1 ← Blinding Sleet (Âldrich-DunModr-EU) | 1s | trinket: available
+1:28  [CC ON TEAM]   2 ← Blinding Sleet (Âldrich-DunModr-EU) | 1s | trinket: ON CD (60s left)
+1:29  [STATE]   friends 1:97 2:69 3:100 / enemies 4:dead 5:100 6:100
+1:30  [STATE]   friends 1:98 2:56 3:100 / enemies 4:dead 5:100 6:99
+1:30  [TEAMMATE CD]   3 (Preservation Evoker): Stasis
+      [RES] rdy:Δ+3:Cauterizing Flame-2:Cloak of Shadows  cd:2:Cloak of Shadows(113s)  enemy:Bestial Wrath/Beast Mastery Hunter(6s)  cc:1/Scorpid Venom-1s
+1:30  [CC ON TEAM]   1 ← Spider Venom (Lenyh-DunModr-EU) | 3s | trinket: available
+1:31  [STATE]   friends 1:94 2:37 3:100 / enemies 4:dead 5:100 6:98
+1:32  [STATE]   friends 1:100 2:66 3:100 / enemies 4:dead 5:100 6:98
+1:33  [STATE]   friends 1:100 2:81 3:100 / enemies 4:dead 6:97
+1:34  [STATE]   friends 1:100 2:95 3:100 / enemies 4:dead 6:95
+1:35  [STATE]   friends 1:100 2:94 3:100 / enemies 4:dead 6:90
+1:36  [STATE]   friends 1:99 2:91 3:100 / enemies 4:dead 6:85
+1:37  [STATE]   friends 1:98 2:90 3:100 / enemies 4:dead 6:73
+1:38  [STATE]   friends 1:99 2:94 3:100 / enemies 4:dead 6:56
+1:39  [STATE]   friends 1:99 2:89 3:100 / enemies 4:dead 6:53
+1:40  [STATE]   friends 1:99 2:80 3:100 / enemies 4:dead 6:38
+1:41  [STATE]   friends 1:99 2:72 3:100 / enemies 4:dead 6:21
+1:42  [STATE]   friends 1:100 2:68 3:100 / enemies 4:dead 6:dead
+1:42  [DEATH]  6 (Unholy Death Knight — enemy)
+1:42  [ROSTER]  enemy 6 removed (dead)
+
+1:43  [MATCH END]   damp: 10%
+  friends 1:100% 2:68% 3:100% / enemies 4:dead(1:28) 6:dead(1:42) 5:100%

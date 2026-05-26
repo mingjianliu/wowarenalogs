@@ -1,0 +1,281 @@
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Preservation Evoker (Healer) | Bracket: 3v3 | Result: Loss | Duration: 2:00
+  My team: Beast Mastery Hunter, Retribution Paladin, Preservation Evoker
+  Enemy team: Devourer Demon Hunter, Preservation Evoker, Frost Mage
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Preservation Evoker): CANNOT offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 10% at match end
+
+CC APPLIED ON ENEMIES (DR summary):
+  Preservation Evoker (Smoothestboy-Tichondrius-US): 8 CC — 3× Incapacitate, 2× Disorient, 3× Stun | 1 reduced, 0 immune
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Bingbong-Malygos-US (Preservation Evoker — log owner):
+    Deep Breath [120s], Cauterizing Flame [60s], Rewind [240s], Emerald Communion [180s], Stasis [90s], Rescue [60s]
+  2: Dreamtraps-Nemesis-US (Beast Mastery Hunter):
+    Bestial Wrath [90s, 2 Charges]
+  3: Seraphyros-Azralon-US (Retribution Paladin):
+    Lay on Hands [600s], Divine Shield [300s], Hammer of Justice [45s, 2 Charges], Blessing of Spellwarding [300s], Avenging Wrath [120s]
+  4: Smoothestboy-Tichondrius-US (Preservation Evoker — enemy):
+    Oppressing Roar [120s], Deep Breath [120s]
+  5: Pùmpýbõí-MoonGuard-US (Devourer Demon Hunter — enemy):
+    none tracked
+  6: Gelatø-Tichondrius-US (Frost Mage — enemy):
+    none tracked
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:00  [STATE]   friends 2:100
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:04  [OWNER CAST]   Verdant Embrace → 3
+0:04  [OWNER CAST]   Verdant Embrace → 3
+0:06  [STATE]   friends 1:100 2:96 3:93
+0:06  [OWNER CAST]   Echo → 2
+0:07  [UNCLEANSED DEBUFF]   Landslide on 1 | 6s | 0k taken during | dispel: Magic
+0:07  [UNCLEANSED DEBUFF]   Landslide on 2 | 6s | 63k taken during | dispel: Magic
+0:07  [OWNER CAST]   Dream Breath [completed before CC landed]
+0:08  [CC ON TEAM]   1 ← Polymorph (Gelatø-Tichondrius-US) | 6s | trinket: available
+0:09  [STATE]   friends 1:100 2:98 3:84 / enemies 4:100 5:100 6:99
+0:10  [STATE]   friends 1:100 2:92 3:84 / enemies 4:100 5:100 6:100
+0:10  [OWNER CAST]   Dream Breath
+0:11  [STATE]   friends 1:100 2:98 3:100 / enemies 4:100 5:100 6:100
+0:11  [OWNER CAST]   Verdant Embrace → 3
+0:11  [OWNER CAST]   Verdant Embrace → 3
+0:12  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:100 6:100
+0:13  [STATE]   friends 1:100 2:99 3:98 / enemies 4:100 5:100 6:94
+0:13  [CC ON TEAM]   1 ← Sleep Walk (Smoothestboy-Tichondrius-US) | 6s | trinket: available
+0:14  [STATE]   friends 1:100 2:99 3:78 / enemies 4:100 5:100 6:91
+0:15  [STATE]   friends 1:100 2:99 3:70 / enemies 4:100 5:100 6:90
+0:15  [TEAMMATE CC]   3 (Retribution Paladin): Hammer of Justice
+0:16  [STATE]   friends 1:100 2:98 3:68 / enemies 4:100 5:100 6:90
+0:17  [STATE]   friends 1:100 2:98 3:69 / enemies 4:100 5:100 6:88
+0:17  [TEAMMATE CD]   2 (Beast Mastery Hunter): Bestial Wrath
+0:18  [STATE]   friends 1:100 2:98 3:70 / enemies 4:100 5:100 6:73
+0:18  [CC ON TEAM]   1 ← Polymorph (Gelatø-Tichondrius-US) | 3s | trinket: available
+0:19  [STATE]   friends 1:100 2:99 3:73 / enemies 4:100 5:99 6:93
+0:20  [STATE]   friends 1:100 2:99 3:74 / enemies 4:100 5:100 6:100
+0:21  [STATE]   friends 1:100 2:99 3:74 / enemies 4:100 5:100 6:100
+0:21  [DMG SPIKE]   3 (Retribution Paladin): 0.70M in 10s [P95 Danger] [BURST] (59% -> 92% HP)
+0:21  [OWNER CD]   Time Dilation → 3
+0:22  [STATE]   friends 1:100 2:100 3:59 / enemies 4:98 5:100 6:100
+0:23  [STATE]   friends 1:100 2:100 3:60 / enemies 4:100 5:96 6:100
+0:23  [OWNER CAST]   Naturalize → self [completed before CC landed]
+0:23  [CLEANSE]   1 dispelled Frost Nova off 1
+0:23  [CC ON TEAM]   1 ← Snowdrift (Gelatø-Tichondrius-US) | 3s | trinket: used
+0:24  [STATE]   friends 1:96 2:100 3:59 / enemies 4:100 5:96 6:92
+0:25  [STATE]   friends 1:93 2:100 3:38 / enemies 4:100 5:96 6:87
+0:25  [TRINKET]   1 used PvP trinket
+0:26  [STATE]   friends 1:92 2:100 3:31 / enemies 4:100 5:97 6:78
+0:26  [OWNER CD]   Rewind
+0:27  [STATE]   friends 1:80 2:100 3:56 / enemies 4:100 5:100 6:68
+0:27  [OWNER CAST]   Merithra's Blessing → 3
+0:28  [STATE]   friends 1:65 2:100 3:86 / enemies 4:100 5:100 6:48
+0:28  [OWNER CD]   Obsidian Scales → self
+0:28  [OWNER CAST]   Echo → self
+0:28  [BUFF FADED]   Rewind
+0:29  [STATE]   friends 1:56 2:98 3:100 / enemies 4:100 5:100 6:56
+0:29  [OWNER CAST]   Echo → 3
+0:30  [STATE]   friends 1:54 2:98 3:92 / enemies 4:99 5:97 6:70
+0:30  [OWNER CAST]   Dream Breath
+0:31  [STATE]   friends 1:49 2:99 3:87 / enemies 4:97 5:97 6:62
+0:31  [DMG SPIKE]   3 (Retribution Paladin): 1.10M in 10s [P95 Danger] [BURST] (92% -> 85% HP)
+0:32  [STATE]   friends 1:93 2:96 3:90 / enemies 4:100 5:95 6:96
+0:32  [OWNER CD]   Tip the Scales
+0:33  [STATE]   friends 1:99 2:96 3:69 / enemies 4:100 5:100 6:91
+0:33  [OWNER CAST]   Fire Breath
+0:34  [STATE]   friends 1:99 2:95 3:63 / enemies 4:100 5:85 6:78
+0:34  [OWNER CAST]   Chrono Flames → 6
+0:35  [STATE]   friends 1:99 2:95 3:44 / enemies 4:95 5:76 6:85
+0:35  [OWNER CAST]   Verdant Embrace → 3
+0:35  [OWNER CD]   Time Dilation → 3
+0:35  [OWNER CAST]   Verdant Embrace → 3
+0:36  [STATE]   friends 1:100 2:95 3:25 / enemies 4:100 5:85 6:100
+0:36  [OWNER CAST]   Merithra's Blessing → 3
+0:37  [OWNER CAST]   Echo → 3
+0:38  [STATE]   friends 1:99 2:96 3:84 / enemies 4:100 5:97 6:92
+0:38  [OWNER CAST]   Echo → 2
+0:38  [CC ON TEAM]   2 ← Polymorph (Gelatø-Tichondrius-US) | 1s | trinket: available
+0:39  [STATE]   friends 1:99 2:99 3:76 / enemies 4:100 5:100 6:100
+0:39  [OWNER CAST]   Reversion → 3
+0:40  [STATE]   friends 1:100 2:98 3:91 / enemies 4:95 5:100 6:90
+0:40  [OWNER CAST]   Verdant Embrace → 3
+0:40  [OWNER CAST]   Verdant Embrace → 3
+0:41  [STATE]   friends 1:99 2:100 3:90 / enemies 4:100 5:100 6:95
+0:42  [STATE]   friends 1:99 2:100 3:86 / enemies 4:100 5:100 6:86
+0:42  [DMG SPIKE]   3 (Retribution Paladin): 0.96M in 10s [P95 Danger] [BURST] (85% -> 84% HP)
+0:42  [OWNER CC]   Sleep Walk → 4
+0:42  [OWNER CAST]   Echo → 3
+0:43  [STATE]   friends 1:90 2:100 3:78 / enemies 4:100 5:100 6:77
+0:43  [OWNER CAST]   Merithra's Blessing → 3
+0:44  [STATE]   friends 1:96 2:98 3:94 / enemies 4:100 5:100 6:75
+0:44  [OWNER CD]   Deep Breath
+      [RES] rdy:Deep Breath,Cauterizing Flame,Emerald Communion,Stasis,Rescue,3:Lay on Hands,3:Divine Shield,3:Blessing of Spellwarding,3:Avenging Wrath  cd:Rewind(221s),2:Bestial Wrath(63s),3:Hammer of Justice(16s)
+0:44  [CLEANSE]   1 dispelled Chilled off 1
+0:45  [STATE]   friends 1:84 2:82 3:74 / enemies 4:97 5:100 6:65
+0:46  [STATE]   friends 1:84 2:78 3:69 / enemies 4:91 5:100 6:55
+0:46  [BUFF FADED]   Deep Breath
+0:47  [STATE]   friends 1:87 2:77 3:48 / enemies 4:87 5:100 6:47
+0:47  [OWNER CAST]   Echo → 3
+0:48  [STATE]   friends 1:98 2:81 3:46 / enemies 4:84 5:100 6:54
+0:48  [OWNER CAST]   Verdant Embrace → 3
+0:48  [OWNER CAST]   Verdant Embrace → 3
+0:48  [TEAMMATE CD]   2 (Beast Mastery Hunter): Bestial Wrath
+0:49  [OWNER CAST]   Echo → 3
+0:50  [OWNER CAST]   Dream Breath
+0:50  [OWNER CAST]   Echo → 3
+0:51  [STATE]   friends 1:100 2:99 3:65
+0:51  [OWNER CAST]   Merithra's Blessing → 3
+0:54  [STATE]   friends 1:100 2:100 3:93
+0:54  [CC ON TEAM]   1 ← Polymorph (Gelatø-Tichondrius-US) | 1s | trinket: ON CD (62s left)
+0:55  [STATE]   friends 1:94 2:100 3:86 / enemies 4:82 5:83 6:97
+0:55  [OWNER CAST]   Verdant Embrace → 3
+0:55  [OWNER CAST]   Verdant Embrace → 3
+0:56  [STATE]   friends 1:100 2:98 3:97 / enemies 4:81 5:79 6:92
+0:56  [OWNER CAST]   Chrono Flames → 4
+0:56  [OWNER CAST]   Naturalize → self
+0:56  [ENEMY CD]   4 (Preservation Evoker): Oppressing Roar
+0:56  [UNCLEANSED DEBUFF]   Oppressing Roar on 2 | 10s | 0k taken during | dispel: Magic
+0:56  [UNCLEANSED DEBUFF]   Oppressing Roar on 1 | 10s | 14k taken during | dispel: Magic
+0:57  [STATE]   friends 1:100 2:99 3:89 / enemies 4:75 5:87 6:100
+0:57  [TRINKET]   3 used PvP trinket
+0:57  [OWNER CAST]   Naturalize → 3
+0:57  [CLEANSE]   1 dispelled Oppressing Roar off 3
+0:58  [STATE]   friends 1:100 2:100 3:81 / enemies 4:63 5:92 6:96
+0:58  [OWNER CD]   Obsidian Scales → 3
+0:58  [OWNER CAST]   Reversion → 3 [completed before CC landed]
+0:59  [STATE]   friends 1:100 2:100 3:89 / enemies 4:62 5:92 6:76
+0:59  [CC ON TEAM]   1 ← Polymorph (Gelatø-Tichondrius-US) | 1s | trinket: ON CD (57s left)
+0:59  [CC ON TEAM]   3 ← Sleep Walk (Smoothestboy-Tichondrius-US) | 1s | trinket: ON CD (118s left)
+1:00  [STATE]   friends 1:100 2:100 3:68 / enemies 4:62 5:94 6:52
+1:00  [CC ON TEAM]   3 ← Sigil of Misery (Pùmpýbõí-MoonGuard-US) | 1s | trinket: ON CD (118s left)
+1:00  [CC ON TEAM]   1 ← Sleep Walk (Smoothestboy-Tichondrius-US) | 4s | trinket: ON CD (56s left)
+1:01  [STATE]   friends 1:98 2:100 3:54 / enemies 4:63 5:99 6:52
+1:02  [STATE]   friends 1:100 2:100 3:49 / enemies 4:64 5:100 6:50
+1:03  [STATE]   friends 1:100 2:100 3:26 / enemies 4:64 5:100 6:66
+1:03  [OWNER CD]   Emerald Communion
+      [RES] rdy:Δ+3:Hammer of Justice-Deep Breath  cd:Deep Breath(102s)  enemy:Oppressing Roar/Preservation Evoker(6s)  cc:1/Sleep Walk-2s
+1:03  [TEAMMATE CD]   3 (Retribution Paladin): Divine Shield
+1:04  [STATE]   friends 1:100 2:100 3:100 / enemies 4:66 5:100 6:57
+1:05  [STATE]   friends 1:100 2:100 3:100 / enemies 4:67 5:100 6:64
+1:06  [STATE]   friends 1:100 2:100 3:100 / enemies 4:77 5:100 6:58
+1:06  [BUFF FADED]   Emerald Communion
+1:07  [STATE]   friends 1:100 2:92 3:100 / enemies 4:78 5:100 6:49
+1:07  [OWNER CAST]   Echo → 3
+1:08  [STATE]   friends 1:100 2:88 3:100 / enemies 4:90 5:100 6:63
+1:08  [OWNER CAST]   Verdant Embrace → 2
+1:09  [STATE]   friends 1:100 2:76 3:100 / enemies 4:93 5:100 6:68
+1:09  [OWNER CAST]   Verdant Embrace → 2
+1:09  [OWNER CAST]   Echo → 2
+1:10  [STATE]   friends 1:100 2:97 3:100 / enemies 4:100 5:100 6:68
+1:10  [OWNER CAST]   Dream Breath
+1:12  [STATE]   friends 1:95 2:100 3:100
+1:13  [OWNER CC]   Sleep Walk → 4
+      [RES] rdy:Δ-Emerald Communion,3:Divine Shield  cd:Emerald Communion(170s),3:Divine Shield(291s)  enemy:Oppressing Roar/Preservation Evoker(16s)
+1:13  [OWNER CAST]   Echo → 3
+1:14  [TEAMMATE CC]   3 (Retribution Paladin): Hammer of Justice
+1:14  [OWNER CAST]   Merithra's Blessing → 3
+1:15  [STATE]   friends 1:96 2:100 3:82
+1:15  [OWNER CD]   Oppressing Roar
+      [RES] rdy:Δ  cd:—  enemy:Oppressing Roar/Preservation Evoker(19s)
+1:17  [OWNER CAST]   Fire Breath
+1:18  [STATE]   friends 1:98 2:97 3:100
+1:19  [TEAMMATE CD]   2 (Beast Mastery Hunter): Bestial Wrath
+1:20  [OWNER CAST]   Chrono Flames → 5
+1:21  [STATE]   friends 1:100 2:100 3:94
+1:21  [OWNER CAST]   Chrono Flames → 5 [completed before CC landed]
+1:22  [CC ON TEAM]   1 ← Dragon's Breath (Gelatø-Tichondrius-US) | 3s | trinket: ON CD (34s left)
+1:22  [CC ON TEAM]   2 ← Imprison (Pùmpýbõí-MoonGuard-US) | 3s | trinket: available
+1:22  [UNCLEANSED DEBUFF]   Imprison on 2 | 3s | 0k taken during | dispel: Magic
+1:23  [STATE]   friends 1:99 2:100 3:85 / enemies 4:100 5:65 6:83
+1:24  [STATE]   friends 1:100 2:100 3:86 / enemies 4:100 5:90 6:71
+1:25  [STATE]   friends 1:100 2:100 3:84 / enemies 4:100 5:89 6:81
+1:25  [OWNER CAST]   Verdant Embrace → 3
+1:25  [OWNER CAST]   Verdant Embrace → 3
+1:26  [STATE]   friends 1:98 2:100 3:94 / enemies 4:100 5:83 6:75
+1:26  [OWNER CAST]   Echo → 3
+1:27  [STATE]   friends 1:100 2:100 3:86 / enemies 4:100 5:85 6:82
+1:27  [OWNER CAST]   Dream Breath
+1:28  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:91 6:90
+1:28  [OWNER CAST]   Echo → 3
+1:29  [STATE]   friends 1:100 2:100 3:89 / enemies 4:99 5:94 6:73
+1:29  [OWNER CAST]   Merithra's Blessing → 3
+1:29  [DMG SPIKE]   3 (Retribution Paladin): 0.92M in 10s [P95 Danger] [BURST] (99% -> 26% HP)
+1:30  [STATE]   friends 1:100 2:100 3:90 / enemies 4:100 5:99 6:55
+1:30  [OWNER CAST]   Echo → 3
+1:31  [STATE]   friends 1:100 2:92 3:71 / enemies 4:100 5:100 6:38
+1:31  [OWNER CAST]   Verdant Embrace → 3
+1:32  [STATE]   friends 1:100 2:78 3:75 / enemies 4:99 5:100 6:49
+1:32  [OWNER CAST]   Verdant Embrace → 3
+1:32  [OWNER CAST]   Echo → 2
+1:33  [STATE]   friends 1:92 2:64 3:100 / enemies 4:100 5:100 6:97
+1:34  [STATE]   friends 1:100 2:65 3:100 / enemies 4:100 5:100 6:98
+1:34  [OWNER CAST]   Merithra's Blessing → 2
+1:35  [STATE]   friends 1:100 2:87 3:100 / enemies 4:93 5:100 6:78
+1:35  [OWNER CAST]   Echo → 2
+1:35  [ENEMY CD]   4 (Preservation Evoker): Deep Breath
+1:36  [STATE]   friends 1:100 2:90 3:91 / enemies 4:94 5:100 6:79
+1:36  [OWNER CAST]   Reversion → 2 [completed before CC landed]
+1:36  [CC ON TEAM]   1 ← Terror of the Skies (Smoothestboy-Tichondrius-US) | 3s | trinket: ON CD (20s left)
+1:36  [CC ON TEAM]   3 ← Terror of the Skies (Smoothestboy-Tichondrius-US) | 3s | trinket: ON CD (81s left)
+1:37  [STATE]   friends 1:91 2:99 3:65 / enemies 4:94 5:100 6:79
+1:37  [CC ON TEAM]   2 ← Terror of the Skies (Smoothestboy-Tichondrius-US) | 3s | trinket: available
+1:38  [STATE]   friends 1:87 2:94 3:49 / enemies 4:94 5:100 6:78
+1:38  [DMG SPIKE]   1 (Preservation Evoker): 0.77M in 10s [P95 Danger] [BURST] (89% -> 0% HP)
+1:39  [STATE]   friends 1:81 2:94 3:30 / enemies 4:94 5:100 6:79
+1:39  [OWNER CAST]   Verdant Embrace → 3
+1:39  [OWNER CAST]   Verdant Embrace → 3
+1:40  [STATE]   friends 1:80 2:96 3:27 / enemies 4:95 5:100 6:80
+1:40  [TEAMMATE CD]   3 (Retribution Paladin): Blessing of Spellwarding
+1:41  [STATE]   friends 1:77 2:92 3:13 / enemies 4:95 5:100 6:80
+1:41  [OWNER CAST]   Reversion → 3
+1:42  [STATE]   friends 1:91 2:93 3:33 / enemies 4:95 5:100 6:77
+1:42  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ-3:Blessing of Spellwarding  cd:3:Blessing of Spellwarding(299s)  enemy:Deep Breath/Preservation Evoker(6s)
+1:43  [STATE]   friends 1:76 2:92 3:44 / enemies 4:95 5:100 6:84
+1:44  [STATE]   friends 1:65 2:85 3:56 / enemies 4:96 5:100 6:86
+1:44  [CC ON TEAM]   1 ← Polymorph (Gelatø-Tichondrius-US) | 2s | trinket: ON CD (12s left)
+1:45  [STATE]   friends 1:36 2:69 3:57 / enemies 4:97 5:100 6:78
+1:46  [STATE]   friends 1:43 2:70 3:72 / enemies 4:100 5:100 6:100
+1:47  [STATE]   friends 1:29 2:70 3:82 / enemies 4:100 5:100 6:100
+1:47  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Deep Breath/Preservation Evoker(12s)
+1:47  [TEAMMATE CC]   3 (Retribution Paladin): Hammer of Justice
+1:48  [STATE]   friends 1:dead 2:70 3:84 / enemies 4:100 5:100 6:99
+1:48  [DEATH]  1 (Preservation Evoker — friendly)
+               HP: 92% at T-15s → 87% at T-10s → 76% at T-5s → 36% at T-3s → dead
+               Top damage in final 10s: Pùmpýbõí-MoonGuard-US — Devour (286k), Pùmpýbõí-MoonGuard-US — Void Ray (187k), Gelatø-Tichondrius-US — Frozen Orb (83k)
+1:49  [STATE]   friends 1:dead 2:71 3:84 / enemies 4:100 5:100 6:95
+1:50  [STATE]   friends 1:dead 2:71 3:86 / enemies 4:100 5:95 6:90
+1:50  [TEAMMATE CD]   2 (Beast Mastery Hunter): Bestial Wrath
+      [RES] rdy:Δ-3:Hammer of Justice  cd:3:Hammer of Justice(10s)  enemy:Deep Breath/Preservation Evoker(15s)
+1:51  [STATE]   friends 1:dead 2:65 3:81 / enemies 4:100 5:95 6:70
+1:52  [STATE]   friends 1:dead 2:72 3:70 / enemies 4:100 5:95 6:38
+1:53  [STATE]   friends 1:dead 2:72 3:47 / enemies 4:100 5:80 6:38
+1:54  [STATE]   friends 1:dead 2:72 3:36 / enemies 4:100 5:59 6:52
+1:55  [STATE]   friends 1:dead 2:66 3:23 / enemies 4:100 5:45 6:66
+1:56  [STATE]   friends 1:dead 2:65 3:dead / enemies 4:100 5:77 6:100
+1:56  [DEATH]  3 (Retribution Paladin — friendly)
+               HP: 14% at T-15s → 72% at T-10s → 81% at T-5s → 47% at T-3s → dead
+               Top damage in final 10s: Pùmpýbõí-MoonGuard-US — Devour (164k), Pùmpýbõí-MoonGuard-US — Void Ray (122k), Pùmpýbõí-MoonGuard-US — Eradicate (69k)
+1:57  [STATE]   friends 1:dead 2:50 3:dead / enemies 4:99 5:87 6:100
+1:58  [STATE]   friends 1:dead 2:35 3:dead / enemies 4:100 5:94 6:100
+1:59  [STATE]   friends 1:dead 2:36 3:dead / enemies 4:100 5:100 6:100
+2:00  [STATE]   friends 1:dead 2:dead 3:dead / enemies 4:100 5:100 6:100
+2:00  [DEATH]  2 (Beast Mastery Hunter — friendly)
+               HP: 69% at T-15s → 72% at T-10s → 65% at T-5s → 50% at T-3s → dead
+               Top damage in final 10s: Pùmpýbõí-MoonGuard-US — Devour (167k), Gelatø-Tichondrius-US — Glacial Spike (79k), Pùmpýbõí-MoonGuard-US — Cull (67k)
+
+2:00  [MATCH END]   damp: 10%
+  friends 1:dead(1:48) 2:dead(2:00) 3:dead(1:56) / enemies 5:99% 4:100% 6:100%

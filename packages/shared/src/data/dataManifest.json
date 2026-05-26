@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-13T20:48:49.002Z",
-  "gitCommit": "972a22d19dbf1f103828defe1b78b16421a5697a",
+  "generatedAt": "2026-05-24T17:13:56.930Z",
+  "gitCommit": "2ccaae7bbef52e11ee3cb6c15e607a75b6e2ed33",
   "files": {
     "spellEffects.json": {
       "description": "Per-spell cooldown, duration, dispelType from Wago.tools DB2",
@@ -18,8 +18,8 @@
       "description": "Spell type/priority classifications from BigDebuffs addon",
       "generatedBy": "npm run start:generateSpellsData (packages/tools)",
       "wowDataDependent": true,
-      "entryCount": 543,
-      "sha256": "9ac8ad2e9cb9baf565c30eb66125e544a4e292f413a709649449318bac2c81f9",
+      "entryCount": 544,
+      "sha256": "5a77aee5cf516175ccd3b5545945a348f696d231704e525d670af6c39ea7faa4",
       "lastCommit": {
         "hash": "6d104028373a87df424a30bc523ec364e76ca0ef",
         "date": "2026-04-30T20:56:29-07:00",

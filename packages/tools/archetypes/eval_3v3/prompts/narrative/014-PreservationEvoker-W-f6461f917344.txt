@@ -1,0 +1,136 @@
+[MATCH TYPE: chain_cc_burst_short]
+**Opponents:** Enemy chains CC hard while rotating targets, then commits all their cooldowns into one coordinated burst window before the round can develop. The CC and the burst arrive almost together.
+
+**Your role:** Save your strongest defensive for the moment enemy CDs stack, not for the individual CC hits that precede it. This round is decided in one window.
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Frost Mage | Bracket: 3v3 | Result: Win | Duration: 1:03
+  My team: Preservation Evoker, Assassination Rogue, Frost Mage
+  Enemy team: Frost Mage, Discipline Priest, Windwalker Monk
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Frost Mage): CAN offensive purge
+  Team purgers: none
+
+## CC Chains
+  Frost Mage (Dázz-TwistingNether-EU): 3 CC — 1× Silence, 2× Stun | 1 reduced, 0 immune
+  Discipline Priest (Jìnrô-Ravencrest-EU): 6 CC — 1× Incapacitate, 3× Silence, 2× Stun | 1 reduced, 0 immune
+  Windwalker Monk (Whizww-Ravencrest-EU): 5 CC — 2× Incapacitate, 2× Stun, 1× Silence | 0 reduced, 0 immune
+
+## Enemy Cooldown Timeline
+  No coordinated enemy burst windows detected — sustained/individual pressure only.
+
+## Kill Attempt Windows
+  None detected (no aligned enemy burst windows).
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Scalm-ShatteredHand-EU (Frost Mage — log owner):
+    Ice Block [240s], Dragon's Breath [45s]
+  2: Drakbrampa-Ravencrest-EU (Preservation Evoker):
+    Deep Breath [120s], Tail Swipe [180s], Wing Buffet [180s], Cauterizing Flame [60s], Rewind [240s], Emerald Communion [180s], Stasis [90s], Rescue [60s]
+  3: Aythusha-TwistingNether-EU (Assassination Rogue):
+    Cloak of Shadows [120s], Kidney Shot [30s], Evasion [120s]
+  4: Jìnrô-Ravencrest-EU (Discipline Priest — enemy):
+    Power Infusion [120s]
+  5: Dázz-TwistingNether-EU (Frost Mage — enemy):
+    none tracked
+  6: Whizww-Ravencrest-EU (Windwalker Monk — enemy):
+    none tracked
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:12  [CC ON TEAM]   3 ← Leg Sweep (Whizww-Ravencrest-EU) | 4s | trinket: available
+0:13  [STATE]   friends 1:100 2:98 3:97 / enemies 5:98 6:100
+0:14  [STATE]   friends 1:100 2:98 3:85 / enemies 5:98 6:100
+0:15  [STATE]   friends 2:98 3:71 / enemies 4:100 5:98 6:100
+0:16  [STATE]   friends 2:98 3:63 / enemies 4:100 5:96 6:100
+0:16  [ENEMY BUFF]   5: Power Infusion (purgeable)
+0:16  [ENEMY CD]   4 (Discipline Priest): Power Infusion
+0:16  [ENEMY BUFF]   4: Power Infusion (purgeable)
+0:17  [STATE]   friends 2:97 3:63 / enemies 4:100 5:99 6:100
+0:18  [STATE]   friends 2:98 3:63 / enemies 4:100 5:98 6:100
+0:19  [STATE]   friends 2:96 3:62 / enemies 4:100 5:100 6:100
+0:19  [DMG SPIKE]   3 (Assassination Rogue): 0.78M in 10s [P95 Danger] [ROT] (59% -> 58% HP)
+0:20  [STATE]   friends 2:100 3:35 / enemies 4:100 5:100 6:100
+0:20  [DMG SPIKE]   2 (Preservation Evoker): 0.43M in 10s [P90 High] [BURST] (100% -> 84% HP)
+0:21  [STATE]   friends 2:99 3:78 / enemies 4:99 5:96 6:100
+0:21  [TEAMMATE CD]   2 (Preservation Evoker): Deep Breath
+      [RES] rdy:Ice Block,Dragon's Breath,2:Deep Breath,2:Tail Swipe,2:Wing Buffet,2:Cauterizing Flame,2:Rewind,2:Emerald Communion,2:Stasis,2:Rescue,3:Cloak of Shadows,3:Kidney Shot,3:Evasion  cd:—  enemy:Power Infusion/Discipline Priest(5s)
+0:21  [CLEANSE]   2 dispelled Chilled off 2
+0:22  [STATE]   friends 2:92 3:70 / enemies 4:99 5:93 6:100
+0:23  [STATE]   friends 1:100 2:100 3:68 / enemies 4:96 5:84 6:96
+0:24  [STATE]   friends 1:100 2:100 3:69 / enemies 4:94 5:94 6:94
+0:25  [STATE]   friends 1:100 2:100 3:78 / enemies 4:92 5:91 6:88
+0:29  [STATE]   friends 1:96 2:84 3:66 / enemies 4:66 5:100 6:88
+0:29  [CC ON TEAM]   2 ← Polymorph (Dázz-TwistingNether-EU) | 1s | trinket: available
+0:30  [STATE]   friends 1:92 2:90 3:54 / enemies 4:63 5:97 6:83
+0:31  [STATE]   friends 1:91 2:94 3:64 / enemies 4:59 5:96 6:78
+0:31  [ENEMY BUFF END]   5: Power Infusion
+0:31  [ENEMY BUFF END]   4: Power Infusion
+0:32  [STATE]   friends 1:91 2:98 3:72 / enemies 4:59 5:92 6:77
+0:33  [STATE]   friends 1:100 2:100 3:91 / enemies 4:47 5:90 6:72
+0:33  [DMG SPIKE]   3 (Assassination Rogue): 0.55M in 10s [P95 Danger] [ROT] (94% -> 84% HP)
+0:34  [STATE]   friends 1:100 2:100 3:94 / enemies 4:28 5:86 6:65
+0:35  [STATE]   friends 1:100 2:100 3:98 / enemies 4:27 5:86 6:60
+0:36  [STATE]   friends 1:100 2:100 3:85 / enemies 4:17 5:87 6:47
+0:36  [CC ON TEAM]   3 ← Dragon's Breath (Dázz-TwistingNether-EU) | 1s | trinket: available
+0:37  [STATE]   friends 1:100 2:100 3:92 / enemies 4:19 5:88 6:46
+0:38  [STATE]   friends 1:95 2:99 3:91 / enemies 4:23 5:90 6:49
+0:39  [STATE]   friends 1:95 2:96 3:94 / enemies 4:25 5:93 6:52
+0:39  [TEAMMATE CD]   2 (Preservation Evoker): Wing Buffet
+0:40  [STATE]   friends 1:93 2:98 3:88 / enemies 4:39 5:95 6:54
+0:40  [TEAMMATE CD]   2 (Preservation Evoker): Tail Swipe
+      [RES] rdy:Δ-2:Deep Breath,2:Wing Buffet  cd:2:Deep Breath(101s),2:Wing Buffet(179s)
+0:41  [STATE]   friends 1:95 2:100 3:89 / enemies 4:55 5:98 6:57
+0:42  [STATE]   friends 1:95 2:100 3:100 / enemies 4:64 5:99 6:65
+0:43  [STATE]   friends 1:100 2:100 3:100 / enemies 4:74 5:100 6:75
+0:44  [STATE]   friends 1:99 2:99 3:84 / enemies 4:82 5:100 6:88
+0:44  [CC ON TEAM]   1 ← Polymorph (Dázz-TwistingNether-EU) | 2s | trinket: used
+0:45  [STATE]   friends 1:100 2:100 3:83 / enemies 4:79 5:100 6:95
+0:46  [STATE]   friends 1:100 2:100 3:80 / enemies 4:72 5:100 6:100
+0:46  [CLEANSE]   2 dispelled Polymorph off 1
+0:46  [DMG SPIKE]   3 (Assassination Rogue): 0.44M in 10s [P95 Danger] [BURST] (77% -> 76% HP)
+0:47  [STATE]   friends 1:100 2:100 3:67 / enemies 4:47 5:100 6:100
+0:47  [CC ON TEAM]   1 ← Psychic Scream (Jìnrô-Ravencrest-EU) | 1s | trinket: used
+0:47  [CC ON TEAM]   3 ← Psychic Scream (Jìnrô-Ravencrest-EU) | 1s | trinket: available
+0:48  [STATE]   friends 1:100 2:100 3:54 / enemies 4:40 5:100 6:100
+0:48  [TRINKET]   1 used PvP trinket
+0:49  [STATE]   friends 1:100 2:100 3:54 / enemies 4:33 5:100 6:100
+0:49  [TEAMMATE CC]   3 (Assassination Rogue): Kidney Shot
+0:50  [STATE]   friends 1:100 2:99 3:64 / enemies 4:17 5:100 6:100
+0:50  [TEAMMATE CD]   3 (Assassination Rogue): Cloak of Shadows
+      [RES] rdy:Δ-2:Tail Swipe,3:Kidney Shot  cd:2:Tail Swipe(170s),3:Kidney Shot(29s)
+0:51  [STATE]   friends 1:100 2:100 3:66 / enemies 4:dead 5:100 6:100
+0:51  [DEATH]  4 (Discipline Priest — enemy)
+0:51  [ROSTER]  enemy 4 removed (dead)
+0:52  [STATE]   friends 1:100 2:100 3:96 / enemies 4:dead 5:99 6:100
+0:53  [STATE]   friends 1:100 2:99 3:100 / enemies 4:dead 5:97 6:89
+0:54  [STATE]   friends 1:100 2:100 3:98 / enemies 4:dead 5:79 6:89
+0:55  [STATE]   friends 1:100 2:100 3:100 / enemies 4:dead 5:76 6:88
+0:56  [STATE]   friends 1:100 2:100 3:83 / enemies 4:dead 5:63 6:83
+0:57  [STATE]   friends 1:100 2:100 3:77 / enemies 4:dead 5:58 6:79
+0:58  [STATE]   friends 1:100 2:100 3:80 / enemies 4:dead 5:29 6:79
+0:59  [STATE]   friends 1:100 2:100 3:84 / enemies 4:dead 5:dead 6:72
+0:59  [DEATH]  5 (Frost Mage — enemy)
+0:59  [ROSTER]  enemy 5 removed (dead)
+1:00  [STATE]   friends 1:100 2:100 3:86 / enemies 4:dead 5:dead 6:68
+1:01  [STATE]   friends 1:100 2:100 3:89 / enemies 4:dead 5:dead 6:49
+1:02  [STATE]   friends 1:73 2:98 3:90 / enemies 4:dead 5:dead 6:34
+1:03  [STATE]   friends 1:74 2:98 3:93 / enemies 4:dead 5:dead 6:dead
+1:03  [DEATH]  6 (Windwalker Monk — enemy)
+1:03  [ROSTER]  enemy 6 removed (dead)
+
+KILL SEQUENCE
+0:51  [KILL]                 Jìnrô-Ravencrest-EU (Discipline Priest) dead (Killer: Scalm-ShatteredHand-EU — Ray of Frost (52k))
+
+1:03  [MATCH END]   damp: 10%
+  friends 1:74% 2:99% 3:94% / enemies 5:dead(0:59) 4:dead(0:51) 6:dead(1:03)

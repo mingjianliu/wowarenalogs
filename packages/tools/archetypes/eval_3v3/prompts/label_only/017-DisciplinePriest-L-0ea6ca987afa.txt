@@ -1,0 +1,779 @@
+[MATCH TYPE: dampening_burst_cycle]
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Discipline Priest (Healer) | Bracket: 3v3 | Result: Loss | Duration: 6:32
+  My team: Discipline Priest, Frost Mage, Subtlety Rogue
+  Enemy team: Frost Mage, Restoration Druid, Subtlety Rogue
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Discipline Priest): CAN offensive purge
+  Team purgers: Frost Mage
+
+DAMPENING (3v3): started at 10%, ended at 32% at match end
+  Note: Reached 32% dampening — healing was meaningfully impaired in the late game.
+
+## CC Chains
+  Frost Mage (Tèars-Archimonde-EU): 21 CC — 6× Stun, 11× Incapacitate, 4× Disorient | 5 reduced, 0 immune
+  Restoration Druid (Slimdrood-Kael'thas-EU): 25 CC — 8× Stun, 11× Disorient, 6× Incapacitate | 3 reduced, 0 immune
+  Subtlety Rogue (Nelfstab-TarrenMill-EU): 26 CC — 13× Stun, 2× Disarm, 7× Incapacitate, 4× Disorient | 5 reduced, 0 immune
+
+## Enemy Cooldown Timeline
+  #1 — 0:55–1:18 | Score: 5.4 [HIGH] | Dampening: 10%
+    CDs: Incarnation: Tree of Life (Slimdrood-Kael'thas-EU) + Shadow Blades (Nelfstab-TarrenMill-EU)
+    Damage: 0.27M (0.9× match avg) | healer CCed
+    Most pressured: Sebobro-Eredar-EU HP: 100% start → 76% mid → 54% end
+  #2 — 3:14–3:30 | Score: 4.5 [HIGH] | Dampening: 12%
+    CDs: Shadow Blades (Nelfstab-TarrenMill-EU) + Nature's Swiftness (Slimdrood-Kael'thas-EU)
+    Damage: 0.35M (1.2× match avg) | healer CCed
+    Most pressured: Sebobro-Eredar-EU HP: 100% start → 45% mid → 45% end
+  #3 — 6:00–6:05 | Score: 21.7 [CRITICAL] | Dampening: 28%
+    CDs: Incarnation: Tree of Life (Slimdrood-Kael'thas-EU) + Nature's Swiftness (Slimdrood-Kael'thas-EU)
+    Damage: 1.00M (3.4× match avg) | healer CCed
+    Most pressured: Sebobro-Eredar-EU HP: 82% start → 51% mid → 30% end
+  CDs not recovered before match ended: Restoration Druid: Incarnation: Tree of Life — not used again after 3:43; Restoration Druid: Incarnation: Tree of Life — not used again after 6:00; Restoration Druid: Nature's Swiftness — not used again after 6:05; Subtlety Rogue: Shadow Blades — not used again after 5:26
+
+## Kill Attempt Windows
+  6:00–6:05  [CRITICAL]  0.54M on Frost Mage | CDs: Incarnation: Tree of Life + Nature's Swiftness
+  Note: 2 burst window(s) had no confirmed spike — possible bait, spiked below threshold, or log gap.
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Dispel-DefiasBrotherhood-EU (Discipline Priest — log owner):
+    Psychic Scream [40s, 2 Charges], Power Infusion [120s], Pain Suppression [180s, 2 Charges]
+  2: Chitta-Blackrock-EU (Frost Mage):
+    Ice Block [240s, 2 Charges], Dragon's Breath [45s, 2 Charges]
+  3: Sebobro-Eredar-EU (Subtlety Rogue):
+    Cloak of Shadows [120s], Kidney Shot [30s], Shadow Blades [90s]
+  4: Slimdrood-Kael'thas-EU (Restoration Druid — enemy):
+    Incarnation: Tree of Life [180s], Nature's Swiftness [60s]
+  5: Nelfstab-TarrenMill-EU (Subtlety Rogue — enemy):
+    Shadow Blades [90s]
+  6: Tèars-Archimonde-EU (Frost Mage — enemy):
+    none tracked
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:01  [OWNER CAST]   Void Shield
+0:04  [OWNER CAST]   Holy Nova
+0:05  [OWNER CAST]   Holy Nova
+0:06  [OWNER CAST]   Holy Nova
+0:08  [OWNER CAST]   Holy Nova
+0:09  [OWNER CAST]   Holy Nova
+0:11  [OWNER CAST]   Holy Nova
+0:12  [OWNER CAST]   Holy Nova
+0:13  [OWNER CAST]   Holy Nova
+0:15  [OWNER CAST]   Holy Nova
+0:16  [OWNER CAST]   Holy Nova
+0:17  [OWNER CAST]   Holy Nova
+0:19  [OWNER CAST]   Holy Nova
+0:20  [OWNER CAST]   Holy Nova
+0:21  [OWNER CAST]   Holy Nova
+0:22  [CC ON TEAM]   1 ← Blind (Nelfstab-TarrenMill-EU) | 5s | trinket: available
+0:23  [STATE]   friends 1:100 2:70 3:100 / enemies 4:98 5:99 6:95
+0:23  [TEAMMATE CC]   3 (Subtlety Rogue): Kidney Shot
+0:24  [STATE]   friends 2:58 3:98 / enemies 4:98 5:99 6:80
+0:24  [TEAMMATE CD]   3 (Subtlety Rogue): Shadow Blades
+0:24  [CC ON TEAM]   2 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 2s | trinket: available
+0:25  [STATE]   friends 2:54 3:95 / enemies 4:99 5:99 6:69
+0:26  [STATE]   friends 2:39 3:95 / enemies 4:98 5:100 6:41
+0:27  [STATE]   friends 1:100 2:37 3:95 / enemies 4:99 5:100 6:31
+0:28  [STATE]   friends 1:100 2:37 3:95 / enemies 4:100 5:99 6:33
+0:28  [OWNER CD]   Pain Suppression → 2 (37% HP)
+0:28  [OWNER CAST]   Power Word: Shield → 2
+0:29  [STATE]   friends 1:100 2:32 3:95 / enemies 4:100 5:99 6:33
+0:29  [TEAMMATE CD]   2 (Frost Mage): Ice Block
+0:30  [STATE]   friends 2:32 / enemies 4:100 5:99 6:36
+0:31  [STATE]   friends 1:100 2:33 / enemies 4:100 5:99 6:46
+0:31  [OWNER CAST]   Shadow Word: Pain → 6
+0:32  [STATE]   friends 1:100 2:33 3:93 / enemies 4:100 5:99 6:58
+0:32  [OWNER CAST]   Penance → 6
+0:33  [STATE]   friends 1:100 2:34 3:93 / enemies 4:99 5:100 6:100
+0:33  [ENEMY CD]   4 (Restoration Druid): Incarnation: Tree of Life [1/5]
+0:34  [STATE]   friends 1:100 2:40 3:87 / enemies 4:99 5:95 6:98
+0:34  [OWNER CAST]   Flash Heal → 2
+0:34  [CC ON TEAM]   3 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 1s | trinket: used
+0:35  [STATE]   friends 1:100 2:65 3:73 / enemies 4:99 5:75 6:98
+0:35  [TRINKET]   3 used PvP trinket
+0:36  [STATE]   friends 1:100 2:68 3:70 / enemies 4:100 5:76 6:98
+0:36  [BUFF FADED]   Pain Suppression
+0:36  [OWNER CAST]   Power Word: Shield → 3
+0:37  [STATE]   friends 1:100 2:70 3:72 / enemies 4:100 5:59 6:100
+0:37  [OWNER CAST]   Flash Heal → 3 [completed before CC landed]
+0:37  [CC ON TEAM]   1 ← Kidney Shot (Nelfstab-TarrenMill-EU) | 5s | trinket: available
+0:38  [STATE]   friends 1:100 2:71 3:83 / enemies 4:99 5:38 6:100
+0:38  [CC ON TEAM]   1 ← Polymorph (Tèars-Archimonde-EU) | 4s | trinket: available
+0:39  [STATE]   friends 1:100 2:71 3:84 / enemies 4:100 5:43 6:100
+0:40  [STATE]   friends 1:100 2:73 3:86 / enemies 4:100 5:33 6:100
+0:40  [CC ON TEAM]   3 ← Dismantle (Nelfstab-TarrenMill-EU) | 5s | trinket: ON CD (116s left)
+0:41  [STATE]   friends 1:100 2:73 3:84 / enemies 4:99 5:28 6:100
+0:42  [STATE]   friends 1:98 2:67 3:85 / enemies 4:100 5:31 6:100
+0:42  [OWNER CAST]   Power Word: Shield → 2
+0:43  [STATE]   friends 1:98 2:69 3:86 / enemies 4:99 5:38 6:100
+0:43  [OWNER CD]   Power Infusion → 1 (98% HP)
+      [HEALING]    0–5s: 53.4k HPS | 5–10s: 37.8k HPS | 10–15s: 6.0k HPS | Overheal: 73%
+0:43  [OWNER CAST]   Power Word: Radiance → self
+0:43  [OWNER CAST]   Evangelism → self
+0:44  [STATE]   friends 1:100 2:90 3:98 / enemies 4:100 5:49 6:100
+0:44  [OWNER CAST]   Penance → 6
+0:45  [STATE]   friends 1:100 2:92 3:99 / enemies 4:100 5:59 6:100
+0:46  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:57 6:92
+0:46  [OWNER CAST]   Shadow Word: Pain → 5
+0:47  [STATE]   friends 1:100 2:100 3:100 / enemies 4:98 5:48 6:88
+0:48  [STATE]   friends 1:100 2:100 3:98 / enemies 4:100 5:47 6:89
+0:48  [OWNER CAST]   Shadow Word: Death → Treant [totem/pet] [completed before CC landed]
+0:48  [CC ON TEAM]   3 ← Dragon's Breath (Tèars-Archimonde-EU) | 3s | trinket: ON CD (108s left)
+0:48  [UNCLEANSED DEBUFF]   Dragon's Breath on 3 | 3s | 10k taken during | dispel: Magic
+0:48  [CC ON TEAM]   1 ← Dragon's Breath (Tèars-Archimonde-EU) | 1s | trinket: available
+0:49  [STATE]   friends 1:100 2:99 3:87 / enemies 4:100 5:51 6:100
+0:50  [STATE]   friends 1:100 2:90 3:89 / enemies 4:99 5:52 6:98
+0:50  [OWNER CAST]   Penance → 5
+0:51  [STATE]   friends 1:100 2:96 3:100 / enemies 4:100 5:76 6:97
+0:51  [CC ON TEAM]   1 ← Ring of Frost (Tèars-Archimonde-EU) | 2s | trinket: available
+0:52  [STATE]   friends 1:100 2:97 3:100 / enemies 4:100 5:91 6:99
+0:52  [CC ON TEAM]   3 ← Ring of Frost (Tèars-Archimonde-EU) | 4s | trinket: ON CD (104s left)
+0:53  [STATE]   friends 1:99 2:98 3:100 / enemies 4:99 5:97 6:99
+0:54  [STATE]   friends 1:99 2:99 3:100 / enemies 4:100 5:99 6:99
+0:55  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:96 6:99
+0:55  [ENEMY CD]   4 (Restoration Druid): Incarnation: Tree of Life [2/5]
+0:56  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:67 6:97
+0:57  [STATE]   friends 1:99 2:99 3:100 / enemies 4:97 5:66 6:78
+0:57  [TEAMMATE CC]   3 (Subtlety Rogue): Kidney Shot
+0:58  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:66 6:75
+0:58  [BUFF FADED]   Power Infusion
+0:58  [OWNER CAST]   Penance → 2
+0:59  [STATE]   friends 1:99 2:100 3:99 / enemies 4:100 5:64 6:75
+1:00  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:62 6:71
+1:01  [STATE]   friends 1:100 2:100 3:99 / enemies 4:100 5:61 6:62
+1:01  [OWNER CAST]   Void Shield
+1:02  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:63 6:59
+1:02  [ENEMY CD]   5 (Subtlety Rogue): Shadow Blades [1/3]
+1:03  [CC ON TEAM]   3 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 4s | trinket: ON CD (93s left)
+1:03  [OWNER CAST]   Shadow Word: Pain → 5
+1:04  [STATE]   friends 1:100 2:100 3:100 / enemies 5:69 6:59
+1:05  [STATE]   friends 1:100 2:100 3:100 / enemies 5:73 6:59
+1:06  [STATE]   friends 1:100 2:100 3:96 / enemies 5:67 6:59
+1:06  [OWNER CAST]   Penance → 5
+1:07  [STATE]   friends 1:100 2:100 3:77 / enemies 4:100 5:71 6:52
+1:07  [CC ON TEAM]   3 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 2s | trinket: ON CD (89s left)
+1:08  [STATE]   friends 1:100 2:100 3:81 / enemies 4:100 5:67 6:47
+1:09  [STATE]   friends 1:100 2:100 3:76 / enemies 4:100 5:66 6:37
+1:09  [OWNER CAST]   Angelic Feather
+1:10  [STATE]   friends 1:100 2:100 3:63 / enemies 4:100 5:72 6:29
+1:11  [STATE]   friends 1:100 2:100 3:57 / enemies 4:100 5:78 6:63
+1:11  [OWNER CC]   Psychic Scream
+      [RES] rdy:Psychic Scream,2:Dragon's Breath,3:Cloak of Shadows  cd:Power Infusion(92s),Pain Suppression(137s),2:Ice Block(198s),3:Kidney Shot(16s),3:Shadow Blades(43s)  enemy:Shadow Blades/Subtlety Rogue(9s)
+1:11  [CC CAST]   Psychic Scream (by 1) → 4
+1:12  [STATE]   friends 1:100 2:100 3:53 / enemies 4:100 5:91 6:74
+1:12  [OWNER CAST]   Power Word: Shield → 3
+1:13  [STATE]   friends 1:100 2:100 3:52 / enemies 4:100 5:90 6:76
+1:13  [OWNER CAST]   Penance → 3
+1:14  [STATE]   friends 1:100 2:100 3:53 / enemies 4:100 5:75 6:79
+1:15  [STATE]   friends 1:100 2:100 3:63 / enemies 4:100 5:62 6:82
+1:16  [STATE]   friends 1:100 2:100 3:65 / enemies 4:100 5:49 6:85
+1:16  [CC ON TEAM]   1 ← Kidney Shot (Nelfstab-TarrenMill-EU) | 5s | trinket: available
+1:17  [STATE]   friends 1:100 2:100 3:66 / enemies 4:100 5:29 6:89
+1:17  [CC ON TEAM]   1 ← Polymorph (Tèars-Archimonde-EU) | 1s | trinket: available
+1:18  [STATE]   friends 1:100 2:100 3:62 / enemies 4:100 5:26 6:100
+1:19  [STATE]   friends 1:100 2:100 3:52 / enemies 4:100 5:17 6:100
+1:19  [OWNER CD]   Pain Suppression → 3 (49% HP)
+1:20  [STATE]   friends 1:100 2:100 3:43 / enemies 4:100 5:7 6:98
+1:21  [STATE]   friends 1:100 2:100 3:37 / enemies 4:100 5:31 6:100
+1:21  [OWNER CAST]   Void Shield [completed before CC landed]
+1:22  [STATE]   friends 1:100 2:100 3:42 / enemies 4:100 5:24 6:97
+1:22  [CC ON TEAM]   1 ← Polymorph (Tèars-Archimonde-EU) | 1s | trinket: available
+1:22  [CC ON TEAM]   3 ← Gouge (Nelfstab-TarrenMill-EU) | 3s | trinket: ON CD (73s left)
+1:23  [STATE]   friends 1:100 2:100 3:46 / enemies 4:100 5:42 6:100
+1:23  [OWNER CAST]   Shadow Mend → 3
+1:24  [STATE]   friends 1:100 2:100 3:71 / enemies 4:100 5:40 6:100
+1:24  [OWNER CAST]   Penance → 3
+1:25  [STATE]   friends 1:100 2:100 3:82 / enemies 4:100 5:53 6:100
+1:25  [OWNER CAST]   Power Word: Radiance → 3
+1:26  [STATE]   friends 1:100 2:97 3:100 / enemies 4:97 5:75 6:100
+1:26  [OWNER CAST]   Shadow Word: Pain → 5
+1:27  [STATE]   friends 1:100 2:92 3:100 / enemies 4:95 5:82 6:100
+1:27  [BUFF FADED]   Pain Suppression
+1:28  [STATE]   friends 1:100 2:74 3:98 / enemies 4:96 5:91 6:100
+1:28  [OWNER CAST]   Shadow Word: Pain → 4
+1:29  [STATE]   friends 1:100 2:76 3:98 / enemies 4:96 5:94 6:100
+1:29  [OWNER CAST]   Shadow Word: Pain → 6
+1:29  [OWNER CAST]   Fade
+1:29  [CLEANSE]   1 dispelled Chilled off 1
+1:29  [CC ON TEAM]   3 ← Polymorph (Tèars-Archimonde-EU) | 2s | trinket: ON CD (66s left)
+1:30  [STATE]   friends 1:100 2:78 3:98 / enemies 4:95 5:98 6:100
+1:31  [STATE]   friends 1:100 2:79 3:100 / enemies 4:95 5:98 6:100
+1:31  [OWNER CAST]   Purify → 3
+1:31  [CLEANSE]   1 dispelled Polymorph off 3
+1:32  [STATE]   friends 1:100 2:72 3:100 / enemies 4:97 5:98 6:100
+1:32  [OWNER CAST]   Power Word: Shield → 2 [completed before CC landed]
+1:32  [ENEMY CD]   4 (Restoration Druid): Nature's Swiftness [1/5]
+1:32  [CC ON TEAM]   1 ← Cyclone (Slimdrood-Kael'thas-EU) | 5s | trinket: available
+1:33  [STATE]   friends 1:100 2:63 3:100 / enemies 4:99 5:90 6:100
+1:34  [STATE]   friends 1:100 2:64 3:95 / enemies 4:96 5:85 6:93
+1:35  [STATE]   friends 2:65 3:95 / enemies 4:94 5:77 6:83
+1:35  [CC ON TEAM]   2 ← Dragon's Breath (Tèars-Archimonde-EU) | 1s | trinket: available
+1:35  [CC ON TEAM]   3 ← Dragon's Breath (Tèars-Archimonde-EU) | 1s | trinket: ON CD (61s left)
+1:36  [STATE]   friends 2:66 3:92 / enemies 4:94 5:96 6:88
+1:37  [STATE]   friends 1:100 2:55 3:93 / enemies 4:100 5:100 6:93
+1:37  [TEAMMATE CC]   2 (Frost Mage): Dragon's Breath
+1:38  [STATE]   friends 1:100 2:42 3:91 / enemies 4:100 5:98 6:88
+1:38  [OWNER CAST]   Power Word: Shield → 2 [completed before CC landed]
+1:38  [CC ON TEAM]   1 ← Maim (Slimdrood-Kael'thas-EU) | 0s | trinket: used
+1:39  [STATE]   friends 1:100 2:43 3:93 / enemies 4:99 5:100 6:88
+1:39  [TRINKET]   1 used PvP trinket
+1:39  [OWNER CAST]   Penance → 5 [succeeded after CC arrived — within 1s in log]
+1:40  [STATE]   friends 1:100 2:48 3:94 / enemies 4:99 5:99 6:86
+1:40  [CC ON TEAM]   1 ← Incapacitating Roar (Slimdrood-Kael'thas-EU) | 3s | trinket: ON CD (89s left)
+1:40  [CC ON TEAM]   1 ← Polymorph (Tèars-Archimonde-EU) | 3s | trinket: ON CD (89s left)
+1:41  [STATE]   friends 1:100 2:64 3:100 / enemies 4:100 5:87 6:84
+1:41  [CC ON TEAM]   3 ← Dismantle (Nelfstab-TarrenMill-EU) | 5s | trinket: ON CD (54s left)
+1:42  [STATE]   friends 1:100 2:67 3:100 / enemies 4:100 5:88 6:79
+1:42  [DMG SPIKE]   3 (Subtlety Rogue): 0.60M in 10s [P95 Danger] [BURST] (95% -> 77% HP)
+1:43  [STATE]   friends 1:100 2:65 3:96 / enemies 4:100 5:100 6:80
+1:43  [OWNER CAST]   Power Word: Shield → 2
+1:44  [STATE]   friends 1:100 2:61 3:85 / enemies 4:100 5:100 6:79
+1:45  [STATE]   friends 1:100 2:63 3:69 / enemies 4:100 5:97 6:62
+1:45  [CC ON TEAM]   3 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 4s | trinket: ON CD (51s left)
+1:45  [OWNER CC]   Psychic Scream
+      [RES] rdy:Δ+3:Kidney Shot-Psychic Scream,2:Dragon's Breath  cd:Psychic Scream(6s),2:Dragon's Breath(37s)  cc:3/Dismantle-2s
+1:45  [CC CAST]   Psychic Scream (by 1) → 4
+1:45  [DMG SPIKE]   2 (Frost Mage): 0.63M in 10s [P95 Danger] [ROT] (63% -> 69% HP)
+1:46  [STATE]   friends 1:100 2:65 3:54 / enemies 4:100 5:94 6:58
+1:46  [OWNER CAST]   Penance → 3
+1:47  [STATE]   friends 1:97 2:63 3:41 / enemies 4:100 5:94 6:54
+1:47  [OWNER CAST]   Power Word: Radiance → 3
+1:47  [OWNER CAST]   Evangelism → 3
+1:48  [STATE]   friends 1:100 2:87 3:50 / enemies 4:100 5:98 6:40
+1:49  [STATE]   friends 1:100 2:91 3:53 / enemies 4:100 5:98 6:38
+1:49  [TEAMMATE CC]   3 (Subtlety Rogue): Kidney Shot
+1:50  [STATE]   friends 1:100 2:87 3:28 / enemies 4:98 5:100 6:40
+1:50  [OWNER CAST]   Shadow Mend → 3
+1:50  [OWNER CAST]   Power Word: Shield → 3
+1:51  [STATE]   friends 1:100 2:70 3:60 / enemies 4:98 5:100 6:40
+1:51  [OWNER CAST]   Power Word: Radiance → 3
+1:52  [STATE]   friends 1:100 2:60 3:77 / enemies 4:100 5:100 6:71
+1:53  [STATE]   friends 1:100 2:39 3:77 / enemies 4:100 5:100 6:100
+1:53  [CC ON TEAM]   2 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 1s | trinket: available
+1:53  [OWNER CAST]   Shadow Mend → 2
+1:53  [OWNER CAST]   Fade
+1:54  [CLEANSE]   1 dispelled Crippling Poison off 1
+1:54  [STATE]   friends 1:100 2:62 3:81 / enemies 4:100 5:100 6:100
+1:54  [OWNER CAST]   Penance → 2
+1:55  [STATE]   friends 1:100 2:59 3:84 / enemies 4:99 5:100 6:100
+1:56  [STATE]   friends 1:100 2:75 3:92 / enemies 4:97 5:99 6:98
+1:56  [OWNER CAST]   Void Shield
+1:56  [TEAMMATE CD]   3 (Subtlety Rogue): Shadow Blades
+1:57  [STATE]   friends 1:100 2:91 3:96 / enemies 4:94 5:94 6:100
+1:57  [OWNER CAST]   Shadow Word: Pain → 6
+1:58  [STATE]   friends 1:100 2:94 3:99 / enemies 4:94 5:83 6:100
+1:58  [CC ON TEAM]   3 ← Polymorph (Tèars-Archimonde-EU) | 1s | trinket: ON CD (37s left)
+1:58  [OWNER CAST]   Shadow Word: Death → 5
+1:59  [STATE]   friends 1:100 2:97 3:100 / enemies 4:95 5:64 6:100
+2:00  [STATE]   friends 1:100 2:99 3:100 / enemies 4:98 5:69 6:100
+2:01  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:67 6:100
+2:01  [OWNER CAST]   Penance → 3
+2:02  [STATE]   friends 1:100 2:100 3:100 / enemies 4:96 5:75 6:100
+2:02  [OWNER CAST]   Shadow Word: Pain → 5
+2:03  [STATE]   friends 1:100 2:100 3:100 / enemies 4:98 5:94 6:100
+2:04  [STATE]   friends 1:100 2:100 3:99 / enemies 4:100 5:91 6:100
+2:05  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:78 6:100
+2:05  [OWNER CC]   Mind Control → 4
+2:06  [STATE]   friends 1:100 2:100 3:95 / enemies 4:100 5:71 6:100
+2:07  [STATE]   friends 1:100 2:99 3:96 / enemies 4:99 5:76 6:100
+2:07  [CC ON TEAM]   2 ← Polymorph (Tèars-Archimonde-EU) | 2s | trinket: used
+2:08  [STATE]   friends 1:100 2:99 3:93 / enemies 4:99 5:66 6:98
+2:09  [STATE]   friends 1:100 2:99 3:87 / enemies 4:94 5:50 6:99
+2:09  [CC ON TEAM]   1 ← Kidney Shot (Nelfstab-TarrenMill-EU) | 5s | trinket: ON CD (61s left)
+2:09  [TRINKET]   2 used PvP trinket
+2:10  [STATE]   friends 1:100 2:100 3:98 / enemies 4:100 5:64 6:100
+2:10  [CC ON TEAM]   3 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 4s | trinket: ON CD (26s left)
+2:10  [ENEMY CD]   4 (Restoration Druid): Incarnation: Tree of Life [3/5]
+2:11  [STATE]   friends 1:100 2:99 3:95 / enemies 4:100 5:66 6:100
+2:12  [STATE]   friends 1:100 2:98 3:91 / enemies 4:100 5:73 6:100
+2:13  [STATE]   friends 1:100 2:97 3:83 / enemies 4:100 5:82 6:100
+2:14  [STATE]   friends 1:100 2:98 3:77 / enemies 4:100 5:67 6:100
+2:14  [OWNER CAST]   Power Word: Shield → 3 [completed before CC landed]
+2:14  [CC ON TEAM]   1 ← Ring of Frost (Tèars-Archimonde-EU) | 6s | trinket: ON CD (55s left)
+2:15  [STATE]   friends 1:100 2:98 3:77 / enemies 4:100 5:72 6:100
+2:16  [STATE]   friends 1:100 2:96 3:79 / enemies 4:99 5:81 6:100
+2:17  [STATE]   friends 1:100 2:82 3:81 / enemies 4:100 5:79 6:97
+2:18  [STATE]   friends 1:99 2:80 3:71 / enemies 4:100 5:89 6:99
+2:19  [STATE]   friends 1:100 2:76 3:71 / enemies 4:100 5:100 6:90
+2:20  [STATE]   friends 1:99 2:75 3:72 / enemies 4:100 5:98 6:86
+2:20  [OWNER CAST]   Power Word: Shield → 2
+2:21  [STATE]   friends 1:99 2:75 3:72 / enemies 4:100 5:78 6:55
+2:21  [CC ON TEAM]   2 ← Gouge (Nelfstab-TarrenMill-EU) | 2s | trinket: ON CD (109s left)
+2:22  [STATE]   friends 1:98 2:75 3:72 / enemies 4:100 5:74 6:54
+2:22  [OWNER CAST]   Penance → 3
+2:23  [STATE]   friends 1:99 2:76 3:77 / enemies 4:100 5:71 6:44
+2:23  [OWNER CAST]   Power Word: Radiance → 3
+2:24  [STATE]   friends 1:100 2:89 3:100 / enemies 4:97 5:70 6:46
+2:25  [STATE]   friends 1:100 2:92 3:100 / enemies 4:100 5:69 6:55
+2:25  [OWNER CAST]   Angelic Feather
+2:26  [STATE]   friends 1:100 2:92 3:96 / enemies 4:100 5:66 6:56
+2:26  [OWNER CAST]   Void Shield
+2:27  [STATE]   friends 1:100 2:92 3:91 / enemies 4:100 5:52 6:38
+2:28  [STATE]   friends 1:100 2:92 3:93 / enemies 4:100 5:50 6:55
+2:28  [CC ON TEAM]   3 ← Dismantle (Nelfstab-TarrenMill-EU) | 5s | trinket: ON CD (8s left)
+2:28  [OWNER CC]   Psychic Scream
+      [RES] rdy:Δ+Psychic Scream,2:Dragon's Breath  cd:—  cc:3/Dismantle-5s
+2:28  [CC CAST]   Psychic Scream (by 1) → 4
+2:29  [STATE]   friends 1:100 2:92 3:93 / enemies 4:100 5:49 6:58
+2:30  [STATE]   friends 1:100 2:94 3:95 / enemies 4:100 5:47 6:55
+2:30  [TEAMMATE CC]   2 (Frost Mage): Dragon's Breath
+2:31  [STATE]   friends 1:100 2:95 3:95 / enemies 4:100 5:45 6:55
+2:32  [STATE]   friends 1:100 2:95 3:95 / enemies 4:100 5:47 6:61
+2:33  [STATE]   friends 1:100 2:97 3:96 / enemies 4:100 5:46 6:65
+2:33  [OWNER CAST]   Mass Dispel
+2:33  [OWNER CAST]   Shadow Word: Pain → 5
+2:33  [CLEANSE]   1 dispelled Chilled off 3
+2:34  [STATE]   friends 1:100 2:98 3:97 / enemies 4:100 5:34 6:67
+2:35  [STATE]   friends 1:100 2:100 3:98 / enemies 4:100 5:36 6:96
+2:35  [OWNER CAST]   Shadow Word: Death → 6
+2:36  [STATE]   friends 1:100 2:100 3:99 / enemies 4:100 5:19 6:100
+2:37  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:8 6:100
+2:37  [OWNER CAST]   Ultimate Penitence → 5
+2:38  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:44 6:100
+2:43  [STATE]   friends 1:100 2:100 3:100 / enemies 4:75 5:67 6:91
+2:44  [STATE]   friends 1:100 2:100 3:99 / enemies 4:71 5:71 6:95
+2:44  [OWNER CAST]   Power Word: Shield → 2 [completed before CC landed]
+2:44  [CC ON TEAM]   1 ← Kidney Shot (Nelfstab-TarrenMill-EU) | 5s | trinket: ON CD (25s left)
+2:45  [STATE]   friends 1:100 2:100 3:95 / enemies 4:67 5:87 6:100
+2:45  [CC ON TEAM]   3 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 1s | trinket: used
+2:46  [STATE]   friends 1:100 2:100 3:87 / enemies 4:72 5:91 6:100
+2:46  [TRINKET]   3 used PvP trinket
+2:46  [OWNER CD]   Pain Suppression → 3 (76% HP)
+2:47  [STATE]   friends 1:100 2:100 3:67 / enemies 4:65 5:99 6:100
+2:47  [CC ON TEAM]   3 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 2s | trinket: ON CD (120s left)
+2:47  [DMG SPIKE]   2 (Frost Mage): 0.48M in 10s [P95 Danger] [BURST]
+2:48  [STATE]   friends 1:100 2:95 3:51 / enemies 4:55 5:100 6:100
+2:49  [STATE]   friends 1:100 2:94 3:39 / enemies 4:44 5:98 6:100
+2:49  [OWNER CAST]   Power Word: Shield → 3 [completed before CC landed]
+2:49  [CC ON TEAM]   1 ← Polymorph (Tèars-Archimonde-EU) | 6s | trinket: ON CD (20s left)
+2:50  [STATE]   friends 1:100 2:90 3:39 / enemies 4:79 5:100 6:100
+2:51  [STATE]   friends 2:79 3:39 / enemies 4:99 5:100 6:100
+2:52  [STATE]   friends 2:45 3:43 / enemies 4:98 5:100 6:100
+2:53  [STATE]   friends 2:39 3:47 / enemies 4:100 5:100 6:100
+2:54  [STATE]   friends 2:34 3:47 / enemies 4:100 5:100 6:100
+2:54  [TEAMMATE CD]   2 (Frost Mage): Ice Block
+2:54  [BUFF FADED]   Pain Suppression
+2:55  [STATE]   friends 2:7 3:51 / enemies 4:100 5:100 6:100
+2:55  [CC ON TEAM]   1 ← Blind (Nelfstab-TarrenMill-EU) | 5s | trinket: ON CD (14s left)
+2:55  [TEAMMATE CC]   3 (Subtlety Rogue): Kidney Shot
+2:56  [STATE]   friends 2:7 3:51 / enemies 4:100 5:100 6:99
+2:57  [STATE]   friends 3:51 / enemies 4:100 5:100 6:99
+2:58  [STATE]   friends 3:48 / enemies 4:100 5:100 6:100
+2:59  [STATE]   friends 1:100 3:50 / enemies 4:100 5:96 6:100
+3:00  [STATE]   friends 1:100 2:7 3:53 / enemies 4:100 5:94 6:100
+3:00  [OWNER CAST]   Fade
+3:00  [OWNER CD]   Power Infusion → 3 (57% HP)
+3:00  [OWNER CAST]   Power Word: Radiance → 3
+3:00  [OWNER CAST]   Evangelism → 3
+3:00  [OWNER CD]   Power Infusion → self
+3:01  [STATE]   friends 1:100 2:27 3:68 / enemies 4:100 5:74 6:100
+3:01  [OWNER CAST]   Power Word: Shield → 2
+3:02  [STATE]   friends 1:100 2:27 3:72 / enemies 4:100 5:59 6:100
+3:03  [STATE]   friends 1:100 2:27 3:61 / enemies 4:100 5:97 6:100
+3:03  [OWNER CAST]   Penance → 2
+3:04  [STATE]   friends 1:100 2:52 3:64 / enemies 4:100 5:94 6:100
+3:04  [OWNER CAST]   Power Word: Radiance → 2
+3:05  [STATE]   friends 1:100 2:99 3:72 / enemies 4:100 5:100 6:100
+3:05  [OWNER CAST]   Penance → 3
+3:07  [OWNER CAST]   Void Shield
+3:09  [OWNER CAST]   Angelic Feather
+3:11  [CC ON TEAM]   1 ← Maim (Slimdrood-Kael'thas-EU) | 5s | trinket: available
+3:12  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:100 6:71
+3:13  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:100 6:70
+3:14  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:72
+3:14  [CC ON TEAM]   3 ← Dragon's Breath (Tèars-Archimonde-EU) | 1s | trinket: ON CD (93s left)
+3:14  [ENEMY CD]   5 (Subtlety Rogue): Shadow Blades [2/3]
+3:14  [CC ON TEAM]   3 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 4s | trinket: ON CD (92s left)
+3:15  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:99 6:72
+3:15  [BUFF FADED]   Power Infusion
+3:16  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:95 6:50
+3:16  [ENEMY CD]   4 (Restoration Druid): Nature's Swiftness [2/5]
+3:16  [CC ON TEAM]   1 ← Cyclone (Slimdrood-Kael'thas-EU) | 5s | trinket: available
+3:17  [STATE]   friends 1:100 2:100 3:92 / enemies 4:100 5:86 6:34
+3:18  [STATE]   friends 2:100 3:75 / enemies 4:100 5:76 6:59
+3:18  [TEAMMATE CD]   3 (Subtlety Rogue): Cloak of Shadows
+3:19  [STATE]   friends 2:100 3:55 / enemies 4:100 5:100 6:71
+3:20  [STATE]   friends 1:100 2:100 3:44 / enemies 4:100 5:100 6:73
+3:21  [STATE]   friends 1:100 2:100 3:44 / enemies 4:100 5:100 6:75
+3:21  [OWNER CAST]   Power Word: Shield → 3 [completed before CC landed]
+3:21  [CC ON TEAM]   1 ← Polymorph (Tèars-Archimonde-EU) | 8s | trinket: available
+3:22  [STATE]   friends 1:100 2:100 3:45 / enemies 4:100 5:100 6:78
+3:23  [STATE]   friends 2:100 3:45 / enemies 4:100 5:100 6:86
+3:24  [STATE]   friends 2:100 3:45 / enemies 4:100 5:100 6:90
+3:25  [STATE]   friends 2:100 3:46 / enemies 4:100 5:100 6:95
+3:26  [STATE]   friends 2:100 3:48 / enemies 4:100 5:100 6:96
+3:27  [STATE]   friends 2:100 3:45 / enemies 4:100 5:99 6:95
+3:27  [CC ON TEAM]   2 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 1s | trinket: ON CD (42s left)
+3:28  [STATE]   friends 1:100 2:95 3:46 / enemies 4:100 5:100 6:97
+3:28  [TEAMMATE CC]   3 (Subtlety Rogue): Kidney Shot
+3:29  [STATE]   friends 1:100 2:91 3:47 / enemies 4:100 5:100 6:100
+3:29  [OWNER CAST]   Power Word: Shield → 3
+3:30  [STATE]   friends 1:97 2:90 3:45 / enemies 4:100 5:100 6:100
+3:31  [STATE]   friends 1:98 2:90 3:46 / enemies 4:100 5:100 6:100
+3:32  [STATE]   friends 1:98 2:90 3:51 / enemies 4:100 5:100 6:100
+3:33  [STATE]   friends 1:98 2:90 3:56 / enemies 4:100 6:100
+3:34  [STATE]   friends 2:89 3:62 / enemies 4:100 6:100
+3:35  [STATE]   friends 2:89 3:67 / enemies 4:100 6:100
+3:36  [STATE]   friends 1:99 2:89 3:68 / enemies 4:100 6:100
+3:37  [STATE]   friends 1:99 2:89 3:61 / enemies 4:100 6:100
+3:37  [CC CAST]   Psychic Scream (by 1) → 4
+3:37  [OWNER CC]   Psychic Scream
+      [RES] rdy:Δ+3:Shadow Blades-3:Cloak of Shadows,3:Kidney Shot  cd:3:Cloak of Shadows(101s),3:Kidney Shot(21s)
+3:38  [OWNER CAST]   Penance → 3
+3:39  [CC ON TEAM]   1 ← Kidney Shot (Nelfstab-TarrenMill-EU) | 5s | trinket: available
+3:40  [STATE]   friends 1:97 2:89 3:75 / enemies 4:100 5:98 6:100
+3:41  [STATE]   friends 1:97 2:89 3:79 / enemies 4:100 5:100 6:79
+3:41  [CC ON TEAM]   3 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 4s | trinket: ON CD (65s left)
+3:42  [STATE]   friends 1:97 2:89 3:79 / enemies 4:100 5:99 6:72
+3:43  [STATE]   friends 1:97 2:89 3:75 / enemies 4:100 5:100 6:69
+3:43  [ENEMY CD]   4 (Restoration Druid): Incarnation: Tree of Life [4/5]
+3:44  [STATE]   friends 1:97 2:90 3:63 / enemies 4:99 5:100 6:69
+3:45  [STATE]   friends 1:97 2:88 3:61 / enemies 4:99 5:100 6:74
+3:45  [OWNER CAST]   Power Word: Shield → 3
+3:45  [TEAMMATE CD]   3 (Subtlety Rogue): Shadow Blades
+3:46  [STATE]   friends 1:100 2:89 3:61 / enemies 4:100 5:100 6:77
+3:46  [OWNER CAST]   Power Word: Radiance → 3
+3:47  [STATE]   friends 1:100 2:95 3:67 / enemies 4:100 5:99 6:98
+3:47  [CC ON TEAM]   3 ← Gouge (Nelfstab-TarrenMill-EU) | 1s | trinket: ON CD (59s left)
+3:47  [OWNER CAST]   Penance → 3
+3:48  [STATE]   friends 1:100 2:95 3:68 / enemies 4:98 5:100 6:100
+3:49  [STATE]   friends 1:100 2:62 3:81 / enemies 4:95 5:98 6:100
+3:49  [OWNER CAST]   Flash Heal → 2
+3:50  [STATE]   friends 1:100 2:67 3:97 / enemies 4:95 5:84 6:100
+3:50  [OWNER CAST]   Power Word: Shield → 2
+3:51  [STATE]   friends 1:100 2:57 3:89 / enemies 4:96 5:74 6:100
+3:52  [STATE]   friends 1:100 2:77 3:88 / enemies 4:96 5:58 6:100
+3:52  [OWNER CAST]   Power Word: Radiance → 2
+3:52  [OWNER CAST]   Evangelism → 2
+3:53  [STATE]   friends 1:100 2:80 3:97 / enemies 4:96 5:50 6:99
+3:53  [OWNER CAST]   Penance → 2
+3:53  [TEAMMATE CC]   2 (Frost Mage): Dragon's Breath
+3:54  [STATE]   friends 1:100 2:98 3:98 / enemies 4:96 5:44 6:100
+3:54  [CC ON TEAM]   3 ← Dragon's Breath (Tèars-Archimonde-EU) | 1s | trinket: ON CD (52s left)
+3:54  [OWNER CAST]   Shadow Word: Pain → 5
+3:55  [STATE]   friends 1:100 2:100 3:99 / enemies 4:95 5:38 6:98
+3:55  [CC ON TEAM]   3 ← Dismantle (Nelfstab-TarrenMill-EU) | 5s | trinket: ON CD (52s left)
+3:55  [OWNER CAST]   Shadow Word: Death → Treant [totem/pet]
+3:56  [STATE]   friends 1:100 2:100 3:100 / enemies 4:93 5:23 6:96
+3:57  [STATE]   friends 1:100 2:100 3:98 / enemies 4:91 5:8 6:96
+3:57  [OWNER CAST]   Penance → 5
+3:58  [STATE]   friends 1:100 2:100 3:99 / enemies 4:88 5:11 6:86
+3:58  [CC ON TEAM]   2 ← Polymorph (Tèars-Archimonde-EU) | 1s | trinket: ON CD (11s left)
+3:58  [OWNER CAST]   Dispel Magic → 5
+3:59  [STATE]   friends 1:100 2:100 3:100 / enemies 4:85 5:15 6:83
+4:00  [STATE]   friends 1:100 2:100 3:93 / enemies 4:82 5:22 6:84
+4:00  [OWNER CAST]   Dispel Magic → 5
+4:01  [STATE]   friends 1:100 2:97 3:72 / enemies 4:79 5:31 6:75
+4:02  [STATE]   friends 1:100 2:98 3:57 / enemies 4:75 5:35 6:71
+4:02  [CC ON TEAM]   3 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 4s | trinket: ON CD (44s left)
+4:02  [OWNER CAST]   Smite → 5
+4:02  [OWNER CAST]   Power Word: Shield → 3
+4:03  [STATE]   friends 1:100 2:100 3:60 / enemies 4:75 5:49 6:66
+4:03  [CC ON TEAM]   3 ← Incapacitating Roar (Slimdrood-Kael'thas-EU) | 1s | trinket: ON CD (43s left)
+4:04  [STATE]   friends 1:100 2:100 3:62 / enemies 4:74 5:40 6:62
+4:04  [OWNER CAST]   Shadow Mend → 3 [completed before CC landed]
+4:05  [STATE]   friends 1:100 2:100 3:100 / enemies 4:70 5:32 6:63
+4:05  [ENEMY CD]   4 (Restoration Druid): Nature's Swiftness [3/5]
+4:05  [CC ON TEAM]   1 ← Cyclone (Slimdrood-Kael'thas-EU) | 5s | trinket: available
+4:06  [STATE]   friends 1:100 2:100 3:100 / enemies 4:70 5:28 6:61
+4:06  [TEAMMATE CC]   3 (Subtlety Rogue): Kidney Shot
+4:07  [STATE]   friends 2:100 3:100 / enemies 4:68 5:30 6:62
+4:08  [STATE]   friends 2:100 3:100 / enemies 4:71 5:67 6:66
+4:09  [STATE]   friends 1:100 2:100 3:94 / enemies 4:71 5:68 6:54
+4:10  [STATE]   friends 1:100 2:100 3:95 / enemies 4:71 5:55 6:55
+4:10  [OWNER CAST]   Fade
+4:11  [STATE]   friends 1:100 2:100 3:95 / enemies 4:71 5:51 6:47
+4:11  [OWNER CAST]   Penance → 5
+4:12  [STATE]   friends 1:100 2:100 3:96 / enemies 4:73 5:54 6:48
+4:13  [STATE]   friends 1:100 2:100 3:96 / enemies 4:76 5:37 6:50
+4:14  [STATE]   friends 1:100 2:100 3:91 / enemies 4:87 5:52 6:61
+4:15  [STATE]   friends 1:99 2:99 3:72 / enemies 4:100 5:65 6:64
+4:15  [OWNER CAST]   Angelic Feather
+4:16  [OWNER CC]   Psychic Scream
+      [RES] rdy:Δ-3:Shadow Blades  cd:3:Shadow Blades(59s)
+4:16  [CC CAST]   Psychic Scream (by 1) → 4
+4:18  [OWNER CAST]   Void Shield [completed before CC landed]
+4:18  [CC ON TEAM]   1 ← Kidney Shot (Nelfstab-TarrenMill-EU) | 3s | trinket: used
+4:18  [CC ON TEAM]   1 ← Polymorph (Tèars-Archimonde-EU) | 3s | trinket: used
+4:19  [STATE]   friends 1:93 2:97 3:50 / enemies 4:100 5:90 6:96
+4:20  [STATE]   friends 1:93 2:97 3:55 / enemies 4:100 5:88 6:98
+4:21  [STATE]   friends 1:93 2:97 3:53 / enemies 4:100 5:78 6:98
+4:21  [TRINKET]   1 used PvP trinket
+4:21  [OWNER CAST]   Penance → 3
+4:22  [STATE]   friends 1:94 2:99 3:61 / enemies 4:100 5:77 6:93
+4:22  [CC ON TEAM]   3 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 2s | trinket: ON CD (25s left)
+4:23  [STATE]   friends 1:98 2:100 3:79 / enemies 4:100 5:76 6:89
+4:23  [OWNER CAST]   Void Shield
+4:24  [STATE]   friends 1:100 2:100 3:89 / enemies 4:100 5:98 6:90
+4:24  [OWNER CAST]   Penance → 3
+4:24  [DMG SPIKE]   3 (Subtlety Rogue): 0.71M in 10s [P95 Danger] [ROT] (91% -> 34% HP)
+4:25  [STATE]   friends 1:100 2:100 3:83 / enemies 4:100 5:97 6:91
+4:26  [STATE]   friends 1:100 2:100 3:86 / enemies 4:96 5:81 6:89
+4:27  [STATE]   friends 1:100 2:100 3:61 / enemies 4:96 5:72 6:91
+4:27  [OWNER CAST]   Power Word: Radiance → 3
+4:28  [STATE]   friends 1:100 2:100 3:50 / enemies 4:100 5:91 6:100
+4:28  [OWNER CAST]   Power Word: Shield → 3
+4:29  [STATE]   friends 1:100 2:100 3:45 / enemies 4:100 5:82 6:87
+4:29  [OWNER CAST]   Flash Heal → 3
+4:30  [STATE]   friends 1:100 2:100 3:53 / enemies 4:100 5:67 6:83
+4:30  [OWNER CAST]   Penance → 3
+4:31  [STATE]   friends 1:100 2:100 3:53 / enemies 4:100 5:52 6:88
+4:32  [STATE]   friends 1:100 2:100 3:53 / enemies 4:100 5:47 6:85
+4:32  [OWNER CAST]   Power Word: Radiance → 3
+4:33  [OWNER CAST]   Fade
+4:34  [HEALER INACTIVITY]   1 inactive 3.7s (3.7s free) while 3 under pressure
+4:37  [CC ON TEAM]   2 ← Polymorph (Tèars-Archimonde-EU) | 1s | trinket: used
+4:38  [STATE]   friends 1:94 2:100 3:12 / enemies 4:100 5:85 6:86
+4:38  [OWNER CAST]   Power Word: Shield → 3
+4:38  [TRINKET]   2 used PvP trinket
+4:39  [STATE]   friends 1:92 2:100 3:12 / enemies 4:100 5:90 6:88
+4:39  [OWNER CAST]   Penance → 3
+4:40  [STATE]   friends 1:91 2:100 3:12 / enemies 4:100 5:98 6:88
+4:41  [STATE]   friends 1:95 2:100 3:26 / enemies 4:99 5:100 6:84
+4:41  [TEAMMATE CC]   2 (Frost Mage): Dragon's Breath
+4:41  [OWNER CAST]   Flash Heal → 3
+4:42  [STATE]   friends 1:97 2:100 3:42 / enemies 4:100 5:100 6:85
+4:42  [OWNER CAST]   Power Word: Radiance → 3
+4:42  [OWNER CAST]   Evangelism → 3
+4:43  [STATE]   friends 1:100 2:99 3:57 / enemies 4:100 5:99 6:85
+4:43  [OWNER CAST]   Power Word: Shield → 3
+4:44  [STATE]   friends 1:100 2:94 3:60 / enemies 4:98 5:100 6:85
+4:44  [TEAMMATE CC]   3 (Subtlety Rogue): Kidney Shot
+4:44  [OWNER CAST]   Penance → 3 [completed before CC landed]
+4:45  [STATE]   friends 1:100 2:84 3:63 / enemies 4:98 5:100 6:85
+4:45  [CC ON TEAM]   1 ← Blind (Nelfstab-TarrenMill-EU) | 5s | trinket: ON CD (66s left)
+4:46  [STATE]   friends 1:100 2:92 3:83 / enemies 4:100 5:100 6:87
+4:47  [STATE]   friends 1:100 2:83 3:86 / enemies 4:100 5:100 6:87
+4:48  [STATE]   friends 1:100 2:75 3:86 / enemies 5:100 6:87
+4:49  [STATE]   friends 1:100 2:75 3:87 / enemies 4:100 5:100 6:83
+4:50  [STATE]   friends 1:100 2:67 3:87 / enemies 4:100 5:100 6:76
+4:50  [OWNER CAST]   Power Word: Shield → 2
+4:51  [STATE]   friends 1:100 2:64 3:87 / enemies 4:100 5:100 6:73
+4:52  [STATE]   friends 1:100 2:64 3:88 / enemies 4:100 5:100 6:70
+4:52  [OWNER CC]   Psychic Scream
+      [RES] rdy:Δ+Pain Suppression,2:Ice Block  cd:—
+4:52  [CC CAST]   Psychic Scream (by 1) → 4, 5 [2 enemies]
+4:53  [STATE]   friends 1:100 2:64 3:88 / enemies 4:98 5:100 6:57
+4:53  [CC ON TEAM]   3 ← Dragon's Breath (Tèars-Archimonde-EU) | 3s | trinket: available
+4:53  [UNCLEANSED DEBUFF]   Dragon's Breath on 3 | 3s | 85k taken during | dispel: Magic
+4:53  [CC ON TEAM]   2 ← Dragon's Breath (Tèars-Archimonde-EU) | 3s | trinket: ON CD (106s left)
+4:53  [CC ON TEAM]   1 ← Kidney Shot (Nelfstab-TarrenMill-EU) | 5s | trinket: ON CD (58s left)
+4:54  [STATE]   friends 1:98 2:64 3:88 / enemies 4:99 5:100 6:55
+4:55  [STATE]   friends 1:98 2:64 3:89 / enemies 4:100 5:100 6:57
+4:55  [CC ON TEAM]   2 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 1s | trinket: ON CD (103s left)
+4:56  [STATE]   friends 1:98 2:64 3:89 / enemies 4:100 5:100 6:57
+4:57  [STATE]   friends 1:97 2:65 3:89 / enemies 5:100 6:57
+4:58  [STATE]   friends 1:98 2:65 3:75 / enemies 4:100 5:94 6:57
+4:58  [OWNER CAST]   Shadow Word: Pain → 5
+4:59  [STATE]   friends 1:98 2:66 3:75 / enemies 4:100 5:84 6:54
+4:59  [CC ON TEAM]   3 ← Maim (Slimdrood-Kael'thas-EU) | 1s | trinket: used
+5:00  [STATE]   friends 1:99 2:66 3:75 / enemies 4:98 5:81 6:49
+5:00  [OWNER CAST]   Power Word: Shield → 2
+5:00  [TRINKET]   3 used PvP trinket
+5:00  [CC ON TEAM]   3 ← Polymorph (Tèars-Archimonde-EU) | 1s | trinket: ON CD (120s left)
+5:00  [OWNER CAST]   Fade
+5:00  [CLEANSE]   1 dispelled Crippling Poison off 1
+5:01  [STATE]   friends 1:97 2:66 3:76 / enemies 4:98 5:80 6:47
+5:01  [OWNER CAST]   Purify → 3
+5:01  [CLEANSE]   1 dispelled Polymorph off 3
+5:02  [STATE]   friends 1:94 2:67 3:77 / enemies 4:100 5:80 6:63
+5:02  [OWNER CAST]   Shadow Word: Death → 4 [completed before CC landed]
+5:03  [STATE]   friends 1:94 2:68 3:78 / enemies 4:100 5:79 6:65
+5:03  [CC ON TEAM]   1 ← Polymorph (Tèars-Archimonde-EU) | 1s | trinket: ON CD (48s left)
+5:03  [OWNER CAST]   Penance → 2 [succeeded after CC arrived — within 1s in log]
+5:04  [STATE]   friends 1:91 2:70 3:79 / enemies 4:100 5:83 6:65
+5:05  [STATE]   friends 1:91 2:83 3:84 / enemies 4:100 5:87 6:51
+5:05  [OWNER CAST]   Void Shield
+5:06  [STATE]   friends 1:95 2:91 3:87 / enemies 4:100 5:91 6:51
+5:06  [OWNER CAST]   Power Word: Radiance → 2
+5:07  [STATE]   friends 1:100 2:87 3:100 / enemies 4:99 5:95 6:54
+5:07  [OWNER CAST]   Shadow Word: Pain → 5
+5:08  [STATE]   friends 1:100 2:85 3:100 / enemies 4:100 5:99 6:87
+5:09  [STATE]   friends 1:100 2:86 3:100 / enemies 4:100 5:100 6:93
+5:09  [CC ON TEAM]   1 ← Polymorph (Tèars-Archimonde-EU) | 3s | trinket: ON CD (42s left)
+5:10  [STATE]   friends 1:100 2:86 3:100 / enemies 4:100 5:100 6:90
+5:11  [STATE]   friends 1:100 2:87 3:100 / enemies 4:100 5:98 6:88
+5:11  [CC ON TEAM]   3 ← Dismantle (Nelfstab-TarrenMill-EU) | 5s | trinket: ON CD (109s left)
+5:11  [ENEMY CD]   4 (Restoration Druid): Nature's Swiftness [4/5]
+5:11  [CC ON TEAM]   1 ← Cyclone (Slimdrood-Kael'thas-EU) | 5s | trinket: ON CD (40s left)
+5:12  [STATE]   friends 2:87 3:100 / enemies 4:100 5:99 6:87
+5:13  [STATE]   friends 2:87 3:100 / enemies 4:100 5:99 6:67
+5:14  [STATE]   friends 2:72 3:100 / enemies 4:99 5:97 6:58
+5:15  [STATE]   friends 2:62 3:100 / enemies 4:97 5:95 6:49
+5:16  [STATE]   friends 1:100 2:39 3:97 / enemies 4:100 5:95 6:85
+5:16  [CC ON TEAM]   3 ← Gouge (Nelfstab-TarrenMill-EU) | 1s | trinket: ON CD (104s left)
+5:16  [OWNER CAST]   Power Word: Shield → 2
+5:17  [STATE]   friends 1:100 2:28 3:98 / enemies 4:100 5:90 6:76
+5:17  [TEAMMATE CD]   2 (Frost Mage): Ice Block
+5:18  [STATE]   friends 1:100 2:29 3:98 / enemies 4:100 5:87 6:93
+5:18  [OWNER CAST]   Penance → 2
+5:19  [STATE]   friends 1:100 2:35 3:99 / enemies 4:100 5:88 6:100
+5:19  [OWNER CAST]   Flash Heal → 2
+5:20  [STATE]   friends 1:100 2:64 3:100 / enemies 4:100 5:90 6:100
+5:21  [STATE]   friends 1:100 2:75 3:100 / enemies 4:100 5:92 6:100
+5:21  [OWNER CAST]   Shadow Word: Pain → 5
+5:21  [OWNER CAST]   Fade
+5:22  [STATE]   friends 1:100 2:75 3:99 / enemies 4:100 5:93 6:98
+5:22  [OWNER CAST]   Shadow Word: Pain → 5
+5:23  [STATE]   friends 1:100 2:75 3:95 / enemies 4:100 5:93 6:98
+5:23  [CC ON TEAM]   1 ← Kidney Shot (Nelfstab-TarrenMill-EU) | 5s | trinket: ON CD (28s left)
+5:24  [STATE]   friends 1:100 2:74 3:92 / enemies 4:100 5:94 6:90
+5:25  [STATE]   friends 2:71 3:92 / enemies 4:100 5:94 6:86
+5:25  [TEAMMATE CC]   3 (Subtlety Rogue): Kidney Shot
+5:25  [CC ON TEAM]   3 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 4s | trinket: ON CD (95s left)
+5:26  [STATE]   friends 1:100 2:68 3:91 / enemies 4:98 5:96 6:92
+5:26  [ENEMY CD]   5 (Subtlety Rogue): Shadow Blades [3/3]
+5:27  [STATE]   friends 1:100 2:64 3:83 / enemies 4:97 5:94 6:92
+5:27  [OWNER CD]   Pain Suppression → 3 (59% HP)
+5:28  [STATE]   friends 1:98 2:52 3:58 / enemies 4:97 5:94 6:95
+5:29  [STATE]   friends 1:98 2:51 3:54 / enemies 4:99 5:96 6:100
+5:29  [OWNER CAST]   Power Word: Shield → 3
+5:29  [TEAMMATE CC]   2 (Frost Mage): Dragon's Breath
+5:30  [STATE]   friends 1:98 2:51 3:54 / enemies 4:99 5:95 6:100
+5:30  [OWNER CD]   Power Infusion → 3 (54% HP)
+      [RES] rdy:Δ+Power Infusion,3:Cloak of Shadows,3:Shadow Blades-Pain Suppression,2:Ice Block  cd:Pain Suppression(17s),2:Ice Block(85s)  enemy:Shadow Blades/Subtlety Rogue(3s)
+      [HEALING]    0–5s: 70.1k HPS | 5–10s: 30.9k HPS | 10–15s: 18.8k HPS | Overheal: 66%
+5:30  [OWNER CD]   Power Infusion → self
+5:30  [OWNER CAST]   Power Word: Radiance → 3
+5:31  [STATE]   friends 1:100 2:59 3:64 / enemies 4:99 5:95 6:99
+5:31  [OWNER CAST]   Power Word: Radiance → 3
+5:31  [OWNER CAST]   Evangelism → 3
+5:32  [STATE]   friends 1:100 2:60 3:78 / enemies 4:100 5:96 6:100
+5:32  [OWNER CAST]   Penance → 3
+5:33  [STATE]   friends 1:100 2:61 3:80 / enemies 4:100 5:98 6:98
+5:33  [OWNER CAST]   Power Word: Shield → 2
+5:34  [STATE]   friends 1:100 2:68 3:100 / enemies 4:100 5:99 6:99
+5:35  [STATE]   friends 1:100 2:71 3:100 / enemies 4:100 5:100 6:100
+5:35  [OWNER CAST]   Penance → 2
+5:35  [BUFF FADED]   Pain Suppression
+5:36  [OWNER CAST]   Shadow Word: Death → 4 [completed before CC landed]
+5:36  [CC ON TEAM]   1 ← Polymorph (Tèars-Archimonde-EU) | 1s | trinket: ON CD (15s left)
+5:36  [UNCLEANSED DEBUFF]   Frost Nova on 2 | 6s | 0k taken during | dispel: Magic
+5:37  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:100
+5:37  [OWNER CAST]   Shadow Word: Pain → 6
+5:38  [STATE]   friends 1:96 2:100 3:100 / enemies 4:100 5:100 6:92
+5:39  [STATE]   friends 1:97 2:100 3:100 / enemies 4:100 5:100 6:94
+5:40  [STATE]   friends 1:97 2:100 3:100 / enemies 4:100 5:100 6:76
+5:40  [OWNER CAST]   Mind Blast → 6
+5:40  [OWNER CAST]   Shadow Word: Pain → 6
+5:40  [CC ON TEAM]   2 ← Ring of Frost (Tèars-Archimonde-EU) | 4s | trinket: ON CD (59s left)
+5:40  [CC ON TEAM]   3 ← Ring of Frost (Tèars-Archimonde-EU) | 1s | trinket: ON CD (80s left)
+5:41  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:58
+5:41  [OWNER CAST]   Penance → 6
+5:42  [STATE]   friends 1:100 2:100 3:91 / enemies 4:100 5:100 6:54
+5:43  [STATE]   friends 1:100 2:100 3:99 / enemies 4:100 5:99 6:43
+5:43  [OWNER CAST]   Void Shield
+5:44  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:64
+5:45  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:87
+5:45  [OWNER CAST]   Angelic Feather
+5:45  [BUFF FADED]   Power Infusion
+5:46  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:99 6:98
+5:46  [CC ON TEAM]   1 ← Dragon's Breath (Tèars-Archimonde-EU) | 3s | trinket: ON CD (5s left)
+5:47  [STATE]   friends 1:100 2:99 3:100 / enemies 4:98 5:97 6:98
+5:47  [CC ON TEAM]   3 ← Gouge (Nelfstab-TarrenMill-EU) | 2s | trinket: ON CD (73s left)
+5:48  [STATE]   friends 1:100 2:99 3:100 / enemies 4:98 5:98 6:100
+5:49  [STATE]   friends 1:100 2:94 3:100 / enemies 4:94 5:96 6:100
+5:49  [OWNER CAST]   Power Word: Shield → 2
+5:50  [STATE]   friends 1:100 2:94 3:100 / enemies 4:89 5:94 6:99
+5:51  [STATE]   friends 1:100 2:92 3:100 / enemies 4:77 5:94 6:100
+5:51  [CC ON TEAM]   2 ← Maim (Slimdrood-Kael'thas-EU) | 1s | trinket: ON CD (48s left)
+5:52  [STATE]   friends 1:100 2:79 3:100 / enemies 4:77 5:97 6:100
+5:53  [STATE]   friends 1:100 2:79 3:100 / enemies 4:77 5:98 6:100
+5:53  [OWNER CAST]   Shadow Mend → 2 [completed before CC landed]
+5:53  [CC ON TEAM]   1 ← Polymorph (Tèars-Archimonde-EU) | 3s | trinket: available
+5:54  [STATE]   friends 1:100 2:100 3:100 / enemies 4:62 5:97 6:98
+5:55  [STATE]   friends 1:100 2:99 3:100 / enemies 4:68 5:98 6:88
+5:55  [TEAMMATE CC]   3 (Subtlety Rogue): Kidney Shot
+5:56  [STATE]   friends 1:100 2:99 3:99 / enemies 4:66 5:96 6:88
+5:56  [TEAMMATE CD]   3 (Subtlety Rogue): Shadow Blades
+5:57  [STATE]   friends 1:100 2:98 3:91 / enemies 4:45 5:95 6:77
+5:57  [CC ON TEAM]   3 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 4s | trinket: ON CD (63s left)
+5:58  [STATE]   friends 1:100 2:96 3:86 / enemies 4:43 5:95 6:79
+5:58  [OWNER CAST]   Shadow Word: Death → Elémentaire d’eau [totem/pet] [completed before CC landed]
+5:58  [CC ON TEAM]   1 ← Kidney Shot (Nelfstab-TarrenMill-EU) | 5s | trinket: available
+5:59  [STATE]   friends 1:100 2:98 3:88 / enemies 4:41 5:94 6:72
+6:00  [STATE]   friends 1:100 2:92 3:83 / enemies 4:47 5:96 6:75
+6:00  [OFFENSIVE WINDOW]   6:00–6:05 | Critical | 0.54M on 2 (Frost Mage) | CDs: Incarnation: Tree of Life + Nature's Swiftness
+6:00  [ENEMY CD]   4 (Restoration Druid): Incarnation: Tree of Life [5/5]
+6:01  [STATE]   friends 1:100 2:94 3:73 / enemies 4:48 5:95 6:65
+6:02  [STATE]   friends 1:96 2:92 3:60 / enemies 4:58 5:87 6:70
+6:03  [STATE]   friends 1:89 2:93 3:51 / enemies 4:60 5:77 6:78
+6:03  [OWNER CAST]   Power Word: Shield → 3
+6:04  [STATE]   friends 1:86 2:92 3:47 / enemies 4:75 5:61 6:81
+6:05  [STATE]   friends 1:82 2:92 3:46 / enemies 4:71 5:51 6:100
+6:05  [OWNER CAST]   Penance → 3 [completed before CC landed]
+6:05  [ENEMY CD]   4 (Restoration Druid): Nature's Swiftness [5/5]
+6:05  [CC ON TEAM]   1 ← Cyclone (Slimdrood-Kael'thas-EU) | 5s | trinket: available
+6:05  [CC ON TEAM]   3 ← Dismantle (Nelfstab-TarrenMill-EU) | 5s | trinket: ON CD (55s left)
+6:06  [STATE]   friends 1:69 2:94 3:30 / enemies 4:65 5:39 6:95
+6:06  [DMG SPIKE]   2 (Frost Mage): 0.54M in 10s [P95 Danger] [BURST] (93% -> 0% HP)
+6:07  [STATE]   friends 1:69 2:94 3:24 / enemies 4:67 5:41 6:100
+6:08  [STATE]   friends 2:91 3:27 / enemies 4:69 5:41 6:100
+6:09  [STATE]   friends 2:80 3:27 / enemies 4:79 5:47 6:100
+6:10  [STATE]   friends 1:69 2:67 3:27 / enemies 4:82 5:48 6:100
+6:10  [TEAMMATE CC]   2 (Frost Mage): Dragon's Breath
+      [RES] rdy:Δ+Pain Suppression-Power Infusion,3:Shadow Blades  cd:Power Infusion(80s),3:Shadow Blades(76s)  enemy:Nature's Swiftness/Restoration Druid(5s)  cc:1/Cyclone-0s,2/Ray of Frost-2s[kick],3/Dismantle-1s
+6:10  [OWNER CAST]   Power Word: Shield → 3
+6:11  [STATE]   friends 1:68 2:60 3:33 / enemies 4:87 5:53 6:100
+6:11  [OWNER CAST]   Fade
+6:11  [CLEANSE]   1 dispelled Chilled off 1
+6:12  [STATE]   friends 1:67 2:56 3:37 / enemies 4:89 5:53 6:100
+6:12  [OWNER CAST]   Penance → 3
+6:12  [CC ON TEAM]   2 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 2s | trinket: ON CD (26s left)
+6:13  [STATE]   friends 1:65 2:47 3:49 / enemies 4:94 5:59 6:100
+6:13  [OWNER CAST]   Power Word: Radiance → 3
+6:14  [STATE]   friends 1:63 2:28 3:69 / enemies 4:96 5:65 6:94
+6:14  [UNCLEANSED DEBUFF]   Frost Nova on 1 | 3s | 6k taken during | dispel: Magic
+6:15  [STATE]   friends 1:62 2:dead 3:69 / enemies 4:100 5:54 6:91
+6:15  [OWNER CAST]   Penance → 2
+6:15  [DEATH]  2 (Frost Mage — friendly)
+               HP: 94% at T-15s → 94% at T-10s → 62% at T-5s → 50% at T-3s → dead
+               Top damage in final 10s: Nelfstab-TarrenMill-EU — Eviscerate (232k), Tèars-Archimonde-EU — Frozen Orb (99k), Nelfstab-TarrenMill-EU — Shadowstrike (59k)
+6:16  [STATE]   friends 1:68 2:dead 3:69 / enemies 4:100 5:55 6:89
+6:16  [OWNER CAST]   Void Shield
+6:17  [STATE]   friends 1:72 2:dead 3:69 / enemies 4:100 5:59 6:90
+6:17  [OWNER CAST]   Shadow Word: Pain → 6
+6:18  [STATE]   friends 1:73 2:dead 3:69 / enemies 4:100 5:65 6:91
+6:19  [STATE]   friends 1:74 2:dead 3:60 / enemies 4:100 5:97 6:100
+6:19  [OWNER CAST]   Shadow Word: Pain → 6
+6:20  [STATE]   friends 1:75 2:dead 3:57 / enemies 4:100 5:99 6:100
+6:20  [OWNER CAST]   Shadow Word: Death → 6
+6:21  [STATE]   friends 1:78 2:dead 3:48 / enemies 4:100 5:98 6:100
+6:21  [OWNER CAST]   Power Word: Radiance → self [completed before CC landed]
+6:21  [OWNER CAST]   Evangelism → self [completed before CC landed]
+6:21  [CC ON TEAM]   1 ← Cyclone (Slimdrood-Kael'thas-EU) | 3s | trinket: available
+6:22  [STATE]   friends 1:89 2:dead 3:52 / enemies 4:100 5:100 6:100
+6:23  [STATE]   friends 1:89 2:dead 3:35 / enemies 4:100 5:100 6:100
+6:23  [CC ON TEAM]   3 ← Gouge (Nelfstab-TarrenMill-EU) | 1s | trinket: ON CD (37s left)
+6:24  [STATE]   friends 1:89 2:dead 3:34 / enemies 4:100 5:98 6:100
+6:24  [OWNER CAST]   Power Word: Shield → 3
+6:24  [TEAMMATE CD]   3 (Subtlety Rogue): Cloak of Shadows
+6:25  [STATE]   friends 1:90 2:dead 3:26 / enemies 4:100 5:100 6:100
+6:25  [OWNER CAST]   Flash Heal → 3 [completed before CC landed]
+6:26  [STATE]   friends 1:93 2:dead 3:41 / enemies 4:100 5:100 6:100
+6:26  [CC ON TEAM]   1 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 4s | trinket: available
+6:27  [STATE]   friends 1:94 2:dead 3:43 / enemies 4:100 5:98 6:100
+6:27  [CC ON TEAM]   3 ← Cheap Shot (Nelfstab-TarrenMill-EU) | 4s | trinket: ON CD (33s left)
+6:28  [STATE]   friends 1:95 2:dead 3:45 / enemies 4:100 5:97 6:100
+6:29  [STATE]   friends 1:96 2:dead 3:43 / enemies 4:100 5:98 6:100
+6:29  [CC ON TEAM]   1 ← Polymorph (Tèars-Archimonde-EU) | 1s | trinket: available
+6:30  [STATE]   friends 1:97 2:dead 3:23 / enemies 4:100 5:100 6:100
+6:31  [STATE]   friends 1:94 2:dead 3:dead / enemies 4:100 5:100 6:100
+6:31  [DEATH]  3 (Subtlety Rogue — friendly)
+               HP: 69% at T-15s → 43% at T-10s → 42% at T-5s → 45% at T-3s → dead
+               Top damage in final 10s: Nelfstab-TarrenMill-EU — Eviscerate [Coup de Grace] (78k), Tèars-Archimonde-EU — Glacial Spike (77k), Nelfstab-TarrenMill-EU — Lashe Macabre (50k)
+6:32  [STATE]   friends 1:83 2:dead 3:dead / enemies 4:100 5:100 6:100
+
+6:32  [MATCH END]   damp: 32%
+  friends 1:83% 2:dead(6:15) 3:dead(6:31) / enemies 6:100% 4:100% 5:100%

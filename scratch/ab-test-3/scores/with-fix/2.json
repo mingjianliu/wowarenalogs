@@ -1,0 +1,9 @@
+{
+  "prompt": {
+    "sufficiency": 5,
+    "noise": 2,
+    "labelBias": 5,
+    "inferenceScaffolding": 2,
+    "notes": "The prompt contains excessive [STATE] lines every second, duplicate cast logs, and the death event lacks preceding damage context."
+  }
+}

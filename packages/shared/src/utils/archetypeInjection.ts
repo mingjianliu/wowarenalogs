@@ -31,12 +31,20 @@ export interface IArchetypeClassification {
   label: string;
   isNoise: boolean;
   promptText: string;
+  distance: number;
 }
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 /** Below this duration, archetype injection is suppressed — too little signal. */
 const MIN_DURATION_SECONDS_FOR_INJECTION = 30;
+
+/**
+ * Distance threshold in Z-Score (SD) space.
+ * Matches further than this from their nearest centroid are considered anomalous
+ * (outliers) and archetype injection is suppressed to avoid hallucinated narratives.
+ */
+const MAX_DISTANCE_SD = 4.5;
 
 // ── Bracket detection ─────────────────────────────────────────────────────────
 
@@ -84,7 +92,7 @@ export function classifyMatchArchetype(
   const model = getModel(slug);
   const prompts = getPrompts(slug);
 
-  const { clusterKey } = classifyCluster(dynamics, model);
+  const { clusterKey, distance } = classifyCluster(dynamics, model);
 
   const cluster = prompts[clusterKey];
   if (!cluster) return null;
@@ -94,6 +102,7 @@ export function classifyMatchArchetype(
     label: cluster.label,
     isNoise: cluster.isNoise,
     promptText: cluster.promptText,
+    distance,
   };
 }
 
@@ -104,6 +113,7 @@ export function classifyMatchArchetype(
  *   - Bracket unsupported
  *   - Duration below the minimum (too little signal in short rounds)
  *   - Classification landed in a noise cluster (one-sided fast wins, no coaching value)
+ *   - Match is too anomalous (outlier — distance too high)
  */
 export function buildArchetypeInjectionHeader(
   bracket: string | undefined | null,
@@ -114,6 +124,7 @@ export function buildArchetypeInjectionHeader(
   const result = classifyMatchArchetype(bracket, dynamics);
   if (!result) return '';
   if (result.isNoise) return '';
+  if (result.distance > MAX_DISTANCE_SD) return '';
 
   return `[MATCH TYPE: ${result.label}]`;
 }

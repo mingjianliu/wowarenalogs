@@ -13836,7 +13836,7 @@ const Warlock = {
     { spellId: '115831', name: 'Wrathstorm', tags: [] },
     { spellId: '89766', name: 'Axe Toss', tags: [] },
     { spellId: '201996', name: 'Call Observer', tags: [] },
-    { spellId: '205180', name: 'Summon Darkglare', tags: [] },
+    { spellId: '205180', name: 'Summon Darkglare', tags: [SpellTag.Offensive] },
     { spellId: '205181', name: 'Shadowflame', tags: [] },
     { spellId: '211714', name: "Thal'kiel's Consumption", tags: [] },
     { spellId: '212459', name: 'Call Fel Lord', tags: [] },

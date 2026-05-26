@@ -1,0 +1,458 @@
+[MATCH TYPE: deep_dampening_siege]
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Preservation Evoker (Healer) | Bracket: 3v3 | Result: Win | Duration: 3:19
+  My team: Retribution Paladin, Preservation Evoker, Marksmanship Hunter
+  Enemy team: Unholy Death Knight, Preservation Evoker, Beast Mastery Hunter
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Preservation Evoker): CANNOT offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 12% at match end
+
+## CC Chains
+  Unholy Death Knight (Hotcherryx-DunModr-EU): 9 CC — 2× Disorient, 4× Stun, 3× Incapacitate | 0 reduced, 0 immune
+  Preservation Evoker (Reehztard-Ravencrest-EU): 10 CC — 4× Stun, 5× Disorient, 1× Unknown | 3 reduced, 0 immune
+  Beast Mastery Hunter (Drek-Sanguino-EU): 6 CC — 5× Stun, 1× Disorient | 1 reduced, 0 immune
+
+## Enemy Cooldown Timeline
+  No coordinated enemy burst windows detected — sustained/individual pressure only.
+
+## Kill Attempt Windows
+  None detected (no aligned enemy burst windows).
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Sharkoslav-Kazzak-EU (Preservation Evoker — log owner):
+    Deep Breath [120s], Cauterizing Flame [60s, 2 Charges], Rewind [240s], Emerald Communion [180s], Stasis [90s], Rescue [60s]
+  2: Tossarn-ArgentDawn-EU (Retribution Paladin):
+    Lay on Hands [600s], Hammer of Justice [45s, 2 Charges], Blessing of Protection [300s], Blessing of Spellwarding [300s], Avenging Wrath [120s]
+  3: Sixsevenn-Kazzak-EU (Marksmanship Hunter):
+    Exhilaration [120s, 2 Charges], Aspect of the Turtle [180s]
+  4: Reehztard-Ravencrest-EU (Preservation Evoker — enemy):
+    Deep Breath [120s], Oppressing Roar [120s]
+  5: Drek-Sanguino-EU (Beast Mastery Hunter — enemy):
+    Bestial Wrath [90s]
+  6: Hotcherryx-DunModr-EU (Unholy Death Knight — enemy):
+    none tracked
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:03  [OWNER CAST]   Verdant Embrace → 3
+0:03  [OWNER CAST]   Verdant Embrace → 3
+0:04  [OWNER CAST]   Echo → 3
+0:05  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 6:100
+0:05  [OWNER CD]   Hover
+0:06  [STATE]   friends 1:100 2:100 3:99 / enemies 4:100 5:100 6:100
+0:06  [OWNER CD]   Tip the Scales
+0:06  [OWNER CAST]   Fire Breath
+0:07  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:86
+0:07  [OWNER CAST]   Chrono Flames → 6
+0:07  [OWNER CAST]   Disintegrate → 6
+0:08  [STATE]   friends 1:100 3:99 / enemies 4:100 5:100 6:82
+0:08  [OWNER CAST]   Verdant Embrace → 3
+0:08  [OWNER CAST]   Verdant Embrace → 3
+0:09  [STATE]   friends 1:100 3:100 / enemies 4:100 5:100 6:80
+0:09  [OWNER CAST]   Echo → 3
+0:09  [DMG SPIKE]   3 (Marksmanship Hunter): 0.71M in 10s [P95 Danger] [ROT] (99% -> 48% HP)
+0:10  [STATE]   friends 1:94 3:99 / enemies 4:100 5:100 6:94
+0:10  [OWNER CAST]   Glide
+0:10  [OWNER CD]   Obsidian Scales → 3
+0:10  [ENEMY CD]   5 (Beast Mastery Hunter): Bestial Wrath [1/5]
+0:11  [STATE]   friends 1:100 3:94 / enemies 4:100 5:96 6:100
+0:11  [OWNER CC]   Sleep Walk → 4
+0:12  [STATE]   friends 1:100 3:93 / enemies 4:100 5:95 6:99
+0:13  [STATE]   friends 1:100 2:100 3:85 / enemies 4:100 5:95 6:98
+0:13  [OWNER CC]   Sleep Walk → 4
+0:13  [OWNER CAST]   Dream Breath
+0:14  [STATE]   friends 1:100 2:100 3:77 / enemies 4:100 5:95 6:100
+0:14  [OWNER CAST]   Echo → 3 [completed before CC landed]
+0:14  [CC ON TEAM]   2 ← Blinding Sleet (Hotcherryx-DunModr-EU) | 1s | trinket: used
+0:14  [CC ON TEAM]   1 ← Blinding Sleet (Hotcherryx-DunModr-EU) | 4s | trinket: available
+0:15  [STATE]   friends 1:100 2:100 3:87 / enemies 4:100 5:85 6:99
+0:15  [TRINKET]   2 used PvP trinket
+0:16  [STATE]   friends 1:100 2:100 3:83 / enemies 4:100 5:83 6:100
+0:17  [STATE]   friends 1:100 2:100 3:78 / enemies 4:100 5:81 6:100
+0:18  [STATE]   friends 1:100 2:100 3:64 / enemies 4:100 5:77 6:100
+0:18  [OWNER CAST]   Verdant Embrace → 3
+0:19  [STATE]   friends 1:100 2:99 3:39 / enemies 4:98 5:75 6:99
+0:19  [OWNER CAST]   Verdant Embrace → 3
+0:19  [OWNER CAST]   Echo → 3
+0:20  [STATE]   friends 1:100 2:100 3:48 / enemies 4:100 5:58 6:97
+0:20  [OWNER CAST]   Dream Breath
+0:20  [OWNER CAST]   Dream Breath
+0:20  [OWNER CAST]   Verdant Embrace → 3
+0:20  [OWNER CD]   Cauterizing Flame → 3 (100% HP)
+0:20  [CLEANSE]   1 dispelled 6 effects: Bloodshed off 3, Barbed Shot off 3, Bloodshed off 3, Undeath off 3, Dread Plague off 3, Virulent Plague off 3
+0:21  [STATE]   friends 1:100 2:95 3:100 / enemies 4:100 5:74 6:100
+0:21  [OWNER CAST]   Echo → 3
+0:22  [STATE]   friends 1:100 2:95 3:99 / enemies 4:100 5:92 6:100
+0:22  [DMG SPIKE]   3 (Marksmanship Hunter): 0.78M in 10s [P95 Danger] [ROT] (98% -> 71% HP)
+0:22  [OWNER CAST]   Merithra's Blessing → 3
+0:23  [STATE]   friends 1:100 2:96 3:100 / enemies 4:97 5:98 6:100
+0:23  [OWNER CD]   Hover
+0:24  [STATE]   friends 1:100 2:100 3:94 / enemies 4:99 5:90 6:99
+0:24  [CC ON TEAM]   1 ← Sleep Walk (Reehztard-Ravencrest-EU) | 3s | trinket: available
+0:25  [STATE]   friends 1:100 2:100 3:93 / enemies 4:90 5:83 6:81
+0:26  [STATE]   friends 1:100 2:100 3:95 / enemies 4:92 5:77 6:80
+0:27  [STATE]   friends 1:100 2:100 3:87 / enemies 4:94 5:73 6:70
+0:28  [STATE]   friends 1:100 2:100 3:75 / enemies 4:100 5:100 6:66
+0:29  [STATE]   friends 1:97 2:100 3:49 / enemies 4:99 5:93 6:80
+0:29  [OWNER CAST]   Verdant Embrace → 3 [completed before CC landed]
+0:29  [OWNER CAST]   Verdant Embrace → 3 [completed before CC landed]
+0:29  [CC ON TEAM]   1 ← Strangulate (Hotcherryx-DunModr-EU) | 2s | trinket: available
+0:30  [STATE]   friends 1:99 2:100 3:44 / enemies 4:100 5:91 6:83
+0:31  [STATE]   friends 1:100 2:100 3:36 / enemies 4:99 5:78 6:80
+0:31  [TEAMMATE CD]   3 (Marksmanship Hunter): Exhilaration
+0:31  [OWNER CD]   Rewind
+0:31  [OWNER CD]   Time Dilation → 3
+0:32  [STATE]   friends 1:100 2:100 3:55 / enemies 4:99 5:91 6:99
+0:32  [ENEMY CD]   4 (Preservation Evoker): Deep Breath [1/2]
+0:32  [CC ON TEAM]   1 ← Scorpid Venom (Drek-Sanguino-EU) | 3s | trinket: available
+0:32  [UNCLEANSED DEBUFF]   Scorpid Venom on 1 | 3s | 57k taken during | dispel: Poison
+0:32  [OWNER CAST]   Echo → 3 [succeeded after CC arrived — within 1s in log]
+0:33  [STATE]   friends 1:100 2:99 3:86 / enemies 4:100 5:92 6:98
+0:33  [BUFF FADED]   Rewind
+0:33  [OWNER CAST]   Fire Breath
+0:33  [CC ON TEAM]   3 ← Terror of the Skies (Reehztard-Ravencrest-EU) | 1s | trinket: used
+0:34  [STATE]   friends 1:100 2:98 3:97 / enemies 4:98 5:79 6:97
+0:34  [TRINKET]   3 used PvP trinket
+0:34  [OWNER CD]   Obsidian Scales → 3
+0:34  [OWNER CAST]   Dream Breath
+0:35  [STATE]   friends 1:100 2:99 3:94 / enemies 4:100 5:54 6:91
+0:35  [OWNER CAST]   Verdant Embrace → 3
+0:36  [STATE]   friends 1:100 2:92 3:94 / enemies 4:100 5:65 6:92
+0:36  [OWNER CAST]   Verdant Embrace → 3
+0:36  [OWNER CAST]   Echo → 3
+0:37  [STATE]   friends 1:99 2:89 3:94 / enemies 4:100 5:61 6:96
+0:37  [OWNER CD]   Hover
+0:38  [STATE]   friends 1:100 2:85 3:88 / enemies 4:100 5:51 6:100
+0:39  [STATE]   friends 1:100 2:85 3:83 / enemies 4:100 5:69 6:100
+0:40  [STATE]   friends 1:100 2:84 3:77 / enemies 4:100 5:65 6:99
+0:40  [OWNER CAST]   Dream Breath
+0:40  [TEAMMATE CC]   2 (Retribution Paladin): Hammer of Justice
+0:41  [STATE]   friends 1:100 2:99 3:84 / enemies 4:100 5:56 6:100
+0:41  [OWNER CAST]   Landslide
+0:42  [STATE]   friends 1:100 2:100 3:89 / enemies 4:100 5:50 6:100
+0:42  [OWNER CAST]   Echo → 3
+0:43  [STATE]   friends 1:100 2:99 3:86 / enemies 4:100 5:61 6:99
+0:43  [OWNER CAST]   Merithra's Blessing → 3
+0:44  [STATE]   friends 1:100 2:100 3:95 / enemies 4:98 5:67 6:100
+0:45  [STATE]   friends 1:100 2:100 3:96 / enemies 4:100 5:69 6:100
+0:45  [DMG SPIKE]   3 (Marksmanship Hunter): 0.81M in 10s [P95 Danger] [ROT] (98% -> 81% HP)
+0:45  [ENEMY CD]   5 (Beast Mastery Hunter): Bestial Wrath [2/5]
+0:46  [STATE]   friends 1:98 2:88 3:84 / enemies 4:91 5:61 6:99
+0:46  [OWNER CC]   Sleep Walk → 4
+0:46  [OWNER CAST]   Echo → 3
+0:47  [STATE]   friends 1:100 2:89 3:79 / enemies 4:96 5:52 6:91
+0:47  [OWNER CAST]   Verdant Embrace → 3
+0:47  [OWNER CAST]   Verdant Embrace → 3
+0:48  [STATE]   friends 1:99 2:87 3:77 / enemies 4:95 5:53 6:85
+0:48  [OWNER CAST]   Echo → 3
+0:49  [STATE]   friends 1:100 2:89 3:66 / enemies 4:100 5:76 6:95
+0:49  [OWNER CAST]   Merithra's Blessing → 3
+0:50  [STATE]   friends 1:100 2:98 3:88 / enemies 4:100 5:74 6:98
+0:51  [OWNER CAST]   Living Flame → 3
+0:51  [OWNER CAST]   Chrono Flames → 3
+0:51  [OWNER CAST]   Echo → 3
+0:53  [OWNER CAST]   Verdant Embrace → 3
+0:53  [OWNER CAST]   Verdant Embrace → 3
+0:54  [OWNER CD]   Deep Breath
+      [RES] rdy:Deep Breath,Emerald Communion,Stasis,Rescue,2:Lay on Hands,2:Blessing of Protection,2:Blessing of Spellwarding,2:Avenging Wrath,3:Aspect of the Turtle  cd:Cauterizing Flame(26s),Rewind(217s),2:Hammer of Justice(31s),3:Exhilaration(96s)  enemy:Bestial Wrath/Beast Mastery Hunter(9s)
+0:56  [BUFF FADED]   Deep Breath
+0:57  [OWNER CAST]   Echo → 3
+0:58  [OWNER CAST]   Merithra's Blessing → 3
+1:00  [CC ON TEAM]   1 ← Bull Rush (Drek-Sanguino-EU) | 2s | trinket: available
+1:00  [CC ON TEAM]   3 ← Bull Rush (Drek-Sanguino-EU) | 1s | trinket: ON CD (94s left)
+1:01  [STATE]   friends 1:100 2:100 3:84 / enemies 4:100 5:96 6:100
+1:01  [OWNER CAST]   Verdant Embrace → 3
+1:01  [OWNER CAST]   Verdant Embrace → 3
+1:02  [STATE]   friends 1:100 2:100 3:91 / enemies 4:100 5:93 6:100
+1:03  [STATE]   friends 1:93 2:100 3:56 / enemies 4:100 5:82 6:100
+1:03  [OWNER CAST]   Echo → 3
+1:04  [STATE]   friends 1:97 2:100 3:55 / enemies 4:100 5:85 6:100
+1:04  [OWNER CD]   Time Dilation → 3
+1:04  [OWNER CAST]   Merithra's Blessing → 3
+1:05  [STATE]   friends 1:100 2:100 3:83 / enemies 4:100 5:88 6:100
+1:05  [CC ON TEAM]   1 ← Sleep Walk (Reehztard-Ravencrest-EU) | 5s | trinket: available
+1:06  [STATE]   friends 1:100 2:100 3:84 / enemies 4:100 5:71 6:100
+1:07  [STATE]   friends 1:99 2:100 3:89 / enemies 4:100 5:66 6:100
+1:08  [STATE]   friends 1:99 2:100 3:88 / enemies 4:100 5:99 6:99
+1:09  [STATE]   friends 1:98 2:100 3:84 / enemies 4:100 5:83 6:100
+1:10  [STATE]   friends 1:97 2:100 3:82 / enemies 4:100 5:84 6:100
+1:11  [STATE]   friends 1:97 2:98 3:78 / enemies 4:100 5:95 6:100
+1:11  [OWNER CAST]   Echo → 3
+1:12  [STATE]   friends 1:96 2:97 3:76 / enemies 4:100 5:82 6:100
+1:12  [OWNER CD]   Hover
+1:13  [STATE]   friends 1:96 2:98 3:70 / enemies 4:100 5:82 6:100
+1:13  [OWNER CAST]   Dream Breath
+1:14  [STATE]   friends 1:100 2:98 3:81 / enemies 4:100 5:77 6:100
+1:14  [CC ON TEAM]   1 ← Strangulate (Hotcherryx-DunModr-EU) | 4s | trinket: available
+1:15  [STATE]   friends 1:100 2:98 3:88 / enemies 4:99 5:65 6:100
+1:15  [DMG SPIKE]   3 (Marksmanship Hunter): 0.72M in 10s [P95 Danger] [ROT] (87% -> 63% HP)
+1:15  [TEAMMATE CC]   2 (Retribution Paladin): Hammer of Justice
+1:16  [STATE]   friends 1:100 2:94 3:84 / enemies 4:100 5:72 6:100
+1:16  [ENEMY CD]   5 (Beast Mastery Hunter): Bestial Wrath [3/5]
+1:17  [STATE]   friends 1:100 2:92 3:70 / enemies 4:100 5:82 6:100
+1:17  [OWNER CAST]   Glide
+1:18  [STATE]   friends 1:100 2:87 3:49 / enemies 4:100 5:73 6:100
+1:18  [OWNER CAST]   Verdant Embrace → 3
+1:19  [STATE]   friends 1:100 2:93 3:30 / enemies 4:100 5:65 6:100
+1:19  [OWNER CAST]   Verdant Embrace → 3
+1:19  [OWNER CD]   Time Dilation → 3
+1:19  [CC ON TEAM]   2 ← Blinding Sleet (Hotcherryx-DunModr-EU) | 4s | trinket: ON CD (56s left)
+1:19  [CC ON TEAM]   3 ← Blinding Sleet (Hotcherryx-DunModr-EU) | 1s | trinket: ON CD (75s left)
+1:20  [STATE]   friends 1:91 2:90 3:32 / enemies 4:100 5:90 6:100
+1:20  [OWNER CD]   Cauterizing Flame → 3 (30% HP)
+      [RES] rdy:Δ-Deep Breath  cd:Deep Breath(95s)  enemy:Bestial Wrath/Beast Mastery Hunter(4s)  cc:2/Blinding Sleet-4s,3/Blinding Sleet-1s
+1:20  [CLEANSE]   1 dispelled 7 effects: Bloodshed off 3, Barbed Shot off 3, Bloodshed off 3, Bloodshed off 3, Virulent Plague off 3, Coil of Devastation off 3, Dread Plague off 3
+1:21  [STATE]   friends 1:97 2:89 3:39 / enemies 4:100 5:91 6:100
+1:21  [OWNER CAST]   Echo → 3
+1:22  [STATE]   friends 1:100 2:89 3:37 / enemies 4:100 5:100 6:100
+1:22  [OWNER CAST]   Merithra's Blessing → 3
+1:23  [STATE]   friends 1:100 2:98 3:65 / enemies 4:100 5:100 6:100
+1:24  [STATE]   friends 1:100 2:99 3:74 / enemies 4:100 5:91 6:100
+1:25  [STATE]   friends 1:100 2:98 3:66 / enemies 4:100 5:91 6:100
+1:25  [CC ON TEAM]   2 ← Freezing Trap (Drek-Sanguino-EU) | 4s | trinket: ON CD (50s left)
+1:25  [UNCLEANSED DEBUFF]   Freezing Trap on 2 | 4s | 21k taken during | dispel: Magic
+1:26  [STATE]   friends 1:93 2:93 3:64 / enemies 4:100 5:88 6:100
+1:26  [OWNER CAST]   Verdant Embrace → 3
+1:27  [STATE]   friends 1:98 2:93 3:73 / enemies 4:100 5:100 6:100
+1:27  [OWNER CAST]   Verdant Embrace → 3
+1:28  [STATE]   friends 1:99 3:83 / enemies 4:100 5:98 6:100
+1:28  [OWNER CAST]   Echo → 3
+1:28  [ENEMY CD]   4 (Preservation Evoker): Oppressing Roar
+1:28  [UNCLEANSED DEBUFF]   Oppressing Roar on 3 | 10s | 239k taken during | dispel: Magic
+1:28  [OWNER CD]   Stasis
+1:29  [STATE]   friends 1:98 2:93 3:81 / enemies 4:100 5:94 6:100
+1:29  [OWNER CAST]   Dream Breath
+1:30  [STATE]   friends 1:100 2:93 3:85 / enemies 4:100 5:84 6:100
+1:30  [CLEANSE]   2 dispelled 3 effects: Virulent Plague off 3, Dread Plague off 3, Coil of Devastation off 3
+1:30  [CLEANSE]   1 dispelled Oppressing Roar off 1
+1:30  [OWNER CAST]   Naturalize → self
+1:30  [OWNER CD]   Hover
+1:31  [STATE]   friends 1:100 2:88 3:88 / enemies 4:100 5:100 6:100
+1:31  [OWNER CD]   Obsidian Scales → self
+1:32  [STATE]   friends 1:100 2:86 3:80 / enemies 4:100 5:95 6:100
+1:32  [OWNER CC]   Sleep Walk → 4
+1:33  [STATE]   friends 1:100 2:83 3:74 / enemies 4:100 5:100
+1:34  [STATE]   friends 1:100 2:83 3:69 / enemies 4:100 5:97
+1:34  [OWNER CC]   Sleep Walk → 4
+1:35  [STATE]   friends 1:100 2:82 3:63 / enemies 4:100 5:94 6:100
+1:35  [OWNER CD]   Oppressing Roar
+1:36  [OWNER CAST]   Glide
+1:37  [OWNER CAST]   Verdant Embrace → 3
+1:38  [OWNER CAST]   Verdant Embrace → 3
+1:40  [TEAMMATE CD]   3 (Marksmanship Hunter): Exhilaration
+1:40  [OWNER CC]   Sleep Walk → 4
+1:40  [OWNER CAST]   Echo → 3
+1:41  [OWNER CAST]   Merithra's Blessing → 3
+1:42  [OWNER CD]   Tip the Scales
+1:42  [OWNER CAST]   Fire Breath
+1:43  [OWNER CAST]   Echo → 3
+1:44  [OWNER CAST]   Chrono Flames → 5
+1:44  [OWNER CAST]   Disintegrate → 5
+1:46  [OWNER CAST]   Verdant Embrace → 3
+1:46  [OWNER CAST]   Verdant Embrace → 3
+1:47  [OWNER CAST]   Echo → 3
+1:47  [ENEMY CD]   5 (Beast Mastery Hunter): Bestial Wrath [4/5]
+1:49  [STATE]   friends 1:100 2:100 3:86 / enemies 4:70 5:79 6:100
+1:49  [OWNER CAST]   Chrono Flames → 5
+1:50  [STATE]   friends 1:100 2:94 3:65 / enemies 4:69 5:55 6:98
+1:50  [OWNER CAST]   Merithra's Blessing → 3
+1:51  [STATE]   friends 1:100 2:99 3:94 / enemies 4:88 5:55 6:100
+1:51  [OWNER CAST]   Disintegrate → 5
+1:52  [STATE]   friends 1:100 2:99 3:99 / enemies 4:85 5:33 6:100
+1:52  [TEAMMATE CC]   2 (Retribution Paladin): Hammer of Justice
+1:52  [OWNER CAST]   Disintegrate → 5
+1:53  [STATE]   friends 1:100 2:99 3:92 / enemies 4:88 5:27 6:100
+1:53  [OWNER CAST]   Verdant Embrace → 3
+1:53  [DMG SPIKE]   3 (Marksmanship Hunter): 0.96M in 10s [P95 Danger] [ROT] (92% -> 61% HP)
+1:53  [OWNER CAST]   Verdant Embrace → 3
+1:54  [STATE]   friends 1:99 2:83 3:89 / enemies 4:99 5:36 6:100
+1:55  [STATE]   friends 1:100 2:85 3:80 / enemies 4:100 5:73 6:100
+1:55  [OWNER CAST]   Chrono Flames → 6
+1:55  [OWNER CAST]   Echo → 3
+1:56  [STATE]   friends 1:92 2:82 3:51 / enemies 4:100 5:96 6:92
+1:56  [OWNER CAST]   Dream Breath
+1:57  [STATE]   friends 1:100 2:100 3:70 / enemies 4:96 5:97 6:85
+1:57  [OWNER CAST]   Merithra's Blessing → 3
+1:58  [STATE]   friends 1:100 2:100 3:74 / enemies 4:98 5:99 6:66
+1:59  [OWNER CAST]   Echo → 3
+2:00  [OWNER CAST]   Reversion → 3 [completed before CC landed]
+2:01  [CC ON TEAM]   1 ← Strangulate (Hotcherryx-DunModr-EU) | 2s | trinket: available
+2:02  [STATE]   friends 1:92 2:74 3:37 / enemies 4:100 5:100 6:69
+2:02  [OWNER CAST]   Dream Breath
+2:02  [OWNER CAST]   Verdant Embrace → 3
+2:03  [STATE]   friends 1:100 2:90 3:43 / enemies 4:100 5:76 6:87
+2:03  [OWNER CD]   Emerald Communion
+2:04  [STATE]   friends 1:100 2:84 3:83 / enemies 4:99 5:80 6:91
+2:05  [STATE]   friends 1:100 2:81 3:94 / enemies 4:100 5:100 6:100
+2:05  [CC ON TEAM]   1 ← Freezing Trap (Drek-Sanguino-EU) | 4s | trinket: available
+2:06  [STATE]   friends 1:100 2:92 3:95 / enemies 4:97 5:100 6:95
+2:06  [BUFF FADED]   Emerald Communion
+2:06  [CLEANSE]   3 dispelled Grip of the Dead off 3
+2:07  [STATE]   friends 2:80 3:78 / enemies 4:99 5:99 6:97
+2:08  [STATE]   friends 1:100 2:80 3:75 / enemies 4:96 5:92 6:99
+2:09  [STATE]   friends 1:100 2:78 3:72 / enemies 4:98 5:91 6:99
+2:09  [CC ON TEAM]   1 ← Sleep Walk (Reehztard-Ravencrest-EU) | 2s | trinket: available
+2:10  [STATE]   friends 1:100 2:76 3:68 / enemies 4:97 5:96 6:100
+2:11  [STATE]   friends 1:94 2:68 3:58 / enemies 4:99 5:88 6:100
+2:11  [OWNER CAST]   Verdant Embrace → 3
+2:11  [OWNER CAST]   Verdant Embrace → 3 [completed before CC landed]
+2:12  [STATE]   friends 1:93 2:68 3:52 / enemies 4:100 5:85 6:100
+2:12  [OWNER CAST]   Echo → 3 [completed before CC landed]
+2:12  [CC ON TEAM]   1 ← Scorpid Venom (Drek-Sanguino-EU) | 3s | trinket: available
+2:12  [OWNER CD]   Time Dilation → 3
+2:13  [STATE]   friends 1:96 2:68 3:57 / enemies 4:100 5:93 6:100
+2:13  [OWNER CAST]   Merithra's Blessing → 3 [succeeded after CC arrived — within 1s in log]
+2:14  [STATE]   friends 1:100 2:76 3:69 / enemies 4:99 5:94 6:100
+2:14  [OWNER CAST]   Echo → 3
+2:14  [OWNER CD]   Hover
+2:15  [STATE]   friends 1:99 2:86 3:67 / enemies 4:100 5:99 6:100
+2:15  [CC ON TEAM]   1 ← Spider Venom (Drek-Sanguino-EU) | 2s | trinket: available
+2:16  [STATE]   friends 1:100 2:86 3:67 / enemies 4:100 5:91 6:100
+2:16  [OWNER CAST]   Merithra's Blessing → 3 [completed before CC landed]
+2:17  [STATE]   friends 1:100 2:94 3:76 / enemies 4:100 5:80 6:100
+2:17  [CC ON TEAM]   1 ← Sleep Walk (Reehztard-Ravencrest-EU) | 3s | trinket: available
+2:18  [STATE]   friends 1:100 2:100 3:80 / enemies 4:100 5:67 6:100
+2:19  [STATE]   friends 1:100 2:100 3:75 / enemies 4:99 5:53 6:94
+2:20  [STATE]   friends 1:100 2:100 3:71 / enemies 4:95 5:32 6:95
+2:21  [STATE]   friends 1:100 2:100 3:67 / enemies 4:98 5:44 6:95
+2:21  [OWNER CAST]   Echo → 3
+2:21  [OWNER CD]   Hover
+2:22  [STATE]   friends 1:100 2:100 3:68 / enemies 4:100 5:52 6:96
+2:22  [OWNER CAST]   Dream Breath
+2:22  [TEAMMATE CC]   2 (Retribution Paladin): Hammer of Justice
+2:23  [STATE]   friends 1:100 2:100 3:69 / enemies 4:98 5:42 6:96
+2:23  [OWNER CAST]   Glide
+2:24  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:59 6:100
+2:24  [ENEMY CD]   5 (Beast Mastery Hunter): Bestial Wrath [5/5]
+2:24  [OWNER CAST]   Echo → 3
+2:25  [STATE]   friends 1:100 2:100 3:77 / enemies 4:100 5:31 6:100
+2:25  [OWNER CAST]   Glide
+2:26  [STATE]   friends 1:100 2:95 3:54 / enemies 4:100 5:68 6:100
+2:26  [OWNER CAST]   Merithra's Blessing → 3
+2:27  [STATE]   friends 1:100 2:92 3:59 / enemies 4:100 5:46 6:100
+2:27  [OWNER CAST]   Verdant Embrace → 3
+2:27  [OWNER CAST]   Verdant Embrace → 3
+2:27  [TEAMMATE CD]   3 (Marksmanship Hunter): Aspect of the Turtle
+2:28  [CC ON TEAM]   2 ← Blinding Sleet (Hotcherryx-DunModr-EU) | 1s | trinket: used
+2:28  [OWNER CD]   Cauterizing Flame → 3 (55% HP)
+      [RES] rdy:Δ+Cauterizing Flame-Emerald Communion,Stasis,3:Aspect of the Turtle  cd:Emerald Communion(155s),Stasis(30s),3:Aspect of the Turtle(179s)  enemy:Bestial Wrath/Beast Mastery Hunter(4s)  cc:2/Blinding Sleet-1s
+2:28  [CLEANSE]   1 dispelled 8 effects: Barbed Shot off 3, Bloodshed off 3, Bloodshed off 3, Rend Flesh off 3, Bloodshed off 3, Ravenous Leap off 3, Dread Plague off 3, Virulent Plague off 3
+2:29  [STATE]   friends 1:100 2:100 3:54 / enemies 4:100 5:72 6:99
+2:29  [TRINKET]   2 used PvP trinket
+2:30  [STATE]   friends 1:98 2:99 3:55 / enemies 4:100 5:70 6:100
+2:30  [OWNER CAST]   Verdant Embrace → 3
+2:31  [STATE]   friends 1:99 2:96 3:60 / enemies 4:100 5:87 6:100
+2:31  [OWNER CAST]   Verdant Embrace → 3
+2:31  [CC ON TEAM]   2 ← Sleep Walk (Reehztard-Ravencrest-EU) | 1s | trinket: ON CD (119s left)
+2:32  [STATE]   friends 1:100 2:95 3:63 / enemies 4:100 5:100 6:100
+2:32  [OWNER CAST]   Naturalize → 2
+2:32  [CLEANSE]   1 dispelled 2 effects: Fire Breath off 2, Sleep Walk off 2
+2:33  [STATE]   friends 1:100 2:98 3:65 / enemies 4:100 5:100 6:100
+2:33  [OWNER CAST]   Echo → 3
+2:34  [STATE]   friends 1:100 2:100 3:69 / enemies 4:100 5:100 6:100
+2:35  [STATE]   friends 1:100 2:99 3:69 / enemies 4:100 5:100 6:100
+2:35  [OWNER CAST]   Time Spiral
+2:35  [OWNER CD]   Hover
+2:36  [STATE]   friends 1:100 2:99 3:72 / enemies 4:100 5:90 6:100
+2:37  [STATE]   friends 1:100 2:100 3:71 / enemies 4:100 5:82 6:100
+2:37  [ENEMY CD]   4 (Preservation Evoker): Deep Breath [2/2]
+2:37  [OWNER CC]   Sleep Walk → 4
+2:37  [OWNER CAST]   Reversion → 3
+2:38  [STATE]   friends 1:100 2:100 3:61 / enemies 4:100 5:85 6:100
+2:38  [OWNER CAST]   Glide
+2:38  [CC ON TEAM]   2 ← Terror of the Skies (Reehztard-Ravencrest-EU) | 3s | trinket: ON CD (111s left)
+2:39  [STATE]   friends 1:100 2:98 3:59 / enemies 4:100 5:68 6:100
+2:39  [OWNER CAST]   Echo → 3
+2:40  [STATE]   friends 1:99 2:93 3:60 / enemies 4:100 5:66 6:100
+2:40  [OWNER CAST]   Merithra's Blessing → 3
+2:41  [STATE]   friends 1:99 2:96 3:61 / enemies 4:100 5:68 6:100
+2:41  [OWNER CAST]   Echo → 3
+2:42  [STATE]   friends 1:100 2:100 3:70 / enemies 4:100 5:50 6:100
+2:42  [CLEANSE]   2 dispelled 4 effects: Undeath off 3, Dread Plague off 3, Coil of Devastation off 3, Virulent Plague off 3
+2:43  [STATE]   friends 1:100 2:99 3:77 / enemies 4:99 5:70 6:99
+2:43  [OWNER CAST]   Dream Breath
+2:44  [STATE]   friends 1:100 2:94 3:80 / enemies 4:100 5:56 6:96
+2:45  [STATE]   friends 1:100 2:100 3:88 / enemies 4:100 5:79 6:94
+2:45  [OWNER CC]   Sleep Walk → 4
+2:45  [OWNER CAST]   Echo → 3
+2:45  [OWNER CAST]   Glide
+2:46  [STATE]   friends 1:100 2:94 3:82 / enemies 4:100 5:77 6:94
+2:46  [OWNER CAST]   Merithra's Blessing → 3
+2:46  [OWNER CD]   Hover
+2:47  [STATE]   friends 1:99 2:94 3:97 / enemies 4:100 5:65 6:93
+2:48  [STATE]   friends 1:100 2:100 3:99 / enemies 4:100 5:67 6:93
+2:48  [OWNER CAST]   Chrono Flames → High Inquisitor Whitemane [totem/pet] [completed before CC landed]
+2:48  [CC ON TEAM]   1 ← Strangulate (Hotcherryx-DunModr-EU) | 4s | trinket: available
+2:49  [STATE]   friends 1:100 2:100 3:98 / enemies 4:100 5:68 6:92
+2:50  [STATE]   friends 1:100 2:99 3:97 / enemies 4:100 5:66 6:92
+2:51  [STATE]   friends 1:100 2:98 3:95 / enemies 4:100 5:59 6:92
+2:52  [STATE]   friends 1:99 2:98 3:94 / enemies 4:100 5:58 6:92
+2:52  [OWNER CAST]   Echo → 3
+2:53  [STATE]   friends 1:100 2:97 3:94 / enemies 4:100 5:54
+2:53  [OWNER CAST]   Fire Breath
+2:54  [STATE]   friends 1:99 2:97 3:95 / enemies 4:100 5:49
+2:54  [TEAMMATE CC]   2 (Retribution Paladin): Hammer of Justice
+2:55  [STATE]   friends 1:100 2:98 3:92 / enemies 4:100 5:37
+2:56  [STATE]   friends 1:99 2:99 3:90 / enemies 4:97 5:30 6:92
+2:57  [STATE]   friends 1:99 2:99 3:89 / enemies 4:100 5:29 6:92
+2:57  [CC ON TEAM]   1 ← Freezing Trap (Drek-Sanguino-EU) | 4s | trinket: available
+2:58  [STATE]   friends 1:99 2:100 3:88 / enemies 4:100 5:54 6:97
+2:58  [CC ON TEAM]   2 ← Binding Shot (Drek-Sanguino-EU) | 3s | trinket: ON CD (92s left)
+2:58  [UNCLEANSED DEBUFF]   Binding Shot on 2 | 3s | 0k taken during | dispel: Magic
+2:59  [STATE]   friends 2:100 3:89 / enemies 4:100 5:82 6:100
+3:00  [STATE]   friends 2:100 3:90 / enemies 4:99 5:87 6:99
+3:01  [STATE]   friends 1:100 2:100 3:87 / enemies 4:99 5:86 6:100
+3:01  [OWNER CAST]   Verdant Embrace → 3
+3:01  [OWNER CAST]   Verdant Embrace → 3
+3:02  [STATE]   friends 1:100 2:100 3:93 / enemies 4:96 5:67 6:98
+3:02  [OWNER CAST]   Echo → 3
+3:02  [CLEANSE]   3 dispelled Grip of the Dead off 3
+3:03  [STATE]   friends 1:100 2:100 3:89 / enemies 4:88 5:40 6:92
+3:03  [CC ON TEAM]   3 ← Binding Shot (Drek-Sanguino-EU) | 1s | trinket: used
+3:03  [OWNER CD]   Stasis
+      [RES] rdy:Δ+Deep Breath,Stasis,3:Exhilaration  cd:—  cc:3/Binding Shot-0s[stun][trinketed]
+3:03  [TRINKET]   3 used PvP trinket
+3:03  [OWNER CD]   Obsidian Scales → 3
+3:04  [STATE]   friends 1:100 2:100 3:86 / enemies 4:91 5:37 6:92
+3:04  [OWNER CAST]   Dream Breath
+3:05  [STATE]   friends 1:100 2:100 3:98 / enemies 4:92 5:dead 6:92
+3:05  [DEATH]  5 (Beast Mastery Hunter — enemy)
+3:05  [ROSTER]  enemy 5 removed (dead)
+3:06  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:dead 6:100
+3:07  [STATE]   friends 1:100 2:99 3:97 / enemies 4:100 5:dead 6:100
+3:07  [OWNER CC]   Sleep Walk → 4
+      [RES] rdy:Δ+2:Hammer of Justice-Stasis  cd:Stasis(86s)
+3:08  [STATE]   friends 1:100 2:99 3:99 / enemies 4:100 5:dead 6:84
+3:08  [OWNER CAST]   Verdant Embrace → 3
+3:09  [STATE]   friends 1:100 2:99 3:95 / enemies 4:100 5:dead 6:77
+3:09  [OWNER CAST]   Verdant Embrace → 3
+3:10  [STATE]   friends 1:100 2:98 3:99 / enemies 4:100 5:dead 6:72
+3:10  [OWNER CAST]   Disintegrate → 6
+3:11  [STATE]   friends 1:100 2:96 3:97 / enemies 4:100 5:dead 6:41
+3:12  [STATE]   friends 1:100 2:94 3:97 / enemies 4:100 5:dead 6:29
+3:12  [OWNER CAST]   Disintegrate → 6
+3:13  [STATE]   friends 1:100 2:93 3:93 / enemies 4:100 5:dead 6:21
+3:13  [OWNER CAST]   Merithra's Blessing → 3
+3:14  [STATE]   friends 1:100 2:92 3:98 / enemies 4:100 5:dead 6:dead
+3:14  [DEATH]  6 (Unholy Death Knight — enemy)
+3:14  [ROSTER]  enemy 6 removed (dead)
+3:18  [OWNER CAST]   Chrono Flames → 4
+3:18  [OWNER CAST]   Disintegrate → 4
+3:19  [OWNER CD]   Tip the Scales
+3:19  [OWNER CAST]   Fire Breath
+
+3:19  [MATCH END]   damp: 12%
+  friends 1:100% 2:99% 3:99% / enemies 6:dead(3:14) 4:41% 5:dead(3:05)

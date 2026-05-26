@@ -1,0 +1,341 @@
+[MATCH TYPE: deep_dampening_siege]
+**Opponents:** Enemies make 5-6 coordinated burst attempts across a 5+ minute round. CC pressure is constant between pushes to drain resources. Each push gets harder as dampening increases.
+
+**Your role:** Ration major cooldowns across the entire round. Using two on an early push leaves you exposed on the fifth.
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Marksmanship Hunter | Bracket: 3v3 | Result: Loss | Duration: 5:42
+  My team: Marksmanship Hunter, Preservation Evoker, Enhancement Shaman
+  Enemy team: Devourer Demon Hunter, Retribution Paladin, Restoration Shaman
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Marksmanship Hunter): CANNOT offensive purge
+  Team purgers: Enhancement Shaman
+
+DAMPENING (3v3): started at 10%, ended at 27% at match end
+  Note: Reached 27% dampening — healing was meaningfully impaired in the late game.
+
+## CC Chains
+  Devourer Demon Hunter (Axelx-Tichondrius-US): 8 CC — 8× Stun | 2 reduced, 0 immune
+  Retribution Paladin (Hydar-Tichondrius-US): 12 CC — 8× Stun, 4× Disorient | 2 reduced, 0 immune
+  Restoration Shaman (Speedxcherry-Tichondrius-US): 38 CC — 8× Stun, 10× Disorient, 11× Incapacitate, 9× Unknown | 7 reduced, 0 immune
+
+## Enemy Cooldown Timeline
+  No enemy offensive cooldown data found.
+
+## Kill Attempt Windows
+  None detected (no aligned enemy burst windows).
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Sax-Kil'jaeden-US (Marksmanship Hunter — log owner):
+    Exhilaration [120s, 2 Charges], Aspect of the Turtle [180s, 2 Charges]
+  2: Proximity-BleedingHollow-US (Preservation Evoker):
+    Deep Breath [120s], Tail Swipe [180s], Cauterizing Flame [60s], Rewind [240s], Emerald Communion [180s, 2 Charges], Stasis [90s], Rescue [60s]
+  3: ßloodlust-Kargath-US (Enhancement Shaman):
+    Hex [30s, 2 Charges], Ascendance (Enhancement) [180s, 2 Charges], Spirit Walk [60s]
+  4: Axelx-Tichondrius-US (Devourer Demon Hunter — enemy):
+    none tracked
+  5: Hydar-Tichondrius-US (Retribution Paladin — enemy):
+    none tracked
+  6: Speedxcherry-Tichondrius-US (Restoration Shaman — enemy):
+    none tracked
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:11  [CLEANSE]   2 dispelled 2 effects: Earthbind off 2, Earthgrab off 2
+0:17  [TEAMMATE CD]   3 (Enhancement Shaman): Ascendance (Enhancement)
+0:18  [TEAMMATE CD]   3 (Enhancement Shaman): Spirit Walk
+0:18  [CC ON TEAM]   2 ← Hammer of Justice (Hydar-Tichondrius-US) | 5s | trinket: available
+0:19  [STATE]   friends 1:85 2:100 3:82 / enemies 4:96 5:100 6:100
+0:20  [STATE]   friends 1:85 2:100 3:82 / enemies 4:77 5:100
+0:21  [STATE]   friends 1:85 2:100 3:83 / enemies 4:56 5:100
+0:22  [STATE]   friends 1:85 2:99 3:82 / enemies 4:56 5:100 6:100
+0:23  [STATE]   friends 1:85 2:99 3:81 / enemies 4:82 5:100 6:100
+0:24  [STATE]   friends 1:78 2:99 3:73 / enemies 4:72 5:100 6:100
+0:25  [STATE]   friends 1:78 2:94 3:67 / enemies 4:77 5:100 6:100
+0:26  [STATE]   friends 1:84 2:98 3:75 / enemies 4:84 5:98 6:100
+0:27  [STATE]   friends 1:95 2:100 3:72 / enemies 4:86 5:90 6:98
+0:28  [STATE]   friends 1:97 2:100 3:76 / enemies 4:81 5:100 6:100
+0:30  [CC ON TEAM]   3 ← Hex (Speedxcherry-Tichondrius-US) | 1s | trinket: available
+0:31  [STATE]   friends 1:100 2:96 3:88 / enemies 4:73 5:95 6:100
+0:31  [CLEANSE]   2 dispelled 3 effects: Truth's Wake off 3, Expurgation off 3, Judgment of Justice off 3
+0:32  [STATE]   friends 1:100 2:100 3:87 / enemies 4:60 5:91 6:100
+0:33  [STATE]   friends 1:100 2:100 3:99 / enemies 4:62 5:93 6:100
+0:34  [STATE]   friends 1:100 2:100 3:100 / enemies 4:59 5:93 6:100
+0:35  [STATE]   friends 1:83 2:100 3:93 / enemies 4:57 5:94 6:100
+0:36  [STATE]   friends 1:79 2:100 3:93 / enemies 4:53 5:94 6:100
+0:37  [STATE]   friends 1:81 2:100 3:90 / enemies 4:52 5:94 6:100
+0:37  [TEAMMATE CD]   2 (Preservation Evoker): Deep Breath
+0:38  [STATE]   friends 1:81 2:97 3:85 / enemies 4:55 5:100 6:100
+0:39  [STATE]   friends 1:62 2:97 3:78 / enemies 4:60 5:100 6:100
+0:40  [STATE]   friends 1:55 2:90 3:74 / enemies 4:67 5:94 6:100
+0:40  [TEAMMATE CC]   3 (Enhancement Shaman): Hex
+0:42  [CLEANSE]   1 dispelled Wave of Debilitation off 1
+0:49  [CC ON TEAM]   2 ← Hammer of Justice (Hydar-Tichondrius-US) | 1s | trinket: used
+0:50  [STATE]   friends 1:100 2:100 3:41 / enemies 4:87 5:100 6:100
+0:50  [TRINKET]   2 used PvP trinket
+0:51  [STATE]   friends 1:100 2:98 3:37 / enemies 4:86 5:96 6:100
+0:52  [STATE]   friends 1:98 2:99 3:39 / enemies 4:60 5:73 6:100
+0:53  [STATE]   friends 1:95 2:99 3:36 / enemies 4:61 5:73 6:100
+0:54  [STATE]   friends 1:83 2:100 3:36 / enemies 4:52 5:76 6:100
+0:55  [STATE]   friends 1:67 2:100 3:35 / enemies 4:40 5:78 6:100
+0:55  [DMG SPIKE]   1 (Marksmanship Hunter): 0.83M in 10s [P95 Danger] [BURST] (66% -> 87% HP)
+0:56  [STATE]   friends 1:43 2:100 3:42 / enemies 4:34 5:80 6:100
+0:57  [STATE]   friends 1:37 2:88 3:42 / enemies 4:41 5:81 6:100
+0:58  [STATE]   friends 1:46 2:94 3:45 / enemies 4:38 5:84 6:100
+0:59  [STATE]   friends 1:45 2:88 3:46 / enemies 4:21 5:56 6:100
+0:59  [TRINKET]   1 used PvP trinket
+1:00  [STATE]   friends 1:53 2:91 3:49 / enemies 4:95 5:56
+1:01  [TEAMMATE CD]   2 (Preservation Evoker): Rewind
+1:07  [CC ON TEAM]   1 ← Blinding Light (Hydar-Tichondrius-US) | 1s | trinket: ON CD (112s left)
+1:07  [CC ON TEAM]   2 ← Blinding Light (Hydar-Tichondrius-US) | 1s | trinket: ON CD (73s left)
+1:07  [CC ON TEAM]   3 ← Blinding Light (Hydar-Tichondrius-US) | 1s | trinket: available
+1:08  [STATE]   friends 1:91 2:100 3:100 / enemies 4:100 5:68 6:99
+1:09  [STATE]   friends 1:90 2:97 3:98 / enemies 4:100 5:69 6:99
+1:10  [STATE]   friends 1:82 2:92 3:93 / enemies 4:100 5:83 6:100
+1:11  [STATE]   friends 1:70 2:88 3:89 / enemies 4:85 5:84 6:94
+1:12  [STATE]   friends 1:58 2:86 3:87 / enemies 4:88 5:86 6:95
+1:13  [STATE]   friends 1:54 2:86 3:87 / enemies 4:71 5:87 6:91
+1:14  [STATE]   friends 1:69 2:87 3:86 / enemies 4:71 5:87 6:93
+1:15  [STATE]   friends 1:78 2:90 3:87 / enemies 4:51 5:83 6:81
+1:16  [STATE]   friends 1:77 2:94 3:90 / enemies 4:44 5:81 6:71
+1:16  [TEAMMATE CD]   2 (Preservation Evoker): Cauterizing Flame
+1:17  [STATE]   friends 1:77 2:97 3:89 / enemies 4:50 5:87 6:82
+1:20  [CC ON TEAM]   2 ← Hammer of Justice (Hydar-Tichondrius-US) | 2s | trinket: ON CD (60s left)
+1:21  [STATE]   friends 1:68 2:100 3:81 / enemies 4:50 5:55 6:54
+1:22  [STATE]   friends 1:68 2:100 3:81 / enemies 4:49 5:58 6:63
+1:23  [STATE]   friends 1:68 2:99 3:80 / enemies 4:57 5:60 6:60
+1:24  [STATE]   friends 1:61 2:99 3:78 / enemies 4:47 5:61 6:61
+1:25  [STATE]   friends 1:52 2:99 3:71 / enemies 4:89 5:62 6:76
+1:26  [STATE]   friends 1:43 2:99 3:70 / enemies 4:88 5:63 6:77
+1:27  [STATE]   friends 1:54 2:100 3:78 / enemies 4:79 5:66 6:79
+1:28  [STATE]   friends 1:65 2:97 3:76 / enemies 4:84 5:67 6:79
+1:29  [STATE]   friends 1:75 2:100 3:77 / enemies 4:91 5:67 6:79
+1:30  [STATE]   friends 1:76 2:100 3:79 / enemies 4:90 5:69 6:81
+1:30  [CLEANSE]   3 dispelled Judgment of Justice off 3
+1:36  [STATE]   friends 1:92 2:98 3:82 / enemies 4:60 5:60 6:86
+1:37  [STATE]   friends 1:95 2:96 3:73 / enemies 4:72 5:59 6:86
+1:38  [STATE]   friends 1:85 2:93 3:71 / enemies 4:73 5:61 6:86
+1:39  [STATE]   friends 1:83 2:93 3:71 / enemies 4:68 5:60 6:86
+1:40  [STATE]   friends 1:82 2:93 3:72 / enemies 4:60 5:58 6:100
+1:40  [DMG SPIKE]   1 (Marksmanship Hunter): 0.87M in 10s [P95 Danger] [BURST] (76% -> 65% HP)
+1:41  [STATE]   friends 1:76 2:94 3:72 / enemies 4:65 5:78 6:100
+1:41  [TEAMMATE CD]   2 (Preservation Evoker): Emerald Communion
+1:42  [STATE]   friends 1:67 2:87 3:58 / enemies 4:79 5:80 6:100
+1:43  [STATE]   friends 1:43 2:100 3:45 / enemies 4:84 5:88 6:100
+1:43  [OWNER CD]   Exhilaration
+      [RES] rdy:Exhilaration,Aspect of the Turtle,2:Tail Swipe,2:Stasis,2:Rescue,3:Hex,3:Spirit Walk  cd:2:Deep Breath(54s),2:Cauterizing Flame(33s),2:Rewind(198s),2:Emerald Communion(178s),3:Ascendance (Enhancement)(94s)
+1:44  [STATE]   friends 1:87 2:100 3:68 / enemies 4:100 5:93 6:100
+1:44  [CLEANSE]   1 dispelled 4 effects: The Hunt off 1, Judgment of Justice off 1, Consecration off 1, Wave of Debilitation off 1
+1:45  [STATE]   friends 1:86 2:100 3:76 / enemies 4:100 5:98 6:100
+1:47  [TEAMMATE CD]   2 (Preservation Evoker): Stasis
+1:50  [CC ON TEAM]   2 ← Hammer of Justice (Hydar-Tichondrius-US) | 3s | trinket: ON CD (30s left)
+1:51  [STATE]   friends 1:79 2:100 3:66 / enemies 4:91 5:97 6:100
+1:52  [STATE]   friends 1:84 2:100 3:64 / enemies 4:82 5:95 6:93
+1:53  [STATE]   friends 1:81 2:100 3:63 / enemies 4:69 5:88 6:96
+1:53  [CC ON TEAM]   2 ← Imprison (Axelx-Tichondrius-US) | 3s | trinket: ON CD (28s left)
+1:54  [STATE]   friends 1:77 2:100 3:62 / enemies 4:63 5:91 6:98
+1:55  [STATE]   friends 1:46 2:100 3:63 / enemies 4:71 5:91 6:100
+1:56  [STATE]   friends 1:37 2:100 3:63 / enemies 4:76 5:93 6:100
+1:57  [STATE]   friends 1:36 2:100 3:64 / enemies 4:67 5:95 6:100
+1:58  [STATE]   friends 1:51 2:100 3:64 / enemies 4:69 5:98 6:100
+1:59  [STATE]   friends 1:49 2:100 3:52 / enemies 4:72 5:100 6:100
+1:59  [TEAMMATE CD]   2 (Preservation Evoker): Rescue
+1:59  [CLEANSE]   2 dispelled 4 effects: Consecration off 2, Judgment of Justice off 2, Judgment of Justice off 1, Consecration off 1
+2:00  [STATE]   friends 1:45 2:100 3:52 / enemies 4:100 5:100 6:100
+2:01  [STATE]   friends 1:43 2:100 3:54 / enemies 4:99 5:100 6:100
+2:02  [STATE]   friends 1:37 2:98 3:55 / enemies 4:75 5:94 6:100
+2:03  [STATE]   friends 1:35 2:99 3:55 / enemies 4:72 5:92 6:100
+2:18  [TEAMMATE CC]   3 (Enhancement Shaman): Hex
+2:23  [CC ON TEAM]   2 ← Hammer of Justice (Hydar-Tichondrius-US) | 5s | trinket: available
+2:24  [STATE]   friends 1:88 2:97 3:97 / enemies 4:100 5:97 6:100
+2:25  [STATE]   friends 1:82 2:94 3:96 / enemies 4:93 5:100 6:100
+2:26  [STATE]   friends 1:64 2:94 3:96 / enemies 4:91 5:99 6:100
+2:26  [TEAMMATE CD]   3 (Enhancement Shaman): Ascendance (Enhancement)
+2:27  [STATE]   friends 1:50 2:91 3:96 / enemies 4:80 5:100 6:98
+2:28  [STATE]   friends 1:43 2:91 3:97 / enemies 4:78 5:100 6:100
+2:29  [STATE]   friends 1:46 2:90 3:98 / enemies 4:66 5:100 6:100
+2:29  [TEAMMATE CD]   3 (Enhancement Shaman): Spirit Walk
+2:29  [CLEANSE]   1 dispelled Consecration off 1
+2:30  [STATE]   friends 1:71 2:85 3:90 / enemies 4:64 5:92 6:100
+2:31  [STATE]   friends 1:75 2:89 3:89 / enemies 4:63 5:88 6:100
+2:32  [STATE]   friends 1:89 2:100 3:92 / enemies 4:71 5:100 6:100
+2:32  [TRINKET]   3 used PvP trinket
+2:33  [STATE]   friends 1:82 2:100 3:95 / enemies 4:78 5:100 6:100
+2:38  [TEAMMATE CD]   2 (Preservation Evoker): Deep Breath
+2:49  [OWNER CD]   Exhilaration
+      [RES] rdy:Δ+2:Cauterizing Flame-Exhilaration,2:Stasis,2:Rescue,3:Spirit Walk  cd:Exhilaration(54s),2:Stasis(28s),2:Rescue(10s),3:Spirit Walk(40s)
+2:52  [CC ON TEAM]   2 ← Blinding Light (Hydar-Tichondrius-US) | 4s | trinket: available
+2:53  [STATE]   friends 1:90 2:100 3:79 / enemies 4:95 5:92 6:92
+2:54  [STATE]   friends 1:89 2:100 3:77 / enemies 4:100 5:93 6:93
+2:55  [STATE]   friends 1:72 2:100 3:77 / enemies 4:100 5:93 6:93
+2:56  [STATE]   friends 1:67 2:100 3:71 / enemies 4:100 5:95 6:91
+2:56  [TEAMMATE CC]   3 (Enhancement Shaman): Hex
+2:57  [STATE]   friends 1:59 2:100 3:70 / enemies 4:100 5:98 6:92
+2:58  [STATE]   friends 1:53 2:100 3:67 / enemies 4:100 5:98 6:93
+2:59  [STATE]   friends 1:58 2:99 3:91 / enemies 4:100 5:100 6:94
+3:00  [STATE]   friends 1:61 2:100 3:95 / enemies 4:100 5:100 6:94
+3:01  [STATE]   friends 1:60 2:100 3:96 / enemies 4:100 5:99
+3:02  [STATE]   friends 1:50 2:100 3:94 / enemies 4:100 5:94 6:95
+3:03  [TEAMMATE CD]   2 (Preservation Evoker): Tail Swipe
+3:05  [CC ON TEAM]   2 ← Hammer of Justice (Hydar-Tichondrius-US) | 1s | trinket: used
+3:06  [STATE]   friends 1:18 2:100 3:94 / enemies 4:100 5:87 6:98
+3:06  [TRINKET]   2 used PvP trinket
+3:07  [STATE]   friends 1:16 2:100 3:98 / enemies 4:91 5:94 6:94
+3:07  [OWNER CD]   Aspect of the Turtle
+3:08  [STATE]   friends 1:49 2:100 3:98 / enemies 4:80 5:91 6:93
+3:09  [STATE]   friends 1:56 2:99 3:96 / enemies 4:78 5:90 6:94
+3:10  [STATE]   friends 1:60 2:100 3:86 / enemies 4:72 5:90 6:95
+3:10  [BUFF FADED]   Aspect of the Turtle
+3:11  [STATE]   friends 1:58 2:100 3:85 / enemies 4:72 5:93 6:98
+3:12  [STATE]   friends 1:59 2:100 3:74 / enemies 4:67 5:93 6:99
+3:13  [STATE]   friends 1:58 2:99 3:61 / enemies 4:66 5:95 6:100
+3:14  [STATE]   friends 1:59 2:99 3:57 / enemies 4:65 5:94 6:100
+3:15  [STATE]   friends 1:69 2:99 3:68 / enemies 4:71 5:95 6:99
+3:16  [TEAMMATE CD]   2 (Preservation Evoker): Cauterizing Flame
+3:18  [TEAMMATE CD]   2 (Preservation Evoker): Stasis
+3:21  [CLEANSE]   3 dispelled Consecration off 1
+3:21  [CLEANSE]   3 dispelled Earthbind off 3
+3:22  [CLEANSE]   3 dispelled 3 effects: Consecration off 2, Judgment of Justice off 2, Earthbind off 2
+3:23  [CLEANSE]   2 dispelled Void Nova off 1
+3:29  [TEAMMATE CC]   3 (Enhancement Shaman): Hex
+3:31  [CLEANSE]   3 dispelled Earthbind off 2
+3:36  [CLEANSE]   3 dispelled Consecration off 2
+3:48  [CLEANSE]   1 dispelled 2 effects: Judgment of Justice off 1, Consecration off 1
+3:54  [TEAMMATE CC]   3 (Enhancement Shaman): Hex
+3:57  [STATE]   friends 1:82 2:100 3:98 / enemies 4:88 5:92 6:100
+3:58  [STATE]   friends 1:83 2:100 3:99 / enemies 4:83 5:90 6:100
+3:59  [STATE]   friends 1:63 2:100 3:81 / enemies 4:85 5:95 6:100
+4:00  [STATE]   friends 1:59 2:100 3:77 / enemies 4:88 5:95 6:100
+4:01  [STATE]   friends 1:70 2:99 3:75 / enemies 4:89 5:94 6:100
+4:01  [DMG SPIKE]   1 (Marksmanship Hunter): 0.78M in 10s [P95 Danger] [BURST] (70% -> 48% HP)
+4:02  [STATE]   friends 1:51 2:99 3:73 / enemies 4:94 5:95 6:100
+4:03  [STATE]   friends 1:40 2:99 3:72 / enemies 4:98 5:96 6:100
+4:03  [CC ON TEAM]   2 ← Imprison (Axelx-Tichondrius-US) | 3s | trinket: ON CD (34s left)
+4:04  [STATE]   friends 1:43 2:100 3:72 / enemies 4:75 5:91 6:100
+4:05  [STATE]   friends 1:47 2:100 3:71 / enemies 4:71 5:92 6:100
+4:06  [STATE]   friends 1:50 2:100 3:72 / enemies 4:65 5:92 6:100
+4:07  [STATE]   friends 1:61 2:100 3:65 / enemies 4:55 5:93 6:93
+4:08  [STATE]   friends 1:59 2:100 3:63 / enemies 4:40 5:95 6:93
+4:09  [STATE]   friends 1:50 2:100 3:64 / enemies 4:43 5:95 6:95
+4:10  [STATE]   friends 1:59 2:100 3:63 / enemies 4:80 5:90 6:95
+4:10  [CLEANSE]   1 dispelled 2 effects: Consecration off 1, Judgment of Justice off 1
+4:11  [STATE]   friends 1:48 2:99 3:58 / enemies 4:79 5:88 6:96
+4:12  [STATE]   friends 1:47 2:100 3:63 / enemies 4:93 5:100 6:100
+4:12  [CC ON TEAM]   2 ← Hammer of Justice (Hydar-Tichondrius-US) | 5s | trinket: ON CD (24s left)
+4:13  [STATE]   friends 1:63 2:100 3:77 / enemies 4:87 5:100 6:100
+4:13  [TRINKET]   1 used PvP trinket
+4:14  [STATE]   friends 1:59 2:100 3:75 / enemies 4:88 5:100 6:100
+4:15  [STATE]   friends 1:51 2:98 3:74 / enemies 4:91 5:100 6:100
+4:16  [STATE]   friends 1:46 2:97 3:75 / enemies 4:93 5:100 6:100
+4:17  [STATE]   friends 1:31 2:95 3:75 / enemies 4:94 5:100 6:100
+4:18  [STATE]   friends 1:24 2:93 3:73 / enemies 4:98 5:100 6:100
+4:19  [STATE]   friends 1:21 2:93 3:74 / enemies 4:100 5:100 6:100
+4:19  [OWNER CD]   Exhilaration
+      [RES] rdy:Δ+Exhilaration,2:Rescue,3:Ascendance (Enhancement),3:Spirit Walk-Aspect of the Turtle,2:Tail Swipe  cd:Aspect of the Turtle(108s),2:Tail Swipe(104s)
+4:20  [STATE]   friends 1:44 2:96 3:75 / enemies 4:96 5:96 6:100
+4:21  [STATE]   friends 1:53 2:99 3:77 / enemies 4:83 5:94 6:100
+4:21  [TEAMMATE CC]   3 (Enhancement Shaman): Hex
+4:22  [STATE]   friends 1:56 2:100 3:77 / enemies 4:87 5:95 6:100
+4:24  [CLEANSE]   3 dispelled Consecration off 3
+4:27  [STATE]   friends 1:38 2:100 3:76 / enemies 4:98 5:99 6:100
+4:28  [STATE]   friends 1:50 2:100 3:80 / enemies 4:100 5:91 6:76
+4:29  [STATE]   friends 1:51 2:98 3:77 / enemies 4:96 5:84 6:70
+4:29  [TEAMMATE CD]   3 (Enhancement Shaman): Spirit Walk
+4:30  [STATE]   friends 1:50 2:92 3:75 / enemies 4:99 5:75 6:66
+4:30  [CC ON TEAM]   1 ← Blinding Light (Hydar-Tichondrius-US) | 1s | trinket: ON CD (103s left)
+4:30  [CC ON TEAM]   2 ← Blinding Light (Hydar-Tichondrius-US) | 2s | trinket: ON CD (6s left)
+4:30  [TEAMMATE CD]   3 (Enhancement Shaman): Ascendance (Enhancement)
+4:31  [STATE]   friends 1:47 2:90 3:75 / enemies 4:100 5:78 6:69
+4:31  [DMG SPIKE]   1 (Marksmanship Hunter): 0.85M in 10s [P95 Danger] [BURST] (44% -> 79% HP)
+4:32  [STATE]   friends 1:44 2:88 3:76 / enemies 4:100 5:81 6:70
+4:33  [STATE]   friends 1:26 2:89 3:76 / enemies 4:100 5:91 6:72
+4:34  [STATE]   friends 1:27 2:100 3:76 / enemies 4:98 5:90 6:55
+4:34  [TEAMMATE CD]   2 (Preservation Evoker): Emerald Communion
+4:35  [STATE]   friends 1:74 2:100 3:76 / enemies 4:98 5:99 6:54
+4:36  [STATE]   friends 1:100 2:98 3:77 / enemies 4:100 5:100 6:56
+4:37  [STATE]   friends 1:100 2:100 3:87 / enemies 4:100 5:100 6:58
+4:38  [STATE]   friends 1:99 2:100 3:100 / enemies 4:100 5:100 6:66
+4:39  [STATE]   friends 1:78 2:100 3:100 / enemies 4:100 5:100 6:63
+4:40  [STATE]   friends 1:65 2:100 3:100 / enemies 4:98 5:100 6:85
+4:45  [CC ON TEAM]   2 ← Hammer of Justice (Hydar-Tichondrius-US) | 1s | trinket: used
+4:46  [STATE]   friends 1:69 2:100 3:95 / enemies 4:65 5:100 6:100
+4:46  [TRINKET]   2 used PvP trinket
+4:47  [STATE]   friends 1:68 2:100 3:90 / enemies 4:54 5:99 6:100
+4:48  [STATE]   friends 1:61 2:100 3:87 / enemies 4:48 5:99 6:100
+4:49  [STATE]   friends 1:63 2:100 3:88 / enemies 4:43 5:100 6:100
+4:49  [TEAMMATE CD]   2 (Preservation Evoker): Stasis
+4:50  [STATE]   friends 1:64 2:100 3:86 / enemies 4:46 5:100 6:100
+4:51  [STATE]   friends 1:88 2:100 3:94 / enemies 4:60 5:100 6:100
+4:52  [STATE]   friends 1:100 2:100 3:95 / enemies 4:64 5:100 6:100
+4:53  [STATE]   friends 1:100 2:100 3:95 / enemies 4:66 5:99 6:100
+4:54  [STATE]   friends 1:99 2:100 3:95 / enemies 4:68 5:100 6:100
+4:55  [STATE]   friends 1:83 2:100 3:96 / enemies 4:79 5:81 6:100
+4:57  [CC ON TEAM]   3 ← Hex (Speedxcherry-Tichondrius-US) | 1s | trinket: used
+4:57  [TRINKET]   3 used PvP trinket
+4:58  [STATE]   friends 1:64 2:100 3:97 / enemies 4:65 5:73 6:100
+4:59  [STATE]   friends 1:75 2:100 3:97 / enemies 4:69 5:78 6:100
+5:00  [STATE]   friends 1:77 2:100 3:99 / enemies 4:70 5:79 6:97
+5:01  [STATE]   friends 1:77 2:100 3:98 / enemies 4:64 5:76 6:99
+5:01  [CLEANSE]   1 dispelled Judgment of Justice off 1
+5:02  [STATE]   friends 1:70 2:97 3:97 / enemies 4:67 5:75 6:100
+5:02  [TEAMMATE CD]   2 (Preservation Evoker): Deep Breath
+5:03  [STATE]   friends 1:68 2:94 3:96 / enemies 4:68 5:73 6:100
+5:03  [TEAMMATE CC]   3 (Enhancement Shaman): Hex
+5:04  [STATE]   friends 1:70 2:97 3:95 / enemies 4:63 5:66 6:100
+5:05  [STATE]   friends 1:77 2:100 3:99 / enemies 4:53 5:61 6:100
+5:06  [STATE]   friends 1:78 2:100 3:100 / enemies 4:55 5:62 6:100
+5:07  [STATE]   friends 1:82 2:100 3:100 / enemies 4:56 5:63 6:98
+5:08  [STATE]   friends 1:81 2:100 3:100 / enemies 4:59 5:67 6:98
+5:09  [STATE]   friends 1:85 2:100 3:100 / enemies 4:84 5:70 6:100
+5:09  [DMG SPIKE]   1 (Marksmanship Hunter): 0.95M in 10s [P95 Danger] [BURST] (85% -> 72% HP)
+5:10  [STATE]   friends 1:63 2:97 3:100 / enemies 4:82 5:76 6:100
+5:11  [STATE]   friends 1:53 2:91 3:98 / enemies 4:85 5:78 6:100
+5:12  [STATE]   friends 1:45 2:91 3:82 / enemies 4:88 5:81 6:100
+5:13  [STATE]   friends 1:69 2:100 3:75 / enemies 4:99 5:83 6:100
+5:14  [STATE]   friends 1:85 2:96 3:72 / enemies 4:99 5:97 6:100
+5:17  [STATE]   friends 1:87 2:96 3:22 / enemies 4:88 5:100 6:97
+5:18  [STATE]   friends 1:78 2:100 3:71 / enemies 4:93 5:100 6:94
+5:19  [STATE]   friends 1:72 2:100 3:73 / enemies 4:88 5:100 6:95
+5:20  [STATE]   friends 1:64 2:100 3:77 / enemies 4:80 5:100 6:94
+5:20  [CC ON TEAM]   2 ← Hammer of Justice (Hydar-Tichondrius-US) | 5s | trinket: ON CD (57s left)
+5:21  [STATE]   friends 1:60 2:100 3:81 / enemies 4:69 5:99 6:93
+5:22  [STATE]   friends 1:34 2:100 3:82 / enemies 4:77 5:100 6:94
+5:23  [STATE]   friends 1:7 2:100 3:85 / enemies 4:87 5:100 6:95
+5:24  [STATE]   friends 1:6 2:100 3:85 / enemies 4:82 5:100 6:86
+5:24  [OWNER CD]   Exhilaration
+      [RES] rdy:Δ+2:Rewind,2:Emerald Communion-3:Ascendance (Enhancement),3:Spirit Walk  cd:3:Ascendance (Enhancement)(2s),3:Spirit Walk(5s)  cc:2/Hammer of Justice-1s[stun]
+5:25  [STATE]   friends 1:21 2:100 3:87 / enemies 4:73 5:99 6:96
+5:26  [STATE]   friends 1:dead 2:100 3:88 / enemies 4:69 5:93 6:98
+5:26  [OWNER CD]   Aspect of the Turtle
+      [RES] rdy:Δ+3:Ascendance (Enhancement)-Exhilaration  cd:Exhilaration(53s)
+5:26  [BUFF FADED]   Aspect of the Turtle
+5:26  [DEATH]  1 (Marksmanship Hunter — friendly)
+               HP: 47% at T-15s → 85% at T-10s → 45% at T-5s → 6% at T-3s → dead
+               Top damage in final 10s: Axelx-Tichondrius-US — Devour (78k), Axelx-Tichondrius-US — Cull (74k), Hydar-Tichondrius-US — Final Verdict (58k)
+5:27  [STATE]   friends 1:dead 2:100 3:89 / enemies 4:68 5:92 6:100
+5:28  [STATE]   friends 1:dead 2:100 3:91 / enemies 4:68 5:94 6:100
+5:29  [STATE]   friends 1:dead 2:98 3:87 / enemies 4:80 5:94 6:100
+5:30  [STATE]   friends 1:dead 2:98 3:84 / enemies 4:84 5:96 6:100
+5:31  [STATE]   friends 1:dead 2:96 3:72 / enemies 4:84 5:97 6:100
+5:32  [STATE]   friends 1:dead 2:96 3:67 / enemies 4:85 5:99 6:100
+5:33  [STATE]   friends 1:dead 2:95 3:65 / enemies 4:100 5:100 6:100
+5:34  [STATE]   friends 1:dead 2:95 3:51 / enemies 4:100 5:100 6:100
+5:35  [STATE]   friends 1:dead 2:93 3:30 / enemies 4:100 5:100 6:100
+5:36  [STATE]   friends 1:dead 2:93 3:30 / enemies 4:100 5:100 6:100
+5:37  [STATE]   friends 1:dead 2:87 3:dead / enemies 4:100 5:100 6:100
+5:37  [DEATH]  3 (Enhancement Shaman — friendly)
+               HP: 82% at T-15s → 91% at T-10s → 66% at T-5s → 36% at T-3s → dead
+               Top damage in final 10s: Axelx-Tichondrius-US — Consume (84k), Hydar-Tichondrius-US — Final Verdict (75k), Hydar-Tichondrius-US — melee (70k)
+
+5:42  [MATCH END]   damp: 27%
+  friends 1:dead(5:26) 2:22% 3:dead(5:37) / enemies 4:100% 5:100% 6:100%

@@ -1,0 +1,344 @@
+[MATCH TYPE: deep_dampening_siege]
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Frost Mage | Bracket: 3v3 | Result: Loss | Duration: 4:32
+  My team: Preservation Evoker, Assassination Rogue, Frost Mage
+  Enemy team: Arms Warrior, Preservation Evoker, Retribution Paladin
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Frost Mage): CAN offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 20% at match end
+  Note: Reached 20% dampening — healing was meaningfully impaired in the late game.
+
+## CC Chains
+  Arms Warrior (Стенолом-Гордунни-EU): 11 CC — 4× Stun, 4× Incapacitate, 3× Disorient | 2 reduced, 0 immune
+  Preservation Evoker (Sukkmymadnes-Silvermoon-EU): 22 CC — 6× Stun, 6× Disorient, 5× Silence, 5× Incapacitate | 6 reduced, 0 immune
+  Retribution Paladin (Loratheon-Stormscale-EU): 16 CC — 7× Silence, 4× Stun, 3× Disorient, 2× Incapacitate | 3 reduced, 0 immune
+
+## Enemy Cooldown Timeline
+  No coordinated enemy burst windows detected — sustained/individual pressure only.
+
+## Kill Attempt Windows
+  None detected (no aligned enemy burst windows).
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Scalm-ShatteredHand-EU (Frost Mage — log owner):
+    Ice Block [240s, 2 Charges], Dragon's Breath [45s]
+  2: Drakbrampa-Ravencrest-EU (Preservation Evoker):
+    Deep Breath [120s], Wing Buffet [180s], Cauterizing Flame [60s], Rewind [240s], Emerald Communion [180s], Stasis [90s], Rescue [60s, 2 Charges]
+  3: Aythusha-TwistingNether-EU (Assassination Rogue):
+    Cloak of Shadows [120s], Kidney Shot [30s], Evasion [120s]
+  4: Стенолом-Гордунни-EU (Arms Warrior — enemy):
+    Avatar [90s]
+  5: Sukkmymadnes-Silvermoon-EU (Preservation Evoker — enemy):
+    Deep Breath [120s]
+  6: Loratheon-Stormscale-EU (Retribution Paladin — enemy):
+    none tracked
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:08  [ENEMY CD]   5 (Preservation Evoker): Deep Breath [1/2]
+0:10  [CLEANSE]   2 dispelled 2 effects: Expurgation off 3, Landslide off 3
+0:14  [CC ON TEAM]   3 ← Storm Bolt (Стенолом-Гордунни-EU) | 3s | trinket: available
+0:14  [TEAMMATE CD]   2 (Preservation Evoker): Deep Breath
+0:15  [STATE]   friends 1:100 2:100 3:100 / enemies 4:98 5:100 6:100
+0:16  [STATE]   friends 1:100 2:91 3:96 / enemies 4:91 5:95 6:100
+0:16  [CC ON TEAM]   2 ← Hammer of Justice (Loratheon-Stormscale-EU) | 5s | trinket: available
+0:17  [STATE]   friends 1:80 2:93 3:97 / enemies 4:95 5:93 6:95
+0:17  [CC ON TEAM]   2 ← Sleep Walk (Sukkmymadnes-Silvermoon-EU) | 1s | trinket: available
+0:18  [STATE]   friends 1:83 2:90 3:93 / enemies 4:92 5:78 6:76
+0:19  [STATE]   friends 1:83 2:79 3:79 / enemies 4:90 5:94 6:93
+0:20  [STATE]   friends 1:74 2:79 3:72 / enemies 4:100 5:100 6:100
+0:21  [STATE]   friends 1:71 2:100 3:96 / enemies 4:100 5:100 6:99
+0:22  [STATE]   friends 1:57 2:99 3:100 / enemies 4:100 5:100 6:98
+0:23  [STATE]   friends 1:57 2:100 3:99 / enemies 4:100 5:94 6:80
+0:24  [STATE]   friends 1:73 2:99 3:100 / enemies 4:100 5:100 6:99
+0:25  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:99
+0:25  [TEAMMATE CC]   3 (Assassination Rogue): Kidney Shot
+0:26  [STATE]   friends 1:100 2:100 3:98 / enemies 4:100 5:100 6:97
+0:27  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:98 6:91
+0:27  [CC ON TEAM]   3 ← Champion's Spear (Стенолом-Гордунни-EU) | 6s | trinket: available
+0:27  [CC ON TEAM]   1 ← Champion's Spear (Стенолом-Гордунни-EU) | 6s | trinket: available
+0:28  [STATE]   friends 1:100 2:100 3:98 / enemies 4:99 5:99 6:91
+0:28  [ENEMY CD]   4 (Arms Warrior): Avatar [1/4]
+0:29  [STATE]   friends 1:96 2:100 3:95 / enemies 4:100 5:99 6:90
+0:30  [STATE]   friends 1:89 2:100 3:94 / enemies 4:100 5:100 6:91
+0:31  [STATE]   friends 1:92 2:100 3:83 / enemies 4:100 5:99 6:89
+0:32  [STATE]   friends 1:100 2:97 3:79 / enemies 4:98 5:99 6:87
+0:33  [STATE]   friends 1:100 2:100 3:78 / enemies 4:97 5:99 6:87
+0:34  [STATE]   friends 1:100 2:100 3:79 / enemies 4:91 5:100 6:87
+0:35  [STATE]   friends 1:100 2:100 3:95 / enemies 4:100 5:100 6:100
+0:36  [STATE]   friends 1:88 2:84 3:99 / enemies 4:100 5:100 6:98
+0:36  [CC ON TEAM]   3 ← Shockwave (Стенолом-Гордунни-EU) | 3s | trinket: available
+0:36  [CC ON TEAM]   2 ← Shockwave (Стенолом-Гордунни-EU) | 1s | trinket: available
+0:37  [STATE]   friends 1:93 2:94 3:100 / enemies 4:100 5:100 6:97
+0:38  [STATE]   friends 1:95 2:98 3:92 / enemies 4:100 5:100 6:100
+0:39  [STATE]   friends 1:93 2:97 3:100 / enemies 4:100 5:100 6:91
+0:40  [STATE]   friends 1:91 2:98 3:95 / enemies 4:100 5:100 6:91
+0:41  [STATE]   friends 1:97 2:100 3:99 / enemies 4:100 5:100 6:72
+0:42  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:67
+0:43  [STATE]   friends 1:100 2:100 3:99 / enemies 4:99 5:100 6:71
+0:44  [STATE]   friends 1:95 2:100 3:95 / enemies 4:100 5:100 6:99
+0:45  [STATE]   friends 1:100 2:100 3:100 / enemies 4:86 5:100 6:73
+0:46  [STATE]   friends 1:89 2:100 3:100 / enemies 4:88 5:100 6:73
+0:46  [TEAMMATE CD]   2 (Preservation Evoker): Wing Buffet
+0:59  [TEAMMATE CD]   2 (Preservation Evoker): Rewind
+1:01  [CC ON TEAM]   2 ← Sleep Walk (Sukkmymadnes-Silvermoon-EU) | 6s | trinket: available
+1:02  [STATE]   friends 1:95 2:97 3:70 / enemies 4:100 5:97 6:94
+1:03  [STATE]   friends 1:97 2:100 3:65 / enemies 4:98 5:95 6:79
+1:04  [STATE]   friends 1:94 2:100 3:56 / enemies 4:87 5:88 6:58
+1:05  [STATE]   friends 1:92 2:100 3:58 / enemies 4:79 5:86 6:48
+1:06  [STATE]   friends 1:72 2:100 3:65 / enemies 4:79 5:100 6:62
+1:07  [STATE]   friends 1:74 2:100 3:61 / enemies 4:82 5:98 6:63
+1:08  [STATE]   friends 1:56 2:100 3:65 / enemies 4:84 5:99 6:50
+1:09  [STATE]   friends 1:52 2:100 3:65 / enemies 4:87 5:100 6:70
+1:10  [STATE]   friends 1:76 2:100 3:77 / enemies 4:92 5:100 6:76
+1:10  [CC ON TEAM]   1 ← Storm Bolt (Стенолом-Гордунни-EU) | 1s | trinket: used
+1:11  [STATE]   friends 1:90 2:100 3:86 / enemies 4:88 5:90 6:36
+1:11  [TRINKET]   1 used PvP trinket
+1:12  [STATE]   friends 1:93 2:100 3:92 / enemies 4:93 5:87 6:47
+1:12  [TEAMMATE CD]   2 (Preservation Evoker): Rescue
+1:13  [STATE]   friends 1:87 2:100 3:78 / enemies 4:95 5:84 6:59
+1:14  [STATE]   friends 1:97 2:100 3:100 / enemies 4:99 5:83 6:70
+1:15  [STATE]   friends 1:96 2:100 3:100 / enemies 4:91 5:80 6:60
+1:16  [STATE]   friends 1:97 2:100 3:100 / enemies 4:94 5:83 6:60
+1:17  [STATE]   friends 1:96 2:100 3:100 / enemies 4:100 5:100 6:95
+1:18  [STATE]   friends 1:84 2:100 3:100 / enemies 4:100 5:100 6:87
+1:18  [DMG SPIKE]   3 (Assassination Rogue): 0.90M in 10s [P95 Danger] [BURST] (99% -> 60% HP)
+1:19  [STATE]   friends 1:87 2:98 3:99 / enemies 4:94 5:100 6:88
+1:20  [STATE]   friends 1:85 2:100 3:96 / enemies 4:92 5:100 6:79
+1:20  [CC ON TEAM]   1 ← Shockwave (Стенолом-Гордунни-EU) | 2s | trinket: ON CD (111s left)
+1:20  [CC ON TEAM]   3 ← Shockwave (Стенолом-Гордунни-EU) | 3s | trinket: available
+1:21  [STATE]   friends 1:80 2:100 3:97 / enemies 4:91 5:100 6:70
+1:22  [STATE]   friends 1:93 2:99 3:95 / enemies 4:91 5:100 6:56
+1:23  [STATE]   friends 1:93 2:100 3:96 / enemies 4:94 5:100 6:57
+1:23  [CC ON TEAM]   2 ← Hammer of Justice (Loratheon-Stormscale-EU) | 1s | trinket: used
+1:23  [TRINKET]   2 used PvP trinket
+1:24  [STATE]   friends 1:94 2:100 3:80 / enemies 4:98 5:100 6:51
+1:24  [TEAMMATE CD]   2 (Preservation Evoker): Stasis
+1:25  [STATE]   friends 1:96 2:91 3:49 / enemies 4:100 5:100 6:66
+1:26  [STATE]   friends 1:100 2:100 3:42 / enemies 4:100 5:100 6:75
+1:27  [STATE]   friends 1:100 2:100 3:62 / enemies 4:100 5:100 6:100
+1:28  [STATE]   friends 1:100 2:92 3:43 / enemies 4:100 5:100 6:93
+1:29  [STATE]   friends 1:96 2:92 3:60 / enemies 4:100 5:100 6:78
+1:29  [TEAMMATE CD]   3 (Assassination Rogue): Cloak of Shadows
+1:30  [STATE]   friends 1:93 2:81 3:64 / enemies 4:100 5:100 6:73
+1:31  [STATE]   friends 1:84 2:79 3:86 / enemies 4:100 5:100 6:80
+1:32  [STATE]   friends 1:76 2:89 3:91 / enemies 4:100 5:100 6:82
+1:33  [STATE]   friends 1:72 2:90 3:100 / enemies 4:100 5:100 6:76
+1:36  [CC ON TEAM]   2 ← Blinding Light (Loratheon-Stormscale-EU) | 4s | trinket: ON CD (78s left)
+1:36  [CC ON TEAM]   3 ← Blinding Light (Loratheon-Stormscale-EU) | 4s | trinket: available
+1:37  [STATE]   friends 1:74 2:100 3:100 / enemies 4:95 5:100 6:49
+1:38  [STATE]   friends 1:74 2:100 3:100 / enemies 4:92 5:100 6:41
+1:38  [OWNER CC]   Dragon's Breath
+1:39  [STATE]   friends 1:63 2:100 3:100 / enemies 4:98 5:100 6:63
+1:39  [ENEMY CD]   4 (Arms Warrior): Avatar [2/4]
+1:40  [STATE]   friends 1:42 2:100 3:100 / enemies 4:99 5:100 6:60
+1:41  [STATE]   friends 1:30 2:100 3:100 / enemies 4:100 5:100 6:62
+1:41  [OWNER CD]   Ice Block
+      [RES] rdy:Ice Block,2:Cauterizing Flame,2:Emerald Communion,3:Kidney Shot,3:Evasion  cd:Dragon's Breath(42s),2:Deep Breath(33s),2:Wing Buffet(125s),2:Rewind(198s),2:Stasis(73s),2:Rescue(31s),3:Cloak of Shadows(108s)  enemy:Avatar/Arms Warrior(2s)
+1:42  [STATE]   friends 1:28 2:97 3:94 / enemies 4:100 5:100 6:59
+1:43  [STATE]   friends 1:73 2:100 3:100 / enemies 4:100 5:100 6:59
+1:44  [STATE]   friends 1:92 2:100 3:100 / enemies 4:100 5:100 6:54
+1:44  [CC ON TEAM]   2 ← Sleep Walk (Sukkmymadnes-Silvermoon-EU) | 3s | trinket: ON CD (70s left)
+1:45  [STATE]   friends 1:97 2:100 3:82 / enemies 4:100 5:100 6:53
+1:46  [STATE]   friends 1:98 2:100 3:82 / enemies 4:100 5:100 6:58
+1:47  [STATE]   friends 1:100 2:99 3:79 / enemies 4:100 5:100 6:63
+1:47  [BUFF FADED]   Ice Block
+1:48  [STATE]   friends 1:100 2:100 3:80 / enemies 4:100 5:100 6:99
+1:49  [STATE]   friends 1:100 2:100 3:96 / enemies 4:100 5:100 6:97
+1:50  [STATE]   friends 1:100 2:82 3:96 / enemies 4:98 5:100 6:86
+1:51  [STATE]   friends 1:100 2:80 3:95 / enemies 4:100 5:100 6:78
+1:52  [STATE]   friends 1:87 2:79 3:95 / enemies 4:100 5:100 6:82
+1:53  [STATE]   friends 1:88 2:78 3:96 / enemies 4:100 5:100 6:82
+1:54  [STATE]   friends 1:86 2:96 3:100 / enemies 4:100 5:100 6:79
+1:55  [CC ON TEAM]   2 ← Shockwave (Стенолом-Гордунни-EU) | 3s | trinket: ON CD (59s left)
+1:55  [CC ON TEAM]   3 ← Shockwave (Стенолом-Гордунни-EU) | 3s | trinket: available
+1:56  [STATE]   friends 1:86 2:94 3:98 / enemies 4:83 5:98 6:47
+1:57  [STATE]   friends 1:87 2:92 3:99 / enemies 4:88 5:97 6:46
+1:58  [STATE]   friends 1:86 2:89 3:100 / enemies 4:100 5:99 6:71
+1:58  [CC ON TEAM]   2 ← Hammer of Justice (Loratheon-Stormscale-EU) | 3s | trinket: ON CD (56s left)
+1:59  [STATE]   friends 1:88 2:89 3:100 / enemies 4:98 5:97 6:67
+2:00  [STATE]   friends 1:68 2:82 3:94 / enemies 4:100 5:100 6:81
+2:01  [STATE]   friends 1:38 2:85 3:94 / enemies 4:100 5:99 6:85
+2:02  [STATE]   friends 1:47 2:88 3:95 / enemies 4:100 5:100 6:86
+2:03  [STATE]   friends 1:56 2:95 3:96 / enemies 4:100 5:100 6:82
+2:04  [STATE]   friends 1:54 2:91 3:93 / enemies 4:100 5:100 6:83
+2:05  [STATE]   friends 1:79 2:100 3:90 / enemies 4:100 5:99 6:80
+2:06  [STATE]   friends 1:100 2:100 3:74 / enemies 4:100 5:98 6:77
+2:07  [STATE]   friends 1:94 2:96 3:74 / enemies 4:100 5:100 6:82
+2:07  [TEAMMATE CC]   3 (Assassination Rogue): Kidney Shot
+2:08  [STATE]   friends 1:93 2:96 3:61 / enemies 4:100 5:95 6:69
+2:13  [TEAMMATE CD]   3 (Assassination Rogue): Evasion
+2:23  [TEAMMATE CD]   2 (Preservation Evoker): Rescue
+2:23  [CLEANSE]   2 dispelled Judgment of Justice off 1
+2:23  [CC ON TEAM]   2 ← Sleep Walk (Sukkmymadnes-Silvermoon-EU) | 6s | trinket: ON CD (31s left)
+2:24  [STATE]   friends 1:88 2:100 3:100 / enemies 4:97 5:100 6:71
+2:25  [STATE]   friends 1:82 2:100 3:92 / enemies 4:100 5:100 6:84
+2:26  [STATE]   friends 1:82 2:100 3:94 / enemies 4:96 5:100 6:81
+2:27  [STATE]   friends 1:80 2:100 3:92 / enemies 4:97 5:100 6:86
+2:28  [STATE]   friends 1:70 2:100 3:91 / enemies 4:96 5:100 6:91
+2:29  [STATE]   friends 1:62 2:100 3:93 / enemies 4:97 5:100 6:88
+2:29  [OWNER CC]   Dragon's Breath
+2:30  [STATE]   friends 1:57 2:100 3:93 / enemies 4:96 5:100 6:87
+2:31  [STATE]   friends 1:58 2:92 3:94 / enemies 4:94 5:100 6:86
+2:32  [STATE]   friends 1:83 2:95 3:94 / enemies 4:98 5:100 6:83
+2:33  [STATE]   friends 1:100 2:100 3:93 / enemies 4:96 5:100 6:85
+2:34  [STATE]   friends 1:86 2:100 3:100 / enemies 4:99 5:100 6:79
+2:34  [CC ON TEAM]   2 ← Hammer of Justice (Loratheon-Stormscale-EU) | 5s | trinket: ON CD (20s left)
+2:35  [STATE]   friends 1:79 2:100 3:100 / enemies 4:100 5:100 6:90
+2:36  [STATE]   friends 1:72 2:99 3:100 / enemies 4:100 5:100 6:90
+2:36  [TEAMMATE CD]   2 (Preservation Evoker): Emerald Communion
+2:36  [DMG SPIKE]   1 (Frost Mage): 0.95M in 10s [P95 Danger] [BURST] (97% -> 89% HP)
+2:37  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:100 6:100
+2:38  [STATE]   friends 1:99 2:100 3:100 / enemies 4:100 5:100 6:100
+2:38  [ENEMY CD]   5 (Preservation Evoker): Deep Breath [2/2]
+2:39  [STATE]   friends 1:99 2:100 3:100 / enemies 4:99 5:99 6:100
+2:39  [CC ON TEAM]   2 ← Terror of the Skies (Sukkmymadnes-Silvermoon-EU) | 2s | trinket: ON CD (15s left)
+2:40  [STATE]   friends 1:99 2:100 3:99 / enemies 4:100 5:100 6:100
+2:40  [CC ON TEAM]   1 ← Terror of the Skies (Sukkmymadnes-Silvermoon-EU) | 3s | trinket: ON CD (31s left)
+2:41  [STATE]   friends 1:55 2:98 3:100 / enemies 4:96 5:99 6:100
+2:42  [STATE]   friends 1:57 2:95 3:99 / enemies 4:100 5:100 6:100
+2:43  [STATE]   friends 1:58 2:100 3:100 / enemies 4:99 5:100 6:100
+2:44  [STATE]   friends 1:88 2:96 3:97 / enemies 4:100 5:100 6:100
+2:45  [STATE]   friends 1:86 2:97 3:97 / enemies 4:96 5:100 6:99
+2:46  [STATE]   friends 1:100 2:100 3:85 / enemies 4:98 5:100 6:100
+2:47  [STATE]   friends 1:96 2:100 3:91 / enemies 4:99 5:81 6:89
+2:48  [STATE]   friends 1:87 2:100 3:78 / enemies 4:98 5:90 6:87
+2:49  [STATE]   friends 1:89 2:100 3:78 / enemies 4:100 5:90 6:80
+2:50  [STATE]   friends 1:91 2:100 3:77 / enemies 4:99 5:88 6:72
+2:54  [TRINKET]   3 used PvP trinket
+2:54  [CC ON TEAM]   1 ← Storm Bolt (Стенолом-Гордунни-EU) | 2s | trinket: ON CD (17s left)
+2:55  [STATE]   friends 1:76 2:100 3:83 / enemies 4:92 5:100 6:94
+2:56  [STATE]   friends 1:68 2:100 3:82 / enemies 4:88 5:100 6:89
+2:57  [STATE]   friends 1:53 2:100 3:85 / enemies 4:79 5:100 6:72
+2:57  [TEAMMATE CD]   2 (Preservation Evoker): Stasis
+2:57  [TEAMMATE CC]   3 (Assassination Rogue): Kidney Shot
+2:58  [STATE]   friends 1:62 2:100 3:87 / enemies 4:74 5:100 6:71
+2:59  [STATE]   friends 1:53 2:100 3:100 / enemies 4:72 5:99 6:63
+2:59  [ENEMY CD]   4 (Arms Warrior): Avatar [3/4]
+3:00  [STATE]   friends 1:65 2:100 3:100 / enemies 4:65 5:98 6:62
+3:01  [STATE]   friends 1:75 2:100 3:100 / enemies 4:67 5:96 6:64
+3:02  [STATE]   friends 1:72 2:98 3:96 / enemies 4:64 5:96 6:57
+3:03  [STATE]   friends 1:50 2:99 3:92 / enemies 4:57 5:95 6:51
+3:04  [STATE]   friends 1:48 2:100 3:89 / enemies 4:53 5:92 6:31
+3:07  [STATE]   friends 1:73 2:100 3:86 / enemies 4:81 5:100 6:72
+3:08  [STATE]   friends 1:86 2:100 3:95 / enemies 4:95 5:100 6:99
+3:09  [STATE]   friends 1:100 2:100 3:95 / enemies 4:99 5:100 6:100
+3:10  [STATE]   friends 1:100 2:100 3:95 / enemies 4:100 5:100 6:97
+3:11  [STATE]   friends 1:99 2:100 3:95 / enemies 4:97 5:100 6:97
+3:11  [TEAMMATE CD]   2 (Preservation Evoker): Deep Breath
+3:11  [DMG SPIKE]   1 (Frost Mage): 0.64M in 10s [P95 Danger] [BURST] (100% -> 76% HP)
+3:12  [STATE]   friends 1:94 2:98 3:92 / enemies 4:100 5:100 6:96
+3:13  [STATE]   friends 1:79 2:92 3:86 / enemies 4:95 5:100 6:100
+3:13  [CC ON TEAM]   2 ← Sleep Walk (Sukkmymadnes-Silvermoon-EU) | 3s | trinket: available
+3:14  [STATE]   friends 1:76 2:93 3:87 / enemies 4:94 5:100 6:96
+3:15  [STATE]   friends 1:40 2:90 3:82 / enemies 4:95 5:100 6:98
+3:16  [STATE]   friends 1:40 2:92 3:83 / enemies 4:96 5:100 6:94
+3:17  [STATE]   friends 1:67 2:91 3:81 / enemies 4:95 5:100 6:89
+3:18  [STATE]   friends 1:57 2:93 3:86 / enemies 4:92 5:97 6:80
+3:19  [STATE]   friends 1:74 2:100 3:98 / enemies 4:94 5:97 6:78
+3:20  [STATE]   friends 1:77 2:100 3:100 / enemies 4:93 5:99 6:79
+3:21  [STATE]   friends 1:76 2:97 3:91 / enemies 4:94 5:99 6:68
+3:21  [TEAMMATE CD]   2 (Preservation Evoker): Rescue
+3:21  [CLEANSE]   2 dispelled Judgment of Justice off 1
+3:22  [STATE]   friends 1:80 2:100 3:89 / enemies 4:93 5:93 6:53
+3:23  [STATE]   friends 1:95 2:100 3:83 / enemies 4:100 5:100 6:86
+3:27  [CC ON TEAM]   3 ← Blinding Light (Loratheon-Stormscale-EU) | 4s | trinket: ON CD (87s left)
+3:27  [CC ON TEAM]   2 ← Blinding Light (Loratheon-Stormscale-EU) | 2s | trinket: available
+3:28  [STATE]   friends 1:100 2:100 3:86 / enemies 4:100 5:100 6:92
+3:29  [STATE]   friends 1:99 2:99 3:88 / enemies 4:100 5:100 6:91
+3:30  [STATE]   friends 1:88 2:99 3:88 / enemies 4:100 5:100 6:100
+3:30  [CC ON TEAM]   1 ← Champion's Spear (Стенолом-Гордунни-EU) | 6s | trinket: available
+3:31  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:100
+3:32  [STATE]   friends 1:95 2:100 3:100 / enemies 4:100 5:100 6:100
+3:33  [STATE]   friends 1:88 2:100 3:100 / enemies 4:100 5:100 6:99
+3:34  [STATE]   friends 1:92 2:99 3:100 / enemies 4:100 5:100 6:95
+3:35  [STATE]   friends 1:78 2:100 3:100 / enemies 4:100 5:100 6:93
+3:36  [STATE]   friends 1:74 2:100 3:100 / enemies 4:100 5:100 6:90
+3:37  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:84
+3:38  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:81
+3:39  [STATE]   friends 1:96 2:99 3:100 / enemies 4:100 5:100 6:81
+3:40  [STATE]   friends 1:87 2:100 3:100 / enemies 4:100 5:100 6:76
+3:44  [CC ON TEAM]   2 ← Hammer of Justice (Loratheon-Stormscale-EU) | 1s | trinket: used
+3:45  [STATE]   friends 1:74 2:100 3:100 / enemies 4:100 5:100 6:91
+3:45  [TRINKET]   2 used PvP trinket
+3:46  [STATE]   friends 1:76 2:100 3:100 / enemies 4:100 5:97 6:92
+3:47  [STATE]   friends 1:90 2:100 3:100 / enemies 4:100 5:100 6:100
+3:48  [STATE]   friends 1:92 2:100 3:98 / enemies 4:97 5:90 6:100
+3:49  [STATE]   friends 1:88 2:100 3:98 / enemies 4:99 5:87 6:97
+3:50  [STATE]   friends 1:78 2:99 3:99 / enemies 4:100 5:85 6:100
+3:51  [STATE]   friends 1:75 2:100 3:96 / enemies 4:100 5:79 6:100
+3:52  [STATE]   friends 1:73 2:100 3:63 / enemies 4:100 5:77 6:100
+3:52  [DMG SPIKE]   1 (Frost Mage): 0.65M in 10s [P95 Danger] [BURST] (96% -> 46% HP)
+3:53  [STATE]   friends 1:96 2:100 3:55 / enemies 4:100 5:74 6:100
+3:53  [TEAMMATE CD]   3 (Assassination Rogue): Cloak of Shadows
+3:53  [TEAMMATE CC]   3 (Assassination Rogue): Kidney Shot
+3:54  [STATE]   friends 1:99 2:100 3:50 / enemies 4:100 5:100 6:100
+3:54  [CC ON TEAM]   3 ← Shockwave (Стенолом-Гордунни-EU) | 3s | trinket: ON CD (61s left)
+3:55  [STATE]   friends 1:100 2:100 3:73 / enemies 4:100 5:97 6:100
+3:56  [STATE]   friends 1:99 2:95 3:70 / enemies 4:100 5:100 6:100
+3:57  [STATE]   friends 1:88 2:99 3:96 / enemies 4:100 5:100 6:91
+3:58  [STATE]   friends 1:88 2:100 3:92 / enemies 4:98 5:98 6:90
+3:59  [STATE]   friends 1:87 2:100 3:93 / enemies 4:100 5:100 6:95
+4:00  [STATE]   friends 1:76 2:100 3:100 / enemies 4:95 5:97 6:86
+4:01  [STATE]   friends 1:62 2:100 3:100 / enemies 4:99 5:93 6:85
+4:02  [STATE]   friends 1:59 2:100 3:100 / enemies 4:99 5:91 6:86
+4:03  [STATE]   friends 1:46 2:92 3:93 / enemies 4:100 5:93 6:87
+4:04  [STATE]   friends 1:46 2:94 3:94 / enemies 4:100 5:83 6:88
+4:04  [TEAMMATE CD]   2 (Preservation Evoker): Cauterizing Flame
+4:04  [CLEANSE]   2 dispelled Rend off 1
+4:09  [STATE]   friends 1:66 2:100 3:96 / enemies 4:100 5:100 6:100
+4:10  [STATE]   friends 1:65 2:100 3:98 / enemies 4:100 5:96 6:100
+4:11  [STATE]   friends 1:68 2:100 3:98 / enemies 4:100 5:100 6:99
+4:12  [STATE]   friends 1:70 2:100 3:99 / enemies 4:98 5:100 6:96
+4:12  [ENEMY CD]   4 (Arms Warrior): Avatar [4/4]
+4:13  [STATE]   friends 1:72 2:100 3:100 / enemies 4:95 5:100 6:90
+4:13  [DMG SPIKE]   3 (Assassination Rogue): 0.63M in 10s [P95 Danger] [BURST] (93% -> 0% HP)
+4:14  [STATE]   friends 1:70 2:94 3:94 / enemies 4:97 5:96 6:87
+4:15  [STATE]   friends 1:62 2:94 3:94 / enemies 4:81 5:91 6:81
+4:16  [STATE]   friends 1:58 2:94 3:94 / enemies 4:81 5:96 6:80
+4:16  [CC ON TEAM]   2 ← Hammer of Justice (Loratheon-Stormscale-EU) | 5s | trinket: ON CD (59s left)
+4:17  [STATE]   friends 1:45 3:94 / enemies 4:83 5:100 6:84
+4:17  [OWNER CD]   Ice Block
+      [RES] rdy:Δ+Dragon's Breath,2:Wing Buffet,2:Rescue-Ice Block,2:Cauterizing Flame,2:Emerald Communion,3:Kidney Shot  cd:Ice Block(84s),2:Cauterizing Flame(48s),2:Emerald Communion(79s),3:Kidney Shot(7s)  enemy:Avatar/Arms Warrior(4s)  cc:2/Hammer of Justice-5s[stun],2/Landslide-2s[root]
+4:18  [STATE]   friends 1:46 3:94 / enemies 4:100 5:100 6:100
+4:19  [STATE]   friends 1:46 3:93 / enemies 4:100 5:100 6:96
+4:20  [STATE]   friends 1:46 3:90 / enemies 4:100 5:97 6:92
+4:20  [CC ON TEAM]   3 ← Storm Bolt (Стенолом-Гордунни-EU) | 3s | trinket: ON CD (35s left)
+4:21  [STATE]   friends 1:47 3:86 / enemies 4:100 5:95 6:94
+4:21  [CC ON TEAM]   2 ← Sleep Walk (Sukkmymadnes-Silvermoon-EU) | 6s | trinket: ON CD (55s left)
+4:22  [STATE]   friends 1:47 3:46 / enemies 4:94 5:90 6:96
+4:23  [STATE]   friends 1:48 3:dead / enemies 4:89 5:85 6:93
+4:23  [BUFF FADED]   Ice Block
+4:23  [DEATH]  3 (Assassination Rogue — friendly)
+               HP: 96% at T-15s → 93% at T-10s → 94% at T-5s → 90% at T-3s → dead
+               Top damage in final 10s: Loratheon-Stormscale-EU — Hammer of Wrath (119k), Стенолом-Гордунни-EU — Execute (84k), Стенолом-Гордунни-EU — Mortal Strike (67k)
+4:24  [STATE]   friends 1:38 3:dead / enemies 4:88 5:83 6:83
+4:25  [STATE]   friends 1:dead 3:dead / enemies 4:91 5:84 6:72
+4:25  [DEATH]  1 (Frost Mage — friendly)
+               HP: 67% at T-15s → 58% at T-10s → 47% at T-5s → 47% at T-3s → dead
+               Top damage in final 10s: Loratheon-Stormscale-EU — Light Within (86k), Стенолом-Гордунни-EU — Execute (79k), Стенолом-Гордунни-EU — Demolish (55k)
+4:26  [STATE]   friends 1:dead 2:93 3:dead / enemies 4:92 5:87 6:70
+4:27  [STATE]   friends 1:dead 2:93 3:dead / enemies 4:92 5:91 6:74
+4:28  [STATE]   friends 1:dead 2:81 3:dead / enemies 4:93 5:93 6:75
+4:29  [STATE]   friends 1:dead 2:57 3:dead / enemies 4:94 5:100 6:100
+4:30  [STATE]   friends 1:dead 2:24 3:dead / enemies 4:95 5:100 6:99
+4:31  [STATE]   friends 1:dead 2:dead 3:dead / enemies 4:98 5:99 6:98
+4:31  [DEATH]  2 (Preservation Evoker — friendly)
+               HP: 94% at T-15s → 94% at T-10s → 94% at T-5s → 81% at T-3s → dead
+               Top damage in final 10s: Loratheon-Stormscale-EU — Final Verdict (101k), Стенолом-Гордунни-EU — Heroic Strike (73k), Loratheon-Stormscale-EU — Light Within (59k)
+
+4:32  [MATCH END]   damp: 20%
+  friends 1:dead(4:25) 2:dead(4:31) 3:dead(4:23) / enemies 4:99% 5:100% 6:100%

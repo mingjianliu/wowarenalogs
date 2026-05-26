@@ -1,0 +1,9 @@
+{
+  "prompt": {
+    "sufficiency": 5,
+    "noise": 2,
+    "labelBias": 5,
+    "inferenceScaffolding": 4,
+    "notes": "Excessive per-second [STATE] lines create noise, but the prompt maintains objective labels and good causal scaffolding."
+  }
+}
