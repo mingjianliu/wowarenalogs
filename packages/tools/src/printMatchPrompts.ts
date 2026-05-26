@@ -518,6 +518,7 @@ export function buildMatchPrompt(combat: ParsedCombat, forceHealer = false): str
     durationSeconds,
     friends,
     combat.startTime,
+    neutral,
   );
 
   const ownerCanPurge = canOffensivePurge(owner);
@@ -613,8 +614,7 @@ export function buildMatchPrompt(combat: ParsedCombat, forceHealer = false): str
     }
   } else {
     criticalMoments.forEach((m, i) => {
-      const impactStr = m.roleLabel === 'Constraint' ? 'Context-setting — not a mistake' : m.impactLabel;
-      lines.push(`--- MOMENT ${i + 1} [${m.roleLabel}] (impact: ${impactStr}) ---`);
+      lines.push(`--- MOMENT ${i + 1} [${m.roleLabel}] ---`);
       lines.push(`${fmtTime(m.timeSeconds)} — ${m.title}`);
       lines.push(`  Enemy state: ${m.enemyState}`);
 
@@ -816,10 +816,10 @@ export function buildMatchPrompt(combat: ParsedCombat, forceHealer = false): str
   }
 
   lines.push('');
-  formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds).forEach((l) => lines.push(l));
+  formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds, neutral).forEach((l) => lines.push(l));
 
   lines.push('');
-  formatKillAttemptWindowsForContext(enemyCDTimeline.alignedBurstWindows, pressureWindows).forEach((l) =>
+  formatKillAttemptWindowsForContext(enemyCDTimeline.alignedBurstWindows, pressureWindows, neutral).forEach((l) =>
     lines.push(l),
   );
 
@@ -1013,12 +1013,6 @@ export function buildMatchPromptNew(combat: ParsedCombat, forceHealer = false): 
   lines.push('DATA DICTIONARY / UNITS');
   lines.push('  Damage units: M = Million (1,000,000), k = Thousand (1,000)');
   lines.push('  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage');
-  lines.push(
-    '  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).',
-  );
-  lines.push(
-    '  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).',
-  );
   lines.push('');
 
   lines.push('PURGE RESPONSIBILITY');
@@ -1058,10 +1052,10 @@ export function buildMatchPromptNew(combat: ParsedCombat, forceHealer = false): 
     lines.push('');
   }
 
-  lines.push(...formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds));
+  lines.push(...formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds, neutral));
   lines.push('');
 
-  lines.push(...formatKillAttemptWindowsForContext(enemyCDTimeline.alignedBurstWindows, pressureWindows));
+  lines.push(...formatKillAttemptWindowsForContext(enemyCDTimeline.alignedBurstWindows, pressureWindows, neutral));
   lines.push('');
 
   // Player loadout
@@ -1095,6 +1089,7 @@ export function buildMatchPromptNew(combat: ParsedCombat, forceHealer = false): 
     enemyIdMap,
     outgoingCCChains,
     bracket: combat.startInfo?.bracket ?? '3v3',
+    neutral,
   };
   lines.push(buildMatchTimeline(params));
 
@@ -1206,12 +1201,6 @@ export function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false):
   lines.push('DATA DICTIONARY / UNITS');
   lines.push('  Damage units: M = Million (1,000,000), k = Thousand (1,000)');
   lines.push('  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage');
-  lines.push(
-    '  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).',
-  );
-  lines.push(
-    '  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).',
-  );
   lines.push('');
 
   lines.push('PURGE RESPONSIBILITY');
@@ -1251,10 +1240,10 @@ export function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false):
     lines.push('');
   }
 
-  lines.push(...formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds));
+  lines.push(...formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds, neutral));
   lines.push('');
 
-  lines.push(...formatKillAttemptWindowsForContext(enemyCDTimeline.alignedBurstWindows, pressureWindows));
+  lines.push(...formatKillAttemptWindowsForContext(enemyCDTimeline.alignedBurstWindows, pressureWindows, neutral));
   lines.push('');
 
   // Player loadout
@@ -1391,7 +1380,6 @@ interface RunOptions {
   compareMode?: boolean;
   compareJsonMode?: boolean;
 }
-
 async function runCloud(count: number, bracket: string, aiMode: boolean, options: RunOptions = {}) {
   const {
     testPromptMode = false,

@@ -179,7 +179,7 @@ export function buildDeathRootCauseTrace(
       const endAt = cc.atSeconds + cc.durationSeconds;
       const avoidNote =
         cc.losBlocked === true
-          ? ` — Positioning: X yd from Pillar LoS — Positioning: ${cc.distanceYards?.toFixed(0) ?? 'X'} yd from Pillar LoS`
+          ? ` — Positioning: ${cc.distanceYards?.toFixed(0) ?? 'X'} yd from Pillar LoS`
           : cc.distanceYards !== null && cc.distanceYards <= 8
             ? ` — applied at ${cc.distanceYards.toFixed(0)}yd (melee range)`
             : '';
@@ -377,7 +377,8 @@ export function identifyCriticalMoments(
       if (durationSeconds < minCooldown) {
         constrainedTradePreceded = true;
         const cdNames = tradedDefCDs.map((cd) => cd.spellName).join(' + ');
-        const enemyState = getEnemyStateAtTime(firstBurst.fromSeconds, enemyCDTimeline, peakDamagePressure5s);
+        const enemyStateRaw = getEnemyStateAtTime(firstBurst.fromSeconds, enemyCDTimeline, peakDamagePressure5s);
+        const enemyState = enemyStateRaw.replace(/ \((Low|Moderate|High|Critical) threat\)/, '');
 
         // Find the lowest HP friendly unit during the burst window to quantify pressure.
         // Scan the full window (not midpoint) so we capture the actual trough even if the
@@ -399,7 +400,7 @@ export function identifyCriticalMoments(
         moments.push({
           timeSeconds: firstBurst.fromSeconds,
           impactScore: 90,
-          impactLabel: 'Critical',
+          impactLabel: 'Moderate',
           roleLabel: 'Constraint',
           title: 'Opening burst forced full defensive trade',
           enemyState,
@@ -428,7 +429,8 @@ export function identifyCriticalMoments(
 
   // 1. Friendly deaths — highest impact
   for (const death of friendlyDeaths) {
-    const enemyState = getEnemyStateAtTime(death.atSeconds, enemyCDTimeline, peakDamagePressure5s);
+    const enemyStateRaw = getEnemyStateAtTime(death.atSeconds, enemyCDTimeline, peakDamagePressure5s);
+    const enemyState = enemyStateRaw.replace(/ \((Low|Moderate|High|Critical) threat\)/, '');
     const cdState = getOwnerCDsAvailable(death.atSeconds, cooldowns);
     const nearbyGap = healingGaps.find((g) => g.fromSeconds <= death.atSeconds && g.toSeconds >= death.atSeconds - 10);
     const dyingUnit = unitsByName.get(death.name);
@@ -449,7 +451,7 @@ export function identifyCriticalMoments(
     moments.push({
       timeSeconds: death.atSeconds,
       impactScore: 100,
-      impactLabel: 'Critical',
+      impactLabel: 'Moderate',
       roleLabel: 'Kill',
       title: `${death.spec} death`,
       enemyState,
@@ -477,7 +479,8 @@ export function identifyCriticalMoments(
       );
       if (tiedToDeath) continue;
       const midpoint = gap.fromSeconds + gap.durationSeconds / 2;
-      const enemyState = getEnemyStateAtTime(midpoint, enemyCDTimeline);
+      const enemyStateRaw = getEnemyStateAtTime(midpoint, enemyCDTimeline);
+      const enemyState = enemyStateRaw.replace(/ \((Low|Moderate|High|Critical) threat\)/, '');
       const cdState = getOwnerCDsAvailable(gap.fromSeconds, cooldowns);
       const dmgK = Math.round(gap.mostDamagedAmount / 1000);
       const score = Math.min(85, 40 + gap.mostDamagedAmount / 150_000);
@@ -485,7 +488,7 @@ export function identifyCriticalMoments(
       moments.push({
         timeSeconds: gap.fromSeconds,
         impactScore: score,
-        impactLabel: score >= 70 ? 'High' : 'Moderate',
+        impactLabel: 'Moderate',
         roleLabel: gapContributingDeath ? 'Setup' : 'Trade',
         title: `Healer inactivity — ${gap.mostDamagedSpec} took ${dmgK}k while healer was free to cast`,
         enemyState,
@@ -504,14 +507,15 @@ export function identifyCriticalMoments(
 
   // 3. Panic defensives — CD used during no real pressure
   for (const panic of panicDefensives) {
-    const enemyState = getEnemyStateAtTime(panic.timeSeconds, enemyCDTimeline);
+    const enemyStateRaw = getEnemyStateAtTime(panic.timeSeconds, enemyCDTimeline);
+    const enemyState = enemyStateRaw.replace(/ \((Low|Moderate|High|Critical) threat\)/, '');
     const cdState = getOwnerCDsAvailable(panic.timeSeconds, cooldowns);
     const panicContributingDeath = findContributingDeath(panic.timeSeconds, friendlyDeaths);
     const panicTargetHpNote = hpPctNote(unitsByName.get(panic.targetName), panic.timeSeconds);
     moments.push({
       timeSeconds: panic.timeSeconds,
       impactScore: 60,
-      impactLabel: 'High',
+      impactLabel: 'Moderate',
       roleLabel: panicContributingDeath ? 'Setup' : 'Trade',
       title: `Defensive commit — ${panic.spellName} used with no coordinated enemy burst detected`,
       enemyState,
@@ -530,7 +534,8 @@ export function identifyCriticalMoments(
 
   // 4. Overlapped defensives
   for (const overlap of overlappedDefensives) {
-    const enemyState = getEnemyStateAtTime(overlap.timeSeconds, enemyCDTimeline);
+    const enemyStateRaw = getEnemyStateAtTime(overlap.timeSeconds, enemyCDTimeline);
+    const enemyState = enemyStateRaw.replace(/ \((Low|Moderate|High|Critical) threat\)/, '');
     const overlapContributingDeath = findContributingDeath(overlap.timeSeconds, friendlyDeaths);
     const overlapTargetHpNote = hpPctNote(unitsById.get(overlap.targetUnitId), overlap.timeSeconds);
     moments.push({

@@ -12,7 +12,7 @@ import {
   specToBenchmarkKey,
   specToString,
 } from '../../../utils/cooldowns';
-import { dampeningDangerMultiplier, getDampeningPercentage } from '../../../utils/dampening';
+import { getDampeningPercentage } from '../../../utils/dampening';
 import { canDefensiveCleanse, IDispelEvent, IDispelSummary } from '../../../utils/dispelAnalysis';
 import { extractAoeCCEvents, IOutgoingCCChain } from '../../../utils/drAnalysis';
 import { IEnemyCDTimeline } from '../../../utils/enemyCDs';
@@ -220,7 +220,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     const cdNames = burst.activeCDs.map((c) => c.spellName).join(' + ');
     addEntry(
       burst.fromSeconds,
-      `${fmtTime(burst.fromSeconds)}  [OFFENSIVE WINDOW]   ${fmtTime(burst.fromSeconds)}–${fmtTime(burst.toSeconds)} | ${burst.dangerLabel} | ${dmgM}M on ${pid(overlappingSpike.targetName)} (${overlappingSpike.targetSpec}) | CDs: ${cdNames}`,
+      `${fmtTime(burst.fromSeconds)}  [OFFENSIVE WINDOW]   ${fmtTime(burst.fromSeconds)}–${fmtTime(burst.toSeconds)} | ${dmgM}M on ${pid(overlappingSpike.targetName)} (${overlappingSpike.targetSpec}) | CDs: ${cdNames}`,
     );
   }
 
@@ -602,25 +602,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       if (fallbackKey) b = benchmarks.bySpec[fallbackKey];
     }
 
-    let dangerLabel = '';
-    if (b?.pressureWindows) {
-      const currentDampeningPct = bracket
-        ? getDampeningPercentage(bracket, [...friends, ...(enemies ?? [])], matchStartMs + pw.fromSeconds * 1000) / 100
-        : 0;
-      const dangerMult = dampeningDangerMultiplier(currentDampeningPct);
-      const effectiveDamage = pw.totalDamage * dangerMult;
-
-      if (effectiveDamage >= b.pressureWindows.p95) dangerLabel = ' [P95 Danger]';
-      else if (effectiveDamage >= b.pressureWindows.p90) dangerLabel = ' [P90 High]';
-      else if (effectiveDamage >= b.pressureWindows.p75) dangerLabel = ' [P75 Elevated]';
-      else if (effectiveDamage >= b.pressureWindows.p50) dangerLabel = ' [P50 Normal]';
-    }
-
     const fromMs = matchStartMs + pw.fromSeconds * 1000;
     const toMs = matchStartMs + pw.toSeconds * 1000;
     const windowEvents =
       targetUnit?.damageIn.filter((d) => d.logLine.timestamp >= fromMs && d.logLine.timestamp <= toMs) ?? [];
-    const sources = new Set(windowEvents.map((d) => d.srcUnitName));
     const totalAbsorbed = windowEvents.reduce((sum, d) => {
       if (d.logLine.event === LogEvent.SPELL_ABSORBED) {
         return sum + ((d as unknown as CombatAbsorbAction).absorbedAmount ?? 0);
@@ -628,12 +613,11 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       return sum;
     }, 0);
 
-    const sourceLabel = sources.size <= 4 ? ' [BURST]' : ' [ROT]';
     const absorbStr = totalAbsorbed > 100_000 ? ` (${(totalAbsorbed / 1_000_000).toFixed(2)}M absorbed)` : '';
 
     addEntry(
       pw.fromSeconds,
-      `${fmtTime(pw.fromSeconds)}  [DMG SPIKE]   ${pid(pw.targetName)} (${pw.targetSpec}): ${dmgM}M in ${windowSec}s${dangerLabel}${sourceLabel}${hpStr}${absorbStr}`,
+      `${fmtTime(pw.fromSeconds)}  [DMG SPIKE]   ${pid(pw.targetName)} (${pw.targetSpec}): ${dmgM}M in ${windowSec}s${hpStr}${absorbStr}`,
     );
   }
 

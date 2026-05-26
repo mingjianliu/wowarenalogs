@@ -296,14 +296,13 @@ export function formatEnemyCDTimelineForContext(timeline: IEnemyCDTimeline, matc
 
   timeline.alignedBurstWindows.forEach((w, idx) => {
     const scoreStr = w.dangerScore.toFixed(1);
-    const labelStr = w.dangerLabel.toUpperCase();
     const dampStr = fmtDampening(w.dampeningPct);
     const cdNames = w.activeCDs.map((c) => `${c.spellName} (${c.playerName})`).join(' + ');
     const dmgM = (w.damageInWindow / 1_000_000).toFixed(2);
     const ratioStr = `${w.damageRatio.toFixed(1)}× match avg`;
     const healerStr = w.healerCCed ? 'healer CCed' : 'healer free';
     lines.push(
-      `  #${idx + 1} — ${fmtTime(w.fromSeconds)}–${fmtTime(w.toSeconds)} | Score: ${scoreStr} [${labelStr}] | Dampening: ${dampStr}`,
+      `  #${idx + 1} — ${fmtTime(w.fromSeconds)}–${fmtTime(w.toSeconds)} | Score: ${scoreStr} | Dampening: ${dampStr}`,
     );
     lines.push(`    CDs: ${cdNames}`);
     lines.push(`    Damage: ${dmgM}M (${ratioStr}) | ${healerStr}`);
@@ -372,7 +371,7 @@ export function formatKillAttemptWindowsForContext(
     const dmgM = (spike.totalDamage / 1_000_000).toFixed(2);
     const cdNames = burst.activeCDs.map((c) => c.spellName).join(' + ');
     lines.push(
-      `  ${fmtTime(burst.fromSeconds)}–${fmtTime(burst.toSeconds)}  [${burst.dangerLabel.toUpperCase()}]  ${dmgM}M on ${spike.targetSpec} | CDs: ${cdNames}`,
+      `  ${fmtTime(burst.fromSeconds)}–${fmtTime(burst.toSeconds)}  ${dmgM}M on ${spike.targetSpec} | CDs: ${cdNames}`,
     );
   }
 
