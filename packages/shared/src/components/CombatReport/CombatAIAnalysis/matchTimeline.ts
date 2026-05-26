@@ -268,28 +268,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   // ── [OWNER CD] events ───────────────────────────────────────────────────────
 
-  // F114 (Variant C + Pressure): precompute which amplifier-spell casts get a [HEALING] block.
-  // Per spell: emit the first eligible cast, the worst subsequent eligible cast
-  // (score = overhealPct * 1000 - maxBucketHps; higher = worse), AND any eligible cast
-  // that falls within an [OFFENSIVE WINDOW] (aligned enemy burst + damage spike).
-  // Casts suppressed by the early-low-activity gate are never eligible.
-
-  // Precompute offensive-window time ranges using the same filter as the
-  // [OFFENSIVE WINDOW] header emission above: aligned burst window overlapping a
-  // pressureWindow whose totalDamage >= DMG_SPIKE_THRESHOLD.
-  const offensiveWindowRanges: { fromSeconds: number; toSeconds: number }[] = [];
-  for (const burst of enemyCDTimeline.alignedBurstWindows) {
-    const hasSpike = pressureWindows.some(
-      (pw) =>
-        pw.totalDamage >= DMG_SPIKE_THRESHOLD &&
-        pw.fromSeconds >= burst.fromSeconds - 5 &&
-        pw.fromSeconds <= burst.toSeconds + 5,
-    );
-    if (hasSpike) offensiveWindowRanges.push({ fromSeconds: burst.fromSeconds, toSeconds: burst.toSeconds });
-  }
-  const inOffensiveWindow = (timeSeconds: number): boolean =>
-    offensiveWindowRanges.some((w) => timeSeconds >= w.fromSeconds && timeSeconds <= w.toSeconds);
-
+  // F114 (Variant C): precompute which amplifier-spell casts get a [HEALING] block.
+  // Per spell, emit only the first eligible cast and the worst subsequent eligible
+  // cast (score = overhealPct * 1000 - maxBucketHps; higher = worse). Casts
+  // suppressed by the early-low-activity gate are never eligible.
   const healingEmissionTimes = new Map<string, Set<number>>();
   for (const cd of ownerCDs) {
     if (!HEALING_AMPLIFIER_SPELL_IDS.has(cd.spellId)) continue;
@@ -315,10 +297,6 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         if (eligible[i].score > eligible[worstIdx].score) worstIdx = i;
       }
       emit.add(eligible[worstIdx].timeSeconds);
-    }
-    // Pressure extension: any eligible cast during an offensive window also emits.
-    for (const e of eligible) {
-      if (inOffensiveWindow(e.timeSeconds)) emit.add(e.timeSeconds);
     }
     healingEmissionTimes.set(cd.spellId, emit);
   }
