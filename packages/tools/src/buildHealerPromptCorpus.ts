@@ -134,6 +134,15 @@ async function tryProcessStub(
   const date = new Date(stub.startTime).toISOString().slice(0, 10);
   process.stderr.write(`  [${ordinal}] ${stub.id} (${stub.startInfo?.bracket ?? BRACKET}, ${date})... `);
 
+  const bracket = stub.startInfo?.bracket ?? BRACKET;
+  const isSoloShuffle = bracket.toLowerCase().includes('solo');
+  const minDuration = isSoloShuffle ? 60 : 90;
+  const stubDurationSec = Math.round((stub.endTime - stub.startTime) / 1000);
+  if (stubDurationSec < minDuration) {
+    process.stderr.write(`too short (${stubDurationSec}s for ${bracket})\n`);
+    return null;
+  }
+
   let text: string;
   try {
     const res = await fetch(stub.logObjectUrl);
@@ -174,7 +183,10 @@ async function tryProcessStub(
     }
 
     const durationSec = Math.round((combat.endTime - combat.startTime) / 1000);
-    if (durationSec < 10) continue;
+    if (durationSec < minDuration) {
+      process.stderr.write(`too short parsed (${durationSec}s)\n`);
+      continue;
+    }
 
     const combatAny = combat as unknown as Record<string, unknown>;
     const playerWon =
@@ -249,6 +261,13 @@ async function runFromRawLogs(): Promise<void> {
 
       const spec = specToString(owner.spec);
       const durationSec = Math.round((combat.endTime - combat.startTime) / 1000);
+      const bracket = combat.startInfo?.bracket ?? BRACKET;
+      const isSoloShuffle = bracket.toLowerCase().includes('solo');
+      const minDuration = isSoloShuffle ? 60 : 90;
+      if (durationSec < minDuration) {
+        process.stderr.write(`  [${i + 1}] ${matchId}: too short (${durationSec}s for ${bracket})\n`);
+        continue;
+      }
       const combatAny = combat as unknown as Record<string, unknown>;
       const playerWon =
         typeof combatAny['winningTeamId'] === 'string' ? combatAny['winningTeamId'] === combat.playerTeamId : null;

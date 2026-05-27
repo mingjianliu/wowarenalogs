@@ -235,6 +235,7 @@ export interface MatchStub {
   wowVersion: string;
   logObjectUrl: string;
   startTime: number;
+  endTime: number;
   startInfo?: { bracket: string };
 }
 
@@ -518,7 +519,6 @@ export function buildMatchPrompt(combat: ParsedCombat, forceHealer = false): str
     durationSeconds,
     friends,
     combat.startTime,
-    neutral,
   );
 
   const ownerCanPurge = canOffensivePurge(owner);
@@ -816,10 +816,10 @@ export function buildMatchPrompt(combat: ParsedCombat, forceHealer = false): str
   }
 
   lines.push('');
-  formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds, neutral).forEach((l) => lines.push(l));
+  formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds).forEach((l) => lines.push(l));
 
   lines.push('');
-  formatKillAttemptWindowsForContext(enemyCDTimeline.alignedBurstWindows, pressureWindows, neutral).forEach((l) =>
+  formatKillAttemptWindowsForContext(enemyCDTimeline.alignedBurstWindows, pressureWindows).forEach((l) =>
     lines.push(l),
   );
 
@@ -1052,10 +1052,10 @@ export function buildMatchPromptNew(combat: ParsedCombat, forceHealer = false): 
     lines.push('');
   }
 
-  lines.push(...formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds, neutral));
+  lines.push(...formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds));
   lines.push('');
 
-  lines.push(...formatKillAttemptWindowsForContext(enemyCDTimeline.alignedBurstWindows, pressureWindows, neutral));
+  lines.push(...formatKillAttemptWindowsForContext(enemyCDTimeline.alignedBurstWindows, pressureWindows));
   lines.push('');
 
   // Player loadout
@@ -1089,7 +1089,6 @@ export function buildMatchPromptNew(combat: ParsedCombat, forceHealer = false): 
     enemyIdMap,
     outgoingCCChains,
     bracket: combat.startInfo?.bracket ?? '3v3',
-    neutral,
   };
   lines.push(buildMatchTimeline(params));
 
@@ -1240,10 +1239,10 @@ export function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false):
     lines.push('');
   }
 
-  lines.push(...formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds, neutral));
+  lines.push(...formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds));
   lines.push('');
 
-  lines.push(...formatKillAttemptWindowsForContext(enemyCDTimeline.alignedBurstWindows, pressureWindows, neutral));
+  lines.push(...formatKillAttemptWindowsForContext(enemyCDTimeline.alignedBurstWindows, pressureWindows));
   lines.push('');
 
   // Player loadout
@@ -1568,7 +1567,9 @@ async function main() {
   }
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}
