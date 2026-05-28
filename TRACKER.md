@@ -45,7 +45,6 @@ Active work items. Completed/N/A items archived in `TRACKER_ARCHIVE.md`.
 
 | F120 | S5 | Timeline Noise Reduction (`[STATE]` Emission) — change per-second resource readiness `[STATE]` lines to be delta-based (only log when a resource changes) or key-moment snapshots (start of kill windows, after deaths/major CDs). This addresses the heavy timeline noise identified in the 05/24 eval report, particularly affecting Holy Paladins. | `matchTimeline.ts`, `packages/shared/src/utils/` |
 | F121 | Backlog | Timeline Noise Reduction: Exclude filler rotations — filter out high-frequency fillers (e.g. Glide, Hover, Rushing Wind Kick, SW:Pain, Sacred Weapon, Judgment) from `[OWNER CAST]` timeline to reduce token waste and AI distraction | `cooldowns.ts`, `printMatchPrompts.ts` |
-| F122 | Backlog | Healer PLAYER LOADOUT Audit: Complete missing CDs — expand loadout tracking for all healers to cover missing major CDs (e.g., Spirit Link Totem, Revival/Restoral, Power Word: Barrier, Rapture, Ultimate Penitence, Spellwarding, Lay on Hands) | `cooldowns.ts`, `ccTrinketAnalysis.ts` |
 | F123 | Backlog | Spec-Specific State Injections: Evoker Stasis & Druid Shapeshifts — track and print stored/released spells inside Evoker `Stasis` casts, and log Druid shapeshifting states (especially Bear Form defensive posture) in the timeline | `printMatchPrompts.ts`, `cooldowns.ts` |
 | F124 | Backlog | Enhanced Debuff & Dispel Tracking: HoT Purges, DRs, & Backlashes — log Druid HoT purge events, magic dispel backlash stun/horrors (VT backlash), and add DR category/base CC durations to `[CC ON TEAM]` annotations | `ccTrinketAnalysis.ts`, `dispelAnalysis.ts` |
 | F125 | Backlog | Re-integrate Healer Exposure during Burst — bring back the structured `HEALER EXPOSURE DURING ENEMY BURST WINDOWS` block in the timeline prompt (`buildMatchPromptNew`) | `printMatchPrompts.ts`, `healerExposureAnalysis.ts` |
@@ -58,7 +57,6 @@ Active work items. Completed/N/A items archived in `TRACKER_ARCHIVE.md`.
 | F132 | Backlog | Spec-Aware Dispel Cooldown Tracking — adjust dispel CD tracking from a hardcoded 8s window to support 60s cooldowns (e.g., Cauterizing Flame) and no-cooldown cleanses (Druid, Mage) | `dispelAnalysis.ts` |
 | F133 | Backlog | Evoker Obsidian Scales Spec Restriction Fix — expand Obsidian Scales tracking to dev/pres/aug specs in `cooldowns.ts` | `cooldowns.ts` |
 | F134 | Backlog | Parser Pet Casts Omission — merge pet `spellCastEvents` (e.g., Freeze, Axe Toss, Seduction) into their owners' cast history so they can be parsed as cooldown trades | `CombatData.ts`, `BattlegroundData.ts` |
-| F135 | Backlog | Shaman Cooldown Mappings — resolve spell ID mismatches for Spirit Link Totem (98008 vs 325174), Grounding Totem (204336 vs 8178), and Earthen Wall Totem (add Defensive tag to 198838) | `cooldowns.ts`, `spellEffects.json` |
 | F136 | Backlog | Healer Match-End HPS & Mana Metrics — include overall match-end healer HPS, overhealing %, and final mana pool states in the prompt facts/timeline | `printMatchPrompts.ts`, `matchTimeline.ts` |
 
 ---
