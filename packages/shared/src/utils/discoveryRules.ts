@@ -1,0 +1,21 @@
+import { SpellTag } from './cooldowns';
+
+/**
+ * Keywords used to intelligently tag dynamically discovered spells.
+ * These are matched against the spell name (lowercase).
+ */
+export const DISCOVERY_TAG_RULES: { pattern: RegExp; tags: SpellTag[] }[] = [
+  {
+    pattern:
+      /shield|wall|block|ward|protection|suppress|spirit|cocoon|bark|shell|cloak|fortitude|embrace|resolv|unending/,
+    tags: [SpellTag.Defensive],
+  },
+  {
+    pattern: /avatar|wrath|power|infusion|berserk|recklessness|lust|ascendance|darkness|metamorph|shadowfiend|bender/,
+    tags: [SpellTag.Offensive],
+  },
+  {
+    pattern: /scream|stun|blind|trap|sheep|nova|fear|horror|root|bash|clap|roar|shout|disorient/,
+    tags: [SpellTag.Control],
+  },
+];

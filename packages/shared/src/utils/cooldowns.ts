@@ -9,6 +9,7 @@ import {
 
 import { getEnglishSpellName, spellEffectData } from '../data/spellEffectData';
 import spellIdListsData from '../data/spellIdLists.json';
+import { DISCOVERY_TAG_RULES } from './discoveryRules';
 import { CD_TALENT_MODIFIERS } from './talentModifiers';
 import { getPlayerTalentedSpellIds, getSpecTalentTreeSpellIds } from './talents';
 
@@ -278,30 +279,21 @@ export function extractMajorCooldowns(unit: ICombatUnit, combat: AtomicArenaComb
 
   // --- Dynamic Discovery ---
   // Add any active talent spell with CD >= 30s that wasn't already in the static list.
-  if (!process.env.DISABLE_TALENT_AWARE_CD && talentedSpellIds) {
+  if (talentedSpellIds) {
     for (const spellId of talentedSpellIds) {
       if (seen.has(spellId)) continue;
       const effectData = spellEffectData[spellId];
       if (!effectData) continue;
       const cd = effectData.cooldownSeconds ?? effectData.charges?.chargeCooldownSeconds ?? 0;
       if (cd >= MIN_CD_SECONDS) {
-        // Intelligent tagging based on name
+        // Intelligent tagging based on name pattern rules
         const name = effectData.name.toLowerCase();
         const tags: SpellTag[] = [];
-        if (
-          /shield|wall|block|ward|protection|suppress|spirit|cocoon|bark|shell|cloak|fortitude|embrace|resolv|unending/.test(
-            name,
-          )
-        ) {
-          tags.push(SpellTag.Defensive);
-        } else if (
-          /avatar|wrath|power|infusion|berserk|recklessness|lust|ascendance|darkness|metamorph|shadowfiend|bender/.test(
-            name,
-          )
-        ) {
-          tags.push(SpellTag.Offensive);
-        } else if (/scream|stun|blind|trap|sheep|nova|fear|horror|root|bash|clap|roar|shout|disorient/.test(name)) {
-          tags.push(SpellTag.Control);
+
+        for (const rule of DISCOVERY_TAG_RULES) {
+          if (rule.pattern.test(name)) {
+            tags.push(...rule.tags);
+          }
         }
 
         // If we found a tag, it's a "Major CD" for analysis purposes.
@@ -322,7 +314,7 @@ export function extractMajorCooldowns(unit: ICombatUnit, combat: AtomicArenaComb
 
     // Apply talent-based modifications if the player's talents are known
     const modifiers = CD_TALENT_MODIFIERS[spell.spellId];
-    if (!process.env.DISABLE_TALENT_AWARE_CD && modifiers && (talentedSpellIds || pvpTalentIds.size > 0)) {
+    if (modifiers && (talentedSpellIds || pvpTalentIds.size > 0)) {
       for (const mod of modifiers) {
         if (talentedSpellIds?.has(mod.talentSpellId) || pvpTalentIds.has(mod.talentSpellId)) {
           if (mod.effect === 'extra_charge') {
