@@ -81,6 +81,7 @@ import {
 import { computeMatchArchetype, formatMatchArchetypeForContext } from '../../shared/src/utils/matchArchetype';
 import { computeOffensiveWindows, formatOffensiveWindowsForContext } from '../../shared/src/utils/offensiveWindows';
 import { benchmarks, formatDTPSBaselines, formatSpecBaselines } from '../../shared/src/utils/specBaselines';
+import { logCache } from './utils/logCache';
 
 const API_BASE = 'https://wowarenalogs.com';
 
@@ -1378,70 +1379,127 @@ interface RunOptions {
   useNewPrompt?: boolean;
   compareMode?: boolean;
   compareJsonMode?: boolean;
+  filterSpec?: string;
+  filterMinDuration?: number;
+  filterMaxDuration?: number;
+  filterResult?: string;
 }
+export async function processStub(
+  stub: MatchStub,
+  matchIndex: number,
+  count: number,
+  aiMode: boolean,
+  options: RunOptions,
+): Promise<boolean> {
+  const { forceHealer = false } = options;
+  const date = new Date(stub.startTime).toISOString().slice(0, 10);
+
+  let text: string;
+  try {
+    text = await logCache.getLogText(stub.id, stub.logObjectUrl);
+  } catch (e) {
+    process.stderr.write(`download/cache failed: ${e}\n`);
+    return false;
+  }
+
+  let combats: ParsedCombat[];
+  try {
+    combats = await parseLogText(text);
+  } catch (e) {
+    process.stderr.write(`parse failed: ${e}\n`);
+    return false;
+  }
+
+  let foundInThisStub = false;
+  for (const combat of combats) {
+    // Apply filters
+    const durationSec = (combat.endTime - combat.startTime) / 1000;
+    if (options.filterMinDuration && durationSec < options.filterMinDuration) {
+      process.stderr.write(`too short (${Math.round(durationSec)}s)\n`);
+      continue;
+    }
+    if (options.filterMaxDuration && durationSec > options.filterMaxDuration) {
+      process.stderr.write(`too long (${Math.round(durationSec)}s)\n`);
+      continue;
+    }
+
+    const allUnits = Object.values(combat.units);
+    const friends = allUnits.filter(
+      (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
+    ) as ICombatUnit[];
+    if (friends.length === 0) continue;
+
+    const byPlayerId = friends.find((p) => p.id === combat.playerId);
+    const owner = byPlayerId
+      ? byPlayerId
+      : forceHealer
+        ? (friends.find((p) => isHealerSpec(p.spec)) ?? friends[0])
+        : (friends.find((p) => !isHealerSpec(p.spec)) ?? friends.find((p) => isHealerSpec(p.spec)) ?? friends[0]);
+
+    if (options.filterSpec && specToString(owner.spec) !== options.filterSpec) {
+      process.stderr.write(`spec mismatch (${specToString(owner.spec)})\n`);
+      continue;
+    }
+
+    const combatAny = combat as unknown as Record<string, unknown>;
+    const playerWon =
+      typeof combatAny['winningTeamId'] === 'string' ? combatAny['winningTeamId'] === combat.playerTeamId : null;
+    const resultStr: 'Win' | 'Loss' | 'Unknown' = playerWon === true ? 'Win' : playerWon === false ? 'Loss' : 'Unknown';
+
+    if (options.filterResult && resultStr.toLowerCase() !== options.filterResult.toLowerCase()) {
+      process.stderr.write(`result mismatch (${resultStr})\n`);
+      continue;
+    }
+
+    // compare mode always uses the new timeline prompt as input (includes [RESOURCES] blocks)
+    const prompt = options.compareJsonMode
+      ? buildMatchPromptJson(combat, forceHealer)
+      : options.compareMode || options.useNewPrompt
+        ? buildMatchPromptNew(combat, forceHealer)
+        : buildMatchPrompt(combat, forceHealer);
+    if (!prompt) {
+      process.stderr.write(`empty prompt\n`);
+      continue;
+    }
+
+    foundInThisStub = true;
+    process.stderr.write(`MATCH ${matchIndex} found!\n`);
+    const label = `${stub.id} (${stub.startInfo?.bracket ?? 'Unknown'}, ${date}) - ${specToString(owner.spec)} ${resultStr} ${Math.round(durationSec)}s`;
+    await printMatch(label, prompt, matchIndex, aiMode, options);
+    break; // only take one combat per stub to match index logic
+  }
+
+  return foundInThisStub;
+}
+
 async function runCloud(count: number, bracket: string, aiMode: boolean, options: RunOptions = {}) {
-  const {
-    testPromptMode = false,
-    forceHealer = false,
-    useNewPrompt = false,
-    compareMode = false,
-    compareJsonMode = false,
-  } = options;
   console.log(`Fetching ${count} matches (bracket: ${bracket}) from ${API_BASE}...\n`);
 
-  const stubs = await fetchStubs(bracket, count);
-  if (stubs.length === 0) {
-    console.error('No matches returned from API.');
-    process.exit(1);
-  }
-  console.log(`Got ${stubs.length} stub(s). Downloading logs...\n`);
+  await logCache.init();
 
-  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'wlogs-prompts-'));
   let matchCount = 0;
+  let offset = 0;
+  const PAGE_SIZE = 50;
 
-  try {
+  while (matchCount < count) {
+    const stubs = await fetchStubs(bracket, PAGE_SIZE, offset);
+    if (stubs.length === 0) {
+      console.log('No more matches returned from API.');
+      break;
+    }
+    offset += PAGE_SIZE;
+
     for (const stub of stubs) {
+      if (matchCount >= count) break;
+
       const date = new Date(stub.startTime).toISOString().slice(0, 10);
-      process.stderr.write(`Downloading ${stub.id} (${stub.startInfo?.bracket ?? bracket}, ${date})...\n`);
+      process.stderr.write(`Processing ${stub.id} (${stub.startInfo?.bracket ?? bracket}, ${date})... `);
 
-      let text: string;
-      try {
-        const res = await fetch(stub.logObjectUrl);
-        if (!res.ok) throw new Error(`GCS ${res.status}`);
-        text = await res.text();
-      } catch (e) {
-        console.error(`  Download failed: ${e}`);
-        continue;
-      }
-
-      let combats: ParsedCombat[];
-      try {
-        combats = await parseLogText(text);
-      } catch (e) {
-        console.error(`  Parse failed: ${e}`);
-        continue;
-      }
-
-      for (const combat of combats) {
-        // compare mode always uses the new timeline prompt as input (includes [RESOURCES] blocks)
-        const prompt = compareJsonMode
-          ? buildMatchPromptJson(combat, forceHealer)
-          : compareMode || useNewPrompt
-            ? buildMatchPromptNew(combat, forceHealer)
-            : buildMatchPrompt(combat, forceHealer);
-        if (!prompt) continue;
+      const found = await processStub(stub, matchCount + 1, count, aiMode, options);
+      if (found) {
         matchCount++;
-        const label = `${stub.id} (${stub.startInfo?.bracket ?? bracket}, ${date})`;
-        await printMatch(label, prompt, matchCount, aiMode, {
-          testPromptMode,
-          useNewPrompt,
-          compareMode,
-          compareJsonMode,
-        });
       }
     }
-  } finally {
-    await fs.remove(tmpDir);
   }
 
   console.log(`\n${'='.repeat(80)}`);
@@ -1453,13 +1511,7 @@ async function runCloud(count: number, bracket: string, aiMode: boolean, options
 // ---------------------------------------------------------------------------
 
 async function runLocal(logDir: string, aiMode: boolean, options: RunOptions = {}) {
-  const {
-    testPromptMode = false,
-    forceHealer = false,
-    useNewPrompt = false,
-    compareMode = false,
-    compareJsonMode = false,
-  } = options;
+  const { forceHealer = false } = options;
   const files = (await fs.readdir(logDir))
     .filter((f) => f.endsWith('.txt') && f.startsWith('WoWCombatLog'))
     .map((f) => path.join(logDir, f))
@@ -1485,6 +1537,34 @@ async function runLocal(logDir: string, aiMode: boolean, options: RunOptions = {
     if (combats.length === 0) continue;
 
     for (const combat of combats) {
+      // Apply filters
+      const durationSec = (combat.endTime - combat.startTime) / 1000;
+      if (options.filterMinDuration && durationSec < options.filterMinDuration) continue;
+      if (options.filterMaxDuration && durationSec > options.filterMaxDuration) continue;
+
+      const allUnits = Object.values(combat.units);
+      const friends = allUnits.filter(
+        (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
+      ) as ICombatUnit[];
+      if (friends.length === 0) continue;
+
+      const byPlayerId = friends.find((p) => p.id === combat.playerId);
+      const owner = byPlayerId
+        ? byPlayerId
+        : forceHealer
+          ? (friends.find((p) => isHealerSpec(p.spec)) ?? friends[0])
+          : (friends.find((p) => !isHealerSpec(p.spec)) ?? friends.find((p) => isHealerSpec(p.spec)) ?? friends[0]);
+
+      if (!owner) continue;
+      if (options.filterSpec && specToString(owner.spec) !== options.filterSpec) continue;
+
+      const combatAny = combat as unknown as Record<string, unknown>;
+      const playerWon =
+        typeof combatAny['winningTeamId'] === 'string' ? combatAny['winningTeamId'] === combat.playerTeamId : null;
+      const resultStr = playerWon === true ? 'Win' : playerWon === false ? 'Loss' : 'Unknown';
+
+      if (options.filterResult && resultStr.toLowerCase() !== options.filterResult.toLowerCase()) continue;
+
       const prompt = compareJsonMode
         ? buildMatchPromptJson(combat, forceHealer)
         : compareMode || useNewPrompt
@@ -1492,12 +1572,8 @@ async function runLocal(logDir: string, aiMode: boolean, options: RunOptions = {
           : buildMatchPrompt(combat, forceHealer);
       if (!prompt) continue;
       matchCount++;
-      await printMatch(fileName, prompt, matchCount, aiMode, {
-        testPromptMode,
-        useNewPrompt,
-        compareMode,
-        compareJsonMode,
-      });
+      const label = `${fileName} - ${specToString(owner.spec)} ${resultStr} ${Math.round(durationSec)}s`;
+      await printMatch(label, prompt, matchCount, aiMode, options);
     }
   }
 
@@ -1522,6 +1598,28 @@ async function main() {
   const bracketIdx = args.indexOf('--bracket');
   const bracket = bracketIdx !== -1 ? args[bracketIdx + 1] : 'Rated Solo Shuffle';
   const count = countIdx !== -1 ? parseInt(args[countIdx + 1] ?? '10', 10) : 10;
+
+  const specIdx = args.indexOf('--spec');
+  const minDurationIdx = args.indexOf('--min-duration');
+  const maxDurationIdx = args.indexOf('--max-duration');
+  const resultIdx = args.indexOf('--result');
+
+  const filterSpec = specIdx !== -1 ? args[specIdx + 1] : undefined;
+  const filterMinDuration = minDurationIdx !== -1 ? parseInt(args[minDurationIdx + 1] ?? '0', 10) : undefined;
+  const filterMaxDuration = maxDurationIdx !== -1 ? parseInt(args[maxDurationIdx + 1] ?? '0', 10) : undefined;
+  const filterResult = resultIdx !== -1 ? args[resultIdx + 1] : undefined;
+
+  const runOptions: RunOptions = {
+    testPromptMode,
+    forceHealer,
+    useNewPrompt,
+    compareMode,
+    compareJsonMode,
+    filterSpec,
+    filterMinDuration,
+    filterMaxDuration,
+    filterResult,
+  };
 
   if (compareMode) {
     if (!process.env.ANTHROPIC_API_KEY) {
@@ -1561,9 +1659,9 @@ async function main() {
       /^~/,
       os.homedir(),
     );
-    await runLocal(logDir, aiMode, { testPromptMode, forceHealer, useNewPrompt, compareMode, compareJsonMode });
+    await runLocal(logDir, aiMode, runOptions);
   } else {
-    await runCloud(count, bracket, aiMode, { testPromptMode, forceHealer, useNewPrompt, compareMode, compareJsonMode });
+    await runCloud(count, bracket, aiMode, runOptions);
   }
 }
 
