@@ -115,13 +115,6 @@
     "durationSeconds": 30,
     "dispelType": "Magic"
   },
-  "740": {
-    "spellId": "740",
-    "name": "Tranquility",
-    "cooldownSeconds": 180,
-    "durationSeconds": 5,
-    "dispelType": null
-  },
   "853": {
     "spellId": "853",
     "name": "Hammer of Justice",
@@ -853,7 +846,7 @@
     "spellId": "51533",
     "name": "Feral Spirit",
     "cooldownSeconds": 90,
-    "durationSeconds": 15,
+    "durationSeconds": 0,
     "dispelType": null
   },
   "51690": {
@@ -1864,13 +1857,6 @@
     "durationSeconds": 60,
     "dispelType": "Magic"
   },
-  "162264": {
-    "spellId": "162264",
-    "name": "Metamorphosis",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 20,
-    "dispelType": null
-  },
   "162480": {
     "spellId": "162480",
     "name": "Steel Trap",
@@ -2016,7 +2002,7 @@
     "spellId": "191427",
     "name": "Metamorphosis",
     "cooldownSeconds": 120,
-    "durationSeconds": 15,
+    "durationSeconds": 0,
     "dispelType": null
   },
   "191634": {
@@ -3334,8 +3320,8 @@
   "311054": {
     "spellId": "311054",
     "name": "Weapons of Order",
-    "cooldownSeconds": 120,
-    "durationSeconds": 30,
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 5,
     "dispelType": null
   },
   "314646": {
@@ -3589,13 +3575,6 @@
     "cooldownSeconds": 180,
     "durationSeconds": 15,
     "dispelType": "Magic"
-  },
-  "333957": {
-    "spellId": "333957",
-    "name": "Feral Spirit",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 15,
-    "dispelType": null
   },
   "335235": {
     "spellId": "335235",
@@ -4610,13 +4589,6 @@
     "durationSeconds": 120,
     "dispelType": null
   },
-  "433475": {
-    "spellId": "433475",
-    "name": "Phase Blades",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
   "433841": {
     "spellId": "433841",
     "name": "Venom Volley",
@@ -4715,6 +4687,13 @@
     "durationSeconds": 0,
     "dispelType": null
   },
+  "466772": {
+    "spellId": "466772",
+    "name": "Doom Winds",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 8,
+    "dispelType": null
+  },
   "468966": {
     "spellId": "468966",
     "name": "Polymorph",
@@ -4769,6 +4748,13 @@
     "name": "Felshield",
     "cooldownSeconds": 999.999,
     "durationSeconds": -0.001,
+    "dispelType": null
+  },
+  "1219480": {
+    "spellId": "1219480",
+    "name": "Ascendance",
+    "cooldownSeconds": 180,
+    "durationSeconds": 15,
     "dispelType": null
   },
   "1227373": {
@@ -4937,17 +4923,6 @@
     "name": "Umbral Collapse",
     "cooldownSeconds": 999.999,
     "durationSeconds": 5.5,
-    "dispelType": null
-  },
-  "1249625": {
-    "spellId": "1249625",
-    "name": "Zenith",
-    "cooldownSeconds": 90,
-    "charges": {
-      "charges": 2,
-      "chargeCooldownSeconds": 90
-    },
-    "durationSeconds": 15,
     "dispelType": null
   },
   "1249639": {
@@ -5440,13 +5415,6 @@
     "durationSeconds": 3,
     "dispelType": null
   },
-  "1277797": {
-    "spellId": "1277797",
-    "name": "Searing Motivation",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
   "1278156": {
     "spellId": "1278156",
     "name": "Lindormi's Guidance",
@@ -5474,13 +5442,6 @@
     "cooldownSeconds": 999.999,
     "durationSeconds": 5,
     "dispelType": null
-  },
-  "1281909": {
-    "spellId": "1281909",
-    "name": "Mind Eraser",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 6,
-    "dispelType": "Magic"
   },
   "1282138": {
     "spellId": "1282138",
@@ -5520,20 +5481,6 @@
   "1282722": {
     "spellId": "1282722",
     "name": "Nullify",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
-  "1284019": {
-    "spellId": "1284019",
-    "name": "Fragility",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
-  "1284083": {
-    "spellId": "1284083",
-    "name": "Dissonant Realities",
     "cooldownSeconds": 999.999,
     "durationSeconds": 0,
     "dispelType": null
@@ -5587,20 +5534,6 @@
     "durationSeconds": 0,
     "dispelType": null
   },
-  "1288077": {
-    "spellId": "1288077",
-    "name": "Power Source",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": -0.001,
-    "dispelType": null
-  },
-  "1288765": {
-    "spellId": "1288765",
-    "name": "Fragility",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
   "1293726": {
     "spellId": "1293726",
     "name": "Terrifying Power",
@@ -5611,6 +5544,20 @@
   "1294563": {
     "spellId": "1294563",
     "name": "Broken Shield",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": -0.001,
+    "dispelType": null
+  },
+  "1295237": {
+    "spellId": "1295237",
+    "name": "Netherburst",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": -0.001,
+    "dispelType": null
+  },
+  "1295243": {
+    "spellId": "1295243",
+    "name": "Netherburst",
     "cooldownSeconds": 999.999,
     "durationSeconds": -0.001,
     "dispelType": null

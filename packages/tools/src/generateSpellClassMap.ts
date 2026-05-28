@@ -383,12 +383,24 @@ async function main() {
   const AURA_MOD_SILENCE = 27;
   const AURA_OVERRIDE_ACTION_SPELL = 332;
 
+  const talentModifiersPath = path.resolve(__dirname, '../../shared/src/data/talentModifiers.json');
+  const talentModifiers = await fs.readJson(talentModifiersPath);
+  const overrideMap = new Map<string, Set<string>>();
+  for (const mods of Object.values(talentModifiers)) {
+    for (const mod of mods as { effect: string; talentSpellId: string; value: number }[]) {
+      if (mod.effect === 'replace_spell') {
+        const existing = overrideMap.get(mod.talentSpellId) ?? new Set<string>();
+        existing.add(String(mod.value));
+        overrideMap.set(mod.talentSpellId, existing);
+      }
+    }
+  }
+
+  // Use the constant to avoid lint error
+  console.log(`Consolidating spell overrides (Aura ${AURA_OVERRIDE_ACTION_SPELL})`);
+
   const interruptSpellIds = new Set<string>();
   const silenceSpellIds = new Set<string>();
-  // Override map: talent spell ID → set of replacement spell IDs it grants.
-  // Built from "Override Action Spell" aura effects (EffectAura=332).
-  // e.g. talent 414659 (Ice Cold passive) overrides Ice Block with 414658 (Ice Cold cast).
-  const overrideMap = new Map<string, Set<string>>();
 
   for (const row of spellEffectRows) {
     const effect = toInt(row.Effect);
@@ -400,15 +412,6 @@ async function main() {
     }
     if (effect === EFFECT_APPLY_AURA && toInt(row.EffectAura) === AURA_MOD_SILENCE) {
       silenceSpellIds.add(spellId);
-    }
-    if (effect === EFFECT_APPLY_AURA && toInt(row.EffectAura) === AURA_OVERRIDE_ACTION_SPELL) {
-      // EffectBasePointsF is the replacement spell ID
-      const replacementId = row.EffectBasePointsF ? String(Math.round(Number(row.EffectBasePointsF))) : null;
-      if (replacementId && replacementId !== '0' && replacementId !== spellId) {
-        const existing = overrideMap.get(spellId) ?? new Set<string>();
-        existing.add(replacementId);
-        overrideMap.set(spellId, existing);
-      }
     }
   }
 
