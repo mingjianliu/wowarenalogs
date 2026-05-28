@@ -11,7 +11,7 @@ import { getEnglishSpellName, spellEffectData } from '../data/spellEffectData';
 import spellIdListsData from '../data/spellIdLists.json';
 import { DISCOVERY_TAG_RULES } from './discoveryRules';
 import { CD_TALENT_MODIFIERS } from './talentModifiers';
-import { getPlayerTalentedSpellIds, getSpecTalentTreeSpellIds } from './talents';
+import { getPlayerTalentedSpellInfo, getSpecTalentTreeSpellInfo } from './talents';
 
 const MAJOR_DEFENSIVE_IDS = new Set<string>(
   (spellIdListsData as unknown as { externalOrBigDefensiveSpellIds?: string[] }).externalOrBigDefensiveSpellIds ?? [],
@@ -224,8 +224,10 @@ export function extractMajorCooldowns(unit: ICombatUnit, combat: AtomicArenaComb
   if (!classData) return [];
 
   const specIdNum = parseInt(unit.spec, 10);
-  const specTalentTreeSpellIds = getSpecTalentTreeSpellIds(specIdNum);
-  const talentedSpellIds = unit.info?.talents ? getPlayerTalentedSpellIds(specIdNum, unit.info.talents) : null;
+  const specTalentTreeSpellInfo = getSpecTalentTreeSpellInfo(specIdNum);
+  const specTalentTreeSpellIds = new Set(specTalentTreeSpellInfo.keys());
+  const talentedSpellInfo = unit.info?.talents ? getPlayerTalentedSpellInfo(specIdNum, unit.info.talents) : null;
+  const talentedSpellIds = talentedSpellInfo ? new Set(talentedSpellInfo.keys()) : null;
   // PvP talents selected by this player (spell IDs). Available when COMBATANT_INFO is present.
   const pvpTalentIds = new Set<string>(unit.info?.pvpTalents ?? []);
   const hasCombatantInfo = unit.info !== undefined;
@@ -279,11 +281,15 @@ export function extractMajorCooldowns(unit: ICombatUnit, combat: AtomicArenaComb
 
   // --- Dynamic Discovery ---
   // Add any active talent spell with CD >= 30s that wasn't already in the static list.
-  if (talentedSpellIds) {
-    for (const spellId of talentedSpellIds) {
+  if (talentedSpellInfo) {
+    for (const [spellId, info] of talentedSpellInfo.entries()) {
       if (seen.has(spellId)) continue;
+      // Only discover buttons (active nodes). Passives are handled via CD_TALENT_MODIFIERS.
+      if (info.type !== 'active') continue;
+
       const effectData = spellEffectData[spellId];
       if (!effectData) continue;
+
       const cd = effectData.cooldownSeconds ?? effectData.charges?.chargeCooldownSeconds ?? 0;
       if (cd >= MIN_CD_SECONDS) {
         // Intelligent tagging based on name pattern rules

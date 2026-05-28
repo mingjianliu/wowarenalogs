@@ -1,4 +1,4 @@
-import { SpellTag } from './cooldowns';
+import { SpellTag } from '@wowarenalogs/parser';
 
 /**
  * Keywords used to intelligently tag dynamically discovered spells.
