@@ -16,6 +16,7 @@
  *   npm run -w @wowarenalogs/tools start:printMatchPrompts -- --count 1 --new-prompt  (uses raw timeline prompt path)
  *   npm run -w @wowarenalogs/tools start:printMatchPrompts -- --count 1 --compare --healer  (A/B: new vs hybrid + judge)
  *   npm run -w @wowarenalogs/tools start:printMatchPrompts -- --count 10 --compare-json --healer  (A/B: [RES] text vs [SIT] JSON + judge)
+ *   npm run -w @wowarenalogs/tools start:printMatchPrompts -- --count 5 --spec Priest_Discipline --result Win --min-duration 60 --verbose
  */
 
 import Anthropic from '@anthropic-ai/sdk';
@@ -224,8 +225,18 @@ const STUBS_QUERY = `
   query GetLatestMatches($wowVersion: String!, $bracket: String, $offset: Int!, $count: Int!, $minRating: Float) {
     latestMatches(wowVersion: $wowVersion, bracket: $bracket, offset: $offset, count: $count, minRating: $minRating) {
       combats {
-        ... on ArenaMatchDataStub  { id wowVersion logObjectUrl startTime endTime timezone startInfo { bracket } }
-        ... on ShuffleRoundStub    { id wowVersion logObjectUrl startTime endTime timezone startInfo { bracket } }
+        ... on ArenaMatchDataStub  {
+          id wowVersion logObjectUrl startTime endTime timezone
+          playerId playerTeamId winningTeamId durationInSeconds
+          units { name spec type reaction }
+          startInfo { bracket }
+        }
+        ... on ShuffleRoundStub    {
+          id wowVersion logObjectUrl startTime endTime timezone
+          playerId playerTeamId winningTeamId durationInSeconds
+          units { name spec type reaction }
+          startInfo { bracket }
+        }
       }
     }
   }
@@ -237,6 +248,16 @@ export interface MatchStub {
   logObjectUrl: string;
   startTime: number;
   endTime: number;
+  playerId?: string;
+  playerTeamId?: string;
+  winningTeamId?: string;
+  durationInSeconds?: number;
+  units?: {
+    name: string;
+    spec: string;
+    type: CombatUnitType;
+    reaction: CombatUnitReaction;
+  }[];
   startInfo?: { bracket: string };
 }
 
@@ -1383,6 +1404,7 @@ interface RunOptions {
   filterMinDuration?: number;
   filterMaxDuration?: number;
   filterResult?: string;
+  verbose?: boolean;
 }
 export async function processStub(
   stub: MatchStub,
@@ -1391,7 +1413,7 @@ export async function processStub(
   aiMode: boolean,
   options: RunOptions,
 ): Promise<boolean> {
-  const { forceHealer = false } = options;
+  const { forceHealer = false, verbose = false } = options;
   const date = new Date(stub.startTime).toISOString().slice(0, 10);
 
   let text: string;
@@ -1415,11 +1437,11 @@ export async function processStub(
     // Apply filters
     const durationSec = (combat.endTime - combat.startTime) / 1000;
     if (options.filterMinDuration && durationSec < options.filterMinDuration) {
-      process.stderr.write(`too short (${Math.round(durationSec)}s)\n`);
+      if (verbose) process.stderr.write(`too short (${Math.round(durationSec)}s)\n`);
       continue;
     }
     if (options.filterMaxDuration && durationSec > options.filterMaxDuration) {
-      process.stderr.write(`too long (${Math.round(durationSec)}s)\n`);
+      if (verbose) process.stderr.write(`too long (${Math.round(durationSec)}s)\n`);
       continue;
     }
 
@@ -1436,8 +1458,8 @@ export async function processStub(
         ? (friends.find((p) => isHealerSpec(p.spec)) ?? friends[0])
         : (friends.find((p) => !isHealerSpec(p.spec)) ?? friends.find((p) => isHealerSpec(p.spec)) ?? friends[0]);
 
-    if (options.filterSpec && specToString(owner.spec) !== options.filterSpec) {
-      process.stderr.write(`spec mismatch (${specToString(owner.spec)})\n`);
+    if (options.filterSpec && specToString(owner.spec).toLowerCase() !== options.filterSpec.toLowerCase()) {
+      if (verbose) process.stderr.write(`spec mismatch (${specToString(owner.spec)})\n`);
       continue;
     }
 
@@ -1447,7 +1469,7 @@ export async function processStub(
     const resultStr: 'Win' | 'Loss' | 'Unknown' = playerWon === true ? 'Win' : playerWon === false ? 'Loss' : 'Unknown';
 
     if (options.filterResult && resultStr.toLowerCase() !== options.filterResult.toLowerCase()) {
-      process.stderr.write(`result mismatch (${resultStr})\n`);
+      if (verbose) process.stderr.write(`result mismatch (${resultStr})\n`);
       continue;
     }
 
@@ -1458,7 +1480,7 @@ export async function processStub(
         ? buildMatchPromptNew(combat, forceHealer)
         : buildMatchPrompt(combat, forceHealer);
     if (!prompt) {
-      process.stderr.write(`empty prompt\n`);
+      if (verbose) process.stderr.write(`empty prompt\n`);
       continue;
     }
 
@@ -1473,6 +1495,7 @@ export async function processStub(
 }
 
 async function runCloud(count: number, bracket: string, aiMode: boolean, options: RunOptions = {}) {
+  const { verbose = false } = options;
   console.log(`Fetching ${count} matches (bracket: ${bracket}) from ${API_BASE}...\n`);
 
   await logCache.init();
@@ -1493,6 +1516,38 @@ async function runCloud(count: number, bracket: string, aiMode: boolean, options
       if (matchCount >= count) break;
 
       const date = new Date(stub.startTime).toISOString().slice(0, 10);
+
+      // Pre-filter with stub metadata
+      if (options.filterMinDuration && stub.durationInSeconds && stub.durationInSeconds < options.filterMinDuration) {
+        if (verbose) process.stderr.write(`Skipping ${stub.id} (metadata): too short (${stub.durationInSeconds}s)\n`);
+        continue;
+      }
+      if (options.filterMaxDuration && stub.durationInSeconds && stub.durationInSeconds > options.filterMaxDuration) {
+        if (verbose) process.stderr.write(`Skipping ${stub.id} (metadata): too long (${stub.durationInSeconds}s)\n`);
+        continue;
+      }
+
+      if (options.filterResult && stub.playerTeamId && stub.winningTeamId) {
+        const playerWon = stub.winningTeamId === stub.playerTeamId;
+        const resultStr = playerWon ? 'Win' : 'Loss';
+        if (resultStr.toLowerCase() !== options.filterResult.toLowerCase()) {
+          if (verbose) process.stderr.write(`Skipping ${stub.id} (metadata): result mismatch (${resultStr})\n`);
+          continue;
+        }
+      }
+
+      if (options.filterSpec && stub.units && stub.playerId) {
+        const ownerStub = stub.units.find((u) => u.name === stub.playerId);
+        if (ownerStub && ownerStub.spec) {
+          const stubSpec = ownerStub.spec.toLowerCase().replace(/[^a-z0-9]/g, '');
+          const filterSpec = options.filterSpec.toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (!stubSpec.includes(filterSpec) && !filterSpec.includes(stubSpec)) {
+            if (verbose) process.stderr.write(`Skipping ${stub.id} (metadata): spec mismatch (${ownerStub.spec})\n`);
+            continue;
+          }
+        }
+      }
+
       process.stderr.write(`Processing ${stub.id} (${stub.startInfo?.bracket ?? bracket}, ${date})... `);
 
       const found = await processStub(stub, matchCount + 1, count, aiMode, options);
@@ -1594,6 +1649,7 @@ async function main() {
   const useNewPrompt = args.includes('--new-prompt');
   const compareMode = args.includes('--compare');
   const compareJsonMode = args.includes('--compare-json');
+  const verbose = args.includes('--verbose');
   const countIdx = args.indexOf('--count');
   const bracketIdx = args.indexOf('--bracket');
   const bracket = bracketIdx !== -1 ? args[bracketIdx + 1] : 'Rated Solo Shuffle';
@@ -1619,6 +1675,7 @@ async function main() {
     filterMinDuration,
     filterMaxDuration,
     filterResult,
+    verbose,
   };
 
   if (compareMode) {

@@ -20,17 +20,25 @@ type Manifest = Record<string, ManifestEntry>;
 export class LogCache {
   private manifest: Manifest | null = null;
   private isInitialized = false;
+  private initPromise: Promise<void> | null = null;
+  private sessionCache = new Map<string, string>();
 
   async init() {
     if (this.isInitialized) return;
-    await fs.ensureDir(CACHE_DIR);
-    try {
-      this.manifest = await fs.readJson(MANIFEST_FILE);
-    } catch {
-      this.manifest = {};
-    }
-    await this.prune();
-    this.isInitialized = true;
+    if (this.initPromise) return this.initPromise;
+
+    this.initPromise = (async () => {
+      await fs.ensureDir(CACHE_DIR);
+      try {
+        this.manifest = await fs.readJson(MANIFEST_FILE);
+      } catch {
+        this.manifest = {};
+      }
+      await this.prune();
+      this.isInitialized = true;
+    })();
+
+    return this.initPromise;
   }
 
   async prune() {
@@ -62,6 +70,9 @@ export class LogCache {
   }
 
   async getLogText(matchId: string, logObjectUrl: string): Promise<string> {
+    const sessionCached = this.sessionCache.get(matchId);
+    if (sessionCached) return sessionCached;
+
     await this.init();
     if (!this.manifest) throw new Error('Cache not initialized');
 
@@ -69,6 +80,7 @@ export class LogCache {
     if (entry) {
       try {
         const text = await fs.readFile(entry.logFile, 'utf-8');
+        this.sessionCache.set(matchId, text);
         return text;
       } catch {
         // If file doesn't exist, we will download it again
@@ -91,6 +103,7 @@ export class LogCache {
     };
 
     await this.saveManifest();
+    this.sessionCache.set(matchId, text);
     return text;
   }
 }
