@@ -1104,6 +1104,7 @@ export function buildMatchPromptNew(combat: ParsedCombat, forceHealer = false): 
     healingGaps,
     friends,
     enemies,
+    allUnits,
     matchStartMs: combat.startTime,
     matchEndMs: combat.endTime,
     isHealer,
@@ -1291,6 +1292,7 @@ export function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false):
     healingGaps,
     friends,
     enemies,
+    allUnits,
     matchStartMs: combat.startTime,
     matchEndMs: combat.endTime,
     isHealer,
@@ -1566,7 +1568,7 @@ async function runCloud(count: number, bracket: string, aiMode: boolean, options
 // ---------------------------------------------------------------------------
 
 async function runLocal(logDir: string, aiMode: boolean, options: RunOptions = {}) {
-  const { forceHealer = false } = options;
+  const { forceHealer = false, useNewPrompt = false, compareMode = false, compareJsonMode = false } = options;
   const files = (await fs.readdir(logDir))
     .filter((f) => f.endsWith('.txt') && f.startsWith('WoWCombatLog'))
     .map((f) => path.join(logDir, f))

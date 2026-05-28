@@ -35,6 +35,7 @@ import {
   HEALING_AMPLIFIER_SPELL_IDS,
   HEALING_WINDOW_EARLY_CD_SECONDS,
   HEALING_WINDOW_MIN_HPS,
+  isCriticalNonPlayerUnit,
   lastCastBefore,
   PASSIVE_SPELL_BLOCKLIST,
 } from './timelineHelpers';
@@ -88,6 +89,7 @@ export interface BuildMatchTimelineParams {
    * Defaults to buildResourceSnapshot (text format). Pass buildJsonSituationSnapshot for JSON format.
    */
   resourceSnapshotFn?: (params: ResourceSnapshotParams) => string;
+  allUnits?: ICombatUnit[];
 }
 
 export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
@@ -105,6 +107,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     healingGaps,
     friends,
     enemies,
+    allUnits,
     matchStartMs,
     matchEndMs,
     isHealer,
@@ -264,6 +267,30 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       `${fmtTime(death.atSeconds)}  [DEATH]  ${enemyPid(death.name)} (${death.spec} — enemy)`,
       `${fmtTime(death.atSeconds)}  [ROSTER]  enemy ${enemyPid(death.name)} removed (dead)`,
     );
+  }
+
+  // ── [UNIT DESTROYED] Non-Player Deaths ────────────────────────────────────
+
+  if (allUnits) {
+    for (const unit of allUnits) {
+      if (unit.deathRecords.length > 0 && isCriticalNonPlayerUnit(unit)) {
+        const reactionStr = unit.reaction === 1 ? 'Friendly' : unit.reaction === 2 ? 'Enemy' : 'Unknown';
+        for (const deathRecord of unit.deathRecords) {
+          const atSeconds = (deathRecord.timestamp - matchStartMs) / 1000;
+          const durationS = (matchEndMs - matchStartMs) / 1000;
+          if (atSeconds > durationS) continue; // Match End cleanup suppression
+
+          const deathLines: string[] = [`${fmtTime(atSeconds)}  [UNIT DESTROYED]   ${unit.name} (${reactionStr})`];
+
+          const topSources = getTopDamageSourcesInWindow(unit, deathRecord.timestamp, 10_000, 2);
+          if (topSources.length > 0) {
+            deathLines[0] += ` killed by: ${topSources.join(', ')}`;
+          }
+
+          addEntry(atSeconds, ...deathLines);
+        }
+      }
+    }
   }
 
   // ── [OWNER CD] events ───────────────────────────────────────────────────────

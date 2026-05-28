@@ -12,6 +12,63 @@ export function lastCastBefore(cd: IMajorCooldownInfo, timeSeconds: number) {
   return cd.casts.filter((c) => c.timeSeconds <= timeSeconds).slice(-1)[0];
 }
 
+export function getNpcIdFromGuid(guid: string): string | null {
+  if (!guid) return null;
+  const parts = guid.split('-');
+  if (
+    parts.length >= 6 &&
+    (guid.startsWith('Creature') ||
+      guid.startsWith('Vehicle') ||
+      guid.startsWith('Pet') ||
+      guid.startsWith('GameObject'))
+  ) {
+    return parts[5];
+  }
+  return null;
+}
+
+export const CRITICAL_NON_PLAYER_NPC_IDS = new Set<string>([
+  // Shaman Totems
+  '3527', // Healing Stream Totem
+  '59764', // Healing Tide Totem
+  '100943', // Earthen Wall Totem
+  '53006', // Spirit Link Totem
+  '5925', // Grounding Totem
+  '5913', // Tremor Totem
+  '105427', // Totem of Wrath / Skyfury Totem
+  '10467', // Mana Tide Totem
+  '61245', // Capacitor Totem
+  '60561', // Earthgrab Totem
+  '179867', // Static Field Totem
+  '225409', // Surging Totem
+  '108270', // Stone Bulwark Totem
+  // Priest
+  '62982', // Mindbender
+  '19668', // Shadowfiend
+  '121111', // Psyfiend
+  '224466', // Voidwraith
+  '189820', // Lightwell
+  '198236', // Divine Image
+  // Monk
+  '63508', // Xuen
+  // Warlock
+  '103673', // Darkglare
+  '135002', // Demonic Tyrant
+  '179193', // Fel Obelisk
+  '107024', // Fel Lord
+  '196111', // Pit Lord
+  '89', // Infernal
+  // Death Knight
+  '27829', // Gargoyle
+]);
+
+export function isCriticalNonPlayerUnit(unit: ICombatUnit): boolean {
+  if (unit.type === CombatUnitType.Pet) return true;
+  const npcId = getNpcIdFromGuid(unit.id);
+  if (npcId && CRITICAL_NON_PLAYER_NPC_IDS.has(npcId)) return true;
+  return false;
+}
+
 // ── Critical moment identification helpers ─────────────────────────────────
 
 /**

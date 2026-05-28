@@ -306,6 +306,7 @@ export function buildMatchContext(
         healingGaps,
         friends: friends as ICombatUnit[],
         enemies: enemies as ICombatUnit[],
+        allUnits: Object.values(combat.units),
         matchStartMs: combat.startTime,
         matchEndMs: combat.endTime,
         isHealer: healer,
