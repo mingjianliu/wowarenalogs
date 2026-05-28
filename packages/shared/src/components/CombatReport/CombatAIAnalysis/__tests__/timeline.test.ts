@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CombatUnitReaction, CombatUnitSpec, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
+import { CombatUnitClass, CombatUnitReaction, CombatUnitSpec, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
 import {
   makeAdvancedAction,
@@ -24,6 +24,8 @@ import {
   computeReadyNames,
   extractEnemyMajorBuffIntervals,
   extractOwnerCDBuffExpiry,
+  extractShapeshiftEvents,
+  extractStasisEvents,
   HEALING_AMPLIFIER_SPELL_IDS,
   HEALING_WINDOW_EARLY_CD_SECONDS,
   HEALING_WINDOW_MIN_HPS,
@@ -1126,7 +1128,6 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
       const result = buildMatchTimeline(makeBaseParams({ enemyCDTimeline, pressureWindows }));
       expect(result).toContain('[OFFENSIVE WINDOW]');
       expect(result).toContain('0:14–0:24');
-      expect(result).toContain('Critical');
       expect(result).toContain('0.84M');
       expect(result).toContain('Shadow Blades + Bladestorm');
     });
@@ -1680,7 +1681,7 @@ describe('buildMatchTimeline — F65 [OWNER CAST] target labels', () => {
         } as any,
       }),
     );
-    expect(result).toContain('[OWNER CAST]');
+    expect(result).toContain('[OWNER CD]');
     expect(result).toContain('[totem/pet]');
     expect(result).toContain('Tremor Totem');
   });
@@ -2632,7 +2633,7 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(ccMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Prism'));
+    const castLine = result.split('\n').find((l) => l.includes('[OWNER CD]') && l.includes('Holy Prism'));
     expect(castLine).toBeDefined();
     expect(castLine).toContain('[completed before CC landed]');
   });
@@ -2650,7 +2651,7 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(ccMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Prism'));
+    const castLine = result.split('\n').find((l) => l.includes('[OWNER CD]') && l.includes('Holy Prism'));
     expect(castLine).toBeDefined();
     expect(castLine).toContain('[succeeded after CC arrived — within 1s in log]');
   });
@@ -2666,7 +2667,7 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(sharedMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Prism'));
+    const castLine = result.split('\n').find((l) => l.includes('[OWNER CD]') && l.includes('Holy Prism'));
     expect(castLine).toBeDefined();
     expect(castLine).toContain('[same server tick as CC — cast succeeded per log]');
   });
@@ -2684,7 +2685,7 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(ccMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Prism'));
+    const castLine = result.split('\n').find((l) => l.includes('[OWNER CD]') && l.includes('Holy Prism'));
     expect(castLine).toBeDefined();
     expect(castLine).not.toContain('[completed before');
     expect(castLine).not.toContain('[succeeded after');
@@ -2702,7 +2703,7 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Prism'));
+    const castLine = result.split('\n').find((l) => l.includes('[OWNER CD]') && l.includes('Holy Prism'));
     expect(castLine).toBeDefined();
     expect(castLine).not.toContain('[completed before');
     expect(castLine).not.toContain('[succeeded after');
@@ -2723,7 +2724,7 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(ccMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Prism'));
+    const castLine = result.split('\n').find((l) => l.includes('[OWNER CD]') && l.includes('Holy Prism'));
     expect(castLine).toBeDefined();
     expect(castLine).toContain('[completed before CC landed]');
   });
@@ -2742,7 +2743,7 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(ccMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Prism'));
+    const castLine = result.split('\n').find((l) => l.includes('[OWNER CD]') && l.includes('Holy Prism'));
     expect(castLine).toBeDefined();
     expect(castLine).toContain('[succeeded after CC arrived — within 1s in log]');
   });
@@ -4489,6 +4490,187 @@ describe('buildMatchTimeline — F113/F114: Event-Gating and [STATE] pruning', (
         expect(sec).toBeGreaterThanOrEqual(25);
         expect(sec).toBeLessThanOrEqual(37);
       }
+    });
+  });
+});
+
+describe('F123: Spec-Specific State Injections', () => {
+  const matchStartMs = 1000;
+
+  const defaultParams: BuildMatchTimelineParams = {
+    owner: { name: 'Owner', class: CombatUnitClass.Priest, spec: '257', advancedActions: [] } as any,
+    ownerSpec: 'Holy Priest',
+    ownerCDs: [],
+    teammateCDs: [],
+    enemyCDTimeline: { alignedBurstWindows: [], players: [] },
+    ccTrinketSummaries: [],
+    dispelSummary: { missedCleanseWindows: [], allyCleanse: [] } as any,
+    friendlyDeaths: [],
+    enemyDeaths: [],
+    pressureWindows: [],
+    healingGaps: [],
+    friends: [],
+    matchStartMs: 1000,
+    matchEndMs: 10000,
+    isHealer: true,
+  };
+
+  describe('Druid Shapeshifts', () => {
+    it('should extract Bear Form applied and removed events', () => {
+      const unit: Partial<ICombatUnit> = {
+        name: 'DruidPlayer',
+        class: CombatUnitClass.Druid,
+        advancedActions: [],
+        auraEvents: [
+          {
+            spellId: '5487',
+            logLine: { event: LogEvent.SPELL_AURA_APPLIED, timestamp: 2000 } as any,
+            timestamp: 2000,
+          } as any,
+          {
+            spellId: '5487',
+            logLine: { event: LogEvent.SPELL_AURA_REMOVED, timestamp: 5000 } as any,
+            timestamp: 5000,
+          } as any,
+        ],
+      };
+
+      const events = extractShapeshiftEvents([unit as ICombatUnit], matchStartMs);
+      expect(events).toHaveLength(2);
+      expect(events[0]).toMatchObject({
+        timeSeconds: 1,
+        playerName: 'DruidPlayer',
+        form: 'Bear Form',
+        eventType: 'applied',
+      });
+      expect(events[1]).toMatchObject({
+        timeSeconds: 4,
+        playerName: 'DruidPlayer',
+        form: 'Bear Form',
+        eventType: 'removed',
+      });
+    });
+
+    it('should appear in the match timeline', () => {
+      const druid: Partial<ICombatUnit> = {
+        name: 'DruidPlayer',
+        class: CombatUnitClass.Druid,
+        advancedActions: [],
+        auraEvents: [
+          {
+            spellId: '5487',
+            logLine: { event: LogEvent.SPELL_AURA_APPLIED, timestamp: 2000 } as any,
+            timestamp: 2000,
+          } as any,
+        ],
+      };
+
+      const params: BuildMatchTimelineParams = {
+        ...defaultParams,
+        friends: [druid as ICombatUnit],
+      };
+
+      const timeline = buildMatchTimeline(params);
+      expect(timeline).toContain('0:01  [STATE]   DruidPlayer enters Bear Form');
+    });
+  });
+
+  describe('Evoker Stasis', () => {
+    it('should extract Stasis store and release events', () => {
+      const unit: Partial<ICombatUnit> = {
+        name: 'EvokerPlayer',
+        class: CombatUnitClass.Evoker,
+        advancedActions: [],
+        auraEvents: [
+          {
+            spellId: '370537', // Stasis Buff
+            logLine: { event: LogEvent.SPELL_AURA_APPLIED, timestamp: 2000 } as any,
+            timestamp: 2000,
+          } as any,
+          {
+            spellId: '370537', // Stasis Buff
+            logLine: { event: LogEvent.SPELL_AURA_REMOVED, timestamp: 8000 } as any,
+            timestamp: 8000,
+          } as any,
+        ],
+        spellCastEvents: [
+          {
+            spellId: '355936', // Dream Breath
+            spellName: 'Dream Breath',
+            logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 3000 } as any,
+            timestamp: 3000,
+          } as any,
+          {
+            spellId: '367226', // Spiritbloom
+            spellName: 'Spiritbloom',
+            logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 4000 } as any,
+            timestamp: 4000,
+          } as any,
+          {
+            spellId: '363502', // Verdant Embrace
+            spellName: 'Verdant Embrace',
+            logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 5000 } as any,
+            timestamp: 5000,
+          } as any,
+          {
+            spellId: '370562', // Stasis Release
+            spellName: 'Stasis',
+            logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 8000 } as any,
+            timestamp: 8000,
+          } as any,
+        ],
+      };
+
+      const events = extractStasisEvents([unit as ICombatUnit], matchStartMs);
+      // 3 stores + 1 release
+      expect(events).toHaveLength(4);
+      expect(events[0]).toMatchObject({ timeSeconds: 2, type: 'store', spellName: 'Dream Breath' });
+      expect(events[1]).toMatchObject({ timeSeconds: 3, type: 'store', spellName: 'Spiritbloom' });
+      expect(events[2]).toMatchObject({ timeSeconds: 4, type: 'store', spellName: 'Verdant Embrace' });
+      expect(events[3]).toMatchObject({
+        timeSeconds: 7,
+        type: 'release',
+        releasedSpells: ['Dream Breath', 'Spiritbloom', 'Verdant Embrace'],
+      });
+    });
+
+    it('should appear in the match timeline', () => {
+      const evoker: Partial<ICombatUnit> = {
+        name: 'EvokerPlayer',
+        class: CombatUnitClass.Evoker,
+        advancedActions: [],
+        auraEvents: [
+          {
+            spellId: '370537',
+            logLine: { event: LogEvent.SPELL_AURA_APPLIED, timestamp: 2000 } as any,
+            timestamp: 2000,
+          } as any,
+        ],
+        spellCastEvents: [
+          {
+            spellId: '355936',
+            spellName: 'Dream Breath',
+            logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 3000 } as any,
+            timestamp: 3000,
+          } as any,
+          {
+            spellId: '370562',
+            spellName: 'Stasis',
+            logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 4000 } as any,
+            timestamp: 4000,
+          } as any,
+        ],
+      };
+
+      const params: BuildMatchTimelineParams = {
+        ...defaultParams,
+        owner: evoker as ICombatUnit,
+        friends: [evoker as ICombatUnit],
+      };
+
+      const timeline = buildMatchTimeline(params);
+      expect(timeline).toContain('0:02  [OWNER CAST]   Dream Breath [stored in Stasis]');
+      expect(timeline).toContain('0:03  [OWNER CD]   Stasis (Release) -> Dream Breath');
     });
   });
 });

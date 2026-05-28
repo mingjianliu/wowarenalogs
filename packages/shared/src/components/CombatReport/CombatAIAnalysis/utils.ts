@@ -7,6 +7,8 @@ export {
   DMG_SPIKE_THRESHOLD,
   extractEnemyMajorBuffIntervals,
   extractOwnerCDBuffExpiry,
+  extractShapeshiftEvents,
+  extractStasisEvents,
   getTopDamageSourcesInWindow,
   HEALER_CAST_SPELL_ID_TO_NAME,
   HEALING_AMPLIFIER_SPELL_IDS,

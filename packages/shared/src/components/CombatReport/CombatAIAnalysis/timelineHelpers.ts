@@ -1,4 +1,11 @@
-import { CombatUnitType, getUnitReaction, getUnitType, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
+import {
+  CombatUnitClass,
+  CombatUnitType,
+  getUnitReaction,
+  getUnitType,
+  ICombatUnit,
+  LogEvent,
+} from '@wowarenalogs/parser';
 
 import { getEnglishSpellName, spellEffectData } from '../../../data/spellEffectData';
 import { IMajorCooldownInfo, PASSIVE_SPELL_BLOCKLIST } from '../../../utils/cooldowns';
@@ -234,6 +241,132 @@ export function extractOwnerCDBuffExpiry(
   }
 
   return result;
+}
+
+// ── Druid Shapeshift tracking (F123) ────────────────────────────────────────
+
+const SHAPESHIFT_SPELL_IDS: Record<string, string> = {
+  '5487': 'Bear Form',
+  '768': 'Cat Form',
+  '783': 'Travel Form',
+  '197625': 'Moonkin Form',
+  '114282': 'Treant Form',
+};
+
+export interface IShapeshiftEvent {
+  timeSeconds: number;
+  playerName: string;
+  form: string;
+  eventType: 'applied' | 'removed';
+}
+
+/**
+ * Scans Druid player units for shapeshift aura events.
+ */
+export function extractShapeshiftEvents(friends: ICombatUnit[], matchStartMs: number): IShapeshiftEvent[] {
+  const results: IShapeshiftEvent[] = [];
+
+  for (const unit of friends) {
+    if (unit.class !== CombatUnitClass.Druid) continue;
+
+    for (const event of unit.auraEvents) {
+      const spellId = event.spellId ?? '';
+      const formName = SHAPESHIFT_SPELL_IDS[spellId];
+      if (!formName) continue;
+
+      const tsMs: number = event.logLine.timestamp;
+      if (tsMs < matchStartMs) continue;
+
+      if (event.logLine.event === LogEvent.SPELL_AURA_APPLIED) {
+        results.push({
+          timeSeconds: (tsMs - matchStartMs) / 1000,
+          playerName: unit.name,
+          form: formName,
+          eventType: 'applied',
+        });
+      } else if (event.logLine.event === LogEvent.SPELL_AURA_REMOVED) {
+        results.push({
+          timeSeconds: (tsMs - matchStartMs) / 1000,
+          playerName: unit.name,
+          form: formName,
+          eventType: 'removed',
+        });
+      }
+    }
+  }
+
+  return results.sort((a, b) => a.timeSeconds - b.timeSeconds);
+}
+
+// ── Evoker Stasis tracking (F123) ──────────────────────────────────────────
+
+export interface IStasisEvent {
+  timeSeconds: number;
+  playerName: string;
+  type: 'store' | 'release';
+  spellName?: string; // for 'store'
+  releasedSpells?: string[]; // for 'release'
+}
+
+/**
+ * Scans Evoker player units for Stasis storage and release events.
+ * Stasis (370537) cast is already handled by [OWNER CD], so this focuses
+ * on the 3 stored spells and the final release (370562).
+ */
+export function extractStasisEvents(friends: ICombatUnit[], matchStartMs: number): IStasisEvent[] {
+  const results: IStasisEvent[] = [];
+
+  for (const unit of friends) {
+    if (unit.class !== CombatUnitClass.Evoker) continue;
+
+    // Track active stasis buff for this unit
+    const stasisApplications = unit.auraEvents
+      .filter((e) => e.spellId === '370537' && e.logLine.event === LogEvent.SPELL_AURA_APPLIED)
+      .map((e) => e.timestamp);
+    const stasisRemovals = unit.auraEvents
+      .filter((e) => e.spellId === '370537' && e.logLine.event === LogEvent.SPELL_AURA_REMOVED)
+      .map((e) => e.timestamp);
+
+    // Track stored spells: success casts while buff is active, up to 3 per application
+    const casts = unit.spellCastEvents.filter((e) => e.logLine.event === LogEvent.SPELL_CAST_SUCCESS);
+
+    // We also need the release cast (370562)
+    const releaseCasts = casts.filter((e) => e.spellId === '370562');
+
+    for (const applyTs of stasisApplications) {
+      const removeTs = stasisRemovals.find((r) => r > applyTs) ?? Number.MAX_SAFE_INTEGER;
+
+      // Spells stored in this window
+      const storedInThisWindow = casts
+        .filter(
+          (c) => c.timestamp > applyTs && c.timestamp < removeTs && c.spellId !== '370537' && c.spellId !== '370562',
+        )
+        .slice(0, 3);
+
+      for (const c of storedInThisWindow) {
+        results.push({
+          timeSeconds: (c.timestamp - matchStartMs) / 1000,
+          playerName: unit.name,
+          type: 'store',
+          spellName: getEnglishSpellName(c.spellId ?? '', c.spellName),
+        });
+      }
+
+      // Find the release cast that corresponds to this stasis (should be the first 370562 after the 3rd spell OR after removal)
+      // Actually, 370562 IS what removes the buff if it's manual release.
+      const release = releaseCasts.find((r) => r.timestamp >= applyTs && r.timestamp <= removeTs + 1000);
+      if (release) {
+        results.push({
+          timeSeconds: (release.timestamp - matchStartMs) / 1000,
+          playerName: unit.name,
+          type: 'release',
+          releasedSpells: storedInThisWindow.map((c) => getEnglishSpellName(c.spellId ?? '', c.spellName)),
+        });
+      }
+    }
+  }
+
+  return results.sort((a, b) => a.timeSeconds - b.timeSeconds);
 }
 
 // ── Module-level constants shared across builders ──────────────────────────

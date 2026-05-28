@@ -30,6 +30,8 @@ import {
   DMG_SPIKE_THRESHOLD,
   extractEnemyMajorBuffIntervals,
   extractOwnerCDBuffExpiry,
+  extractShapeshiftEvents,
+  extractStasisEvents,
   getTopDamageSourcesInWindow,
   HEALER_CAST_SPELL_ID_TO_NAME,
   HEALING_AMPLIFIER_SPELL_IDS,
@@ -116,6 +118,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   } = params;
 
   const enemyBuffIntervals = extractEnemyMajorBuffIntervals(enemies ?? [], matchStartMs, matchEndMs);
+
+  // ── F123: Spec-Specific State Injections ───────────────────────────────────
+  const shapeshifts = extractShapeshiftEvents(friends, matchStartMs);
+  const stasisEvents = extractStasisEvents(friends, matchStartMs);
 
   /**
    * Returns the short numeric ID for a friendly player name, or the raw name
@@ -431,7 +437,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       if (cdSeconds >= 30) {
         addEntry(
           timeSeconds,
-          `${fmtTime(timeSeconds)}  [OWNER CD]   ${displayName}${targetPart}${totemNote}`,
+          `${fmtTime(timeSeconds)}  [OWNER CD]   ${displayName}${targetPart}${totemNote}${orderNote}`,
           resourceSnapshot(timeSeconds),
         );
         continue;
@@ -629,6 +635,24 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         gap.fromSeconds,
         `${fmtTime(gap.fromSeconds)}  [HEALER INACTIVITY]   ${pid(owner.name)} inactive ${gap.durationSeconds.toFixed(1)}s (${gap.freeCastSeconds.toFixed(1)}s free) while ${pid(gap.mostDamagedName)} under pressure`,
       );
+    }
+  }
+
+  // ── F123: Spec-Specific State Injections (Shapeshifts & Stasis) ─────────────
+
+  for (const s of shapeshifts) {
+    const action = s.eventType === 'applied' ? 'enters' : 'leaves';
+    addEntry(s.timeSeconds, `${fmtTime(s.timeSeconds)}  [STATE]   ${pid(s.playerName)} ${action} ${s.form}`);
+  }
+
+  for (const s of stasisEvents) {
+    if (s.type === 'store') {
+      const prefix = s.playerName === owner.name ? '[OWNER CAST]' : '[TEAMMATE CAST]';
+      addEntry(s.timeSeconds, `${fmtTime(s.timeSeconds)}  ${prefix}   ${s.spellName} [stored in Stasis]`);
+    } else if (s.type === 'release') {
+      const released = s.releasedSpells?.join(', ') ?? 'none';
+      const prefix = s.playerName === owner.name ? '[OWNER CD]' : '[TEAMMATE CD]';
+      addEntry(s.timeSeconds, `${fmtTime(s.timeSeconds)}  ${prefix}   Stasis (Release) -> ${released}`);
     }
   }
 
