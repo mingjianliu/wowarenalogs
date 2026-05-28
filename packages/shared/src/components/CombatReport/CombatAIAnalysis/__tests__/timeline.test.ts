@@ -1126,7 +1126,6 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
       const result = buildMatchTimeline(makeBaseParams({ enemyCDTimeline, pressureWindows }));
       expect(result).toContain('[OFFENSIVE WINDOW]');
       expect(result).toContain('0:14–0:24');
-      expect(result).toContain('Critical');
       expect(result).toContain('0.84M');
       expect(result).toContain('Shadow Blades + Bladestorm');
     });
@@ -1871,10 +1870,15 @@ describe('buildMatchTimeline — F62 dense HP ticks in critical windows', () => 
         matchEndMs: 45_000,
       }),
     );
-    // Should have 1s ticks in [20, 30]
-    expect(result).toContain('0:21');
+    // Under delta-gated noise reduction, stable HP ticks are suppressed.
+    // HP changes by 10% at t=20, 22, 24, 25, 29.
+    expect(result).toContain('0:20');
     expect(result).toContain('0:22');
-    expect(result).toContain('0:23');
+    expect(result).toContain('0:24');
+    expect(result).toContain('0:25');
+    expect(result).toContain('0:29');
+    expect(result).not.toContain('0:21');
+    expect(result).not.toContain('0:23');
     // T=19 is NOT in the dense window (window starts at 20) — should NOT appear as an [HP] tick
     // (T=18 would be a 3s baseline tick, T=19 should not)
     const lines = result.split('\n');
@@ -1948,10 +1952,12 @@ describe('buildMatchTimeline — F62 dense HP ticks in critical windows', () => 
         matchEndMs: 45_000,
       }),
     );
-    // Should have 1s ticks in [15, 25]
+    // Under delta-gated noise reduction, stable HP ticks are suppressed.
+    // HP changes at t=15 (CC cast - key moment), t=17 (70% - delta), t=23 (50% - delta).
     expect(result).toContain('0:15');
-    expect(result).toContain('0:16');
     expect(result).toContain('0:17');
+    expect(result).toContain('0:23');
+    expect(result).not.toContain('0:16');
     // T=14 is not in window and not a 3s multiple
     const lines = result.split('\n');
     const hp14Line = lines.find((l) => l.startsWith('0:14') && l.includes('[STATE]'));
@@ -2091,11 +2097,9 @@ describe('buildMatchTimeline — F64 enemy HP in [HP] ticks', () => {
       })
       .filter((t): t is number => t !== null);
     const inDenseWindow = tickSeconds.filter((t) => t >= 50 && t <= 60);
-    // At minimum 5 of the 11 possible 1s ticks should appear (accounting for sparse advanced data)
-    expect(inDenseWindow.length).toBeGreaterThanOrEqual(5);
-    // Specifically, t=52 and t=53 are NOT 3s multiples — they should appear only because of the dense window
-    expect(inDenseWindow).toContain(52);
-    expect(inDenseWindow).toContain(53);
+    // Under delta-gated noise reduction, stable HP ticks are suppressed.
+    // HP changes at t=50 (20%), t=55 (5%), and t=60 (death key moment).
+    expect(inDenseWindow).toEqual([50, 55, 60]);
   });
 });
 

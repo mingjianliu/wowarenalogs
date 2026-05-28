@@ -632,8 +632,6 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     }
   }
 
-  // ── [STATE] ticks — 1s resolution in critical windows, 3s elsewhere (F62) ──────
-
   const matchDurationS = (matchEndMs - matchStartMs) / 1000;
   const criticalWindowSet = new Set<number>(); // which tick-seconds are in a critical window
   for (const d of friendlyDeaths) {
@@ -664,11 +662,39 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     }
   }
 
-  const tickSet = new Set<number>();
-  // B33: use Math.floor so ticks never exceed matchEnd (Math.ceil could emit a tick 1s past end).
-  for (let t = 0; t <= Math.floor(matchDurationS); t++) {
-    if (criticalWindowSet.has(t) || t % 3 === 0) {
-      tickSet.add(t);
+  // Compile key moment seconds where major events occur
+  const keyMomentSeconds = new Set<number>();
+  for (const d of friendlyDeaths) keyMomentSeconds.add(Math.floor(d.atSeconds));
+  for (const d of enemyDeaths) keyMomentSeconds.add(Math.floor(d.atSeconds));
+  for (const cd of ownerCDs) {
+    for (const cast of cd.casts) keyMomentSeconds.add(Math.floor(cast.timeSeconds));
+  }
+  for (const { cds } of teammateCDs) {
+    for (const cd of cds) {
+      for (const cast of cd.casts) keyMomentSeconds.add(Math.floor(cast.timeSeconds));
+    }
+  }
+  for (const player of enemyCDTimeline.players) {
+    for (const cd of player.offensiveCDs) keyMomentSeconds.add(Math.floor(cd.castTimeSeconds));
+  }
+  for (const summary of ccTrinketSummaries) {
+    for (const cc of summary.ccInstances) {
+      if (cc.durationSeconds > 0) keyMomentSeconds.add(Math.floor(cc.atSeconds));
+    }
+    for (const t of summary.trinketUseTimes) keyMomentSeconds.add(Math.floor(t));
+  }
+  for (const pw of pressureWindows) {
+    if (pw.totalDamage >= DMG_SPIKE_THRESHOLD) keyMomentSeconds.add(Math.floor(pw.fromSeconds));
+  }
+  for (const miss of dispelSummary.missedCleanseWindows) {
+    if (canDefensiveCleanse(owner, miss.dispelType)) keyMomentSeconds.add(Math.floor(miss.timeSeconds));
+  }
+  for (const cleanse of dispelSummary.allyCleanse) {
+    keyMomentSeconds.add(Math.floor(cleanse.timeSeconds));
+  }
+  if (outgoingCCChains && outgoingCCChains.length > 0) {
+    for (const event of extractAoeCCEvents(outgoingCCChains)) {
+      keyMomentSeconds.add(Math.floor(event.atSeconds));
     }
   }
 
@@ -714,63 +740,94 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     label: (name: string) => enemyPid(name),
   }));
 
-  // B15: Track previous HP readings to suppress unchanged [STATE] ticks.
-  // Only emit when at least one unit's HP% changed, OR on 5s anchor ticks.
-  let prevHpKey = '';
-
   // B42: Build death-time lookup so [STATE] ticks show :dead instead of silently omitting dead players.
   const friendlyDeathAtByName = new Map<string, number>(friendlyDeaths.map((d) => [d.name, d.atSeconds]));
   const enemyDeathAtByName = new Map<string, number>(enemyDeaths.map((d) => [d.name, d.atSeconds]));
 
-  for (const t of [...tickSet].sort((a, b) => a - b)) {
+  const lastEmittedHp = new Map<string, number>();
+  const lastEmittedStatus = new Map<string, string>(); // 'alive' | 'dead'
+
+  for (let t = 0; t <= Math.floor(matchDurationS); t++) {
     const tsMs = matchStartMs + t * 1000;
     const sampleWindowMs = criticalWindowSet.has(t) ? HP_SAMPLE_WINDOW_CRITICAL_MS : HP_SAMPLE_WINDOW_BASELINE_MS;
 
-    const friendlyParts = friendlyHpUnits
-      .map(({ unit, label }) => {
-        const deathAt = friendlyDeathAtByName.get(unit.name);
-        if (deathAt !== undefined && t >= Math.floor(deathAt)) {
-          return `${label(unit.name)}:dead`;
-        }
-        const pct = getUnitHpAtTimestamp(unit, tsMs, sampleWindowMs);
-        // B18/B23: clamp to 100% — absorb shields can push HP readings over max
-        const clamped = pct !== null ? Math.min(pct, 100) : null;
-        return clamped !== null ? `${label(unit.name)}:${clamped}` : null;
-      })
-      .filter((s): s is string => s !== null);
+    const friendlyParts: string[] = [];
+    const currentFriendlies = friendlyHpUnits.map(({ unit, label }) => {
+      const deathAt = friendlyDeathAtByName.get(unit.name);
+      const isDead = deathAt !== undefined && t >= Math.floor(deathAt);
+      const pct = getUnitHpAtTimestamp(unit, tsMs, sampleWindowMs);
+      const clamped = pct !== null ? Math.min(pct, 100) : null;
+      if (isDead) {
+        friendlyParts.push(`${label(unit.name)}:dead`);
+      } else if (clamped !== null) {
+        friendlyParts.push(`${label(unit.name)}:${clamped}`);
+      }
+      return { name: unit.name, isDead, hp: clamped };
+    });
 
-    const enemyParts: string[] =
+    const enemyParts: string[] = [];
+    const currentEnemies =
       criticalWindowSet.has(t) && enemyHpUnits.length > 0
-        ? enemyHpUnits
-            .map(({ unit, label }) => {
-              const deathAt = enemyDeathAtByName.get(unit.name);
-              if (deathAt !== undefined && t >= Math.floor(deathAt)) {
-                return `${label(unit.name)}:dead`;
-              }
-              const pct = getUnitHpAtTimestamp(unit, tsMs, sampleWindowMs);
-              // B18: clamp enemy HP to 100% too
-              const clamped = pct !== null ? Math.min(pct, 100) : null;
-              return clamped !== null ? `${label(unit.name)}:${clamped}` : null;
-            })
-            .filter((s): s is string => s !== null)
+        ? enemyHpUnits.map(({ unit, label }) => {
+            const deathAt = enemyDeathAtByName.get(unit.name);
+            const isDead = deathAt !== undefined && t >= Math.floor(deathAt);
+            const pct = getUnitHpAtTimestamp(unit, tsMs, sampleWindowMs);
+            const clamped = pct !== null ? Math.min(pct, 100) : null;
+            if (isDead) {
+              enemyParts.push(`${label(unit.name)}:dead`);
+            } else if (clamped !== null) {
+              enemyParts.push(`${label(unit.name)}:${clamped}`);
+            }
+            return { name: unit.name, isDead, hp: clamped };
+          })
         : [];
 
     if (friendlyParts.length === 0 && enemyParts.length === 0) continue;
 
     // B15: Option 2 (Event-Gating) - strictly emit ONLY inside critical windows, or if a player died.
-    const currentHpKey = `${friendlyParts.join('|')}||${enemyParts.join('|')}`;
     const isInCritical = criticalWindowSet.has(t);
-    const someoneDied = friendlyParts.some((p) => p.includes('dead')) || enemyParts.some((p) => p.includes('dead'));
+    const someoneDied = currentFriendlies.some((p) => p.isDead) || currentEnemies.some((p) => p.isDead);
 
-    // Allow immediate tick if someone just died to capture precise timing.
-    const isFirstDeathTick = someoneDied && !prevHpKey.includes('dead');
+    const wasSomeoneDead = Array.from(lastEmittedStatus.values()).some((status) => status === 'dead');
+    const isFirstDeathTick = someoneDied && !wasSomeoneDead;
 
     // Only emit if inside critical window, or death. No time anchors!
     if (!isInCritical && !isFirstDeathTick) continue;
 
-    // Deduplicate within critical windows to avoid per-second spam if nothing changed
-    if (currentHpKey === prevHpKey && !isInCritical) continue;
-    prevHpKey = currentHpKey;
+    // Decide if it's a key moment or delta change
+    let shouldEmit = false;
+    if (t === 0) {
+      shouldEmit = true; // Always emit first tick
+    } else if (keyMomentSeconds.has(t)) {
+      shouldEmit = true; // Key moment snapshot
+    } else {
+      // Check if any player's HP changed by at least 5% or status changed since last emitted tick
+      for (const p of [...currentFriendlies, ...currentEnemies]) {
+        const lastHp = lastEmittedHp.get(p.name);
+        const lastStatus = lastEmittedStatus.get(p.name) ?? 'alive';
+        const currentStatus = p.isDead ? 'dead' : 'alive';
+
+        if (currentStatus !== lastStatus) {
+          shouldEmit = true;
+          break;
+        }
+
+        if (p.hp !== null) {
+          if (lastHp === undefined || Math.abs(p.hp - lastHp) >= 10) {
+            shouldEmit = true;
+            break;
+          }
+        }
+      }
+    }
+
+    if (!shouldEmit) continue;
+
+    // Update last emitted state
+    for (const p of [...currentFriendlies, ...currentEnemies]) {
+      if (p.hp !== null) lastEmittedHp.set(p.name, p.hp);
+      lastEmittedStatus.set(p.name, p.isDead ? 'dead' : 'alive');
+    }
 
     let stateParts: string;
     if (friendlyParts.length > 0 && enemyParts.length > 0) {
