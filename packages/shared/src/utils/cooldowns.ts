@@ -9,6 +9,7 @@ import {
 
 import { getEnglishSpellName, spellEffectData } from '../data/spellEffectData';
 import spellIdListsData from '../data/spellIdLists.json';
+import { CD_TALENT_MODIFIERS } from './talentModifiers';
 import { getPlayerTalentedSpellIds, getSpecTalentTreeSpellIds } from './talents';
 
 const MAJOR_DEFENSIVE_IDS = new Set<string>(
@@ -275,10 +276,63 @@ export function extractMajorCooldowns(unit: ICombatUnit, combat: AtomicArenaComb
     return true;
   });
 
+  // --- Dynamic Discovery ---
+  // Add any active talent spell with CD >= 30s that wasn't already in the static list.
+  if (!process.env.DISABLE_TALENT_AWARE_CD && talentedSpellIds) {
+    for (const spellId of talentedSpellIds) {
+      if (seen.has(spellId)) continue;
+      const effectData = spellEffectData[spellId];
+      if (!effectData) continue;
+      const cd = effectData.cooldownSeconds ?? effectData.charges?.chargeCooldownSeconds ?? 0;
+      if (cd >= MIN_CD_SECONDS) {
+        // Intelligent tagging based on name
+        const name = effectData.name.toLowerCase();
+        const tags: SpellTag[] = [];
+        if (
+          /shield|wall|block|ward|protection|suppress|spirit|cocoon|bark|shell|cloak|fortitude|embrace|resolv|unending/.test(
+            name,
+          )
+        ) {
+          tags.push(SpellTag.Defensive);
+        } else if (
+          /avatar|wrath|power|infusion|berserk|recklessness|lust|ascendance|darkness|metamorph|shadowfiend|bender/.test(
+            name,
+          )
+        ) {
+          tags.push(SpellTag.Offensive);
+        } else if (/scream|stun|blind|trap|sheep|nova|fear|horror|root|bash|clap|roar|shout|disorient/.test(name)) {
+          tags.push(SpellTag.Control);
+        }
+
+        // If we found a tag, it's a "Major CD" for analysis purposes.
+        if (tags.length > 0) {
+          majorSpells.push({ spellId, name: effectData.name, tags });
+          seen.add(spellId);
+        }
+      }
+    }
+  }
+
   return majorSpells.flatMap((spell) => {
     const effectData = spellEffectData[spell.spellId];
     if (!effectData) return [];
-    const cooldownSeconds = effectData.cooldownSeconds ?? effectData.charges?.chargeCooldownSeconds ?? 0;
+
+    let cooldownSeconds = effectData.cooldownSeconds ?? effectData.charges?.chargeCooldownSeconds ?? 0;
+    let baselineCharges = effectData.charges?.charges ?? 1;
+
+    // Apply talent-based modifications if the player's talents are known
+    const modifiers = CD_TALENT_MODIFIERS[spell.spellId];
+    if (!process.env.DISABLE_TALENT_AWARE_CD && modifiers && (talentedSpellIds || pvpTalentIds.size > 0)) {
+      for (const mod of modifiers) {
+        if (talentedSpellIds?.has(mod.talentSpellId) || pvpTalentIds.has(mod.talentSpellId)) {
+          if (mod.effect === 'extra_charge') {
+            baselineCharges += mod.value;
+          } else if (mod.effect === 'reduce_cd') {
+            cooldownSeconds -= mod.value;
+          }
+        }
+      }
+    }
 
     const castEvents = unit.spellCastEvents.filter(
       (e) => e.spellId === spell.spellId && e.logLine.event === LogEvent.SPELL_CAST_SUCCESS,
@@ -341,7 +395,7 @@ export function extractMajorCooldowns(unit: ICombatUnit, combat: AtomicArenaComb
 
     // Detect observed charge count: if any two consecutive casts are closer than the CD,
     // the player must have had at least 2 charges (e.g. double Pain Suppression via PvP talent).
-    let maxChargesDetected = Math.max(1, effectData.charges?.charges ?? 1);
+    let maxChargesDetected = Math.max(1, baselineCharges);
     for (let i = 1; i < casts.length; i++) {
       if (casts[i].timeSeconds - casts[i - 1].timeSeconds < cooldownSeconds) {
         maxChargesDetected = Math.max(maxChargesDetected, 2);
