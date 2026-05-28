@@ -421,6 +421,57 @@ Then:
   return content.text;
 }
 
+async function callClaudeCcAvoidJudge(
+  prompt: string,
+  responseA: string,
+  responseB: string,
+  responseC: string,
+): Promise<string> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return '[AI SKIPPED — set ANTHROPIC_API_KEY env var to enable]';
+  const client = new Anthropic({ apiKey });
+
+  const judgeSystem = `You are a prompt engineer evaluating three AI-generated WoW arena match analyses produced from identical match data but different timeline configurations. Your job is to give a blunt, concrete verdict on which format produced better counterfactual reasoning and coaching feedback, and check for bias or noise.`;
+
+  const userMessage = `Below are three analyses of the same WoW arena match. They differ only in how CC avoidance is displayed in the timeline:
+- Analysis A (None - Control): No [CC AVOIDED] annotations.
+- Analysis B (Continuous): [CC AVOIDED] annotations shown at all times.
+- Analysis C (Gated): [CC AVOIDED] annotations shown only during dangerous windows.
+
+ANALYSIS A:
+---
+${responseA}
+---
+
+ANALYSIS B:
+---
+${responseB}
+---
+
+ANALYSIS C:
+---
+${responseC}
+---
+
+Please rate each analysis on:
+1. **Bias & Hallucination** — Did the presence of CC avoidance in B or C cause the model to write unearned praise or miss mistakes (positive bias)? Did the absence of it in A cause the model to make incorrect assumptions (e.g. asking to use Grounding/Death when they actually did)?
+2. **Noise vs. Signal** — Did B feel too cluttered or distract the model's focus compared to A and C?
+3. **Coaching Value** — Which analysis yields the most accurate and high-value decision/coaching recommendations?
+
+Provide a verdict on which timeline configuration (A: None, B: Continuous, C: Gated) is the winner, and a 1-sentence explanation of why.`;
+
+  const message = await client.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 2048,
+    temperature: 0.2,
+    system: judgeSystem,
+    messages: [{ role: 'user', content: userMessage }],
+  });
+  const content = message.content[0];
+  if (content.type !== 'text') return '[Judge returned non-text response]';
+  return content.text;
+}
+
 // ---------------------------------------------------------------------------
 // Build full prompt — mirrors buildMatchContext() in CombatAIAnalysis/index.tsx
 // ---------------------------------------------------------------------------
@@ -934,7 +985,11 @@ export function buildMatchPrompt(combat: ParsedCombat, forceHealer = false): str
 // Build new raw timeline prompt — uses buildPlayerLoadout + buildMatchTimeline
 // ---------------------------------------------------------------------------
 
-export function buildMatchPromptNew(combat: ParsedCombat, forceHealer = false): string {
+export function buildMatchPromptNew(
+  combat: ParsedCombat,
+  forceHealer = false,
+  ccAvoidanceMode: 'none' | 'continuous' | 'gated' = 'continuous',
+): string {
   const allUnits = Object.values(combat.units);
   const friends = allUnits.filter(
     (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
@@ -1096,7 +1151,10 @@ export function buildMatchPromptNew(combat: ParsedCombat, forceHealer = false): 
     ownerCDs,
     teammateCDs,
     enemyCDTimeline,
-    ccTrinketSummaries,
+    ccTrinketSummaries:
+      ccAvoidanceMode === 'none'
+        ? ccTrinketSummaries.map((s) => ({ ...s, ccAvoidedInstances: [] }))
+        : ccTrinketSummaries,
     dispelSummary,
     friendlyDeaths,
     enemyDeaths,
@@ -1112,6 +1170,7 @@ export function buildMatchPromptNew(combat: ParsedCombat, forceHealer = false): 
     enemyIdMap,
     outgoingCCChains,
     bracket: combat.startInfo?.bracket ?? '3v3',
+    gateCcAvoidanceToDanger: ccAvoidanceMode === 'gated',
   };
   lines.push(buildMatchTimeline(params));
 
@@ -1311,11 +1370,20 @@ export function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false):
 // Print one match (prompt + optional AI response)
 // ---------------------------------------------------------------------------
 
+function extractTimelineFromPrompt(prompt: string): string {
+  const lines = prompt.split('\n');
+  const startIdx = lines.findIndex((l) => l.includes('MATCH TIMELINE'));
+  if (startIdx === -1) return '';
+  return lines.slice(startIdx, startIdx + 150).join('\n');
+}
+
 interface PrintMatchOptions {
   testPromptMode?: boolean;
   useNewPrompt?: boolean;
   compareMode?: boolean;
   compareJsonMode?: boolean;
+  compareCcMode?: boolean;
+  forceHealer?: boolean;
 }
 
 async function printMatch(
@@ -1324,12 +1392,60 @@ async function printMatch(
   matchIndex: number,
   aiMode: boolean,
   options: PrintMatchOptions = {},
+  combat?: ParsedCombat,
 ): Promise<void> {
-  const { testPromptMode = false, useNewPrompt = false, compareMode = false, compareJsonMode = false } = options;
+  const {
+    testPromptMode = false,
+    useNewPrompt = false,
+    compareMode = false,
+    compareJsonMode = false,
+    compareCcMode = false,
+  } = options;
   const sep = '='.repeat(80);
   console.log(`\n${sep}`);
   console.log(`MATCH ${matchIndex} — ${matchLabel}`);
   console.log(sep);
+
+  if (compareCcMode && combat) {
+    process.stderr.write(
+      `  CC Avoidance A/B/C compare for match ${matchIndex}: calling Claude x3 (A: none, B: continuous, C: gated)...\n`,
+    );
+    try {
+      const promptA = buildMatchPromptNew(combat, options.forceHealer ?? false, 'none');
+      const promptB = buildMatchPromptNew(combat, options.forceHealer ?? false, 'continuous');
+      const promptC = buildMatchPromptNew(combat, options.forceHealer ?? false, 'gated');
+
+      const [responseA, responseB, responseC] = await Promise.all([
+        callClaude(promptA, 'new'),
+        callClaude(promptB, 'new'),
+        callClaude(promptC, 'new'),
+      ]);
+
+      console.log('\n--- TIMELINE A (None — Control) ---\n');
+      console.log(extractTimelineFromPrompt(promptA));
+      console.log('\n--- ANALYSIS A (None) ---\n');
+      console.log(responseA);
+
+      console.log('\n--- TIMELINE B (Continuous — Full Exposure) ---\n');
+      console.log(extractTimelineFromPrompt(promptB));
+      console.log('\n--- ANALYSIS B (Continuous) ---\n');
+      console.log(responseB);
+
+      console.log('\n--- TIMELINE C (Gated — Dangerous Window Only) ---\n');
+      console.log(extractTimelineFromPrompt(promptC));
+      console.log('\n--- ANALYSIS C (Gated) ---\n');
+      console.log(responseC);
+
+      process.stderr.write(`  Calling CC Avoidance Judge...\n`);
+      const judgment = await callClaudeCcAvoidJudge(promptB, responseA, responseB, responseC);
+      console.log('\n--- JUDGE VERDICT ---\n');
+      console.log(judgment);
+    } catch (e) {
+      console.log(`[Compare failed: ${e}]`);
+    }
+    return;
+  }
+
   console.log('\n--- PROMPT ---\n');
   console.log(prompt);
 
@@ -1402,6 +1518,7 @@ interface RunOptions {
   useNewPrompt?: boolean;
   compareMode?: boolean;
   compareJsonMode?: boolean;
+  compareCcMode?: boolean;
   filterSpec?: string;
   filterMinDuration?: number;
   filterMaxDuration?: number;
@@ -1489,7 +1606,7 @@ export async function processStub(
     foundInThisStub = true;
     process.stderr.write(`MATCH ${matchIndex} found!\n`);
     const label = `${stub.id} (${stub.startInfo?.bracket ?? 'Unknown'}, ${date}) - ${specToString(owner.spec)} ${resultStr} ${Math.round(durationSec)}s`;
-    await printMatch(label, prompt, matchIndex, aiMode, options);
+    await printMatch(label, prompt, matchIndex, aiMode, options, combat);
     break; // only take one combat per stub to match index logic
   }
 
@@ -1568,7 +1685,13 @@ async function runCloud(count: number, bracket: string, aiMode: boolean, options
 // ---------------------------------------------------------------------------
 
 async function runLocal(logDir: string, aiMode: boolean, options: RunOptions = {}) {
-  const { forceHealer = false, useNewPrompt = false, compareMode = false, compareJsonMode = false } = options;
+  const {
+    forceHealer = false,
+    useNewPrompt = false,
+    compareMode = false,
+    compareJsonMode = false,
+    compareCcMode = false,
+  } = options;
   const files = (await fs.readdir(logDir))
     .filter((f) => f.endsWith('.txt') && f.startsWith('WoWCombatLog'))
     .map((f) => path.join(logDir, f))
@@ -1624,13 +1747,13 @@ async function runLocal(logDir: string, aiMode: boolean, options: RunOptions = {
 
       const prompt = compareJsonMode
         ? buildMatchPromptJson(combat, forceHealer)
-        : compareMode || useNewPrompt
+        : compareMode || useNewPrompt || compareCcMode
           ? buildMatchPromptNew(combat, forceHealer)
           : buildMatchPrompt(combat, forceHealer);
       if (!prompt) continue;
       matchCount++;
       const label = `${fileName} - ${specToString(owner.spec)} ${resultStr} ${Math.round(durationSec)}s`;
-      await printMatch(label, prompt, matchCount, aiMode, options);
+      await printMatch(label, prompt, matchCount, aiMode, options, combat);
     }
   }
 
@@ -1651,6 +1774,7 @@ async function main() {
   const useNewPrompt = args.includes('--new-prompt');
   const compareMode = args.includes('--compare');
   const compareJsonMode = args.includes('--compare-json');
+  const compareCcMode = args.includes('--compare-cc');
   const verbose = args.includes('--verbose');
   const countIdx = args.indexOf('--count');
   const bracketIdx = args.indexOf('--bracket');
@@ -1673,6 +1797,7 @@ async function main() {
     useNewPrompt,
     compareMode,
     compareJsonMode,
+    compareCcMode,
     filterSpec,
     filterMinDuration,
     filterMaxDuration,
@@ -1709,6 +1834,16 @@ async function main() {
     } else {
       process.stderr.write(
         'JSON compare mode — [RES] text vs [SIT] JSON, judge on counterfactual reasoning quality.\n',
+      );
+    }
+  }
+
+  if (compareCcMode) {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      process.stderr.write('Warning: --compare-cc requires ANTHROPIC_API_KEY. Responses will be skipped.\n');
+    } else {
+      process.stderr.write(
+        'CC Avoidance compare mode — A: None vs B: Continuous vs C: Gated, judge on bias and noise.\n',
       );
     }
   }

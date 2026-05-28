@@ -90,6 +90,7 @@ export interface BuildMatchTimelineParams {
    */
   resourceSnapshotFn?: (params: ResourceSnapshotParams) => string;
   allUnits?: ICombatUnit[];
+  gateCcAvoidanceToDanger?: boolean;
 }
 
 export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
@@ -116,6 +117,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     outgoingCCChains,
     resourceSnapshotFn,
     bracket,
+    gateCcAvoidanceToDanger,
   } = params;
 
   const enemyBuffIntervals = extractEnemyMajorBuffIntervals(enemies ?? [], matchStartMs, matchEndMs);
@@ -540,6 +542,24 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   // ── [TRINKET] and [CC ON TEAM] events ──────────────────────────────────────
 
+  const isDangerousTime = (t: number) => {
+    // 1. Teammate death within next 10s
+    for (const d of friendlyDeaths) {
+      if (t >= d.atSeconds - 10 && t <= d.atSeconds) return true;
+    }
+    // 2. High pressure window
+    for (const pw of pressureWindows) {
+      if (pw.totalDamage >= DMG_SPIKE_THRESHOLD && t >= pw.fromSeconds - 5 && t <= pw.toSeconds + 5) {
+        return true;
+      }
+    }
+    // 3. Enemy burst window
+    for (const burst of enemyCDTimeline.alignedBurstWindows) {
+      if (t >= burst.fromSeconds - 5 && t <= burst.toSeconds + 5) return true;
+    }
+    return false;
+  };
+
   for (const summary of ccTrinketSummaries) {
     for (const t of summary.trinketUseTimes) {
       addEntry(t, `${fmtTime(t)}  [TRINKET]   ${pid(summary.playerName)} used PvP trinket`);
@@ -561,6 +581,18 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         cc.atSeconds,
         `${fmtTime(cc.atSeconds)}  [CC ON TEAM]   ${pid(summary.playerName)} ← ${cc.spellName} (${pid(cc.sourceName)}) | ${cc.durationSeconds.toFixed(0)}s${trinketNote}`,
       );
+    }
+
+    if (summary.ccAvoidedInstances) {
+      for (const avoided of summary.ccAvoidedInstances) {
+        if (gateCcAvoidanceToDanger && !isDangerousTime(avoided.atSeconds)) {
+          continue;
+        }
+        addEntry(
+          avoided.atSeconds,
+          `${fmtTime(avoided.atSeconds)}  [CC AVOIDED]   ${pid(summary.playerName)} avoided ${avoided.spellName} via ${avoided.avoidanceSpellName} (by ${enemyPid(avoided.sourceName)})`,
+        );
+      }
     }
   }
 

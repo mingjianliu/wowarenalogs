@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CombatUnitReaction, CombatUnitSpec, LogEvent } from '@wowarenalogs/parser';
+import { CombatUnitClass, CombatUnitReaction, CombatUnitSpec, LogEvent } from '@wowarenalogs/parser';
 
 import { analyzePlayerCCAndTrinket, detectTrinketType } from '../ccTrinketAnalysis';
-import { makeAuraEvent, makeInterruptEvent, makeUnit } from './testHelpers';
+import { makeAuraEvent, makeInterruptEvent, makeSpellCastEvent, makeUnit } from './testHelpers';
 
 // Mock the generated JSON so tests never depend on real item IDs.
 jest.mock('../../data/trinketItemIds.json', () => ({
@@ -454,5 +454,110 @@ describe('analyzePlayerCCAndTrinket — further branches', () => {
       startInfo: { zoneId: '999' },
     });
     expect(result.ccInstances[0].losBlocked).toBeNull();
+  });
+});
+
+describe('analyzePlayerCCAndTrinket — CC Avoidance', () => {
+  const MATCH_START = 1_000_000;
+  const MATCH_END = 1_300_000;
+
+  function makeCombat() {
+    return { startTime: MATCH_START, endTime: MATCH_END, startInfo: { zoneId: '1672' } };
+  }
+
+  function makeEnemy(id: string, name: string) {
+    return makeUnit(id, {
+      name,
+      reaction: CombatUnitReaction.Hostile,
+      spec: CombatUnitSpec.Rogue_Subtlety,
+    });
+  }
+
+  it('tracks buff-based CC avoidance (Precognition buff active)', () => {
+    // Player has Precognition buff ('377362') active from T+5s to T+15s
+    const precogApply = makeAuraEvent(
+      LogEvent.SPELL_AURA_APPLIED,
+      '377362',
+      MATCH_START + 5_000,
+      'player-1',
+      'player-1',
+      'BUFF',
+    );
+    const precogRemove = makeAuraEvent(
+      LogEvent.SPELL_AURA_REMOVED,
+      '377362',
+      MATCH_START + 15_000,
+      'player-1',
+      'player-1',
+      'BUFF',
+    );
+
+    // Enemy casts Polymorph ('118') targeting player at T+10s
+    const enemyCast = makeSpellCastEvent('118', MATCH_START + 10_000, 'player-1', 'Player', 'enemy-1', 'EnemyA');
+
+    const player = makeUnit('player-1', {
+      class: CombatUnitClass.Mage,
+      spec: CombatUnitSpec.Mage_Frost,
+      auraEvents: [precogApply, precogRemove],
+    });
+    const enemy = makeEnemy('enemy-1', 'EnemyA');
+    enemy.spellCastEvents = [enemyCast as any];
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+
+    expect(result.ccAvoidedInstances).toHaveLength(1);
+    expect(result.ccAvoidedInstances[0].spellId).toBe('118');
+    expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Precognition');
+    expect(result.ccAvoidedInstances[0].avoidanceSpellId).toBe('377362');
+  });
+
+  it('tracks grounding totem redirects for Shamans', () => {
+    // Enemy casts Polymorph ('118') targeting "Grounding Totem" at T+12s
+    const enemyCast = makeSpellCastEvent(
+      '118',
+      MATCH_START + 12_000,
+      'grounding-totem-id',
+      'Grounding Totem',
+      'enemy-1',
+      'EnemyA',
+    );
+
+    const player = makeUnit('player-1', {
+      class: CombatUnitClass.Shaman,
+      spec: CombatUnitSpec.Shaman_Restoration,
+    });
+    const enemy = makeEnemy('enemy-1', 'EnemyA');
+    enemy.spellCastEvents = [enemyCast as any];
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+
+    expect(result.ccAvoidedInstances).toHaveLength(1);
+    expect(result.ccAvoidedInstances[0].spellId).toBe('118');
+    expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Grounding Totem');
+    expect(result.ccAvoidedInstances[0].avoidanceSpellId).toBe('8177');
+  });
+
+  it('tracks SW:D self-damage breaks for Priests', () => {
+    // CC (Polymorph '118') is applied to Priest at T+10s and removed at T+10.5s (duration <= 1.0)
+    const ccApply = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '118', MATCH_START + 10_000, 'enemy-1', 'player-1');
+    const ccRemove = makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '118', MATCH_START + 10_500, 'enemy-1', 'player-1');
+
+    // Priest cast SW:D ('32379') at T+9.8s (within 500ms before CC application)
+    const swdCast = makeSpellCastEvent('32379', MATCH_START + 9_800, 'enemy-1', 'EnemyA', 'player-1', 'Player');
+
+    const player = makeUnit('player-1', {
+      class: CombatUnitClass.Priest,
+      spec: CombatUnitSpec.Priest_Shadow,
+      auraEvents: [ccApply, ccRemove],
+      spellCastEvents: [swdCast as any],
+    });
+    const enemy = makeEnemy('enemy-1', 'EnemyA');
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+
+    expect(result.ccAvoidedInstances).toHaveLength(1);
+    expect(result.ccAvoidedInstances[0].spellId).toBe('118');
+    expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Shadow Word: Death');
+    expect(result.ccAvoidedInstances[0].avoidanceSpellId).toBe('32379');
   });
 });
