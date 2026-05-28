@@ -1,0 +1,73 @@
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Restoration Druid (Healer) | Bracket: 3v3 | Result: Win | Duration: 0:17
+  My team: Restoration Druid, Arms Warrior, Retribution Paladin
+  Enemy team: Feral Druid, Discipline Priest
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Restoration Druid): CANNOT offensive purge
+  Team purgers: none
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Yoruichiuwu-Tichondrius-US (Restoration Druid — log owner):
+    Stampeding Roar [120s], Incapacitating Roar [30s], Frenzied Regeneration [36s], Tranquility [180s], Incarnation: Tree of Life [180s], Ironbark [90s]
+  2: Swishin-BurningLegion-US (Arms Warrior):
+    Avatar [90s], Intimidating Shout [90s], Die by the Sword [120s], Bladestorm (Arms) [90s]
+  3: Tandue-Tichondrius-US (Retribution Paladin):
+    Lay on Hands [600s], Hammer of Justice [45s], Blessing of Protection [300s], Avenging Wrath [120s]
+  4: Negidam-Area52-US (Feral Druid — enemy):
+    Tiger's Fury [30s], Incarnation: Avatar of Ashamane [180s]
+  5: Prëzley-Mal'Ganis-US (Discipline Priest — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100 2:100 3:100
+0:00  [OWNER CAST]   774 → 2
+0:02  [OWNER CAST]   774 → 3
+0:03  [STATE]   friends 1:100 2:98 3:100
+0:03  [OWNER CAST]   774 → self
+0:03  [ENEMY CD]   4 (Feral Druid): Tiger's Fury
+0:03  [OWNER CAST]   Prowl
+0:03  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ-Stampeding Roar,Incapacitating Roar,Frenzied Regeneration,Tranquility,Incarnation: Tree of Life,Ironbark,2:Avatar,2:Intimidating Shout,2:Die by the Sword,2:Bladestorm (Arms),3:Lay on Hands,3:Blessing of Protection,3:Avenging Wrath  cd:—  enemy:Tiger's Fury/Feral Druid(1s)
+0:04  [ENEMY CD]   4 (Feral Druid): Incarnation: Avatar of Ashamane
+0:05  [STATE]   friends 1:100 2:94 3:98 / enemies 4:93 5:87
+0:05  [CC ON TEAM]   3 ← Rake (Negidam-Area52-US) | 1s | trinket: used
+0:06  [STATE]   friends 1:100 2:89 3:97 / enemies 4:89 5:82
+0:06  [TRINKET]   3 used PvP trinket
+0:06  [OWNER CAST]   33763 → 2
+0:07  [STATE]   friends 1:100 2:89 3:95 / enemies 4:81 5:74
+0:07  [TEAMMATE CD]   2 (Arms Warrior): Die by the Sword
+      [RES] rdy:Δ+2:Die by the Sword  cd:—  enemy:Tiger's Fury/Feral Druid(4s),Incarnation: Avatar of Ashamane/Feral Druid(3s)
+0:08  [STATE]   friends 1:100 2:80 3:95 / enemies 4:82 5:75
+0:08  [OWNER CAST]   48438
+0:09  [STATE]   friends 1:100 2:83 3:97 / enemies 4:82 5:71
+0:09  [OWNER CAST]   18562 → 2
+0:10  [STATE]   friends 1:100 2:100 3:100 / enemies 4:82 5:60
+0:10  [OWNER CD]   Innervate → self
+      [RES] rdy:Δ  cd:—  enemy:Tiger's Fury/Feral Druid(7s),Incarnation: Avatar of Ashamane/Feral Druid(6s)
+0:10  [TEAMMATE CD]   2 (Arms Warrior): Avatar
+      [RES] rdy:Δ  cd:—  enemy:Tiger's Fury/Feral Druid(7s),Incarnation: Avatar of Ashamane/Feral Druid(6s)
+0:10  [OWNER CD]   Incarnation: Tree of Life
+      [RES] rdy:Stampeding Roar,Incapacitating Roar,Frenzied Regeneration,Tranquility,Incarnation: Tree of Life,Ironbark,2:Avatar,2:Intimidating Shout,2:Bladestorm (Arms),3:Lay on Hands,3:Blessing of Protection,3:Avenging Wrath  cd:2:Die by the Sword(117s),3:Hammer of Justice(38s)  enemy:Tiger's Fury/Feral Druid(7s),Incarnation: Avatar of Ashamane/Feral Druid(6s)
+0:11  [STATE]   friends 1:100 2:100 3:98 / enemies 4:82 5:53
+0:12  [STATE]   friends 1:100 2:100 3:99 / enemies 4:78 5:34
+0:12  [OWNER CAST]   8936 → 3
+0:13  [STATE]   friends 1:100 2:100 3:100 / enemies 4:68 5:17
+0:13  [OWNER CAST]   5176 → 5
+0:14  [STATE]   friends 1:100 2:100 3:100 / enemies 4:56 5:dead
+0:14  [DEATH]  5 (Discipline Priest — enemy)
+0:14  [ROSTER]  enemy 5 removed (dead)
+0:15  [STATE]   friends 1:100 2:99 3:95 / enemies 4:45 5:dead
+0:15  [OWNER CAST]   197626 → 4
+0:16  [STATE]   friends 1:100 2:100 3:100 / enemies 4:34 5:dead
+0:16  [OWNER CAST]   5176 → 4
+0:17  [STATE]   friends 1:100 2:99 3:98 / enemies 4:dead 5:dead
+0:17  [DEATH]  4 (Feral Druid — enemy)
+0:17  [ROSTER]  enemy 4 removed (dead)
+
+0:17  [MATCH END]   damp: 10%
+  friends 1:100% 2:100% 3:99% / enemies 4:dead(0:17) 5:dead(0:14)

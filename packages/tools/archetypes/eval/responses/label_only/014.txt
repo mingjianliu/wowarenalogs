@@ -1,0 +1,15 @@
+Archetype: Restoration Druid — short_tunnel. Loss.
+
+Your Retribution Paladin died at 1:33 after dropping from 92% to dead in 5 seconds. The Windwalker Monk tunneled them while the Disc Priest kept the enemy team healthy and the Retribution Paladin pressured your own Ret. Ironbark was available at 1:23 (it came off cooldown) but was not used on your Paladin during the final spike. That's the direct cause of the death.
+
+What you did well: Incarnation: Tree of Life at 0:19 was a correct response to the first burst window — the Ret Paladin had dropped to 51% under Execution Sentence at that point and Incarnation gave you the throughput to bring them back and survive the overlapping Power Infusion window. Barkskin at 0:15 on yourself when you were being targeted was right. Cleanse discipline was solid: Blaze of Light at 0:19, Divine Hammer at 0:22, Flying Serpent Kick at 0:45, Divine Hammer at 1:04, Consecration at 1:27. You read the debuff frames and acted.
+
+The offensive CC — Entangling Roots at 0:41 on the Disc Priest, Incapacitating Roar at 0:42 hitting the Disc Priest, Cyclone at 0:51 on the Windwalker — was actively using your toolkit to buy space. Cyclone on the Windwalker at 0:51 directly prevented them from continuing to build pressure on your Paladin. Incapacitating Roar at 1:24 catching both the Ret Paladin and Windwalker during the second spike window was good awareness.
+
+Where it went wrong: Your Retribution Paladin was at 41% HP at 1:14 and at 57% at 1:08. Ironbark had been off cooldown since 1:08 (it expired at 0:39). You used it at 0:27 on the Ret Paladin when they were at 93% HP — that's too early. Ironbark at 93% HP is preventive, but in a short_tunnel match you should hold Ironbark until the target is below 60% and taking active damage. Using it at 93% means it expired while the Paladin was still healthy and wasn't available for the genuine crisis.
+
+At 1:14 your Paladin was at 41%. Ironbark was available. No Ironbark was cast. The Paladin continued dropping. At 1:32 they were at 35% and dead a second later from Rushing Wind Kick (173k), Strike of the Windlord (126k), Hammer of Wrath (97k) in the final 10 seconds. An Ironbark at 1:14 or even at 1:20 when the Paladin was at 57% under Execution Sentence would have bought the seconds needed for your healing to catch up.
+
+After the Paladin died, you ran out of healing targets quickly. Your Warrior declined steadily from 64% to 42% as the enemy Windwalker pivoted to them after the kill.
+
+Primary adjustment: hold Ironbark for genuine crisis windows below 60% HP, not preventive use at 90%+.

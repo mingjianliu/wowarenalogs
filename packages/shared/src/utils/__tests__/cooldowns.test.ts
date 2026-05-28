@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-non-null-assertion */
-import { CombatUnitReaction, CombatUnitSpec, LogEvent } from '@wowarenalogs/parser';
+import { CombatUnitClass, CombatUnitReaction, CombatUnitSpec, LogEvent } from '@wowarenalogs/parser';
 
 import {
   annotateDefensiveTimings,
   computePressureWindows,
   detectOverlappedDefensives,
   detectPanicDefensives,
+  extractMajorCooldowns,
   fmtTime,
   getPressureThreshold,
   IEnemyCDTimelineForTiming,
@@ -785,5 +786,209 @@ describe('detectPanicDefensives', () => {
 
     // 50k > 35k healer threshold → not a panic
     expect(detectPanicDefensives([caster, target], [enemy], combat)).toHaveLength(0);
+  });
+});
+
+// ─── extractMajorCooldowns ────────────────────────────────────────────────────
+
+describe('extractMajorCooldowns', () => {
+  const T0 = 1_000_000; // match start ms
+  const T_END = 1_180_000; // match end ms (3 min)
+
+  function makeCombatFull(units: Record<string, ReturnType<typeof makeUnit>>) {
+    return {
+      startTime: T0,
+      endTime: T_END,
+      units,
+    } as unknown as import('@wowarenalogs/parser').AtomicArenaCombat;
+  }
+
+  it('includes Avenging Crusader (216331) for Holy Paladin who cast it', () => {
+    const owner = makeUnit('player-1', {
+      class: CombatUnitClass.Paladin,
+      spec: CombatUnitSpec.Paladin_Holy,
+      spellCastEvents: [makeSpellCastEvent('216331', T0 + 30_000, 'enemy-1')],
+    });
+    const combat = makeCombatFull({ 'player-1': owner });
+
+    const cds = extractMajorCooldowns(owner, combat);
+    const ac = cds.find((c) => c.spellId === '216331');
+    expect(ac).toBeDefined();
+    expect(ac?.casts).toHaveLength(1);
+    expect(ac?.casts[0].timeSeconds).toBeCloseTo(30, 1);
+  });
+
+  it('does not include Avenging Crusader for Retribution Paladin', () => {
+    const owner = makeUnit('player-1', {
+      class: CombatUnitClass.Paladin,
+      spec: CombatUnitSpec.Paladin_Retribution,
+      spellCastEvents: [],
+      info: { talents: [], pvpTalents: [] } as unknown as ReturnType<typeof makeUnit>['info'],
+    });
+    const combat = makeCombatFull({ 'player-1': owner });
+
+    const cds = extractMajorCooldowns(owner, combat);
+    expect(cds.find((c) => c.spellId === '216331')).toBeUndefined();
+  });
+
+  it('does not include Avenging Crusader for Retribution Paladin without COMBATANT_INFO', () => {
+    const owner = makeUnit('player-1', {
+      class: CombatUnitClass.Paladin,
+      spec: CombatUnitSpec.Paladin_Retribution,
+      spellCastEvents: [],
+      // info omitted → hasCombatantInfo = false; SPEC_EXCLUSIVE_SPELLS is the only guard
+    });
+    const combat = makeCombatFull({ 'player-1': owner });
+
+    const cds = extractMajorCooldowns(owner, combat);
+    expect(cds.find((c) => c.spellId === '216331')).toBeUndefined();
+  });
+
+  it('includes Aura Mastery (31821) for Holy Paladin who cast it', () => {
+    const owner = makeUnit('player-1', {
+      class: CombatUnitClass.Paladin,
+      spec: CombatUnitSpec.Paladin_Holy,
+      spellCastEvents: [makeSpellCastEvent('31821', T0 + 60_000, 'player-1')],
+    });
+    const combat = makeCombatFull({ 'player-1': owner });
+
+    const cds = extractMajorCooldowns(owner, combat);
+    expect(cds.find((c) => c.spellId === '31821')).toBeDefined();
+  });
+
+  it('does not include Aura Mastery for Retribution Paladin (SPEC_EXCLUSIVE_SPELLS guard)', () => {
+    const owner = makeUnit('player-1', {
+      class: CombatUnitClass.Paladin,
+      spec: CombatUnitSpec.Paladin_Retribution,
+      spellCastEvents: [makeSpellCastEvent('31821', T0 + 60_000, 'player-1')],
+    });
+    const combat = makeCombatFull({ 'player-1': owner });
+
+    const cds = extractMajorCooldowns(owner, combat);
+    expect(cds.find((c) => c.spellId === '31821')).toBeUndefined();
+  });
+
+  it('includes Ardent Defender (31850) for Protection Paladin who cast it', () => {
+    const owner = makeUnit('player-1', {
+      class: CombatUnitClass.Paladin,
+      spec: CombatUnitSpec.Paladin_Protection,
+      spellCastEvents: [makeSpellCastEvent('31850', T0 + 45_000, 'player-1')],
+    });
+    const combat = makeCombatFull({ 'player-1': owner });
+
+    const cds = extractMajorCooldowns(owner, combat);
+    expect(cds.find((c) => c.spellId === '31850')).toBeDefined();
+  });
+
+  it('includes Guardian Spirit (47788) for Priest Holy who cast it', () => {
+    const owner = makeUnit('player-1', {
+      class: CombatUnitClass.Priest,
+      spec: CombatUnitSpec.Priest_Holy,
+      spellCastEvents: [makeSpellCastEvent('47788', T0 + 30_000, 'friendly-1')],
+    });
+    const combat = makeCombatFull({ 'player-1': owner });
+    const cds = extractMajorCooldowns(owner, combat);
+    const gs = cds.find((c) => c.spellId === '47788');
+    expect(gs).toBeDefined();
+    expect(gs?.spellName).toBe('Guardian Spirit');
+    expect(gs?.cooldownSeconds).toBe(180);
+  });
+
+  it('does NOT include Guardian Spirit for Priest Discipline (SPEC_EXCLUSIVE guard)', () => {
+    const owner = makeUnit('player-1', {
+      class: CombatUnitClass.Priest,
+      spec: CombatUnitSpec.Priest_Discipline,
+      spellCastEvents: [makeSpellCastEvent('47788', T0 + 30_000, 'friendly-1')],
+    });
+    const combat = makeCombatFull({ 'player-1': owner });
+    const cds = extractMajorCooldowns(owner, combat);
+    expect(cds.find((c) => c.spellId === '47788')).toBeUndefined();
+  });
+
+  it('includes Divine Hymn (64843) for Priest Holy who cast it', () => {
+    const owner = makeUnit('player-1', {
+      class: CombatUnitClass.Priest,
+      spec: CombatUnitSpec.Priest_Holy,
+      spellCastEvents: [makeSpellCastEvent('64843', T0 + 45_000, 'player-1')],
+    });
+    const combat = makeCombatFull({ 'player-1': owner });
+    const cds = extractMajorCooldowns(owner, combat);
+    const dh = cds.find((c) => c.spellId === '64843');
+    expect(dh).toBeDefined();
+    expect(dh?.spellName).toBe('Divine Hymn');
+    expect(dh?.cooldownSeconds).toBe(180);
+  });
+
+  it('does NOT include Divine Hymn for Priest Discipline (SPEC_EXCLUSIVE guard)', () => {
+    const owner = makeUnit('player-1', {
+      class: CombatUnitClass.Priest,
+      spec: CombatUnitSpec.Priest_Discipline,
+      spellCastEvents: [makeSpellCastEvent('64843', T0 + 45_000, 'player-1')],
+    });
+    const combat = makeCombatFull({ 'player-1': owner });
+    const cds = extractMajorCooldowns(owner, combat);
+    expect(cds.find((c) => c.spellId === '64843')).toBeUndefined();
+  });
+
+  it('includes Tranquility (740) for Druid Restoration who cast it', () => {
+    const owner = makeUnit('player-1', {
+      class: CombatUnitClass.Druid,
+      spec: CombatUnitSpec.Druid_Restoration,
+      spellCastEvents: [makeSpellCastEvent('740', T0 + 60_000, 'player-1')],
+    });
+    const combat = makeCombatFull({ 'player-1': owner });
+    const cds = extractMajorCooldowns(owner, combat);
+    const tranq = cds.find((c) => c.spellId === '740');
+    expect(tranq).toBeDefined();
+    expect(tranq?.spellName).toBe('Tranquility');
+    expect(tranq?.cooldownSeconds).toBe(180);
+  });
+
+  it('does NOT include Tranquility for Druid Balance (SPEC_EXCLUSIVE guard)', () => {
+    const owner = makeUnit('player-1', {
+      class: CombatUnitClass.Druid,
+      spec: CombatUnitSpec.Druid_Balance,
+      spellCastEvents: [makeSpellCastEvent('740', T0 + 60_000, 'player-1')],
+    });
+    const combat = makeCombatFull({ 'player-1': owner });
+    const cds = extractMajorCooldowns(owner, combat);
+    expect(cds.find((c) => c.spellId === '740')).toBeUndefined();
+  });
+
+  it('B102: deduplicates consecutive casts of the same major cooldown within 2 seconds', () => {
+    const owner = makeUnit('player-1', {
+      class: CombatUnitClass.DeathKnight,
+      spec: CombatUnitSpec.DeathKnight_Frost,
+      spellCastEvents: [
+        makeSpellCastEvent('47568', T0 + 10_000, 'player-1', 'Target', 'player-1', 'Empower Rune Weapon'), // Manual cast
+        makeSpellCastEvent('47568', T0 + 10_500, 'player-1', 'Target', 'player-1', 'Empower Rune Weapon'), // Duplicate at +0.5s
+        makeSpellCastEvent('47568', T0 + 11_500, 'player-1', 'Target', 'player-1', 'Empower Rune Weapon'), // Duplicate at +1.5s
+        makeSpellCastEvent('47568', T0 + 30_000, 'player-1', 'Target', 'player-1', 'Empower Rune Weapon'), // Separate cast > 2s
+      ] as any,
+    });
+    const combat = makeCombatFull({ 'player-1': owner });
+
+    const cds = extractMajorCooldowns(owner, combat);
+    const erw = cds.find((c) => c.spellId === '47568');
+    expect(erw).toBeDefined();
+    expect(erw?.casts).toHaveLength(2); // Should only keep 10s and 30s
+    expect(erw?.casts[0].timeSeconds).toBe(10);
+    expect(erw?.casts[1].timeSeconds).toBe(30);
+  });
+
+  it('B102: filters out casts that match the PASSIVE_SPELL_BLOCKLIST', () => {
+    const owner = makeUnit('player-1', {
+      class: CombatUnitClass.DeathKnight,
+      spec: CombatUnitSpec.DeathKnight_Frost,
+      spellCastEvents: [
+        makeSpellCastEvent('47568', T0 + 10_000, 'player-1', 'Target', 'player-1', 'Player', 0, 'Divine Purpose'),
+      ] as any,
+    });
+    const combat = makeCombatFull({ 'player-1': owner });
+
+    const cds = extractMajorCooldowns(owner, combat);
+    const erw = cds.find((c) => c.spellId === '47568');
+    expect(erw).toBeDefined();
+    expect(erw?.casts).toHaveLength(0); // Filtered out by name
   });
 });

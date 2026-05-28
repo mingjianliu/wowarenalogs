@@ -1,0 +1,31 @@
+Your team won this 3:45 match against Ret/BM Hunter/Mistweaver with controlled pressure throughout, but several decisions cost you efficiency and nearly cost you the Mage twice.
+
+**What went right**
+
+The opening was clean. You dumped both Power Infusion charges at 0:08 — one on yourself, one on the Mage — right as your Rogue opened with Adrenaline Rush and Kidney Shot. The burst window pushed the Ret to 62% and got the first meaningful hp deficit. Guardian Spirit on the Mage at 0:24 when she was at 50% and Bestial Wrath incoming was the right call: she would have died otherwise. Using Apotheosis at 0:32 when you were CC'd by Scorpid Venom and the Mage was getting hammered was the correct reactive move — you got 586 off before the CC landed, cleansed yourself twice in quick succession, and kept her alive through the first Bestial Wrath.
+
+The 0:45 Divine Hymn under Spirit of Redemption was well-timed — you were dying and it covered you while you recovered. Using Psychic Scream on the Monk at 0:40 to peel healer pressure and again at 1:22 on both enemy DPS to create a damage window showed good game sense.
+
+The Guardian Spirit at 1:55 on the Mage at 39% with Bestial Wrath and Polymorph incoming was technically correct, and you got her out cleanly. The second big save came at 2:29 when the Mage hit 12% — you had Ice Block at 2:29 and used it, then got three Prayer of Mending stacks back and pushed her to 100% by 2:34. These are match-defining moments you handled.
+
+**What went wrong**
+
+Guardian Spirit at 0:24 went onto the Water Elemental instead of the Mage. This was a wasted charge — one of two charges on a 180-second CD. The Mage was at 50% with Bestial Wrath still ticking; you corrected by healing her back to 81% with direct casts, but losing a Guardian charge for free is a mistake.
+
+Missed cleanses were a problem throughout. Blinding Light on your Rogue at 0:54 sat for 4 seconds with 2k damage inside it — trivial damage, but the pattern of not immediately cleansing your carry is a habit that will kill in a closer match. Freezing Trap on your Rogue at 2:20 sat for 3 seconds with 19k taken. That is meaningful: your Rogue was doing real damage and those seconds mattered. You had a free GCD available both times.
+
+Power Infusion at 2:21 on the Mage at 60% with 28% overheal in the following window suggests you had significant throughput to spare. The timing of this PI was reactive rather than offensive — you deployed it because the Mage was under pressure rather than to maximize a burst window. With the Rogue's Adrenaline Rush and Blind both coming back around this window, coordinating PI with the Rogue's next go would have generated more kill pressure on the Ret rather than just keeping the Mage alive.
+
+You used Psychic Scream offensively several times when it connected only on the Monk — the kill target for much of the match was the Ret, not the Monk. At 1:22, Scream hit both enemies (Monk and Ret) which was good. At 0:40 and 3:15 you screamed only the Monk into a brief break. These were worthwhile but the Ret should have been your focus — he died first at 3:17.
+
+**Specific adjustments**
+
+1. Bind a separate key for Guardian Spirit target selection. Misclicking onto a Water Elemental costs a CD that takes 3 minutes to come back; verify your target before casting.
+
+2. Make cleansing Freezing Trap and Blinding Light an immediate reflex, not a delayed one. Magic CC on your physical carry is highest priority — trinkets burn, you have Dispel on a 1.5-second CD.
+
+3. When the Rogue pops Adrenaline Rush and the enemy healer is already CC'd, that is when you shift one PI onto the Rogue rather than saving both for defensive use. Your Ret was 62% at the end; those two Avatar windows from the Rogue went unaugmented.
+
+4. Flame Shock/Spider Venom chains were consistently slow to cleanse on yourself. In this match the damage was manageable, but against melee comps that stack on the healer this will be lethal.
+
+The match was controlled but sloppy in places. You had the tools to win cleanly — you just need to trust your cleanses more and stop spending defensive CDs reactively when offensive coordination would close the game faster.

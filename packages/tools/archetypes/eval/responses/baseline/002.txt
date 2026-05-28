@@ -1,0 +1,14 @@
+The loss is primarily explained by three missed Infected Wounds cleanses. The Feral Druid applied Infected Wounds throughout the match and it went undispelled four separate times, costing your Paladin hundreds of thousands of health in damage taken while the debuff was running. The fourth and final instance — at 0:51, 310k damage taken during a 5-second window — immediately preceded the kill at 0:57.
+
+Infected Wounds is a Disease. Discipline Priest can dispel diseases. This should have been a priority cleanse every time it appeared on a player taking heavy damage.
+
+The Power Infusion usage at 0:23 was questionable. You cast PI on the Warrior at 100% HP, then immediately cast a second PI charge on yourself at 97% HP. Both targets were near-full health, and Incarnation plus Tiger's Fury had just gone up on the enemy Feral — meaning the incoming damage was about to spike hard onto your Paladin. PI on offense is valuable, but here you burned both charges in the 20-second window before your Paladin was in any real danger, then watched him die at 57% while you had no remaining PI for his healing window.
+
+The Healing Gap at 0:57 — 9.5 seconds of healer inactivity while the Warrior was under pressure — is the most damaging execution error. The Paladin died at 0:57. The Warrior had a 0.84M incoming spike in the 10 seconds centered around 0:56. You were not healing the Warrior during a 9.5-second window of free time. Looking at what you were doing during that window: dispelling Entangling Roots at 0:43, handling your own CC at 0:43, etc. — but from 0:47 onward the timeline shows no casts onto the Warrior until it was too late.
+
+The match was loseable at the structure level too: the enemy ran Cyclone on the Warrior at 0:30 during the heaviest Paladin damage window, which removed your main off-healer from the game while the Paladin was at 67%. That timing was clean from the enemy team, and you had no interrupt or CC to break it.
+
+For next time:
+- Prioritize Infected Wounds cleanse over Shadow Word: Pain cleanse. The disease is reducing your Paladin's damage by 25% and contributing to the kill. Clear it first.
+- Hold at least one PI charge for the moment your Paladin drops below 60% during an enemy CD window. Both charges burned at near-full health is rarely correct.
+- When the Warrior is Cycloned and your Paladin is below 70%, that is your cue to move all healing onto the Paladin immediately. Do not wait for the Warrior to come out of Cyclone before acting.

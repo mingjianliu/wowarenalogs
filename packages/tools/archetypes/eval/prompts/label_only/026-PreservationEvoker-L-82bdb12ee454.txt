@@ -1,0 +1,427 @@
+[ARCHETYPE: Preservation Evoker — heavy_burst_swap]
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Preservation Evoker (Healer) | Bracket: 3v3 | Result: Loss | Duration: 2:58
+  My team: Arms Warrior, Preservation Evoker, Enhancement Shaman
+  Enemy team: Devourer Demon Hunter, Restoration Druid, Fury Warrior
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Preservation Evoker): CANNOT offensive purge
+  Team purgers: Enhancement Shaman
+
+DAMPENING (3v3): started at 10%, ended at 10% at match end
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Jadeddr-Proudmoore-US (Preservation Evoker — log owner):
+    Deep Breath [120s], Wing Buffet [180s, 2 Charges], Cauterizing Flame [60s], Rewind [240s], Emerald Communion [180s], Stasis [90s, 2 Charges], Rescue [60s]
+  2: Frugged-Illidan-US (Arms Warrior):
+    Avatar [90s], Intimidating Shout [90s], Die by the Sword [120s], Bladestorm (Arms) [90s]
+  3: Yen-Icecrown-US (Enhancement Shaman):
+    Hex [30s], Ascendance (Enhancement) [180s, 2 Charges]
+  4: Vorrent-Stormrage-US (Restoration Druid — enemy):
+    Innervate [180s], Nature's Swiftness [60s], Incarnation: Tree of Life [180s]
+  5: Heslatheege-Kel'Thuzad-US (Fury Warrior — enemy):
+    Avatar [90s], Recklessness [90s]
+  6: Dafuqs-Illidan-US (Devourer Demon Hunter — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100
+0:01  [OWNER CAST]   364342 → self
+0:03  [STATE]   friends 1:100 3:100
+0:03  [OWNER CAST]   364343 → 3
+0:06  [STATE]   friends 1:100 3:100
+0:06  [OWNER CAST]   358385
+0:07  [OWNER CAST]   357208
+0:09  [STATE]   friends 1:100 2:100 3:87
+0:09  [ENEMY CD]   5 (Fury Warrior): Avatar
+0:09  [ENEMY CD]   5 (Fury Warrior): Recklessness
+0:09  [OWNER CAST]   355936
+0:10  [CC ON TEAM]   3 ← Storm Bolt (Heslatheege-Kel'Thuzad-US) | 3s
+0:11  [STATE]   friends 1:100 2:100 3:97 / enemies 6:98 5:96
+0:12  [STATE]   friends 1:100 2:98 3:95 / enemies 6:97 5:95
+0:12  [OWNER CAST]   364343 → 3
+0:12  [OWNER CD]   Hover
+      [RES] rdy:Δ+Deep Breath,Wing Buffet,Rewind,Emerald Communion,Stasis,3:Hex,3:Ascendance (Enhancement)  cd:—  enemy:Avatar/Fury Warrior(3s),Recklessness/Fury Warrior(3s)  cc:3/Storm Bolt-1s[stun]
+0:13  [STATE]   friends 1:99 2:95 3:84 / enemies 6:98 5:97
+0:13  [OWNER CD]   Wing Buffet
+      [RES] rdy:Δ+Wing Buffet,Emerald Communion,Stasis,2:Avatar,2:Intimidating Shout,3:Ascendance (Enhancement)  cd:—  enemy:Avatar/Fury Warrior(4s),Recklessness/Fury Warrior(4s)
+0:14  [STATE]   friends 1:98 2:92 3:74 / enemies 6:98 5:96
+0:14  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ-Wing Buffet  cd:Wing Buffet(179s)  enemy:Avatar/Fury Warrior(5s),Recklessness/Fury Warrior(5s)
+0:15  [STATE]   friends 1:98 2:91 3:63 / enemies 6:98 4:100 5:86
+0:15  [TEAMMATE CD]   2 (Arms Warrior): Intimidating Shout
+      [RES] rdy:Δ+Deep Breath,Rewind,Emerald Communion,2:Intimidating Shout,3:Ascendance (Enhancement)  cd:—  enemy:Avatar/Fury Warrior(7s),Recklessness/Fury Warrior(7s)  cc:1/Charge-0s[root]
+0:15  [CC CAST]   Intimidating Shout (by 2) → 6
+0:16  [STATE]   friends 1:92 2:91 3:61 / enemies 6:98 4:100 5:77
+0:16  [OWNER CAST]   357208
+0:16  [ENEMY CD]   4 (Restoration Druid): Innervate
+0:17  [STATE]   friends 1:85 2:92 3:61 / enemies 6:100 4:100 5:80
+0:17  [TEAMMATE CD]   2 (Arms Warrior): Avatar
+      [RES] rdy:Δ+Deep Breath,Rewind,Emerald Communion,2:Avatar,3:Hex,3:Ascendance (Enhancement)  cd:—  enemy:Innervate/Restoration Druid(1s),Avatar/Fury Warrior(8s),Recklessness/Fury Warrior(8s)  cc:1/Sleep Walk-2s[kick]
+0:17  [OWNER CD]   Obsidian Scales → self
+      [RES] rdy:Δ-2:Avatar,2:Intimidating Shout  cd:2:Avatar(89s),2:Intimidating Shout(88s)  enemy:Innervate/Restoration Druid(2s),Avatar/Fury Warrior(9s),Recklessness/Fury Warrior(9s)  cc:1/Sleep Walk-1s[kick]
+0:18  [STATE]   friends 1:80 2:88 3:58 / enemies 6:100 4:100 5:89
+0:19  [STATE]   friends 1:76 2:84 3:55 / enemies 6:100 4:100 5:100
+0:19  [TEAMMATE CD]   3 (Enhancement Shaman): Ascendance (Enhancement)
+      [RES] rdy:Δ+Deep Breath,Rewind,Emerald Communion,3:Ascendance (Enhancement)  cd:—  enemy:Innervate/Restoration Druid(3s),Avatar/Fury Warrior(10s),Recklessness/Fury Warrior(10s)
+0:19  [OWNER CAST]   361509 → 3
+0:19  [OWNER CAST]   431443 → 3
+0:20  [STATE]   friends 1:73 2:80 3:54 / enemies 6:100 4:100 5:92
+0:20  [OWNER CAST]   Sleep Walk → 6
+0:21  [STATE]   friends 1:61 2:78 3:68
+0:21  [OWNER CAST]   360995 → self
+0:21  [OWNER CAST]   361195 → self
+0:21  [ENEMY CD]   4 (Restoration Druid): Nature's Swiftness
+0:22  [CC ON TEAM]   3 ← Imprison (Dafuqs-Illidan-US) | 2s
+0:22  [ENEMY CD]   4 (Restoration Druid): Incarnation: Tree of Life
+0:22  [OWNER CAST]   364343 → self
+0:23  [STATE]   friends 1:65 2:75 3:70 / enemies 6:100 4:87 5:49
+0:23  [OWNER CD]   Hover
+      [RES] rdy:Δ-3:Ascendance (Enhancement)  cd:3:Ascendance (Enhancement)(176s)  enemy:Innervate/Restoration Druid(7s),Nature's Swiftness/Restoration Druid(1s),Incarnation: Tree of Life/Restoration Druid(1s),Avatar/Fury Warrior(14s),Recklessness/Fury Warrior(14s)  cc:3/Imprison-0s
+0:23  [OWNER CAST]   1256581 → self
+0:24  [STATE]   friends 1:100 2:74 3:79 / enemies 6:100 4:97 5:69
+0:24  [OWNER CAST]   406971
+0:25  [STATE]   friends 1:99 2:78 3:87 / enemies 6:100 4:100 5:54
+0:25  [OWNER CAST]   364343 → 2
+0:26  [STATE]   friends 1:100 2:74 3:87 / enemies 6:100 4:100 5:100
+0:26  [OWNER CD]   Stasis
+      [RES] rdy:Δ+Stasis  cd:—  enemy:Innervate/Restoration Druid(10s),Nature's Swiftness/Restoration Druid(5s),Incarnation: Tree of Life/Restoration Druid(4s),Avatar/Fury Warrior(17s),Recklessness/Fury Warrior(17s)  cc:1/Charge-1s[root],2/Disarm-0s[disarm]
+0:26  [TRINKET]   2 used PvP trinket
+0:27  [STATE]   friends 1:96 2:72 3:79 / enemies 6:97 4:100 5:100
+0:27  [OWNER CAST]   360995 → 2
+0:27  [OWNER CAST]   361195 → 2
+0:28  [STATE]   friends 1:99 2:89 3:74 / enemies 6:88 4:100 5:94
+0:28  [OWNER CAST]   364343 → 2
+0:29  [STATE]   friends 1:90 2:68 3:76 / enemies 6:77 4:100 5:92
+0:29  [OWNER CAST]   355936
+0:30  [STATE]   friends 1:100 2:74 3:74 / enemies 6:80 4:85 5:94
+0:30  [OWNER CAST]   1256581 → 2
+0:31  [STATE]   friends 1:100 2:99 3:81 / enemies 6:83 4:91 5:84
+0:32  [STATE]   friends 1:96 2:97 3:74 / enemies 6:87 4:93 5:83
+0:33  [STATE]   friends 1:80 2:88 3:66
+0:34  [OWNER CAST]   361195 → 2
+0:35  [OWNER CAST]   364343 → 2
+0:35  [OWNER CAST]   355941
+0:36  [STATE]   friends 1:85 2:99 3:69
+0:36  [OWNER CAST]   356995 → 5
+0:37  [OWNER CAST]   360823 → 2
+0:37  [CLEANSE]   1 dispelled 2 effects: Moonfire off 2, Mass Entanglement off 2
+0:37  [CC ON TEAM]   3 ← Storm Bolt (Heslatheege-Kel'Thuzad-US) | 3s
+0:38  [STATE]   friends 1:74 2:99 3:77 / enemies 6:100 4:100 5:95
+0:38  [OWNER CAST]   364343 → 3
+0:39  [STATE]   friends 1:70 2:99 3:79 / enemies 6:100 4:100 5:100
+0:39  [OWNER CAST]   1256581 → self
+0:40  [STATE]   friends 1:79 2:100 3:78 / enemies 6:100 4:100 5:92
+0:40  [OWNER CAST]   364343 → 3
+0:41  [STATE]   friends 1:81 2:100 3:88 / enemies 6:100 4:100 5:96
+0:41  [OFFENSIVE WINDOW]   0:41–1:01 | Critical | 0.88M on 3 (Enhancement Shaman) | CDs: Avatar + Recklessness
+0:41  [ENEMY CD]   5 (Fury Warrior): Avatar
+0:41  [ENEMY CD]   5 (Fury Warrior): Recklessness
+0:41  [OWNER CD]   Hover
+      [RES] rdy:Δ-Stasis  cd:Stasis(74s)  enemy:Innervate/Restoration Druid(26s),Nature's Swiftness/Restoration Druid(20s),Incarnation: Tree of Life/Restoration Druid(20s),Avatar/Fury Warrior(1s),Recklessness/Fury Warrior(1s)
+0:42  [STATE]   friends 1:48 2:97 3:80 / enemies 6:100 4:100 5:92
+0:42  [CC ON TEAM]   1 ← Shockwave (Heslatheege-Kel'Thuzad-US) | 1s | trinket: used
+0:42  [CC ON TEAM]   3 ← Shockwave (Heslatheege-Kel'Thuzad-US) | 1s
+0:43  [STATE]   friends 1:44 2:96 3:71 / enemies 6:100 4:100 5:93
+0:43  [OWNER CD]   Emerald Communion
+      [RES] rdy:Δ+Deep Breath,Emerald Communion  cd:—  enemy:Innervate/Restoration Druid(27s),Nature's Swiftness/Restoration Druid(22s),Incarnation: Tree of Life/Restoration Druid(22s),Avatar/Fury Warrior(3s),Recklessness/Fury Warrior(3s)  cc:1/Shockwave-0s[stun][trinketed]
+0:44  [STATE]   friends 1:60 2:93 3:62 / enemies 6:100 4:100 5:77
+0:44  [TRINKET]   1 used PvP trinket
+0:45  [STATE]   friends 1:70 2:97 3:56 / enemies 6:100 4:100 5:80
+0:46  [STATE]   friends 1:92 2:87 3:60 / enemies 6:100 4:100 5:99
+0:47  [STATE]   friends 1:98 2:87 3:66 / enemies 6:91 4:100 5:100
+0:47  [BUFF FADED]   Emerald Communion
+0:47  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ-Emerald Communion  cd:Emerald Communion(176s)  enemy:Nature's Swiftness/Restoration Druid(26s),Incarnation: Tree of Life/Restoration Druid(26s),Avatar/Fury Warrior(7s),Recklessness/Fury Warrior(7s)
+0:47  [OWNER CD]   Deep Breath
+      [RES] rdy:Deep Breath,Cauterizing Flame,Rewind,Rescue,2:Die by the Sword,2:Bladestorm (Arms),3:Hex  cd:Wing Buffet(146s),Emerald Communion(176s),Stasis(69s),2:Avatar(59s),2:Intimidating Shout(58s),3:Ascendance (Enhancement)(151s)  enemy:Nature's Swiftness/Restoration Druid(26s),Incarnation: Tree of Life/Restoration Druid(26s),Avatar/Fury Warrior(7s),Recklessness/Fury Warrior(7s)
+0:48  [STATE]   friends 1:97 2:87 3:62 / enemies 6:100 4:100 5:100
+0:49  [STATE]   friends 1:97 2:87 3:61 / enemies 6:100 4:100 5:96
+0:49  [BUFF FADED]   Deep Breath
+0:50  [STATE]   friends 1:94 2:91 3:59 / enemies 6:100 4:100 5:96
+0:50  [OWNER CAST]   360995 → 3
+0:50  [OWNER CAST]   361195 → 3
+0:51  [STATE]   friends 1:95 2:92 3:77 / enemies 6:93 4:100 5:100
+0:52  [STATE]   friends 1:96 2:94 3:72 / enemies 6:85 4:100 5:100
+0:52  [OWNER CAST]   364343 → 3
+0:53  [OWNER CD]   Obsidian Scales → self
+      [RES] rdy:Δ-Deep Breath  cd:Deep Breath(115s)  enemy:Avatar/Fury Warrior(12s),Recklessness/Fury Warrior(12s)  cc:1/Sleep Walk-2s[kick]
+0:53  [OWNER CAST]   357208
+0:54  [STATE]   friends 1:87 2:91 3:68 / enemies 6:100 4:100 5:97
+0:55  [STATE]   friends 1:84 2:94 3:69 / enemies 6:84 4:100 5:85
+0:55  [OWNER CAST]   361509 → 3
+0:55  [OWNER CAST]   431443 → 3
+0:55  [OWNER CAST]   1256581 → 3
+0:56  [STATE]   friends 1:100 2:93 3:82 / enemies 6:87 4:100 5:75
+0:56  [OWNER CAST]   364343 → 3
+0:57  [STATE]   friends 1:92 2:90 3:99 / enemies 6:94 4:100 5:71
+0:58  [STATE]   friends 1:86 2:81 3:96 / enemies 6:94 4:100 5:94
+0:58  [OWNER CAST]   355936
+0:58  [DMG SPIKE]   3 (Enhancement Shaman): 0.88M in 10s
+0:59  [STATE]   friends 1:85 2:65 3:90 / enemies 6:100 4:100 5:88
+0:59  [OWNER CAST]   364343 → 2
+1:00  [STATE]   friends 1:89 2:67 3:76 / enemies 6:100 4:100 5:77
+1:00  [OWNER CAST]   360995 → 2
+1:00  [OWNER CAST]   361195 → 2
+1:01  [STATE]   friends 1:93 2:83 3:76 / enemies 6:100 4:100 5:93
+1:01  [OWNER CAST]   364343 → 3
+1:02  [STATE]   friends 1:84 2:74 3:72 / enemies 6:100 4:100 5:94
+1:02  [OWNER CAST]   1256581 → 3
+1:03  [STATE]   friends 1:95 2:90 3:95 / enemies 6:100 4:100 5:94
+1:03  [OWNER CAST]   356995 → 5
+1:06  [STATE]   friends 1:90 2:98 3:87
+1:08  [OWNER CD]   Rewind
+      [RES] rdy:Δ+Rewind-Stasis,2:Avatar,2:Intimidating Shout  cd:Stasis(48s),2:Avatar(39s),2:Intimidating Shout(38s)  enemy:Avatar/Fury Warrior(27s),Recklessness/Fury Warrior(27s)
+1:09  [STATE]   friends 1:80 2:97 3:43
+1:09  [OWNER CAST]   364343 → 3
+1:09  [OWNER CD]   Hover
+      [RES] rdy:Δ-Rewind  cd:Rewind(238s)  enemy:Avatar/Fury Warrior(28s),Recklessness/Fury Warrior(28s)
+1:09  [BUFF FADED]   Rewind
+1:10  [OWNER CAST]   366155 → 3
+1:12  [STATE]   friends 1:87 2:96 3:83
+1:12  [OWNER CD]   Wing Buffet
+      [RES] rdy:Δ-Deep Breath,Wing Buffet,Rewind,Emerald Communion,Stasis,2:Avatar,2:Intimidating Shout,3:Ascendance (Enhancement)  cd:Deep Breath(95s),Wing Buffet(121s),Rewind(235s),Emerald Communion(151s),Stasis(44s),2:Avatar(34s),2:Intimidating Shout(33s),3:Ascendance (Enhancement)(126s)
+1:13  [OWNER CD]   Time Dilation → self
+      [RES] rdy:Δ  cd:—
+1:13  [OWNER CAST]   360995 → self
+1:13  [OWNER CAST]   361195 → self
+1:15  [STATE]   friends 1:42 2:46 3:60 / enemies 6:97 4:89 5:99
+1:16  [STATE]   friends 1:40 2:54 3:63 / enemies 6:98 4:94 5:99
+1:16  [OWNER CAST]   361509 → self
+1:16  [OWNER CAST]   431443 → self
+1:16  [OWNER CAST]   364343 → self
+1:16  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ  cd:—
+1:17  [STATE]   friends 1:49 2:49 3:62 / enemies 6:100 4:95 5:100
+1:17  [OWNER CAST]   355936
+1:17  [OWNER CAST]   364343 → 2
+1:18  [STATE]   friends 1:85 2:64 3:77 / enemies 6:97 4:95 5:100
+1:18  [OWNER CAST]   1256581 → 2
+1:19  [STATE]   friends 1:92 2:93 3:89 / enemies 6:100 4:95 5:100
+1:19  [OFFENSIVE WINDOW]   1:19–1:42 | Critical | 0.83M on 1 (Preservation Evoker) | CDs: Recklessness + Avatar
+1:19  [ENEMY CD]   5 (Fury Warrior): Recklessness
+1:19  [DMG SPIKE]   1 (Preservation Evoker): 0.83M in 10s
+1:20  [STATE]   friends 1:89 2:96 3:89 / enemies 6:99 4:96 5:100
+1:20  [OWNER CAST]   431443 → 6
+1:21  [STATE]   friends 1:84 2:62 3:78 / enemies 6:80 4:100 5:100
+1:21  [OWNER CAST]   Sleep Walk → 5
+1:22  [STATE]   friends 1:83 2:59 3:79 / enemies 6:87 4:100 5:100
+1:22  [ENEMY CD]   5 (Fury Warrior): Avatar
+1:22  [OWNER CAST]   360995 → 2
+1:22  [OWNER CAST]   361195 → 2
+1:23  [STATE]   friends 1:79 2:64 3:75 / enemies 6:91 4:100 5:100
+1:24  [STATE]   friends 1:70 2:65 3:69 / enemies 6:90 4:100 5:87
+1:24  [OWNER CAST]   Sleep Walk → 5
+1:24  [OWNER CAST]   364343 → self
+1:25  [OWNER CAST]   366155 → self
+1:26  [OWNER CAST]   364343 → self
+1:26  [OWNER CAST]   357208
+1:27  [STATE]   friends 1:43 2:96 3:60
+1:27  [TEAMMATE CD]   3 (Enhancement Shaman): Hex
+      [RES] rdy:Δ+3:Hex-Deep Breath,Stasis  cd:Deep Breath(80s),Stasis(29s)  enemy:Recklessness/Fury Warrior(9s),Avatar/Fury Warrior(5s)
+1:28  [OWNER CAST]   1256581 → self [completed before CC landed]
+1:28  [CC ON TEAM]   1 ← Storm Bolt (Heslatheege-Kel'Thuzad-US) | 2s | trinket: ON CD (46s left)
+1:29  [STATE]   friends 1:62 2:100 3:53 / enemies 6:95 4:100 5:99
+1:30  [STATE]   friends 1:64 2:99 3:47 / enemies 6:97 4:100 5:97
+1:30  [OWNER CAST]   364343 → 3
+1:30  [OWNER CD]   Hover
+      [RES] rdy:Δ-3:Hex  cd:3:Hex(27s)  enemy:Recklessness/Fury Warrior(12s),Avatar/Fury Warrior(8s)
+1:31  [STATE]   friends 1:64 2:100 3:53 / enemies 6:99 4:100 5:99
+1:31  [OWNER CAST]   360995 → 3
+1:31  [OWNER CAST]   361195 → 3
+1:32  [STATE]   friends 1:72 2:100 3:56 / enemies 6:97 4:100 5:99
+1:32  [OWNER CAST]   364343 → 3
+1:33  [STATE]   friends 1:78 2:100 3:62 / enemies 6:100 4:100 5:99
+1:33  [OWNER CAST]   355936
+1:34  [STATE]   friends 1:100 2:100 3:91 / enemies 6:100 4:100 5:100
+1:35  [STATE]   friends 1:99 2:100 3:96 / enemies 6:100 4:100 5:99
+1:35  [OWNER CAST]   1256581 → 3
+1:36  [STATE]   friends 1:95 2:100 3:89 / enemies 6:93 4:100 5:100
+1:36  [OWNER CAST]   356995 → 6
+1:37  [STATE]   friends 1:95 2:99 3:92 / enemies 6:99 4:100 5:95
+1:38  [STATE]   friends 1:89 2:99 3:93 / enemies 6:99 4:98 5:98
+1:39  [STATE]   friends 1:86 2:99 3:78
+1:39  [OWNER CAST]   431443 → 6
+1:39  [OWNER CAST]   364343 → 3
+1:41  [OWNER CAST]   360995 → self
+1:41  [OWNER CAST]   361195 → self
+1:42  [STATE]   friends 1:85 2:90 3:93
+1:42  [OWNER CAST]   364343 → 3
+1:44  [STATE]   friends 1:77 2:91 3:73 / enemies 6:96 4:77 5:84
+1:45  [STATE]   friends 1:71 2:93 3:65 / enemies 6:91 4:77 5:84
+1:45  [OWNER CAST]   Sleep Walk → 5
+1:45  [OWNER CAST]   1256581 → self
+1:46  [STATE]   friends 1:87 2:92 3:70 / enemies 6:85 4:97 5:85
+1:47  [STATE]   friends 1:95 2:100 3:80 / enemies 6:100 4:98 5:87
+1:47  [OWNER CAST]   Sleep Walk → 5
+1:48  [STATE]   friends 1:89 2:99 3:84 / enemies 6:86 4:100 5:95
+1:48  [DMG SPIKE]   3 (Enhancement Shaman): 0.94M in 10s
+1:48  [OWNER CAST]   364343 → 3
+1:49  [STATE]   friends 1:80 2:81 3:61 / enemies 6:88 4:100 5:99
+1:49  [OWNER CD]   Hover
+      [RES] rdy:Δ+2:Avatar,2:Intimidating Shout  cd:—  enemy:Recklessness/Fury Warrior(30s),Avatar/Fury Warrior(27s)
+1:49  [OWNER CD]   Stasis
+      [RES] rdy:Δ+2:Avatar,2:Intimidating Shout-Deep Breath,Rewind,Emerald Communion,Stasis,3:Hex  cd:Deep Breath(58s),Rewind(199s),Emerald Communion(115s),Stasis(7s),3:Hex(9s)  enemy:Avatar/Fury Warrior(27s)
+1:49  [OWNER CAST]   360995 → 3
+1:49  [OWNER CAST]   361195 → 3
+1:50  [STATE]   friends 1:96 2:76 3:57 / enemies 6:82 4:100 5:100
+1:50  [OWNER CAST]   364343 → 3
+1:51  [STATE]   friends 1:94 2:73 3:59 / enemies 6:83 4:99 5:100
+1:51  [OWNER CAST]   355936
+1:52  [STATE]   friends 1:89 2:69 3:52 / enemies 6:80 4:100 5:90
+1:53  [STATE]   friends 1:99 2:91 3:73 / enemies 6:89 4:98 5:87
+1:53  [CC ON TEAM]   2 ← Mighty Bash (Vorrent-Stormrage-US) | 4s | trinket: ON CD (34s left)
+1:53  [OWNER CAST]   364343 → 3
+1:54  [STATE]   friends 1:99 2:92 3:76 / enemies 6:90 4:100 5:90
+1:54  [OWNER CAST]   357208
+1:55  [STATE]   friends 1:86 2:93 3:64 / enemies 6:95 4:100 5:100
+1:55  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ  cd:—  cc:1/Sleep Walk-1s[kick],2/Mighty Bash-2s[stun],3/Hex-1s[kick]
+1:55  [OWNER CAST]   356995 → 5
+1:56  [STATE]   friends 1:97 2:94 3:56 / enemies 6:100 4:99 5:91
+1:57  [STATE]   friends 1:84 2:98 3:52 / enemies 6:100 4:97 5:91
+1:57  [OWNER CAST]   361195 → 3
+1:57  [OWNER CAST]   364343 → 3
+1:57  [OWNER CAST]   1256581 → 3
+1:58  [STATE]   friends 1:87 2:98 3:91 / enemies 6:100 4:99 5:96
+1:58  [OWNER CAST]   355941
+1:59  [STATE]   friends 1:100 2:100 3:98 / enemies 6:99 4:99 5:99
+2:00  [STATE]   friends 1:100 2:100 3:100 / enemies 6:100 4:99 5:94
+2:00  [CC ON TEAM]   1 ← Shockwave (Heslatheege-Kel'Thuzad-US) | 2s | trinket: ON CD (15s left)
+2:00  [DMG SPIKE]   1 (Preservation Evoker): 0.90M in 10s
+2:01  [STATE]   friends 1:100 2:100 3:98 / enemies 6:100 4:100 5:94
+2:02  [STATE]   friends 1:49 2:85 3:90 / enemies 6:100 4:100 5:100
+2:02  [OFFENSIVE WINDOW]   2:02–2:22 | Critical | 0.90M on 1 (Preservation Evoker) | CDs: Avatar + Recklessness + Incarnation: Tree of Life
+2:02  [ENEMY CD]   5 (Fury Warrior): Avatar
+2:02  [ENEMY CD]   5 (Fury Warrior): Recklessness
+2:02  [OWNER CD]   Obsidian Scales → self
+      [RES] rdy:Δ+Stasis,3:Hex  cd:—  enemy:Avatar/Fury Warrior(0s),Recklessness/Fury Warrior(0s)
+2:02  [OWNER CAST]   364343 → self
+2:03  [STATE]   friends 1:27 2:76 3:87 / enemies 6:92 4:100 5:100
+2:03  [OWNER CAST]   1256581 → self
+2:03  [CC ON TEAM]   3 ← Imprison (Dafuqs-Illidan-US) | 3s
+2:04  [STATE]   friends 1:90 2:83 3:96 / enemies 6:99 4:99 5:100
+2:04  [OWNER CD]   Wing Buffet
+      [RES] rdy:Δ+Stasis,2:Avatar,2:Intimidating Shout  cd:—  enemy:Avatar/Fury Warrior(2s),Recklessness/Fury Warrior(2s)  cc:3/Imprison-2s
+2:04  [TEAMMATE CD]   2 (Arms Warrior): Intimidating Shout
+      [RES] rdy:Δ-Deep Breath,Rewind,Emerald Communion,3:Ascendance (Enhancement)  cd:Deep Breath(43s),Rewind(183s),Emerald Communion(99s),3:Ascendance (Enhancement)(74s)  enemy:Avatar/Fury Warrior(3s),Recklessness/Fury Warrior(3s)  cc:3/Imprison-1s
+2:04  [CC CAST]   Intimidating Shout (by 2) → 4
+2:05  [STATE]   friends 1:90 2:89 3:97 / enemies 6:100 4:100 5:100
+2:05  [OWNER CAST]   364343 → self
+2:06  [STATE]   friends 1:86 2:90 3:100 / enemies 6:99 4:100 5:99
+2:06  [OWNER CAST]   360823 → 3
+2:06  [CLEANSE]   1 dispelled 2 effects: Imprison off 3, Void Nova off 3
+2:07  [STATE]   friends 1:85 2:93 3:100 / enemies 6:96 4:97 5:100
+2:07  [OWNER CAST]   355936
+2:08  [STATE]   friends 1:83 2:94 3:100 / enemies 6:89 4:97 5:100
+2:08  [OWNER CAST]   364343 → self
+2:08  [TEAMMATE CD]   2 (Arms Warrior): Avatar
+      [RES] rdy:Δ-Deep Breath,Rewind,Emerald Communion,3:Ascendance (Enhancement)  cd:Deep Breath(39s),Rewind(179s),Emerald Communion(95s),3:Ascendance (Enhancement)(70s)  enemy:Avatar/Fury Warrior(7s),Recklessness/Fury Warrior(7s)
+2:09  [STATE]   friends 1:100 2:100 3:100 / enemies 6:100 4:100 5:100
+2:10  [STATE]   friends 1:87 2:92 3:100 / enemies 6:92 4:100 5:99
+2:10  [OWNER CAST]   1256581 → self
+2:11  [STATE]   friends 1:100 2:98 3:96 / enemies 6:83 4:100 5:100
+2:11  [ENEMY CD]   4 (Restoration Druid): Incarnation: Tree of Life
+2:12  [STATE]   friends 1:94 2:99 3:91 / enemies 6:89 4:99 5:98
+2:13  [STATE]   friends 1:100 2:95 3:92 / enemies 6:96 4:97 5:92
+2:13  [ENEMY CD]   4 (Restoration Druid): Incarnation: Tree of Life
+2:15  [STATE]   friends 1:100 2:98 3:88
+2:15  [CC ON TEAM]   1 ← Intimidating Shout (Heslatheege-Kel'Thuzad-US) | 1s
+2:16  [STATE]   friends 1:99 2:97 3:88 / enemies 6:96 4:100 5:86
+2:16  [OWNER CAST]   366155 → 3
+2:17  [STATE]   friends 1:98 2:99 3:91 / enemies 6:94 4:99 5:87
+2:17  [OWNER CD]   Hover
+      [RES] rdy:Δ-2:Avatar,2:Intimidating Shout  cd:2:Avatar(81s),2:Intimidating Shout(77s)  enemy:Incarnation: Tree of Life/Restoration Druid(6s),Incarnation: Tree of Life/Restoration Druid(4s),Avatar/Fury Warrior(15s),Recklessness/Fury Warrior(15s)
+2:17  [OWNER CAST]   364343 → self
+2:18  [STATE]   friends 1:88 2:99 3:92 / enemies 6:89 4:97 5:90
+2:18  [OWNER CAST]   357208
+2:19  [STATE]   friends 1:83 2:100 3:92 / enemies 6:84 4:98 5:100
+2:20  [STATE]   friends 1:93 2:99 3:90 / enemies 6:99 4:100 5:98
+2:21  [STATE]   friends 1:89 2:99 3:91 / enemies 6:89 4:99 5:100
+2:22  [STATE]   friends 1:80 2:99 3:91 / enemies 6:90 4:100 5:100
+2:23  [STATE]   friends 1:77 2:99 3:91 / enemies 6:90 4:100 5:99
+2:23  [OWNER CAST]   Sleep Walk → 5
+2:23  [OWNER CAST]   360995 → self
+2:23  [OWNER CAST]   361195 → self
+2:24  [STATE]   friends 1:100 2:98 3:89 / enemies 6:86 4:100 5:99
+2:24  [OWNER CAST]   364343 → 3
+2:25  [STATE]   friends 1:95 2:100 3:88 / enemies 6:81 4:100 5:99
+2:25  [OWNER CAST]   366155 → 2
+2:27  [STATE]   friends 1:100 2:95 3:72
+2:27  [OWNER CAST]   355936
+2:28  [TEAMMATE CD]   3 (Enhancement Shaman): Hex
+      [RES] rdy:Δ+Stasis  cd:—  enemy:Incarnation: Tree of Life/Restoration Druid(18s),Incarnation: Tree of Life/Restoration Druid(15s),Avatar/Fury Warrior(27s),Recklessness/Fury Warrior(27s)
+2:30  [STATE]   friends 1:100 2:100 3:82
+2:30  [CC ON TEAM]   1 ← Storm Bolt (Heslatheege-Kel'Thuzad-US) | 3s
+2:31  [STATE]   friends 1:96 2:99 3:75 / enemies 6:100 4:100 5:100
+2:31  [CC ON TEAM]   3 ← Sigil of Misery (Dafuqs-Illidan-US) | 1s
+2:32  [STATE]   friends 1:83 2:98 3:70 / enemies 6:93 4:100 5:100
+2:33  [STATE]   friends 1:78 2:96 3:68 / enemies 6:91 4:99 5:100
+2:33  [OWNER CAST]   364343 → self
+2:34  [STATE]   friends 1:79 2:94 3:66 / enemies 6:96 4:100 5:100
+2:34  [OWNER CD]   Hover
+      [RES] rdy:Δ-3:Hex  cd:3:Hex(25s)  enemy:Incarnation: Tree of Life/Restoration Druid(23s),Incarnation: Tree of Life/Restoration Druid(20s)
+2:34  [OWNER CAST]   360995 → 3
+2:34  [OWNER CAST]   361195 → 3
+2:35  [STATE]   friends 1:80 2:89 3:61 / enemies 6:100 4:100 5:100
+2:35  [OWNER CAST]   364343 → 3
+2:35  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ  cd:—  enemy:Incarnation: Tree of Life/Restoration Druid(24s),Incarnation: Tree of Life/Restoration Druid(22s)
+2:36  [STATE]   friends 1:87 2:88 3:50 / enemies 6:100 4:100 5:98
+2:36  [CC ON TEAM]   2 ← Cyclone (Vorrent-Stormrage-US) | 5s
+2:36  [TEAMMATE CD]   3 (Enhancement Shaman): Ascendance (Enhancement)
+      [RES] rdy:Δ-Deep Breath,Rewind,Emerald Communion,3:Hex,3:Ascendance (Enhancement)  cd:Deep Breath(11s),Rewind(151s),Emerald Communion(67s),3:Hex(22s),3:Ascendance (Enhancement)(42s)  enemy:Incarnation: Tree of Life/Restoration Druid(25s),Incarnation: Tree of Life/Restoration Druid(23s)  cc:2/Cyclone-5s
+2:37  [STATE]   friends 1:75 2:89 3:51 / enemies 6:97 4:99 5:99
+2:37  [OWNER CAST]   1256581 → 3
+2:38  [STATE]   friends 1:93 3:70 / enemies 6:93 4:100 5:90
+2:39  [STATE]   friends 1:96 3:74 / enemies 6:92 4:100 5:93
+2:40  [STATE]   friends 1:69 2:88 3:70 / enemies 6:99 4:100 5:93
+2:40  [OWNER CAST]   364343 → self
+2:41  [STATE]   friends 1:64 2:88 3:65 / enemies 6:100 4:100 5:79
+2:42  [STATE]   friends 1:52 2:95 3:61 / enemies 6:100 4:100 5:59
+2:42  [OWNER CAST]   357208
+2:42  [DMG SPIKE]   1 (Preservation Evoker): 1.05M in 10s
+2:43  [STATE]   friends 1:48 2:95 3:59 / enemies 6:100 4:100 5:78
+2:43  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ  cd:—  enemy:Incarnation: Tree of Life/Restoration Druid(30s)
+2:44  [STATE]   friends 1:40 2:88 3:58 / enemies 6:100 4:100 5:67
+2:44  [OWNER CAST]   360995 → self
+2:44  [OWNER CAST]   361195 → self
+2:44  [OWNER CAST]   364343 → self
+2:45  [STATE]   friends 1:56 2:88 3:58 / enemies 6:100 4:100 5:100
+2:45  [OFFENSIVE WINDOW]   2:45–3:05 | High | 1.05M on 1 (Preservation Evoker) | CDs: Avatar + Recklessness
+2:45  [ENEMY CD]   5 (Fury Warrior): Avatar
+2:45  [ENEMY CD]   5 (Fury Warrior): Recklessness
+2:45  [OWNER CAST]   355936
+2:45  [TRINKET]   2 used PvP trinket
+2:46  [STATE]   friends 1:100 2:97 3:71 / enemies 6:100 4:100 5:81
+2:46  [OWNER CAST]   1256581 → 3
+2:47  [STATE]   friends 1:78 2:91 3:75 / enemies 6:100 4:100 5:98
+2:47  [OWNER CAST]   364343 → self
+2:48  [STATE]   friends 1:81 2:95 3:76 / enemies 6:100 4:100 5:85
+2:49  [STATE]   friends 1:51 2:87 3:75 / enemies 6:83 4:100 5:100
+2:49  [OWNER CAST]   Sleep Walk → 6
+2:50  [STATE]   friends 1:46 2:83 3:72 / enemies 6:77 4:100 5:98
+2:51  [STATE]   friends 1:31 2:71 3:69 / enemies 6:74 4:100 5:96
+2:52  [STATE]   friends 1:dead 2:65 3:64 / enemies 6:79 4:100 5:89
+2:52  [OWNER CAST]   360995 → self
+2:52  [OWNER CAST]   361195 → self
+2:52  [DEATH]  1 (Preservation Evoker — friendly)
+               HP: 94% at T-15s → 48% at T-10s → 80% at T-5s → 46% at T-3s → dead
+               Top damage in final 10s: Heslatheege-Kel'Thuzad-US — Rampage (233k), Heslatheege-Kel'Thuzad-US — Bloodbath (163k), Vorrent-Stormrage-US — Starsurge (137k)
+2:53  [TEAMMATE CD]   2 (Arms Warrior): Die by the Sword
+      [RES] rdy:Δ+Deep Breath-2:Avatar,2:Intimidating Shout,3:Hex  cd:2:Avatar(46s),2:Intimidating Shout(42s),3:Hex(6s)  enemy:Avatar/Fury Warrior(7s),Recklessness/Fury Warrior(7s)
+2:54  [STATE]   friends 1:dead 2:42 3:43
+2:54  [CC ON TEAM]   3 ← Cyclone (Vorrent-Stormrage-US) | 4s
+2:55  [STATE]   friends 1:dead 2:43 3:43 / enemies 6:98 4:100 5:94
+2:56  [STATE]   friends 1:dead 2:57 / enemies 6:100 4:100 5:94
+2:57  [STATE]   friends 1:dead 2:57 / enemies 6:100 4:100 5:97
+2:58  [STATE]   friends 1:dead 2:55 / enemies 6:100 4:100 5:100
+
+2:58  [MATCH END]   damp: 10%
+  friends 1:dead(2:52) 2:55% 3:43% / enemies 6:100% 4:100% 5:93%

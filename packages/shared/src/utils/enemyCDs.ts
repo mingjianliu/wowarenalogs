@@ -2,7 +2,7 @@ import { AtomicArenaCombat, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
 import { spellEffectData } from '../data/spellEffectData';
 import spellsData from '../data/spells.json';
-import { fmtTime, getUnitHpAtTimestamp, isHealerSpec, specToString } from './cooldowns';
+import { fmtTime, getUnitHpAtTimestamp, IDamageBucket, isHealerSpec, specToString } from './cooldowns';
 
 type SpellEntry = { type: string };
 const SPELLS = spellsData as Record<string, SpellEntry>;
@@ -92,6 +92,14 @@ export function reconstructEnemyCDTimeline(
 
       const castTimeSeconds = (cast.logLine.timestamp - matchStartMs) / 1000;
       const buffDuration = effectData.durationSeconds ?? 0;
+
+      // Deduplicate: same player + same spellName within 1s = one cast (guards against double-parsed events and multi-target buffs)
+      const isDuplicate = offensiveCDs.some(
+        (existing) =>
+          existing.spellName === effectData.name && Math.abs(castTimeSeconds - existing.castTimeSeconds) < 1,
+      );
+      if (isDuplicate) continue;
+
       offensiveCDs.push({
         spellId,
         spellName: effectData.name,
@@ -127,11 +135,7 @@ export function reconstructEnemyCDTimeline(
     )
     .sort((a, b) => a.time - b.time);
 
-  // Deduplicate: same player + same spellId within 1s = one cast (guards against double-parsed events)
-  const allCasts = allCastsRaw.filter((c, idx) => {
-    const prev = allCastsRaw[idx - 1];
-    return !(prev && prev.playerName === c.playerName && prev.spellId === c.spellId && c.time - prev.time < 1);
-  });
+  const allCasts = allCastsRaw;
 
   // Compute total friendly damage for ratio calculation
   const allFriendlyDamage = (friendlies ?? []).flatMap((u) => u.damageIn);
@@ -279,7 +283,7 @@ export function reconstructEnemyCDTimeline(
 export function formatEnemyCDTimelineForContext(timeline: IEnemyCDTimeline, matchDurationSeconds: number): string[] {
   const lines: string[] = [];
 
-  lines.push('ENEMY BURST WINDOWS:');
+  lines.push('## Enemy Cooldown Timeline');
 
   if (timeline.alignedBurstWindows.length === 0) {
     lines.push(
@@ -292,14 +296,13 @@ export function formatEnemyCDTimelineForContext(timeline: IEnemyCDTimeline, matc
 
   timeline.alignedBurstWindows.forEach((w, idx) => {
     const scoreStr = w.dangerScore.toFixed(1);
-    const labelStr = w.dangerLabel.toUpperCase();
     const dampStr = fmtDampening(w.dampeningPct);
     const cdNames = w.activeCDs.map((c) => `${c.spellName} (${c.playerName})`).join(' + ');
     const dmgM = (w.damageInWindow / 1_000_000).toFixed(2);
     const ratioStr = `${w.damageRatio.toFixed(1)}× match avg`;
     const healerStr = w.healerCCed ? 'healer CCed' : 'healer free';
     lines.push(
-      `  #${idx + 1} — ${fmtTime(w.fromSeconds)}–${fmtTime(w.toSeconds)} | Score: ${scoreStr} [${labelStr}] | Dampening: ${dampStr}`,
+      `  #${idx + 1} — ${fmtTime(w.fromSeconds)}–${fmtTime(w.toSeconds)} | Score: ${scoreStr} | Dampening: ${dampStr}`,
     );
     lines.push(`    CDs: ${cdNames}`);
     lines.push(`    Damage: ${dmgM}M (${ratioStr}) | ${healerStr}`);
@@ -328,6 +331,57 @@ export function formatEnemyCDTimelineForContext(timeline: IEnemyCDTimeline, matc
   }
   if (unusedByCDId.size > 0) {
     lines.push('  CDs not recovered before match ended: ' + [...unusedByCDId].join('; '));
+  }
+
+  return lines;
+}
+
+/** Minimum total damage in a 10-second window to treat a burst window as a confirmed kill attempt */
+const KILL_ATTEMPT_SPIKE_THRESHOLD = 300_000;
+
+/**
+ * Synthesizes aligned enemy burst windows with actual damage spikes to label
+ * explicit kill attempt windows. A "confirmed" kill attempt = burst window that
+ * overlaps with a pressure spike above threshold. Unconfirmed burst windows
+ * (likely baits or log gaps) are counted and noted separately.
+ */
+export function formatKillAttemptWindowsForContext(
+  alignedBurstWindows: IAlignedBurstWindow[],
+  pressureWindows: IDamageBucket[],
+): string[] {
+  if (alignedBurstWindows.length === 0) {
+    return ['## Kill Attempt Windows', '  None detected (no aligned enemy burst windows).'];
+  }
+
+  const lines: string[] = ['## Kill Attempt Windows'];
+  let unconfirmedCount = 0;
+
+  for (const burst of alignedBurstWindows) {
+    // Spike's start time must fall within [burstStart-5s, burstEnd+5s] — covers lead-in and trailing damage
+    const spike = pressureWindows.find(
+      (pw) =>
+        pw.totalDamage >= KILL_ATTEMPT_SPIKE_THRESHOLD &&
+        pw.fromSeconds >= burst.fromSeconds - 5 &&
+        pw.fromSeconds <= burst.toSeconds + 5,
+    );
+    if (!spike) {
+      unconfirmedCount++;
+      continue;
+    }
+    const dmgM = (spike.totalDamage / 1_000_000).toFixed(2);
+    const cdNames = burst.activeCDs.map((c) => c.spellName).join(' + ');
+    lines.push(
+      `  ${fmtTime(burst.fromSeconds)}–${fmtTime(burst.toSeconds)}  ${dmgM}M on ${spike.targetSpec} | CDs: ${cdNames}`,
+    );
+  }
+
+  if (lines.length === 1) {
+    lines.push('  No burst windows had a confirmed damage spike above threshold.');
+  }
+  if (unconfirmedCount > 0) {
+    lines.push(
+      `  Note: ${unconfirmedCount} burst window(s) had no confirmed spike — possible bait, spiked below threshold, or log gap.`,
+    );
   }
 
   return lines;

@@ -1,0 +1,13 @@
+Archetype: Preservation Evoker — dampening_grind_swap. Win.
+
+Your survival through back-to-back Ascendance+Bloodlust windows was the defining factor here. The first critical burst at 0:32 (1.30M on the DH) was handled cleanly — immediate mass dispel cleared three debuffs off the DH and Obsidian Scales covered the Rogue as Avatar overlapped. The second Ascendance wave at 2:43 with the Rogue at 29% HP required your cleaner decision-making: instead of stacking resources, you shifted healing load appropriately and kept Emerald Communion for the later double-low at 3:39 when both you and the DH were below 55%. That timing was correct.
+
+Deep Breath at 4:09 was the kill setup. Your team had been eating Champion's Spear chains and the Warrior died at 4:16 — seven seconds after Deep Breath landed. That's the sequence that won the match.
+
+The pattern you need to fix is Flame Shock cleanse latency. Across the match you missed nine Flame Shocks, ranging from 23 to 36 seconds of uptime, with the worst costing 618k damage on yourself at 3:37. That debuff was dispellable the entire time. In dampening grind matches against Shaman, Flame Shock is effectively a second healer if you leave it up — it front-loads the damage Shaman's team needs to win through attrition. Dispel it within 3 seconds of application as a hard rule.
+
+Two Sleep Walks at 1:00 and 1:03 were absorbed by Grounding Totem. Check for it before committing the cast — the Shaman will reflexively place it whenever you position to CC their Paladin.
+
+Stasis was loaded at 2:05 during a calm period (team nearly full health) and detonated at 3:43. Loading it during a calm phase is correct, but ideally you load it even earlier in the window to maximize the duration of its buff window heading into the next push.
+
+The win was earned by good resource management under the two major burst phases and smart Deep Breath timing in the endgame. Clean up the cleanse discipline to make similar matchups significantly less dangerous.

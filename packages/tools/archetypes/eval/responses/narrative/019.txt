@@ -1,0 +1,11 @@
+A 17-second win. Not much to analyze from a healer coaching perspective — the enemy team was a two-player composition (Feral Druid, Discipline Priest) that was already under significant HP before the match's first tick appears in the log. The Feral opened with Tiger's Fury at 0:03 and Incarnation at 0:04, which is their standard opener, but the enemy Priest was at 87% HP at 0:05 and continuing to fall. That suggests your team had already been doing damage in the pre-match lobby area, or the enemy Priest took damage from something at start. The Priest died at 0:14, the Feral died at 0:17.
+
+What you did: spread Rejuvenation pre-cast at 0:00 on the Warrior, then on the Ret Paladin at 0:02 and yourself at 0:03. The Warrior was at 80% HP at 0:08 — Regrowth at 0:06 brought them to 89%, then Wild Growth at 0:08 covered the team. Swiftmend on yourself at 0:12 when you'd taken a small amount of damage. You popped Incarnation: Tree of Life at 0:10, which is clearly an opportunistic use since no major healing was needed — you were using it as a throughput tool to close the match faster, which is actually correct. Innervate on yourself at 0:10 is also correct — free resources in a match where you're not going to need to save them.
+
+The Ret Paladin's trinket was burned at 0:05 from a Rake silence — a 1-second effect. That's an aggressive trinket spend on a 1-second CC from the Feral Druid's opener. In longer matches this would be a significant mistake. In a 17-second match it's irrelevant.
+
+Your Entangling Roots at 0:15 on the Feral and Cyclone (5176) on the Priest at 0:13 and Feral at 0:16 were the offensive contributions — these kept the enemy healer CC'd during the kill window. Wrath cast on the Disc Priest at 0:13 contributed to their death at 0:14.
+
+The Warrior's Die by the Sword at 0:07 was a puzzling use — the Warrior was at 80% HP and the enemy team had only been active for 4 seconds. This suggests the Warrior felt the Feral's opener was dangerous (Incarnation plus Tiger's Fury plus Frenzy stacks), which is reasonable. It didn't matter in a match of this length.
+
+Nothing meaningful went wrong here. Keep the pre-cast Rejuvenation habit — spreading HoTs before the match starts is correct regardless of match length, and in matches that do go long it prevents early damage spikes.

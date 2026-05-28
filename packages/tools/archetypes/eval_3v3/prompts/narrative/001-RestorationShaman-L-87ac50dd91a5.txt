@@ -1,0 +1,190 @@
+[MATCH TYPE: cc_grind_single_push]
+**Opponents:** Enemies apply CC throughout the round while occasionally swapping targets, eventually committing to one burst window. The burst is real but not overwhelming — a war of attrition with one escalation point.
+
+**Your role:** Hold enough defensives for the eventual burst push rather than spending them on individual CC chains. Patience with cooldowns wins this archetype.
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Retribution Paladin | Bracket: 3v3 | Result: Loss | Duration: 1:31
+  My team: Havoc Demon Hunter, Retribution Paladin, Restoration Shaman
+  Enemy team: Arms Warrior, Discipline Priest, Enhancement Shaman
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Retribution Paladin): CANNOT offensive purge
+  Team purgers: Havoc Demon Hunter, Restoration Shaman
+
+DAMPENING (3v3): started at 10%, ended at 10% at match end
+
+## CC Chains
+  Discipline Priest (Dashtoonz-Onyxia-US): 5 CC — 4× Stun, 1× Disorient | 1 reduced, 0 immune
+  Enhancement Shaman (Zammyshaman-Area52-US): 1 CC — 1× Stun | 0 reduced, 0 immune
+
+## Enemy Cooldown Timeline
+  #1 — 0:09–0:31 | Score: 6.4 [HIGH] | Dampening: 10%
+    CDs: Power Infusion (Dashtoonz-Onyxia-US) + Avatar (Glossz-Darkspear-US) + Bloodlust (Zammyshaman-Area52-US) + Doom Winds (Zammyshaman-Area52-US)
+    Damage: 0.93M (1.0× match avg) | healer free
+    Most pressured: Hydar-Tichondrius-US HP: 100% start → 59% mid → 61% end
+  #2 — 1:18–1:45 | Score: 9.6 [CRITICAL] | Dampening: 10%
+    CDs: Bloodlust (Zammyshaman-Area52-US) + Doom Winds (Zammyshaman-Area52-US) + Avatar (Glossz-Darkspear-US)
+    Damage: 2.17M (2.2× match avg) | healer free
+    Most pressured: Speedxcherry-Tichondrius-US HP: 99% start → 0% mid
+  CDs not recovered before match ended: Arms Warrior: Avatar — not used again after 0:11; Arms Warrior: Avatar — not used again after 1:25; Discipline Priest: Power Infusion — not used again after 0:09; Enhancement Shaman: Bloodlust — not used again after 1:18; Enhancement Shaman: Doom Winds — not used again after 1:18
+
+## Kill Attempt Windows
+  0:09–0:31  [HIGH]  1.51M on Retribution Paladin | CDs: Power Infusion + Avatar + Bloodlust + Doom Winds
+  1:18–1:45  [CRITICAL]  0.90M on Restoration Shaman | CDs: Bloodlust + Doom Winds + Avatar
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Hydar-Tichondrius-US (Retribution Paladin — log owner):
+    Lay on Hands [600s], Divine Shield [300s], Hammer of Justice [45s, 2 Charges], Blessing of Protection [300s], Avenging Wrath [120s]
+  2: Axelx-Tichondrius-US (Havoc Demon Hunter):
+    Chaos Nova [45s]
+  3: Speedxcherry-Tichondrius-US (Restoration Shaman):
+    Hex [30s], Spiritwalker's Grace [120s], Healing Tide Totem [180s]
+  4: Glossz-Darkspear-US (Arms Warrior — enemy):
+    Avatar [90s]
+  5: Dashtoonz-Onyxia-US (Discipline Priest — enemy):
+    Power Infusion [120s]
+  6: Zammyshaman-Area52-US (Enhancement Shaman — enemy):
+    Bloodlust [60s], Doom Winds [60s]
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:05  [CC ON TEAM]   1 ← Storm Bolt (Glossz-Darkspear-US) | 3s | trinket: available
+0:06  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:100
+0:07  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:100
+0:08  [STATE]   friends 1:100 2:100 3:99 / enemies 4:100 5:100 6:100
+0:08  [CLEANSE]   3 dispelled 5 effects: Shadow Word: Pain off 1, Stormbind off 1, Flame Shock off 1, Earthgrab off 1, Earthbind off 1
+0:09  [STATE]   friends 1:100 2:99 3:88 / enemies 4:100 5:100 6:100
+0:09  [OFFENSIVE WINDOW]   0:09–0:31 | High | 1.51M on 1 (Retribution Paladin) | CDs: Power Infusion + Avatar + Bloodlust + Doom Winds
+0:09  [ENEMY BUFF]   6: Power Infusion (purgeable)
+0:09  [ENEMY CD]   5 (Discipline Priest): Power Infusion
+0:09  [ENEMY BUFF]   5: Power Infusion (purgeable)
+0:10  [STATE]   friends 1:100 2:100 3:91 / enemies 4:98 5:100 6:100
+0:10  [CC ON TEAM]   1 ← Champion's Spear (Glossz-Darkspear-US) | 6s | trinket: available
+0:11  [STATE]   friends 1:99 2:99 3:91 / enemies 4:98 5:100 6:100
+0:11  [ENEMY CD]   4 (Arms Warrior): Avatar [1/2]
+0:12  [STATE]   friends 1:96 2:100 3:91 / enemies 4:100 5:100 6:100
+0:12  [TEAMMATE CD]   3 (Restoration Shaman): Healing Tide Totem
+0:12  [OWNER CC]   Hammer of Justice → Dashtoonz-Onyxia-US (100% HP)
+0:13  [STATE]   friends 1:100 2:99 3:99 / enemies 4:100 5:100 6:100
+0:14  [STATE]   friends 1:97 2:91 3:99 / enemies 4:97 5:95 6:92
+0:15  [STATE]   friends 1:97 2:94 3:100 / enemies 4:94 5:98 6:88
+0:16  [STATE]   friends 1:97 2:87 3:99 / enemies 4:75 5:100 6:87
+0:17  [STATE]   friends 1:93 2:89 3:99 / enemies 4:67 5:100 6:87
+0:17  [ENEMY CD]   6 (Enhancement Shaman): Bloodlust [1/2]
+0:17  [ENEMY CD]   6 (Enhancement Shaman): Doom Winds [1/2]
+0:17  [DMG SPIKE]   1 (Retribution Paladin): 1.51M in 10s [P95 Danger] [ROT] (81% -> 31% HP)
+0:18  [STATE]   friends 1:81 2:92 3:98 / enemies 4:45 5:100 6:86
+0:19  [STATE]   friends 1:58 2:83 3:99 / enemies 4:23 5:100 6:82
+0:20  [STATE]   friends 1:57 2:81 3:98 / enemies 4:20 5:100 6:74
+0:21  [STATE]   friends 1:76 2:84 3:100 / enemies 4:21 5:100 6:73
+0:22  [STATE]   friends 1:62 2:83 3:100 / enemies 4:22 5:100 6:71
+0:24  [ENEMY BUFF END]   6: Power Infusion
+0:24  [ENEMY BUFF END]   5: Power Infusion
+0:25  [STATE]   friends 1:74 2:100 3:100 / enemies 4:58 5:100 6:84
+0:26  [STATE]   friends 1:69 2:99 3:100 / enemies 4:74 5:100 6:83
+0:26  [TEAMMATE CD]   3 (Restoration Shaman): Spiritwalker's Grace
+0:27  [STATE]   friends 1:43 2:95 3:100 / enemies 4:85 5:100 6:77
+0:27  [CC CAST]   Sigil of Misery (by 2) → 5
+0:28  [STATE]   friends 1:31 2:87 3:100 / enemies 4:86 5:100 6:71
+0:29  [STATE]   friends 1:93 2:92 3:100 / enemies 4:87 5:100 6:59
+0:29  [DMG SPIKE]   1 (Retribution Paladin): 0.76M in 10s [P95 Danger] [ROT] (87% -> 70% HP)
+0:30  [STATE]   friends 1:74 2:94 3:100 / enemies 4:87 5:100 6:53
+0:31  [STATE]   friends 1:61 2:100 3:100 / enemies 4:87 5:100 6:53
+0:32  [STATE]   friends 1:88 2:100 3:100 / enemies 4:97 5:100 6:94
+0:33  [STATE]   friends 1:84 2:93 3:100 / enemies 4:96 5:100 6:98
+0:34  [STATE]   friends 1:79 2:97 3:100 / enemies 4:92 5:100 6:98
+0:37  [CC ON TEAM]   1 ← Shockwave (Glossz-Darkspear-US) | 2s | trinket: available
+0:37  [CC ON TEAM]   2 ← Shockwave (Glossz-Darkspear-US) | 2s | trinket: available
+0:38  [STATE]   friends 1:72 2:85 3:100 / enemies 4:94 5:97 6:100
+0:39  [STATE]   friends 1:76 2:87 3:99 / enemies 4:96 5:100 6:99
+0:40  [STATE]   friends 1:64 2:70 3:100 / enemies 4:99 5:100 6:99
+0:40  [CC ON TEAM]   3 ← Storm Bolt (Glossz-Darkspear-US) | 3s | trinket: available
+0:41  [STATE]   friends 1:59 2:70 3:99 / enemies 4:99 5:100 6:99
+0:42  [STATE]   friends 1:64 2:72 3:100 / enemies 4:91 5:100 6:100
+0:43  [STATE]   friends 1:66 2:79 3:100 / enemies 4:85 5:100 6:97
+0:43  [OWNER CC]   Hammer of Justice → Dashtoonz-Onyxia-US (98% HP)
+0:44  [STATE]   friends 1:67 2:79 3:99 / enemies 4:86 5:98 6:97
+0:45  [STATE]   friends 1:56 2:82 3:100 / enemies 4:86 5:99 6:100
+0:46  [STATE]   friends 1:49 2:79 3:99 / enemies 4:79 5:94 6:98
+0:46  [TEAMMATE CC]   2 (Havoc Demon Hunter): Chaos Nova
+0:47  [STATE]   friends 1:52 2:83 3:99 / enemies 4:69 5:78 6:98
+0:47  [TRINKET]   1 used PvP trinket
+0:48  [STATE]   friends 1:48 2:87 3:89 / enemies 4:70 5:73 6:98
+0:48  [CC ON TEAM]   1 ← Psychic Scream (Dashtoonz-Onyxia-US) | 2s | trinket: ON CD (120s left)
+0:48  [CC ON TEAM]   2 ← Psychic Scream (Dashtoonz-Onyxia-US) | 3s | trinket: available
+0:49  [STATE]   friends 1:50 2:88 3:97 / enemies 4:64 5:72 6:95
+0:50  [STATE]   friends 1:68 2:83 3:97 / enemies 4:64 5:70 6:96
+0:51  [STATE]   friends 1:49 2:82 3:95 / enemies 4:54 5:81 6:92
+0:52  [STATE]   friends 1:35 2:82 3:96 / enemies 4:54 5:78 6:91
+0:53  [STATE]   friends 1:41 2:89 3:100 / enemies 4:67 5:76 6:82
+0:54  [STATE]   friends 1:41 2:92 3:100 / enemies 4:55 5:75 6:82
+0:55  [STATE]   friends 1:82 2:88 3:100 / enemies 4:51 5:69 6:80
+0:56  [STATE]   friends 1:75 2:82 3:100 / enemies 4:54 5:77 6:86
+0:57  [STATE]   friends 1:69 2:70 3:99 / enemies 4:40 5:68 6:88
+0:58  [STATE]   friends 1:65 2:67 3:99 / enemies 4:37 5:66 6:85
+0:59  [STATE]   friends 1:68 2:66 3:100 / enemies 4:61 5:69 6:89
+1:00  [STATE]   friends 1:64 2:64 3:100 / enemies 4:63 5:81 6:90
+1:00  [CC ON TEAM]   3 ← Hex (Zammyshaman-Area52-US) | 5s | trinket: available
+1:01  [STATE]   friends 1:57 2:63 3:100 / enemies 4:60 5:80 6:92
+1:02  [STATE]   friends 1:57 2:56 3:100 / enemies 4:57 5:100 6:92
+1:03  [STATE]   friends 1:57 2:56 3:100 / enemies 4:52 5:100 6:81
+1:03  [DMG SPIKE]   1 (Retribution Paladin): 0.95M in 10s [P95 Danger] [BURST] (56% -> 66% HP)
+1:04  [STATE]   friends 1:28 2:56 3:100 / enemies 4:93 5:100 6:98
+1:05  [STATE]   friends 1:99 2:59 3:100 / enemies 4:85 5:100 6:91
+1:05  [CC ON TEAM]   3 ← Intimidating Shout (Glossz-Darkspear-US) | 1s | trinket: available
+1:05  [CC ON TEAM]   1 ← Intimidating Shout (Glossz-Darkspear-US) | 1s | trinket: ON CD (102s left)
+1:06  [STATE]   friends 1:76 2:59 3:100 / enemies 4:98 5:100 6:100
+1:07  [STATE]   friends 1:70 2:62 3:100 / enemies 4:96 5:96 6:100
+1:08  [STATE]   friends 1:68 2:62 3:100 / enemies 4:96 5:98 6:99
+1:09  [STATE]   friends 1:53 2:52 3:100 / enemies 4:96 5:98 6:97
+1:09  [CC ON TEAM]   1 ← Storm Bolt (Glossz-Darkspear-US) | 3s | trinket: ON CD (98s left)
+1:10  [STATE]   friends 1:85 2:71 3:99 / enemies 4:91 5:100 6:90
+1:10  [DMG SPIKE]   2 (Havoc Demon Hunter): 0.69M in 10s [P95 Danger] [ROT] (78% -> 0% HP)
+1:11  [STATE]   friends 1:72 2:84 3:100 / enemies 4:80 5:100 6:86
+1:12  [STATE]   friends 1:81 2:85 3:99 / enemies 4:81 5:99 6:84
+1:13  [STATE]   friends 1:76 2:88 3:100 / enemies 4:85 5:100 6:80
+1:13  [OWNER CC]   Hammer of Justice → Dashtoonz-Onyxia-US (100% HP)
+1:14  [STATE]   friends 1:66 2:69 3:100 / enemies 4:97 5:98 6:77
+1:15  [STATE]   friends 1:65 2:60 3:99 / enemies 4:100 5:94 6:71
+1:16  [STATE]   friends 1:59 2:58 3:100 / enemies 4:89 5:90 6:64
+1:17  [STATE]   friends 1:57 2:54 3:98 / enemies 4:70 5:86 6:51
+1:18  [STATE]   friends 1:57 2:52 3:100 / enemies 4:67 5:92 6:69
+1:18  [OFFENSIVE WINDOW]   1:18–1:45 | Critical | 0.90M on 3 (Restoration Shaman) | CDs: Bloodlust + Doom Winds + Avatar
+1:18  [ENEMY CD]   6 (Enhancement Shaman): Bloodlust [2/2]
+1:18  [ENEMY CD]   6 (Enhancement Shaman): Doom Winds [2/2]
+1:19  [STATE]   friends 1:50 2:47 3:99 / enemies 4:66 5:87 6:66
+1:20  [STATE]   friends 1:38 2:dead 3:100 / enemies 4:65 5:84 6:70
+1:20  [DEATH]  2 (Havoc Demon Hunter — friendly)
+               HP: 59% at T-15s → 71% at T-10s → 60% at T-5s → 53% at T-3s → dead
+               Top damage in final 10s: Zammyshaman-Area52-US — Sundering (69k), Glossz-Darkspear-US — Execute (60k), Glossz-Darkspear-US — Reap the Storm (48k)
+1:20  [DMG SPIKE]   3 (Restoration Shaman): 0.90M in 10s [P95 Danger] [ROT] (100% -> 0% HP)
+1:21  [STATE]   friends 1:46 2:dead 3:100 / enemies 4:89 5:97 6:79
+1:22  [STATE]   friends 1:37 2:dead 3:100 / enemies 4:86 5:100 6:79
+1:22  [OWNER CD]   Divine Shield
+      [RES] rdy:Lay on Hands,Divine Shield,Blessing of Protection,Avenging Wrath,3:Hex  cd:Hammer of Justice(6s),2:Chaos Nova(9s),3:Spiritwalker's Grace(64s),3:Healing Tide Totem(110s)  enemy:Bloodlust/Enhancement Shaman(4s),Doom Winds/Enhancement Shaman(4s)
+1:23  [STATE]   friends 1:67 2:dead 3:100 / enemies 4:84 5:96 6:80
+1:24  [STATE]   friends 1:71 2:dead 3:93 / enemies 4:88 5:97 6:81
+1:25  [STATE]   friends 1:78 2:dead 3:76 / enemies 4:84 5:95 6:81
+1:25  [ENEMY CD]   4 (Arms Warrior): Avatar [2/2]
+1:26  [STATE]   friends 1:81 2:dead 3:76 / enemies 4:85 5:95 6:82
+1:27  [STATE]   friends 1:83 2:dead 3:71 / enemies 4:86 5:95 6:83
+1:28  [STATE]   friends 1:84 2:dead 3:47 / enemies 4:100 5:100 6:98
+1:29  [STATE]   friends 1:84 2:dead 3:35 / enemies 4:100 5:100 6:100
+1:30  [STATE]   friends 1:85 2:dead 3:dead / enemies 4:100 5:100 6:100
+1:30  [BUFF FADED]   Divine Shield
+1:30  [DEATH]  3 (Restoration Shaman — friendly)
+               HP: 100% at T-15s → 100% at T-10s → 75% at T-5s → 49% at T-3s → dead
+               Top damage in final 10s: Glossz-Darkspear-US — Bladestorm (243k), Zammyshaman-Area52-US — Lightning Bolt (100k), Glossz-Darkspear-US — Mortal Strike (92k)
+
+1:31  [MATCH END]   damp: 10%
+  friends 1:85% 2:dead(1:20) 3:dead(1:30) / enemies 4:100% 5:100% 6:100%

@@ -1,0 +1,13 @@
+Archetype: Holy Paladin — short_passive_swap. Loss.
+
+A 3:47 attrition match that illustrates the structural weakness of this comp against Restoration Shaman: no purge, no way to undo the Shaman's healing, and no kill pressure that punches through Shaman sustain. Your Balance Druid died at 3:23 from accumulated Warlock DoT damage while the Rogue and Warlock continued cycling.
+
+Cleanse output was the strongest element of your performance. You stripped poison stacks off teammates consistently throughout the match — seven effects at 0:22, six effects at 1:15, five effects at 2:37, and multiple other dispels. This is what kept the match alive to 3:47. Without that cleanse discipline, your Druid dies around 2:30 under the accumulated Warlock DoT plus Rogue poison load.
+
+Blessing of Sacrifice timing at 0:19 (Druid under Kidney Shot stun at 88% HP) and 2:19 (Druid at 73% HP under pressure) were correct reads. Avenging Crusader rotations were functional. Aura Mastery at 3:17 with the Monk at 34% HP during a Deathmark plus Warlock push was the right tool.
+
+The healing gap at 3:37 (9.7 seconds inactive while the Monk dropped from 34% to dead) is where the match ended. Fear at 3:38 landed during the gap, Lightning Lasso hit the Monk at 3:38, and the Monk died at 3:39. That gap had 6.8 seconds of free time before the CC arrived — something was wrong with your positioning or target awareness in that window.
+
+The structural issue is target selection. All offensive pressure in this match went toward the Rogue across 3:47 of fighting. The Rogue never died. The Shaman sustained them through every push. The Warlock, who has minimal defensive capabilities, was never threatened. Against Restoration Shaman without purge, killing the Warlock is a better path than trying to burst through Shaman heals on their tankiest player.
+
+Divine Shield at 2:04 when all friendlies were near full health is the one CD timing note — it interrupted your healing output for 8 seconds during a period when the Druid was steadily declining. That block of time would have been better spent casting.

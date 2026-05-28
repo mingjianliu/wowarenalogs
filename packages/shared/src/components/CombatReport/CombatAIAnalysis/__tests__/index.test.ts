@@ -82,6 +82,9 @@ function makeCCTrinketSummary(
     ccInstances,
     trinketUseTimes: [],
     missedTrinketWindows: [],
+    rootInstances: [],
+    disarmInstances: [],
+    interruptInstances: [],
   };
 }
 
@@ -456,11 +459,11 @@ describe('buildDeathRootCauseTrace', () => {
     expect(result.some((t) => t.includes('available at death time') && t.includes('not pressed'))).toBe(true);
   });
 
-  it('includes CC active near death with LoS-avoidable note when losBlocked=true', () => {
+  it('includes CC active near death with LoS-yd from Pillar LoS note when losBlocked=true', () => {
     const cc = makeCCInstance(52, 15, 'on_cooldown', { losBlocked: true });
     const ccSummary = makeCCTrinketSummary('HealerA', [cc]);
     const result = buildDeathRootCauseTrace(60, [], ccSummary, undefined, MATCH_START_MS);
-    expect(result.some((t) => t.includes('LoS was available') && t.includes('avoidable'))).toBe(true);
+    expect(result.some((t) => t.includes('Positioning:') && t.includes('yd from Pillar LoS'))).toBe(true);
   });
 
   it('includes CC near death with melee-range positioning note when distanceYards <= 8', () => {
@@ -720,7 +723,7 @@ describe('identifyCriticalMoments', () => {
       targetSpec: 'Frost Mage',
     };
     const { moments } = callIdentify({ panicDefensives: [panic] });
-    const panicMoment = moments.find((m) => m.title.includes('Panic defensive'));
+    const panicMoment = moments.find((m) => m.title.includes('Defensive commit'));
     expect(panicMoment).toBeDefined();
     expect(panicMoment?.impactScore).toBe(60);
   });
@@ -737,7 +740,7 @@ describe('identifyCriticalMoments', () => {
     };
     const deaths = [{ spec: 'Holy Priest', name: 'HealerA', atSeconds: 95 }]; // 35s after panic
     const { moments } = callIdentify({ panicDefensives: [panic], friendlyDeaths: deaths });
-    const panicMoment = moments.find((m) => m.title.includes('Panic defensive'));
+    const panicMoment = moments.find((m) => m.title.includes('Defensive commit'));
     expect(panicMoment?.roleLabel).toBe('Setup');
   });
 
@@ -775,7 +778,7 @@ describe('identifyCriticalMoments', () => {
       mostDamagedAmount: 200_000,
     };
     const { moments } = callIdentify({ isHealer: true, healingGaps: [gap] });
-    const gapMoment = moments.find((m) => m.title.includes('Healing gap'));
+    const gapMoment = moments.find((m) => m.title.includes('Healer inactivity'));
     expect(gapMoment).toBeDefined();
   });
 
@@ -790,7 +793,7 @@ describe('identifyCriticalMoments', () => {
       mostDamagedAmount: 200_000,
     };
     const { moments } = callIdentify({ isHealer: false, healingGaps: [gap] });
-    expect(moments.every((m) => !m.title.includes('Healing gap'))).toBe(true);
+    expect(moments.every((m) => !m.title.includes('Healer inactivity'))).toBe(true);
   });
 
   it('suppresses healing gap when the gap is tied to a friendly death', () => {
@@ -806,7 +809,7 @@ describe('identifyCriticalMoments', () => {
     };
     const deaths = [{ spec: 'Frost Mage', name: 'DPS-A', atSeconds: 50 }];
     const { moments } = callIdentify({ isHealer: true, healingGaps: [gap], friendlyDeaths: deaths });
-    const gapMoment = moments.find((m) => m.title.includes('Healing gap'));
+    const gapMoment = moments.find((m) => m.title.includes('Healer inactivity'));
     expect(gapMoment).toBeUndefined();
   });
 

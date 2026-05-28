@@ -1,0 +1,77 @@
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Arms Warrior | Bracket: Rated Solo Shuffle | Result: Win | Duration: 0:42
+  My team: Mistweaver Monk, Arms Warrior, Marksmanship Hunter
+  Enemy team: Holy Paladin, Beast Mastery Hunter, Fire Mage
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Arms Warrior): CANNOT offensive purge
+  Team purgers: none
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Сноррег-Гордунни-EU (Arms Warrior — log owner):
+    Avatar [90s], Intimidating Shout [90s], Die by the Sword [120s], Bladestorm (Arms) [90s]
+  2: Tisza-ArgentDawn-EU (Mistweaver Monk):
+    Paralysis [45s], Life Cocoon [120s]
+  3: Avent-Neptulon-EU (Marksmanship Hunter):
+    none tracked
+  4: Thräd-Silvermoon-EU (Beast Mastery Hunter — enemy):
+    Bestial Wrath [90s]
+  5: Zivac-Kazzak-EU (Fire Mage — enemy):
+    Combustion [120s]
+  6: Dadeluxe-Aegwynn-EU (Holy Paladin — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100 2:100 3:100
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:09  [STATE]   friends 1:100 2:100 3:100
+0:12  [STATE]   friends 1:100 2:100 3:100
+0:14  [CC ON TEAM]   2 ← Binding Shot (Thräd-Silvermoon-EU) | 3s
+0:15  [STATE]   friends 1:100 2:100 3:100 / enemies 6:100 4:100
+0:16  [STATE]   friends 1:100 2:100 3:100 / enemies 6:100 4:100
+0:16  [CC ON TEAM]   2 ← Freezing Trap (Thräd-Silvermoon-EU) | 3s
+0:16  [CC ON TEAM]   1 ← Binding Shot (Thräd-Silvermoon-EU) | 2s
+0:17  [STATE]   friends 1:100 2:100 3:100 / enemies 6:100 4:100
+0:18  [STATE]   friends 1:100 2:100 3:100 / enemies 6:100 4:100
+0:19  [STATE]   friends 1:100 2:100 3:100 / enemies 6:100 4:100
+0:20  [STATE]   friends 1:99 2:100 3:100 / enemies 6:100 4:100 5:100
+0:21  [STATE]   friends 1:99 2:100 3:100 / enemies 6:100 4:100 5:100
+0:22  [STATE]   friends 1:94 2:100 3:100 / enemies 6:100 4:100 5:100
+0:23  [STATE]   friends 1:96 2:100 3:100 / enemies 6:100 4:100 5:100
+0:24  [STATE]   friends 1:93 2:100 3:100 / enemies 6:100 4:95 5:100
+0:25  [STATE]   friends 1:93 2:100 3:100 / enemies 6:100 4:100 5:100
+0:26  [STATE]   friends 1:97 2:100 3:100 / enemies 6:100 4:98 5:100
+0:26  [OWNER CD]   Avatar
+      [RES] rdy:Avatar,Intimidating Shout,Die by the Sword,Bladestorm (Arms),2:Paralysis,2:Life Cocoon  cd:—
+0:27  [STATE]   friends 1:99 2:100 3:100
+0:27  [OFFENSIVE WINDOW]   0:27–0:42 | Critical | 0.80M on 3 (Marksmanship Hunter) | CDs: Bestial Wrath + Combustion
+0:27  [ENEMY CD]   4 (Beast Mastery Hunter): Bestial Wrath
+0:28  [STATE]   friends 1:99 2:100 3:100 / enemies 6:100 4:97 5:100
+0:28  [ENEMY CD]   5 (Fire Mage): Combustion
+0:29  [STATE]   friends 1:100 2:100 3:100 / enemies 6:99 4:85 5:94
+0:30  [STATE]   friends 1:100 2:100 3:96 / enemies 6:96 4:75 5:84
+0:31  [STATE]   friends 1:90 2:100 3:87 / enemies 6:91 4:70 5:72
+0:32  [STATE]   friends 1:90 2:100 3:88 / enemies 6:87 4:60 5:65
+0:32  [DMG SPIKE]   3 (Marksmanship Hunter): 0.80M in 10s
+0:33  [STATE]   friends 1:88 2:100 3:89 / enemies 6:90 4:64 5:77
+0:34  [STATE]   friends 1:85 2:100 3:91 / enemies 6:88 4:74 5:76
+0:35  [STATE]   friends 1:86 2:100 3:78 / enemies 6:88 5:76
+0:36  [STATE]   friends 1:86 2:99 3:68 / enemies 6:88 4:74 5:75
+0:37  [STATE]   friends 1:87 2:100 3:51 / enemies 6:88 4:74 5:74
+0:38  [STATE]   friends 1:86 2:100 3:65 / enemies 6:88 4:74 5:59
+0:39  [STATE]   friends 1:87 2:100 3:50 / enemies 6:88 4:74 5:49
+0:40  [STATE]   friends 1:87 2:100 3:43 / enemies 6:88 4:74 5:33
+0:41  [STATE]   friends 1:89 2:100 3:78 / enemies 6:90 4:74 5:4
+0:42  [STATE]   friends 1:93 2:100 3:82 / enemies 6:95 4:86 5:dead
+0:42  [DEATH]  5 (Fire Mage — enemy)
+0:42  [ROSTER]  enemy 5 removed (dead)
+0:42  [CC ON TEAM]   2 ← Scorpid Venom (Thräd-Silvermoon-EU) | 2s
+0:45  [CC ON TEAM]   2 ← Spider Venom (Thräd-Silvermoon-EU) | 3s
+
+0:42  [MATCH END]   damp: 10%
+  friends 1:93% 2:100% 3:100% / enemies 6:95% 4:86% 5:dead(0:42)

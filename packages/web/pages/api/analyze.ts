@@ -1,7 +1,15 @@
 import Anthropic from '@anthropic-ai/sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { NEW_SYSTEM_PROMPT, SYSTEM_PROMPT } from '../../shared/src/prompts/analyzeSystemPrompts';
+import {
+  parseFindingsResponse,
+  renderFindingsAsProse,
+} from '../../../shared/src/components/CombatReport/CombatAIAnalysis/aiFindings';
+import {
+  FINDINGS_JSON_SYSTEM_PROMPT,
+  NEW_SYSTEM_PROMPT,
+  SYSTEM_PROMPT,
+} from '../../../shared/src/prompts/analyzeSystemPrompts';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -14,12 +22,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     systemPrompt: bodySystemPrompt,
     debug,
     useTimelinePrompt,
+    findingsJson,
   } = req.body as {
     matchContext?: string;
     apiKey?: string;
     systemPrompt?: string;
     debug?: boolean;
     useTimelinePrompt?: boolean;
+    findingsJson?: boolean;
   };
   const apiKey = bodyApiKey || process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
@@ -38,14 +48,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Prompt selection precedence (highest priority first):
     //   1. debug && bodySystemPrompt: explicit override for local dev/testing only.
     //      Gate prevents the route becoming a free LLM proxy for arbitrary prompts.
-    //   2. useTimelinePrompt: use raw timeline path (NEW_SYSTEM_PROMPT).
-    //   3. default: structured critical-moments path (SYSTEM_PROMPT).
+    //   2. findingsJson: structured JSON findings path used by the AI Analysis UI.
+    //   3. useTimelinePrompt: use raw timeline path (NEW_SYSTEM_PROMPT).
+    //   4. default: structured critical-moments path (SYSTEM_PROMPT, prose).
     const activeSystemPrompt =
       debug && bodySystemPrompt && typeof bodySystemPrompt === 'string' && bodySystemPrompt.length <= 32_000
         ? bodySystemPrompt
-        : useTimelinePrompt
-          ? NEW_SYSTEM_PROMPT
-          : SYSTEM_PROMPT;
+        : findingsJson
+          ? FINDINGS_JSON_SYSTEM_PROMPT
+          : useTimelinePrompt
+            ? NEW_SYSTEM_PROMPT
+            : SYSTEM_PROMPT;
 
     const message = await client.messages.create({
       model,
@@ -62,6 +75,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const responseBody: Record<string, unknown> = { analysis: content.text };
+
+    // Structured path: parse the model's JSON into findings. On success, also
+    // reconstruct the legacy prose so any consumer reading `analysis` is unaffected.
+    // On failure, fall back to the raw text (the UI degrades to a plain card).
+    let parseOk: boolean | undefined;
+    let parseError: string | undefined;
+    if (findingsJson) {
+      try {
+        const findings = parseFindingsResponse(content.text);
+        responseBody.findings = findings;
+        responseBody.analysis = renderFindingsAsProse(findings);
+        parseOk = true;
+      } catch (parseErr) {
+        parseOk = false;
+        parseError = parseErr instanceof Error ? parseErr.message : 'parse failed';
+        responseBody.parseError = parseError;
+        console.warn(`[analyze] findingsJson parse FAILED: ${parseError}`);
+      }
+      responseBody.parseOk = parseOk;
+    }
+
     if (debug) {
       responseBody.debug = {
         model,
@@ -70,6 +104,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         inputTokens: message.usage.input_tokens,
         outputTokens: message.usage.output_tokens,
         durationMs,
+        parseOk,
+        parseError,
+        rawText: findingsJson ? content.text : undefined,
       };
     }
     return res.status(200).json(responseBody);

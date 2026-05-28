@@ -1,0 +1,11 @@
+The archetype description for this cluster highlights cc_then_burst as the dominant setup style at 55% of matches, high offensive CC pressure at 10.59 events per minute, and a 34% missed cleanse rate. This was a clean execution of the cc_then_burst style: Psychic Scream on both the Shadow Priest and Preservation Evoker at 0:12, followed by sustained offensive pressure on the Shadow Priest through the entire match, with the kill landing at 1:20.
+
+The cluster also notes 33% CD nonuse — which this match demonstrated via Divine Hymn, Desperate Prayer, and the Rogue's Blind. None of those were needed, which is the ideal outcome: your CC and cleanse work kept your team healthy enough that the big throughput tools stayed on the shelf.
+
+Your cleanse rate was notably below the cluster's 34% missed figure — you caught three major cleanse moments well (0:06, 0:18, 0:43). The 0:43 five-effect cleanse off the Mage under Silence is the kind of proactive dispelling that the 46% optimal CD timing in this cluster rewards.
+
+The one alignment issue: Guardian Spirit at 0:53 on an 88% target with Ice Block available. The cluster's 11% early CD rate likely includes this type of spend — a major CD placed on a target who has a personal defensive CD that would have served the same purpose more efficiently. Guardian Spirit should be positioned for your Rogue in cc_heavy_swap; they have no immunity and are your team's primary kill vector through the final burn phase.
+
+Power Infusion at 0:05 before the match was even fully started is aggressive, but the match only lasted 91 seconds and both charges were used within the window — the 46% optimal rate in this cluster suggests most players time CDs to burst windows rather than opening them, but in a 1:31 match any use before 1:00 is defensible.
+
+Overall, this match executed the cc_heavy_swap archetype correctly. The win was not in doubt from around 0:50 onward.

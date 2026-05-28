@@ -1,0 +1,13 @@
+In cc_heavy_fast matches, the enemy's CC volume is their kill mechanic — they're not trying to out-heal you or out-damage you, they're trying to lock your healer out of range or out of cast time long enough to create a gap where a target dies. The signature of this archetype is that the Evoker gets CC'd heavily and selectively, and the win condition is staying functional enough under that pressure to keep your damage dealer alive and find a kill.
+
+This match fits that pattern exactly. The Druid cycled Cyclone on you at 1:02, 1:20, 1:26, and 2:12 — four separate Cyclone casts over 80 seconds targeting you, while the Shadow Priest added Silence, Cascading Horrors, and Psychic Scream to create additional dead time. The Hunter provided Freezing Traps and Binding Shots. Your Rogue absorbed the brunt of this while you were neutralized.
+
+The win hinged on two things: maintaining just enough throughput on the Rogue to keep them above kill threshold despite the debuffs, and eventually creating a kill window on the Druid at 2:22 when the Druid's Incarnation: Tree of Life expired and your Rogue applied Shadow Blades into a Kidney Shot sequence. The fact that the Druid was still at 100% when their second Tree of Life came up at 2:09 indicates how strong their defensive output was — you were essentially grinding through their full healing CDs, which is why the match ran long.
+
+The central execution gap is cleanse responsiveness to Shadow Word: Madness. This debuff converts your Rogue's health deficit directly into damage through the repeated casts during high-pressure phases. The 300k instance at 0:28 running for 21 seconds, and the 348k instance at 1:04 running for 11 seconds, represent healing that your throughput had to compensate for after the fact. Against a Shadow Priest, your dispel GCDs on Vampiric Touch and Shadow Word: Madness should be treated as emergency healing, not secondary actions.
+
+Time Dilation usage was well-timed — 0:33 during the opening burst window, 0:47 during the extended pressure, 1:29 during the sustained Bestial Wrath phase, and 2:08 during the Rogue's critical 3:35% window. These all landed during actual decline, not preemptively or wastefully.
+
+Sleep Walk on the Druid at 0:27, 1:13, 1:48, and 2:12 disrupted their healing flow at the right moments. The Druid's Cyclone casts on you and the Druid's Nature's Swiftness use were the tactical signals you needed to respond to, and you tracked them.
+
+The closing sequence was clean. Once the Druid died at 2:22, rotating Cauterizing Flame onto the Hunter and then the Priest finished in 8 seconds. The second and third kills at 2:28 and 2:30 came quickly once the enemy lost their healer.

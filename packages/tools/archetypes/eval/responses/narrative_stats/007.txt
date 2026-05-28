@@ -1,0 +1,13 @@
+This win demonstrates several of the better behavioral patterns in the short-tunnel Restoration Druid archetype — and also surfaces the early-cooldown question that the cluster data makes visible.
+
+The archetype shows 58% optimal CD timing and a median response latency of ~7.8 seconds. Your Ironbark deployment at 0:10 — approximately 4–5 seconds after the Warrior first started dropping toward 45% HP — is within optimal range. Incarnation: Tree of Life at 0:15 was fast, arguably ahead of the typical response window, but the burst data supports it: 0.90M landed on the Warrior in the first minute, with Power Infusion and Shadow Blades both active. In a short-tunnel environment where 51% of cooldowns go unused because matches end fast, deploying Incarnation immediately to prevent the first kill is a defensible choice. The Warrior survived and recovered fully — the cooldown did its job.
+
+The offensive participation at 53% in this match type is roughly what the cluster averages. Your three Cyclones (0:19, 1:04, 1:13) and the Entangling Roots sequences on the enemy Disc Priest placed you well within that range. The 0:19 Cyclone using Nature's Swiftness was the highest-value single play — it removed the enemy healer from a kill window when the Warrior was at 42% HP. That's exactly the kind of offensive participation that defines winning Druid play in this archetype.
+
+The archetype's missed cleanse rate is 29%. Your cleanse activity in this match was substantially better: Chilled twice, Crippling Poison twice, Polymorph off the Paladin, and Psychic Scream off the Paladin — all removed promptly. The Polymorph cleanse at 0:49 before the Paladin took significant damage is the type of proactive removal that distinguishes cleansing from reactive play. This matches the cluster's best performers.
+
+The purge rate for this archetype averages 1.14/min. You cannot purge — noted in the log — so this metric is not applicable. However, your offensive disruption through CC compensated effectively.
+
+The one structural note: Incarnation: Tree of Life was unavailable for the second half of the match. When the third burst window opened at 1:09 (0.72M on the Warrior), you managed it with Barkskin, Frenzied Regeneration, and single-target healing — which worked, but was tighter than the first window. If the enemy team had staggered their cooldowns differently and pushed a fourth window, the missing Incarnation could have been decisive. Early cooldown deployment in short-format matches is generally correct, but worth maintaining awareness of what you've committed and what remains available.
+
+Overall: clean execution with above-average cleansing, appropriate offensive participation, and well-timed defensive cooldowns under continuous rogue pressure.

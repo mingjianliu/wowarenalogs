@@ -1,0 +1,15 @@
+Good match — clean execution with strong Warrior coordination, and you closed out both kills efficiently. A few things worth reviewing.
+
+The missed Flame Shock cleanse on your Warrior at 0:07 is the most actionable early mistake. The Warrior took 92k through that DoT during a window where enemy pressure was light and your mana was full. Flame Shock is Magic — you're the only one with a Magic dispel in this comp. Any time Shaman applies it onto your melee in the first 30 seconds, that should be your immediate priority before it snowballs into the opening burst.
+
+Both Power Infusion charges at 0:22 went out while the Warrior and yourself were at 100% HP, shortly after the Dragonrage window expired. That's a low-value timing — PI should amplify a real offensive or defensive moment, not be banked and dumped on full targets. The Evoker's Dragonrage came at 0:09 and expired before your PI landed. Next time, consider holding the second charge until your Warrior's Avatar lines up with a stun, or until the enemy healer is locked in CC and you need a burst amplifier to close.
+
+Pain Suppression at 0:36 on your Warrior at 80% with 17s remaining on his trinket is defensible given the layered CC (Storm Bolt + Shockwave hitting simultaneously on two different targets), but the timing was slightly reactive. The 80% threshold on its own isn't typically a PainSup trigger — the key was the double CC with trinket unavailable. That read was fine, but recognize the better version of that moment involves pre-positioning with Psychic Scream or a slow to break up the CC chain before PainSup is necessary.
+
+Your Psychic Scream at 1:00 into the Shaman was well-placed — the Evoker was at 47% and you'd just built meaningful damage onto their warrior. Fearing the healer cleanly into a Warrior swap that finished the Evoker at 1:37 is textbook. Good read.
+
+The second kill on the Shaman from 1:37 to 1:52 was clean pillar play — you systematically denied healing with purges and offensive casts while keeping your team topped. No wasted globals.
+
+One thing to build on: when both enemy DPS are alive post-first-kill, your Warrior should be calling swap targets immediately. The Shaman was clearly the right call here given the Arms Warrior had trinket and full HP, but that coordination is worth verbalizing in the moment so you're not reacting to target calls 5–10 seconds late.
+
+Overall a well-controlled match. The main repeatable habits to fix: dispel Magic debuffs immediately when Shaman applies them to melee, and hold at least one PI charge for a defined go window rather than dumping both off cooldown on full targets.

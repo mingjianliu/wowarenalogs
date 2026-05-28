@@ -1,0 +1,15 @@
+You lost your Retribution Paladin at 1:33, and the death was avoidable. Let's trace what happened.
+
+The Paladin's final 15 seconds: 100% at T-15, 100% at T-10, 92% at T-5, 69% at T-3, dead. The decisive damage was Rushing Wind Kick (173k), Strike of the Windlord (126k), and Hammer of Wrath (97k) landing in a tight window — Windwalker burst on a Retribution Paladin who was already sitting at 35% HP at 1:32. The Paladin was in trouble from 1:22 onward (45% HP) and you didn't have enough throughput or defensive tools to catch him.
+
+The critical miss is Ironbark. You used it at 0:27 on the Paladin at 93% HP — early in the match, on a healthy target, with no active go window on your Paladin. Ironbark's 20% damage reduction for 12 seconds is most valuable on a target already under focused pressure at 60% or lower. Using it at 93% means when the Paladin hit 40% at 1:22, Ironbark was still 33 seconds from coming back (CD is 90s, used at 0:27, so back at ~1:57). You went into the dangerous window with no Ironbark available.
+
+Your Incarnation: Tree of Life fired at 0:19 during the Execution Sentence + Power Infusion opener, which was correct context — both enemies were burning major CDs simultaneously on a fragile target. But the Paladin still fell to 31% at 0:22 before recovering. The problem is that Tree of Life was exhausted at 0:19, Ironbark at 0:27, and then from 0:39 onward you were running without a targeted damage-reduction cooldown on the Paladin for the next 70+ seconds while he took sustained damage.
+
+The Power Infusion buff on the enemy Monk at 0:10 was purgeable. You don't have an offensive purge, but your Warrior does. Calling that purge immediately when you see Power Infusion apply to the Monk could have reduced the early pressure — make that callout a habit even if you can't execute it yourself.
+
+At 1:07 you used Hammer of Justice offensively into the enemy Warlock at full HP. That's a 45-second CC CD that could have been used to buy your Paladin time (stun the Windwalker or Paladin who was actively killing him) but instead created no meaningful defensive value. When your Paladin is at 45% and the Windwalker is freely melee'ing him, Hammer of Justice on the Windwalker is 3 seconds of breathing room that might change the outcome.
+
+Your Cyclone at 1:30 on the enemy Priest came too late — the Paladin was already at 35% and the Windwalker was about to deliver a full burst combo. That Cyclone should have been on the Windwalker, not the Priest. The Priest was at 100% HP and not the source of the imminent damage.
+
+Incarnation on Cyclone timing: using Nature's Swiftness → Cyclone on the Monk at 0:51 was good map awareness — CCing the melee who was actively landing damage. That's the right instinct. Apply it again at 1:30: CC the Windwalker, not the healer, when your Paladin is at 35% and dying.

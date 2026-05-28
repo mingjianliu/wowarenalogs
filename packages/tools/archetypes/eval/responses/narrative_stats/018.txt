@@ -1,0 +1,13 @@
+The cc_heavy_fast cluster averages 111-second matches with 13.82 CC events per minute — the highest across all archetypes. This match ran 151 seconds, well above the median. A longer match in this cluster typically means the enemy healer was strong enough to delay the kill, which is confirmed here: the enemy Restoration Druid used both Incarnation: Tree of Life windows (0:19 and 2:09) and burned Innervate and Nature's Swiftness before dying. You had to grind through their full resource budget before finding the kill.
+
+The cluster's missed cleanse rate is 45%. This match generated repeated Shadow Word: Madness misses — seven distinct instances — which is high even relative to the cluster baseline. Shadow Word: Madness specifically has a mechanic that amplifies damage taken, making it the highest-priority dispel target on your Rogue. The 300k instance at 0:28 (21 seconds running) and the 348k instance at 1:04 (11 seconds running) are the most impactful. Vampiric Touch had five additional missed instances. Collectively these represent roughly 1.5M in damage your throughput had to compensate for after the fact.
+
+The cluster shows 57% cooldown never-used rate for top Evokers in this archetype. This match used Cauterizing Flame, Stasis, Rewind (presumably held), Emerald Communion, and Rescue — notably absent from the timeline. The healer was deeply engaged throughout, which is atypical for the cluster average but consistent with the longer match duration and stronger enemy healer.
+
+Offensive participation in this cluster averages 43%. Sleep Walk casts at 0:27, 1:05, 1:13, 1:48, 2:12, 2:16, 2:18 represent strong offensive participation — you were consistently contributing to disrupting the Druid's cast flow. The cluster's CC rate of 3.7 events per match for Evokers; your Sleep Walk usage alone exceeded that.
+
+Time Dilation was used four times across the match (0:33, 0:47, 1:29, 2:08) and each instance coincided with active health decline on the Rogue. The CD response latency for this cluster is approximately 9956ms median; each Time Dilation landed within 5–8 seconds of the pressure onset, which is above average responsiveness.
+
+Stasis at 1:52 was pre-emptive to the Bestial Wrath at 1:49 — a smart read on the Bestial Wrath cooldown timer. This is cc_heavy_fast play at its best: using the enemy CD tracker to anticipate rather than react.
+
+Cleanse speed on Shadow Priest debuffs is the singular area where this performance fell below the archetype's top execution threshold. Everything else — kill target selection, Druid disruption, Time Dilation accuracy, Stasis timing — was competent to strong.

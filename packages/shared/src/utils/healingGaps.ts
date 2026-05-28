@@ -1,7 +1,7 @@
 import { ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
 import spellsData from '../data/spells.json';
-import { fmtTime, getPressureThreshold, specToString } from './cooldowns';
+import { fmtTime, isHealerSpec, specToString } from './cooldowns';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -12,6 +12,17 @@ const HEALING_GAP_THRESHOLD_MS = 3500;
 const MIN_FREE_CAST_MS = 1500;
 /** Grace period: ignore tail gaps within this many ms of match end (match may end mid-cast) */
 const TAIL_GRACE_MS = 5000;
+/** B19: Suppress gaps that start in the first N ms of the match (pre-combat initialization) */
+const MATCH_START_GRACE_MS = 5000;
+/**
+ * B47: Gap-specific pressure factor — 10% of max HP taken in the gap window.
+ * Lower than the panic-defensive 15% because gaps are measured over the full gap
+ * duration (≥3.5s) rather than a short burst window, so moderate sustained
+ * pressure (≈10-15k DPS) is enough to flag a meaningful missed heal.
+ */
+const GAP_PRESSURE_PCT = 0.1;
+const GAP_PRESSURE_FALLBACK_DPS = 40_000;
+const GAP_PRESSURE_FALLBACK_HEALER = 25_000;
 
 // Spell types that prevent the healer from casting
 const CAST_PREVENTING_TYPES = new Set(['cc', 'immunities_spells']);
@@ -34,6 +45,18 @@ export interface IHealingGap {
   mostDamagedSpec: string;
   /** Raw damage taken by the most-pressured teammate */
   mostDamagedAmount: number;
+}
+
+// ---------------------------------------------------------------------------
+// Pressure threshold (gap-specific)
+// ---------------------------------------------------------------------------
+
+function getGapPressureThreshold(unit: ICombatUnit): number {
+  if (unit.advancedActions.length > 0) {
+    const maxHp = Math.max(...unit.advancedActions.map((a) => a.advancedActorMaxHp));
+    if (maxHp > 0) return maxHp * GAP_PRESSURE_PCT;
+  }
+  return isHealerSpec(unit.spec) ? GAP_PRESSURE_FALLBACK_HEALER : GAP_PRESSURE_FALLBACK_DPS;
 }
 
 // ---------------------------------------------------------------------------
@@ -158,6 +181,9 @@ export function detectHealingGaps(
   const results: IHealingGap[] = [];
 
   for (const { fromMs, toMs } of rawGaps) {
+    // B19: skip gaps at match start — pre-combat initialization artifact
+    if (fromMs - matchStartMs < MATCH_START_GRACE_MS) continue;
+
     // CC check: how much of the gap was the healer unable to cast?
     const ccMs = getCCCoveredMs(healer, fromMs, toMs, enemyIds);
     const freeCastMs = toMs - fromMs - ccMs;
@@ -174,7 +200,7 @@ export function detectHealingGaps(
         .filter((d) => d.logLine.timestamp >= fromMs && d.logLine.timestamp <= toMs)
         .reduce((sum, d) => sum + Math.abs(d.effectiveAmount), 0);
 
-      if (dmg >= getPressureThreshold(teammate)) anyUnderPressure = true;
+      if (dmg >= getGapPressureThreshold(teammate)) anyUnderPressure = true;
       if (dmg > mostDamagedAmount) {
         mostDamagedAmount = dmg;
         mostDamagedName = teammate.name;
@@ -204,7 +230,7 @@ export function detectHealingGaps(
 
 export function formatHealingGapsForContext(gaps: IHealingGap[]): string[] {
   const lines: string[] = [];
-  lines.push('HEALING GAPS (healer was inactive for >3.5s while a teammate was under pressure and healer was free):');
+  lines.push('HEALER INACTIVITY (intervals >3.5s where healer cast no spells while a teammate was under pressure):');
 
   if (gaps.length === 0) {
     lines.push('  None detected.');
@@ -216,7 +242,7 @@ export function formatHealingGapsForContext(gaps: IHealingGap[]): string[] {
     const dur = g.durationSeconds.toFixed(1);
     const free = g.freeCastSeconds.toFixed(1);
     lines.push(
-      `  ⚠ Free-Cast Gap: From ${fmtTime(g.fromSeconds)} to ${fmtTime(g.toSeconds)} (${dur}s gap, ${free}s free to cast), you cast no heals or spells while your ${g.mostDamagedSpec} (${g.mostDamagedName}) took ${dmgK}k damage. You were not CC'd.`,
+      `  [HEALER INACTIVITY] From ${fmtTime(g.fromSeconds)} to ${fmtTime(g.toSeconds)} (${dur}s duration, ${free}s free window), no heals or spells cast while ${g.mostDamagedSpec} (${g.mostDamagedName}) took ${dmgK}k damage.`,
     );
   }
 

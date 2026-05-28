@@ -1,0 +1,44 @@
+This is a fast_nuke_tunnel loss — your Mage died at 1:49 to Devour + Execute with the enemy team at full health. The tunnel score for this archetype is high (0.634), meaning the enemy commits hard to one target and doesn't switch. You knew who they were killing from the first 10 seconds, and you still couldn't keep the Mage alive.
+
+**The opening: correct reads, wrong sequence**
+
+The Warrior landed Champion's Spear on you and the Rogue at 0:05, locking out both your mobility and cleanse options for 6 seconds. Your first response was Guardian Spirit on the Rogue at 0:07 — the Rogue was at 86% and not the target being tunneled; the Mage was being hit. Guardian Spirit on the Rogue 7 seconds into the match, before any serious damage had happened, is the wrong CD for the wrong target. That charge came back on a 180-second timer (97 seconds remaining at match end) and was never usable again.
+
+The first Psychic Scream at 0:11 hit the Evoker alone, which pulled her out of her healing rotation during the Warrior's Avatar burst. That was correct. Power Infusion at 0:12 went onto the Mage first, then yourself — the Mage was at 78%, which is reasonable, and the PI timing was appropriate given the incoming Avatar + Oppressing Roar stack.
+
+**Divine Hymn at 0:18: early**
+
+Divine Hymn was used at 0:18. At that timestamp your team's HPS for the 10-15s window was 82.1k. The Mage was at 78%, you were at 100%, and the Rogue was at 78% after the Champion's Spear damage. The Warrior had just used Avatar at 0:17. Using Divine Hymn at 0:18 with 160 seconds remaining on a match that ended at 2:01 means you had no Hymn for the kill window at 1:40–1:49 when the Mage was melting. At 1:44–1:49 you had no Hymn, no Guardian Spirit (used on the Rogue at 0:07), no Apotheosis (expired at 1:12), and no Power Infusion (on CD). The Mage died with your entire defensive toolkit on cooldown.
+
+**Apotheosis at 0:52: too late for the opener, too early for the close**
+
+Apotheosis at 0:52 covered the 0:52–1:12 window when the Mage was between 43% and 99%. The timing was defensive — the Mage had been at 44% at 0:45 under Sleep Walk. Using Apotheosis here was appropriate; the Mage needed stabilization. But it expired at 1:12, which meant that by 1:30–1:49, your second Apotheosis was unavailable (not on this build) and your throughput was purely base Holy Priest without cooldown amplification.
+
+**The kill window: 1:27–1:49**
+
+From 1:27 to 1:49, the Mage received 0.98M and 0.81M in two overlapping damage spikes. At 1:30 she was at 15% HP. You used Guardian Spirit at 1:30 — correct call, the right target this time — and she recovered to 100% at 1:33. Then the Avatar at 1:41 started the next wave: 0.81M from the Rogue's spike (indicating the enemy was now also targeting through the Mage) and Devour + Execute from the Demon Hunter killed her at 1:49 at 33% HP.
+
+At 1:44 you had Intimidating Shout hit the Rogue for 1 second and the Mage for 6 seconds simultaneously. The Mage was falling from 47% at that timestamp. You had:
+- Divine Hymn: on 101-second CD (used at 0:18, available ~1:59)
+- Guardian Spirit: active on the Mage, expired at 1:42
+- Power Infusion: on 34-second CD (available ~1:51, 2 seconds after death)
+- Apotheosis: on 74-second CD
+- Desperate Prayer: available
+
+Desperate Prayer was not used at any point before the Mage died. Casting Desperate Prayer on yourself at 1:44 when the Intimidating Shout landed and the Mage was at 47% would have freed up a GCD for a direct heal and given you the breathing room from personal damage to focus your casts. It sat unused.
+
+**Missed cleanses**
+
+Oppressing Roar at 0:07 sat on you and the Rogue for the full 10-second duration with 35k and 78k damage respectively. You were CC'd by Champion's Spear until 0:11, so the first 4 seconds were unavoidable. After 0:11 you had 6 more seconds to dispel Oppressing Roar off the Rogue — you did not. The Rogue's 78k from Oppressing Roar while the Warrior had Avatar active was meaningful early pressure.
+
+The missed Intimidating Shout on the Mage at 1:44 (16k over 6 seconds, dispel: Magic) is minor in damage terms but the Mage was at 47% and the Shout locked her for 6 seconds of the kill window. Getting that dispelled at second 2 would have given the Mage 4 more seconds of movement and cast availability during the final burst.
+
+**What to change**
+
+1. Hold Guardian Spirit until a target is below 40% HP. The Rogue at 86% HP at 0:07 did not need Guardian Spirit. You burned a major CD preemptively and had nothing for the actual kill window.
+
+2. Divine Hymn at 0:18 was too early. In a 2-minute fast_nuke game, Hymn is a match-winning CD if held until the second damage window (around 1:30–1:45). Save it.
+
+3. Use Desperate Prayer when you personally take heavy damage during a carry save — it frees up your throughput for the carry.
+
+4. Dispel Oppressing Roar on your physical carry after you break Champion's Spear CC. That's 78k of unnecessary damage on the Rogue during Avatar burst.

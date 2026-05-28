@@ -1,0 +1,15 @@
+This cc_heavy_swap win at 1:45 aligns well with the archetype's profile: 130-second average match length, 11.82 CC events per minute (highest density across all clusters), and a cc_then_burst setup at 51% of matches. Your match ran exactly this pattern — survive the opening CC storm, then execute a swap chain that killed three targets in sequence.
+
+The opening 30 seconds generated extreme CC density. Your team absorbed Storm Bolt, Intimidating Shout, Champion's Spear, Shockwave, Silence, Psychic Scream, and Cascading Horrors across your three players simultaneously. Your opponents also ran Power Infusion on two players at once. Despite this, nobody died. The CD timing analysis for this phase is notable:
+
+Ironbark at 0:22 onto the Paladin at 41% HP — response latency from the first danger signal (Paladin hitting 55% at 0:22) was essentially immediate. This is significantly below the archetype's 6.96-second median latency and falls in the optimal 52% of windows category.
+
+Incarnation: Tree of Life at 0:28 — deployed exactly when Power Infusion expired on the enemy players, which is the structurally correct moment (threat is peaking, enemy offensive buffs are rolling off, your throughput window begins). This is another optimal placement.
+
+Nature's Swiftness at 0:18 — used 4 seconds before Ironbark to enable an instant emergency heal on the Paladin, then Ironbark followed naturally. That's a clean pairing.
+
+The missed cleanse rate of 6 events across a 105-second match is notable. Archetype average is 17% missed cleanse rate, and this match ran somewhat higher. Vampiric Touch sat on the Paladin for 61 seconds (the full match from 0:09 onward) and dealt 57k. Shadow Word: Madness events sat for 5–6 seconds on multiple players before clearing or expiring. In a 130-second average match, this is partially acceptable — the kills come fast enough that DoT accumulation doesn't compound. But Vampiric Touch on the Paladin at 0:09, if dispelled immediately, would have reduced the healing burden during the 0:20–0:35 critical window.
+
+The 45% CD-never-used rate in this archetype reflects how often late-match CDs go untouched when the game ends early. Your Tranquility and Stampeding Roar both went unused — correct, because the game ended before they were needed. Blessing of Spellwarding and Lay on Hands from the Paladin also went unused. The wins in this archetype come from efficient use of early CDs and fast kills, not from managing the full CD toolkit.
+
+The Cyclone absorbed by Grounding Totem at 0:42 is worth one note: the DR chain rate in this archetype is 0.08 per match (very low), meaning individual CC casts carry high value. Against Restoration Shaman, Cyclone should be preceded by a setup that removes the Grounding Totem — either have a melee destroy it or wait until the Shaman casts it elsewhere. One absorbed CC in a 105-second match is survivable, but in a tighter game it could cost a kill window.

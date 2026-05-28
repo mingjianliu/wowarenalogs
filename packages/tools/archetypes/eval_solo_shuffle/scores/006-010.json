@@ -1,0 +1,167 @@
+{
+  "006": {
+    "spec": "MistweaverMonk",
+    "cluster": "heavy_burst_swap",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Claims trinket was unavailable at 2:35 Blinding Light — log shows trinket was available and used at 2:41 after the blind expired."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Same trinket CD error at 2:35; also conflates player identities (references 'shaman at 32%' when log is MW/Warrior/Mage)."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 4,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Same trinket-unavailable-at-2:35 error; claim that trinket 'not available for 89 more seconds' at Blinding Light contradicts the log."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Same trinket timing error; archetype benchmark stats (9.4s median latency, 6% healing gap rate) unverifiable from single match log."
+    }
+  },
+  "007": {
+    "spec": "DisciplinePriest",
+    "cluster": "heavy_burst_tunnel",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "All major claims verified; minor imprecision suggesting PI cast 'at 0:30 when the shaman was at 55%' when shaman was at 55% around 0:12-0:13, not 0:30."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "All specific claims verified: Recklessness timestamps, HP values, death breakdown, Psychic Scream target, purge opportunity at 0:19."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Both cleanses correctly identified; Power Infusion purge opportunity at 0:19 correctly attributed to Fury Warrior; all events verified."
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Log-verifiable events all correct; archetype benchmarks (1.56 purges/min, 4,499ms median latency) external data, cannot confirm from this log but do not contradict it."
+    }
+  },
+  "008": {
+    "spec": "DisciplinePriest",
+    "cluster": "fast_passive_tunnel",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "All specific claims verified: Blinding Light hitting all three, both PS timestamps, Psychic Scream landing on all three enemies at 1:00, death damage breakdown."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 2,
+      "hallucination_risk": true,
+      "notes": "States '0 Psychic Scream casts' and 'no Psychic Scream', but log shows Psychic Scream cast at 1:00 landing on all three enemies — direct factual contradiction."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Correctly includes Psychic Scream at 1:00 hitting all three enemies; PS timestamps, HP values, and purge opportunity all verified."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 2,
+      "hallucination_risk": true,
+      "notes": "Claims '0 offensive CC from the Priest — no Psychic Scream', contradicting Psychic Scream at 1:00 hitting all three; same factual error as label_only."
+    }
+  },
+  "009": {
+    "spec": "DisciplinePriest",
+    "cluster": "cc_heavy_swap",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 4,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Claims 'three distinct Bestial Wrath windows' at 0:13, 0:46, 1:47, but log shows a fourth at 1:17 — shared generation error across all variants."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 4,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Same missing fourth Bestial Wrath (1:17) as baseline; purgeable PI target and Hex target correctly identified otherwise."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 4,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "All individual event claims correct but 'three Bestial Wrath windows' count omits the 1:17 window — direct factual error shared with all variants."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Same three-window error; two cleanse actions correctly identified; archetype stats unverifiable from log."
+    }
+  },
+  "010": {
+    "spec": "DisciplinePriest",
+    "cluster": "fast_passive_tunnel",
+    "result": "Win",
+    "baseline": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Claims 'enemy cast Power Infusion on the Fury Warrior at 0:34', but log shows PI on BM Hunter (player 4) and enemy Disc Priest (player 5) — no enemy Fury Warrior in this match."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Same 'Power Infusion on the Fury Warrior' error as baseline; all other event claims verified correctly."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Correctly identifies PI as appearing on 'Diapermaxxer (BM Hunter) and Skeemzin (Disc Priest)' — no Fury Warrior error; all log events verified."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Correctly identifies PI on BM Hunter and enemy Disc Priest; shaman HP values at 0:45-0:46 verified; archetype benchmarks do not contradict log."
+    }
+  }
+}

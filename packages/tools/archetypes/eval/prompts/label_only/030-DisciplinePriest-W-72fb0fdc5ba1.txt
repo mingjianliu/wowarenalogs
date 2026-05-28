@@ -1,0 +1,512 @@
+[ARCHETYPE: Discipline Priest — heavy_burst_cc_swap]
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Discipline Priest (Healer) | Bracket: 3v3 | Result: Win | Duration: 3:52
+  My team: Discipline Priest, Arms Warrior, Retribution Paladin
+  Enemy team: Enhancement Shaman, Preservation Evoker, Arms Warrior
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Discipline Priest): CAN offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 16% at match end
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Alahkazam-TarrenMill-EU (Discipline Priest — log owner):
+    Psychic Scream [40s, 2 Charges], Power Infusion [120s, 2 Charges], Pain Suppression [180s, 2 Charges]
+  2: Arediønw-Kil'jaeden-EU (Arms Warrior):
+    Avatar [90s, 2 Charges], Intimidating Shout [90s], Die by the Sword [120s], Bladestorm (Arms) [90s]
+  3: Mectrl-Ravencrest-EU (Retribution Paladin):
+    Lay on Hands [600s], Divine Shield [300s], Hammer of Justice [45s, 2 Charges], Blessing of Spellwarding [300s], Avenging Wrath [120s]
+  4: Kuule-GrimBatol-EU (Enhancement Shaman — enemy):
+    Bloodlust [60s], Ascendance [180s]
+  5: Rosey-Dentarg-EU (Preservation Evoker — enemy):
+    Deep Breath [120s], Oppressing Roar [120s]
+  6: Marex-GrimBatol-EU (Arms Warrior — enemy):
+    Avatar [90s]
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100 2:100 3:100
+0:00  [OWNER CAST]   200829 → 2
+0:02  [OWNER CAST]   200829 → 3
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:04  [OWNER CAST]   47540 → 2
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:06  [OWNER CAST]   589 → 6
+0:08  [OWNER CAST]   47540 → 6
+0:08  [CLEANSE]   2 dispelled Landslide off 2
+0:09  [STATE]   friends 1:100 2:100 3:90 / enemies 4:95 5:100 6:99
+0:09  [OWNER CAST]   1253593
+0:09  [OFFENSIVE WINDOW]   0:09–0:31 | Critical | 0.76M on 3 (Retribution Paladin) | CDs: Deep Breath + Avatar + Bloodlust + Ascendance
+0:09  [ENEMY CD]   5 (Preservation Evoker): Deep Breath
+0:09  [MISSED CLEANSE]   Flame Shock on 3 | 18s | 140k taken during | dispel: Magic
+0:10  [STATE]   friends 1:100 2:100 3:96 / enemies 4:93 5:100 6:97
+0:10  [CC ON TEAM]   3 ← Champion's Spear (Marex-GrimBatol-EU) | 6s
+0:10  [TEAMMATE CD]   2 (Arms Warrior): Avatar
+      [RES] rdy:Δ+Power Infusion,Pain Suppression,2:Intimidating Shout,2:Die by the Sword,2:Bladestorm (Arms),3:Divine Shield,3:Hammer of Justice  cd:—  enemy:Deep Breath/Preservation Evoker(1s)  cc:3/Champion's Spear-6s
+0:10  [OWNER CAST]   589 → 4
+0:11  [STATE]   friends 1:100 2:100 3:100 / enemies 4:93 5:99 6:100
+0:11  [CC ON TEAM]   3 ← Terror of the Skies (Rosey-Dentarg-EU) | 1s
+0:11  [CC ON TEAM]   2 ← Terror of the Skies (Rosey-Dentarg-EU) | 3s
+0:11  [ENEMY CD]   6 (Arms Warrior): Avatar
+0:12  [STATE]   friends 1:100 2:100 3:100 / enemies 4:91 5:98 6:99
+0:13  [STATE]   friends 1:100 2:100 3:100 / enemies 4:89 5:95 6:100
+0:13  [OWNER CAST]   8092 → 4
+0:13  [OWNER CAST]   47540 → 4
+0:13  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ+Power Infusion,Pain Suppression,2:Intimidating Shout,2:Die by the Sword,2:Bladestorm (Arms),3:Hammer of Justice-2:Avatar  cd:2:Avatar(87s)  enemy:Deep Breath/Preservation Evoker(4s),Avatar/Arms Warrior(2s)  cc:2/Terror of the Skies-1s[stun],3/Champion's Spear-3s
+0:13  [DMG SPIKE]   3 (Retribution Paladin): 0.60M in 10s
+0:14  [STATE]   friends 1:100 2:100 3:90 / enemies 4:88 5:100 6:98
+0:14  [OWNER CAST]   194509 → 3
+0:14  [OWNER CAST]   472433 → 3
+0:15  [STATE]   friends 1:100 2:100 3:93 / enemies 4:57 5:99 6:85
+0:15  [ENEMY CD]   4 (Enhancement Shaman): Bloodlust
+0:15  [ENEMY CD]   4 (Enhancement Shaman): Ascendance
+0:15  [OWNER CD]   Power Infusion → 2 (90% HP)
+      [RES] rdy:Δ+Power Infusion,Pain Suppression,2:Intimidating Shout,2:Die by the Sword,2:Bladestorm (Arms),3:Divine Shield,3:Blessing of Spellwarding  cd:—  enemy:Bloodlust/Enhancement Shaman(1s),Ascendance/Enhancement Shaman(1s),Deep Breath/Preservation Evoker(6s),Avatar/Arms Warrior(4s)  cc:3/Champion's Spear-0s
+      [HEALING]    0–5s: 85.8k HPS | 5–10s: 24.0k HPS | 10–15s: 84.0k HPS | Overheal: 41%
+0:15  [OWNER CD]   Power Infusion → 1 (100% HP)
+      [RES] rdy:Δ  cd:—  enemy:Bloodlust/Enhancement Shaman(1s),Ascendance/Enhancement Shaman(1s),Deep Breath/Preservation Evoker(6s),Avatar/Arms Warrior(4s)  cc:3/Champion's Spear-0s
+      [HEALING]    0–5s: 85.8k HPS | 5–10s: 24.0k HPS | 10–15s: 84.0k HPS | Overheal: 41%
+0:16  [STATE]   friends 1:100 2:90 3:73 / enemies 4:53 5:100 6:100
+0:16  [OWNER CAST]   17 → 3
+0:17  [STATE]   friends 1:100 2:81 3:69 / enemies 4:46 5:93 6:91
+0:17  [OWNER CD]   Psychic Scream
+      [RES] rdy:Psychic Scream,Pain Suppression,2:Intimidating Shout,2:Die by the Sword,2:Bladestorm (Arms),3:Lay on Hands,3:Divine Shield,3:Blessing of Spellwarding,3:Avenging Wrath  cd:Power Infusion(118s),2:Avatar(83s),3:Hammer of Justice(41s)  enemy:Bloodlust/Enhancement Shaman(2s),Ascendance/Enhancement Shaman(2s),Deep Breath/Preservation Evoker(8s),Avatar/Arms Warrior(6s)
+0:17  [CC CAST]   Psychic Scream (by 1) → 5
+0:17  [CC CAST]   Psychic Scream (by 1) → nil [non-player target]
+0:18  [STATE]   friends 1:100 2:80 3:67 / enemies 4:35 5:88 6:72
+0:18  [OWNER CAST]   47540 → 4
+0:19  [STATE]   friends 1:100 2:78 3:67 / enemies 4:71 5:90 6:71
+0:20  [STATE]   friends 1:100 2:85 3:63 / enemies 4:68 5:90 6:74
+0:20  [OWNER CAST]   186263 → 3
+0:21  [STATE]   friends 1:100 2:91 3:99 / enemies 4:57 5:92 6:60
+0:23  [OWNER CAST]   585 → 4
+0:24  [STATE]   friends 1:100 2:100 3:96
+0:24  [OWNER CAST]   585 → 4
+0:25  [OWNER CAST]   47540 → 4
+0:25  [CC ON TEAM]   3 ← Storm Bolt (Marex-GrimBatol-EU) | 2s
+0:26  [STATE]   friends 1:100 2:100 3:87 / enemies 4:46 5:88 6:72
+0:27  [STATE]   friends 1:100 2:100 3:100 / enemies 4:72 5:91 6:79
+0:28  [STATE]   friends 1:100 2:77 3:96 / enemies 4:87 5:100 6:89
+0:28  [OWNER CAST]   186263 → 2
+0:29  [STATE]   friends 1:100 2:95 3:97 / enemies 4:99 5:100 6:94
+0:29  [OWNER CAST]   17 → 3
+0:30  [STATE]   friends 1:100 2:93 3:89 / enemies 4:91 5:100 6:94
+0:30  [OWNER CAST]   194509 → 3
+0:30  [BUFF FADED]   Power Infusion
+0:30  [BUFF FADED]   Power Infusion
+0:31  [STATE]   friends 1:100 2:99 3:88 / enemies 4:87 5:98 6:95
+0:32  [STATE]   friends 1:100 2:98 3:84 / enemies 4:82 5:99 6:91
+0:32  [MISSED CLEANSE]   Flame Shock on 3 | 18s | 254k taken during | dispel: Magic
+0:32  [OWNER CAST]   47540 → 3
+0:33  [STATE]   friends 1:100 2:100 3:83 / enemies 4:76 5:98 6:85
+0:34  [STATE]   friends 1:100 2:96 3:100 / enemies 4:71 5:98 6:86
+0:34  [DMG SPIKE]   3 (Retribution Paladin): 0.76M in 10s
+0:35  [STATE]   friends 1:100 2:84 3:88 / enemies 4:64 5:100 6:89
+0:35  [OWNER CAST]   194509 → 2
+0:36  [STATE]   friends 1:100 2:89 3:84 / enemies 4:75 5:100 6:98
+0:37  [STATE]   friends 1:100 2:78 3:77 / enemies 4:87 5:100 6:98
+0:37  [OWNER CAST]   17 → 3 [completed before CC landed]
+0:37  [CC ON TEAM]   1 ← Intimidating Shout (Marex-GrimBatol-EU) | 1s
+0:38  [STATE]   friends 1:100 2:80 3:76 / enemies 4:94 5:98 6:100
+0:38  [ENEMY CD]   5 (Preservation Evoker): Oppressing Roar
+0:38  [MISSED CLEANSE]   Oppressing Roar on 1 | 10s | 0k taken during | dispel: Magic
+0:39  [STATE]   friends 1:100 2:81 3:70 / enemies 4:92 5:100 6:100
+0:39  [OWNER CAST]   47540 → 3
+0:40  [STATE]   friends 1:100 2:85 3:64 / enemies 4:77 5:99 6:98
+0:41  [STATE]   friends 1:100 2:80 3:66 / enemies 4:98 5:100 6:99
+0:42  [STATE]   friends 1:100 2:80 3:49 / enemies 4:95 5:100 6:98
+0:42  [CC ON TEAM]   1 ← Sleep Walk (Rosey-Dentarg-EU) | 2s
+0:43  [STATE]   friends 1:100 2:74 3:29 / enemies 4:87 5:99 6:98
+0:44  [STATE]   friends 1:100 2:67 3:92 / enemies 4:86 5:100 6:100
+0:44  [OWNER CAST]   1253593 [completed before CC landed]
+0:45  [STATE]   friends 1:100 2:77 3:97 / enemies 4:96 5:95 6:100
+0:45  [CC ON TEAM]   1 ← Shockwave (Marex-GrimBatol-EU) | 4s
+0:46  [STATE]   friends 1:100 2:80 3:99 / enemies 4:99 5:98 6:100
+0:47  [STATE]   friends 1:100 2:82 3:100 / enemies 4:94 5:100 6:99
+0:48  [STATE]   friends 1:100 2:86 3:100 / enemies 4:85 5:100 6:96
+0:49  [STATE]   friends 1:100 2:87 3:100 / enemies 4:83 5:100 6:99
+0:50  [STATE]   friends 1:100 2:88 3:100 / enemies 4:77 5:99 6:100
+0:50  [OWNER CAST]   47540 → 4
+0:51  [STATE]   friends 1:100 2:95 3:100 / enemies 4:85 5:100 6:99
+0:51  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ-Psychic Scream,Power Infusion,3:Hammer of Justice  cd:Psychic Scream(6s),Power Infusion(85s),3:Hammer of Justice(7s)  enemy:Oppressing Roar/Preservation Evoker(13s)
+0:52  [STATE]   friends 1:100 2:100 3:91 / enemies 4:70 5:100 6:100
+0:53  [STATE]   friends 1:100 2:90 3:79 / enemies 4:40 5:94 6:90
+0:53  [OWNER CAST]   421453 → 4
+0:53  [OWNER CAST]   1253593
+0:54  [STATE]   friends 1:100 2:91 3:78 / enemies 4:33 5:99 6:96
+0:55  [STATE]   friends 1:100 2:96 3:81 / enemies 4:59 5:100 6:100
+0:57  [STATE]   friends 1:100 2:100 3:100
+0:58  [TEAMMATE CD]   2 (Arms Warrior): Intimidating Shout
+      [RES] rdy:Δ+Pain Suppression,2:Intimidating Shout,2:Die by the Sword,2:Bladestorm (Arms),3:Divine Shield,3:Hammer of Justice,3:Blessing of Spellwarding-2:Avatar  cd:2:Avatar(42s)  enemy:Oppressing Roar/Preservation Evoker(20s)
+0:58  [CC CAST]   Intimidating Shout (by 2) → 5, 6 [2 enemies]
+0:58  [OWNER CAST]   47540 → 4
+1:00  [STATE]   friends 1:100 2:100 3:86
+1:02  [OWNER CAST]   17 → 3
+1:02  [MISSED CLEANSE]   Flame Shock on 3 | 15s | 181k taken during | dispel: Magic
+1:03  [STATE]   friends 1:100 2:100 3:84
+1:03  [OWNER CAST]   194509 → 3
+1:03  [OWNER CAST]   472433 → 3
+1:04  [CC ON TEAM]   2 ← Sleep Walk (Rosey-Dentarg-EU) | 3s
+1:04  [OWNER CAST]   47540 → 4
+1:05  [STATE]   friends 1:100 2:100 3:99 / enemies 4:90 5:100 6:91
+1:06  [STATE]   friends 1:100 2:100 3:92 / enemies 4:85 5:100 6:93
+1:07  [STATE]   friends 1:100 2:100 3:87 / enemies 4:85 5:100 6:94
+1:07  [OWNER CAST]   527 → 2
+1:07  [CLEANSE]   1 dispelled 2 effects: Flame Shock off 2, Sleep Walk off 2
+1:08  [STATE]   friends 1:100 2:100 3:69 / enemies 4:83 5:100 6:94
+1:08  [OWNER CAST]   17 → 3
+1:09  [STATE]   friends 1:100 2:100 3:60 / enemies 4:73 5:99 6:89
+1:09  [OWNER CD]   Pain Suppression → 3 (60% HP)
+      [RES] rdy:Δ+Pain Suppression-Power Infusion,2:Avatar  cd:Power Infusion(67s),2:Avatar(32s)
+1:09  [OWNER CAST]   47540 → 3
+1:10  [STATE]   friends 1:100 2:100 3:61 / enemies 4:63 5:100 6:81
+1:11  [STATE]   friends 1:100 2:98 3:66 / enemies 4:65 5:92 6:79
+1:11  [OWNER CAST]   194509 → 3
+1:12  [STATE]   friends 1:100 2:100 3:94 / enemies 4:76 5:99 6:78
+1:13  [STATE]   friends 1:100 2:99 3:100 / enemies 4:82 5:100 6:87
+1:13  [OWNER CAST]   8092 → 4
+1:13  [OWNER CAST]   589 → 4
+1:14  [STATE]   friends 1:100 2:96 3:98 / enemies 4:86 5:99 6:86
+1:15  [STATE]   friends 1:100 2:100 3:87
+1:15  [OWNER CAST]   32379 → 5
+1:15  [ENEMY CD]   4 (Enhancement Shaman): Bloodlust
+1:16  [OWNER CAST]   586
+1:16  [OWNER CAST]   121536
+1:17  [BUFF FADED]   Pain Suppression
+1:17  [MISSED CLEANSE]   Flame Shock on 2 | 18s | 17k taken during | dispel: Magic
+1:17  [OWNER CAST]   17 → 3
+1:18  [STATE]   friends 1:98 2:100 3:78
+1:19  [CC ON TEAM]   1 ← Sleep Walk (Rosey-Dentarg-EU) | 1s
+1:20  [STATE]   friends 1:99 2:100 3:79 / enemies 4:76 5:94 6:82
+1:20  [OWNER CAST]   7744
+1:20  [OWNER CAST]   47540 → 4
+1:21  [STATE]   friends 1:100 2:100 3:82 / enemies 4:85 5:96 6:75
+1:22  [STATE]   friends 1:100 2:100 3:100 / enemies 4:86 5:99 6:72
+1:22  [TEAMMATE CD]   2 (Arms Warrior): Avatar
+      [RES] rdy:Δ-Power Infusion,Pain Suppression,2:Avatar,2:Intimidating Shout  cd:Power Infusion(54s),Pain Suppression(167s),2:Avatar(18s),2:Intimidating Shout(66s)  enemy:Bloodlust/Enhancement Shaman(6s)
+1:23  [STATE]   friends 1:100 2:100 3:100 / enemies 4:89 5:93 6:75
+1:23  [OWNER CAST]   585 → 4
+1:24  [STATE]   friends 1:100 2:100 3:100 / enemies 4:76 5:89 6:82
+1:24  [OWNER CAST]   589 → 6
+1:25  [STATE]   friends 1:100 2:100 3:100 / enemies 4:74 5:76 6:67
+1:25  [OWNER CAST]   47540 → 6
+1:26  [STATE]   friends 1:100 2:96 3:100 / enemies 4:70 5:73 6:58
+1:26  [ENEMY CD]   6 (Arms Warrior): Avatar
+1:27  [STATE]   friends 1:100 2:100 3:100 / enemies 4:55 5:87 6:58
+1:27  [OWNER CAST]   1253593
+1:28  [STATE]   friends 1:100 2:95 3:100 / enemies 4:46 5:86 6:49
+1:28  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ+Psychic Scream,3:Hammer of Justice-Pain Suppression,2:Intimidating Shout  cd:Pain Suppression(161s),2:Intimidating Shout(60s)  enemy:Bloodlust/Enhancement Shaman(12s),Avatar/Arms Warrior(1s)
+1:29  [STATE]   friends 1:100 2:100 3:100 / enemies 4:61 5:85 6:38
+1:30  [STATE]   friends 1:100 2:100 3:100 / enemies 4:51 5:100 6:100
+1:30  [OWNER CAST]   585 → Grounding Totem [absorbed: Grounding Totem]
+1:31  [STATE]   friends 1:100 2:100 3:100 / enemies 4:71 5:100 6:100
+1:31  [OWNER CAST]   589 → Earthgrab Totem [totem/pet]
+1:32  [STATE]   friends 1:100 2:100 3:71 / enemies 4:79 5:100 6:89
+1:32  [DMG SPIKE]   2 (Arms Warrior): 0.56M in 10s
+1:32  [OWNER CAST]   17 → 3
+1:33  [STATE]   friends 1:100 2:97 3:62 / enemies 4:86 5:100 6:100
+1:33  [OWNER CAST]   73325 → 3
+1:34  [STATE]   friends 1:100 2:93 3:62 / enemies 4:80 5:99 6:99
+1:34  [OWNER CAST]   194509 → 3
+1:35  [STATE]   friends 1:100 2:85 3:86 / enemies 4:72 5:100 6:100
+1:35  [OWNER CAST]   47540 → 3
+1:36  [STATE]   friends 1:100 2:73 3:88 / enemies 4:63 5:99 6:100
+1:37  [STATE]   friends 1:100 2:64 3:95 / enemies 4:51 5:96 6:95
+1:38  [OWNER CAST]   186263 → 2
+1:39  [STATE]   friends 1:100 2:81 3:93
+1:39  [OWNER CAST]   8092 → 4
+1:40  [OWNER CAST]   186263 → 3
+1:41  [OWNER CAST]   17 → 2
+1:41  [OWNER CAST]   586
+1:42  [STATE]   friends 1:100 2:86 3:94
+1:42  [CC ON TEAM]   3 ← Sleep Walk (Rosey-Dentarg-EU) | 1s
+1:42  [OWNER CAST]   527 → 3
+1:42  [CLEANSE]   1 dispelled 2 effects: Flame Shock off 3, Sleep Walk off 3
+1:43  [STATE]   friends 1:100 2:89 3:97 / enemies 4:63 5:100 6:100
+1:43  [OWNER CAST]   47540 → 3
+1:44  [STATE]   friends 1:100 2:92 3:79 / enemies 4:67 5:100 6:100
+1:45  [STATE]   friends 1:100 2:96 3:77 / enemies 4:73 5:100 6:100
+1:45  [CC ON TEAM]   2 ← Shockwave (Marex-GrimBatol-EU) | 3s
+1:45  [CC ON TEAM]   3 ← Shockwave (Marex-GrimBatol-EU) | 3s
+1:46  [STATE]   friends 1:100 2:100 3:84 / enemies 4:70 5:100 6:98
+1:46  [OWNER CAST]   32379 → 4 [completed before CC landed]
+1:46  [CC ON TEAM]   1 ← Sleep Walk (Rosey-Dentarg-EU) | 1s
+1:47  [STATE]   friends 1:100 2:92 3:81 / enemies 4:71 5:100 6:100
+1:47  [OWNER CAST]   1253593 [succeeded after CC arrived — within 1s in log]
+1:48  [STATE]   friends 1:100 2:93 3:69 / enemies 4:80 5:100 6:100
+1:48  [MISSED CLEANSE]   Flame Shock on 3 | 18s | 212k taken during | dispel: Magic
+1:48  [OWNER CAST]   194509 → 3
+1:48  [OWNER CAST]   472433 → 3
+1:49  [STATE]   friends 1:100 2:100 3:83 / enemies 4:98 5:100 6:100
+1:49  [CC ON TEAM]   2 ← Champion's Spear (Marex-GrimBatol-EU) | 6s
+1:49  [CC ON TEAM]   3 ← Champion's Spear (Marex-GrimBatol-EU) | 6s
+1:49  [OWNER CAST]   589 → 4
+1:50  [STATE]   friends 1:100 2:100 3:91 / enemies 4:97 5:99 6:97
+1:51  [STATE]   friends 1:93 2:99 3:74 / enemies 4:87 5:99 6:96
+1:51  [OWNER CAST]   47540 → 4
+1:52  [STATE]   friends 1:100 2:91 3:69 / enemies 4:77 5:99 6:85
+1:53  [STATE]   friends 1:100 2:96 3:65 / enemies 4:49 5:89 6:69
+1:54  [STATE]   friends 1:100 2:100 3:58 / enemies 4:78 5:100 6:87
+1:54  [OWNER CAST]   186263 → 3
+1:54  [OWNER CAST]   17 → 3
+1:55  [STATE]   friends 1:100 2:96 3:84 / enemies 4:72 5:97 6:41
+1:56  [STATE]   friends 1:100 2:94 3:73 / enemies 4:65 5:87 6:42
+1:56  [OWNER CAST]   186263 → 3
+1:57  [STATE]   friends 1:100 2:100 3:100 / enemies 4:94 5:100 6:54
+1:57  [OWNER CAST]   47540 → 6
+1:58  [STATE]   friends 1:100 2:100 3:97 / enemies 4:100 5:100 6:100
+1:58  [OWNER CAST]   589 → 6
+1:59  [STATE]   friends 1:100 2:100 3:90 / enemies 4:96 5:86 6:98
+2:00  [STATE]   friends 1:100 2:100 3:80
+2:00  [OWNER CAST]   17 → 3
+2:00  [CLEANSE]   2 dispelled Landslide off 2
+2:02  [OWNER CAST]   527 → 2
+2:02  [CLEANSE]   1 dispelled 2 effects: Earthgrab off 2, Flame Shock off 2
+2:02  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ+2:Avatar  cd:—
+2:03  [STATE]   friends 1:83 2:98 3:80
+2:03  [OWNER CAST]   47540 → 3
+2:06  [STATE]   friends 1:89 2:87 3:64
+2:06  [OWNER CAST]   186263 → 3
+2:06  [OWNER CAST]   1253593
+2:08  [CC ON TEAM]   2 ← Sleep Walk (Rosey-Dentarg-EU) | 1s
+2:08  [OWNER CAST]   8092 → 6
+2:08  [OWNER CAST]   589 → 4
+2:09  [STATE]   friends 1:100 2:100 3:79 / enemies 4:92 5:99 6:59
+2:09  [MISSED CLEANSE]   Flame Shock on 3 | 65s | 235k taken during | dispel: Magic
+2:10  [STATE]   friends 1:100 2:99 3:56 / enemies 4:89 5:100 6:71
+2:10  [OWNER CAST]   527 → 2
+2:10  [CLEANSE]   1 dispelled 2 effects: Stormbind off 2, Flame Shock off 2
+2:11  [STATE]   friends 1:82 2:89 3:42 / enemies 4:91 5:100 6:77
+2:11  [CC ON TEAM]   3 ← Storm Bolt (Marex-GrimBatol-EU) | 3s
+2:11  [OWNER CAST]   17 → 3
+2:11  [OWNER CD]   Pain Suppression → 3 (42% HP)
+      [RES] rdy:Δ+2:Avatar-Pain Suppression,3:Hammer of Justice  cd:Pain Suppression(117s),3:Hammer of Justice(1s)  cc:3/Storm Bolt-2s[stun]
+2:12  [STATE]   friends 1:83 2:91 3:42 / enemies 4:82 5:100 6:77
+2:12  [ENEMY CD]   5 (Preservation Evoker): Deep Breath
+2:12  [CC ON TEAM]   2 ← Terror of the Skies (Rosey-Dentarg-EU) | 1s | trinket: used
+2:12  [OWNER CAST]   47540 → 4
+2:13  [STATE]   friends 1:83 2:90 3:43 / enemies 4:74 5:92 6:77
+2:14  [STATE]   friends 1:89 2:94 3:45 / enemies 4:72 5:93 6:81
+2:14  [TRINKET]   2 used PvP trinket
+2:14  [CC ON TEAM]   1 ← Intimidating Shout (Marex-GrimBatol-EU) | 1s
+2:15  [STATE]   friends 1:94 2:100 3:55 / enemies 4:73 5:92 6:96
+2:16  [STATE]   friends 1:100 2:99 3:55 / enemies 4:64 5:85 6:96
+2:16  [OWNER CAST]   47540 → 4
+2:16  [CC ON TEAM]   2 ← Sleep Walk (Rosey-Dentarg-EU) | 2s | trinket: ON CD (118s left)
+2:17  [STATE]   friends 1:100 2:100 3:58 / enemies 4:62 5:89 6:98
+2:18  [STATE]   friends 1:100 2:100 3:64 / enemies 4:95 5:100 6:100
+2:18  [OWNER CAST]   527 → 2
+2:18  [CLEANSE]   1 dispelled 2 effects: Sleep Walk off 2, Earthbind off 2
+2:19  [STATE]   friends 1:100 2:100 3:60 / enemies 4:96 5:100 6:99
+2:19  [OWNER CAST]   1253593
+2:19  [BUFF FADED]   Pain Suppression
+2:20  [STATE]   friends 1:100 2:99 3:59 / enemies 4:90 5:100 6:96
+2:20  [OWNER CD]   Power Infusion → 2 (100% HP)
+      [RES] rdy:Δ+2:Avatar,3:Hammer of Justice-Pain Suppression,2:Intimidating Shout  cd:Pain Suppression(108s),2:Intimidating Shout(8s)  enemy:Deep Breath/Preservation Evoker(9s)
+      [HEALING]    0–5s: 59.8k HPS | 5–10s: 34.9k HPS | 10–15s: 46.1k HPS | Overheal: 36%
+2:20  [OWNER CD]   Power Infusion → 1 (100% HP)
+      [RES] rdy:Δ  cd:—  enemy:Deep Breath/Preservation Evoker(9s)
+      [HEALING]    0–5s: 59.8k HPS | 5–10s: 34.9k HPS | 10–15s: 46.1k HPS | Overheal: 36%
+2:21  [STATE]   friends 1:100 2:100 3:60 / enemies 4:85 5:100 6:100
+2:21  [OWNER CAST]   32379 → 5 [completed before CC landed]
+2:21  [CC ON TEAM]   1 ← Sleep Walk (Rosey-Dentarg-EU) | 1s
+2:21  [MISSED CLEANSE]   Flame Shock on 1 | 23s | 0k taken during | dispel: Magic
+2:22  [STATE]   friends 1:100 2:100 3:65 / enemies 4:67 5:98 6:99
+2:22  [OWNER CAST]   186263 → 3 [succeeded after CC arrived — within 1s in log]
+2:23  [STATE]   friends 1:100 2:100 3:89 / enemies 4:75 5:100 6:100
+2:23  [OWNER CAST]   47540 → 3
+2:24  [STATE]   friends 1:100 2:100 3:83 / enemies 4:73 5:96 6:99
+2:25  [STATE]   friends 1:100 2:100 3:90 / enemies 4:63 5:96 6:100
+2:25  [ENEMY CD]   4 (Enhancement Shaman): Bloodlust
+2:25  [ENEMY CD]   4 (Enhancement Shaman): Ascendance
+2:26  [STATE]   friends 1:100 2:100 3:94 / enemies 4:96 5:100 6:96
+2:26  [OWNER CD]   Psychic Scream
+      [RES] rdy:Δ+2:Avatar,3:Hammer of Justice-Pain Suppression,2:Intimidating Shout  cd:Pain Suppression(102s),2:Intimidating Shout(2s)  enemy:Bloodlust/Enhancement Shaman(1s),Ascendance/Enhancement Shaman(1s),Deep Breath/Preservation Evoker(15s)
+2:26  [CC CAST]   Psychic Scream (by 1) → nil [non-player target]
+2:26  [CC CAST]   Psychic Scream (by 1) → 5
+2:27  [STATE]   friends 1:100 2:97 3:89 / enemies 4:98 5:100 6:100
+2:27  [OWNER CAST]   17 → 2
+2:28  [STATE]   friends 1:100 2:79 3:92 / enemies 4:97 5:100 6:100
+2:29  [STATE]   friends 1:100 2:80 3:93 / enemies 4:90 5:98 6:100
+2:29  [OWNER CAST]   47540 → 4
+2:30  [STATE]   friends 1:100 2:55 3:96 / enemies 4:70 5:92 6:96
+2:30  [TEAMMATE CD]   2 (Arms Warrior): Intimidating Shout
+      [RES] rdy:Δ+2:Avatar-Pain Suppression  cd:Pain Suppression(99s)  enemy:Bloodlust/Enhancement Shaman(5s),Ascendance/Enhancement Shaman(5s),Deep Breath/Preservation Evoker(19s)
+2:30  [CC CAST]   Intimidating Shout (by 2) → 4
+2:31  [STATE]   friends 1:100 2:72 3:100 / enemies 4:74 5:99 6:99
+2:31  [OWNER CAST]   186263 → 2
+2:33  [STATE]   friends 1:100 2:90 3:85
+2:33  [OWNER CAST]   17 → 3
+2:33  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ  cd:—  enemy:Bloodlust/Enhancement Shaman(8s),Ascendance/Enhancement Shaman(8s),Deep Breath/Preservation Evoker(21s)  cc:1/Mind Blast-2s[kick]
+2:33  [TEAMMATE CD]   2 (Arms Warrior): Avatar
+      [RES] rdy:Δ+2:Avatar  cd:—  enemy:Bloodlust/Enhancement Shaman(8s),Ascendance/Enhancement Shaman(8s),Deep Breath/Preservation Evoker(22s)  cc:1/Mind Blast-2s[kick]
+2:34  [OWNER CAST]   589 → 4
+2:35  [ENEMY CD]   6 (Arms Warrior): Avatar
+2:35  [BUFF FADED]   Power Infusion
+2:35  [BUFF FADED]   Power Infusion
+2:35  [OWNER CAST]   194509 → 3
+2:35  [OWNER CAST]   472433 → 3
+2:36  [STATE]   friends 1:100 2:100 3:100
+2:37  [OWNER CAST]   47540 → 4
+2:38  [OWNER CAST]   32379 → 4
+2:38  [CC ON TEAM]   2 ← Shockwave (Marex-GrimBatol-EU) | 3s | trinket: ON CD (96s left)
+2:38  [CC ON TEAM]   3 ← Shockwave (Marex-GrimBatol-EU) | 3s
+2:39  [STATE]   friends 1:100 2:100 3:87 / enemies 4:10 5:99 6:59
+2:40  [STATE]   friends 1:100 2:100 3:85 / enemies 4:16 5:97 6:58
+2:40  [OWNER CAST]   17 → 3
+2:41  [STATE]   friends 1:100 2:100 3:84 / enemies 4:49 5:98 6:69
+2:42  [STATE]   friends 1:100 2:99 3:86 / enemies 4:51 5:98 6:68
+2:43  [STATE]   friends 1:100 2:100 3:86 / enemies 4:50 5:98 6:55
+2:43  [OWNER CAST]   47540 → self
+2:44  [STATE]   friends 1:100 2:96 3:85 / enemies 4:52 5:79 6:40
+2:45  [STATE]   friends 1:100 2:98 3:78 / enemies 4:49 5:71 6:47
+2:45  [OWNER CAST]   528 → 6
+2:46  [STATE]   friends 1:100 2:100 3:68 / enemies 4:98 5:100 6:55
+2:46  [OWNER CAST]   1253593
+2:47  [STATE]   friends 1:100 2:94 3:61 / enemies 4:100 5:92 6:54
+2:47  [OWNER CAST]   186263 → 3
+2:48  [STATE]   friends 1:100 2:100 3:100 / enemies 4:95 5:93 6:73
+2:50  [OWNER CAST]   585 → 6
+2:50  [OWNER CAST]   47540 → 6
+2:50  [ENEMY CD]   5 (Preservation Evoker): Oppressing Roar
+2:51  [STATE]   friends 1:100 2:79 3:100
+2:51  [CLEANSE]   1 dispelled Oppressing Roar off 1
+2:51  [OWNER CAST]   527 → self
+2:52  [TEAMMATE CD]   2 (Arms Warrior): Die by the Sword
+      [RES] rdy:Δ-2:Intimidating Shout  cd:2:Intimidating Shout(68s)  enemy:Bloodlust/Enhancement Shaman(27s),Ascendance/Enhancement Shaman(27s),Oppressing Roar/Preservation Evoker(2s),Avatar/Arms Warrior(17s)
+2:53  [OWNER CAST]   32379 → 5 [completed before CC landed]
+2:53  [CC ON TEAM]   1 ← Sleep Walk (Rosey-Dentarg-EU) | 1s
+2:54  [STATE]   friends 1:100 2:58 3:93 / enemies 4:75 5:100 6:76
+2:54  [OWNER CAST]   17 → 2
+2:54  [OWNER CAST]   586
+2:54  [CC ON TEAM]   3 ← Sleep Walk (Rosey-Dentarg-EU) | 1s
+2:55  [STATE]   friends 1:100 2:61 3:94 / enemies 4:69 5:100 6:75
+2:56  [STATE]   friends 1:100 2:62 3:79 / enemies 4:69 5:100 6:79
+2:56  [TEAMMATE CD]   2 (Arms Warrior): Bladestorm (Arms)
+      [RES] rdy:Δ-2:Die by the Sword  cd:2:Die by the Sword(117s)  enemy:Oppressing Roar/Preservation Evoker(5s),Avatar/Arms Warrior(20s)
+2:57  [STATE]   friends 1:100 2:65 3:67 / enemies 4:72 5:100 6:82
+2:57  [OWNER CAST]   47540 → 3
+2:58  [STATE]   friends 1:100 2:72 3:63 / enemies 4:69 5:99 6:80
+2:59  [STATE]   friends 1:100 2:76 3:79 / enemies 4:62 5:93 6:83
+2:59  [OWNER CAST]   1253593 [completed before CC landed]
+3:00  [STATE]   friends 1:100 2:81 3:82 / enemies 4:51 5:92 6:87
+3:00  [CC ON TEAM]   1 ← Storm Bolt (Marex-GrimBatol-EU) | 3s
+3:01  [STATE]   friends 1:100 2:85 3:83 / enemies 4:75 5:99 6:100
+3:02  [STATE]   friends 1:100 2:90 3:87 / enemies 4:71 5:97 6:95
+3:03  [STATE]   friends 1:100 2:78 3:96 / enemies 4:61 5:91 6:83
+3:03  [OWNER CAST]   194509 → 2
+3:04  [STATE]   friends 1:100 2:80 3:100 / enemies 4:70 5:97 6:84
+3:04  [DMG SPIKE]   3 (Retribution Paladin): 0.65M in 10s
+3:04  [OWNER CAST]   2061 → 2
+3:05  [STATE]   friends 1:100 2:89 3:100 / enemies 4:46 5:78 6:83
+3:05  [OWNER CAST]   47540 → 4
+3:06  [STATE]   friends 1:100 2:85 3:100 / enemies 4:40 5:78 6:86
+3:07  [STATE]   friends 1:100 2:88 3:98 / enemies 4:36 5:75 6:85
+3:07  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ-2:Die by the Sword,2:Bladestorm (Arms)  cd:2:Die by the Sword(106s),2:Bladestorm (Arms)(79s)  enemy:Oppressing Roar/Preservation Evoker(17s)
+3:07  [DMG SPIKE]   2 (Arms Warrior): 0.78M in 10s
+3:08  [STATE]   friends 1:100 2:100 3:97 / enemies 4:62 5:99 6:100
+3:08  [OWNER CAST]   527 → 2
+3:08  [CLEANSE]   1 dispelled 4 effects: Flame Shock off 2, Earthbind off 2, Permeating Chill off 2, Capacitor Totem off 2
+3:09  [STATE]   friends 1:100 2:95 3:75 / enemies 4:85 5:98 6:97
+3:09  [OWNER CAST]   17 → 3
+3:10  [STATE]   friends 1:100 2:92 3:64 / enemies 4:85 5:97 6:93
+3:11  [STATE]   friends 1:100 2:77 3:63 / enemies 4:87 5:90 6:76
+3:12  [STATE]   friends 1:100 2:66 3:53 / enemies 4:75 5:89 6:74
+3:12  [OWNER CD]   Psychic Scream
+      [RES] rdy:Δ-2:Die by the Sword,2:Bladestorm (Arms),3:Hammer of Justice  cd:2:Die by the Sword(100s),2:Bladestorm (Arms)(74s),3:Hammer of Justice(6s)  enemy:Oppressing Roar/Preservation Evoker(22s)
+3:12  [CC CAST]   Psychic Scream (by 1) → nil [non-player target]
+3:12  [CC CAST]   Psychic Scream (by 1) → 5
+3:13  [OWNER CAST]   47540 → 3
+3:14  [TEAMMATE CD]   3 (Retribution Paladin): Divine Shield
+      [RES] rdy:Δ-2:Bladestorm (Arms),3:Hammer of Justice  cd:2:Bladestorm (Arms)(72s),3:Hammer of Justice(4s)  enemy:Oppressing Roar/Preservation Evoker(24s)
+3:14  [OWNER CAST]   194509 → 3
+3:15  [STATE]   friends 1:100 2:47 3:65
+3:15  [OWNER CAST]   186263 → 2
+3:17  [OWNER CAST]   17 → 2
+3:17  [TEAMMATE CD]   3 (Retribution Paladin): Blessing of Spellwarding
+      [RES] rdy:Δ+3:Blessing of Spellwarding-3:Hammer of Justice  cd:3:Hammer of Justice(1s)  enemy:Oppressing Roar/Preservation Evoker(27s)
+3:17  [OWNER CD]   Pain Suppression → 2 (38% HP)
+      [RES] rdy:Δ-2:Die by the Sword,2:Bladestorm (Arms),3:Divine Shield  cd:2:Die by the Sword(95s),2:Bladestorm (Arms)(68s),3:Divine Shield(297s)  enemy:Oppressing Roar/Preservation Evoker(27s)
+3:18  [STATE]   friends 1:100 2:45 3:66
+3:21  [STATE]   friends 1:100 2:58 3:69
+3:21  [OWNER CAST]   47540 → 6
+3:23  [OWNER CAST]   17 → 3
+3:24  [STATE]   friends 1:100 2:86 3:84
+3:24  [OWNER CAST]   194509 → 2
+3:24  [OWNER CAST]   472433 → 2
+3:25  [BUFF FADED]   Pain Suppression
+3:26  [OWNER CAST]   47540 → 4
+3:27  [STATE]   friends 1:92 2:100 3:99
+3:27  [CC ON TEAM]   1 ← Sleep Walk (Rosey-Dentarg-EU) | 1s
+3:28  [STATE]   friends 1:100 2:99 3:100 / enemies 4:68 5:99 6:95
+3:28  [OWNER CAST]   7744 [succeeded after CC arrived — within 1s in log]
+3:29  [STATE]   friends 1:100 2:100 3:100 / enemies 4:71 5:100 6:99
+3:29  [OWNER CAST]   1253593
+3:30  [STATE]   friends 1:100 2:100 3:100 / enemies 4:73 5:100 6:100
+3:31  [STATE]   friends 1:100 2:100 3:100 / enemies 4:65 5:99 6:100
+3:31  [OWNER CAST]   589 → 4
+3:32  [STATE]   friends 1:100 2:100 3:100 / enemies 4:83 5:84 6:94
+3:32  [MISSED CLEANSE]   Flame Shock on 3 | 18s | 57k taken during | dispel: Magic
+3:33  [STATE]   friends 1:100 2:100 3:100 / enemies 4:76 5:69 6:96
+3:33  [CC ON TEAM]   2 ← Champion's Spear (Marex-GrimBatol-EU) | 6s | trinket: ON CD (41s left)
+3:33  [CC ON TEAM]   3 ← Champion's Spear (Marex-GrimBatol-EU) | 6s
+3:33  [OWNER CAST]   585 → 4
+3:34  [STATE]   friends 1:100 2:100 3:100 / enemies 4:67 5:68 6:94
+3:34  [ENEMY CD]   4 (Enhancement Shaman): Bloodlust
+3:34  [OWNER CAST]   47540 → 4
+3:35  [STATE]   friends 1:100 2:95 3:100 / enemies 4:47 5:51 6:90
+3:35  [OWNER CAST]   527 → 2
+3:35  [CLEANSE]   1 dispelled 4 effects: Landslide off 2, Flame Shock off 2, Permeating Chill off 2, Stormbind off 2
+3:36  [STATE]   friends 1:100 2:100 3:100 / enemies 4:31 5:54 6:87
+3:36  [OWNER CAST]   32379 → 4
+3:37  [STATE]   friends 1:100 2:100 3:100 / enemies 4:28 5:54 6:88
+3:38  [STATE]   friends 1:100 2:100 3:92 / enemies 4:23 5:56 6:93
+3:38  [CC ON TEAM]   3 ← Intimidating Shout (Marex-GrimBatol-EU) | 1s
+3:38  [CC ON TEAM]   2 ← Intimidating Shout (Marex-GrimBatol-EU) | 1s | trinket: ON CD (36s left)
+3:38  [OWNER CAST]   17 → 3
+3:39  [STATE]   friends 1:100 2:100 3:93 / enemies 4:40 5:76 6:100
+3:40  [STATE]   friends 1:100 2:100 3:94 / enemies 4:66 5:94 6:100
+3:40  [TEAMMATE CD]   3 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ-3:Divine Shield,3:Blessing of Spellwarding  cd:3:Divine Shield(274s),3:Blessing of Spellwarding(277s)  enemy:Bloodlust/Enhancement Shaman(6s)
+3:41  [STATE]   friends 1:100 2:92 3:86 / enemies 4:48 5:93 6:90
+3:41  [OWNER CAST]   8092 → 4
+3:41  [OWNER CAST]   47540 → 4
+3:42  [STATE]   friends 1:100 2:99 3:60 / enemies 4:dead 5:86 6:76
+3:42  [DEATH]  4 (Enhancement Shaman — enemy)
+3:42  [ROSTER]  enemy 4 removed (dead)
+3:43  [STATE]   friends 1:100 2:100 3:64 / enemies 4:dead 5:85 6:75
+3:43  [TEAMMATE CD]   2 (Arms Warrior): Avatar
+      [RES] rdy:Δ-2:Die by the Sword,2:Bladestorm (Arms),3:Divine Shield,3:Hammer of Justice,3:Blessing of Spellwarding  cd:2:Die by the Sword(69s),2:Bladestorm (Arms)(43s),3:Divine Shield(271s),3:Hammer of Justice(9s),3:Blessing of Spellwarding(274s)  enemy:Bloodlust/Enhancement Shaman(9s)
+3:44  [STATE]   friends 1:97 2:100 3:63 / enemies 4:dead 5:73 6:63
+3:44  [OWNER CD]   Psychic Scream
+      [RES] rdy:Δ-2:Avatar,3:Divine Shield,3:Blessing of Spellwarding  cd:2:Avatar(20s),3:Divine Shield(270s),3:Blessing of Spellwarding(273s)  enemy:Bloodlust/Enhancement Shaman(10s)
+3:44  [CC CAST]   Psychic Scream (by 1) → nil [non-player target]
+3:44  [CC CAST]   Psychic Scream (by 1) → 6, 5 [2 enemies]
+3:45  [STATE]   friends 1:93 2:97 3:64 / enemies 4:dead 5:57 6:43
+3:45  [ENEMY CD]   6 (Arms Warrior): Avatar
+3:45  [OWNER CAST]   1253593
+3:46  [STATE]   friends 1:94 2:95 3:65 / enemies 4:dead 5:53 6:48
+3:46  [OWNER CAST]   589 → 6
+3:47  [STATE]   friends 1:96 2:98 3:66 / enemies 4:dead 5:38 6:44
+3:48  [STATE]   friends 1:97 2:99 3:68 / enemies 4:dead 5:25 6:42
+3:49  [STATE]   friends 1:98 2:100 3:70 / enemies 4:dead 5:19 6:27
+3:49  [OWNER CAST]   585 → 6
+3:49  [OWNER CAST]   47540 → 6
+3:50  [STATE]   friends 1:100 2:100 3:74 / enemies 4:dead 5:17 6:23
+3:51  [STATE]   friends 1:100 2:100 3:89 / enemies 4:dead 5:6 6:dead
+3:51  [DEATH]  6 (Arms Warrior — enemy)
+3:51  [ROSTER]  enemy 6 removed (dead)
+
+3:52  [MATCH END]   damp: 16%
+  friends 1:100% 2:96% 3:91% / enemies 4:dead(3:42) 5:5% 6:dead(3:51)

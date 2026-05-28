@@ -1,9 +1,10 @@
-.env
-*.pyc
-node_modules
-.serverless
-gcp_service_account.json
-wowarenalogs-public-dev.json
-wowarenalogs.json
+prompts_output.txt
+sample_prompts.txt
+archetypes/features_3v3.jsonl
+archetypes/features_solo_shuffle.jsonl
+archetypes/archetype_prompts_3v3_draft.json
+archetypes/archetype_prompts_solo_shuffle_draft.json
+archetypes/logs/
+archetypes/archetype_prompts_draft.json
 benchmarks/logs/
 benchmarks/log_manifest.json

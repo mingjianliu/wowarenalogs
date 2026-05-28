@@ -1,0 +1,11 @@
+This was a fast_nuke_swap match — the enemy opened with all three major CDs simultaneously at 0:23 to try to kill your Warrior in one window, and your job was to survive that and maintain offensive pressure. You did both correctly.
+
+The core defensive execution was clean. When the Warrior dropped to 29% at 0:37 under Touch of Karma, Avenging Crusader, and Soul Rip stacked together, you had Rewind up and used it immediately, pairing Time Dilation to maximize the window. The Warrior was back to 100% by 0:40. Wing Buffet right before at 0:30 helped manage the Shaman who was Howl of Terror'd and couldn't heal. This is exactly how fast_nuke_swap defense should work — read the CD stack, commit your big tools, recover fully.
+
+The kill on the Windwalker at 2:35 came from your team grinding him down across multiple Avatar and Ascendance windows. Sleep Walk on the Holy Paladin consistently during your team's offensive windows was the right call — denying their healer GCDs during a fast_nuke_swap win is how you close out the match rather than stalling into a defensive spiral.
+
+Two things to tighten up. First, Mortal Coil on the Shaman at 0:43 was a missed cleanse — you had no CC on yourself at that moment and could have cleared it. Second, Curse of Weakness on the Warrior at 0:49 ran for 38 seconds and he took 392k during that time. In a fast_nuke_swap game your Warrior's damage is the win condition, and Curse of Weakness cuts into it directly. Your Shaman needs to be tracking and clearing this, or you need to be calling it out loudly.
+
+The 1:14 Emerald Communion when the Shaman was at 38% was well-timed — Rewind was on CD and the Shaman's trinket was spent, so it was the correct emergency tool. The self-defense rotation at 1:36–1:40 when you took the 0.71M spike on yourself showed good priority discipline, keeping the Warrior at full while covering yourself.
+
+Overall a well-managed win. Cleanse responsiveness is the clearest area to sharpen.

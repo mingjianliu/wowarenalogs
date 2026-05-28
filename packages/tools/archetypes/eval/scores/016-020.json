@@ -1,0 +1,167 @@
+{
+  "016": {
+    "spec": "Preservation Evoker",
+    "cluster": "fast_nuke_swap",
+    "result": "Win",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Strong match-specific analysis grounded in the timeline. Correctly identifies the triple-CD stack (Touch of Karma + Avenging Crusader + Soul Rip), Rewind+Time Dilation sequencing, Wing Buffet usage, and both cleanse misses (Mortal Coil + Curse of Weakness). Mentions 'Druid-side at 0:28 Deep Breath opener' in reference to Sleep Walk target which is slightly garbled but not hallucinated — the target is Holy Paladin, not a Druid. No archetype context means the coaching is solid but lacks the framing that would explain why this opener pattern matters. Outcome is correctly affirmed as a win with specific areas to improve."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Label context sharpens the analysis materially. Response opens by situating the match within fast_nuke_swap expectations (all CDs stacked in one window, survive-and-convert), which directly contextualizes the opener defense. Cleanse critique is identical in substance but the 'fast_nuke_swap win condition = Warrior damage' framing makes the Curse of Weakness point land harder. Concise and healer-centric throughout. No fabricated claims."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Archetype narrative ('compressed kill windows, leave CDs unused because games end before they're relevant') is accurate and directly frames every coaching point. Response correctly notes that this match ran longer than the archetype median (the 160s vs typical ~107s) and explains why: survival of the opener converted the game to attrition. Sleep Walk targeting rationale (deny Paladin heals during Warrior pressure) is well-explained. Two cleanse misses covered with appropriate priority weighting. Emerald Communion and self-defense window both analyzed correctly."
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "All cited statistics (107s median, 58% CD never-used, 47% offensive participation, p90 response latency under 16s, 42% missed cleanse rate) match the prompt's archetype block. Comparison of actual match duration (160s) to median (107s) adds genuine interpretive value. The claim that this player's response latency was 'under 10 seconds' against a p90 of 16s is a specific benchmark comparison that is well-grounded. Stasis and Wing Buffet usage noted as consistent with the longer-duration variant. No fabricated numbers."
+    }
+  },
+  "017": {
+    "spec": "Mistweaver Monk",
+    "cluster": "heavy_burst_tunnel",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Correctly identifies the structural failure: both Life Cocoon and Ascendance spent in the same window, leaving nothing for the Bloodlust+Ascendance second peak. Loss outcome is honestly acknowledged with root-cause focus. The phrase 'Bestial Wrath equivalent windows' is an odd analogy since the comp is Arms Warrior + Enhancement Shaman + Evoker — Bestial Wrath is a BM Hunter ability, not relevant here. This is a minor imprecision (the intent is 'Avatar equivalent') rather than a fabrication. Ascendance timing advice is specific and actionable. Sleep Walk death sentence at 1:04 correctly identified."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "heavy_burst_tunnel framing ('two separate burst peaks') directly structures the coaching. The CD staggering advice (hold one of the two tools for the Bloodlust window) is precise and archetype-appropriate. Sleep Walk timing as 'kill shot' is accurate given the match context. No imprecision from baseline ('Bestial Wrath' reference) is absent here. Clean and directly actionable."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Excellent archetype framing: 'ensure there is always something held for the second wave after the first is absorbed.' Correctly names the enemy's CC setup (Oppressing Roar + Deep Breath enabling the burst), and identifies Bloodlust+Ascendance as the signal for the secondary window. Die by the Sword on the Warrior at 0:28 is correctly noted as a reasonable instinct that still wasn't sufficient. Ends with comp-specific alternative paths (neutralize Evoker, interrupt Bloodlust via Warrior), which is actionable without being comp-heuristic. No fabrications."
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "All statistics match the prompt (peak burst score 18.9, 63% optimal CD timing, 8% never-used, 129s median, 7464ms CD response latency, 39% missed cleanse rate, 49% offensive participation). Two distinct burst windows are explicitly delineated with the 1.18M spike appearing in both (correct from prompt). The note that 'no flagged missed cleanses' exist is accurate and honest — the cleanse execution critique is redirected to the structural CD allocation problem. Healing gap rate 1% correctly applied. The Sleep Walk at 1:04 with trinket spent 80s earlier is a precise observation from the timeline."
+    }
+  },
+  "018": {
+    "spec": "Preservation Evoker",
+    "cluster": "cc_heavy_fast",
+    "result": "Win",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Correctly identifies Shadow Word: Madness as the priority dispel and lists specific timestamp instances with damage amounts. Time Dilation timings (0:33, 2:08) are accurate from the timeline. Stasis at 1:52 pre-empting Bestial Wrath at 1:49 is a well-spotted good play. The note that the Mage was the primary CC target is accurate. Duration (2:31) reported as above archetype median without knowing the cluster median — this is a reasonable inference, not a claim. Slight focus dilution from noting the match difficulty without archetype framing for why cleanse throughput = healer kill mechanic in this cluster."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "cc_heavy_fast framing makes the cleanse critique structurally motivated ('CC volume is the kill mechanic'). Lists seven Shadow Word: Madness missed instances (more complete than baseline), including the 0:28 instance running for 21 seconds as the 'most egregious'. Correctly notes Rogue's Cloak of Shadows at 2:05 as important. Kill sequence at 2:20–2:22 analyzed correctly. Duration vs archetype median contextualized (2:31 vs shorter typical). No fabrications."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Opens with the exact archetype mechanic: 'lock your healer out of range or out of cast time.' Druid Cyclone targeting (four casts over 80 seconds on the Evoker) is accurate from timeline. Shadow Blades + Kidney Shot kill sequence on the Druid at 2:22 is specific and well-traced. Time Dilation cadence (0:33, 0:47, 1:29, 2:08) all cited correctly and described as 'during actual decline.' The Druid being at 100% when second Tree of Life came up at 2:09 is an accurate observation that explains the longer match duration. No fabrications."
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "All statistics match the prompt block (111s median, 13.82 CC/min, 45% missed cleanse rate, 57% CD never-used, 43% offensive participation, 3.7 CC events/match, 9956ms response latency). Sleep Walk usage (seven casts) correctly exceeds the 3.7 cluster average. Time Dilation response within 5–8s of pressure onset vs 9956ms median is a fair comparison. The 'Rewind (presumably held)' hedge is epistemically honest — Rewind does not appear in the timeline as used. Stasis pre-emption of Bestial Wrath noted as top-cluster behavior. Seven missed Shadow Word: Madness instances vs 45% cluster baseline is appropriately contextualized as elevated."
+    }
+  },
+  "019": {
+    "spec": "Restoration Druid",
+    "cluster": "short_tunnel",
+    "result": "Win",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Correctly identifies the 17-second match as a 2v3 cleanup. CD economy note (Tree of Life + Innervate over-investment for a guaranteed win) is the right coaching angle. Honestly acknowledges there is almost nothing to analyze. Pre-hot habit note is a constructive takeaway. No fabrications — keeps observations tightly bounded by the match data."
+    },
+    "label_only": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "short_tunnel label adds the right lens: assess kill speed before committing major defensive CDs. Ironbark + Frenzied Regeneration as sufficient alternatives to Tree of Life is a mechanically accurate suggestion for this scenario. CD economy advice is more specific than baseline. Slightly shorter and less detailed than baseline but well-calibrated for a match with little to analyze."
+    },
+    "narrative": {
+      "focusCalibration": 3,
+      "outcomeAlignment": 4,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Over-analyzes a 17-second match to the point of speculating on pre-match conditions. The claim that 'your team had already been doing damage in the pre-match lobby area' to explain the enemy Priest being at 87% HP at 0:05 is speculation not supported by the log — this is a hallucination risk. The analysis of Die by the Sword at 80% as 'puzzling' and Ret Paladin trinket on Rake as 'aggressive' are low-signal coaching points in a match this short. The response reads as padding to fill a narrative structure on a match that cannot support it. Wrath contribution to Disc Priest kill is mentioned but framed as a meaningful coaching point when it is trivially expected. Focus calibration suffers from forcing analysis onto an analytically empty match."
+    },
+    "narrative_stats": {
+      "focusCalibration": 3,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Statistics cited (51% CD never-used, 99s median, 58% optimal CD timing, 7853ms response latency, 4.2 mean CC events, 29% missed cleanse rate) all match the prompt. The response earns credit for being honest: 'this match is not analytically useful for coaching purposes beyond confirming correct pre-cast discipline.' Pre-cast Rejuvenation timing vs the 7853ms median is a genuine comparison, though the sample is too small to be meaningful. Paladin trinket on 1-second Rake flagged as a lower-stakes error in short_tunnel context — appropriate caveat. No fabrications, but the focus calibration suffers from the same structural problem: a 17-second match does not exercise the healer's decision space enough to anchor the stat comparisons."
+    }
+  },
+  "020": {
+    "spec": "Holy Priest",
+    "cluster": "cc_heavy_swap",
+    "result": "Win",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Guardian Spirit on Water Elemental is confirmed in the prompt timeline (0:24 Guardian Spirit → Water Elemental at 100% HP). Apotheosis at 0:32 during Scorpid Venom is accurate. Spirit of Redemption proc at 0:45 leading to Divine Hymn is correctly identified. PI overheal point (28% overheal in following window) is from the prompt. Blinding Light cleanse miss (0:54) and Freezing Trap miss (2:20) are both confirmed as MISSED CLEANSE events. The Psychic Scream analysis (hitting Monk vs Ret priority) is reasonable but slightly arguable — Monk as enemy healer is the correct Scream target to deny healing. Overall accurate and specific. Slightly verbose with the bolded headers but all claims are grounded."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "cc_heavy_swap framing makes the cleanse priority analysis mechanically motivated: 'physical carry CC loses go windows.' Cleanse timing (both within 3 seconds vs the Blinding Light running full 4 seconds) is accurate from the timeline. Guardian Spirit Water Elemental error correctly identified. Apotheosis at 0:32 timing analysis is precise. The Blinding Light miss at 0:54 as 'most impactful error' is well-supported — all three teammates were blinded while the Ret was at 83%. The Freezing Trap at 2:20 priority analysis (Mage survival vs Rogue uptime) is nuanced and honest. Psychic Scream usage correctly evaluated against the cc_heavy_swap context of disrupting the enemy healer during go windows."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Moment-by-moment narrative structure works well for a 3:45 match with multiple inflection points. All specific claims (Guardian Spirit to Water Elemental confirmed, Apotheosis at 0:32, Spirit of Redemption at 0:45, Divine Hymn, Guardian Spirit at 1:55 at 39%, Ice Block at 2:29, kill sequence at 3:08–3:17) are accurate from the prompt timeline. PI at 2:21 with 28% overheal correctly traced. Rogue-vs-self PI recommendation is mechanically sound. Kill sequence breakdown (Blind at 3:12, Dragon's Breath at 3:13, Scream at 3:15, Ret dies at 3:17) is precise and confirmed. Cleanse delay on Freezing Trap framed as 'can heal and dispel simultaneously' — correct mechanic for Holy Priest."
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Most statistics match the prompt (46% optimal CD utilization, 34% missed cleanse rate, 33% CD never-used, 6499ms CD response latency, 4.2 outgoing CC mean, 10.59 CC/min cluster rate). However, the cited HPS figures '95.4k/94.5k/82.2k HPS across the three windows' are not present in the prompt. The prompt shows per-event HPS snapshots for specific CD casts (e.g., '0–5s: 3.3k HPS | 5–10s: 5.7k HPS') but no aggregate window HPS totals matching these values. These specific numbers appear fabricated from whole cloth and cannot be verified against provided data. The PI overheal figure (28%) is in the prompt. The Psychic Scream rate (1.3/min over 3:45) is correctly calculated from five Scream casts. The Guardian Spirit Water Elemental analysis is accurate. Despite strong overall structure, the hallucinated HPS numbers undermine the credibility of the stat-grounded coaching."
+    }
+  }
+}

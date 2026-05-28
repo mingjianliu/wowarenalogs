@@ -1,0 +1,9 @@
+This was a heavy burst swap match where the enemy Fury Warrior ran Avatar and Recklessness three times in roughly 90-second cycles, each time targeting a different member of your team. You survived the first two windows but ran out of defensive resources for the third and fourth.
+
+The pattern that killed you: the enemy's cc_then_burst setup worked exactly as intended. Shockwave and Storm Bolt repeatedly locked down your team during burst, and the enemy Restoration Druid's Cyclone pulled your Arms Warrior out of the fight at key moments (2:36 for 5 seconds, then again post-death at 2:54). You countered with Sleep Walk on the Fury Warrior, which bought seconds but not enough to interrupt the broader rotation.
+
+The fatal decision was using Stasis at 1:49 when the Shaman was at 61% during what was actually a manageable pressure phase. That Stasis use happened just 7 seconds after Stasis came off cooldown — it was reflexive rather than strategic. Holding that Stasis for the incoming third burst window at 2:02 would have given you stored heals to cover yourself when you dropped to 27%. Instead you had Obsidian Scales as your only tool, and the fourth window found Rewind on a 199-second cooldown and Emerald Communion on a 115-second cooldown.
+
+The death at 2:52 was inevitable from around 2:36 onward. Once your Warrior was Cycloned for 5 seconds at 2:36 and Ascendance popped for the Shaman simultaneously, you lost the ability to generate pressure on the enemy healer. The enemy druid never dropped below 85% for the entire final two minutes.
+
+Your Stasis timing at 0:26 was fine — that was during the first genuine crisis when the Shaman hit 54% and you needed the burst output. But in heavy burst swap matches, the second and third Stasis charges need to be preserved for the windows where Avatar and Recklessness align with your defensive cooldowns being depleted.

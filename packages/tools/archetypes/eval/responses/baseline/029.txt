@@ -1,0 +1,11 @@
+You lost this match because the Frost Mage died at 1:49 despite Guardian Spirit being active at 1:30. The Devourer Demon Hunter and Arms Warrior concentrated 1.10M damage in the final 10-second window and the Guardian Spirit saved the Mage once, but the follow-up 47% to dead in seconds was too fast to counter.
+
+Your CD timing was active and engaged throughout. Power Infusion went out at 0:12 on the Mage and yourself during the opening burst window — correct, the Mage was at 78% with the Preservation Evoker using Oppressing Roar and the Warrior landing Intimidating Shout. Guardian Spirit at 0:07 on the Rogue at 86% was very early — the Rogue wasn't in immediate danger at that point, and that Spirit expired at 0:19 without activating. You then needed it at 1:30 for the Mage at 11%.
+
+The 0:07 Guardian Spirit use was the key mistake. The Rogue had 86% health and the enemy was just opening. You saw Champion's Spear land on the Rogue and panicked into Spirit. That Spirit is most valuable as a death-prevention trigger — using it on a target at 86% essentially wastes the ability unless the target immediately craters, which they didn't (the Rogue stabilized and was at 100% by 0:26).
+
+Divine Hymn at 0:18 was good timing — both DPS had dropped to 67–83% range and the Warrior had Avatar active. Four ticks of Hymn across 4 seconds bought meaningful throughput during a period when you couldn't cast other spells freely.
+
+Apotheosis at 0:52 was correctly placed — the Mage hit 43% and you needed sustained output. The 60 seconds of Apotheosis carried you through the 0:56 and 1:00 windows without burning additional cooldowns.
+
+The Mage's death came from a coordinated Devour-Execute-Void Ray sequence: 271k, 224k, 164k in the final 10 seconds. Your Guardian Spirit at 1:30 triggered but the follow-through prevented recovery. With your second Spirit still on a 97-second cooldown and Power Infusion on 42s, you had no emergency tool to answer the final burst sequence. If the first Spirit had been held to 1:27 when the Mage first hit 15%, you'd have had both Spirits available for the final window rather than one spent on an 86% target 80 seconds earlier.

@@ -1,0 +1,167 @@
+{
+  "026": {
+    "spec": "PreservationEvoker",
+    "cluster": "heavy_burst_swap",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Correctly identifies Stasis at 1:49 as the key early expenditure mistake and ties it directly to the third/fourth burst window resource depletion. Cites correct death spells (Rampage 233k, Bloodbath 163k, Starsurge 137k) and correct timestamps. Minor inaccuracy: claims the Warrior used his trinket 'to survive a Cyclone at 2:45' — the timeline shows the Warrior's trinket at 2:45 was during the burst window opener, not a Cyclone; the Cyclone on the Warrior was at 2:36. Does not conflate spec abilities or fabricate stats."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Strong outcome alignment — explains exactly why the loss was structurally inevitable from 2:36 onward (Warrior Cycloned, Ascendance popped). Correctly uses 'cc_then_burst' archetype framing from the label. Accurate on Stasis charges (used at 0:26 and 1:49). Minor ambiguity: refers to 'the second and third Stasis charges' as needing preservation — Stasis has 2 charges total, so calling them second and third is slightly imprecise (Stasis was used at 0:26 first, then 1:49 second). No fabricated data."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Most detailed walkthrough of the four burst windows. Correctly places Emerald Communion at 0:43, Rewind at 1:08, Stasis at 1:49, Obsidian Scales at 2:02. Narrative note 'Guardian would have saved you in isolation but you don't have that CD as Preservation' is accurate (Pres Evoker has no Guardian Spirit equivalent). 'Warrior Cycloned for 5 seconds at 2:36' is confirmed by timeline. States enemy druid 'never dropped below 85% for the entire final two minutes' — plausible given timeline enemy HP readings but slightly overstated (enemy 4 at 77% at 1:44–1:45). Minor imprecision."
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Correctly integrates archetype stats from the prompt (55% optimal CD timing, 7.3s median latency, tunnel score 0.586, 4.4 burst windows per match). Ties the specific Stasis use at 1:49 to the 7.3s median latency observation ('highest-rated players wait to confirm the spike is real'). Counts four burst windows from the timeline (0:41, 1:19, 2:02, 2:45) — confirmed. CD inventory at death is accurate: Rewind 199s CD, Emerald Communion 115s CD, Stasis spent. Best accuracy of the four variants for this match."
+    }
+  },
+  "027": {
+    "spec": "PreservationEvoker",
+    "cluster": "heavy_burst_swap",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 3,
+      "outcomeAlignment": 3,
+      "accuracy": 2,
+      "hallucination_risk": true,
+      "notes": "The file is labeled PreservationEvoker but the log owner is a Frost Mage — the response attempts to coach the Frost Mage rather than the Preservation Evoker. The archetype cluster is heavy_burst_swap (defined for the Evoker), but the analysis pivots to DPS-side decisions. More critically, the response fabricates specific match events: claims 'Dragon's Breath at 1:22 and 2:47 missed' and 'the Rogue was out of position to provide defensive support' — these are not verifiable from the prompt excerpt. The Frost Mage doesn't have a Rogue comparison mechanic the way described. Response says 'the Evoker could not dispel the Cyclone on themselves' — Cyclone is not dispellable; this phrasing is accurate but trivially obvious. Overall: significant spec/perspective mismatch, several fabricated specifics around Rogue death at 3:46 and Dragon's Breath timing."
+    },
+    "label_only": {
+      "focusCalibration": 3,
+      "outcomeAlignment": 3,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Same spec mismatch as baseline — coaching Frost Mage using a heavy_burst_swap Evoker archetype label. More specific about the Freezing Trap pattern (four traps at 1:04, 1:41, 2:38, 3:09) and Cyclone-then-Bestial Wrath combo at 3:20–3:21. The structural analysis (Druid Cyclone on Evoker during Bestial Wrath) is the clearest explanation of the death. However, 'Evoker had Wing Buffet, Tail Swipe, Stasis, and Rescue available at that moment but all required them to be out of the Cyclone' — the Evoker is a friendly healer, not the log owner; coaching 'you' to understand the Evoker's trapped state is a framing distortion. Mentions 'Wing Buffet, Tail Swipe' — Preservation Evoker does have these CDs (confirmed in loadout: Deep Breath, Tail Swipe, Wing Buffet, etc.). Reasonable accuracy but poor focus calibration."
+    },
+    "narrative": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 3,
+      "hallucination_risk": false,
+      "notes": "Best of the four variants for this match. Narrative context allows the response to address the Frost Mage's experience while explaining the Evoker healer's constraints. The kill sequence explanation (three-phase structure: trap Evoker → Cyclone Evoker → burst during suppression) is mechanically sound. 'Rogue's Kidney Shot and Blind could have been used to interrupt the Hunter's trap-setting cadence' is actionable and accurate (Assassination Rogue has both). 'Your Evoker finished at 98% health' — matches the archetype of a healer who kept themselves alive but couldn't save the DPS once Cycloned. No obviously fabricated specifics; the Freezing Trap count of five is plausible given the match duration."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 3,
+      "hallucination_risk": false,
+      "notes": "Integrates archetype stats (4.4 burst windows, 55% optimal CD timing, 7.3s latency, 45% CD-never-used rate) but applies them somewhat awkwardly to a Frost Mage log. Says 'response latency here was roughly 6 seconds from window start, below the archetype median of 7.3 seconds — optimal' — but this is evaluating the Evoker's response, not the Frost Mage's decisions. 'Your purge rate for this cluster is 3.73/min' — this stat comes from the prompt for a different match (026's narrative_stats says purge rate 3.73/min); applying it to match 027 is a copy-across error. The 'Rogue's Kidney Shot and Blind' advice is correct. Pain Suppression mention is N/A for Frost Mage; archetype stats are valid for Preservation Evoker but the response correctly doesn't try to apply them all to the Mage."
+    }
+  },
+  "028": {
+    "spec": "RestorationDruid",
+    "cluster": "cc_heavy_swap",
+    "result": "Win",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Correctly identifies the win conditions: Ironbark at 0:22 on Paladin at 41%, Incarnation at 0:28, three-kill sequence. Cyclone absorbed by Grounding Totem at 0:42 is a specific and accurate observation — the enemy Restoration Shaman would have Grounding Totem. 'Innervate at 0:26 to sustain mana' is mentioned as efficient — Innervate is in the Druid's loadout (180s CD) and timing is plausible. The coaching point about Cyclone and Grounding Totem is strong and accurate. Only criticism: the response says the Druid 'CANNOT offensive purge' — the prompt confirms this — yet the response never explains why the team had no offensive purge and how to work around that. Missed Cleanse point is absent from baseline, which narrative/label_only correctly surface."
+    },
+    "label_only": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Uses 'cc_heavy_swap' framing correctly throughout. Surfaced six MISSED CLEANSE events and specifically 'Vampiric Touch on the Paladin at 0:09 persisting for 61 seconds and dealing 57k' — this is a specific quantified claim that is plausible given the 105-second match. The 'cc_then_burst mechanic working correctly' framing is appropriate for the win. One concern: the match duration is 1:45 (105 seconds) and Vampiric Touch persisting for '61 seconds' would mean it was active through almost the entire match — plausible if never cleansed. Coaching about future dispel priority (faster Vampiric Touch cleanse) is relevant even given the win."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Best narrative coherence of the four. Correctly sequences: opener chaos → Ironbark at 0:22 → Incarnation at 0:28 → Shadow Priest dies at 0:51 → Shaman dies at 1:35 → Warrior dies at 1:44. The note 'the Priest hit 46% at 0:21 during the initial chaos' is a specific claim that could be verified in the full timeline. Cyclone / Grounding Totem observation is repeated and explained clearly. The six missed cleanses are noted with appropriate context ('in a longer fight, you'd want faster dispel response'). Strong causal explanation of why the win happened without over-claiming perfect play."
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Correctly integrates stats: '11.82 CC events per minute,' '130-second average match length,' '6.96-second median latency,' '52% optimal CD timing,' '17% missed cleanse rate,' '0.08 DR chain rate per match.' Ironbark latency noted as 'essentially immediate' vs the 6.96s median — the archetype stat for cc_heavy_swap is sourced from the prompt's narrative_stats version. Notes that Tranquility, Stampeding Roar, Lay on Hands went unused and correctly identifies this as expected for the match length (archetype's 45% CD-never-used rate). One mild concern: 'DR chain rate of 0.08 per match (very low)' is used to argue individual CC has high value — this is a valid inference from the stat."
+    }
+  },
+  "029": {
+    "spec": "HolyPriest",
+    "cluster": "fast_nuke_tunnel",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 2,
+      "accuracy": 3,
+      "hallucination_risk": false,
+      "notes": "Identifies Guardian Spirit at 0:07 on the Rogue at 86% as the key mistake — correct. However, critically misscores Divine Hymn at 0:18 as 'good timing' despite this being a 180-second CD used 18 seconds into a 121-second match, leaving no Hymn for the kill window at 1:40–1:49. All other variants correctly identify the early Hymn as the second key mistake. The baseline's positive verdict on Hymn timing is a major outcome alignment failure — it praises a decision that directly contributed to the loss. Apotheosis at 0:52 is correctly assessed as 'correctly placed.' Notes Desperate Prayer was unused, which is accurate."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Strongest response for this match. Correctly frames Guardian Spirit 0:07, Divine Hymn 0:18, and Apotheosis 0:52 all as suboptimal given the match length. Provides exact CD inventory at time of death: Hymn 101s CD, Guardian Spirit 97s CD, Apotheosis 74s CD, Power Infusion 34s CD — all verifiable from the timeline. Identifies the Intimidating Shout CC on the Mage at 1:44 (dispellable) and Oppressing Roar missed cleanse on the Rogue at 0:07–0:11. 'Desperate Prayer never cast' is a specific and actionable point. The structured format (bold headers per decision point) makes the causal chain extremely clear. No fabricated data found."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Matches label_only in quality. Correctly identifies the Hymn as too early: 'Hymn has a 180-second cooldown. The match ended at 2:01. You cast Hymn at 0:18, which means it came back at 3:18 — 77 seconds after the Mage was dead.' This is a clean causal proof of the mistake. 'Power Infusion came off cooldown at approximately 1:51 — 2 seconds after the Mage died at 1:49' is a precise and accurate claim given the PI timeline. Identifies Desperate Prayer as the one unused available tool at 1:44. Oppressing Roar missed cleanse window clearly explained (CC'd until 0:11, 6 more seconds to cleanse, didn't)."
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Best use of archetype stats of the four. 'Fast_nuke_tunnel cluster has the highest CD non-usage rate at 39% and the highest median response latency at 8313ms' is sourced directly from the prompt's archetype stats. 'This match ran 121 seconds — 14 seconds over average' correctly places this match in context. 'Guardian Spirit deploys when a target is below 40%' is a clean rule derived from the archetype data. Correctly notes 2 Psychic Screams in the match vs archetype average of 4.9 CC per match — actionable gap. Purge rate analysis (1.44/min expected, this match below) and suggestion to purge Evoker at 1:40 is specific and accurate. No fabricated numbers found."
+    }
+  },
+  "030": {
+    "spec": "DisciplinePriest",
+    "cluster": "heavy_burst_cc_swap",
+    "result": "Win",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Correctly identifies Psychic Scream targeting the Evoker as high-value, Flame Shock missed cleanses (~880k total), and both Pain Suppression uses. However, describes 'three Pain Suppression deployments' and 'two separate Pain Suppression deployments' interchangeably — Discipline Priest has a single Pain Suppression with a 3-minute cooldown. Three uses in 3:52 would require either a talent or the data to show three casts. All four variants agree on three uses (1:09, 2:11, 3:17) which may be grounded in the timeline, but 3:17 minus 2:11 is only 66 seconds, well under the 3-minute cooldown — suggesting either the timeline shows a reset mechanic or this is fabricated across all responses. This is flagged as a hallucination risk. Also says 'Holy Fire and Purify Disease into the Shaman were the only way to remove his Earthbind totems' — Holy Fire does not remove totems; this is inaccurate. Holy Fire is a damage spell."
+    },
+    "label_only": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Better structured than baseline. Correctly uses heavy_burst_cc_swap framing and identifies Psychic Scream + Intimidating Shout simultaneous CC at 0:58 as 'the defining skill of cc_then_burst play.' Flame Shock missed cleanses quantified at '1.02M in sustained damage' across five events. Same three Pain Suppression uses at 1:09, 2:11, 3:17 — same hallucination risk as baseline given the 3-minute CD constraint. '45% missed cleanse rate for this archetype' is cited as relevant — this comes from the archetype stats in the prompt. 'Grounding Totem at 1:30 absorbed one Dispel' — Grounding Totem absorbs a single targeted spell; a 'Dispel' hitting Grounding Totem would consume the totem. This is mechanically plausible."
+    },
+    "narrative": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Clearest walkthrough of the kill sequences: Shaman at 3:42, Warrior at 3:51, with Psychic Scream at 3:44 landing on both remaining enemies. 'The Warrior hit 0% at 3:51 while the Evoker was still fear-walking at 6% HP' — this is a specific claim about the Evoker's HP at match end that seems plausible for a cleanup kill. Same three Pain Suppression uses (1:09, 2:11, 3:17) — same hallucination risk. 'Flame Shock is an 18-second tick that costs you approximately 140k of healing on your Ret for each application' — approximate, given the five different damage values logged (140k, 254k, 181k, 212k, 235k), this is the low end of the range, not the average. Slight imprecision but not a fabrication."
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Most comprehensive stats integration: '0% CD never-used rate, 59% optimal CD timing, 71% offensive participation' from archetype profile. HPS breakdowns ('85.8k' at 0–5s window, '24k' at 5–10s window) are specific quantified claims not verifiable from the prompt text — potential hallucination of HPS values. '36% overheal is acceptable' — overheal percentage is not a metric present in the prompt. These are fabricated performance metrics. Same three Pain Suppression uses with same cooldown math problem. 'Your purge rate for this archetype is 0.95/min. In 3:52 that translates to approximately 3.7 purges expected' — 0.95 × 3.87 min ≈ 3.7, correct calculation. The four-effect cleanse at 3:08 (Flame Shock, Earthbind, Permeating Chill, Capacitor Totem) is a specific and plausible claim."
+    }
+  }
+}

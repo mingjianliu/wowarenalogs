@@ -1,0 +1,344 @@
+[ARCHETYPE: Preservation Evoker — cc_heavy_fast]
+At 13.82 CC events per minute — the highest across all clusters — these short 111-second matches are defined by heavy offensive CC pressure rather than sustained burst (burst windows average 1.0, peak 10.4). Top Preservation Evokers leave cooldowns unused 57% of the time and show a balanced tunnel score of 0.523, with cc_then_burst as the dominant setup style at 50% of matches. Offensive participation is 43%, suggesting healers absorb significant CC pressure while contributing selectively to setup sequences.
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Preservation Evoker (Healer) | Bracket: 3v3 | Result: Loss | Duration: 2:32
+  My team: Preservation Evoker, Devourer Demon Hunter, Subtlety Rogue
+  Enemy team: Subtlety Rogue, Balance Druid, Preservation Evoker
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Preservation Evoker): CANNOT offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 10% at match end
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Evoteiken-DunModr-EU (Preservation Evoker — log owner):
+    Deep Breath [120s], Cauterizing Flame [60s], Rewind [240s], Emerald Communion [180s], Stasis [90s], Rescue [60s]
+  2: Syxs-Ravencrest-EU (Devourer Demon Hunter):
+    none tracked
+  3: Racherlul-DunModr-EU (Subtlety Rogue):
+    Cloak of Shadows [120s], Kidney Shot [30s], Shadow Blades [90s]
+  4: Røgger-Lightbringer-EU (Subtlety Rogue — enemy):
+    Shadow Blades [90s]
+  5: Yolobolo-Ragnaros-EU (Balance Druid — enemy):
+    Incarnation: Chosen of Elune [180s]
+  6: Wadasdada-Ysera-EU (Preservation Evoker — enemy):
+    Deep Breath [120s]
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100 2:100 3:100
+0:00  [OWNER CAST]   355936
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:09  [STATE]   friends 1:100 2:100 3:100
+0:10  [OWNER CAST]   360995 → 2
+0:11  [OWNER CAST]   361195 → 2
+0:12  [STATE]   friends 1:100 2:100 3:100
+0:12  [OWNER CAST]   364343 → 2
+0:13  [OWNER CD]   Hover
+      [RES] rdy:Δ+Deep Breath,3:Kidney Shot,3:Shadow Blades  cd:—
+0:14  [OWNER CAST]   360995 → 3
+0:15  [STATE]   friends 1:100 2:100 3:100
+0:15  [OWNER CAST]   361195 → 3
+0:17  [OWNER CD]   Deep Breath
+      [RES] rdy:Deep Breath,Cauterizing Flame,Rewind,Emerald Communion,Stasis,Rescue,3:Cloak of Shadows,3:Kidney Shot,3:Shadow Blades  cd:—
+0:18  [STATE]   friends 1:100 2:99 3:100
+0:18  [TEAMMATE CD]   3 (Subtlety Rogue): Shadow Blades
+      [RES] rdy:Δ+Emerald Communion,3:Cloak of Shadows  cd:—
+0:20  [BUFF FADED]   Deep Breath
+0:20  [OWNER CD]   Hover
+      [RES] rdy:Δ-Deep Breath,3:Shadow Blades  cd:Deep Breath(117s),3:Shadow Blades(88s)  cc:3/Faerie Swarm-5s[disarm]
+0:21  [STATE]   friends 1:100 2:100 3:100
+0:22  [OWNER CAST]   Sleep Walk → 5
+0:23  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ  cd:—  cc:3/Faerie Swarm-2s[disarm]
+0:23  [OWNER CAST]   357208
+0:24  [STATE]   friends 1:100 2:100 3:100
+0:24  [CC ON TEAM]   3 ← Dismantle (Røgger-Lightbringer-EU) | 3s
+0:24  [OWNER CAST]   431443 → 4 [completed before CC landed]
+0:24  [OWNER CD]   Obsidian Scales → 4
+      [RES] rdy:Δ  cd:—  cc:3/Dismantle-2s,3/Faerie Swarm-1s[disarm]
+0:25  [STATE]   friends 1:100 2:100 3:100 / enemies 4:84 5:86 6:100
+0:25  [CC ON TEAM]   1 ← Cyclone (Yolobolo-Ragnaros-EU) | 5s
+0:26  [STATE]   friends 1:100 2:100 3:95 / enemies 4:81 5:82 6:100
+0:26  [ENEMY CD]   5 (Balance Druid): Incarnation: Chosen of Elune
+0:27  [STATE]   friends 2:100 3:97 / enemies 4:98 5:100 6:100
+0:27  [CC ON TEAM]   3 ← Kidney Shot (Røgger-Lightbringer-EU) | 5s
+0:28  [STATE]   friends 1:100 2:99 3:92 / enemies 4:100 5:100 6:100
+0:29  [STATE]   friends 1:100 2:100 3:96 / enemies 4:100 5:100 6:100
+0:29  [OWNER CAST]   355941
+0:29  [OWNER CAST]   361195 → 2
+0:29  [OWNER CAST]   355941 [completed before CC landed]
+0:30  [STATE]   friends 1:100 2:100 3:100 / enemies 4:94 5:100 6:100
+0:30  [OWNER CAST]   364343 → 3 [completed before CC landed]
+0:30  [CC ON TEAM]   1 ← Cheap Shot (Røgger-Lightbringer-EU) | 4s
+0:31  [STATE]   friends 1:98 2:100 3:99 / enemies 4:80 5:100 6:100
+0:31  [CC ON TEAM]   3 ← Sleep Walk (Wadasdada-Ysera-EU) | 5s
+0:32  [STATE]   friends 1:92 2:100 3:98 / enemies 4:55 5:100 6:100
+0:32  [CC ON TEAM]   3 ← Cyclone (Yolobolo-Ragnaros-EU) | 3s
+0:33  [STATE]   friends 1:88 2:98 3:98 / enemies 4:44 5:100 6:100
+0:34  [STATE]   friends 1:81 2:96 3:99 / enemies 4:65 5:100 6:100
+0:34  [OWNER CAST]   1256581 → self
+0:35  [STATE]   friends 1:95 2:100 3:99 / enemies 4:79 5:100 6:100
+0:35  [OWNER CAST]   360995 → self
+0:35  [OWNER CAST]   361195 → self
+0:36  [STATE]   friends 1:97 2:99 3:96 / enemies 4:90 5:100 6:100
+0:36  [OWNER CAST]   360823 → 3
+0:36  [CLEANSE]   1 dispelled 4 effects: Sleep Walk off 3, Moonfire off 3, Astral Smolder off 3, Oppressing Roar off 3
+0:37  [STATE]   friends 1:97 2:100 3:99 / enemies 4:99 5:100 6:100
+0:37  [OWNER CAST]   364343 → 3
+0:38  [STATE]   friends 1:91 2:100 3:98 / enemies 4:88 5:100 6:100
+0:38  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  enemy:Incarnation: Chosen of Elune/Balance Druid(12s)
+0:38  [TEAMMATE CD]   3 (Subtlety Rogue): Kidney Shot
+      [RES] rdy:Δ+Emerald Communion  cd:—  enemy:Incarnation: Chosen of Elune/Balance Druid(12s)
+0:39  [STATE]   friends 1:93 2:99 3:99 / enemies 4:88 5:100 6:100
+0:40  [STATE]   friends 1:87 2:94 3:99 / enemies 4:97 5:100 6:100
+0:41  [STATE]   friends 1:88 2:94 3:100 / enemies 4:100 5:100 6:98
+0:41  [OWNER CAST]   Sleep Walk → 6
+0:42  [STATE]   friends 1:85 2:95 3:100 / enemies 4:92 5:100 6:100
+0:42  [CC ON TEAM]   2 ← Cyclone (Yolobolo-Ragnaros-EU) | 5s
+0:43  [STATE]   friends 1:75 2:98 3:100 / enemies 4:96 5:100 6:100
+0:43  [OWNER CAST]   431443 → 5
+0:44  [STATE]   friends 1:63 3:100 / enemies 4:91 5:91 6:100
+0:45  [STATE]   friends 1:59 3:100 / enemies 4:80 5:91 6:100
+0:45  [OWNER CAST]   Sleep Walk → 6
+0:46  [STATE]   friends 1:55 3:100 / enemies 4:74 5:91 6:100
+0:46  [OWNER CAST]   360995 → self
+0:46  [OWNER CAST]   361195 → self
+0:46  [CC ON TEAM]   3 ← Gouge (Røgger-Lightbringer-EU) | 3s
+0:47  [STATE]   friends 1:78 2:97 3:100 / enemies 4:72 5:91 6:100
+0:47  [OWNER CAST]   1256581 → self
+0:48  [STATE]   friends 1:97 2:97 3:100 / enemies 4:63 6:100
+0:49  [STATE]   friends 1:96 2:99 3:97 / enemies 4:64 5:94 6:100
+0:49  [CC ON TEAM]   3 ← Cheap Shot (Røgger-Lightbringer-EU) | 5s
+0:49  [DMG SPIKE]   3 (Subtlety Rogue): 0.47M in 10s
+0:49  [OWNER CAST]   Sleep Walk → 5
+0:50  [STATE]   friends 1:96 2:99 3:96 / enemies 4:85 5:94 6:100
+0:50  [CC ON TEAM]   1 ← Cyclone (Yolobolo-Ragnaros-EU) | 3s | trinket: used
+0:51  [STATE]   friends 1:96 2:100 3:80 / enemies 4:79 5:94 6:100
+0:52  [STATE]   friends 1:95 2:100 3:72 / enemies 4:100 5:100 6:100
+0:53  [STATE]   friends 1:95 2:100 3:67 / enemies 4:100 5:100 6:100
+0:53  [TRINKET]   1 used PvP trinket
+0:53  [OWNER CAST]   360995 → 3
+0:53  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ-3:Kidney Shot  cd:3:Kidney Shot(15s)  enemy:Incarnation: Chosen of Elune/Balance Druid(27s)  cc:3/Cheap Shot-1s[stun]
+0:53  [OWNER CAST]   361195 → 3
+0:54  [STATE]   friends 1:98 2:99 3:45 / enemies 4:100 5:100 6:100
+0:54  [OWNER CAST]   364343 → 3
+0:55  [STATE]   friends 1:100 2:95 3:37 / enemies 4:100 5:100 6:100
+0:55  [OWNER CAST]   355936
+0:55  [CC ON TEAM]   3 ← Sleep Walk (Wadasdada-Ysera-EU) | 1s
+0:56  [STATE]   friends 1:100 2:100 3:53 / enemies 4:100 5:100 6:100
+0:56  [OWNER CAST]   364343 → 3
+0:57  [STATE]   friends 1:99 2:100 3:55 / enemies 4:97 5:100 6:100
+0:57  [OWNER CAST]   1256581 → 3 [completed before CC landed]
+0:57  [CC ON TEAM]   1 ← Kidney Shot (Røgger-Lightbringer-EU) | 5s | trinket: ON CD (86s left)
+0:57  [CC CAST]   Sigil of Misery (by 2) → 4
+0:58  [STATE]   friends 1:100 2:99 3:70 / enemies 4:90 5:100 6:100
+0:58  [CC ON TEAM]   3 ← Sleep Walk (Wadasdada-Ysera-EU) | 2s
+0:59  [STATE]   friends 1:99 2:100 3:81 / enemies 4:92 5:100 6:100
+0:59  [DMG SPIKE]   1 (Preservation Evoker): 1.11M in 10s
+1:00  [STATE]   friends 1:98 2:100 3:79 / enemies 4:85 5:100 6:100
+1:00  [OFFENSIVE WINDOW]   1:00–1:20 | Critical | 1.11M on 1 (Preservation Evoker) | CDs: Shadow Blades + Incarnation: Chosen of Elune + Deep Breath
+1:00  [ENEMY CD]   4 (Subtlety Rogue): Shadow Blades
+1:00  [ENEMY CD]   5 (Balance Druid): Incarnation: Chosen of Elune
+1:01  [STATE]   friends 1:71 2:99 3:79 / enemies 4:85 5:100 6:100
+1:02  [STATE]   friends 1:40 2:94 3:75 / enemies 4:83 5:100 6:100
+1:02  [OWNER CD]   Emerald Communion
+      [RES] rdy:Δ-Deep Breath,3:Kidney Shot,3:Shadow Blades  cd:Deep Breath(75s),3:Kidney Shot(6s),3:Shadow Blades(47s)  enemy:Shadow Blades/Subtlety Rogue(2s),Incarnation: Chosen of Elune/Balance Druid(2s)  cc:1/Kidney Shot-1s[stun]
+1:03  [STATE]   friends 1:52 2:90 3:72 / enemies 4:78 5:97 6:97
+1:03  [CC ON TEAM]   1 ← Cheap Shot (Røgger-Lightbringer-EU) | 2s | trinket: ON CD (80s left)
+1:04  [STATE]   friends 1:53 2:97 3:70 / enemies 4:66 5:100 6:100
+1:05  [STATE]   friends 1:55 2:94 3:67 / enemies 4:64 5:100 6:100
+1:05  [BUFF FADED]   Emerald Communion
+1:06  [STATE]   friends 1:82 2:97 3:58 / enemies 4:68 5:100 6:100
+1:06  [OWNER CAST]   360995 → self
+1:06  [OWNER CAST]   361195 → self
+1:07  [STATE]   friends 1:95 2:95 3:54 / enemies 4:85 5:100 6:93
+1:07  [OWNER CAST]   364343 → 3
+1:08  [STATE]   friends 1:100 2:100 3:54 / enemies 4:92 5:100 6:100
+1:08  [OWNER CAST]   366155 → 3
+1:08  [OWNER CD]   Hover
+      [RES] rdy:Δ+3:Kidney Shot-Emerald Communion  cd:Emerald Communion(173s)  enemy:Shadow Blades/Subtlety Rogue(9s),Incarnation: Chosen of Elune/Balance Druid(8s)
+1:09  [STATE]   friends 1:97 2:97 3:66 / enemies 4:100 5:100 6:86
+1:09  [CC ON TEAM]   2 ← Cyclone (Yolobolo-Ragnaros-EU) | 5s
+1:09  [ENEMY CD]   6 (Preservation Evoker): Deep Breath
+1:10  [STATE]   friends 1:100 2:96 3:57 / enemies 4:96 5:100 6:77
+1:11  [STATE]   friends 1:98 3:48 / enemies 4:96 5:100 6:82
+1:12  [STATE]   friends 1:91 3:42 / enemies 4:91 5:100 6:83
+1:12  [CC ON TEAM]   1 ← Blind (Røgger-Lightbringer-EU) | 5s | trinket: ON CD (71s left)
+1:13  [STATE]   friends 1:86 2:97 3:40 / enemies 4:96 5:100 6:99
+1:13  [TEAMMATE CD]   3 (Subtlety Rogue): Cloak of Shadows
+      [RES] rdy:Δ+3:Cloak of Shadows,3:Kidney Shot-3:Shadow Blades  cd:3:Shadow Blades(35s)  enemy:Shadow Blades/Subtlety Rogue(13s),Incarnation: Chosen of Elune/Balance Druid(13s),Deep Breath/Preservation Evoker(4s)  cc:1/Blind-4s,2/Cyclone-1s
+1:13  [CC ON TEAM]   3 ← Cheap Shot (Røgger-Lightbringer-EU) | 4s
+1:14  [STATE]   friends 1:87 2:97 3:34 / enemies 4:100 5:100 6:100
+1:15  [STATE]   friends 1:87 2:99 3:29 / enemies 4:97 5:100 6:100
+1:16  [STATE]   friends 1:87 2:99 3:25 / enemies 4:98 5:88 6:100
+1:17  [STATE]   friends 1:89 2:99 3:21 / enemies 4:98 5:88 6:100
+1:17  [OWNER CAST]   360995 → 3
+1:17  [OWNER CAST]   361195 → 3
+1:18  [STATE]   friends 1:92 2:100 3:27 / enemies 4:98 5:88 6:100
+1:18  [CC ON TEAM]   3 ← Cheap Shot (Røgger-Lightbringer-EU) | 2s
+1:18  [OWNER CAST]   364343 → 3
+1:19  [STATE]   friends 1:94 2:100 3:28 / enemies 4:98 5:88 6:100
+1:19  [CC ON TEAM]   2 ← Incapacitating Roar (Yolobolo-Ragnaros-EU) | 3s
+1:19  [CC ON TEAM]   3 ← Incapacitating Roar (Yolobolo-Ragnaros-EU) | 1s
+1:19  [MISSED CLEANSE]   Incapacitating Roar on 2 | 3s | 26k taken during | dispel: Magic
+1:19  [OWNER CAST]   355936
+1:20  [STATE]   friends 1:97 2:99 3:31 / enemies 4:100 5:88 6:100
+1:20  [OWNER CAST]   364343 → 3 [completed before CC landed]
+1:21  [STATE]   friends 1:100 2:100 3:70 / enemies 4:94 5:88 6:100
+1:21  [CC ON TEAM]   1 ← Sleep Walk (Wadasdada-Ysera-EU) | 3s | trinket: ON CD (62s left)
+1:22  [STATE]   friends 1:100 2:100 3:73 / enemies 4:96 5:96 6:100
+1:23  [STATE]   friends 1:100 2:98 3:72 / enemies 4:95 5:97 6:100
+1:24  [STATE]   friends 1:100 2:98 3:75 / enemies 4:90 5:100 6:100
+1:24  [OWNER CAST]   1256581 → 3
+1:25  [STATE]   friends 1:100 2:99 3:83 / enemies 4:95 5:100 6:100
+1:25  [OWNER CD]   Hover
+      [RES] rdy:Δ-3:Cloak of Shadows  cd:3:Cloak of Shadows(108s)  enemy:Shadow Blades/Subtlety Rogue(25s),Incarnation: Chosen of Elune/Balance Druid(25s),Deep Breath/Preservation Evoker(16s)
+1:25  [CC ON TEAM]   3 ← Cyclone (Yolobolo-Ragnaros-EU) | 5s
+1:26  [STATE]   friends 1:100 2:99 3:88 / enemies 4:82 5:100 6:100
+1:26  [OWNER CAST]   Sleep Walk → 6
+1:27  [STATE]   friends 1:99 2:100 3:88 / enemies 4:86 5:100 6:100
+1:28  [STATE]   friends 1:99 2:100 / enemies 4:87 5:100 6:100
+1:28  [CC ON TEAM]   1 ← Kidney Shot (Røgger-Lightbringer-EU) | 5s | trinket: ON CD (56s left)
+1:28  [DMG SPIKE]   1 (Preservation Evoker): 0.54M in 10s
+1:29  [STATE]   friends 1:93 2:100 / enemies 4:85 5:100 6:100
+1:30  [STATE]   friends 1:72 2:98 3:95 / enemies 4:83 5:100 6:100
+1:31  [STATE]   friends 1:54 2:97 3:95 / enemies 4:80 5:100 6:100
+1:31  [CLEANSE]   2 dispelled 4 effects: Astral Smolder off 2, Astral Smolder off 1, Sunfire off 1, Moonfire off 1
+1:31  [TEAMMATE CD]   3 (Subtlety Rogue): Kidney Shot
+      [RES] rdy:Δ-Emerald Communion,3:Cloak of Shadows  cd:Emerald Communion(151s),3:Cloak of Shadows(102s)  enemy:Deep Breath/Preservation Evoker(22s)  cc:1/Kidney Shot-2s[stun]
+1:32  [STATE]   friends 1:48 2:98 3:95 / enemies 4:76 5:98 6:100
+1:32  [CC ON TEAM]   1 ← Cheap Shot (Røgger-Lightbringer-EU) | 2s | trinket: ON CD (51s left)
+1:33  [STATE]   friends 1:41 2:98 3:95 / enemies 4:78 5:89 6:100
+1:34  [STATE]   friends 1:34 2:100 3:96 / enemies 4:86 5:88 6:100
+1:34  [OWNER CAST]   360995 → self
+1:34  [OWNER CAST]   361195 → self
+1:35  [STATE]   friends 1:39 2:100 3:94 / enemies 4:95 5:89 6:100
+1:35  [OWNER CD]   Time Dilation → self
+      [RES] rdy:Δ-3:Kidney Shot  cd:3:Kidney Shot(26s)  enemy:Deep Breath/Preservation Evoker(26s)
+1:36  [STATE]   friends 1:25 2:100 3:89 / enemies 4:100 5:68 6:100
+1:36  [OWNER CAST]   364343 → self
+1:37  [STATE]   friends 1:23 2:97 3:91 / enemies 4:100 5:45 6:100
+1:37  [OWNER CAST]   366155 → self
+1:37  [CC ON TEAM]   3 ← Dismantle (Røgger-Lightbringer-EU) | 5s
+1:38  [STATE]   friends 1:48 2:100 3:92 / enemies 4:100 5:52 6:100
+1:38  [OWNER CAST]   360995 → self
+1:38  [OWNER CAST]   361195 → self
+1:39  [STATE]   friends 1:64 2:100 3:89 / enemies 4:100 5:68 6:100
+1:39  [OWNER CAST]   364343 → self
+1:40  [STATE]   friends 1:65 2:100 3:85 / enemies 4:100 5:100 6:100
+1:40  [MISSED CLEANSE]   Landslide on 2 | 6s | 5k taken during | dispel: Magic
+1:40  [OWNER CAST]   355936
+1:41  [STATE]   friends 1:69 2:100 3:82 / enemies 4:100 5:100 6:100
+1:42  [STATE]   friends 1:100 2:100 3:100 / enemies 4:98 5:100 6:100
+1:42  [CC ON TEAM]   1 ← Sleep Walk (Wadasdada-Ysera-EU) | 2s | trinket: ON CD (41s left)
+1:43  [STATE]   friends 1:99 2:100 3:99 / enemies 4:100 5:100 6:100
+1:44  [STATE]   friends 1:99 2:100 3:96 / enemies 4:100 5:99 6:100
+1:45  [STATE]   friends 1:97 2:100 3:97 / enemies 4:99 5:96 6:100
+1:45  [OWNER CD]   Hover
+      [RES] rdy:Δ  cd:—  cc:2/Landslide-1s[root]
+1:46  [STATE]   friends 1:99 2:100 3:99 / enemies 4:98 5:98 6:100
+1:46  [CC ON TEAM]   2 ← Cyclone (Yolobolo-Ragnaros-EU) | 5s
+1:47  [STATE]   friends 1:99 2:100 3:98 / enemies 4:99 5:93 6:100
+1:47  [OWNER CAST]   Sleep Walk → 5
+1:47  [OWNER CAST]   360995 → 3
+1:48  [STATE]   friends 1:100 3:97 / enemies 4:100 5:100 6:100
+1:48  [OWNER CAST]   361195 → 3
+1:48  [OWNER CAST]   364343 → self
+1:49  [STATE]   friends 1:100 3:100 / enemies 4:100 5:99 6:100
+1:49  [OWNER CD]   Obsidian Scales → self
+      [RES] rdy:Δ+3:Shadow Blades  cd:—  cc:2/Cyclone-2s
+1:50  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:100 6:100
+1:50  [OWNER CAST]   1256581 → 3
+1:51  [STATE]   friends 1:99 2:100 3:100 / enemies 4:100 5:100 6:100
+1:51  [OWNER CAST]   364343 → 3
+1:52  [STATE]   friends 1:100 2:100 3:100 / enemies 4:99 5:100 6:100
+1:53  [STATE]   friends 1:98 2:99 3:100 / enemies 4:90 5:100 6:100
+1:53  [CC ON TEAM]   2 ← Cyclone (Yolobolo-Ragnaros-EU) | 3s
+1:53  [OWNER CAST]   431443 → 4
+1:54  [STATE]   friends 1:99 2:100 3:99 / enemies 4:87 5:100 6:100
+1:54  [OWNER CAST]   356995 → 4
+1:55  [STATE]   friends 1:99 2:100 3:100 / enemies 4:79 5:100 6:100
+1:56  [STATE]   friends 1:100 2:100 3:95 / enemies 4:75 5:100 6:100
+1:57  [STATE]   friends 1:99 2:98 3:88 / enemies 4:80 5:100 6:100
+1:58  [STATE]   friends 1:100 2:99 3:83 / enemies 4:84 5:98 6:100
+1:59  [STATE]   friends 1:100 2:100 3:83 / enemies 4:65 5:100 6:99
+1:59  [OWNER CAST]   360995 → 3
+1:59  [OWNER CAST]   361195 → 3
+2:00  [STATE]   friends 1:100 2:99 3:100 / enemies 4:71 5:98 6:100
+2:00  [OWNER CAST]   364343 → 3
+2:01  [STATE]   friends 1:100 2:99 3:100 / enemies 4:89 5:98 6:100
+2:02  [STATE]   friends 1:99 2:100 3:98 / enemies 4:100 5:100 6:100
+2:02  [OWNER CAST]   358385
+2:03  [STATE]   friends 1:98 2:95 3:98 / enemies 4:98 5:98 6:99
+2:03  [MISSED CLEANSE]   Mass Entanglement on 3 | 3s | 22k taken during | dispel: Magic
+2:04  [OWNER CD]   Time Dilation → 3
+      [RES] rdy:Δ+3:Kidney Shot  cd:—  cc:1/Mass Entanglement-5s[root],3/Mass Entanglement-3s[root]
+2:05  [STATE]   friends 1:98 2:92 3:100 / enemies 4:99 5:100 6:100
+2:05  [OWNER CAST]   366155 → 3
+2:06  [STATE]   friends 1:100 2:92 3:100 / enemies 4:100 5:100 6:100
+2:06  [CC ON TEAM]   3 ← Cyclone (Yolobolo-Ragnaros-EU) | 1s | trinket: used
+2:06  [TRINKET]   3 used PvP trinket
+2:07  [STATE]   friends 1:97 2:92 3:100 / enemies 4:100 5:100 6:100
+2:08  [STATE]   friends 1:97 2:91 3:100 / enemies 4:100 5:100 6:100
+2:08  [TEAMMATE CD]   3 (Subtlety Rogue): Kidney Shot
+      [RES] rdy:Δ+3:Shadow Blades  cd:—  cc:1/Mass Entanglement-1s[root]
+2:09  [STATE]   friends 1:96 2:92 3:99 / enemies 4:100 5:100 6:100
+2:09  [OWNER CAST]   Sleep Walk → 5
+2:09  [DMG SPIKE]   1 (Preservation Evoker): 0.78M in 10s
+2:10  [STATE]   friends 1:95 2:97 3:100 / enemies 4:80 5:100 6:98
+2:10  [TEAMMATE CD]   3 (Subtlety Rogue): Shadow Blades
+      [RES] rdy:Δ-Emerald Communion,3:Cloak of Shadows,3:Kidney Shot  cd:Emerald Communion(112s),3:Cloak of Shadows(63s),3:Kidney Shot(28s)
+2:10  [OWNER CD]   Tip the Scales
+      [RES] rdy:Δ-3:Kidney Shot  cd:3:Kidney Shot(28s)
+2:11  [STATE]   friends 1:93 2:97 3:100 / enemies 4:76 5:100 6:98
+2:11  [OWNER CAST]   357208
+2:12  [STATE]   friends 1:97 2:99 3:100 / enemies 4:87 5:100 6:98
+2:12  [OWNER CAST]   431443 → 4
+2:12  [OWNER CAST]   356995 → 4
+2:13  [STATE]   friends 1:98 2:100 3:100 / enemies 4:88 5:100 6:90
+2:14  [STATE]   friends 1:96 2:100 3:100 / enemies 4:67 5:100 6:93
+2:14  [CC ON TEAM]   1 ← Kidney Shot (Røgger-Lightbringer-EU) | 4s | trinket: ON CD (9s left)
+2:15  [STATE]   friends 1:95 2:100 3:100 / enemies 4:57 5:100 6:97
+2:16  [STATE]   friends 1:84 2:100 3:100 / enemies 4:76 5:99 6:100
+2:16  [CC ON TEAM]   2 ← Cyclone (Yolobolo-Ragnaros-EU) | 1s | trinket: used
+2:16  [DMG SPIKE]   3 (Subtlety Rogue): 0.54M in 10s
+2:17  [STATE]   friends 1:65 2:99 3:89 / enemies 4:96 5:100 6:100
+2:17  [ENEMY CD]   5 (Balance Druid): Incarnation: Chosen of Elune
+2:17  [TRINKET]   2 used PvP trinket
+2:18  [STATE]   friends 1:32 2:77 3:76 / enemies 4:100 5:100 6:100
+2:18  [CC ON TEAM]   3 ← Sleep Walk (Wadasdada-Ysera-EU) | 2s | trinket: ON CD (109s left)
+2:19  [STATE]   friends 1:dead 2:73 3:75 / enemies 4:96 5:86 6:100
+2:19  [DEATH]  1 (Preservation Evoker — friendly)
+               HP: 99% at T-15s → 96% at T-10s → 96% at T-5s → 77% at T-3s → dead
+               Top damage in final 10s: Røgger-Lightbringer-EU — Lashe Macabre (65k), Røgger-Lightbringer-EU — Shadowstrike (64k), Wadasdada-Ysera-EU — Living Flame (62k)
+2:20  [STATE]   friends 1:dead 2:73 3:74 / enemies 4:93 5:81 6:100
+2:20  [CC ON TEAM]   3 ← Cheap Shot (Røgger-Lightbringer-EU) | 4s | trinket: ON CD (107s left)
+2:21  [STATE]   friends 1:dead 2:74 3:70 / enemies 4:90 5:63 6:79
+2:22  [STATE]   friends 1:dead 2:77 3:59 / enemies 4:92 5:43 6:100
+2:23  [STATE]   friends 1:dead 2:77 3:41 / enemies 4:93 5:100 6:100
+2:24  [STATE]   friends 1:dead 2:73 3:25 / enemies 4:98 5:100 6:100
+2:24  [CC ON TEAM]   3 ← Cheap Shot (Røgger-Lightbringer-EU) | 1s | trinket: ON CD (103s left)
+2:25  [STATE]   friends 1:dead 2:72 3:dead / enemies 4:98 5:91 6:100
+2:25  [DEATH]  3 (Subtlety Rogue — friendly)
+               HP: 99% at T-15s → 99% at T-10s → 74% at T-5s → 47% at T-3s → dead
+               Top damage in final 10s: Røgger-Lightbringer-EU — Eviscerate (103k), Wadasdada-Ysera-EU — Fire Breath (49k), Wadasdada-Ysera-EU — Living Flame (47k)
+2:26  [STATE]   friends 1:dead 2:76 3:dead / enemies 4:99 5:91 6:100
+2:27  [STATE]   friends 1:dead 2:77 3:dead / enemies 4:98 5:76 6:100
+2:28  [STATE]   friends 1:dead 2:80 3:dead / enemies 4:100 5:98 6:100
+2:29  [STATE]   friends 1:dead 2:78 3:dead / enemies 4:98 5:100 6:100
+2:30  [STATE]   friends 1:dead 2:74 3:dead / enemies 4:99 5:97 6:100
+2:30  [CC ON TEAM]   2 ← Cheap Shot (Røgger-Lightbringer-EU) | 2s | trinket: ON CD (107s left)
+2:31  [STATE]   friends 1:dead 2:73 3:dead / enemies 4:99 5:91 6:100
+2:32  [STATE]   friends 1:dead 2:44 3:dead / enemies 4:100 5:95 6:100
+
+2:32  [MATCH END]   damp: 10%
+  friends 1:dead(2:19) 2:35% 3:dead(2:25) / enemies 4:100% 5:97% 6:100%

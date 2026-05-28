@@ -1,0 +1,9 @@
+{
+  "prompt": {
+    "sufficiency": 5,
+    "noise": 3,
+    "labelBias": 5,
+    "inferenceScaffolding": 5,
+    "notes": "The prompt contains a good amount of detail and context but is a bit verbose with some repetitive state spam, though mostly well scaffolded and unbiased."
+  }
+}

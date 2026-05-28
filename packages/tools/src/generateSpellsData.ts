@@ -5,8 +5,37 @@ import path from 'path';
 
 import { awcSpellIds } from '../../shared/src/data/awcSpells';
 import taggedSpellsDump from '../../shared/src/data/spells.json';
+import talentIdMap from '../../shared/src/data/talentIdMap.json';
 
 const taggedSpellIds = Object.keys(taggedSpellsDump);
+
+// Walk talentIdMap and collect every `type: "active"` spellId from class/spec/hero/subtree nodes.
+// Any active talent button is a potential CD worth tracking — including this set future-proofs
+// the metadata library against new talents that Blizzard hasn't flagged in SpellMisc.
+function collectTalentActiveSpellIds(): string[] {
+  const ids = new Set<string>();
+  type Entry = { type?: string; spellId?: number };
+  type Node = { entries?: Entry[] };
+  type Spec = { classNodes?: Node[]; specNodes?: Node[]; heroNodes?: Node[]; subTreeNodes?: Node[] };
+  const nodeBuckets: (keyof Spec)[] = ['classNodes', 'specNodes', 'heroNodes', 'subTreeNodes'];
+  for (const spec of talentIdMap as unknown as Spec[]) {
+    for (const bucket of nodeBuckets) {
+      const nodes = spec[bucket];
+      if (!nodes) continue;
+      for (const node of nodes) {
+        if (!node.entries) continue;
+        for (const entry of node.entries) {
+          if (entry.type === 'active' && typeof entry.spellId === 'number' && entry.spellId > 0) {
+            ids.add(entry.spellId.toString());
+          }
+        }
+      }
+    }
+  }
+  return Array.from(ids);
+}
+
+const talentActiveSpellIds = collectTalentActiveSpellIds();
 
 import { WAGO_BUILD, withBuild } from './wagoConfig';
 const SOURCE_TABLES = {
@@ -246,10 +275,14 @@ const MANUAL_SPELL_IDS: string[] = [
   '403631', // Breath of Eons
   '404977', // Time Skip
   '360828', // Blistering Scales
+  // Healer utility CDs — tagged in classMetadata but absent from spells.json
+  '633', // Lay on Hands (Holy Paladin)
+  '62618', // Power Word: Barrier (Disc Priest)
+  '311054', // Weapons of Order (Mistweaver Monk)
 ];
 
 function collectSpellIds(): string[] {
-  const rawIds = [...taggedSpellIds, ...awcSpellIds, ...MANUAL_SPELL_IDS];
+  const rawIds = [...taggedSpellIds, ...awcSpellIds, ...MANUAL_SPELL_IDS, ...talentActiveSpellIds];
   const validIds = rawIds.filter((id) => /^\d+$/.test(id));
   const invalidIds = rawIds.length - validIds.length;
   if (invalidIds > 0) {

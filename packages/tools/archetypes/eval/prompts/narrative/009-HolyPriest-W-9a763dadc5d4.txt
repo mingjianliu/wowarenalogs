@@ -1,0 +1,203 @@
+[ARCHETYPE: Holy Priest — cc_heavy_swap]
+This Holy Priest plays in short matches averaging 109 seconds with high offensive CC pressure at 10.59 events per minute, predominantly using a cc_then_burst setup style (55% of matches). CD usage is mostly optimal (46%) but 33% of cooldowns go unused, and missed cleanses occur in 34% of opportunities. Offensive participation is moderate at 42% with purge activity around 1.1 per minute.
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Holy Priest (Healer) | Bracket: 3v3 | Result: Win | Duration: 1:05
+  My team: Holy Priest, Outlaw Rogue, Frost Mage
+  Enemy team: Devourer Demon Hunter, Discipline Priest, Assassination Rogue
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Holy Priest): CAN offensive purge
+  Team purgers: Frost Mage
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Shieldbot-Sylvanas-EU (Holy Priest — log owner):
+    Psychic Scream [40s], Power Infusion [120s, 2 Charges], Desperate Prayer [90s], Guardian Spirit [180s], Divine Hymn [180s], Apotheosis [120s]
+  2: Nablesse-Silvermoon-EU (Outlaw Rogue):
+    Cloak of Shadows [120s], Kidney Shot [30s], Blind [120s], Adrenaline Rush [180s, 2 Charges]
+  3: Womànmoment-Ravencrest-EU (Frost Mage):
+    Ice Block [240s], Dragon's Breath [45s]
+  4: Punición-ArgentDawn-EU (Discipline Priest — enemy):
+    Power Infusion [120s]
+  5: Lörnrespekt-Sylvanas-EU (Devourer Demon Hunter — enemy):
+    none tracked
+  6: Sapgodxd-Ravencrest-EU (Assassination Rogue — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100 2:100
+0:01  [OWNER CAST]   33076 → 2
+0:02  [OWNER CAST]   33076 → self
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:04  [OWNER CAST]   528 → 5
+0:05  [CC ON TEAM]   3 ← Garrote - Silence (Sapgodxd-Ravencrest-EU) | 3s
+0:06  [STATE]   friends 1:100 2:100 3:100 / enemies 5:100 4:100 6:100
+0:06  [CC ON TEAM]   1 ← Garrote - Silence (Sapgodxd-Ravencrest-EU) | 4s
+0:07  [STATE]   friends 1:100 3:99 / enemies 5:100 4:100 6:100
+0:07  [CC ON TEAM]   3 ← Cheap Shot (Sapgodxd-Ravencrest-EU) | 2s
+0:08  [STATE]   friends 3:96 / enemies 5:100 4:100 6:100
+0:09  [STATE]   friends 1:100 2:100 3:86 / enemies 5:100 4:100 6:100
+0:09  [TEAMMATE CD]   2 (Outlaw Rogue): Blind
+      [RES] rdy:Δ+Psychic Scream,Guardian Spirit,Divine Hymn,2:Blind,2:Adrenaline Rush,3:Ice Block  cd:—  cc:1/Garrote - Silence-1s
+0:10  [STATE]   friends 1:100 2:100 3:86 / enemies 5:100 4:100 6:100
+0:10  [OWNER CAST]   586
+0:10  [CLEANSE]   1 dispelled Crippling Poison off 1
+0:10  [TEAMMATE CD]   2 (Outlaw Rogue): Adrenaline Rush
+      [RES] rdy:Δ-2:Blind  cd:2:Blind(119s)
+0:11  [STATE]   friends 1:100 2:100 3:86 / enemies 5:100 4:100 6:100
+0:11  [OWNER CAST]   33076 → 3
+0:12  [STATE]   friends 1:100 2:100 3:93 / enemies 5:100 4:100 6:99
+0:12  [TEAMMATE CD]   2 (Outlaw Rogue): Kidney Shot
+      [RES] rdy:Δ+Psychic Scream,Guardian Spirit,2:Kidney Shot  cd:—
+0:13  [STATE]   friends 1:100 2:100 3:93 / enemies 5:98 4:100 6:99
+0:13  [CC ON TEAM]   2 ← Garrote - Silence (Sapgodxd-Ravencrest-EU) | 3s
+0:14  [STATE]   friends 1:100 2:100 3:94 / enemies 5:96 4:100 6:97
+0:14  [OWNER CAST]   88625 → 4
+0:14  [CC ON TEAM]   2 ← Dismantle (Sapgodxd-Ravencrest-EU) | 5s
+0:15  [STATE]   friends 1:100 2:100 3:94 / enemies 5:96 4:100 6:94
+0:16  [STATE]   friends 1:100 2:100 3:95 / enemies 5:99 4:100 6:80
+0:17  [STATE]   friends 1:100 2:98 3:98 / enemies 5:100 4:100 6:67
+0:17  [OWNER CD]   Psychic Scream
+      [RES] rdy:Psychic Scream,Power Infusion,Desperate Prayer,Guardian Spirit,Divine Hymn,Apotheosis,2:Cloak of Shadows,3:Ice Block,3:Dragon's Breath  cd:2:Kidney Shot(25s),2:Blind(112s),2:Adrenaline Rush(174s)  cc:2/Dismantle-2s
+0:17  [CC CAST]   Psychic Scream (by 1) → nil [non-player target]
+0:17  [CC CAST]   Psychic Scream (by 1) → 4
+0:18  [STATE]   friends 1:99 2:88 3:100 / enemies 5:99 6:51
+0:19  [STATE]   friends 1:97 2:86 3:99 / enemies 5:99 4:100 6:39
+0:19  [CC ON TEAM]   3 ← Imprison (Lörnrespekt-Sylvanas-EU) | 1s | trinket: used
+0:20  [STATE]   friends 1:98 2:85 3:100 / enemies 5:100 4:100 6:30
+0:20  [TRINKET]   3 used PvP trinket
+0:20  [CC ON TEAM]   2 ← Kidney Shot (Sapgodxd-Ravencrest-EU) | 5s
+0:20  [OWNER CAST]   527 → 2
+0:21  [STATE]   friends 1:97 2:80 3:100 / enemies 5:99 4:100 6:27
+0:21  [OWNER CD]   Guardian Spirit → 2 (78% HP)
+      [RES] rdy:Δ+Guardian Spirit,Divine Hymn,Apotheosis,3:Ice Block  cd:—  cc:2/Kidney Shot-4s[stun]
+0:21  [OWNER CAST]   2050 → 2
+0:22  [STATE]   friends 1:97 2:100 3:100 / enemies 5:99 4:100 6:24
+0:22  [DMG SPIKE]   2 (Outlaw Rogue): 1.14M in 10s
+0:22  [ENEMY CD]   4 (Discipline Priest): Power Infusion
+0:22  [ENEMY BUFF]   5: Power Infusion (purgeable)
+0:22  [ENEMY BUFF]   4: Power Infusion (purgeable)
+0:23  [STATE]   friends 1:96 2:91 3:100 / enemies 5:100 4:100 6:27
+0:23  [OWNER CAST]   14914 → 6
+0:24  [STATE]   friends 1:96 2:90 3:100 / enemies 5:100 4:100 6:24
+0:24  [OWNER CAST]   14914 → 6
+0:25  [STATE]   friends 1:94 2:72 3:100 / enemies 5:100 4:100 6:18
+0:26  [STATE]   friends 1:94 2:78 3:100 / enemies 5:99 4:100 6:24
+0:26  [OWNER CAST]   33076 → 2
+0:26  [DMG SPIKE]   3 (Frost Mage): 0.42M in 10s
+0:27  [STATE]   friends 1:93 2:71 3:100 / enemies 5:100 4:100 6:30
+0:27  [OWNER CD]   Spirit of Redemption
+      [RES] rdy:Δ+Divine Hymn,3:Ice Block  cd:—  enemy:Power Infusion/Discipline Priest(5s)
+0:27  [OWNER CAST]   64844
+0:27  [OWNER CD]   Divine Hymn
+      [RES] rdy:Δ-Guardian Spirit  cd:Guardian Spirit(174s)  enemy:Power Infusion/Discipline Priest(5s)
+0:28  [STATE]   friends 1:96 2:50 3:81 / enemies 5:100 4:100 6:29
+0:28  [OWNER CAST]   64844
+0:29  [STATE]   friends 1:97 2:30 3:66 / enemies 5:99 4:96 6:51
+0:29  [BUFF FADED]   Divine Hymn
+0:29  [OWNER CAST]   2050 → 2
+0:30  [STATE]   friends 1:97 2:75 3:72 / enemies 5:100 4:100 6:75
+0:30  [OWNER CAST]   33076 → 3
+0:31  [STATE]   friends 1:97 2:74 3:56 / enemies 5:100 4:96 6:77
+0:32  [STATE]   friends 1:97 2:78 3:61 / enemies 5:100 4:95 6:90
+0:33  [STATE]   friends 1:97 2:66 3:64 / enemies 5:100 4:99 6:97
+0:33  [OWNER CAST]   1262763 → 2
+0:33  [DMG SPIKE]   2 (Outlaw Rogue): 0.37M in 10s
+0:33  [BUFF FADED]   Guardian Spirit
+0:34  [STATE]   friends 1:97 2:88 3:66 / enemies 5:100 4:99 6:99
+0:34  [OWNER CAST]   2061 → 2
+0:35  [STATE]   friends 1:97 2:97 3:70 / enemies 5:100 4:100 6:98
+0:35  [OWNER CAST]   2061 → 2
+0:36  [STATE]   friends 1:97 2:98 3:90 / enemies 5:100 4:100 6:94
+0:36  [OWNER CAST]   2061 → 3
+0:36  [CC ON TEAM]   3 ← Garrote - Silence (Sapgodxd-Ravencrest-EU) | 4s | trinket: ON CD (104s left)
+0:37  [STATE]   friends 1:97 2:99 3:80 / enemies 5:96 4:94 6:95
+0:37  [DMG SPIKE]   3 (Frost Mage): 0.75M in 10s
+0:37  [OWNER CAST]   527 → 2
+0:37  [CLEANSE]   1 dispelled Shadow Word: Pain off 2
+0:37  [ENEMY BUFF END]   5: Power Infusion
+0:37  [ENEMY BUFF END]   4: Power Infusion
+0:38  [STATE]   friends 1:96 2:99 3:56 / enemies 5:100 4:94 6:96
+0:38  [OWNER CAST]   2050 → 3
+0:39  [STATE]   friends 1:97 2:94 3:53 / enemies 5:100 4:96 6:100
+0:40  [STATE]   friends 1:91 2:95 3:39 / enemies 5:100 4:96 6:100
+0:40  [OWNER CAST]   33076 → 3
+0:40  [CC ON TEAM]   3 ← Cheap Shot (Sapgodxd-Ravencrest-EU) | 2s | trinket: ON CD (100s left)
+0:41  [STATE]   friends 1:87 2:96 3:42 / enemies 5:100 4:98 6:100
+0:42  [STATE]   friends 1:89 2:78 3:43 / enemies 5:100 4:98 6:98
+0:42  [CC ON TEAM]   1 ← Garrote - Silence (Sapgodxd-Ravencrest-EU) | 4s | trinket: used
+0:43  [STATE]   friends 1:86 2:80 3:19 / enemies 5:100 4:100 6:98
+0:44  [STATE]   friends 1:85 2:87 3:22 / enemies 5:100 4:100 6:97
+0:44  [TEAMMATE CD]   3 (Frost Mage): Ice Block
+      [RES] rdy:Δ+3:Ice Block  cd:—  enemy:Power Infusion/Discipline Priest(21s)  cc:1/Garrote - Silence-3s
+0:45  [STATE]   friends 1:86 2:86 3:23 / enemies 5:100 4:100 6:89
+0:46  [STATE]   friends 1:77 2:89 3:31 / enemies 5:100 4:100 6:91
+0:46  [CC ON TEAM]   1 ← Blind (Sapgodxd-Ravencrest-EU) | 1s | trinket: used
+0:46  [TEAMMATE CD]   2 (Outlaw Rogue): Adrenaline Rush
+      [RES] rdy:Δ-Psychic Scream,Guardian Spirit,Divine Hymn,2:Adrenaline Rush,3:Ice Block  cd:Psychic Scream(11s),Guardian Spirit(155s),Divine Hymn(161s),2:Adrenaline Rush(144s),3:Ice Block(238s)  enemy:Power Infusion/Discipline Priest(24s)  cc:1/Garrote - Silence-0s
+0:46  [TEAMMATE CD]   2 (Outlaw Rogue): Kidney Shot
+      [RES] rdy:Δ-Psychic Scream,Guardian Spirit,Divine Hymn,3:Ice Block  cd:Psychic Scream(11s),Guardian Spirit(155s),Divine Hymn(161s),3:Ice Block(238s)  enemy:Power Infusion/Discipline Priest(24s)  cc:1/Garrote - Silence-0s
+0:47  [STATE]   friends 1:79 2:93 3:25 / enemies 5:100 4:100 6:93
+0:47  [TRINKET]   1 used PvP trinket
+0:47  [OWNER CD]   Apotheosis
+      [RES] rdy:Δ-Divine Hymn,3:Ice Block  cd:Divine Hymn(160s),3:Ice Block(236s)  enemy:Power Infusion/Discipline Priest(25s)
+0:47  [OWNER CAST]   586
+0:48  [STATE]   friends 1:79 2:94 3:29 / enemies 5:100 4:96 6:99
+0:48  [OWNER CAST]   2050 → 3
+0:49  [STATE]   friends 1:79 2:95 3:69 / enemies 5:100 4:94 6:100
+0:49  [TEAMMATE CD]   3 (Frost Mage): Dragon's Breath
+      [RES] rdy:Δ-Apotheosis,2:Kidney Shot,3:Ice Block  cd:Apotheosis(118s),2:Kidney Shot(27s),3:Ice Block(235s)  enemy:Power Infusion/Discipline Priest(27s)
+0:49  [CC CAST]   Dragon's Breath (by 3) → nil [non-player target]
+0:49  [OWNER CD]   Power Infusion → 3 (69% HP)
+      [RES] rdy:Δ+Power Infusion,3:Dragon's Breath-Psychic Scream  cd:Psychic Scream(8s)  enemy:Power Infusion/Discipline Priest(27s)
+      [HEALING]    0–5s: 51.2k HPS | 5–10s: 35.2k HPS | 10–15s: 80.6k HPS | Overheal: 23%
+0:49  [OWNER CD]   Power Infusion → 1 (79% HP)
+      [RES] rdy:Δ  cd:—  enemy:Power Infusion/Discipline Priest(27s)
+      [HEALING]    0–5s: 51.2k HPS | 5–10s: 35.2k HPS | 10–15s: 80.6k HPS | Overheal: 23%
+0:50  [STATE]   friends 1:80 2:97 3:74 / enemies 5:98 4:95 6:100
+0:50  [OWNER CAST]   33076 → 3
+0:51  [STATE]   friends 1:80 2:97 3:83 / enemies 5:99 4:98 6:83
+0:52  [STATE]   friends 1:80 2:100 3:89 / enemies 5:99 4:98 6:81
+0:52  [DMG SPIKE]   3 (Frost Mage): 0.55M in 10s
+0:52  [OWNER CAST]   88625 → 4
+0:53  [STATE]   friends 1:81 2:100 3:83 / enemies 5:100 4:95 6:41
+0:53  [OWNER CAST]   33076 → 3
+0:54  [STATE]   friends 1:82 2:100 3:96 / enemies 5:98 4:93 6:22
+0:55  [STATE]   friends 1:84 2:100 3:97 / enemies 5:98 4:93 6:10
+0:55  [OWNER CAST]   121536
+0:55  [CC ON TEAM]   3 ← Sigil of Misery (Lörnrespekt-Sylvanas-EU) | 1s | trinket: ON CD (85s left)
+0:55  [CC ON TEAM]   2 ← Sigil of Misery (Lörnrespekt-Sylvanas-EU) | 1s | trinket: used
+0:56  [STATE]   friends 1:84 2:100 3:94 / enemies 5:100 4:93 6:dead
+0:56  [TRINKET]   2 used PvP trinket
+0:56  [DEATH]  6 (Assassination Rogue — enemy)
+0:56  [ROSTER]  enemy 6 removed (dead)
+0:57  [STATE]   friends 1:86 2:100 3:83 / enemies 5:98 4:100 6:dead
+0:58  [STATE]   friends 1:86 2:100 3:88 / enemies 5:78 4:100 6:dead
+0:58  [OWNER CAST]   33076 → 3
+0:59  [STATE]   friends 1:87 2:100 3:65 / enemies 5:60 4:97 6:dead
+0:59  [OWNER CD]   Psychic Scream
+      [RES] rdy:Δ-Power Infusion,Guardian Spirit,Divine Hymn,Apotheosis,3:Ice Block,3:Dragon's Breath  cd:Power Infusion(110s),Guardian Spirit(142s),Divine Hymn(148s),Apotheosis(108s),3:Ice Block(225s),3:Dragon's Breath(35s)
+0:59  [CC CAST]   Psychic Scream (by 1) → 4
+0:59  [CC CAST]   Psychic Scream (by 1) → nil [non-player target]
+1:00  [STATE]   friends 1:87 2:100 3:58 / enemies 5:54 4:97 6:dead
+1:00  [OWNER CAST]   14914 → 5
+1:01  [STATE]   friends 1:87 2:100 3:47 / enemies 5:46 4:97 6:dead
+1:01  [OWNER CAST]   14914 → 5
+1:02  [STATE]   friends 1:88 2:100 3:59 / enemies 5:36 4:97 6:dead
+1:03  [STATE]   friends 1:89 2:100 3:48 / enemies 5:30 4:98 6:dead
+1:03  [OWNER CAST]   2050 → 3
+1:04  [STATE]   friends 1:89 2:95 3:95 / enemies 5:22 4:98 6:dead
+1:04  [OWNER CAST]   1262763 → 3
+1:04  [BUFF FADED]   Power Infusion
+1:04  [BUFF FADED]   Power Infusion
+1:05  [STATE]   friends 1:95 2:100 3:100 / enemies 5:dead 4:99 6:dead
+1:05  [OWNER CAST]   32379 → 5
+1:05  [DEATH]  5 (Devourer Demon Hunter — enemy)
+1:05  [ROSTER]  enemy 5 removed (dead)
+
+1:05  [MATCH END]   damp: 10%
+  friends 1:95% 2:100% 3:96% / enemies 5:dead(1:05) 4:99% 6:dead(0:56)

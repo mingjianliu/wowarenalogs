@@ -1,0 +1,11 @@
+Cluster stats: 57% CD nonuse, 37% optimal timing, 9956ms median CD response latency, 3.7 CC per match outgoing, 45% missed cleanse rate, 3% healing gap rate. This match sits in the middle of those ranges except on the CD nonuse metric — Rewind was never used in a 152-second match where you were the kill target.
+
+The 57% CD nonuse rate reflects conservative tool management in a match type where healers absorb the most CC of any cluster. Most of those unused CDs are correct decisions — skills like Stasis or Rescue that weren't triggered because conditions didn't justify them. Rewind at 240 seconds is different. In a 152-second match where you died at 2:19 after three separate major kill attempts (1:00, 1:28, 2:09), Rewind had one window to be used. At 1:34 you were at 23% health. At 2:18 you were at 32% health with Shadow Blades + Incarnation active. The 9956ms median response latency in this cluster is long — but 23% health under sustained CC is a condition that should override that tendency toward delayed response.
+
+Emerald Communion at 1:02 during the first 1.11M spike was timed well. Time Dilation on yourself at 1:35 was correct. The missed cleanses (Incapacitating Roar at 1:19, Mass Entanglement at 2:03, Landslide at 1:40) align with the cluster's 45% miss rate and were all low-damage situations — acceptable tradeoffs.
+
+Your outgoing CC via Sleep Walk was consistent, placing you above the cluster's 3.7 mean. Targeting the enemy Evoker to disrupt their healing output is the correct priority in this comp.
+
+The 3% healing gap rate cluster stat is excellent — top Evokers almost never pause their healing output. Your own gap rate in this match appears similarly low. The loss came from CD depth running out after three kill attempts, not from mechanical lapses.
+
+The single change that likely alters the outcome: Rewind at 1:34 or 2:18. It is the only major throughput tool that was available for the second and third kill attempts and was never deployed.

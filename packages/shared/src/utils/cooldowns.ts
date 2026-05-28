@@ -7,9 +7,11 @@ import {
   SpellTag,
 } from '@wowarenalogs/parser';
 
-import { spellEffectData } from '../data/spellEffectData';
+import { getEnglishSpellName, spellEffectData } from '../data/spellEffectData';
 import spellIdListsData from '../data/spellIdLists.json';
-import { getPlayerTalentedSpellIds, getSpecTalentTreeSpellIds } from './talents';
+import { DISCOVERY_TAG_RULES } from './discoveryRules';
+import { CD_TALENT_MODIFIERS } from './talentModifiers';
+import { getPlayerTalentedSpellInfo, getSpecTalentTreeSpellInfo } from './talents';
 
 const MAJOR_DEFENSIVE_IDS = new Set<string>(
   (spellIdListsData as unknown as { externalOrBigDefensiveSpellIds?: string[] }).externalOrBigDefensiveSpellIds ?? [],
@@ -24,6 +26,21 @@ const OFFENSIVE_SPELL_IDS = new Set<string>(
 
 /** Only track cooldowns at or above this threshold */
 const MIN_CD_SECONDS = 30;
+
+/**
+ * Passive proc spells that emit SPELL_CAST_SUCCESS but are not intentional player casts.
+ * Filtering these removes noise from the [OWNER CAST] timeline.
+ */
+export const PASSIVE_SPELL_BLOCKLIST = new Set([
+  'Reclamation',
+  'Infusion of Light',
+  "Ysera's Gift",
+  "Nature's Vigor",
+  'Resounding Voice',
+  'Eminence',
+  'Awakening',
+  'Divine Purpose',
+]);
 
 /**
  * Spec-exclusive spells: if a spell ID appears here, it is only valid for the listed specs.
@@ -43,6 +60,7 @@ const SPEC_EXCLUSIVE_SPELLS: Record<string, CombatUnitSpec[]> = {
   '33891': [CombatUnitSpec.Druid_Restoration], // Incarnation: Tree of Life
   '102342': [CombatUnitSpec.Druid_Restoration], // Ironbark
   '236696': [CombatUnitSpec.Druid_Restoration], // Thorns
+  '740': [CombatUnitSpec.Druid_Restoration], // Tranquility
   // Monk
   '115203': [CombatUnitSpec.Monk_BrewMaster], // Fortifying Brew
   '122470': [CombatUnitSpec.Monk_Windwalker], // Touch of Karma
@@ -55,10 +73,13 @@ const SPEC_EXCLUSIVE_SPELLS: Record<string, CombatUnitSpec[]> = {
   '6940': [CombatUnitSpec.Paladin_Holy], // Blessing of Sacrifice
   '199448': [CombatUnitSpec.Paladin_Holy], // Blessing of Sacrifice
   '210294': [CombatUnitSpec.Paladin_Holy], // Divine Favor
+  '31821': [CombatUnitSpec.Paladin_Holy], // Aura Mastery
+  '216331': [CombatUnitSpec.Paladin_Holy], // Avenging Crusader
   '86659': [CombatUnitSpec.Paladin_Protection], // Guardian of Ancient Kings
   '337851': [CombatUnitSpec.Paladin_Protection], // Guardian of Ancient Kings
   '337852': [CombatUnitSpec.Paladin_Protection], // Reign of Ancient Kings
   '228049': [CombatUnitSpec.Paladin_Protection], // Guardian of the Forgotten Queen
+  '31850': [CombatUnitSpec.Paladin_Protection], // Ardent Defender
   // Priest
   '33206': [CombatUnitSpec.Priest_Discipline], // Pain Suppression
   '47536': [CombatUnitSpec.Priest_Discipline], // Rapture
@@ -68,6 +89,8 @@ const SPEC_EXCLUSIVE_SPELLS: Record<string, CombatUnitSpec[]> = {
   '19236': [CombatUnitSpec.Priest_Holy], // Desperate Prayer
   '196762': [CombatUnitSpec.Priest_Holy], // Inner Focus
   '200183': [CombatUnitSpec.Priest_Holy], // Apotheosis
+  '47788': [CombatUnitSpec.Priest_Holy], // Guardian Spirit
+  '64843': [CombatUnitSpec.Priest_Holy], // Divine Hymn
   '47585': [CombatUnitSpec.Priest_Shadow], // Dispersion
   '64044': [CombatUnitSpec.Priest_Shadow], // Psychic Horror
   // Warlock
@@ -201,8 +224,10 @@ export function extractMajorCooldowns(unit: ICombatUnit, combat: AtomicArenaComb
   if (!classData) return [];
 
   const specIdNum = parseInt(unit.spec, 10);
-  const specTalentTreeSpellIds = getSpecTalentTreeSpellIds(specIdNum);
-  const talentedSpellIds = unit.info?.talents ? getPlayerTalentedSpellIds(specIdNum, unit.info.talents) : null;
+  const specTalentTreeSpellInfo = getSpecTalentTreeSpellInfo(specIdNum);
+  const specTalentTreeSpellIds = new Set(specTalentTreeSpellInfo.keys());
+  const talentedSpellInfo = unit.info?.talents ? getPlayerTalentedSpellInfo(specIdNum, unit.info.talents) : null;
+  const talentedSpellIds = talentedSpellInfo ? new Set(talentedSpellInfo.keys()) : null;
   // PvP talents selected by this player (spell IDs). Available when COMBATANT_INFO is present.
   const pvpTalentIds = new Set<string>(unit.info?.pvpTalents ?? []);
   const hasCombatantInfo = unit.info !== undefined;
@@ -254,10 +279,58 @@ export function extractMajorCooldowns(unit: ICombatUnit, combat: AtomicArenaComb
     return true;
   });
 
+  // --- Dynamic Discovery ---
+  // Add any active talent spell with CD >= 30s that wasn't already in the static list.
+  if (talentedSpellInfo) {
+    for (const [spellId, info] of talentedSpellInfo.entries()) {
+      if (seen.has(spellId)) continue;
+      // Only discover buttons (active nodes). Passives are handled via CD_TALENT_MODIFIERS.
+      if (info.type !== 'active') continue;
+
+      const effectData = spellEffectData[spellId];
+      if (!effectData) continue;
+
+      const cd = effectData.cooldownSeconds ?? effectData.charges?.chargeCooldownSeconds ?? 0;
+      if (cd >= MIN_CD_SECONDS) {
+        // Intelligent tagging based on name pattern rules
+        const name = effectData.name.toLowerCase();
+        const tags: SpellTag[] = [];
+
+        for (const rule of DISCOVERY_TAG_RULES) {
+          if (rule.pattern.test(name)) {
+            tags.push(...rule.tags);
+          }
+        }
+
+        // If we found a tag, it's a "Major CD" for analysis purposes.
+        if (tags.length > 0) {
+          majorSpells.push({ spellId, name: effectData.name, tags });
+          seen.add(spellId);
+        }
+      }
+    }
+  }
+
   return majorSpells.flatMap((spell) => {
     const effectData = spellEffectData[spell.spellId];
     if (!effectData) return [];
-    const cooldownSeconds = effectData.cooldownSeconds ?? effectData.charges?.chargeCooldownSeconds ?? 0;
+
+    let cooldownSeconds = effectData.cooldownSeconds ?? effectData.charges?.chargeCooldownSeconds ?? 0;
+    let baselineCharges = effectData.charges?.charges ?? 1;
+
+    // Apply talent-based modifications if the player's talents are known
+    const modifiers = CD_TALENT_MODIFIERS[spell.spellId];
+    if (modifiers && (talentedSpellIds || pvpTalentIds.size > 0)) {
+      for (const mod of modifiers) {
+        if (talentedSpellIds?.has(mod.talentSpellId) || pvpTalentIds.has(mod.talentSpellId)) {
+          if (mod.effect === 'extra_charge') {
+            baselineCharges += mod.value;
+          } else if (mod.effect === 'reduce_cd') {
+            cooldownSeconds -= mod.value;
+          }
+        }
+      }
+    }
 
     const castEvents = unit.spellCastEvents.filter(
       (e) => e.spellId === spell.spellId && e.logLine.event === LogEvent.SPELL_CAST_SUCCESS,
@@ -266,7 +339,8 @@ export function extractMajorCooldowns(unit: ICombatUnit, combat: AtomicArenaComb
     const isDefOrExternal = spell.tags.includes(SpellTag.Defensive) || (spell.tags as string[]).includes('External');
     const isControl = spell.tags.includes(SpellTag.Control);
 
-    const casts: ICooldownCast[] = castEvents
+    const rawCasts: ICooldownCast[] = castEvents
+      .filter((e) => !e.spellName || !PASSIVE_SPELL_BLOCKLIST.has(e.spellName))
       .map((e) => {
         const timeSeconds = (e.logLine.timestamp - matchStartMs) / 1000;
         const cast: ICooldownCast = { timeSeconds };
@@ -281,6 +355,14 @@ export function extractMajorCooldowns(unit: ICombatUnit, combat: AtomicArenaComb
         return cast;
       })
       .sort((a, b) => a.timeSeconds - b.timeSeconds);
+
+    const casts: ICooldownCast[] = [];
+    for (const c of rawCasts) {
+      const last = casts[casts.length - 1];
+      if (!last || c.timeSeconds - last.timeSeconds > 2) {
+        casts.push(c);
+      }
+    }
 
     const availableWindows: IAvailableWindow[] = [];
 
@@ -311,7 +393,7 @@ export function extractMajorCooldowns(unit: ICombatUnit, combat: AtomicArenaComb
 
     // Detect observed charge count: if any two consecutive casts are closer than the CD,
     // the player must have had at least 2 charges (e.g. double Pain Suppression via PvP talent).
-    let maxChargesDetected = Math.max(1, effectData.charges?.charges ?? 1);
+    let maxChargesDetected = Math.max(1, baselineCharges);
     for (let i = 1; i < casts.length; i++) {
       if (casts[i].timeSeconds - casts[i - 1].timeSeconds < cooldownSeconds) {
         maxChargesDetected = Math.max(maxChargesDetected, 2);
@@ -640,6 +722,14 @@ export function isMeleeSpec(spec: CombatUnitSpec): boolean {
   return MELEE_SPECS.has(spec);
 }
 
+/**
+ * Returns the key used for this spec in benchmarks.json (e.g. "DeathKnight Frost").
+ */
+export function specToBenchmarkKey(spec: CombatUnitSpec): string {
+  const key = Object.keys(CombatUnitSpec).find((k) => CombatUnitSpec[k as keyof typeof CombatUnitSpec] === spec);
+  return key?.replace('_', ' ') ?? 'Unknown';
+}
+
 /** Format seconds as m:ss string */
 export function fmtTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -812,7 +902,7 @@ export function detectOverlappedDefensives(
         casterName: unit.name,
         casterSpec: specToString(unit.spec),
         spellId,
-        spellName: action.spellName ?? spellId,
+        spellName: getEnglishSpellName(spellId, action.spellName),
         targetUnitId: action.destUnitId,
         targetName: action.destUnitName,
       });
@@ -1085,7 +1175,7 @@ export function detectPanicDefensives(
         timeSeconds: castTimeSeconds,
         casterSpec: specToString(unit.spec),
         casterName: unit.name,
-        spellName: action.spellName ?? spellId,
+        spellName: getEnglishSpellName(spellId, action.spellName),
         spellId,
         targetName: action.destUnitName,
         targetSpec: targetUnit ? specToString(targetUnit.spec) : 'Unknown',

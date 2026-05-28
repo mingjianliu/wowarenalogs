@@ -1,0 +1,36 @@
+Your fast_nuke_tunnel cluster has the highest CD non-usage rate at 39% and the highest median response latency at 8313ms. This match is the inverse problem: you used CDs too early, not too late, and the result was the same — the Mage died at 1:49 with Power Infusion 2 seconds from coming off cooldown and Divine Hymn on a 3-minute timer.
+
+The archetype averages 107 seconds per match. This match ran 121 seconds — 14 seconds over average. Those 14 seconds represent the second Avatar burst window that your early CD deployment could not cover.
+
+**Guardian Spirit at 0:07**
+
+Defensive CDs in this cluster are used optimally 42% of the time and early 16% of the time. Guardian Spirit on the Rogue at 0:07 at 86% HP is squarely in the Early category. The Warrior had Avatar, the Evoker had Oppressing Roar, and the Mage was at 97% — entirely fine. Guardian Spirit on the Rogue at this timestamp is a fear response to the combat opener, not an informed read on threat. It cost you a 180-second CD that expired before the second burst window.
+
+**Divine Hymn at 0:18**
+
+Match duration in this cluster is ~107 seconds. Your team had been in combat for 18 seconds. The Warrior's Avatar was burning and the Mage was at 78%. Your HPS in the 10–15-second window was 82.1k — high throughput before using any channel. Hymn added throughput on top of already functional healing in the first 30 seconds of a 2-minute match.
+
+The cost: Hymn came back at approximately 3:18 (180-second CD from 0:18). The Mage died at 1:49. The CD response latency of 8313ms in this cluster suggests you tend to wait before using defensive CDs, but in this match you did the opposite — Hymn went in before the first burst window fully developed. The correct hold is until the Warrior's second Avatar at 1:41.
+
+**CD inventory at time of death (1:49)**
+
+- Power Infusion: 34-second CD remaining (deployed ~1:15, available ~1:49 — simultaneous with death)
+- Guardian Spirit: 97-second CD remaining (spent at 0:07, second charge spent at 1:30)
+- Apotheosis: 74-second CD remaining (spent at 0:52, expired at 1:12)
+- Divine Hymn: ~90-second CD remaining (spent at 0:18)
+- Desperate Prayer: available, never used
+
+Your offensive participation rate for this cluster is 53% — mid-range. This match shows 2 Psychic Screams in 2:01 (roughly 1.0 per minute). Your cluster average is 4.9 CC per match. You used 2. That is below average for a game where the Evoker was the primary obstacle to surviving the burst. More Scream pressure on the Evoker in the 1:30–1:49 window — specifically, Scream hitting her before the second Avatar landed — would have created a 6-second gap in her heal output during the kill window.
+
+Your purge rate for this cluster is 1.44 per minute. This match shows one purge attempt (32379 at 1:07 and 1:15 targeting enemy Warrior/Evoker). Purging the Evoker's Reversion or Resonating Sphere during the kill window removes her highest-throughput healing tool. The Evoker at 89–96% health during the final burst window had full resources to heal; a purge at 1:40 removes one of those tools.
+
+**The missed cleanse**
+
+Oppressing Roar on the Rogue at 0:07 sat for 10 seconds with 78k damage taken (logged under missed cleanse at 0:07, Rogue). You were Champion's Speared for 6 of those seconds. After 0:11 you had 6 seconds to dispel it — during which you cast Mind Control at 0:30 and a purge at 0:09 and 0:07, but not a dispel on the Rogue. The Rogue's 78k during Avatar burst was avoidable after 0:11. That total is roughly equivalent to one additional direct heal on the Mage.
+
+**Adjustment priority**
+
+1. Hymn holds until second burst window. In a 2-minute game with one available Avatar at 1:41, Hymn should go at 1:30 when the Mage is at 15% HP, not at 0:18.
+2. Guardian Spirit deploys when a target is below 40%, not at 86%.
+3. Psychic Scream on the Evoker at the start of the second Avatar window (1:41) creates a 6-second healing gap exactly when you need it.
+4. Dispel Oppressing Roar off the physical carry immediately after breaking your own CC.

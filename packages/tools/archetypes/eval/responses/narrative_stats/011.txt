@@ -1,0 +1,13 @@
+In balanced_swap matches like this one, CD timing is optimal 47% of the time and the missed cleanse rate runs at 34% — this match hit both of those benchmarks in visible ways, and addressing them will make already-won games more dominant and close games more survivable.
+
+The Flame Shock on your Warrior at 0:07 went uncleansed for 18 seconds (92k damage taken through it). With a 34% baseline missed cleanse rate in this archetype, this is a recurring pattern, not a one-off. You're the sole Magic dispel in this comp. When Shaman applies Flame Shock to your Warrior in the first 10 seconds, the correct response is immediate — within 2 seconds. This is not a judgment call; it's a rule.
+
+Both Power Infusion charges at 0:22 landed on full HP targets with no active pressure window. The Dragonrage window (0:09–0:20) had just closed, and Avatar was only beginning to spin up. CD timing was optimal in 47% of windows in this archetype, meaning slightly more than half the time something better was available. Here, the better option was holding at least one PI charge until the next defined go window — either your Warrior's Avatar at 0:20 syncing with incoming Dragonrage, or waiting until the Evoker was sub-60% and you needed to close. Burning both charges on topped targets leaves you without PI when the enemy opens their next sequence.
+
+Your Psychic Scream at 1:00 — with the Evoker at 47%, the Shaman on your target, and your team fully healthy — was the kind of optimal CD timing this archetype rewards. The fear landed on the Shaman cleanly and opened the Evoker kill 37 seconds later. With outgoing CC averaging 3.6 per match in this playstyle, every CC cast needs to be loaded with purpose. This one was.
+
+Pain Suppression at 0:36 into the Storm Bolt + Shockwave double CC (Warrior trinket at 112s remaining) was defensible given the layered threat, but the response latency — reactive after CC landed rather than preemptive — is worth noting. The median CD response latency in this archetype is 3,576ms. You used PainSup the moment the Warrior hit 80% with CCs landing simultaneously, which is reactive by definition. The goal is reading the setup half a second earlier and disrupting it before the correction costs you a major defensive CD.
+
+Closing the Shaman with consistent purge pressure after the Evoker died was efficient. Purge rate in this archetype averages 1.38/min — you hit that ceiling well in the second half of the match with consistent offensive targeting.
+
+Two things to drill: Magic cleanse priority on Shaman Flame Shock, and PI charge conservation until a defined go window rather than off-cooldown dumps on full targets.

@@ -1,0 +1,9 @@
+This is a short-tunnel match that ended in 53 seconds — the archetype where the game is decided in the first kill window. The enemy Warrior, Disc Priest, and Devourer DH executed a clean opening-cooldown kill on the Enhancement Shaman, and the Druid's response had two critical gaps that sealed the loss.
+
+The first problem was trinket sequencing. The Shaman trinketed a 1-second Storm Bolt at 0:08. The Warrior immediately followed with Champion's Spear at 0:10 — a 6-second immobilize that is the actual setup tool for the kill. Trinket should have been held for Champion's Spear. In short-tunnel matches like this one, early trinket decisions are often the deciding factor because the match resolves before a second opportunity to spend that cooldown ever comes.
+
+The second problem was Druid defensive cooldown usage during the main window. Avatar and Power Infusion both activated at 0:11–0:13, with the Shaman at 62% HP and dropping at roughly 40% per second. The Druid placed Ironbark at 0:14 — that was correct. But Frenzied Regeneration, Incapacitating Roar, and Incarnation: Tree of Life were all available and went unused while the Shaman was being killed. The Power Infusion on the Warrior was also purgeable — in this match type, that purge would have directly reduced the incoming damage on the target.
+
+The final kill at 0:43–0:46 was locked in by an Imprison followed immediately by Storm Bolt on the Druid, leaving the Shaman at 17% HP with no healer available. The Druid's trinket had been burned at 0:41 on the second Storm Bolt, leaving nothing for Sigil of Misery at 0:43. That back-to-back CC sequence on the Druid is a known DH pattern — Imprison into Sigil of Misery — and it can sometimes be pre-empted by positioning out of Imprison range.
+
+The match outcome was largely determined by the opening 15 seconds. In short-tunnel games, the first 20 seconds of cooldown management — both team CDs and trinkets — often define everything that follows.

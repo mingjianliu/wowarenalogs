@@ -1,0 +1,13 @@
+The archetype label fast_nuke_tunnel fits exactly what the enemy ran: high tunnel score, avatar-plus-Bloodlust as the setup, no elaborate CC chain — just sustained pressure with cooldown spikes. The archetype profile notes that setup style is "predominantly unknown (94%)" because these matches often feel unstructured to the healer. That is the dangerous part. The match felt like random pressure but it was actually three clean offensive CD windows that the enemy timed with precision.
+
+Window one (0:11–0:24): Avatar plus Bloodlust plus Ascendance. Your response: Guardian Spirit at 0:44 when the mage hit 31%. Correct.
+
+Window two (1:30–1:50): Avatar plus Bloodlust. Your response: Divine Hymn at 0:15 had already expired, Apotheosis at 1:45 absorbed much of the pressure. The mage survived with Ice Block backup.
+
+Window three (2:43–2:58): Ascendance plus Bloodlust again. No Guardian Spirit left, PI just used, Apotheosis on cooldown. Mage died at 2:24 — actually before the window started — during the previous smaller Bloodlust window, because your cooldown supply was depleted by the time you needed it.
+
+The 39% CD-never-used rate in this archetype's data reflects that top Holy Priests consciously hold cooldowns. In this match, the opposite happened: PI went out at 0:08 before any enemy CD had fired. Divine Hymn went out at 0:15 during the opener. By the time the mage needed it most at 2:16, you were using PI reactively against dampening pressure because there was nothing else.
+
+The missed Flame Shock cleanses tell a separate story: 35k, 307k, 72k, 190k, 242k, 302k, 67k, 81k, 618k in uncleansed windows. The cumulative damage from uncleansed Flame Shocks across this match is enormous. With a team purger on the Frost Mage and Cleanse available on yourself, Flame Shock should never run for 33 seconds uninterrupted. Set a mental trigger: every time you hear the Flame Shock damage-over-time tick, your next button is Purify.
+
+In fast_nuke_tunnel against this comp, you want PI held for the second and third Avatar windows, not the opener. The opener you survive on Hymn and positioning. The middle windows are where top players separate.

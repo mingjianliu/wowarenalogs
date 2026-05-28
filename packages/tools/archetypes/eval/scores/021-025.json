@@ -1,0 +1,167 @@
+{
+  "021": {
+    "spec": "HolyPaladin",
+    "cluster": "short_passive_swap",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Correctly identifies Avenging Crusader at 0:21 (one second before death) and unused BoS/BoP during kill window. Accurate timestamps and HP values throughout. Healing gap analysis (3.6s and 10.5s) matches timeline. Power Infusion reference on Warrior and Disc Priest at 0:17 confirmed. No archetype-specific context used since baseline prompt has none."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Label framing adds meaningful structure: explicitly connects short_passive_swap pattern (fast kill attempt, need for proactive CDs) to the Avenging Crusader timing failure. Correctly identifies 15-20 second threat execution window as archetype-defining. Healing gaps noted as secondary. Better calibrated to the archetype than baseline despite similar factual content."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Best use of archetype context: explicitly ties 53% CD nonuse and 14% healing gap rate (from narrative prompt) to this specific match. Correctly characterizes the offensive window as a real kill attempt (0.72M on Monk), not passive, pushing back against any low-threat misread. The 'one dangerous sequence' framing for short matches is accurate and useful. All facts match timeline."
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Correctly deploys cluster stats (53% CD nonuse, 14% gap rate, 7638ms response latency, 43% offensive participation) and ties each to specific match evidence. The '11 seconds after the offensive CD fired' calculation (Avatar at 0:10, AC at 0:21) is correct. Minor: characterizing 'offensive participation of 43%' as relevant to a 50-second match is weak—the log owner cannot purge and the match ended in 50s, making offensive participation stats less actionable here. Otherwise excellent."
+    }
+  },
+  "022": {
+    "spec": "DisciplinePriest",
+    "cluster": "heavy_burst_cc_swap",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Correctly identifies Oppressing Roar dispel miss at 1:08 (273k on Warrior confirmed), Pain Suppression at 3:12 on 82% Ret (confirmed), and PI at 2:24 on 100% Warrior (confirmed). Minor inaccuracy: says 'Saving Pain Suppression for the 4:06 Avatar window'—Avatar (Arms Warrior CD) fired at 3:58, but the Ret who died was being killed by Devourer DH Cull/Voidsurge, not Avatar. The final kill was DH-driven, not Avatar-driven. Slightly conflates the two. Otherwise strong factual grounding."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Archetype label sharply contextualizes the Oppressing Roar miss: explicitly frames CC-healer-burst as the enemy's repeating structure and why cleansing that specific debuff collapses the burst window. Correctly identifies that Psychic Scream rotation on the Evoker was correct. Same minor inaccuracy as baseline on Avatar vs. DH damage as kill vector. The structural frame (heavy_burst_cc_swap demands dispel-the-enabling-debuff) is well applied."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Good use of archetype narrative: correctly notes 45% missed cleanse rate in cluster and distinguishes it from the Oppressing Roar miss (which was not the kind of cleanse the 45% rate excuses). PI timing discussion is accurate—second PI charge at 2:24 on 100% HP Warrior with Adrenaline Rush 18s away is confirmed. Same Avatar vs. DH kill vector confusion. Argues Pain Suppression at 3:12 was pre-emptive-at-high-health, which is valid. Solid overall."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 3,
+      "accuracy": 2,
+      "hallucination_risk": true,
+      "notes": "HALLUCINATION: References 'Avenging Wrath' at 4:06 as an enemy offensive CD. The enemy team has no Avenging Wrath—enemy team is Devourer DH, Preservation Evoker, Outlaw Rogue. Avenging Wrath belongs to Ret/Prot Paladin, none of whom are on the enemy team. This fabricated enemy CD undermines the entire Pain Suppression timing argument in the final paragraph. Stat citations (59% optimal CD timing, 45% missed cleanse rate, 7515ms latency, 0% CD never-used) are correctly drawn from the prompt and match overall findings, but the hallucination on the enemy ability is disqualifying for accuracy."
+    }
+  },
+  "023": {
+    "spec": "PreservationEvoker",
+    "cluster": "cc_heavy_fast",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Core finding (Rewind never used despite being the kill target for 2.5 minutes) is correct and clearly argued. Emerald Communion at 1:02 timing confirmed. Says 'at 1:34 you were at 23% health'—timeline shows 34% at 1:34 and 23% at 1:37; the 23% figure is slightly mis-timestamped but the range is accurate enough for coaching purposes. The framing that Communion on 173s CD left no major throughput for the 2:10 second Incarnation return is logically sound and supported by timeline data."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Archetype label adds value: cc_heavy_fast explicitly named as the context where Rewind is a 'core survival tool, not last resort.' Time Dilation on self at 1:35 when at 23% confirmed (minor same timestamp offset as baseline). Correct identification that Sleep Walk on enemy Evoker was the right offensive priority. Clean, actionable coaching. Same minor HP% timestamp offset as baseline."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Best use of narrative context: connects 57% CD nonuse rate (confirmed in narrative prompt) to the specific claim that Rewind belongs in a different category than the other unused CDs. Correctly argues the 13.82 CC/min density justifies treating Rewind as mandatory rather than conservative. Correctly notes the Communion-Rewind sequencing problem (Communion used first, leaves no throughput for second window). Same minor HP% timestamp offset."
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Strong deployment of stats: 57% CD nonuse, 37% optimal timing, 9956ms median CD response latency, 3% healing gap rate all correctly cited from prompt and connected to match evidence. The point that 9956ms median response latency 'should be overridden by 23% health under sustained CC' is a good structural argument against the latency stat being used to justify waiting. Cleanse miss analysis (Incapacitating Roar, Mass Entanglement, Landslide) correctly categorized as low-damage and acceptable per 45% missed cleanse cluster rate. Same minor HP% timestamp offset."
+    }
+  },
+  "024": {
+    "spec": "HolyPriest",
+    "cluster": "cc_heavy_swap",
+    "result": "Win",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "FACTUAL ERROR: Claims Ice Block was a better option at 0:53 for the Mage. Ice Block was used at 0:34 (240s CD), meaning it had ~221s remaining at 0:53 and was not available. The Mage had no immunity at 0:53. This is a meaningful error in the primary adjustment point. Psychic Scream at 0:12 hitting both players 5 and 6 confirmed. Guardian Spirit at 0:53 on 88% Mage confirmed (GS faded at 1:05 without triggering). Cleanse actions at 0:06, 0:18, 0:43 all confirmed. Win analysis is otherwise accurate."
+    },
+    "label_only": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Same Ice Block error as baseline—'At 0:53, Ice Block was a better defensive option for the Mage's situation.' Ice Block was on a 240s CD at that point (used at 0:34). Otherwise good archetype framing: correctly identifies cc_then_burst structure, Psychic Scream two-for-one on healer and DPS, and Guardian Spirit misallocation rationale (should save for kill dealer without immunity). Archetype-specific guidance on Guardian Spirit targeting is appropriate for cc_heavy_swap."
+    },
+    "narrative": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Same Ice Block error: 'Guardian Spirit at 0:53 on an 88% target with Ice Block available.' Ice Block was on CD. Uses archetype stats (33% CD nonuse, 46% optimal timing, 11% early CD rate) from the narrative prompt appropriately. Correctly notes PI at 0:05 is before the match 'fully started' but defends it given 91-second match length. The 10.59 CC events/minute reference matches the narrative prompt. Error on Ice Block availability is consistent across all variants except narrative_stats."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 4,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Does NOT repeat the Ice Block error—focuses instead on PI targeting (Rogue vs. Mage at 0:05) and missed cleanse analysis. Claims 'PI on the Rogue would have added significantly more damage to the 0:08-0:20 Windwalker burst' is a reasonable coaching point, though noting the Rogue was also under pressure at that time. Shadow Word: Madness missed cleanse at 0:10 sitting 6s (73k) is confirmed. The large missed cleanse analysis (Vampiric Touch 229k at 0:29, 390k at 0:55) correctly attributes them to healer CC windows. 4.2 mean outgoing CC reference matches cluster stat. Apotheosis at 1:07 analysis is accurate. Best-scored variant for this match."
+    }
+  },
+  "025": {
+    "spec": "MistweaverMonk",
+    "cluster": "long_sustained_swap",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 3,
+      "accuracy": 3,
+      "hallucination_risk": false,
+      "notes": "Warrior at 6% HP at 1:34 and Paladin at 24% at 1:43 are confirmed. Shadowfury at 1:32 on Evoker confirmed. However, the sentence 'The Warlock should have kept pressure on the Warrior's heals rather than CCing the Evoker' is contradictory and confusing—the Warlock DID CC the Evoker (Shadowfury → player 5), the problem was timing (28s too late), not target selection. Framing it as 'rather than CCing the Evoker' inverts the lesson. Life Cocoon at 1:28 on Mage (46%) confirmed. The core Shadowfury timing argument is correct despite the confusing framing. Coaching surface area is broad but the causal narrative has a logical hole."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Best structured analysis of the match: explicitly frames long_sustained_swap as CC-the-healer-to-win archetype and shows each kill window where Evoker was free. The 1:03 Leg Sweep window analysis (28 seconds of free Evoker healing, Warrior from 69% to 6% and back to 95%) is accurate and damning. The 2:36 Shadowfury error (hit Warrior and Paladin, not Evoker) confirmed. The 4:27 Shadowfury hitting all three as the one correct instance confirmed. Leg Sweep deployments at 1:03, 3:02, 3:53, 4:43 all confirmed. Life Cocoon defensive saves correctly noted as individually correct. Cleaner diagnosis than baseline."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Narrative format works well here: walks match chronologically, identifying each kill window and Evoker's free status. 0:11 Leg Sweep hitting Evoker and Paladin confirmed (CC CAST entries show Leg Sweep by 2 → 5 [Evoker] and 6 [Paladin]). Warrior at 6% at 1:34 confirmed. Shadowfury at 1:32 → player 5 (Evoker) confirmed but described as 'should have been the first thing at Evoker when Warrior dropped below 50%'—accurate timing argument. 2:36 Shadowfury on Warrior and Paladin confirmed. 4:27 Shadowfury on all three confirmed. Intimidating Shout at 4:48 on all three players confirmed. The 'one change ends this match' conclusion is appropriately decisive. Minor note: says Evoker 'healed between Deep Breath casts' which is accurate but not elaborated."
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Strong stat deployment: 0% CD nonuse, 75% offensive participation, 35% missed cleanse rate, 8573ms CD response latency, 10.14 CC/min all correctly cited from prompt and connected to specific match evidence. The 28-second Evoker free healing window calculation (Leg Sweep at 1:03, Shadowfury at 1:32) is accurate. The Shadowfury volume count (0:44, 1:32, 2:36, 3:31, 4:27) is confirmed in timeline. The Flame Shock on Mage sitting 65 seconds is cited—timeline shows Flame Shock (Weihe/Earthbind referenced via cleanse events; actual Flame Shock duration would need German-language spell lookup but the cleanse log supports periodic Judgment/Earthbind removal). The 65-second duration claim for Flame Shock is the one unverifiable stat but plausible given the long match. Life Cocoon deployments at 0:23 (31%), 1:28 (46%), 3:18 (42%) all confirmed. Leg Sweep deployments at 1:03, 3:02, 3:53, 4:43 confirmed."
+    }
+  }
+}

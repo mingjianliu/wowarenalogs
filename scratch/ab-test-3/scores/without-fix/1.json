@@ -1,0 +1,9 @@
+{
+  "prompt": {
+    "sufficiency": 5,
+    "noise": 2,
+    "labelBias": 5,
+    "inferenceScaffolding": 4,
+    "notes": "The timeline is extremely noisy due to [STATE] lines appearing almost every second."
+  }
+}

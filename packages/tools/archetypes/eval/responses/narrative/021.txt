@@ -1,0 +1,9 @@
+Matches in this cluster are short with low burst activity and a pattern of CD underutilization — 53% of CDs go unused and healing gap rates are elevated for the match duration. This match is a direct expression of those tendencies.
+
+The game ended in 50 seconds. Your Windwalker Monk died at 0:22 during a critical enemy offensive window (0:10–0:36) featuring Avatar, Avenging Wrath, and Power Infusion. You had Avenging Crusader available from 0:13 onward — it went out at 0:21, one second after the Monk died. Blessing of Sacrifice and Blessing of Protection were both ready and unused through the kill sequence.
+
+This is the CD-nonuse pattern the cluster description flags. The match was short enough that a single well-timed defensive CD would likely have saved the Monk. The offensive window lasted 26 seconds with 0.72M damage on the Monk — that is not a passive, low-burst situation, it was a real kill attempt that your CDs could have answered.
+
+After the Monk died you went 3v2 and managed the Druid to 48% at match end, which indicates your baseline healing output was fine. The two healing gaps (3.6s at 0:34, 10.5s at 0:40) reflect the elevated gap rate the archetype describes — but neither was the kill vector here.
+
+The fix is straightforward: in short matches where the enemy has opened major offensive CDs, treat Avenging Crusader as a proactive tool, not a last resort. Offensive CDs on the enemy are the trigger, not health percentage on your teammate. The cluster pattern of 53% CD nonuse means players in this scenario repeatedly leave defensive tools on cooldown through the only real dangerous moment in the game.

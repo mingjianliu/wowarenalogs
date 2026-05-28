@@ -1,0 +1,11 @@
+The loss has two root causes: Curse of Tongues was never dispelled despite appearing on all three team members simultaneously, and the healer was killed by sustained pressure after 3:10 with three burst windows landing on them personally.
+
+At 0:54, Curse of Tongues appeared on all three friendly players — dispel type is Curse, and Preservation Evoker can dispel Curses. The log shows it ran for 30 seconds on you, 28 seconds on the Shaman, 28 seconds on the Warrior. That is roughly 428k total damage taken across the team during the uncleansed window. This is the match's biggest avoidable mistake. When Curse of Tongues lands on all three players simultaneously, you must clear the Warrior first (he is taking the most melee damage), then yourself, then the Shaman.
+
+The enemy's strategy was patient: Affliction Warlock applied sustained DOT pressure, the Frost Mage added Polymorph CC on you, and the Disc Priest ran Mind Control and Psychic Scream to disrupt. This is a grind comp. They were not trying to burst anyone down in the first minute — they were stacking DOTs, applying Curses, and running Power Infusion to amplify their sustained output. Your team's counters are Sleep Walk (you used it well on the Disc Priest multiple times) and the Warrior's offensive CDs.
+
+The personal damage spike at 3:06 (1.48M in 10 seconds on you) is the moment the match shifted decisively. You went from 69% to 33% in one tick at 3:09. You survived by using your personal defensives (Obsidian Scales, Rescue to self, healing burst to 88% at 3:10). But from 3:10 onward the enemy continued pressing you as the target.
+
+Mind Control at 3:14 on the Shaman for 6 seconds is the kill setup: you are now 2v3 for 6 seconds. During that window, you went from 58% to dead at 3:24. Rewind was on a 142-second cooldown at 2:15 when it was available — there is no record of it being used in the final crisis. Check whether Rewind was on cooldown at the time of your death or whether it was a missed usage.
+
+Key adjustments: set a priority for Curse dispel — whenever Curse of Tongues appears on any player taking Drain Soul or other sustained damage, clear it immediately. It slows all casting by 50%, which means your healing spells cost more time and create windows where you cannot respond to burst.

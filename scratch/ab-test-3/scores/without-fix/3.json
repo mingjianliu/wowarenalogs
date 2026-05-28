@@ -1,0 +1,9 @@
+{
+  "prompt": {
+    "sufficiency": 5,
+    "noise": 2,
+    "labelBias": 5,
+    "inferenceScaffolding": 4,
+    "notes": "There is significant noise from per-second [STATE] lines and duplicated back-to-back fast casts."
+  }
+}

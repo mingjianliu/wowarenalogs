@@ -1,0 +1,15 @@
+Top Restoration Druids in short_tunnel matches show 51% CD never-used — meaning in the typical 99-second average match, half the loadout stays on cooldown. In a 17-second match, essentially the entire loadout stays unused. This match was resolved before any healing emergency could develop, so the benchmark statistics are largely inapplicable here.
+
+The archetype's 58% optimal CD timing standard is defined around matches where CDs are actually triggered by damage events. Your Incarnation: Tree of Life at 0:10 was used opportunistically — the match was effectively over at that point (enemy Priest at 17% HP at 0:13, Feral at 56%) — but it's not a mistimed CD in the traditional sense. Using Incarnation when a kill window is open and your team is healthy is valid, even if it's not the defensive emergency use the archetype typically scores.
+
+Innervate at 0:10 is technically a CD in the archetype's loadout. Using it freely in a 17-second match is correct — there's no reason to save mana resources when the match is concluding.
+
+Pre-cast Rejuvenation on the Warrior at 0:00, Ret Paladin at 0:02, and yourself at 0:03 is the right opening routine and matches what the archetype benchmarks expect at the 7853ms response latency threshold. The healing was applied before damage arrived (Warrior hit 80% at 0:08) — technically above the 7853ms median response time but the HoTs were already ticking by the time damage landed.
+
+Offensive participation: the archetype averages 53%. You cast Wrath on the Disc Priest at 0:13 and used Entangling Roots at 0:15 and Cyclone at 0:13 and 0:16. Two offensive CC events in 17 seconds is a very high per-second rate, though the small sample size makes comparison to the 4.2 mean outgoing CC events per match meaningless.
+
+The missed cleanse rate in this archetype is 29%. No cleanses were needed in this match — the Feral's only CC was Rake at 0:05 (1-second stun, trinket burned by the Paladin). There are no missed cleanse events.
+
+The Ret Paladin's trinket spent at 0:05 on a 1-second Rake is the only decision worth flagging for future matches: a 1-second CC from a Feral opener is survivable without trinket. That trinket would be meaningful later in matches that actually go long. In short_tunnel matches, however, where kills often happen in the first 30 seconds, it's a lower-stakes error than in dampening grind contexts.
+
+Summary: this match is not analytically useful for coaching purposes beyond confirming correct pre-cast discipline. The result was determined before meaningful healer decisions could be tested.

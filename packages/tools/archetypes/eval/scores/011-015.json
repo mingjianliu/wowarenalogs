@@ -1,0 +1,197 @@
+[
+  {
+    "matchId": "22efcd80b1d0e7b9a79db8d886a64305",
+    "ordinal": 11,
+    "spec": "Discipline Priest",
+    "archetype": "balanced_swap",
+    "result": "Win",
+    "scores": {
+      "baseline": {
+        "focusCalibration": 4,
+        "outcomeAlignment": 4,
+        "accuracy": 5,
+        "hallucination_risk": 5
+      },
+      "label_only": {
+        "focusCalibration": 4,
+        "outcomeAlignment": 4,
+        "accuracy": 5,
+        "hallucination_risk": 5
+      },
+      "narrative": {
+        "focusCalibration": 5,
+        "outcomeAlignment": 4,
+        "accuracy": 5,
+        "hallucination_risk": 4
+      },
+      "narrative_stats": {
+        "focusCalibration": 5,
+        "outcomeAlignment": 5,
+        "accuracy": 5,
+        "hallucination_risk": 4
+      }
+    },
+    "notes": {
+      "baseline": "Correctly identifies missed Flame Shock cleanse, PI waste on full targets, and Psychic Scream as the decisive play enabling the Evoker kill. No invented details. Slight lack of calibration in that Pain Suppression analysis gets equal weight to the two primary issues.",
+      "label_only": "Label adds useful framing that PI timing matters in balanced_swap because enemy windows are spaced. Substance unchanged. No hallucinations.",
+      "narrative": "References 34% missed cleanse rate from archetype context — applies it accurately to the actual missed Flame Shock. Explains PI depletion relative to the archetype's spaced offensive windows. Slightly better coaching than baseline. Low hallucination risk: the stat matches the match event.",
+      "narrative_stats": "Uses 47% optimal CD timing benchmark and 3.6 CC/match stat to contextualize Psychic Scream as purposeful CC. All stat applications are grounded in actual match events. PI waste and cleanse miss framed with quantitative precision. The 3576ms median response latency applied to Pain Suppression is the one stat where the connection to the actual event is slightly stretched (the PainSup was at 0:36, not notably slow). Hallucination risk is low but not zero."
+    }
+  },
+  {
+    "matchId": "e8679ffe321fc16d761261ed12018019",
+    "ordinal": 12,
+    "spec": "Mistweaver Monk",
+    "archetype": "heavy_burst_tunnel",
+    "result": "Win",
+    "scores": {
+      "baseline": {
+        "focusCalibration": 5,
+        "outcomeAlignment": 4,
+        "accuracy": 5,
+        "hallucination_risk": 5
+      },
+      "label_only": {
+        "focusCalibration": 5,
+        "outcomeAlignment": 4,
+        "accuracy": 5,
+        "hallucination_risk": 5
+      },
+      "narrative": {
+        "focusCalibration": 5,
+        "outcomeAlignment": 4,
+        "accuracy": 5,
+        "hallucination_risk": 4
+      },
+      "narrative_stats": {
+        "focusCalibration": 5,
+        "outcomeAlignment": 5,
+        "accuracy": 5,
+        "hallucination_risk": 3
+      }
+    },
+    "notes": {
+      "baseline": "Precisely identifies the two critical errors (Mortal Coil on fading Avatar Warrior, Dark Pact self-heal while Mage dying) and the two excellent plays (Shadowfury+Leg Sweep chain, Mortal Coil on dying Evoker). No invented content. Outcome alignment is good but could more explicitly address why the match was won despite the errors.",
+      "label_only": "Same quality as baseline with minimal archetype framing. Correctly notes heavy_burst_tunnel requires CC on active damage dealer. No hallucinations.",
+      "narrative": "Contextualizes the Warlock's tension between Dark Pact self-preservation and teammate CC needs well. Accurately uses archetype framing without inventing typical-pattern claims. The '34% missed cleanse rate' stat cited in the narrative prompt applies to Mistweaver but the coaching targets the Warlock — minor framing confusion, not a factual error in the response itself.",
+      "narrative_stats": "Uses 63% optimal timing, 1% healing gap rate, 6.2 CC/match, tunnel score 0.653 all tied to actual events. The 39% missed cleanse rate citing 'Mistweaver' while coaching the Warlock creates conceptual noise but does not produce false claims about the match. The stat about 'CD response latency 7464ms' used to note the Monk almost never allows healing gaps — accurately applied. Slight hallucination risk from mixing Mistweaver and Warlock stats in ways that could confuse the reader about who is responsible for what."
+    }
+  },
+  {
+    "matchId": "f2d34dcd2ae2742672862e27e85e5731",
+    "ordinal": 13,
+    "spec": "Preservation Evoker",
+    "archetype": "dampening_grind_swap",
+    "result": "Win",
+    "scores": {
+      "baseline": {
+        "focusCalibration": 4,
+        "outcomeAlignment": 4,
+        "accuracy": 5,
+        "hallucination_risk": 5
+      },
+      "label_only": {
+        "focusCalibration": 5,
+        "outcomeAlignment": 4,
+        "accuracy": 5,
+        "hallucination_risk": 5
+      },
+      "narrative": {
+        "focusCalibration": 5,
+        "outcomeAlignment": 5,
+        "accuracy": 5,
+        "hallucination_risk": 4
+      },
+      "narrative_stats": {
+        "focusCalibration": 5,
+        "outcomeAlignment": 5,
+        "accuracy": 5,
+        "hallucination_risk": 4
+      }
+    },
+    "notes": {
+      "baseline": "Accurately identifies both missed Oppressing Roar cleanses, praises Rewind and Time Dilation timing, notes Sleep Walk usage. Correctly identifies Emerald Communion/Stasis spacing gap. Some weight given to the Oppressing Roar analysis at 0:15 that is largely unactionable (player was CC'd), reducing focus calibration slightly.",
+      "label_only": "Tighter version — leads with the two missed cleanses as the defining issue. Sleep Walk praised concisely. Emerald Communion/Stasis spacing noted. Strong focus on the recurring pattern vs. one-off events.",
+      "narrative": "Explains that dampening compounding magnifies every missed dispel. Lists Sleep Walk timestamps explicitly — all grounded in prompt data. The 34% optimal CD timing figure applied to Rewind and Time Dilation decisions. Excellent outcome alignment: explains why the Oppressing Roar dispel matters more in a dampening game than in a short match.",
+      "narrative_stats": "Uses 10s median CD response latency to set the sub-5s dispel goal for Oppressing Roar — precise and well-reasoned. Purge rate 3.9/min referenced against Sleep Walk cadence. The '319s average match vs 365s actual' framing accurately explains why Emerald Communion/Stasis compression became visible. Healing gap rate 0% confirmed by actual performance. All stat applications grounded in real match events."
+    }
+  },
+  {
+    "matchId": "9a29ed803a1a9a60982b3c39b0692566",
+    "ordinal": 14,
+    "spec": "Restoration Druid",
+    "archetype": "short_tunnel",
+    "result": "Loss",
+    "scores": {
+      "baseline": {
+        "focusCalibration": 5,
+        "outcomeAlignment": 5,
+        "accuracy": 5,
+        "hallucination_risk": 5
+      },
+      "label_only": {
+        "focusCalibration": 5,
+        "outcomeAlignment": 5,
+        "accuracy": 3,
+        "hallucination_risk": 3
+      },
+      "narrative": {
+        "focusCalibration": 5,
+        "outcomeAlignment": 5,
+        "accuracy": 3,
+        "hallucination_risk": 3
+      },
+      "narrative_stats": {
+        "focusCalibration": 5,
+        "outcomeAlignment": 5,
+        "accuracy": 5,
+        "hallucination_risk": 5
+      }
+    },
+    "notes": {
+      "baseline": "Precisely traces the Paladin's death to Ironbark at 93% HP at 0:27 (90s CD, unavailable at 1:14 when Paladin at 41%). Correctly identifies 1:37 Cyclone on Priest instead of Windwalker. Notes PI buff on Monk was purgeable but attributed to Warrior call (Druid cannot purge — accurate). No invented timestamps or events. The strongest response across all variants for this match.",
+      "label_only": "Same focus on Ironbark timing as the core cause. Correctly praises cleanses and Cyclone on Windwalker at 0:51. CONTAINS A FACTUAL ERROR: states 'Ironbark had been off cooldown since 1:08 (90-second CD from 0:27 expiry)' — the correct calculation is 0:27 + 90s = 1:57, not 1:08. Ironbark was NOT available at 1:14 when needed; it was still on CD. This inverts the causal claim, making it appear Ironbark was available but unused, when actually it was on cooldown. This is a significant accuracy error.",
+      "narrative": "Same Ironbark analysis as label_only. CONTAINS THE SAME FACTUAL ERROR: 'Ironbark had come back around 1:08 (90-second CD from 0:27 expiry).' This is mathematically wrong. Ironbark was on CD when the Paladin was at 41% HP at 1:14. The narrative correctly states at 0:27 + 90s = 1:57, but then contradicts itself by saying '1:08'. The archetype context about short_tunnel matches resolving around a single kill window is accurate and appropriate framing.",
+      "narrative_stats": "Uses 58% optimal CD timing and correctly states 'cast at 0:27, 90-second CD, available at 1:57. But the Paladin died at 1:33.' This is mathematically correct and does NOT repeat the 1:08 error. The 99s median match length vs 103s actual is accurate. The 51% CD never-used rate applied to unused CDs (Tranquility, Frenzied Regeneration) is accurate. Strongest accuracy of the three archetype-context variants."
+    }
+  },
+  {
+    "matchId": "497dca8fe606ddeb1d3c61f6209499b3",
+    "ordinal": 15,
+    "spec": "Holy Paladin",
+    "archetype": "short_passive_swap",
+    "result": "Loss",
+    "scores": {
+      "baseline": {
+        "focusCalibration": 5,
+        "outcomeAlignment": 5,
+        "accuracy": 5,
+        "hallucination_risk": 5
+      },
+      "label_only": {
+        "focusCalibration": 5,
+        "outcomeAlignment": 5,
+        "accuracy": 5,
+        "hallucination_risk": 5
+      },
+      "narrative": {
+        "focusCalibration": 5,
+        "outcomeAlignment": 5,
+        "accuracy": 5,
+        "hallucination_risk": 4
+      },
+      "narrative_stats": {
+        "focusCalibration": 5,
+        "outcomeAlignment": 5,
+        "accuracy": 5,
+        "hallucination_risk": 4
+      }
+    },
+    "notes": {
+      "baseline": "Identifies the 9.7s healing gap at 3:37 as the decisive event, ties it to the Wrath cast on Warlock while Monk at 34% HP. Structural kill target problem (Rogue vs Warlock) clearly explained. Divine Shield at 2:04 correctly flagged as interrupting healing output. Exceptional cleanse output correctly credited for extending match to 3:47. No invented content.",
+      "label_only": "Same quality as baseline. Structural issue (Restoration Shaman without purge → Rogue target choice was wrong) clearly stated. The 9.7s gap correctly identified as match-ending event. Divine Shield at 2:04 flagged. Clean and accurate.",
+      "narrative": "Describes the Warlock+Rogue passive damage machine accurately — DoTs, poisons, Haunt, Unstable Affliction. Avenging Crusader timing analysis is correct (0:31, 1:33, 2:42). Lists exact cleanse timestamps from prompt data. The Wrath cast at 3:37 identified correctly. Slight hallucination risk from the framing 'short_passive_swap losses have a recognizable signature' — this pattern description is plausible but is a general claim not entirely derived from the match data, though it does not contradict any match facts.",
+      "narrative_stats": "Uses 42% optimal CD timing to individually rate each major CD — these ratings are all verified against match timeline events. The 14% healing gap rate framing applied to the 9.7s gap at 3:37 is accurate and explanatory. '53% CD never-used' correctly applied to unused major CDs. '43% offensive participation' used to critique the Wrath cast at 3:37 — this is the strongest application of a stat to a real match decision. The 118s archetype median vs 3:47 actual used to note structural mismatch (Shaman sustain extended the match). All applications grounded in match data."
+    }
+  }
+]

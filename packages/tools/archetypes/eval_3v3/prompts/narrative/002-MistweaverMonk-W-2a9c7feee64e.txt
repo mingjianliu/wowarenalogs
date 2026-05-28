@@ -1,0 +1,251 @@
+[MATCH TYPE: passive_dampening]
+**Opponents:** Neither team escalates. Enemies apply moderate CC and steady pressure but never commit cooldowns to a kill window. The round drifts into deep dampening and is decided by accumulated mistakes rather than any moment of peak danger.
+
+**Your role:** With no real burst threat, offensive contribution matters more than defensive positioning. Your team's ability to CC the enemy healer and force them into poor decisions determines the outcome.
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Frost Mage | Bracket: 3v3 | Result: Win | Duration: 2:24
+  My team: Subtlety Rogue, Mistweaver Monk, Frost Mage
+  Enemy team: Restoration Druid, Retribution Paladin, Arms Warrior
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Frost Mage): CAN offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 10% at match end
+
+## CC Chains
+  Restoration Druid (Halloflash-Sargeras-US): 15 CC — 4× Incapacitate, 8× Stun, 3× Disorient | 3 reduced, 0 immune
+  Retribution Paladin (Deelong-Tichondrius-US): 15 CC — 7× Incapacitate, 6× Stun, 2× Disorient | 5 reduced, 0 immune
+  Arms Warrior (Yamatoflash-Tichondrius-US): 11 CC — 3× Disorient, 5× Incapacitate, 2× Stun, 1× Disarm | 1 reduced, 0 immune
+
+## Enemy Cooldown Timeline
+  #1 — 0:16–0:44 | Score: 11.2 [CRITICAL] | Dampening: 10%
+    CDs: Avatar (Yamatoflash-Tichondrius-US) + Execution Sentence (Deelong-Tichondrius-US) + Avenging Wrath (Deelong-Tichondrius-US)
+    Damage: 0.86M (2.0× match avg) | healer free
+    Most pressured: Jectr-Tichondrius-US HP: 87% start → 95% mid → 60% end
+  #2 — 0:27–0:35 | Score: 20.2 [CRITICAL] | Dampening: 10%
+    CDs: Innervate (Halloflash-Sargeras-US) + Incarnation: Tree of Life (Halloflash-Sargeras-US) + Nature's Swiftness (Halloflash-Sargeras-US)
+    Damage: 1.16M (2.7× match avg) | healer free
+    Most pressured: Blãýsiêß-Tichondrius-US HP: 88% start → 100% mid → 43% end
+  #3 — 1:29–1:53 | Score: 22.5 [CRITICAL] | Dampening: 10%
+    CDs: Avatar (Yamatoflash-Tichondrius-US) + Avenging Wrath (Deelong-Tichondrius-US) + Nature's Swiftness (Halloflash-Sargeras-US) + Execution Sentence (Deelong-Tichondrius-US)
+    Damage: 1.43M (3.4× match avg) | healer free
+    Most pressured: Blãýsiêß-Tichondrius-US HP: 85% start → 26% mid → 100% end
+  CDs not recovered before match ended: Restoration Druid: Innervate — not used again after 0:27; Restoration Druid: Incarnation: Tree of Life — not used again after 0:27; Restoration Druid: Nature's Swiftness — not used again after 1:35; Restoration Druid: Nature's Swiftness — not used again after 2:18; Retribution Paladin: Avenging Wrath — not used again after 0:24; Retribution Paladin: Avenging Wrath — not used again after 1:33; Retribution Paladin: Execution Sentence — not used again after 1:36; Arms Warrior: Avatar — not used again after 1:29
+
+## Kill Attempt Windows
+  0:16–0:44  [CRITICAL]  0.51M on Subtlety Rogue | CDs: Avatar + Execution Sentence + Avenging Wrath
+  0:27–0:35  [CRITICAL]  0.48M on Frost Mage | CDs: Innervate + Incarnation: Tree of Life + Nature's Swiftness
+  1:29–1:53  [CRITICAL]  0.60M on Frost Mage | CDs: Avatar + Avenging Wrath + Nature's Swiftness + Execution Sentence
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Blãýsiêß-Tichondrius-US (Frost Mage — log owner):
+    Ice Block [240s], Dragon's Breath [45s, 2 Charges]
+  2: Jectr-Tichondrius-US (Subtlety Rogue):
+    Cloak of Shadows [120s], Kidney Shot [30s], Shadow Blades [90s]
+  3: Makefistory-Area52-US (Mistweaver Monk):
+    Paralysis [45s], Leg Sweep [60s], Life Cocoon [120s, 2 Charges]
+  4: Halloflash-Sargeras-US (Restoration Druid — enemy):
+    Innervate [180s], Incarnation: Tree of Life [180s], Nature's Swiftness [60s]
+  5: Deelong-Tichondrius-US (Retribution Paladin — enemy):
+    Execution Sentence [60s], Avenging Wrath [120s]
+  6: Yamatoflash-Tichondrius-US (Arms Warrior — enemy):
+    Avatar [90s]
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:10  [TEAMMATE CC]   2 (Subtlety Rogue): Kidney Shot
+0:11  [CC ON TEAM]   2 ← Rake (Halloflash-Sargeras-US) | 4s | trinket: available
+0:12  [STATE]   friends 1:100 2:96 3:100 / enemies 4:100 5:92 6:96
+0:13  [STATE]   friends 1:100 2:95 3:100 / enemies 4:100 5:92 6:97
+0:13  [CC ON TEAM]   1 ← Storm Bolt (Yamatoflash-Tichondrius-US) | 1s | trinket: used
+0:14  [STATE]   friends 1:100 2:96 3:100 / enemies 4:100 5:94 6:99
+0:14  [TRINKET]   1 used PvP trinket
+0:14  [OWNER CC]   Dragon's Breath
+0:14  [CC ON TEAM]   1 ← Champion's Spear (Yamatoflash-Tichondrius-US) | 6s | trinket: ON CD (120s left)
+0:15  [STATE]   friends 1:99 2:89 3:100 / enemies 4:100 5:97 6:99
+0:15  [TEAMMATE CC]   3 (Mistweaver Monk): Paralysis
+0:16  [STATE]   friends 1:95 2:84 3:100 / enemies 4:100 5:98 6:100
+0:16  [DMG SPIKE]   2 (Subtlety Rogue): 0.43M in 10s [P95 Danger] [BURST] (87% -> 82% HP)
+0:16  [OFFENSIVE WINDOW]   0:16–0:44 | Critical | 0.51M on 2 (Subtlety Rogue) | CDs: Avatar + Execution Sentence + Avenging Wrath
+0:16  [ENEMY CD]   6 (Arms Warrior): Avatar [1/2]
+0:16  [TEAMMATE CC]   3 (Mistweaver Monk): Leg Sweep
+0:16  [CC CAST]   Leg Sweep (by 3) → 4
+0:16  [TEAMMATE CD]   2 (Subtlety Rogue): Shadow Blades
+0:17  [STATE]   friends 1:89 2:87 3:100 / enemies 4:100 5:100 6:100
+0:18  [STATE]   friends 1:87 2:82 3:100 / enemies 4:100 5:100 6:100
+0:19  [STATE]   friends 1:86 2:64 3:100 / enemies 4:100 5:99 6:100
+0:20  [STATE]   friends 1:85 2:56 3:100 / enemies 4:100 5:92 6:100
+0:21  [STATE]   friends 1:85 2:55 3:100 / enemies 4:100 5:75 6:100
+0:21  [CC ON TEAM]   2 ← Hammer of Justice (Deelong-Tichondrius-US) | 3s | trinket: available
+0:22  [STATE]   friends 1:85 2:55 / enemies 4:100 5:75 6:100
+0:23  [STATE]   friends 1:85 2:57 / enemies 4:100 5:72 6:100
+0:24  [STATE]   friends 1:85 2:58 3:100 / enemies 4:100 5:67 6:100
+0:24  [ENEMY CD]   5 (Retribution Paladin): Execution Sentence [1/2]
+0:24  [ENEMY CD]   5 (Retribution Paladin): Avenging Wrath [1/2]
+0:25  [STATE]   friends 1:79 2:59 3:100 / enemies 4:100 5:53 6:97
+0:25  [DMG SPIKE]   1 (Frost Mage): 0.48M in 10s [P95 Danger] [BURST] (79% -> 43% HP)
+0:26  [STATE]   friends 1:55 2:38 3:100 / enemies 4:100 5:41 6:97
+0:27  [STATE]   friends 1:89 2:84 3:100 / enemies 4:100 5:99 6:100
+0:27  [OFFENSIVE WINDOW]   0:27–0:35 | Critical | 0.48M on 1 (Frost Mage) | CDs: Innervate + Incarnation: Tree of Life + Nature's Swiftness
+0:27  [ENEMY CD]   4 (Restoration Druid): Innervate
+0:27  [ENEMY CD]   4 (Restoration Druid): Incarnation: Tree of Life
+0:28  [STATE]   friends 1:98 2:85 3:100 / enemies 4:100 5:100 6:97
+0:29  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:95
+0:30  [STATE]   friends 1:100 2:95 3:100 / enemies 4:100 5:100 6:94
+0:31  [STATE]   friends 1:100 2:94 3:100 / enemies 4:100 5:100 6:98
+0:31  [ENEMY CD]   4 (Restoration Druid): Nature's Swiftness [1/3]
+0:32  [CC ON TEAM]   3 ← Cyclone (Halloflash-Sargeras-US) | 3s | trinket: used
+0:33  [STATE]   friends 1:99 2:92 3:100 / enemies 4:100 5:100 6:87
+0:34  [STATE]   friends 1:71 2:94 3:100 / enemies 4:100 5:99 6:81
+0:35  [STATE]   friends 1:54 2:87 3:100 / enemies 4:100 5:100 6:99
+0:35  [TRINKET]   3 used PvP trinket
+0:36  [STATE]   friends 1:32 2:89 3:100 / enemies 4:100 5:100 6:94
+0:36  [TEAMMATE CD]   3 (Mistweaver Monk): Life Cocoon
+0:37  [STATE]   friends 1:43 2:84 3:100 / enemies 4:100 5:100 6:89
+0:38  [STATE]   friends 1:57 2:86 3:100 / enemies 4:93 5:100 6:88
+0:39  [STATE]   friends 1:79 2:95 3:100 / enemies 4:100 5:100 6:93
+0:40  [STATE]   friends 1:89 2:97 3:100 / enemies 4:99 5:100 6:93
+0:40  [DMG SPIKE]   2 (Subtlety Rogue): 0.51M in 10s [P95 Danger] [BURST] (93% -> 98% HP)
+0:40  [CC ON TEAM]   2 ← Storm Bolt (Yamatoflash-Tichondrius-US) | 3s | trinket: available
+0:41  [STATE]   friends 1:100 2:90 3:100 / enemies 4:91 5:100 6:96
+0:42  [STATE]   friends 1:100 2:73 3:100 / enemies 4:90 5:100 6:100
+0:43  [STATE]   friends 1:100 2:61 3:100 / enemies 4:86 5:100 6:100
+0:43  [CC ON TEAM]   1 ← Cyclone (Halloflash-Sargeras-US) | 5s | trinket: ON CD (92s left)
+0:44  [STATE]   friends 1:100 2:62 3:100 / enemies 4:84 5:100 6:100
+0:45  [STATE]   friends 1:100 2:70 3:100 / enemies 4:96 5:95 6:97
+0:46  [STATE]   friends 2:87 3:100 / enemies 4:86 5:92 6:99
+0:47  [STATE]   friends 2:84 3:100 / enemies 4:80 5:86 6:100
+0:48  [STATE]   friends 1:99 2:87 3:100 / enemies 4:69 5:77 6:100
+0:49  [STATE]   friends 1:100 2:95 3:100 / enemies 4:47 5:60 6:97
+0:50  [STATE]   friends 1:100 2:98 3:100 / enemies 4:49 5:61 6:100
+0:51  [STATE]   friends 1:91 2:98 3:100 / enemies 4:45 5:61 6:100
+0:51  [CC ON TEAM]   3 ← Hammer of Justice (Deelong-Tichondrius-US) | 5s | trinket: ON CD (74s left)
+0:52  [STATE]   friends 1:84 2:100 3:100 / enemies 4:89 5:63 6:100
+0:53  [STATE]   friends 1:82 2:100 3:100 / enemies 4:100 5:78 6:100
+0:54  [STATE]   friends 1:71 2:99 3:100 / enemies 4:100 5:86 6:100
+0:55  [STATE]   friends 1:72 2:99 3:100 / enemies 4:100 5:90 6:100
+0:56  [STATE]   friends 1:73 2:95 3:99 / enemies 4:100 5:98 6:100
+0:56  [CC ON TEAM]   3 ← Incapacitating Roar (Halloflash-Sargeras-US) | 3s | trinket: ON CD (69s left)
+0:57  [STATE]   friends 1:74 2:98 3:99 / enemies 4:100 5:100 6:100
+0:58  [STATE]   friends 1:75 2:100 3:99 / enemies 4:100 5:100 6:100
+0:59  [STATE]   friends 1:70 2:100 3:99 / enemies 4:100 5:100 6:100
+1:00  [STATE]   friends 1:69 2:98 3:99 / enemies 4:100 5:93 6:100
+1:00  [CC ON TEAM]   2 ← Shockwave (Yamatoflash-Tichondrius-US) | 3s | trinket: available
+1:01  [STATE]   friends 1:72 2:97 3:100 / enemies 4:100 5:82 6:100
+1:01  [TEAMMATE CC]   3 (Mistweaver Monk): Paralysis
+1:02  [STATE]   friends 1:65 2:98 3:100 / enemies 4:100 5:63 6:100
+1:03  [STATE]   friends 1:51 2:100 3:100 / enemies 4:100 5:58 6:99
+1:04  [STATE]   friends 1:48 2:99 3:100 / enemies 4:100 5:76 6:92
+1:05  [STATE]   friends 1:39 2:99 3:100 / enemies 4:100 5:77 6:91
+1:06  [STATE]   friends 1:55 2:99 3:100 / enemies 4:100 5:81 6:88
+1:07  [STATE]   friends 1:49 2:99 3:100 / enemies 4:100 5:79 6:69
+1:07  [DMG SPIKE]   1 (Frost Mage): 0.60M in 10s [P95 Danger] [BURST] (49% -> 31% HP)
+1:08  [STATE]   friends 1:48 2:98 3:100 / enemies 4:100 5:81 6:67
+1:09  [STATE]   friends 1:54 2:97 3:100 / enemies 4:100 5:83 6:57
+1:10  [STATE]   friends 1:74 2:95 3:100 / enemies 4:100 5:85 6:57
+1:11  [STATE]   friends 1:80 2:94 3:99 / enemies 4:100 5:86 6:76
+1:11  [CC ON TEAM]   2 ← Intimidating Shout (Yamatoflash-Tichondrius-US) | 4s | trinket: available
+1:11  [CC ON TEAM]   3 ← Intimidating Shout (Yamatoflash-Tichondrius-US) | 6s | trinket: ON CD (55s left)
+1:12  [STATE]   friends 1:100 2:94 3:99 / enemies 4:100 5:90 6:93
+1:13  [STATE]   friends 1:87 2:93 3:98 / enemies 4:100 5:98 6:97
+1:14  [STATE]   friends 1:83 2:93 3:98 / enemies 4:100 5:99 6:99
+1:14  [CC ON TEAM]   1 ← Storm Bolt (Yamatoflash-Tichondrius-US) | 3s | trinket: ON CD (61s left)
+1:15  [STATE]   friends 1:81 2:93 3:98 / enemies 4:100 5:100 6:100
+1:16  [STATE]   friends 1:63 2:81 3:97 / enemies 4:100 5:100 6:100
+1:17  [STATE]   friends 1:43 2:80 3:98 / enemies 4:99 5:100 6:100
+1:17  [OWNER CD]   Ice Block
+      [RES] rdy:Ice Block,Dragon's Breath,2:Cloak of Shadows,2:Kidney Shot,3:Leg Sweep  cd:2:Shadow Blades(30s),3:Paralysis(29s),3:Life Cocoon(79s)  cc:3/Intimidating Shout-0s
+1:18  [STATE]   friends 1:32 2:78 3:97 / enemies 4:100 5:100 6:100
+1:19  [STATE]   friends 1:35 2:76 3:96 / enemies 4:99 5:100 6:100
+1:20  [STATE]   friends 1:77 2:73 3:97 / enemies 4:100 5:100 6:100
+1:20  [BUFF FADED]   Ice Block
+1:21  [STATE]   friends 1:86 2:69 3:96 / enemies 4:99 5:99 6:100
+1:22  [STATE]   friends 1:78 2:59 3:96 / enemies 4:99 5:100 6:100
+1:23  [STATE]   friends 1:61 2:46 3:85 / enemies 4:97 5:100 6:100
+1:23  [CC ON TEAM]   3 ← Hammer of Justice (Deelong-Tichondrius-US) | 5s | trinket: ON CD (42s left)
+1:24  [STATE]   friends 1:81 2:76 3:84 / enemies 4:84 5:100 6:100
+1:25  [STATE]   friends 1:87 2:75 3:67 / enemies 4:79 5:100 6:100
+1:26  [STATE]   friends 1:88 2:74 3:62 / enemies 4:85 5:100 6:100
+1:26  [OWNER CC]   Dragon's Breath
+      [RES] rdy:Δ-Ice Block  cd:Ice Block(231s)  cc:1/Polymorph-2s[kick],3/Hammer of Justice-3s[stun]
+1:27  [STATE]   friends 1:89 2:75 3:61 / enemies 4:98 5:100 6:100
+1:28  [STATE]   friends 1:87 2:73 3:59 / enemies 4:100 5:100 6:100
+1:28  [TEAMMATE CC]   2 (Subtlety Rogue): Kidney Shot
+1:28  [CC ON TEAM]   3 ← Maim (Halloflash-Sargeras-US) | 3s | trinket: ON CD (37s left)
+1:29  [STATE]   friends 1:85 2:73 3:57 / enemies 4:100 5:98 6:100
+1:29  [OFFENSIVE WINDOW]   1:29–1:53 | Critical | 0.60M on 1 (Frost Mage) | CDs: Avatar + Avenging Wrath + Nature's Swiftness + Execution Sentence
+1:29  [ENEMY CD]   6 (Arms Warrior): Avatar [2/2]
+1:29  [DMG SPIKE]   1 (Frost Mage): 0.60M in 10s [P95 Danger] [BURST] (84% -> 31% HP)
+1:30  [STATE]   friends 1:82 2:73 3:53 / enemies 4:100 5:100 6:100
+1:31  [STATE]   friends 1:66 2:67 3:49 / enemies 4:100 5:100 6:100
+1:31  [CLEANSE]   3 dispelled Truth's Wake off 3
+1:32  [STATE]   friends 1:39 2:66 3:51 / enemies 4:100 5:100 6:100
+1:33  [STATE]   friends 1:37 2:72 3:53 / enemies 4:100 5:100 6:100
+1:33  [ENEMY CD]   5 (Retribution Paladin): Avenging Wrath [2/2]
+1:34  [STATE]   friends 1:44 2:71 3:72 / enemies 4:98 5:100 6:100
+1:35  [STATE]   friends 1:58 2:96 3:77 / enemies 4:100 5:99 6:77
+1:35  [ENEMY CD]   4 (Restoration Druid): Nature's Swiftness [2/3]
+1:35  [CC ON TEAM]   3 ← Cyclone (Halloflash-Sargeras-US) | 5s | trinket: ON CD (30s left)
+1:36  [STATE]   friends 1:68 2:80 3:77 / enemies 4:100 5:98 6:79
+1:36  [ENEMY CD]   5 (Retribution Paladin): Execution Sentence [2/2]
+1:37  [STATE]   friends 1:70 2:77 3:77 / enemies 4:100 5:98 6:77
+1:38  [STATE]   friends 1:55 2:75 / enemies 4:100 5:91 6:77
+1:39  [STATE]   friends 1:44 2:75 / enemies 4:100 5:85 6:78
+1:40  [STATE]   friends 1:31 2:74 3:78 / enemies 4:100 5:84 6:79
+1:40  [CC ON TEAM]   2 ← Shockwave (Yamatoflash-Tichondrius-US) | 3s | trinket: available
+1:40  [TEAMMATE CD]   3 (Mistweaver Monk): Life Cocoon
+1:41  [STATE]   friends 1:25 2:72 3:78 / enemies 4:100 5:82 6:81
+1:42  [STATE]   friends 1:59 2:73 3:78 / enemies 4:100 5:83 6:83
+1:43  [STATE]   friends 1:68 2:70 3:79 / enemies 4:100 5:79 6:87
+1:44  [STATE]   friends 1:79 2:66 3:83 / enemies 4:100 5:65 6:90
+1:45  [STATE]   friends 1:89 2:71 3:86 / enemies 4:100 5:60 6:91
+1:46  [STATE]   friends 1:100 2:67 3:89 / enemies 4:92 5:61 6:79
+1:47  [STATE]   friends 1:100 2:68 3:87 / enemies 4:100 5:87 6:89
+1:48  [STATE]   friends 1:100 2:68 3:80 / enemies 4:100 5:90 6:92
+1:48  [TEAMMATE CD]   2 (Subtlety Rogue): Shadow Blades
+1:49  [STATE]   friends 1:100 2:61 3:82 / enemies 4:89 5:93 6:94
+1:49  [CC ON TEAM]   3 ← Champion's Spear (Yamatoflash-Tichondrius-US) | 6s | trinket: ON CD (16s left)
+1:50  [STATE]   friends 1:100 2:51 3:84 / enemies 4:72 5:90 6:85
+1:51  [STATE]   friends 1:100 2:54 3:97 / enemies 4:51 5:75 6:73
+1:52  [STATE]   friends 1:100 2:45 3:91 / enemies 4:42 5:78 6:74
+1:53  [STATE]   friends 1:100 2:50 3:96 / enemies 4:36 5:72 6:71
+1:54  [STATE]   friends 1:95 2:95 3:95 / enemies 4:27 5:54 6:64
+1:55  [STATE]   friends 1:100 2:90 3:95 / enemies 4:61 5:72 6:71
+1:56  [STATE]   friends 1:99 2:89 3:91 / enemies 4:72 5:100 6:83
+1:57  [STATE]   friends 1:65 2:90 3:92 / enemies 4:73 5:100 6:87
+1:57  [TEAMMATE CC]   3 (Mistweaver Monk): Paralysis
+1:58  [STATE]   friends 1:54 2:97 3:92 / enemies 4:72 5:95 6:92
+1:59  [STATE]   friends 1:54 2:99 3:91 / enemies 4:78 5:99 6:95
+2:06  [CC ON TEAM]   3 ← Hammer of Justice (Deelong-Tichondrius-US) | 5s | trinket: available
+2:07  [STATE]   friends 1:57 2:91 3:97 / enemies 4:88 5:56 6:77
+2:08  [STATE]   friends 1:62 2:83 3:96 / enemies 4:93 5:59 6:77
+2:09  [STATE]   friends 1:64 2:83 3:95 / enemies 4:96 5:62 6:94
+2:10  [STATE]   friends 1:61 2:82 3:95 / enemies 4:100 5:73 6:99
+2:10  [OWNER CC]   Dragon's Breath
+      [RES] rdy:Δ  cd:—  cc:3/Hammer of Justice-1s[stun]
+2:11  [STATE]   friends 1:60 2:83 3:94 / enemies 4:99 5:78 6:100
+2:12  [STATE]   friends 1:63 2:81 3:94 / enemies 4:100 5:81 6:100
+2:13  [STATE]   friends 1:71 2:81 3:94 / enemies 4:96 5:85 6:100
+2:14  [STATE]   friends 1:81 2:84 3:96 / enemies 4:85 5:86 6:100
+2:15  [STATE]   friends 1:85 2:85 3:97 / enemies 4:73 5:88 6:100
+2:16  [STATE]   friends 1:94 2:90 3:100 / enemies 4:56 5:90 6:100
+2:17  [STATE]   friends 1:97 2:93 3:100 / enemies 4:42 5:91 6:100
+2:18  [STATE]   friends 1:100 2:100 3:100 / enemies 4:21 5:95 6:100
+2:18  [ENEMY CD]   4 (Restoration Druid): Nature's Swiftness [3/3]
+2:19  [STATE]   friends 1:100 2:99 3:100 / enemies 4:dead 5:96 6:100
+2:19  [DEATH]  4 (Restoration Druid — enemy)
+2:19  [ROSTER]  enemy 4 removed (dead)
+
+2:24  [MATCH END]   damp: 10%
+  friends 1:100% 2:100% 3:100% / enemies 4:dead(2:19) 5:100% 6:85%

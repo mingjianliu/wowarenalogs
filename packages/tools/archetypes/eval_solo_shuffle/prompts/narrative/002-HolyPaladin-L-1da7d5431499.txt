@@ -1,0 +1,77 @@
+[ARCHETYPE: Holy Paladin — fast_passive_tunnel]
+These 70-second rounds end quickly with zero recorded burst windows and a peak burst score of 0.0, yet carry the highest tunnel score (0.689), suggesting opponents lock onto a target without executing structured burst sequences. Holy Paladin healers use the fewest cooldowns of any cluster — 69.2% go unused — and offensive participation drops to just 16.7%, the lowest observed, consistent with healers spending the round exclusively managing sustained tunnel pressure on one target. The setup style breakdown is entirely unclassified, reflecting that these rounds lack recognizable offensive patterns and end before conventional kill setups can develop.
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Arms Warrior | Bracket: Rated Solo Shuffle | Result: Loss | Duration: 0:35
+  My team: Arms Warrior, Holy Paladin, Beast Mastery Hunter
+  Enemy team: Mistweaver Monk, Marksmanship Hunter, Fire Mage
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Arms Warrior): CANNOT offensive purge
+  Team purgers: none
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Сноррег-Гордунни-EU (Arms Warrior — log owner):
+    Avatar [90s], Intimidating Shout [90s], Die by the Sword [120s], Bladestorm (Arms) [90s]
+  2: Dadeluxe-Aegwynn-EU (Holy Paladin):
+    Lay on Hands [600s], Blessing of Protection [300s], Blessing of Spellwarding [300s], Avenging Wrath [120s], Blessing of Sacrifice [120s], Aura Mastery [180s]
+  3: Thräd-Silvermoon-EU (Beast Mastery Hunter):
+    Exhilaration [120s], Bestial Wrath [90s]
+  4: Zivac-Kazzak-EU (Fire Mage — enemy):
+    Combustion [120s]
+  5: Tisza-ArgentDawn-EU (Mistweaver Monk — enemy):
+    none tracked
+  6: Avent-Neptulon-EU (Marksmanship Hunter — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 3:100
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:09  [STATE]   friends 1:100 2:100 3:100
+0:12  [STATE]   friends 3:100
+0:15  [STATE]   friends 1:100 2:100 3:100
+0:17  [CC ON TEAM]   3 ← Dragon's Breath (Zivac-Kazzak-EU) | 3s
+0:18  [STATE]   friends 1:99 2:100 3:100 / enemies 5:100 4:100
+0:19  [STATE]   friends 1:99 3:100 / enemies 5:100 6:100 4:100
+0:20  [STATE]   friends 1:99 2:100 3:100 / enemies 5:100 6:100 4:100
+0:21  [STATE]   friends 1:98 2:100 3:87 / enemies 5:100 6:100 4:100
+0:22  [STATE]   friends 1:98 2:100 3:87 / enemies 5:100 6:100 4:100
+0:23  [STATE]   friends 1:100 2:100 3:99 / enemies 5:100 6:100 4:100
+0:24  [STATE]   friends 1:98 2:94 3:88 / enemies 5:100 6:100 4:100
+0:25  [STATE]   friends 1:97 2:83 3:70 / enemies 5:100 6:100 4:100
+0:25  [TEAMMATE CD]   3 (Beast Mastery Hunter): Exhilaration
+      [RES] rdy:Δ+Avatar,3:Exhilaration,3:Bestial Wrath  cd:—
+0:25  [DMG SPIKE]   1 (Arms Warrior): 0.61M in 10s
+0:26  [STATE]   friends 1:81 2:80 3:90 / enemies 5:100 6:100 4:100
+0:26  [OWNER CD]   Avatar
+      [RES] rdy:Avatar,Intimidating Shout,Die by the Sword,Bladestorm (Arms),2:Lay on Hands,2:Blessing of Protection,2:Blessing of Spellwarding,2:Avenging Wrath,2:Blessing of Sacrifice,2:Aura Mastery,3:Exhilaration,3:Bestial Wrath  cd:—
+0:27  [STATE]   friends 1:81 2:80 3:94 / enemies 5:100 6:100 4:100
+0:28  [STATE]   friends 1:74 2:100 3:100 / enemies 5:100 6:100 4:100
+0:28  [TEAMMATE CD]   3 (Beast Mastery Hunter): Bestial Wrath
+      [RES] rdy:Δ-Avatar,3:Exhilaration  cd:Avatar(88s),3:Exhilaration(117s)
+0:29  [STATE]   friends 1:73 2:100 3:100 / enemies 5:100 6:100 4:81
+0:29  [ENEMY CD]   4 (Fire Mage): Combustion
+0:30  [STATE]   friends 1:67 2:100 3:100 / enemies 5:100 6:100 4:67
+0:31  [STATE]   friends 1:55 2:100 3:100 / enemies 5:100 6:100 4:59
+0:31  [OWNER CD]   Die by the Sword
+      [RES] rdy:Δ-Avatar,3:Exhilaration,3:Bestial Wrath  cd:Avatar(85s),3:Exhilaration(115s),3:Bestial Wrath(87s)  enemy:Combustion/Fire Mage(1s)
+0:31  [CC ON TEAM]   2 ← Intimidation (Avent-Neptulon-EU) | 2s | trinket: used
+0:32  [STATE]   friends 1:30 2:100 3:100 / enemies 5:100 6:100 4:63
+0:33  [STATE]   friends 1:36 2:100 3:100 / enemies 5:100 6:100 4:72
+0:33  [CC ON TEAM]   2 ← Freezing Trap (Avent-Neptulon-EU) | 1s | trinket: used
+0:33  [TRINKET]   2 used PvP trinket
+0:34  [STATE]   friends 1:23 2:100 3:100 / enemies 6:100 4:84
+0:35  [STATE]   friends 1:dead 2:100 3:100 / enemies 6:100 4:90
+0:35  [BUFF FADED]   Avatar
+0:35  [BUFF FADED]   Die by the Sword
+0:35  [DEATH]  1 (Arms Warrior — friendly)
+               HP: 99% at T-15s → 97% at T-10s → 67% at T-5s → 29% at T-3s → dead
+               Top damage in final 10s: Zivac-Kazzak-EU — Огненная глыба (184k), Avent-Neptulon-EU — Прицельный выстрел (181k), Avent-Neptulon-EU — Черная стрела (74k)
+
+0:35  [MATCH END]   damp: 10%
+  friends 1:dead(0:35) 2:100% 3:100% / enemies 5:100% 6:100% 4:91%

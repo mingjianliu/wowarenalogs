@@ -1,29 +1,29 @@
 {
-  "generatedAt": "2026-04-11T20:48:28.471Z",
-  "gitCommit": "24929c3ebc01df6457344f32b60c382263cc9845",
+  "generatedAt": "2026-05-24T17:13:56.930Z",
+  "gitCommit": "2ccaae7bbef52e11ee3cb6c15e607a75b6e2ed33",
   "files": {
     "spellEffects.json": {
       "description": "Per-spell cooldown, duration, dispelType from Wago.tools DB2",
       "generatedBy": "npm run start:refreshSpellMetadata (packages/tools)",
       "wowDataDependent": true,
-      "entryCount": 763,
-      "sha256": "449b17b5413a2bf35833df5d9577d221d22d93050ce2b62d56d7bc125146b3ff",
+      "entryCount": 776,
+      "sha256": "ce026a1b811a252944898b8b8b23bbcf5c2ffd730a603d08835a0638b8a69951",
       "lastCommit": {
-        "hash": "ef94c8a79338b583581142c310f1d0a3a13e908d",
-        "date": "2026-04-02T00:12:33-07:00",
-        "subject": "fix(cd-analysis): add Evoker spells and fix missing tags for DK/Monk/Paladin/Druid/Shaman/Warlock"
+        "hash": "053ea6835d28b8a62ab6c40eecddeb30434afb1e",
+        "date": "2026-05-12T23:32:05-07:00",
+        "subject": "feat(F100): add Lay on Hands, Power Word: Barrier, Weapons of Order to spellEffects"
       }
     },
     "spells.json": {
       "description": "Spell type/priority classifications from BigDebuffs addon",
       "generatedBy": "npm run start:generateSpellsData (packages/tools)",
       "wowDataDependent": true,
-      "entryCount": 543,
-      "sha256": "67fbf7a1b3d34b2ddbb7468c36b2753573ca9efa0af55814b9a80e5297ea9db6",
+      "entryCount": 544,
+      "sha256": "5a77aee5cf516175ccd3b5545945a348f696d231704e525d670af6c39ea7faa4",
       "lastCommit": {
-        "hash": "69a9756ad900078977b294599956aa16f20e5dee",
-        "date": "2026-04-02T12:12:43-07:00",
-        "subject": "fix(ai): correct data quality issues from Antigravity refactor"
+        "hash": "6d104028373a87df424a30bc523ec364e76ca0ef",
+        "date": "2026-04-30T20:56:29-07:00",
+        "subject": "fix(enemyCDs): track Havoc Meta (191427) and Feral Spirit (51533) as offensive CDs (F44)"
       }
     },
     "spellIdLists.json": {
@@ -31,11 +31,23 @@
       "generatedBy": "npm run start:generateSpellIdLists (packages/tools)",
       "wowDataDependent": true,
       "entryCount": 8,
-      "sha256": "f86fcb4e5512e7cda67168aadd540808f368f6824cb9922cdc3d2fa02200af2a",
+      "sha256": "7eba81e13bd801f780fa144025eae3ec10d5c0ae9ad903638a7081ea29cf86a3",
       "lastCommit": {
-        "hash": "1e5717a1cb8ae8ed361a009ded45cde1870bd9e4",
-        "date": "2026-03-31T00:52:50-07:00",
-        "subject": "feat: add update-wow-data skill + update spell data to build 12.0.1.66709"
+        "hash": "6f1890cc6f8491db948b579c583cf5f14a2f9bee",
+        "date": "2026-04-16T02:28:05-04:00",
+        "subject": "merge: pull upstream/main (65 commits, spell library + mistakes tab + pvp talents)"
+      }
+    },
+    "trinketItemIds.json": {
+      "description": "Adaptation and Relentless PvP trinket item IDs from Wago.tools ItemSparse DB2",
+      "generatedBy": "npm run start:generateTrinketItemIds (packages/tools)",
+      "wowDataDependent": true,
+      "entryCount": 6,
+      "sha256": "0051eec2413854c29c6e7d36510166bd13362a8766182a089daa724e34d03c28",
+      "lastCommit": {
+        "hash": "66b9b465ff6a680ca12c40b8920fb0e8d399ffbc",
+        "date": "2026-04-29T22:31:34-07:00",
+        "subject": "chore(data): generate trinketItemIds.json from wago.tools DB2"
       }
     },
     "talentIdMap.json": {

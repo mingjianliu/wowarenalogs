@@ -1,0 +1,9 @@
+This is a heavy_burst_cc_swap loss — a 4:28 game against Devourer DH / Pres Evoker / Outlaw Rogue where the enemy delivered multiple coordinated burst windows using Adrenaline Rush + Oppressing Roar + Deep Breath combinations. You survived most of them but lost your Ret Paladin at 4:16 and then your Warrior at 4:28.
+
+The defining failure in a heavy_burst_cc_swap match is missing the dispel when the enemy's setup lands. At 1:08, Oppressing Roar hit all three of your players simultaneously. Your Warrior took 273k through that debuff alone — it's a magic dispel on a 10-second duration, and you were not CC'd. This is the dispel that converts the burst window from survivable to fatal. You got Psychic Scream on the Evoker and Pain Suppression on the Ret to survive that window, but the missed Oppressing Roar dispel made both of those more expensive than they needed to be.
+
+In the heavy_burst_cc_swap pattern, the enemy's setup is always the same structure: CC the healer, apply a major debuff, burst the target. When you can dispel the debuff, you collapse the burst window. When you miss it, you are spending major CDs to compensate.
+
+Pain Suppression at 3:12 on an 82% Ret was too early. The actual kill window came at 4:06 with Avatar firing into a 4s Kidney Shot on your Warrior. Pain Suppression had already faded. In a match with this many burst windows, you need to hold your second Pain Suppression charge until an enemy offensive CD confirms the kill attempt is real, not spend it defensively at high health.
+
+Your Psychic Scream usage was consistently correct — targeting the Evoker to disrupt their healing chain across the full match. That is the right priority in this archetype.

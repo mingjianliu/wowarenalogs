@@ -1,0 +1,15 @@
+This was a solid win against a Windwalker/Holy Paladin/Affliction Warlock team, and your defensive execution in the first offensive window at 0:23 was the highlight of the match. The enemy burned Touch of Karma, Avenging Crusader, and Soul Rip simultaneously on your Arms Warrior, putting him to 29% in 14 seconds. You responded with Rewind at 0:37 when he hit 29%, which was the right call — Time Dilation paired immediately after to amplify the Rewind throughput, and you fully recovered him to 100% by 0:40. That's textbook execution of your big defensive cooldown window.
+
+The Warrior taking 0.89M in 10 seconds at 0:34 was the critical moment. The enemy team stacked three major CDs into that window, and you held your ground. Wing Buffet at 0:30 before the Rewind kept the Shaman from applying additional pressure during the hardest seconds.
+
+However, there are two cleanse misses worth addressing. At 0:43, Mortal Coil landed on your Shaman while you had GCDs available and no CC on yourself — that's a Magic dispel you should be clearing immediately, especially with 24k taken during. More costly was Curse of Weakness on your Warrior from 0:49 onward: 392k taken during that curse over 38 seconds. You cannot purge curses yourself, but this needed to be called out to your Shaman earlier. Curse of Weakness meaningfully reduces your Warrior's damage output and survivability.
+
+Sleep Walk usage was good throughout — you consistently targeted the Holy Paladin during your Warrior's kill pressure windows on the Windwalker, which denied heals during the right moments. Particularly clean was the 0:27 Sleep Walk on the Druid-side at 0:28 into the Deep Breath opener.
+
+At 1:08 the Shaman took 0.82M in a spike and was sitting at 38% by 1:13. Emerald Communion at 1:14 was the right call — you had no other efficient option with Rewind on CD and the Shaman's trinket already spent. The timing was precise given the Hammer of Justice stun on you at 1:10 forced you to delay briefly.
+
+The second time you went personal at 1:36–1:40, absorbing a 0.71M spike on yourself, you stacked Obsidian Scales, Time Dilation, and your self-heals effectively. Dropping to 47% while keeping the Warrior at 100% shows good priority management.
+
+The kill came at 2:35 with the Windwalker dying after sustained pressure starting around 2:09. The final Ascendance from your Shaman at 2:30 was the decisive push. Your job was to keep the Warrior relevant until that second Ascendance came up, and you succeeded.
+
+Areas to improve: cleanse reaction time on magic debuffs (Mortal Coil, Psychic Scream type CC on allies), and get your Shaman to track and clear Curse of Weakness actively. The Warrior's damage output directly depends on being curse-free when he has Avatar rolling.

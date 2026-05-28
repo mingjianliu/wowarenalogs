@@ -1,0 +1,167 @@
+{
+  "016": {
+    "spec": "HolyPaladin",
+    "cluster": "passive_swap",
+    "result": "Win",
+    "baseline": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Comprehensive and accurate; minor ambiguity in Aura Mastery overlap timing, all verifiable claims pass."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Archetype framing adds context cleanly; all specific claims verified; cluster stat usage (2.44 CC events) appropriately hedged."
+    },
+    "narrative": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Good teaching angle on early Wings use; correctly notes win came through dampening; all log references verified."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Cluster stats (47% unused CDs, 37% optimal timing) unverifiable but directionally plausible; all verifiable log claims pass."
+    }
+  },
+  "017": {
+    "spec": "HolyPaladin",
+    "cluster": "heavy_burst_cc_swap",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Incorrectly attributes the PvP trinket use at 0:17 to the Holy Paladin (player 3) when the log shows it was the Arms Warrior (player 1)."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Correct identification of first Trueshot window as pivotal failure; all verifiable claims match the log; no trinket attribution error."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Mage HP at '78–55%' for 0:48–0:52 window slightly off (mage was at 84% at 0:50), but directionally correct; core teaching point is sound."
+    },
+    "narrative_stats": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Cluster stats unverifiable but verifiable log claims (Avenging Wrath, Trueshot, 0.74M spike, Leg Sweep lockout) all check out."
+    }
+  },
+  "018": {
+    "spec": "MistweaverMonk",
+    "cluster": "heavy_burst_swap",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "All major log references verified; minor inconsistency in framing Leg Sweep at 1:23 as 'limited value' when it correctly stunned BM Hunter during burst window."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Accurate on all verifiable claims; final Leg Sweep targeting recommendation is the highest-leverage coaching point and correctly identified."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "All specific claims verified; correctly identifies Leg Sweep at 2:26 targeting Hunter instead of Holy Paladin as the actionable improvement."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Claims 'Life Cocoon twice and Leg Sweep twice' but log shows three Leg Sweep casts (0:30, 1:23, 2:26) — direct factual error on CD count."
+    }
+  },
+  "019": {
+    "spec": "DisciplinePriest",
+    "cluster": "heavy_burst_tunnel",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Claims shaman dropped '24 percentage points in one second' at 1:34 — actually 3 seconds (44% at 1:31 to 20% at 1:34); all other HP values and CD timings accurate."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "Correctly prioritizes missed Power Infusion purge as key optimization; all log references verified; coherent archetype framing."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 5,
+      "hallucination_risk": false,
+      "notes": "All HP values, timing references, and CD states verified; shaman HP at 66–74% when Pain Suppression landed at 0:22 confirmed by log."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 4,
+      "hallucination_risk": false,
+      "notes": "Claims PI on '88-second cooldown' at death but calculation yields ~57s remaining; all other verifiable claims (Psychic Scream target, death damage) accurate."
+    }
+  },
+  "020": {
+    "spec": "DisciplinePriest",
+    "cluster": "fast_passive_tunnel",
+    "result": "Loss",
+    "baseline": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Claims 'enemy Retribution Paladin dropped to 22% by 1:06' but log shows player 5 (Fury Warrior) at 22% and player 6 (Ret Paladin) at 42%; also misattributes 0.79M outgoing damage to the 1:18 incoming spike (which was 0.59M)."
+    },
+    "label_only": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Repeats same error as baseline: 'enemy Retribution Paladin to 22% HP' when log shows Fury Warrior (player 5) at 22%, not Ret Paladin (player 6) at 42%."
+    },
+    "narrative": {
+      "focusCalibration": 5,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Same player ID confusion: states 'enemy Retribution Paladin to 22% HP' when log identifies player 5 at 22% as Fury Warrior."
+    },
+    "narrative_stats": {
+      "focusCalibration": 4,
+      "outcomeAlignment": 5,
+      "accuracy": 3,
+      "hallucination_risk": true,
+      "notes": "Repeats Retribution Paladin/Fury Warrior confusion at 1:06; Power Infusion expiry at 1:01 correctly verified; cluster stats unverifiable."
+    }
+  }
+}

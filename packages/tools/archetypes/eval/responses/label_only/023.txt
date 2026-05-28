@@ -1,0 +1,9 @@
+This is a cc_heavy_fast loss — a 2:32 game against Subtlety Rogue / Balance Druid / Pres Evoker where the enemy's CC density kept you partially or fully locked out of healing for most of the match. You were Cycloned, Kidney Shot, Blind, Cheap Shot, and Sleep Walked repeatedly from 0:25 onward, and ultimately died at 2:19 after being the primary kill target the whole game.
+
+The cc_heavy_fast label describes a match type where the healer absorbs enormous CC pressure and often dies to it. That is exactly what happened here. The critical decision point was Rewind: a 240-second CD you never used in a 152-second match. Rewind exists precisely for cc_heavy_fast situations — when you're being CC'd through your health bar and your smaller heals can't compensate fast enough, Rewind rewinds you to a safer state. At 1:34 you were at 23% health with Deep Breath CC still on you. At 2:18 you were at 32% health with Shadow Blades + Incarnation both active. Either moment was a correct Rewind usage.
+
+Emerald Communion at 1:02 was the right response to the first major kill attempt, and you executed it well. The problem is what came after: with Communion on 173-second cooldown after 1:02, you had no major throughput tool for the 2:10 window when they ran their second Incarnation. Rewind would have been that tool.
+
+Time Dilation on yourself at 1:35 when dropping to 23% was correct. Your Sleep Walk usage to disrupt the enemy Evoker's healing was sound — you consistently targeted them to limit their output on their team.
+
+In cc_heavy_fast matches, Rewind is not a last-resort CD, it is a core survival tool for exactly the moments where CC is preventing you from self-healing through a sustained kill attempt.

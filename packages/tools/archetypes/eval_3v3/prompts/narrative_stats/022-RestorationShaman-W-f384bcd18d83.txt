@@ -1,0 +1,483 @@
+[MATCH TYPE: offensive_trade]
+**Opponents:** Your team is pressuring the enemy heavily. Enemies are fighting from behind — their burst is reactive rather than structured. The damage is real but their timing is harder to control.
+
+**Your role:** Survive the enemy's desperation burst without overcommitting. Don't burn cooldowns preemptively — your team is winning the exchange.
+
+Key behavioral patterns observed in this match type:
+CD timing: 53% Optimal / 9% Early / 10% Late / 2% Reactive
+CD never used: 37%
+CD response latency: 8002ms median
+Outgoing CC per match: 5.2 mean
+Healing gap rate during burst: 2%
+Offensive participation: 57%
+Purge rate: 2.22/min
+Missed cleanse rate: 39%
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Retribution Paladin | Bracket: 3v3 | Result: Win | Duration: 5:42
+  My team: Devourer Demon Hunter, Restoration Shaman, Retribution Paladin
+  Enemy team: Preservation Evoker, Enhancement Shaman, Marksmanship Hunter
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Retribution Paladin): CANNOT offensive purge
+  Team purgers: Restoration Shaman
+
+DAMPENING (3v3): started at 10%, ended at 27% at match end
+  Note: Reached 27% dampening — healing was meaningfully impaired in the late game.
+
+## CC Chains
+  Preservation Evoker (Proximity-BleedingHollow-US): 14 CC — 9× Stun, 3× Disorient, 2× Incapacitate | 0 reduced, 0 immune
+  Enhancement Shaman (ßloodlust-Kargath-US): 3 CC — 2× Incapacitate, 1× Disorient | 0 reduced, 0 immune
+  Marksmanship Hunter (Sax-Kil'jaeden-US): 2 CC — 2× Disorient | 0 reduced, 0 immune
+
+## Enemy Cooldown Timeline
+  #1 — 0:17–0:32 | Score: 5.5 [HIGH] | Dampening: 10%
+    CDs: Ascendance (ßloodlust-Kargath-US) + Bloodlust (ßloodlust-Kargath-US)
+    Damage: 0.96M (1.9× match avg) | healer free
+    Most pressured: Axelx-Tichondrius-US HP: 100% start → 83% mid → 62% end
+  #2 — 0:37–0:50 | Score: 3.0 [MODERATE] | Dampening: 10%
+    CDs: Deep Breath (Proximity-BleedingHollow-US) + Explosive Shot (Sax-Kil'jaeden-US)
+    Damage: 0.94M (1.9× match avg) | healer free
+    Most pressured: Axelx-Tichondrius-US HP: 55% start → 89% mid → 86% end
+  #3 — 3:13–3:29 | Score: 3.5 [MODERATE] | Dampening: 12%
+    CDs: Explosive Shot (Sax-Kil'jaeden-US) + Trueshot (Sax-Kil'jaeden-US)
+    Damage: 1.08M (2.2× match avg) | healer free
+    Most pressured: Axelx-Tichondrius-US HP: 66% start → 84% mid → 91% end
+  #4 — 3:44–3:55 | Score: 1.4 [LOW] | Dampening: 15%
+    CDs: Explosive Shot (Sax-Kil'jaeden-US) + Bloodlust (ßloodlust-Kargath-US)
+    Damage: 0.83M (1.7× match avg) | healer free
+    Most pressured: Axelx-Tichondrius-US HP: 56% start → 84% mid → 87% end
+  #5 — 5:22–5:40 | Score: 3.3 [MODERATE] | Dampening: 25%
+    CDs: Explosive Shot (Sax-Kil'jaeden-US) + Trueshot (Sax-Kil'jaeden-US)
+    Damage: 0.87M (1.7× match avg) | healer free
+    Most pressured: Axelx-Tichondrius-US HP: 86% start → 85% mid → 100% end
+  CDs not recovered before match ended: Preservation Evoker: Deep Breath — not used again after 5:02; Enhancement Shaman: Ascendance — not used again after 4:30; Marksmanship Hunter: Explosive Shot — not used again after 5:22; Marksmanship Hunter: Trueshot — not used again after 5:25
+
+## Kill Attempt Windows
+  0:17–0:32  [HIGH]  0.97M on Devourer Demon Hunter | CDs: Ascendance + Bloodlust
+  0:37–0:50  [MODERATE]  0.81M on Devourer Demon Hunter | CDs: Deep Breath + Explosive Shot
+  Note: 3 burst window(s) had no confirmed spike — possible bait, spiked below threshold, or log gap.
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Hydar-Tichondrius-US (Retribution Paladin — log owner):
+    Lay on Hands [600s], Hammer of Justice [45s, 2 Charges], Blessing of Spellwarding [300s], Avenging Wrath [120s]
+  2: Axelx-Tichondrius-US (Devourer Demon Hunter):
+    none tracked
+  3: Speedxcherry-Tichondrius-US (Restoration Shaman):
+    Hex [30s], Spiritwalker's Grace [120s], Healing Tide Totem [180s, 2 Charges]
+  4: Proximity-BleedingHollow-US (Preservation Evoker — enemy):
+    Deep Breath [120s]
+  5: ßloodlust-Kargath-US (Enhancement Shaman — enemy):
+    Ascendance [180s], Bloodlust [60s]
+  6: Sax-Kil'jaeden-US (Marksmanship Hunter — enemy):
+    Explosive Shot [30s], Trueshot [120s]
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:10  [CC ON TEAM]   3 ← Intimidation (Sax-Kil'jaeden-US) | 1s | trinket: available
+0:11  [STATE]   friends 1:100 2:93 3:100 / enemies 4:100 5:88
+0:12  [STATE]   friends 1:100 2:94 3:100 / enemies 4:100 5:84
+0:13  [STATE]   friends 1:100 2:94 3:100 / enemies 4:100 5:83 6:100
+0:14  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:83 6:100
+0:15  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:82 6:100
+0:15  [TEAMMATE CD]   3 (Restoration Shaman): Healing Tide Totem
+0:16  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:81 6:92
+0:17  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:80 6:83
+0:17  [CC ON TEAM]   3 ← Sleep Walk (Proximity-BleedingHollow-US) | 6s | trinket: available
+0:17  [CC ON TEAM]   2 ← Binding Shot (Sax-Kil'jaeden-US) | 3s | trinket: available
+0:17  [OFFENSIVE WINDOW]   0:17–0:32 | High | 0.97M on 2 (Devourer Demon Hunter) | CDs: Ascendance + Bloodlust
+0:17  [ENEMY CD]   5 (Enhancement Shaman): Ascendance [1/3]
+0:17  [ENEMY CD]   5 (Enhancement Shaman): Bloodlust [1/3]
+0:17  [CC ON TEAM]   3 ← Freezing Trap (Sax-Kil'jaeden-US) | 4s | trinket: available
+0:18  [STATE]   friends 1:100 2:97 3:100 / enemies 4:100 5:82 6:85
+0:18  [DMG SPIKE]   2 (Devourer Demon Hunter): 0.97M in 10s [P95 Danger] [ROT] (96% -> 75% HP)
+0:18  [OWNER CC]   Hammer of Justice → Proximity-BleedingHollow-US (100% HP)
+      [RES] rdy:Lay on Hands,Hammer of Justice,Blessing of Spellwarding,Avenging Wrath,3:Hex,3:Spiritwalker's Grace  cd:3:Healing Tide Totem(177s)  enemy:Ascendance/Enhancement Shaman(1s),Bloodlust/Enhancement Shaman(1s)  cc:2/Binding Shot-2s[stun],3/Sleep Walk-5s
+0:19  [STATE]   friends 1:100 2:96 3:100 / enemies 4:100 5:82 6:85
+0:20  [STATE]   friends 1:100 2:77 / enemies 4:100 5:82 6:85
+0:21  [STATE]   friends 1:100 2:56 / enemies 4:100 5:83 6:85
+0:22  [STATE]   friends 1:100 2:57 3:100 / enemies 4:99 5:82 6:85
+0:23  [STATE]   friends 1:100 2:82 3:100 / enemies 4:99 5:81 6:85
+0:24  [STATE]   friends 1:100 2:72 3:100 / enemies 4:99 5:73 6:78
+0:25  [STATE]   friends 1:100 2:77 3:100 / enemies 4:94 5:67 6:78
+0:25  [CC ON TEAM]   3 ← Scorpid Venom (Sax-Kil'jaeden-US) | 3s | trinket: available
+0:25  [UNCLEANSED DEBUFF]   Scorpid Venom on 3 | 3s | 9k taken during | dispel: Poison
+0:26  [STATE]   friends 1:98 2:84 3:100 / enemies 4:98 5:75 6:84
+0:27  [STATE]   friends 1:90 2:86 3:98 / enemies 4:100 5:72 6:95
+0:27  [TEAMMATE CD]   3 (Restoration Shaman): Spiritwalker's Grace
+0:28  [STATE]   friends 1:100 2:81 3:100 / enemies 4:100 5:76 6:97
+0:29  [STATE]   friends 1:98 2:75 3:100 / enemies 4:99 5:67 6:97
+0:30  [STATE]   friends 1:91 2:63 3:100 / enemies 4:100 5:97 6:100
+0:30  [TEAMMATE CC]   3 (Restoration Shaman): Hex
+0:31  [STATE]   friends 1:95 2:73 3:100 / enemies 4:96 5:88 6:100
+0:32  [STATE]   friends 1:91 2:60 3:100 / enemies 4:100 5:87 6:100
+0:33  [STATE]   friends 1:93 2:62 3:100 / enemies 4:100 5:99 6:100
+0:33  [CC ON TEAM]   3 ← Sleep Walk (Proximity-BleedingHollow-US) | 2s | trinket: available
+0:34  [STATE]   friends 1:93 2:58 3:100 / enemies 4:100 5:100 6:100
+0:35  [STATE]   friends 1:94 2:57 3:100 / enemies 4:100 5:93 6:83
+0:36  [STATE]   friends 1:94 2:53 3:100 / enemies 4:100 5:93 6:79
+0:37  [STATE]   friends 1:94 2:52 3:100 / enemies 4:100 5:90 6:81
+0:37  [OFFENSIVE WINDOW]   0:37–0:50 | Moderate | 0.81M on 2 (Devourer Demon Hunter) | CDs: Deep Breath + Explosive Shot
+0:37  [ENEMY CD]   4 (Preservation Evoker): Deep Breath [1/3]
+0:38  [STATE]   friends 1:100 2:55 3:100 / enemies 4:97 5:85 6:81
+0:39  [STATE]   friends 1:100 2:60 3:100 / enemies 4:97 5:78 6:62
+0:39  [CC ON TEAM]   1 ← Terror of the Skies (Proximity-BleedingHollow-US) | 4s | trinket: available
+0:39  [CC ON TEAM]   2 ← Terror of the Skies (Proximity-BleedingHollow-US) | 3s | trinket: available
+0:40  [STATE]   friends 1:94 2:67 3:100 / enemies 4:90 5:74 6:55
+0:41  [STATE]   friends 1:94 2:100 3:100 / enemies 4:93 5:71 6:59
+0:42  [STATE]   friends 1:97 2:100 3:100 / enemies 4:91 5:68 6:60
+0:43  [STATE]   friends 1:97 2:98 3:100 / enemies 4:95 5:63 6:69
+0:44  [STATE]   friends 1:99 2:100 3:100 / enemies 4:94 5:58 6:65
+0:45  [STATE]   friends 1:99 2:86 3:100 / enemies 4:94 5:52 6:61
+0:45  [DMG SPIKE]   2 (Devourer Demon Hunter): 0.81M in 10s [P95 Danger] [ROT] (86% -> 30% HP)
+0:46  [STATE]   friends 1:99 2:86 3:100 / enemies 4:100 5:70 6:85
+0:47  [STATE]   friends 1:100 2:73 3:100 / enemies 4:99 5:73 6:96
+0:47  [ENEMY CD]   6 (Marksmanship Hunter): Explosive Shot [1/7]
+0:48  [STATE]   friends 1:100 2:71 3:100 / enemies 4:97 5:53 6:99
+0:49  [STATE]   friends 1:100 2:76 3:100 / enemies 4:100 5:41 6:100
+0:49  [OWNER CC]   Hammer of Justice → Proximity-BleedingHollow-US (98% HP)
+      [RES] rdy:Δ-Hammer of Justice,3:Hex,3:Spiritwalker's Grace  cd:Hammer of Justice(14s),3:Hex(11s),3:Spiritwalker's Grace(98s)  enemy:Explosive Shot/Marksmanship Hunter(2s)
+0:50  [STATE]   friends 1:100 2:87 3:100 / enemies 4:100 5:41 6:100
+0:50  [ENEMY CD]   6 (Marksmanship Hunter): Trueshot [1/3]
+0:55  [CC ON TEAM]   3 ← Intimidation (Sax-Kil'jaeden-US) | 3s | trinket: available
+0:56  [STATE]   friends 1:80 2:34 3:100 / enemies 4:100 5:42 6:43
+0:57  [STATE]   friends 1:81 2:41 3:100 / enemies 4:88 5:42 6:37
+0:57  [CC ON TEAM]   3 ← Freezing Trap (Sax-Kil'jaeden-US) | 4s | trinket: available
+0:58  [STATE]   friends 1:84 2:38 3:100 / enemies 4:94 5:45 6:46
+0:58  [CLEANSE]   2 dispelled 3 effects: Hunter's Mark off 2, Flame Shock off 2, Flame Shock off 1
+0:59  [STATE]   friends 1:56 2:21 3:100 / enemies 4:88 5:46 6:45
+1:00  [STATE]   friends 1:56 2:95 / enemies 4:91 5:49 6:53
+1:01  [STATE]   friends 1:57 2:92 3:100 / enemies 4:95 5:49 6:61
+1:02  [STATE]   friends 1:53 2:95 3:100 / enemies 4:100 5:55 6:80
+1:03  [STATE]   friends 1:59 2:100 3:100 / enemies 4:100 5:57 6:96
+1:04  [STATE]   friends 1:61 2:100 3:100 / enemies 4:100 5:82 6:99
+1:05  [STATE]   friends 1:61 2:100 3:100 / enemies 4:100 5:85 6:94
+1:06  [STATE]   friends 1:63 2:100 3:100 / enemies 4:100 5:94 6:86
+1:07  [STATE]   friends 1:73 2:100 3:100 / enemies 4:98 5:97 6:86
+1:08  [STATE]   friends 1:66 2:99 3:99 / enemies 4:100 5:100 6:91
+1:09  [STATE]   friends 1:69 2:100 3:99 / enemies 4:97 5:98 6:90
+1:10  [STATE]   friends 1:83 2:100 3:100 / enemies 4:92 5:93 6:82
+1:11  [STATE]   friends 1:84 2:85 3:94 / enemies 4:87 5:89 6:70
+1:11  [CC ON TEAM]   1 ← Binding Shot (Sax-Kil'jaeden-US) | 3s | trinket: available
+1:11  [DMG SPIKE]   2 (Devourer Demon Hunter): 0.76M in 10s [P95 Danger] [ROT] (90% -> 49% HP)
+1:12  [STATE]   friends 1:86 2:88 3:95 / enemies 4:86 5:87 6:58
+1:13  [STATE]   friends 1:87 2:71 3:91 / enemies 4:86 5:87 6:54
+1:13  [CC ON TEAM]   2 ← Binding Shot (Sax-Kil'jaeden-US) | 2s | trinket: available
+1:14  [STATE]   friends 1:87 2:71 3:93 / enemies 4:87 5:86 6:69
+1:14  [CLEANSE]   3 dispelled 3 effects: Earthbind off 2, Flame Shock off 2, Binding Shot off 2
+1:15  [STATE]   friends 1:83 2:51 3:81 / enemies 4:90 5:87 6:78
+1:16  [STATE]   friends 1:81 2:44 3:71 / enemies 4:94 5:90 6:77
+1:17  [STATE]   friends 1:87 2:50 3:82 / enemies 4:97 5:89 6:77
+1:18  [STATE]   friends 1:83 2:32 3:60 / enemies 4:98 5:89 6:75
+1:18  [CC ON TEAM]   3 ← Binding Shot (Sax-Kil'jaeden-US) | 1s | trinket: used
+1:19  [STATE]   friends 1:84 2:38 3:41 / enemies 4:100 5:89 6:72
+1:19  [CC ON TEAM]   3 ← Sleep Walk (Proximity-BleedingHollow-US) | 1s | trinket: used
+1:20  [STATE]   friends 1:53 2:49 3:53 / enemies 4:100 5:88 6:67
+1:20  [TRINKET]   3 used PvP trinket
+1:20  [ENEMY CD]   6 (Marksmanship Hunter): Explosive Shot [2/7]
+1:20  [OWNER CC]   Hammer of Justice → Proximity-BleedingHollow-US (100% HP)
+      [RES] rdy:Δ+Hammer of Justice,3:Hex  cd:—  enemy:Explosive Shot/Marksmanship Hunter(1s)
+1:21  [STATE]   friends 1:55 2:50 3:54 / enemies 4:100 5:81 6:68
+1:22  [STATE]   friends 1:58 2:49 3:63 / enemies 4:100 5:81 6:68
+1:23  [STATE]   friends 1:60 2:57 3:60 / enemies 4:99 5:80 6:68
+1:24  [STATE]   friends 1:61 2:47 3:61 / enemies 4:99 5:78 6:61
+1:25  [STATE]   friends 1:62 2:89 3:76 / enemies 4:99 5:71 6:52
+1:26  [STATE]   friends 1:63 2:88 3:78 / enemies 4:99 5:70 6:43
+1:27  [STATE]   friends 1:66 2:79 3:79 / enemies 4:100 5:78 6:54
+1:27  [CC ON TEAM]   3 ← Scorpid Venom (Sax-Kil'jaeden-US) | 3s | trinket: ON CD (83s left)
+1:28  [STATE]   friends 1:67 2:84 3:79 / enemies 4:97 5:76 6:65
+1:29  [STATE]   friends 1:67 2:91 3:79 / enemies 4:100 5:77 6:75
+1:30  [STATE]   friends 1:69 2:90 3:81 / enemies 4:100 5:79 6:76
+1:30  [CC ON TEAM]   3 ← Spider Venom (Sax-Kil'jaeden-US) | 3s | trinket: ON CD (80s left)
+1:30  [UNCLEANSED DEBUFF]   Spider Venom on 3 | 3s | 0k taken during | dispel: Poison
+1:31  [STATE]   friends 1:66 2:88 3:83 / enemies 4:96 5:79 6:65
+1:32  [STATE]   friends 1:64 2:89 3:83 / enemies 4:95 5:72 6:53
+1:32  [CC ON TEAM]   3 ← Sleep Walk (Proximity-BleedingHollow-US) | 3s | trinket: ON CD (78s left)
+1:33  [STATE]   friends 1:60 2:77 3:85 / enemies 4:100 5:77 6:83
+1:34  [STATE]   friends 1:59 2:73 3:85 / enemies 4:99 5:86 6:100
+1:35  [STATE]   friends 1:58 2:65 3:85 / enemies 4:100 5:86 6:100
+1:36  [STATE]   friends 1:60 2:60 3:86 / enemies 4:98 5:82 6:92
+1:37  [STATE]   friends 1:59 2:72 3:86 / enemies 4:96 5:73 6:95
+1:38  [STATE]   friends 1:61 2:73 3:86 / enemies 4:93 5:71 6:85
+1:38  [CC ON TEAM]   3 ← Intimidation (Sax-Kil'jaeden-US) | 1s | trinket: ON CD (72s left)
+1:39  [STATE]   friends 1:60 2:68 3:86 / enemies 4:93 5:71 6:83
+1:39  [ENEMY CD]   5 (Enhancement Shaman): Bloodlust [2/3]
+1:40  [STATE]   friends 1:58 2:60 3:100 / enemies 4:93 5:72 6:82
+1:41  [STATE]   friends 1:78 2:64 3:100 / enemies 4:94 5:72 6:76
+1:42  [STATE]   friends 1:80 2:79 3:100 / enemies 4:87 5:58 6:67
+1:43  [STATE]   friends 1:88 2:84 3:100 / enemies 4:100 5:45 6:43
+1:44  [STATE]   friends 1:93 2:100 3:100 / enemies 4:100 5:68 6:87
+1:45  [STATE]   friends 1:98 2:100 3:100 / enemies 4:100 5:76 6:86
+1:46  [STATE]   friends 1:100 2:100 3:100 / enemies 4:92 5:93 6:77
+1:47  [STATE]   friends 1:100 2:100 3:100 / enemies 4:92 5:95 6:75
+1:48  [STATE]   friends 1:99 2:96 3:100 / enemies 4:92 5:90 6:72
+1:50  [OWNER CC]   Hammer of Justice → Proximity-BleedingHollow-US (100% HP)
+1:51  [CLEANSE]   3 dispelled 3 effects: Earthbind off 2, Capacitor Totem off 2, Flame Shock off 2
+2:00  [CC ON TEAM]   2 ← Binding Shot (Sax-Kil'jaeden-US) | 2s | trinket: available
+2:01  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:54 6:43
+2:02  [STATE]   friends 1:94 2:75 3:100 / enemies 4:98 5:55 6:37
+2:03  [STATE]   friends 1:92 2:72 3:100 / enemies 4:99 5:55 6:35
+2:03  [CC ON TEAM]   1 ← Binding Shot (Sax-Kil'jaeden-US) | 3s | trinket: available
+2:04  [STATE]   friends 1:86 2:70 3:100 / enemies 4:100 5:57 6:35
+2:04  [ENEMY CD]   6 (Marksmanship Hunter): Explosive Shot [3/7]
+2:05  [STATE]   friends 1:88 2:71 3:100 / enemies 4:100 5:56 6:32
+2:06  [STATE]   friends 1:92 2:67 3:100 / enemies 4:100 5:72 6:69
+2:07  [STATE]   friends 1:92 2:69 3:100 / enemies 4:100 5:71 6:72
+2:08  [STATE]   friends 1:100 2:80 3:100 / enemies 4:100 5:71 6:77
+2:09  [STATE]   friends 1:100 2:91 3:100 / enemies 4:100 5:76 6:78
+2:10  [STATE]   friends 1:100 2:85 3:100 / enemies 4:100 5:82 6:79
+2:11  [STATE]   friends 1:100 2:83 3:100 / enemies 4:100 5:81 6:84
+2:12  [STATE]   friends 1:100 2:72 3:100 / enemies 4:100 5:82 6:73
+2:13  [STATE]   friends 1:100 2:79 3:100 / enemies 4:100 5:83 6:100
+2:14  [CC ON TEAM]   3 ← Sleep Walk (Proximity-BleedingHollow-US) | 1s | trinket: ON CD (36s left)
+2:15  [STATE]   friends 1:95 2:73 3:100 / enemies 4:100 5:84 6:88
+2:16  [STATE]   friends 1:100 2:79 3:100 / enemies 4:98 5:84 6:86
+2:16  [CC ON TEAM]   3 ← Freezing Trap (Sax-Kil'jaeden-US) | 4s | trinket: ON CD (34s left)
+2:17  [STATE]   friends 1:100 2:88 / enemies 4:100 5:90 6:93
+2:18  [STATE]   friends 1:100 2:95 / enemies 4:100 5:91 6:86
+2:19  [STATE]   friends 1:100 2:100 / enemies 4:100 5:98 6:95
+2:20  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:99 6:92
+2:21  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:97 6:85
+2:22  [STATE]   friends 1:100 2:99 3:100 / enemies 4:99 5:98 6:87
+2:22  [OWNER CC]   Hammer of Justice → Proximity-BleedingHollow-US (98% HP)
+2:23  [STATE]   friends 1:100 2:99 3:100 / enemies 4:98 5:98 6:87
+2:24  [STATE]   friends 1:97 2:100 3:100 / enemies 4:97 5:97 6:88
+2:25  [STATE]   friends 1:100 2:93 3:100 / enemies 4:95 5:96 6:82
+2:25  [TEAMMATE CD]   3 (Restoration Shaman): Healing Tide Totem
+2:26  [STATE]   friends 1:99 2:91 3:100 / enemies 4:94 5:96 6:64
+2:26  [ENEMY CD]   5 (Enhancement Shaman): Ascendance [2/3]
+2:30  [CC ON TEAM]   3 ← Scorpid Venom (Sax-Kil'jaeden-US) | 3s | trinket: ON CD (20s left)
+2:30  [UNCLEANSED DEBUFF]   Scorpid Venom on 3 | 3s | 4k taken during | dispel: Poison
+2:31  [STATE]   friends 1:88 2:63 3:100 / enemies 4:89 5:89 6:75
+2:32  [STATE]   friends 1:100 2:71 3:100 / enemies 4:100 5:92 6:89
+2:33  [STATE]   friends 1:100 2:78 3:100 / enemies 4:100 5:95 6:82
+2:33  [CC ON TEAM]   3 ← Spider Venom (Sax-Kil'jaeden-US) | 3s | trinket: ON CD (17s left)
+2:33  [UNCLEANSED DEBUFF]   Spider Venom on 3 | 3s | 57k taken during | dispel: Poison
+2:34  [STATE]   friends 1:97 2:79 3:100 / enemies 4:100 5:83 6:97
+2:35  [STATE]   friends 1:100 2:82 3:100 / enemies 4:100 5:77 6:99
+2:36  [STATE]   friends 1:98 2:86 3:100 / enemies 4:98 5:70 6:94
+2:37  [STATE]   friends 1:97 2:80 3:100 / enemies 4:96 5:65 6:92
+2:38  [STATE]   friends 1:98 2:73 3:100 / enemies 4:95 5:61 6:81
+2:38  [CLEANSE]   3 dispelled 4 effects: Flame Shock off 1, Stormbind off 1, Oppressing Roar off 1, Landslide off 1
+2:38  [ENEMY CD]   4 (Preservation Evoker): Deep Breath [2/3]
+2:39  [STATE]   friends 1:100 2:70 3:95 / enemies 4:95 5:51 6:78
+2:39  [CC ON TEAM]   2 ← Terror of the Skies (Proximity-BleedingHollow-US) | 4s | trinket: available
+2:40  [STATE]   friends 1:100 2:77 3:96 / enemies 4:95 5:48 6:64
+2:41  [STATE]   friends 1:96 2:60 3:96 / enemies 4:98 5:46 6:63
+2:42  [STATE]   friends 1:97 2:53 3:97 / enemies 4:97 5:43 6:64
+2:43  [STATE]   friends 1:96 2:44 3:98 / enemies 4:100 5:59 6:62
+2:44  [STATE]   friends 1:94 2:48 3:98 / enemies 4:100 5:69 6:64
+2:45  [STATE]   friends 1:94 2:82 3:98 / enemies 4:100 5:71 6:67
+2:46  [STATE]   friends 1:100 2:95 3:100 / enemies 4:100 5:70 6:68
+2:46  [CC ON TEAM]   1 ← Sleep Walk (Proximity-BleedingHollow-US) | 3s | trinket: available
+2:47  [STATE]   friends 1:100 2:96 3:100 / enemies 4:100 5:73 6:57
+2:48  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:73 6:29
+2:49  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:72 6:27
+2:50  [STATE]   friends 1:99 2:100 3:100 / enemies 4:100 5:79 6:62
+2:51  [STATE]   friends 1:99 2:100 3:100 / enemies 4:100 5:81 6:81
+2:52  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:81 6:80
+2:52  [CC ON TEAM]   2 ← Binding Shot (Sax-Kil'jaeden-US) | 2s | trinket: available
+2:53  [STATE]   friends 1:92 2:95 3:92 / enemies 4:100 5:79 6:90
+2:54  [STATE]   friends 1:93 2:98 3:93 / enemies 4:100 5:77 6:89
+2:55  [STATE]   friends 1:93 2:100 3:93 / enemies 4:100 5:77 6:72
+2:56  [STATE]   friends 1:95 2:100 3:91 / enemies 4:100 5:71 6:67
+2:56  [CC ON TEAM]   3 ← Hex (ßloodlust-Kargath-US) | 6s | trinket: available
+2:57  [STATE]   friends 1:98 2:100 3:92 / enemies 4:100 5:70 6:59
+2:57  [CC ON TEAM]   3 ← Intimidation (Sax-Kil'jaeden-US) | 3s | trinket: available
+2:58  [STATE]   friends 1:98 2:100 3:93 / enemies 4:100 5:67 6:53
+2:59  [STATE]   friends 1:100 2:100 3:94 / enemies 4:99 5:91 6:58
+2:59  [CC ON TEAM]   3 ← Freezing Trap (Sax-Kil'jaeden-US) | 2s | trinket: available
+3:00  [STATE]   friends 1:100 2:100 3:94 / enemies 4:100 5:95 6:61
+3:00  [CC ON TEAM]   1 ← Binding Shot (Sax-Kil'jaeden-US) | 2s | trinket: available
+3:01  [STATE]   friends 1:99 2:100 / enemies 4:100 5:96 6:60
+3:02  [STATE]   friends 1:94 2:100 3:95 / enemies 4:100 5:94 6:50
+3:03  [STATE]   friends 1:89 2:100 3:95 / enemies 4:99 5:94 6:54
+3:04  [STATE]   friends 1:85 2:100 3:95 / enemies 4:99 5:92 6:42
+3:05  [STATE]   friends 1:86 2:100 3:97 / enemies 4:100 5:95 6:33
+3:05  [OWNER CC]   Hammer of Justice → Proximity-BleedingHollow-US (100% HP)
+      [RES] rdy:Δ+3:Spiritwalker's Grace  cd:—
+3:06  [STATE]   friends 1:87 2:97 3:98 / enemies 4:100 5:94 6:18
+3:07  [STATE]   friends 1:94 2:91 3:94 / enemies 4:100 5:98 6:16
+3:08  [STATE]   friends 1:91 2:80 3:93 / enemies 4:100 5:98 6:49
+3:09  [STATE]   friends 1:90 2:78 3:94 / enemies 4:99 5:96 6:56
+3:10  [STATE]   friends 1:90 2:72 3:95 / enemies 4:100 5:86 6:60
+3:13  [ENEMY CD]   6 (Marksmanship Hunter): Explosive Shot [4/7]
+3:14  [ENEMY CD]   6 (Marksmanship Hunter): Trueshot [2/3]
+3:17  [TEAMMATE CD]   3 (Restoration Shaman): Spiritwalker's Grace
+3:17  [OWNER CD]   Blessing of Spellwarding → 2 (57% HP)
+3:23  [BUFF FADED]   Blessing of Spellwarding
+3:29  [CC ON TEAM]   3 ← Hex (ßloodlust-Kargath-US) | 6s | trinket: available
+3:30  [STATE]   friends 1:100 2:90 3:100 / enemies 4:99 5:98 6:62
+3:31  [STATE]   friends 1:100 2:86 3:100 / enemies 4:98 5:99 6:44
+3:32  [STATE]   friends 1:100 2:84 3:100 / enemies 4:100 5:100 6:28
+3:33  [STATE]   friends 1:100 2:82 3:100 / enemies 4:100 5:100 6:60
+3:33  [CC ON TEAM]   3 ← Scorpid Venom (Sax-Kil'jaeden-US) | 3s | trinket: available
+3:34  [STATE]   friends 1:100 2:69 3:100 / enemies 4:100 5:100 6:63
+3:35  [STATE]   friends 1:100 2:70 3:100 / enemies 4:100 5:100 6:73
+3:36  [STATE]   friends 1:99 2:66 3:100 / enemies 4:100 5:100 6:99
+3:36  [CC ON TEAM]   3 ← Spider Venom (Sax-Kil'jaeden-US) | 3s | trinket: available
+3:36  [UNCLEANSED DEBUFF]   Spider Venom on 3 | 3s | 0k taken during | dispel: Poison
+3:37  [STATE]   friends 1:99 2:63 3:100 / enemies 4:100 5:100 6:92
+3:38  [STATE]   friends 1:99 2:63 3:100 / enemies 4:100 5:100 6:100
+3:38  [CC ON TEAM]   1 ← Binding Shot (Sax-Kil'jaeden-US) | 3s | trinket: available
+3:38  [CC ON TEAM]   1 ← Sleep Walk (Proximity-BleedingHollow-US) | 0s | trinket: available
+3:39  [STATE]   friends 1:99 2:66 3:100 / enemies 4:100 5:100 6:98
+3:40  [STATE]   friends 1:98 2:72 3:100 / enemies 4:100 5:100 6:99
+3:41  [STATE]   friends 1:98 2:74 3:100 / enemies 4:100 5:100 6:94
+3:41  [CLEANSE]   3 dispelled Binding Shot off 1
+3:41  [OWNER CC]   Hammer of Justice → Proximity-BleedingHollow-US (100% HP)
+      [RES] rdy:Δ+3:Healing Tide Totem-Blessing of Spellwarding,3:Spiritwalker's Grace  cd:Blessing of Spellwarding(276s),3:Spiritwalker's Grace(96s)
+3:42  [STATE]   friends 1:97 2:55 3:100 / enemies 4:100 5:100 6:92
+3:43  [STATE]   friends 1:99 2:67 3:100 / enemies 4:100 5:100 6:95
+3:43  [CC ON TEAM]   3 ← Sleep Walk (Proximity-BleedingHollow-US) | 1s | trinket: used
+3:44  [STATE]   friends 1:99 2:54 3:100 / enemies 4:96 5:95 6:84
+3:44  [TRINKET]   3 used PvP trinket
+3:44  [ENEMY CD]   6 (Marksmanship Hunter): Explosive Shot [5/7]
+3:45  [STATE]   friends 1:100 2:55 3:100 / enemies 4:98 5:92 6:81
+3:45  [ENEMY CD]   5 (Enhancement Shaman): Bloodlust [3/3]
+3:46  [STATE]   friends 1:100 2:78 3:100 / enemies 4:100 5:92 6:77
+3:46  [CC ON TEAM]   3 ← Intimidation (Sax-Kil'jaeden-US) | 3s | trinket: ON CD (89s left)
+3:47  [STATE]   friends 1:100 2:79 3:100 / enemies 4:100 5:92 6:77
+3:47  [CC ON TEAM]   3 ← Sleep Walk (Proximity-BleedingHollow-US) | 3s | trinket: ON CD (87s left)
+3:48  [STATE]   friends 1:100 2:85 3:100 / enemies 4:100 5:94 6:69
+3:48  [CC ON TEAM]   3 ← Freezing Trap (Sax-Kil'jaeden-US) | 2s | trinket: ON CD (86s left)
+3:49  [STATE]   friends 1:93 2:83 3:100 / enemies 4:100 5:95 6:70
+3:50  [STATE]   friends 1:92 2:84 3:100 / enemies 4:100 5:96 6:68
+3:51  [STATE]   friends 1:86 2:75 3:100 / enemies 4:100 5:96 6:63
+3:52  [STATE]   friends 1:83 2:73 3:100 / enemies 4:100 5:97 6:60
+3:53  [STATE]   friends 1:82 2:64 3:100 / enemies 4:100 5:100 6:54
+3:54  [STATE]   friends 1:89 2:70 3:100 / enemies 4:100 5:100 6:80
+3:55  [STATE]   friends 1:90 2:85 3:100 / enemies 4:100 5:100 6:87
+3:56  [STATE]   friends 1:91 2:88 3:100 / enemies 4:100 5:100 6:87
+3:57  [STATE]   friends 1:92 2:88 3:100 / enemies 4:100 5:98 6:82
+3:58  [STATE]   friends 1:90 2:83 3:100 / enemies 4:100 5:99 6:83
+4:06  [CLEANSE]   3 dispelled 2 effects: Capacitor Totem off 2, Flame Shock off 2
+4:12  [OWNER CC]   Hammer of Justice → Proximity-BleedingHollow-US (100% HP)
+4:16  [ENEMY CD]   6 (Marksmanship Hunter): Explosive Shot [6/7]
+4:21  [CC ON TEAM]   3 ← Hex (ßloodlust-Kargath-US) | 6s | trinket: ON CD (54s left)
+4:22  [STATE]   friends 1:95 2:87 3:100 / enemies 4:100 5:77 6:56
+4:23  [STATE]   friends 1:95 2:84 3:100 / enemies 4:98 5:79 6:51
+4:23  [CC ON TEAM]   3 ← Sleep Walk (Proximity-BleedingHollow-US) | 4s | trinket: ON CD (52s left)
+4:24  [STATE]   friends 1:97 2:87 3:100 / enemies 4:99 5:78 6:34
+4:25  [STATE]   friends 1:97 2:90 3:100 / enemies 4:100 5:77 6:50
+4:26  [STATE]   friends 1:98 2:94 3:100 / enemies 4:99 5:76 6:37
+4:27  [STATE]   friends 1:99 2:98 3:100 / enemies 4:100 5:75 6:38
+4:27  [DMG SPIKE]   3 (Restoration Shaman): 0.72M in 10s [P95 Danger] [BURST] (100% -> 58% HP)
+4:27  [CC ON TEAM]   1 ← Binding Shot (Sax-Kil'jaeden-US) | 3s | trinket: available
+4:28  [STATE]   friends 1:91 2:100 3:77 / enemies 4:100 5:80 6:50
+4:28  [CC ON TEAM]   3 ← Binding Shot (Sax-Kil'jaeden-US) | 3s | trinket: ON CD (46s left)
+4:29  [STATE]   friends 1:84 2:96 3:70 / enemies 4:98 5:77 6:51
+4:30  [STATE]   friends 1:75 2:99 3:66 / enemies 4:92 5:75 6:50
+4:30  [CC ON TEAM]   3 ← Freezing Trap (Sax-Kil'jaeden-US) | 2s | trinket: ON CD (45s left)
+4:30  [ENEMY CD]   5 (Enhancement Shaman): Ascendance [3/3]
+4:31  [STATE]   friends 1:78 2:100 3:69 / enemies 4:90 5:75 6:47
+4:32  [STATE]   friends 1:81 2:100 3:70 / enemies 4:88 5:76 6:44
+4:33  [STATE]   friends 1:91 2:100 3:72 / enemies 4:89 5:76 6:26
+4:34  [STATE]   friends 1:90 2:98 3:55 / enemies 4:100 5:76 6:27
+4:34  [TEAMMATE CD]   3 (Restoration Shaman): Healing Tide Totem
+4:34  [CC ON TEAM]   1 ← Intimidation (Sax-Kil'jaeden-US) | 1s | trinket: used
+4:35  [STATE]   friends 1:99 2:98 3:54 / enemies 4:100 5:76 6:74
+4:35  [TRINKET]   1 used PvP trinket
+4:36  [STATE]   friends 1:100 2:100 3:56 / enemies 4:98 5:77 6:100
+4:37  [STATE]   friends 1:100 2:100 3:58 / enemies 4:100 5:88 6:100
+4:38  [STATE]   friends 1:100 2:100 3:66 / enemies 4:100 5:100 6:99
+4:39  [STATE]   friends 1:100 2:100 3:63 / enemies 4:100 5:100 6:78
+4:39  [DMG SPIKE]   2 (Devourer Demon Hunter): 0.73M in 10s [P95 Danger] [ROT] (100% -> 43% HP)
+4:39  [CC ON TEAM]   1 ← Sleep Walk (Proximity-BleedingHollow-US) | 2s | trinket: ON CD (117s left)
+4:40  [STATE]   friends 1:100 2:98 3:85 / enemies 4:100 5:100 6:65
+4:41  [STATE]   friends 1:98 2:77 3:86 / enemies 4:100 5:100 6:95
+4:42  [STATE]   friends 1:98 2:70 3:91 / enemies 4:100 5:100 6:79
+4:42  [CC ON TEAM]   3 ← Scorpid Venom (Sax-Kil'jaeden-US) | 3s | trinket: ON CD (32s left)
+4:42  [UNCLEANSED DEBUFF]   Scorpid Venom on 3 | 3s | 6k taken during | dispel: Poison
+4:43  [STATE]   friends 1:98 2:64 3:93 / enemies 4:100 5:99 6:90
+4:44  [STATE]   friends 1:100 2:77 3:99 / enemies 4:100 5:99 6:80
+4:45  [STATE]   friends 1:99 2:77 3:100 / enemies 4:99 5:96 6:71
+4:45  [CC ON TEAM]   3 ← Spider Venom (Sax-Kil'jaeden-US) | 3s | trinket: ON CD (29s left)
+4:45  [UNCLEANSED DEBUFF]   Spider Venom on 3 | 3s | 0k taken during | dispel: Poison
+4:45  [OWNER CC]   Hammer of Justice → Proximity-BleedingHollow-US (100% HP)
+      [RES] rdy:Δ-3:Healing Tide Totem  cd:3:Healing Tide Totem(40s)  enemy:Ascendance/Enhancement Shaman(15s)  cc:3/Spider Venom-3s
+4:46  [STATE]   friends 1:100 2:65 3:100 / enemies 4:100 5:95 6:69
+4:47  [STATE]   friends 1:99 2:54 3:100 / enemies 4:100 5:90 6:68
+4:48  [STATE]   friends 1:99 2:48 3:100 / enemies 4:100 5:87 6:61
+4:48  [CC ON TEAM]   1 ← Sleep Walk (Proximity-BleedingHollow-US) | 1s | trinket: ON CD (108s left)
+4:49  [STATE]   friends 1:100 2:43 3:100 / enemies 4:100 5:88 6:63
+4:50  [STATE]   friends 1:100 2:46 3:100 / enemies 4:100 5:86 6:64
+4:51  [STATE]   friends 1:100 2:60 3:100 / enemies 4:100 5:94 6:88
+4:52  [STATE]   friends 1:100 2:64 3:100 / enemies 4:100 5:95 6:100
+4:53  [STATE]   friends 1:99 2:66 3:100 / enemies 4:100 5:95 6:100
+4:54  [STATE]   friends 1:100 2:68 3:100 / enemies 4:100 5:95 6:99
+4:55  [STATE]   friends 1:81 2:79 3:100 / enemies 4:100 5:96 6:83
+4:56  [STATE]   friends 1:75 2:72 3:100 / enemies 4:100 5:96 6:81
+4:57  [STATE]   friends 1:76 2:65 3:100 / enemies 4:100 5:96 6:77
+4:57  [TEAMMATE CC]   3 (Restoration Shaman): Hex
+4:58  [STATE]   friends 1:73 2:65 3:100 / enemies 4:100 5:97 6:64
+4:59  [CC ON TEAM]   3 ← Sleep Walk (Proximity-BleedingHollow-US) | 1s | trinket: ON CD (15s left)
+5:00  [STATE]   friends 1:79 2:70 3:97 / enemies 4:100 5:99 6:77
+5:01  [STATE]   friends 1:76 2:64 3:99 / enemies 4:100 5:98 6:77
+5:02  [STATE]   friends 1:75 2:67 3:100 / enemies 4:97 5:97 6:70
+5:02  [ENEMY CD]   4 (Preservation Evoker): Deep Breath [3/3]
+5:02  [CC ON TEAM]   1 ← Terror of the Skies (Proximity-BleedingHollow-US) | 3s | trinket: ON CD (93s left)
+5:03  [STATE]   friends 1:73 2:68 3:100 / enemies 4:94 5:96 6:68
+5:03  [CC ON TEAM]   3 ← Hex (ßloodlust-Kargath-US) | 4s | trinket: ON CD (12s left)
+5:03  [CC ON TEAM]   2 ← Terror of the Skies (Proximity-BleedingHollow-US) | 1s | trinket: used
+5:04  [STATE]   friends 1:66 2:63 3:100 / enemies 4:97 5:95 6:70
+5:04  [TRINKET]   2 used PvP trinket
+5:05  [STATE]   friends 1:61 2:53 3:100 / enemies 4:100 5:99 6:77
+5:06  [STATE]   friends 1:62 2:55 3:100 / enemies 4:100 5:100 6:78
+5:07  [STATE]   friends 1:63 2:56 3:98 / enemies 4:100 5:100 6:82
+5:08  [STATE]   friends 1:67 2:59 3:98 / enemies 4:100 5:100 6:81
+5:08  [CC ON TEAM]   3 ← Freezing Trap (Sax-Kil'jaeden-US) | 2s | trinket: ON CD (6s left)
+5:09  [STATE]   friends 1:70 2:84 3:100 / enemies 4:100 5:100 6:85
+5:10  [STATE]   friends 1:76 2:82 3:100 / enemies 4:97 5:100 6:66
+5:11  [STATE]   friends 1:78 2:85 3:100 / enemies 4:91 5:98 6:53
+5:12  [STATE]   friends 1:81 2:88 3:100 / enemies 4:91 5:82 6:45
+5:13  [STATE]   friends 1:83 2:99 3:100 / enemies 4:100 5:75 6:69
+5:14  [STATE]   friends 1:97 2:99 3:100 / enemies 4:96 5:72 6:85
+5:15  [STATE]   friends 1:100 2:97 3:100 / enemies 4:96 5:58 6:90
+5:15  [CC ON TEAM]   3 ← Binding Shot (Sax-Kil'jaeden-US) | 3s | trinket: available
+5:16  [STATE]   friends 1:100 2:100 3:100 / enemies 4:95 5:51 6:88
+5:17  [STATE]   friends 1:100 2:88 3:97 / enemies 4:96 5:22 6:87
+5:17  [CC ON TEAM]   2 ← Binding Shot (Sax-Kil'jaeden-US) | 2s | trinket: ON CD (107s left)
+5:18  [STATE]   friends 1:100 2:93 3:94 / enemies 4:100 5:71 6:78
+5:19  [STATE]   friends 1:100 2:88 3:95 / enemies 4:100 5:73 6:72
+5:19  [CC ON TEAM]   3 ← Sleep Walk (Proximity-BleedingHollow-US) | 1s | trinket: available
+5:20  [STATE]   friends 1:100 2:80 3:94 / enemies 4:100 5:77 6:64
+5:20  [OWNER CC]   Hammer of Justice → Proximity-BleedingHollow-US (100% HP)
+      [RES] rdy:Δ+3:Spiritwalker's Grace-3:Hex  cd:3:Hex(7s)
+5:21  [STATE]   friends 1:99 2:69 3:93 / enemies 4:100 5:81 6:60
+5:21  [TEAMMATE CD]   3 (Restoration Shaman): Spiritwalker's Grace
+5:22  [STATE]   friends 1:99 2:77 3:94 / enemies 4:100 5:82 6:34
+5:22  [ENEMY CD]   6 (Marksmanship Hunter): Explosive Shot [7/7]
+5:23  [STATE]   friends 1:100 2:87 3:94 / enemies 4:100 5:85 6:7
+5:24  [STATE]   friends 1:100 2:82 3:86 / enemies 4:100 5:85 6:6
+5:25  [STATE]   friends 1:99 2:73 3:96 / enemies 4:100 5:87 6:21
+5:25  [CLEANSE]   3 dispelled 2 effects: Earthbind off 1, Capacitor Totem off 1
+5:25  [ENEMY CD]   6 (Marksmanship Hunter): Trueshot [3/3]
+5:26  [STATE]   friends 1:93 2:69 3:98 / enemies 4:100 5:88 6:dead
+5:26  [DEATH]  6 (Marksmanship Hunter — enemy)
+5:26  [ROSTER]  enemy 6 removed (dead)
+5:27  [STATE]   friends 1:92 2:68 3:99 / enemies 4:100 5:89 6:dead
+5:28  [STATE]   friends 1:94 2:68 3:100 / enemies 4:100 5:91 6:dead
+5:29  [STATE]   friends 1:94 2:80 3:100 / enemies 4:98 5:87 6:dead
+5:30  [STATE]   friends 1:96 2:84 3:100 / enemies 4:98 5:84 6:dead
+5:31  [STATE]   friends 1:97 2:84 3:100 / enemies 4:96 5:72 6:dead
+5:32  [STATE]   friends 1:99 2:85 3:100 / enemies 4:96 5:67 6:dead
+5:33  [STATE]   friends 1:100 2:100 3:100 / enemies 4:95 5:65 6:dead
+5:34  [STATE]   friends 1:100 2:100 3:100 / enemies 4:95 5:51 6:dead
+5:35  [STATE]   friends 1:100 2:100 3:100 / enemies 4:93 5:30 6:dead
+5:36  [STATE]   friends 1:100 2:100 3:100 / enemies 4:93 5:30 6:dead
+5:37  [STATE]   friends 1:100 2:100 3:100 / enemies 4:87 5:dead 6:dead
+5:37  [DEATH]  5 (Enhancement Shaman — enemy)
+5:37  [ROSTER]  enemy 5 removed (dead)
+
+5:42  [MATCH END]   damp: 27%
+  friends 1:100% 2:100% 3:100% / enemies 4:22% 5:dead(5:37) 6:dead(5:26)

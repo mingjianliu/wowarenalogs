@@ -1,0 +1,418 @@
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Mistweaver Monk (Healer) | Bracket: 3v3 | Result: Loss | Duration: 3:11
+  My team: Elemental Shaman, Arms Warrior, Mistweaver Monk
+  Enemy team: Preservation Evoker, Shadow Priest, Devourer Demon Hunter
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Mistweaver Monk): CANNOT offensive purge
+  Team purgers: Elemental Shaman
+
+DAMPENING (3v3): started at 10%, ended at 12% at match end
+
+CC APPLIED ON ENEMIES (DR summary):
+  Preservation Evoker (Balefirebob-Azgalor-US): 16 CC — 2× Incapacitate, 5× Unknown, 5× Disorient, 4× Stun | 3 reduced, 0 immune
+  Shadow Priest (Renoitukax-Nazjatar-US): 9 CC — 2× Unknown, 2× Disorient, 5× Stun | 2 reduced, 0 immune
+  Devourer Demon Hunter (Dashmodius-BloodFurnace-US): 9 CC — 5× Unknown, 3× Stun, 1× Disorient | 2 reduced, 0 immune
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Chinutty-BurningLegion-US (Mistweaver Monk — log owner):
+    Paralysis [45s], Leg Sweep [60s, 2 Charges], Life Cocoon [120s, 2 Charges]
+  2: Giblie-Kel'Thuzad-US (Elemental Shaman):
+    Hex [30s], Ascendance (Elemental) [180s, 2 Charges], Stormkeeper [60s, 2 Charges], Spiritwalker's Grace [120s]
+  3: Bigbadmitch-BurningLegion-US (Arms Warrior):
+    Avatar [90s, 2 Charges], Intimidating Shout [90s], Die by the Sword [120s], Bladestorm (Arms) [90s]
+  4: Balefirebob-Azgalor-US (Preservation Evoker — enemy):
+    Deep Breath [120s]
+  5: Renoitukax-Nazjatar-US (Shadow Priest — enemy):
+    Power Infusion [120s]
+  6: Dashmodius-BloodFurnace-US (Devourer Demon Hunter — enemy):
+    none tracked
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:00  [STATE]   friends 1:100
+0:02  [OWNER CAST]   Summon Jade Serpent Statue
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:03  [OWNER CAST]   Soothing Mist → 2
+0:04  [UNCLEANSED DEBUFF]   Vampiric Touch on 2 | 23s | 61k taken during | dispel: Magic
+0:04  [UNCLEANSED DEBUFF]   Shadow Word: Madness on 2 | 6s | 59k taken during | dispel: Magic
+0:05  [OWNER CAST]   Soothing Mist → 3
+0:06  [STATE]   friends 1:100 2:99 3:100
+0:06  [TEAMMATE CD]   2 (Elemental Shaman): Spiritwalker's Grace
+0:06  [UNCLEANSED DEBUFF]   Vampiric Touch on 1 | 17s | 15k taken during | dispel: Magic
+0:06  [OWNER CAST]   Transcendence
+0:07  [TEAMMATE CD]   2 (Elemental Shaman): Stormkeeper
+0:07  [OWNER CAST]   Renewing Mist → 2
+0:09  [STATE]   friends 1:98 2:91 3:100
+0:09  [OWNER CAST]   Chi Torpedo
+0:10  [TEAMMATE CD]   2 (Elemental Shaman): Ascendance (Elemental)
+0:10  [OWNER CC]   Paralysis → Balefirebob-Azgalor-US (100% HP)
+      [RES] rdy:Paralysis,Leg Sweep,Life Cocoon,2:Hex,2:Ascendance (Elemental),3:Avatar,3:Intimidating Shout,3:Die by the Sword,3:Bladestorm (Arms)  cd:2:Stormkeeper(57s),2:Spiritwalker's Grace(115s)
+0:12  [STATE]   friends 1:97 2:91 3:100
+0:12  [UNCLEANSED DEBUFF]   Vampiric Touch on 3 | 7s | 172k taken during | dispel: Magic
+0:12  [TEAMMATE CD]   3 (Arms Warrior): Avatar
+0:13  [OWNER CAST]   Renewing Mist → 2
+0:14  [TRINKET]   3 used PvP trinket
+0:15  [STATE]   friends 1:95 2:93 3:99
+0:16  [OWNER CAST]   Soothing Mist → 3
+0:16  [OWNER CAST]   Enveloping Mist → 3
+0:17  [ENEMY CD]   4 (Preservation Evoker): Deep Breath [1/2]
+0:18  [STATE]   friends 1:93 2:95 3:77
+0:18  [OWNER CAST]   Renewing Mist → self
+0:19  [OWNER CAST]   Rushing Wind Kick
+0:19  [UNCLEANSED DEBUFF]   Shadow Word: Madness on 2 | 6s | 59k taken during | dispel: Magic
+0:20  [OWNER CAST]   Spinning Crane Kick
+0:21  [STATE]   friends 1:100 2:99 3:83
+0:23  [OWNER CAST]   Spinning Crane Kick
+0:24  [STATE]   friends 1:99 2:94 3:77
+0:24  [ENEMY BUFF]   5: Power Infusion (purgeable)
+0:24  [ENEMY CD]   5 (Shadow Priest): Power Infusion [1/2]
+0:24  [ENEMY BUFF]   6: Power Infusion (purgeable)
+0:26  [OWNER CAST]   Renewing Mist → 3
+0:26  [UNCLEANSED DEBUFF]   Shadow Word: Madness on 3 | 6s | 53k taken during | dispel: Magic
+0:26  [OWNER CD]   Life Cocoon → 3 (43% HP)
+0:27  [STATE]   friends 1:77 2:88 3:48
+0:27  [CC ON TEAM]   2 ← Sleep Walk (Balefirebob-Azgalor-US) | 1s | trinket: available
+0:27  [CC ON TEAM]   2 ← Imprison (Dashmodius-BloodFurnace-US) | 1s | trinket: available
+0:27  [OWNER CAST]   Renewing Mist → self
+0:28  [STATE]   friends 1:79 2:85 3:51 / enemies 4:100 5:69 6:100
+0:28  [CC ON TEAM]   3 ← Cascading Horrors (Renoitukax-Nazjatar-US) | 2s | trinket: ON CD (107s left)
+0:29  [STATE]   friends 1:75 2:86 3:56 / enemies 4:100 5:71 6:100
+0:29  [CC ON TEAM]   2 ← Cascading Horrors (Renoitukax-Nazjatar-US) | 2s | trinket: available
+0:29  [OWNER CAST]   Transcendence
+0:30  [STATE]   friends 1:76 2:81 3:61 / enemies 4:100 5:73 6:100
+0:30  [UNCLEANSED DEBUFF]   Vampiric Touch on 2 | 15s | 422k taken during | dispel: Magic
+0:31  [STATE]   friends 1:71 2:82 3:64 / enemies 4:100 5:71 6:100
+0:31  [UNCLEANSED DEBUFF]   Shadow Word: Madness on 2 | 7s | 457k taken during | dispel: Magic
+0:32  [STATE]   friends 1:72 2:72 3:70 / enemies 4:100 5:65 6:99
+0:32  [OWNER CAST]   Soothing Mist → 2 [completed before CC landed]
+0:33  [STATE]   friends 1:71 2:53 3:79 / enemies 4:100 5:48 6:94
+0:33  [OWNER CAST]   Enveloping Mist → 2 [completed before CC landed]
+0:33  [CC ON TEAM]   1 ← Silence (Renoitukax-Nazjatar-US) | 4s | trinket: available
+0:34  [STATE]   friends 1:71 2:54 3:91 / enemies 4:100 5:42 6:93
+0:35  [STATE]   friends 1:74 2:81 3:100 / enemies 4:95 5:43 6:94
+0:35  [OWNER CAST]   Will of the Forsaken
+0:36  [STATE]   friends 1:74 2:76 3:100 / enemies 4:90 5:47 6:76
+0:37  [STATE]   friends 1:69 2:71 3:100 / enemies 4:100 5:56 6:80
+0:37  [OWNER CAST]   Invoke Chi-Ji, the Red Crane
+0:38  [STATE]   friends 1:67 2:72 3:100 / enemies 4:100 5:90 6:92
+0:38  [TEAMMATE CC]   3 (Arms Warrior): Intimidating Shout
+0:38  [CC CAST]   Intimidating Shout (by 3) → 4, 5 [2 enemies]
+0:38  [BUFF FADED]   Life Cocoon
+0:38  [OWNER CAST]   Soothing Mist → 2
+0:39  [STATE]   friends 1:68 2:76 3:100 / enemies 4:99 5:94 6:100
+0:39  [ENEMY BUFF END]   5: Power Infusion
+0:39  [OWNER CAST]   Enveloping Mist → 2
+0:39  [ENEMY BUFF END]   6: Power Infusion
+0:40  [STATE]   friends 1:73 2:80 3:100 / enemies 4:100 5:81 6:98
+0:40  [CC ON TEAM]   2 ← Psychic Scream (Renoitukax-Nazjatar-US) | 0s | trinket: available
+0:40  [CC ON TEAM]   3 ← Psychic Scream (Renoitukax-Nazjatar-US) | 0s | trinket: ON CD (95s left)
+0:41  [STATE]   friends 1:76 2:75 3:100 / enemies 4:100 5:76 6:100
+0:41  [OWNER CAST]   Chi Torpedo
+0:42  [STATE]   friends 1:76 2:69 3:100 / enemies 4:98 5:67 6:100
+0:43  [STATE]   friends 1:80 2:71 3:99 / enemies 4:99 5:53 6:99
+0:43  [OWNER CC]   Leg Sweep
+0:43  [CC CAST]   Leg Sweep (by 1) → 4
+0:44  [STATE]   friends 1:83 2:72 3:99 / enemies 4:99 5:41 6:100
+0:45  [STATE]   friends 1:86 2:74 3:100 / enemies 4:100 5:29 6:91
+0:45  [UNCLEANSED DEBUFF]   Shadow Word: Madness on 2 | 6s | 184k taken during | dispel: Magic
+0:46  [STATE]   friends 1:88 2:65 3:97 / enemies 4:99 5:4 6:94
+0:47  [STATE]   friends 1:87 2:67 3:97 / enemies 4:100 5:5 6:95
+0:47  [OWNER CAST]   Song of Chi-Ji
+0:48  [STATE]   friends 1:89 2:68 3:97 / enemies 4:98 5:17 6:93
+0:48  [OWNER CAST]   Renewing Mist → 2
+0:49  [STATE]   friends 1:91 2:56 3:98 / enemies 4:98 5:17 6:95
+0:49  [OWNER CAST]   Soothing Mist → 2
+0:50  [STATE]   friends 1:85 2:57 3:99 / enemies 4:100 5:22 6:89
+0:50  [OWNER CAST]   Enveloping Mist → 2
+0:50  [DMG SPIKE]   2 (Elemental Shaman): 0.75M in 10s [P95 Danger] [BURST] (58% -> 66% HP)
+0:51  [STATE]   friends 1:87 2:57 3:100 / enemies 4:98 5:31 6:89
+0:52  [STATE]   friends 1:86 2:59 3:100 / enemies 4:100 5:43 6:92
+0:52  [OWNER CAST]   Rushing Wind Kick
+0:53  [STATE]   friends 1:86 2:65 3:99 / enemies 4:93 5:57 6:84
+0:53  [OWNER CAST]   Thunder Focus Tea
+0:53  [UNCLEANSED DEBUFF]   Shadow Word: Madness on 2 | 7s | 383k taken during | dispel: Magic
+0:53  [OWNER CAST]   Rushing Wind Kick
+0:54  [STATE]   friends 1:98 2:59 3:100 / enemies 4:95 5:65 6:83
+0:55  [STATE]   friends 1:96 2:64 3:96 / enemies 4:93 5:49 6:78
+0:56  [OWNER CAST]   Soothing Mist → 2
+0:56  [OWNER CAST]   Sheilun's Gift → 2
+0:57  [STATE]   friends 1:98 2:87 3:93
+0:58  [OWNER CAST]   Sheilun's Gift → 2
+0:59  [OWNER CAST]   Rushing Wind Kick
+0:59  [TEAMMATE CD]   2 (Elemental Shaman): Stormkeeper
+1:00  [STATE]   friends 1:100 2:95 3:99
+1:00  [OWNER CAST]   Spinning Crane Kick
+1:01  [STATE]   friends 1:99 2:66 3:99 / enemies 4:100 5:62 6:99
+1:01  [OWNER CAST]   Thunder Focus Tea
+1:01  [OWNER CAST]   Rushing Wind Kick
+1:02  [STATE]   friends 1:100 2:86 3:100 / enemies 4:100 5:68 6:89
+1:02  [UNCLEANSED DEBUFF]   Shadow Word: Madness on 1 | 6s | 93k taken during | dispel: Magic
+1:03  [STATE]   friends 1:98 2:84 3:100 / enemies 4:100 5:56 6:93
+1:03  [OWNER CAST]   Renewing Mist → 2 [completed before CC landed]
+1:03  [CC ON TEAM]   1 ← Silence (Renoitukax-Nazjatar-US) | 4s | trinket: available
+1:04  [STATE]   friends 1:96 2:82 3:99 / enemies 4:100 5:36 6:100
+1:04  [OWNER CAST]   Rushing Wind Kick [succeeded after CC arrived — within 1s in log]
+1:05  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 5:36 6:94
+1:05  [DMG SPIKE]   2 (Elemental Shaman): 0.86M in 10s [P95 Danger] [BURST] (97% -> 82% HP)
+1:06  [STATE]   friends 1:96 2:97 3:98 / enemies 4:100 5:45 6:94
+1:06  [OWNER CAST]   Spinning Crane Kick
+1:07  [STATE]   friends 1:98 2:77 3:100 / enemies 4:100 5:75 6:99
+1:08  [STATE]   friends 1:99 2:60 3:100 / enemies 4:100 5:69 6:100
+1:08  [OWNER CAST]   Sheilun's Gift → 2
+1:09  [STATE]   friends 1:99 2:67 3:99 / enemies 4:100 5:77 6:97
+1:09  [OWNER CAST]   Soothing Mist → 2
+1:10  [STATE]   friends 1:99 2:56 3:100 / enemies 4:100 5:73 6:96
+1:10  [OWNER CAST]   Enveloping Mist → 2
+1:11  [STATE]   friends 1:99 2:61 3:100 / enemies 4:98 5:65 6:98
+1:11  [TRINKET]   2 used PvP trinket
+1:11  [OWNER CAST]   Detox → 2 [completed before CC landed]
+1:11  [CLEANSE]   1 dispelled 4 effects: Catastrophe off 2, Shadow Word: Pain off 2, Vampiric Touch off 2, Horrific Visions off 2
+1:11  [CC ON TEAM]   1 ← Sin and Punishment (Renoitukax-Nazjatar-US) | 3s | trinket: available
+1:12  [STATE]   friends 1:98 2:68 3:96 / enemies 4:96 5:63 6:98
+1:13  [STATE]   friends 1:99 2:63 3:91 / enemies 4:96 5:57 6:100
+1:13  [CC ON TEAM]   1 ← Sleep Walk (Balefirebob-Azgalor-US) | 4s | trinket: available
+1:14  [STATE]   friends 1:99 2:58 3:94 / enemies 4:97 5:50 6:100
+1:15  [STATE]   friends 1:98 2:43 3:94 / enemies 4:97 5:34 6:100
+1:15  [UNCLEANSED DEBUFF]   Shadow Word: Madness on 3 | 6s | 71k taken during | dispel: Magic
+1:15  [CC ON TEAM]   3 ← Psychic Scream (Renoitukax-Nazjatar-US) | 1s | trinket: ON CD (60s left)
+1:16  [STATE]   friends 1:98 2:83 3:92 / enemies 4:96 5:70 6:100
+1:17  [STATE]   friends 1:95 2:86 3:93 / enemies 4:100 5:72 6:100
+1:18  [STATE]   friends 1:94 2:77 3:89 / enemies 4:100 5:85 6:99
+1:18  [UNCLEANSED DEBUFF]   Vampiric Touch on 2 | 19s | 410k taken during | dispel: Magic
+1:18  [OWNER CAST]   Renewing Mist → 2
+1:19  [STATE]   friends 1:95 2:64 3:87 / enemies 4:100 5:99 6:100
+1:19  [OWNER CAST]   Soothing Mist → 2
+1:20  [STATE]   friends 1:95 2:64 3:88 / enemies 4:100 5:99 6:100
+1:20  [OWNER CAST]   Sheilun's Gift → 2
+1:20  [DMG SPIKE]   2 (Elemental Shaman): 0.90M in 10s [P95 Danger] [BURST] (74% -> 35% HP)
+1:21  [STATE]   friends 1:92 2:59 3:90 / enemies 4:100 5:100 6:100
+1:21  [OWNER CAST]   Sheilun's Gift → 2
+1:22  [STATE]   friends 1:93 2:85 3:88 / enemies 4:100 5:83 6:100
+1:22  [OWNER CAST]   Rushing Wind Kick
+1:23  [STATE]   friends 1:99 2:88 3:99 / enemies 4:100 5:94 6:100
+1:23  [OWNER CAST]   Spinning Crane Kick
+1:24  [STATE]   friends 1:100 2:91 3:100 / enemies 4:100 5:97 6:100
+1:24  [OWNER CAST]   Thunder Focus Tea
+1:25  [STATE]   friends 1:100 2:84 3:100 / enemies 4:100 5:99 6:100
+1:25  [OWNER CAST]   Rushing Wind Kick
+1:26  [OWNER CAST]   Chi Torpedo
+1:26  [UNCLEANSED DEBUFF]   Vampiric Touch on 1 | 26s | 23k taken during | dispel: Magic
+1:26  [UNCLEANSED DEBUFF]   Shadow Word: Madness on 1 | 6s | 19k taken during | dispel: Magic
+1:27  [STATE]   friends 1:100 2:83 3:90
+1:27  [OWNER CAST]   Transcendence
+1:27  [TEAMMATE CD]   3 (Arms Warrior): Avatar
+1:29  [OWNER CAST]   Sheilun's Gift → 2
+1:30  [STATE]   friends 1:100 2:49 3:92
+1:30  [OWNER CAST]   Soothing Mist → 2
+1:32  [OWNER CAST]   Enveloping Mist → 2
+1:33  [STATE]   friends 1:100 2:42 3:100
+1:33  [OWNER CAST]   Sheilun's Gift → 2
+1:34  [CC ON TEAM]   1 ← Silence (Renoitukax-Nazjatar-US) | 4s | trinket: used
+1:34  [UNCLEANSED DEBUFF]   Shadow Word: Madness on 2 | 23s | 86k taken during | dispel: Magic
+1:35  [STATE]   friends 1:98 2:71 3:99 / enemies 4:100 5:65 6:100
+1:35  [OWNER CAST]   Spinning Crane Kick [succeeded after CC arrived — within 1s in log]
+1:36  [STATE]   friends 1:99 2:73 3:97 / enemies 4:95 5:54 6:100
+1:36  [OWNER CAST]   Spinning Crane Kick
+1:37  [STATE]   friends 1:98 2:74 3:97 / enemies 4:95 5:55 6:100
+1:37  [CC ON TEAM]   3 ← Cascading Horrors (Renoitukax-Nazjatar-US) | 3s | trinket: ON CD (38s left)
+1:37  [UNCLEANSED DEBUFF]   Cascading Horrors on 3 | 3s | 38k taken during | dispel: Magic
+1:38  [STATE]   friends 1:98 2:78 3:95 / enemies 4:94 5:57 6:100
+1:38  [CC ON TEAM]   1 ← Cascading Horrors (Renoitukax-Nazjatar-US) | 1s | trinket: used
+1:38  [TRINKET]   1 used PvP trinket
+1:39  [STATE]   friends 1:100 2:83 3:96 / enemies 4:95 5:56 6:98
+1:39  [OWNER CC]   Leg Sweep
+1:39  [CC CAST]   Leg Sweep (by 1) → 4, 5 [2 enemies]
+1:40  [STATE]   friends 1:99 2:84 3:98 / enemies 4:96 5:59 6:98
+1:41  [STATE]   friends 1:98 2:84 3:98 / enemies 4:95 5:59 6:99
+1:41  [OWNER CAST]   Song of Chi-Ji
+1:42  [STATE]   friends 1:97 2:77 3:99 / enemies 4:95 5:55 6:97
+1:43  [STATE]   friends 1:96 2:72 3:100 / enemies 4:96 5:50 6:100
+1:43  [OWNER CAST]   Renewing Mist → 2
+1:43  [DMG SPIKE]   2 (Elemental Shaman): 1.10M in 10s [P95 Danger] [ROT] (71% -> 22% HP)
+1:44  [STATE]   friends 1:95 2:70 3:96 / enemies 5:49 6:100
+1:44  [OWNER CAST]   Soothing Mist → 2
+1:45  [STATE]   friends 1:93 2:47 3:94 / enemies 5:49 6:100
+1:45  [OWNER CAST]   Sheilun's Gift → 2
+1:46  [STATE]   friends 1:93 2:97 3:94 / enemies 5:48 6:100
+1:46  [CC ON TEAM]   3 ← Psychic Scream (Renoitukax-Nazjatar-US) | 1s | trinket: ON CD (29s left)
+1:47  [STATE]   friends 1:92 2:69 3:92 / enemies 4:97 5:45 6:100
+1:47  [OWNER CAST]   Soothing Mist → 2
+1:47  [OWNER CAST]   Invoke Chi-Ji, the Red Crane
+1:48  [STATE]   friends 1:89 2:70 3:92 / enemies 4:99 5:46 6:100
+1:49  [STATE]   friends 1:90 2:63 3:93 / enemies 4:100 5:80 6:100
+1:49  [OWNER CAST]   Renewing Mist → 2
+1:50  [STATE]   friends 1:90 2:43 3:96 / enemies 4:100 5:92 6:100
+1:50  [OWNER CAST]   Soothing Mist → 2
+1:51  [STATE]   friends 1:90 2:35 3:100 / enemies 4:95 5:100 6:100
+1:51  [OWNER CAST]   Sheilun's Gift → 2
+1:51  [TEAMMATE CD]   2 (Elemental Shaman): Stormkeeper
+1:52  [STATE]   friends 1:91 2:27 3:89 / enemies 4:89 5:94 6:100
+1:52  [OWNER CAST]   Sheilun's Gift → 2
+1:53  [STATE]   friends 1:91 2:25 3:91 / enemies 4:91 5:87 6:100
+1:53  [OWNER CAST]   Renewing Mist → 2 [completed before CC landed]
+1:54  [STATE]   friends 1:74 2:25 3:92 / enemies 4:80 5:72 6:97
+1:54  [CC ON TEAM]   1 ← Sleep Walk (Balefirebob-Azgalor-US) | 1s | trinket: ON CD (75s left)
+1:55  [STATE]   friends 1:64 2:23 3:95 / enemies 4:72 5:62 6:100
+1:56  [STATE]   friends 1:68 2:22 3:86 / enemies 4:86 5:60 6:100
+1:56  [CC ON TEAM]   3 ← Mind Control (Renoitukax-Nazjatar-US) | 3s | trinket: ON CD (19s left)
+1:56  [UNCLEANSED DEBUFF]   Mind Control on 3 | 3s | 8k taken during | dispel: Magic
+1:56  [OWNER CAST]   Soothing Mist → 2
+1:57  [STATE]   friends 1:68 2:24 3:84 / enemies 4:88 5:50 6:100
+1:57  [OWNER CAST]   Enveloping Mist → 2
+1:58  [STATE]   friends 1:74 2:25 3:85 / enemies 4:92 5:48 6:98
+1:59  [STATE]   friends 1:78 2:29 3:88 / enemies 4:100 5:52 6:99
+1:59  [OWNER CD]   Life Cocoon → 2 (31% HP)
+2:00  [STATE]   friends 1:85 2:36 3:88 / enemies 4:100 5:82 6:100
+2:00  [OWNER CAST]   Chi Torpedo
+2:01  [STATE]   friends 1:89 2:46 3:93 / enemies 4:99 5:97 6:100
+2:02  [STATE]   friends 1:93 2:52 3:95 / enemies 4:100 5:85 6:100
+2:02  [UNCLEANSED DEBUFF]   Vampiric Touch on 3 | 63s | 163k taken during | dispel: Magic
+2:02  [UNCLEANSED DEBUFF]   Shadow Word: Madness on 3 | 7s | 158k taken during | dispel: Magic
+2:03  [STATE]   friends 1:93 2:54 3:90 / enemies 4:100 5:81 6:93
+2:04  [STATE]   friends 1:97 2:60 3:83 / enemies 4:100 5:89 6:92
+2:04  [UNCLEANSED DEBUFF]   Vampiric Touch on 1 | 26s | 190k taken during | dispel: Magic
+2:05  [STATE]   friends 1:100 2:63 3:80 / enemies 4:100 5:88 6:92
+2:05  [OWNER CAST]   Renewing Mist → 3
+2:06  [STATE]   friends 1:97 2:66 3:79 / enemies 4:100 5:100 6:98
+2:06  [UNCLEANSED DEBUFF]   Shadow Word: Madness on 1 | 10s | 193k taken during | dispel: Magic
+2:07  [OWNER CAST]   Renewing Mist → 3 [completed before CC landed]
+2:07  [CC ON TEAM]   1 ← Sleep Walk (Balefirebob-Azgalor-US) | 1s | trinket: ON CD (62s left)
+2:08  [STATE]   friends 1:78 2:72 3:77 / enemies 4:99 5:100 6:99
+2:08  [CC ON TEAM]   2 ← Imprison (Dashmodius-BloodFurnace-US) | 3s | trinket: ON CD (63s left)
+2:08  [UNCLEANSED DEBUFF]   Imprison on 2 | 3s | 18k taken during | dispel: Magic
+2:08  [OWNER CAST]   Chi Torpedo
+2:09  [STATE]   friends 1:74 2:76 3:74 / enemies 4:100 5:100 6:100
+2:10  [STATE]   friends 1:74 2:80 3:69 / enemies 4:100 5:96 6:100
+2:10  [OWNER CAST]   Mana Tea
+2:11  [STATE]   friends 1:71 2:83 3:60 / enemies 4:100 5:96 6:98
+2:11  [UNCLEANSED DEBUFF]   Vampiric Touch on 2 | 20s | 35k taken during | dispel: Magic
+2:11  [BUFF FADED]   Life Cocoon
+2:12  [STATE]   friends 1:71 2:85 3:51 / enemies 4:100 5:91 6:100
+2:13  [STATE]   friends 1:70 2:86 3:33 / enemies 4:100 5:94 6:100
+2:14  [STATE]   friends 1:67 2:84 3:38 / enemies 4:100 5:83 6:100
+2:14  [UNCLEANSED DEBUFF]   Landslide on 1 | 6s | 4k taken during | dispel: Magic
+2:15  [STATE]   friends 1:63 2:85 3:36 / enemies 4:100 5:73 6:99
+2:15  [OWNER CD]   Restoral
+2:16  [STATE]   friends 1:98 2:100 3:72 / enemies 4:99 5:61 6:99
+2:16  [OWNER CAST]   Renewing Mist → 3
+2:17  [STATE]   friends 1:98 2:100 3:78 / enemies 4:99 5:44 6:99
+2:17  [CC CAST]   Earthquake (by 2) → 6
+2:18  [STATE]   friends 1:98 2:100 3:79 / enemies 4:98 5:44 6:99
+2:18  [TEAMMATE CC]   3 (Arms Warrior): Intimidating Shout
+2:18  [CC CAST]   Intimidating Shout (by 3) → 4, 6 [2 enemies]
+2:18  [OWNER CAST]   Mana Tea
+2:19  [TEAMMATE CD]   2 (Elemental Shaman): Ascendance (Elemental)
+2:21  [STATE]   friends 1:97 2:100 3:86
+2:21  [OWNER CAST]   Renewing Mist → 3
+2:24  [STATE]   friends 1:99 2:100 3:92
+2:25  [OWNER CAST]   Song of Chi-Ji
+2:26  [TEAMMATE CD]   2 (Elemental Shaman): Spiritwalker's Grace
+2:27  [STATE]   friends 1:100 2:100 3:80
+2:27  [OWNER CAST]   Soothing Mist → 3
+2:28  [OWNER CAST]   Enveloping Mist → 3
+2:29  [CC ON TEAM]   3 ← Psychic Scream (Renoitukax-Nazjatar-US) | 1s | trinket: available
+2:29  [OWNER CAST]   Spinning Crane Kick
+2:30  [STATE]   friends 1:100 2:99 3:83 / enemies 4:98 5:76 6:100
+2:30  [OWNER CAST]   Thunder Focus Tea
+2:30  [OWNER CAST]   Rushing Wind Kick
+2:31  [STATE]   friends 1:99 2:99 3:100 / enemies 4:88 5:67 6:96
+2:31  [OFFENSIVE WINDOW]   2:31–2:50 | Critical | 0.75M on 2 (Elemental Shaman) | CDs: Deep Breath + Power Infusion
+2:31  [ENEMY CD]   4 (Preservation Evoker): Deep Breath [2/2]
+2:31  [UNCLEANSED DEBUFF]   Shadow Word: Madness on 2 | 14s | 307k taken during | dispel: Magic
+2:31  [CC ON TEAM]   1 ← Terror of the Skies (Balefirebob-Azgalor-US) | 3s | trinket: ON CD (37s left)
+2:31  [CC ON TEAM]   2 ← Terror of the Skies (Balefirebob-Azgalor-US) | 3s | trinket: ON CD (40s left)
+2:31  [CC ON TEAM]   3 ← Terror of the Skies (Balefirebob-Azgalor-US) | 3s | trinket: available
+2:32  [STATE]   friends 1:92 2:90 3:91 / enemies 4:84 5:45 6:97
+2:33  [STATE]   friends 1:87 2:81 3:93 / enemies 4:91 5:51 6:100
+2:34  [STATE]   friends 1:74 2:59 3:82 / enemies 4:100 5:81 6:100
+2:35  [STATE]   friends 1:73 2:54 3:77 / enemies 4:100 5:87 6:100
+2:35  [ENEMY BUFF]   5: Power Infusion (purgeable)
+2:35  [ENEMY CD]   5 (Shadow Priest): Power Infusion [2/2]
+2:35  [ENEMY BUFF]   6: Power Infusion (purgeable)
+2:36  [STATE]   friends 1:72 2:51 3:74 / enemies 4:100 5:86 6:99
+2:37  [STATE]   friends 1:60 2:44 3:70 / enemies 4:100 5:93 6:99
+2:37  [OWNER CAST]   Soothing Mist → 2
+2:37  [OWNER CAST]   Sheilun's Gift → 2
+2:38  [STATE]   friends 1:56 2:63 3:62 / enemies 4:100 5:99 6:100
+2:38  [DMG SPIKE]   2 (Elemental Shaman): 0.75M in 10s [P95 Danger] [ROT] (62% -> 24% HP)
+2:38  [OWNER CAST]   Thunder Focus Tea
+2:39  [STATE]   friends 1:45 2:54 3:49 / enemies 4:99 5:87 6:97
+2:39  [OWNER CAST]   Rushing Wind Kick
+2:40  [STATE]   friends 1:53 2:45 3:56 / enemies 4:100 5:71 6:96
+2:40  [OWNER CC]   Leg Sweep
+2:40  [CC CAST]   Leg Sweep (by 1) → 6, 5 [2 enemies]
+2:41  [STATE]   friends 1:50 2:36 3:57 / enemies 4:100 5:63 6:100
+2:41  [CC ON TEAM]   1 ← Sleep Walk (Balefirebob-Azgalor-US) | 0s | trinket: ON CD (27s left)
+2:42  [STATE]   friends 1:48 2:89 3:60 / enemies 4:100 5:71 6:99
+2:43  [STATE]   friends 1:60 2:84 3:66 / enemies 4:100 5:71 6:100
+2:43  [OWNER CAST]   Renewing Mist → self
+2:44  [STATE]   friends 1:60 2:72 3:66 / enemies 4:100 5:74 6:100
+2:44  [OWNER CAST]   Soothing Mist → 3 [completed before CC landed]
+2:44  [CC ON TEAM]   1 ← Sleep Walk (Balefirebob-Azgalor-US) | 2s | trinket: ON CD (24s left)
+2:45  [STATE]   friends 1:60 2:57 3:71 / enemies 4:97 5:81 6:99
+2:45  [TEAMMATE CD]   3 (Arms Warrior): Avatar
+2:46  [STATE]   friends 1:63 2:50 3:73 / enemies 4:99 5:82 6:100
+2:46  [CC ON TEAM]   1 ← Silence (Renoitukax-Nazjatar-US) | 4s | trinket: ON CD (23s left)
+2:47  [STATE]   friends 1:61 2:30 3:73 / enemies 4:100 5:85 6:100
+2:47  [UNCLEANSED DEBUFF]   Shadow Word: Madness on 1 | 6s | 162k taken during | dispel: Magic
+2:48  [STATE]   friends 1:56 2:25 3:76 / enemies 4:100 5:98 6:99
+2:49  [STATE]   friends 1:55 2:21 3:78 / enemies 4:100 5:69 6:100
+2:50  [STATE]   friends 1:50 2:18 3:78 / enemies 4:98 5:67 6:100
+2:50  [ENEMY BUFF END]   5: Power Infusion
+2:50  [ENEMY BUFF END]   6: Power Infusion
+2:51  [STATE]   friends 1:49 2:19 3:77 / enemies 4:100 5:69 6:100
+2:51  [OWNER CAST]   Renewing Mist → 2
+2:52  [STATE]   friends 1:44 2:18 3:93 / enemies 4:100 5:67 6:99
+2:52  [OWNER CAST]   Sheilun's Gift → 2
+2:52  [TEAMMATE CD]   2 (Elemental Shaman): Stormkeeper
+2:53  [STATE]   friends 1:36 2:18 3:85 / enemies 4:100 5:36 6:91
+2:53  [OWNER CAST]   Soothing Mist → 2
+2:54  [STATE]   friends 1:31 2:10 3:79 / enemies 4:98 5:36 6:91
+2:54  [OWNER CAST]   Sheilun's Gift → 2
+2:55  [STATE]   friends 1:24 2:20 3:75 / enemies 4:99 5:51 6:90
+2:55  [OWNER CAST]   Spinning Crane Kick [completed before CC landed]
+2:55  [OWNER CD]   Fortifying Brew
+2:55  [CLEANSE]   1 dispelled 4 effects: Fire Breath off 1, Shadow Word: Pain off 1, Horrific Visions off 1, Vampiric Touch off 1
+2:55  [CC ON TEAM]   1 ← Sin and Punishment (Renoitukax-Nazjatar-US) | 3s | trinket: ON CD (13s left)
+2:56  [STATE]   friends 1:56 2:18 3:77 / enemies 4:89 5:42 6:91
+2:57  [STATE]   friends 1:44 2:dead 3:78 / enemies 4:86 5:55 6:89
+2:57  [DEATH]  2 (Elemental Shaman — friendly)
+               HP: 85% at T-15s → 29% at T-10s → 31% at T-5s → 23% at T-3s → dead
+               Top damage in final 10s: Dashmodius-BloodFurnace-US — Consume (98k), Balefirebob-Azgalor-US — Disintegrate (92k), Dashmodius-BloodFurnace-US — Void Ray (43k)
+2:58  [STATE]   friends 1:44 2:dead 3:76 / enemies 4:94 5:68 6:98
+2:59  [STATE]   friends 1:45 2:dead 3:74 / enemies 4:100 5:76 6:97
+2:59  [OWNER CAST]   Chi Torpedo
+2:59  [UNCLEANSED DEBUFF]   Shadow Word: Madness on 3 | 6s | 368k taken during | dispel: Magic
+3:00  [STATE]   friends 1:47 2:dead 3:56 / enemies 4:100 5:85 6:98
+3:00  [OWNER CAST]   Renewing Mist → self
+3:01  [STATE]   friends 1:48 2:dead 3:45 / enemies 4:100 5:79 6:97
+3:02  [STATE]   friends 1:50 2:dead 3:35 / enemies 4:100 5:84 6:100
+3:03  [STATE]   friends 1:50 2:dead 3:22 / enemies 4:98 5:85 6:100
+3:03  [OWNER CC]   Paralysis → Balefirebob-Azgalor-US (98% HP)
+      [RES] rdy:Δ+2:Stormkeeper-2:Ascendance (Elemental),3:Intimidating Shout  cd:2:Ascendance (Elemental)(7s),3:Intimidating Shout(45s)  enemy:Power Infusion/Shadow Priest(28s)
+3:04  [STATE]   friends 1:52 2:dead 3:13 / enemies 4:98 5:79 6:99
+3:04  [OWNER CAST]   Renewing Mist → 3
+3:05  [STATE]   friends 1:55 2:dead 3:dead / enemies 4:100 5:76 6:100
+3:05  [DEATH]  3 (Arms Warrior — friendly)
+               HP: 78% at T-15s → 75% at T-10s → 67% at T-5s → 35% at T-3s → dead
+               Top damage in final 10s: Renoitukax-Nazjatar-US — Shadow Word: Madness (85k), Dashmodius-BloodFurnace-US — Void Ray (71k), Dashmodius-BloodFurnace-US — Consume (56k)
+3:06  [STATE]   friends 1:59 2:dead 3:dead
+3:06  [CC ON TEAM]   1 ← Imprison (Dashmodius-BloodFurnace-US) | 1s | trinket: ON CD (3s left)
+3:07  [STATE]   friends 1:60 2:dead 3:dead / enemies 4:100 5:81 6:100
+3:08  [STATE]   friends 1:63 2:dead 3:dead / enemies 4:100 5:99 6:100
+3:09  [STATE]   friends 1:57 2:dead 3:dead / enemies 4:100 5:100 6:97
+3:10  [STATE]   friends 1:53 2:dead 3:dead / enemies 4:100 5:99 6:100
+3:11  [STATE]   friends 1:52 2:dead 3:dead / enemies 4:100 5:99 6:99
+
+3:11  [MATCH END]   damp: 12%
+  friends 1:52% 2:dead(2:57) 3:dead(3:05) / enemies 4:100% 5:99% 6:99%

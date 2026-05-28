@@ -1,0 +1,138 @@
+[ARCHETYPE: Holy Paladin — short_passive_swap]
+Matches in this cluster are short (median 118s) with low burst activity and moderate CC pressure. CD usage is notably absent in 53% of cases, and purge data is unavailable, suggesting limited offensive engagement. A 14% healing gap rate is elevated for Holy Paladin given the short duration, and offensive participation sits at 43%, the lowest across clusters.
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Holy Paladin (Healer) | Bracket: 3v3 | Result: Loss | Duration: 0:50
+  My team: Holy Paladin, Balance Druid, Windwalker Monk
+  Enemy team: Discipline Priest, Protection Paladin, Arms Warrior
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Holy Paladin): CANNOT offensive purge
+  Team purgers: none
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Lilholypal-Outland-EU (Holy Paladin — log owner):
+    Lay on Hands [600s], Blessing of Protection [300s], Avenging Crusader [60s], Blessing of Sacrifice [120s], Aura Mastery [180s]
+  2: Moomre-Kazzak-EU (Balance Druid):
+    Mass Entanglement [30s], Barkskin [60s], Incarnation: Chosen of Elune [180s], Stampeding Roar [120s], Incapacitating Roar [30s], Frenzied Regeneration [36s]
+  3: Saintviper-Outland-EU (Windwalker Monk):
+    Paralysis [45s], Leg Sweep [60s], Touch of Karma [90s]
+  4: Justdiebro-Outland-EU (Discipline Priest — enemy):
+    Power Infusion [120s]
+  5: Lichti-Malygos-EU (Protection Paladin — enemy):
+    Avenging Wrath [120s], Shield of Virtue [45s]
+  6: Shabubey-DunMorogh-EU (Arms Warrior — enemy):
+    Avatar [90s]
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100 2:100
+0:02  [OWNER CAST]   432459 → 2
+0:03  [STATE]   friends 1:100 2:100
+0:04  [OWNER CAST]   275773 → 5
+0:06  [STATE]   friends 1:100 2:100
+0:07  [OWNER CAST]   20473 → 5
+0:08  [STATE]   friends 1:100 / enemies 4:100 5:100 6:100
+0:09  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:100
+0:09  [OWNER CAST]   275773 → 6
+0:09  [CC ON TEAM]   3 ← Storm Bolt (Shabubey-DunMorogh-EU) | 3s
+0:10  [STATE]   friends 1:100 2:100 3:96 / enemies 4:100 5:100 6:100
+0:10  [OFFENSIVE WINDOW]   0:10–0:36 | Critical | 0.72M on 2 (Balance Druid) | CDs: Avatar + Avenging Wrath + Power Infusion
+0:10  [ENEMY CD]   6 (Arms Warrior): Avatar
+0:10  [TEAMMATE CD]   2 (Balance Druid): Incapacitating Roar
+      [RES] rdy:Δ+2:Incapacitating Roar,3:Leg Sweep  cd:—  enemy:Avatar/Arms Warrior(0s)  cc:3/Storm Bolt-2s[stun]
+0:10  [CC CAST]   Incapacitating Roar (by 2) → nil [non-player target]
+0:10  [CC CAST]   Incapacitating Roar (by 2) → 4
+0:10  [OWNER CAST]   85673 → 3
+0:11  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:100 6:100
+0:11  [CC ON TEAM]   3 ← Champion's Spear (Shabubey-DunMorogh-EU) | 6s
+0:12  [STATE]   friends 1:100 2:100 3:94 / enemies 4:100 5:100 6:100
+0:12  [DMG SPIKE]   3 (Windwalker Monk): 0.55M in 10s
+0:12  [TEAMMATE CD]   3 (Windwalker Monk): Leg Sweep
+      [RES] rdy:Δ-2:Incapacitating Roar  cd:2:Incapacitating Roar(28s)  enemy:Avatar/Arms Warrior(2s)  cc:3/Champion's Spear-5s
+0:12  [CC CAST]   Leg Sweep (by 3) → 5
+0:12  [CC CAST]   Leg Sweep (by 3) → nil [non-player target]
+0:13  [STATE]   friends 1:100 2:100 3:84 / enemies 4:100 5:100 6:100
+0:13  [TEAMMATE CD]   2 (Balance Druid): Incarnation: Chosen of Elune
+      [RES] rdy:Δ+Avenging Crusader,2:Incarnation: Chosen of Elune,3:Touch of Karma  cd:—  enemy:Avatar/Arms Warrior(4s)  cc:3/Champion's Spear-4s
+0:13  [OWNER CAST]   19750 → 3
+0:13  [OWNER CAST]   85673 → 3
+0:14  [STATE]   friends 1:100 2:100 3:68 / enemies 4:100 5:97 6:100
+0:15  [STATE]   friends 1:100 2:100 3:73 / enemies 4:100 5:92 6:100
+0:15  [CC ON TEAM]   1 ← Hammer of Justice (Lichti-Malygos-EU) | 4s
+0:16  [STATE]   friends 2:100 3:66 / enemies 4:100 5:88 6:86
+0:16  [ENEMY CD]   5 (Protection Paladin): Avenging Wrath
+0:17  [STATE]   friends 2:100 3:62 / enemies 4:100 5:89 6:63
+0:17  [ENEMY CD]   4 (Discipline Priest): Power Infusion
+0:17  [ENEMY BUFF]   6: Power Infusion (purgeable)
+0:17  [ENEMY BUFF]   4: Power Infusion (purgeable)
+0:18  [STATE]   friends 2:100 3:37 / enemies 4:100 5:100 6:57
+0:19  [STATE]   friends 2:100 3:34 / enemies 4:100 5:100 6:55
+0:19  [TEAMMATE CD]   3 (Windwalker Monk): Touch of Karma
+      [RES] rdy:Δ-2:Incarnation: Chosen of Elune,3:Leg Sweep  cd:2:Incarnation: Chosen of Elune(175s),3:Leg Sweep(53s)  enemy:Power Infusion/Discipline Priest(2s),Avenging Wrath/Protection Paladin(3s),Avatar/Arms Warrior(9s)  cc:1/Hammer of Justice-0s[stun]
+0:20  [STATE]   friends 1:100 2:100 3:33 / enemies 4:100 5:100 6:53
+0:20  [CC ON TEAM]   1 ← Blinding Light (Lichti-Malygos-EU) | 1s
+0:21  [STATE]   friends 1:100 2:100 3:31 / enemies 4:100 5:100 6:50
+0:21  [OWNER CD]   Avenging Crusader
+      [RES] rdy:Lay on Hands,Blessing of Protection,Avenging Crusader,Blessing of Sacrifice,Aura Mastery,2:Mass Entanglement,2:Barkskin,2:Stampeding Roar,2:Frenzied Regeneration,3:Paralysis  cd:2:Incarnation: Chosen of Elune(172s),2:Incapacitating Roar(19s),3:Leg Sweep(51s),3:Touch of Karma(88s)  enemy:Power Infusion/Discipline Priest(4s),Avenging Wrath/Protection Paladin(5s),Avatar/Arms Warrior(11s)
+0:21  [OWNER CAST]   190784
+0:22  [STATE]   friends 1:100 2:100 3:dead / enemies 4:100 5:100 6:52
+0:22  [DEATH]  3 (Windwalker Monk — friendly)
+               HP: 86% at T-10s → 49% at T-5s → 33% at T-3s → dead
+               Top damage in final 10s: Shabubey-DunMorogh-EU — Bladestorm (70k), Shabubey-DunMorogh-EU — Mortal Strike (70k), [pet] — Inescapable Torment (61k)
+0:23  [STATE]   friends 1:100 2:100 3:dead / enemies 4:100 5:100 6:47
+0:23  [OWNER CAST]   82326 → 2
+0:24  [STATE]   friends 1:100 2:100 3:dead / enemies 4:100 5:100 6:51
+0:25  [STATE]   friends 1:100 2:100 3:dead / enemies 4:100 5:100 6:52
+0:25  [OWNER CAST]   1241413 → 6
+0:26  [STATE]   friends 1:100 2:100 3:dead / enemies 4:100 5:100 6:53
+0:26  [DMG SPIKE]   2 (Balance Druid): 0.72M in 10s
+0:26  [OWNER CAST]   85673 → 2
+0:27  [STATE]   friends 1:100 2:95 3:dead / enemies 4:100 5:100 6:75
+0:27  [ENEMY CD]   5 (Protection Paladin): Shield of Virtue
+0:28  [STATE]   friends 1:100 2:80 3:dead / enemies 4:100 5:100 6:80
+0:28  [TEAMMATE CD]   2 (Balance Druid): Barkskin
+      [RES] rdy:Δ-Avenging Crusader  cd:Avenging Crusader(53s)  enemy:Power Infusion/Discipline Priest(11s),Avenging Wrath/Protection Paladin(12s),Shield of Virtue/Protection Paladin(1s),Avatar/Arms Warrior(18s)
+0:28  [OWNER CAST]   19750 → 2
+0:29  [STATE]   friends 1:100 2:96 3:dead / enemies 4:98 5:100 6:92
+0:30  [STATE]   friends 1:100 2:83 3:dead / enemies 4:100 5:100 6:100
+0:30  [OWNER CAST]   20473 → 6
+0:31  [STATE]   friends 1:100 2:67 3:dead / enemies 4:99 5:100 6:100
+0:32  [STATE]   friends 1:100 2:50 3:dead / enemies 4:100 5:100 6:100
+0:32  [ENEMY BUFF END]   6: Power Infusion
+0:32  [ENEMY BUFF END]   4: Power Infusion
+0:32  [OWNER CAST]   85673 → 2
+0:33  [STATE]   friends 1:99 2:62 3:dead / enemies 4:99 5:100 6:100
+0:33  [OWNER CAST]   1241413 → 5
+0:34  [STATE]   friends 1:99 2:50 3:dead / enemies 4:100 5:100 6:100
+0:34  [HEALING GAP]   1 inactive 3.6s (3.6s free) while 2 under pressure
+0:35  [STATE]   friends 1:100 2:40 3:dead / enemies 4:95 5:100 6:100
+0:36  [STATE]   friends 1:96 2:44 3:dead / enemies 4:93 5:100 6:100
+0:36  [CC ON TEAM]   2 ← Shockwave (Shabubey-DunMorogh-EU) | 2s
+0:36  [DMG SPIKE]   2 (Balance Druid): 0.37M in 10s
+0:37  [STATE]   friends 1:96 2:53 3:dead / enemies 4:94 5:99 6:100
+0:37  [OWNER CAST]   82326 → 2
+0:38  [STATE]   friends 1:99 2:96 3:dead / enemies 4:94 5:99 6:99
+0:39  [STATE]   friends 1:97 2:93 3:dead / enemies 4:94 5:99 6:100
+0:39  [OWNER CAST]   85673 → 2
+0:40  [STATE]   friends 1:96 2:99 3:dead / enemies 4:94 5:98 6:98
+0:40  [HEALING GAP]   1 inactive 10.5s (5.5s free) while 2 under pressure
+0:41  [STATE]   friends 1:93 2:98 3:dead / enemies 4:93 5:99 6:98
+0:41  [CC ON TEAM]   1 ← Storm Bolt (Shabubey-DunMorogh-EU) | 3s
+0:42  [STATE]   friends 1:86 2:94 3:dead / enemies 4:93 5:99 6:98
+0:43  [STATE]   friends 1:83 2:83 3:dead / enemies 4:94 5:98 6:97
+0:43  [BUFF FADED]   Avenging Crusader
+0:44  [STATE]   friends 1:79 2:77 3:dead / enemies 4:93 5:98 6:98
+0:45  [STATE]   friends 1:78 2:65 3:dead / enemies 4:94 5:98 6:99
+0:46  [STATE]   friends 1:75 2:54 3:dead / enemies 4:97 5:99 6:100
+0:47  [STATE]   friends 1:66 2:51 3:dead / enemies 4:100 5:99 6:100
+0:47  [CC ON TEAM]   1 ← Hammer of Justice (Lichti-Malygos-EU) | 2s
+0:48  [STATE]   friends 1:62 2:50 3:dead / enemies 4:100 5:99 6:100
+0:49  [STATE]   friends 1:52 2:49 3:dead / enemies 4:100 5:99 6:100
+0:50  [STATE]   friends 1:49 2:48 3:dead / enemies 4:100 5:98 6:100
+
+0:50  [MATCH END]   damp: 10%
+  friends 1:49% 2:48% 3:dead(0:22) / enemies 4:100% 5:98% 6:100%

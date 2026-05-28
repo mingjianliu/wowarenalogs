@@ -1,0 +1,11 @@
+This is a cc_heavy_swap match and the enemy executed the archetype correctly: Cyclone the Warrior to remove your off-peel, CC the healer, and pour damage into the Paladin while you cannot respond. Your team did not adapt quickly enough to the swap.
+
+The core issue is cleanse priority. Infected Wounds appeared on the Paladin and Warrior multiple times and went undispelled across four separate windows, accounting for 310k damage on the Paladin in a single 5-second window right before he died. Discipline Priest can dispel Disease. In a cc_heavy_swap game where the enemy will keep swapping targets and reapplying bleeds and debuffs to force healing pressure, keeping debuffs cleared is what buys time for your PI and Atonement healing to cover the gap.
+
+The PI decision at 0:23 needs a different framework. Both charges went out in the same cast window — one to the Warrior at full HP, one to yourself at 97% HP — while Incarnation and Tiger's Fury were just starting. In cc_heavy_swap games, enemy damage windows are short and intense. You want PI available to amplify healing during the kill attempt on your target, not before the pressure starts. Using both charges proactively at the start of an enemy offensive means you have nothing to accelerate healing when the Paladin hits 45% at 0:33.
+
+The 9.5-second healing gap at 0:57 happened exactly as the Warrior hit a 0.84M spike. You were effectively offline for the entire duration of that spike window. The Warrior was the next to die after the Paladin — that gap is why.
+
+The structural loss condition in cc_heavy_swap is this: once the enemy gets your Warrior in Cyclone and your healer in incapacitate simultaneously, you need Pain Suppression or a defensive external to buy time. Pain Suppression was available throughout the match and was never used. The Paladin died without receiving it.
+
+Next time: treat Infected Wounds as the highest-priority cleanse on any player actively taking Feral damage. Save Pain Suppression for the moment the Paladin is in a Cyclone-plus-healer-CC window with the enemy on cooldowns. That is the moment this match was decided, and Pain Suppression was sitting unused.

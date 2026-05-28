@@ -1,0 +1,164 @@
+[ARCHETYPE: Preservation Evoker — cc_heavy_fast]
+At 13.82 CC events per minute — the highest across all clusters — these short 111-second matches are defined by heavy offensive CC pressure rather than sustained burst (burst windows average 1.0, peak 10.4). Top Preservation Evokers leave cooldowns unused 57% of the time and show a balanced tunnel score of 0.523, with cc_then_burst as the dominant setup style at 50% of matches. Offensive participation is 43%, suggesting healers absorb significant CC pressure while contributing selectively to setup sequences.
+
+Key behavioral patterns observed in this match type:
+CD timing: 37% Optimal / 3% Early / 8% Late / 4% Reactive
+CD never used: 57%
+CD response latency: 9956ms median
+Outgoing CC per match: 3.7 mean
+Healing gap rate during burst: 3%
+Offensive participation: 43%
+Purge rate: 3.48/min
+Missed cleanse rate: 45%
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Frost Mage | Bracket: 3v3 | Result: Loss | Duration: 1:14
+  My team: Preservation Evoker, Assassination Rogue, Frost Mage
+  Enemy team: Discipline Priest, Frost Mage, Assassination Rogue
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Frost Mage): CAN offensive purge
+  Team purgers: none
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Scalm-ShatteredHand-EU (Frost Mage — log owner):
+    Ice Block [240s], Dragon's Breath [45s]
+  2: Drakbrampa-Ravencrest-EU (Preservation Evoker):
+    Deep Breath [120s], Cauterizing Flame [60s], Rewind [240s], Emerald Communion [180s], Stasis [90s], Rescue [60s]
+  3: Aythusha-TwistingNether-EU (Assassination Rogue):
+    Cloak of Shadows [120s], Kidney Shot [30s], Evasion [120s]
+  4: Ðàx-Stormscale-EU (Discipline Priest — enemy):
+    Power Infusion [120s]
+  5: Visuáls-Ravencrest-EU (Assassination Rogue — enemy):
+    Deathmark [120s]
+  6: Silverwix-Draenor-EU (Frost Mage — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 1:100 2:100 3:100
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:09  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100
+0:10  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100
+0:11  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100
+0:12  [STATE]   friends 2:98 / enemies 4:98 5:100
+0:13  [STATE]   friends 2:96 / enemies 4:100 5:100
+0:13  [CC ON TEAM]   2 ← Cheap Shot (Visuáls-Ravencrest-EU) | 4s
+0:13  [DMG SPIKE]   2 (Preservation Evoker): 0.37M in 10s
+0:14  [STATE]   friends 2:94 3:100 / enemies 4:100 5:100
+0:14  [CC ON TEAM]   2 ← Garrote - Silence (Visuáls-Ravencrest-EU) | 3s
+0:15  [STATE]   friends 2:78 3:100 / enemies 4:100 6:100 5:100
+0:16  [STATE]   friends 2:100 3:100 / enemies 4:100 6:100 5:100
+0:17  [STATE]   friends 1:100 2:91 3:100 / enemies 4:100 6:100 5:100
+0:17  [ENEMY BUFF]   6: Power Infusion (purgeable)
+0:17  [ENEMY CD]   4 (Discipline Priest): Power Infusion
+0:18  [STATE]   friends 1:100 2:80 3:100 / enemies 4:100 6:100 5:100
+0:18  [ENEMY BUFF]   4: Power Infusion (purgeable)
+0:19  [STATE]   friends 1:100 2:77 3:100 / enemies 4:100 6:100 5:100
+0:20  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 6:100 5:100
+0:21  [STATE]   friends 1:100 2:99 3:100 / enemies 4:100 6:100 5:99
+0:21  [CC ON TEAM]   1 ← Garrote - Silence (Visuáls-Ravencrest-EU) | 3s
+0:22  [STATE]   friends 1:100 2:98 3:100 / enemies 4:100 6:100 5:99
+0:23  [STATE]   friends 1:96 2:97 3:100 / enemies 4:100 6:97 5:100
+0:24  [STATE]   friends 1:92 2:94 3:100 / enemies 4:100 6:94 5:100
+0:24  [CC ON TEAM]   1 ← Garrote - Silence (Visuáls-Ravencrest-EU) | 2s
+0:24  [DMG SPIKE]   1 (Frost Mage): 0.62M in 10s
+0:25  [STATE]   friends 1:77 2:92 3:100 / enemies 4:100 6:92 5:100
+0:26  [STATE]   friends 1:68 2:89 3:100 / enemies 4:100 6:91 5:100
+0:27  [STATE]   friends 1:55 2:88 3:100 / enemies 4:100 6:90 5:100
+0:27  [CC ON TEAM]   1 ← Kidney Shot (Visuáls-Ravencrest-EU) | 1s
+0:28  [OWNER CD]   Ice Block
+      [RES] rdy:Ice Block,Dragon's Breath,2:Deep Breath,2:Cauterizing Flame,2:Rewind,2:Emerald Communion,2:Stasis,2:Rescue,3:Cloak of Shadows,3:Kidney Shot,3:Evasion  cd:—  enemy:Power Infusion/Discipline Priest(10s)  cc:2/Sleep Walk-0s[kick],3/Frost Nova-0s[root]
+0:28  [STATE]   friends 1:45 2:98 3:100 / enemies 4:100 6:100 5:100
+0:29  [STATE]   friends 1:56 2:96 3:100 / enemies 4:99 6:98 5:97
+0:30  [STATE]   friends 1:59 2:90 3:100 / enemies 4:98 6:94 5:96
+0:31  [STATE]   friends 1:78 2:90 3:100 / enemies 4:96 6:90 5:95
+0:31  [BUFF FADED]   Ice Block
+0:31  [TEAMMATE CD]   3 (Assassination Rogue): Kidney Shot
+      [RES] rdy:Δ+2:Deep Breath,3:Kidney Shot  cd:—  enemy:Power Infusion/Discipline Priest(14s)
+0:32  [STATE]   friends 1:100 2:100 3:100 / enemies 4:95 6:82 5:96
+0:32  [ENEMY BUFF END]   6: Power Infusion
+0:33  [STATE]   friends 1:90 2:95 3:100 / enemies 4:95 6:99 5:96
+0:33  [ENEMY BUFF END]   4: Power Infusion
+0:33  [TEAMMATE CD]   2 (Preservation Evoker): Deep Breath
+      [RES] rdy:Δ-Ice Block,3:Kidney Shot  cd:Ice Block(235s),3:Kidney Shot(29s)  enemy:Power Infusion/Discipline Priest(15s)
+0:33  [CLEANSE]   2 dispelled 2 effects: Chilled off 2, Crippling Poison off 2
+0:34  [STATE]   friends 1:99 2:98 3:100 / enemies 4:93 6:92 5:90
+0:35  [STATE]   friends 1:93 2:97 3:100 / enemies 4:91 6:73 5:82
+0:36  [STATE]   friends 1:96 2:99 3:100 / enemies 4:90 6:73 5:82
+0:37  [STATE]   friends 1:100 2:100 3:100 / enemies 4:88 6:73 5:81
+0:38  [STATE]   friends 1:100 2:100 3:100 / enemies 4:86 6:73 5:85
+0:38  [CC ON TEAM]   3 ← Cheap Shot (Visuáls-Ravencrest-EU) | 4s
+0:39  [STATE]   friends 1:100 2:100 3:99 / enemies 4:86 6:73 5:85
+0:40  [STATE]   friends 1:100 2:100 3:100 / enemies 4:87 6:75 5:91
+0:40  [TEAMMATE CD]   2 (Preservation Evoker): Rescue
+      [RES] rdy:Δ+2:Cauterizing Flame,2:Rescue  cd:—  enemy:Power Infusion/Discipline Priest(22s)  cc:3/Cheap Shot-2s[stun]
+0:40  [CLEANSE]   2 dispelled 2 effects: Chilled off 2, Chilled off 3
+0:40  [DMG SPIKE]   1 (Frost Mage): 0.81M in 10s
+0:41  [STATE]   friends 1:96 2:97 3:99 / enemies 4:88 6:76 5:93
+0:42  [STATE]   friends 1:77 2:94 3:100 / enemies 4:90 6:78 5:99
+0:42  [ENEMY CD]   5 (Assassination Rogue): Deathmark
+0:43  [STATE]   friends 1:77 2:100 3:100 / enemies 4:94 6:80 5:100
+0:44  [STATE]   friends 1:56 2:98 3:98 / enemies 4:94 6:77 5:100
+0:45  [STATE]   friends 1:68 2:100 3:100 / enemies 4:95 6:71 5:100
+0:46  [STATE]   friends 1:50 2:100 3:100 / enemies 4:99 6:67 5:100
+0:46  [CC ON TEAM]   2 ← Blind (Visuáls-Ravencrest-EU) | 1s | trinket: used
+0:47  [STATE]   friends 1:42 2:96 3:100 / enemies 4:100 6:66 5:100
+0:47  [TRINKET]   2 used PvP trinket
+0:48  [STATE]   friends 1:59 2:98 3:100 / enemies 4:100 6:66 5:100
+0:48  [TEAMMATE CD]   2 (Preservation Evoker): Cauterizing Flame
+      [RES] rdy:Δ-2:Deep Breath,2:Rescue  cd:2:Deep Breath(104s),2:Rescue(52s)  enemy:Deathmark/Assassination Rogue(6s)
+0:48  [CLEANSE]   2 dispelled 6 effects: Rupture off 1, Mutilated Flesh off 1, Garrote off 1, Numbing Poison off 1, Wound Poison off 1, Deadly Poison off 1
+0:49  [STATE]   friends 1:62 2:100 3:99 / enemies 4:100 6:71 5:100
+0:50  [STATE]   friends 1:62 2:99 3:98 / enemies 4:100 6:85 5:100
+0:51  [STATE]   friends 1:86 2:99 3:99 / enemies 4:100 6:100 5:100
+0:51  [CLEANSE]   2 dispelled 2 effects: Shadow Word: Pain off 3, Chilled off 3
+0:52  [STATE]   friends 1:100 2:98 3:99 / enemies 4:100 6:100 5:100
+0:52  [CC ON TEAM]   1 ← Garrote - Silence (Visuáls-Ravencrest-EU) | 4s
+0:53  [STATE]   friends 1:100 2:96 3:100 / enemies 4:100 6:98 5:100
+0:53  [CC ON TEAM]   2 ← Garrote - Silence (Visuáls-Ravencrest-EU) | 3s | trinket: ON CD (85s left)
+0:54  [STATE]   friends 1:94 2:97 3:99 / enemies 4:100 6:99 5:100
+0:54  [DMG SPIKE]   1 (Frost Mage): 1.25M in 10s
+0:55  [STATE]   friends 1:88 2:98 3:98 / enemies 4:99 6:100 5:100
+0:56  [STATE]   friends 1:82 2:98 3:98 / enemies 4:98 6:99 5:100
+0:56  [CC ON TEAM]   1 ← Cheap Shot (Visuáls-Ravencrest-EU) | 1s
+0:57  [STATE]   friends 1:68 2:98 3:98 / enemies 4:94 6:100 5:100
+0:57  [CC ON TEAM]   2 ← Kidney Shot (Visuáls-Ravencrest-EU) | 5s | trinket: ON CD (81s left)
+0:57  [CC ON TEAM]   2 ← Polymorph (Silverwix-Draenor-EU) | 8s | trinket: ON CD (81s left)
+0:57  [CC ON TEAM]   3 ← Psychic Scream (Ðàx-Stormscale-EU) | 6s
+0:58  [STATE]   friends 1:67 2:98 3:99 / enemies 4:92 6:97 5:100
+0:58  [TEAMMATE CD]   2 (Preservation Evoker): Emerald Communion
+      [RES] rdy:Δ-2:Cauterizing Flame  cd:2:Cauterizing Flame(50s)  enemy:Deathmark/Assassination Rogue(16s)  cc:2/Kidney Shot-4s[stun],3/Psychic Scream-5s
+0:59  [STATE]   friends 1:100 2:100 3:99 / enemies 4:98 6:100 5:100
+1:00  [STATE]   friends 1:81 2:100 3:99 / enemies 4:98 6:98 5:100
+1:01  [STATE]   friends 1:78 2:100 3:99 / enemies 4:97 6:100 5:100
+1:02  [STATE]   friends 1:86 2:100 3:95 / enemies 4:100 6:100 5:100
+1:03  [STATE]   friends 1:72 2:100 3:95 / enemies 4:100 6:100 5:100
+1:04  [STATE]   friends 1:dead 2:100 3:95 / enemies 4:100 6:100 5:100
+1:04  [DEATH]  1 (Frost Mage — friendly)
+               HP: 62% at T-15s → 94% at T-10s → 95% at T-5s → 96% at T-3s → dead
+               Top damage in final 10s: [pet] — Inescapable Torment (110k), Ðàx-Stormscale-EU — Expiation (109k), Silverwix-Draenor-EU — Shatter (107k)
+1:04  [DMG SPIKE]   3 (Assassination Rogue): 0.54M in 10s
+1:05  [STATE]   friends 1:dead 2:100 3:98 / enemies 4:100 6:100 5:100
+1:06  [STATE]   friends 1:dead 2:100 3:97 / enemies 4:100 6:100 5:100
+1:07  [STATE]   friends 1:dead 2:100 3:100 / enemies 4:100 6:100 5:100
+1:07  [CC ON TEAM]   3 ← Garrote - Silence (Visuáls-Ravencrest-EU) | 3s
+1:08  [STATE]   friends 1:dead 2:100 3:93 / enemies 4:100 6:100 5:100
+1:08  [CC ON TEAM]   2 ← Garrote - Silence (Visuáls-Ravencrest-EU) | 2s | trinket: ON CD (70s left)
+1:09  [STATE]   friends 1:dead 2:95 3:86 / enemies 4:100 6:100 5:100
+1:10  [STATE]   friends 1:dead 2:83 3:71 / enemies 4:100 6:100 5:100
+1:11  [STATE]   friends 1:dead 2:82 3:57 / enemies 4:100 6:100 5:100
+1:11  [CC ON TEAM]   3 ← Cheap Shot (Visuáls-Ravencrest-EU) | 3s
+1:12  [STATE]   friends 1:dead 2:81 3:46 / enemies 4:100 6:100 5:100
+1:13  [STATE]   friends 1:dead 2:82 3:35 / enemies 4:100 6:100 5:100
+1:14  [STATE]   friends 1:dead 2:82 3:dead / enemies 4:100 6:100 5:100
+1:14  [DEATH]  3 (Assassination Rogue — friendly)
+               HP: 99% at T-15s → 98% at T-10s → 83% at T-5s → 54% at T-3s → dead
+               Top damage in final 10s: Ðàx-Stormscale-EU — Ultimate Penitence (164k), Silverwix-Draenor-EU — Flurry (64k), Ðàx-Stormscale-EU — Expiation (52k)
+
+1:14  [MATCH END]   damp: 10%
+  friends 1:dead(1:04) 2:81% 3:dead(1:14) / enemies 4:100% 6:100% 5:100%

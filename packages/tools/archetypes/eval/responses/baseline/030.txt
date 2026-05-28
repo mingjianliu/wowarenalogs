@@ -1,0 +1,35 @@
+This 3:52 win against Enhancement Shaman/Preservation Evoker/Arms Warrior required sustained pressure across four distinct burst windows, constant Flame Shock management, and two separate Pain Suppression deployments. You converted the Shaman at 3:42 and the enemy Arms Warrior at 3:51. Your team was never in serious danger of losing, but the Flame Shock missed cleanses accumulated into meaningful drain on your Ret Paladin throughout.
+
+**The opening: correct prioritization under pressure**
+
+The enemy opened with a critical-rated window at 0:09 — Deep Breath, Avatar, Bloodlust, and Ascendance simultaneously. You responded: Psychic Scream on the Evoker at 0:17 to interrupt her healing, Power Infusion at 0:15 on the Warrior then yourself, and aggressive purges (Holy Fire into the Shaman at 0:07, 0:13, 0:18, 0:25). The Ret's output pushed the Shaman to 35% HP at 0:18 and the enemy Arms Warrior to 60% at 0:21. That is strong early pressure.
+
+The first Flame Shock on the Ret at 0:09 sat for 18 seconds with 140k damage. You were occupied with the critical burst window — Power Infusion, Psychic Scream, purging — and cleansing a dot takes a back seat when your team is at 67–80% HP under Bloodlust. The decision to delay that cleanse was implicitly correct given your priorities, but note the pattern: every time Flame Shock appeared on your Ret, it sat for the full duration. Across the match you have five logged missed Flame Shock cleanses with damage ranging from 57k to 254k per instance. Totaled, that is roughly 880k damage your Ret took from avoidable sustained damage.
+
+**Pain Suppression timing: both uses were correct**
+
+First Pain Suppression at 1:09 on the Ret at 60% HP. The Shaman's second Bloodlust was incoming at 1:15, and the Ret had been grinding down steadily. The 8-second Pain Suppression window (1:09 to 1:17) covered the second Bloodlust burst exactly. When it dropped, the Ret was at 78% HP. Well done.
+
+Second Pain Suppression at 2:11 on the Ret at 42% with Storm Bolt incoming (3-second stun). This is correct: Storm Bolt into a 42% Ret with the enemy Warrior's Avatar at 2:47 incoming is a death sentence without a cooldown. You got the Suppression in before the stun landed, which kept the window controlled. The Ret recovered to 100% by 2:34.
+
+At 3:17, Pain Suppression went onto the Warrior at 38% HP. The Ret was at 65%, not in immediate danger, but the Warrior was in a Bladestorm window (2:56) and had just dropped from 81% to 47% under continued Ret Paladin pressure. The Warrior was the active kill target for the enemy team at that moment — the enemy Arms Warrior had Avatar coming and the Warrior's Die by the Sword was expired. Choosing to save the Warrior here was correct.
+
+**Psychic Scream: excellent targeting**
+
+You used Psychic Scream on the Evoker in four of your five uses: 0:17, 0:58 (two enemies), 2:26, 3:12, and 3:44 (two enemies). Each landing on the Evoker during your Ret's burst windows or your Warrior's burst windows was high-value — it interrupted her healing rotation during the windows where your team was applying kill pressure. The Evoker going fearful at 0:17 during the Bloodlust window and again at 2:26 during the second Bloodlust were the most impactful uses.
+
+The double-Scream at 0:58 hitting both Evoker and enemy Arms Warrior simultaneously while your Warrior's Intimidating Shout also landed on both is excellent timing — two CCs landing on the same targets within the same second, giving 6–8 seconds of dual lockout.
+
+**Purging**
+
+You landed purges consistently on the Shaman and enemy Warrior throughout the match. Without a dedicated purger on the team (the warrior cannot purge), your Holy Fire and Purify Disease into the Shaman were the only way to remove his Earthbind totems and Flame Shock stacks from your teammates. The 3:08 cleanse removing Flame Shock, Earthbind, Permeating Chill, and Capacitor Totem from the Warrior in one GCD is the best cleanse of the match. You were reading the crowd control state correctly.
+
+**The kill sequences**
+
+Shaman died at 3:42. From approximately 3:30 onward your team had him below 35% HP twice — 28% at 3:37, 31% at 3:36 — while you kept the Evoker and enemy Warrior CC'd with Psychic Scream at 3:44. The final sequence: your Warrior used Avatar at 3:43 with the Shaman at 23%, and the Ret's Hammer of Justice at 3:40 into the Shaman kept him from repositioning. Clean.
+
+Enemy Arms Warrior died at 3:51 while the Shaman was dead and the Evoker was at 25% HP and falling. Your Psychic Scream at 3:44 hitting both Evoker and enemy Arms Warrior gave your team 6–8 seconds of clean uptime on the Warrior during his Avatar.
+
+**Flame Shock: the persistent issue**
+
+The one substantive critique is the Flame Shock pattern. You cleansed it twice (1:42 and 2:02 on the Warrior, 3:08 on the Warrior, 3:35 on the Warrior), but the Ret took five separate Flame Shock applications that ran full duration. Discipline priests commonly accept Flame Shock as background damage they heal through, but Holy Priests have Purify with no CD — cleansing a Flame Shock on the Ret every 18 seconds when you have a GCD takes roughly 250k over the match's duration off your healing requirement. Build the habit of dispelling Flame Shock off the Ret within 3 seconds of application; it costs you a GCD of output but saves multiple GCDs of reactive healing.

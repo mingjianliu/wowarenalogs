@@ -1,0 +1,106 @@
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Frost Mage | Bracket: 3v3 | Result: Loss | Duration: 0:34
+  My team: Mistweaver Monk, Assassination Rogue, Frost Mage
+  Enemy team: Enhancement Shaman, Restoration Druid, Windwalker Monk
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Frost Mage): CAN offensive purge
+  Team purgers: none
+
+## CC Chains
+  Enhancement Shaman (Paypigpapi-Illidan-US): 1 CC — 1× Incapacitate | 0 reduced, 0 immune
+  Restoration Druid (Kaperij-Cho'gall-US): 2 CC — 1× Silence, 1× Stun | 0 reduced, 0 immune
+  Windwalker Monk (Mahoraga-GrizzlyHills-US): 3 CC — 1× Stun, 1× Silence, 1× Disorient | 0 reduced, 0 immune
+
+## Enemy Cooldown Timeline
+  #1 — 0:09–0:28 | Score: 7.1 [CRITICAL] | Dampening: 10%
+    CDs: Incarnation: Tree of Life (Kaperij-Cho'gall-US) + Bloodlust (Paypigpapi-Illidan-US) + Ascendance (Paypigpapi-Illidan-US)
+    Damage: 0.60M (1.0× match avg) | healer free
+    Most pressured: Makefistory-Area52-US HP: 100% start → 100% mid → 46% end
+  CDs not recovered before match ended: Enhancement Shaman: Bloodlust — not used again after 0:13; Enhancement Shaman: Ascendance — not used again after 0:13; Restoration Druid: Incarnation: Tree of Life — not used again after 0:09
+
+## Kill Attempt Windows
+  0:09–0:28  [CRITICAL]  1.11M on Mistweaver Monk | CDs: Incarnation: Tree of Life + Bloodlust + Ascendance
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Blãýsiêß-Tichondrius-US (Frost Mage — log owner):
+    Ice Block [240s], Dragon's Breath [45s]
+  2: Makefistory-Area52-US (Mistweaver Monk):
+    Paralysis [45s], Life Cocoon [120s]
+  3: Jectr-Tichondrius-US (Assassination Rogue):
+    Cloak of Shadows [120s], Kidney Shot [30s], Evasion [120s]
+  4: Paypigpapi-Illidan-US (Enhancement Shaman — enemy):
+    Bloodlust [60s], Ascendance [180s]
+  5: Kaperij-Cho'gall-US (Restoration Druid — enemy):
+    Incarnation: Tree of Life [180s]
+  6: Mahoraga-GrizzlyHills-US (Windwalker Monk — enemy):
+    none tracked
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:07  [CC ON TEAM]   3 ← Rake (Kaperij-Cho'gall-US) | 4s | trinket: available
+0:08  [STATE]   friends 1:100 2:100 3:98 / enemies 4:100 5:100 6:79
+0:09  [STATE]   friends 2:100 3:100 / enemies 4:100 5:85 6:68
+0:09  [OFFENSIVE WINDOW]   0:09–0:28 | Critical | 1.11M on 2 (Mistweaver Monk) | CDs: Incarnation: Tree of Life + Bloodlust + Ascendance
+0:09  [ENEMY CD]   5 (Restoration Druid): Incarnation: Tree of Life
+0:10  [STATE]   friends 2:100 3:100 / enemies 4:100 5:88 6:91
+0:10  [CC ON TEAM]   1 ← Paralysis (Mahoraga-GrizzlyHills-US) | 1s | trinket: used
+0:11  [STATE]   friends 2:100 3:100 / enemies 4:100 5:99 6:100
+0:11  [CC ON TEAM]   1 ← Leg Sweep (Mahoraga-GrizzlyHills-US) | 1s | trinket: used
+0:12  [STATE]   friends 1:100 2:100 3:100 / enemies 4:100 5:88 6:99
+0:12  [TRINKET]   1 used PvP trinket
+0:12  [DMG SPIKE]   1 (Frost Mage): 0.58M in 10s [P95 Danger] [BURST]
+0:12  [OWNER CC]   Dragon's Breath
+      [RES] rdy:Ice Block,Dragon's Breath,2:Paralysis,2:Life Cocoon,3:Cloak of Shadows,3:Kidney Shot,3:Evasion  cd:—  enemy:Incarnation: Tree of Life/Restoration Druid(4s)
+0:13  [STATE]   friends 1:86 2:100 3:100 / enemies 4:100 5:74 6:100
+0:13  [ENEMY CD]   4 (Enhancement Shaman): Bloodlust
+0:13  [ENEMY CD]   4 (Enhancement Shaman): Ascendance
+0:14  [STATE]   friends 1:77 2:100 3:100 / enemies 4:100 5:68 6:100
+0:15  [STATE]   friends 1:41 2:100 3:100 / enemies 4:100 5:53 6:100
+0:15  [TEAMMATE CC]   3 (Assassination Rogue): Kidney Shot
+      [RES] rdy:Δ-Dragon's Breath  cd:Dragon's Breath(43s)  enemy:Bloodlust/Enhancement Shaman(2s),Ascendance/Enhancement Shaman(2s),Incarnation: Tree of Life/Restoration Druid(6s)
+0:16  [STATE]   friends 1:39 2:100 3:100 / enemies 4:100 5:47 6:100
+0:17  [STATE]   friends 1:dead 2:100 3:100 / enemies 4:100 5:39 6:100
+0:17  [DEATH]  1 (Frost Mage — friendly)
+               HP: 100% at T-10s → 100% at T-5s → 45% at T-3s → dead
+               Top damage in final 10s: Paypigpapi-Illidan-US — Tempest (96k), Mahoraga-GrizzlyHills-US — Strike of the Windlord (91k), Mahoraga-GrizzlyHills-US — Rising Sun Kick (65k)
+0:18  [STATE]   friends 1:dead 2:100 3:100 / enemies 4:100 5:40 6:100
+0:19  [STATE]   friends 1:dead 2:96 3:100 / enemies 4:100 5:37 6:100
+0:20  [STATE]   friends 1:dead 2:91 3:100 / enemies 4:100 5:43 6:100
+0:21  [STATE]   friends 1:dead 2:96 3:100 / enemies 4:100 5:62 6:99
+0:22  [STATE]   friends 1:dead 2:89 3:100 / enemies 4:100 5:87 6:100
+0:23  [STATE]   friends 1:dead 2:73 3:99 / enemies 4:100 5:100 6:98
+0:24  [STATE]   friends 1:dead 2:83 3:92 / enemies 4:100 5:99 6:99
+0:24  [DMG SPIKE]   2 (Mistweaver Monk): 1.11M in 10s [P95 Danger] [BURST] (99% -> 0% HP)
+0:25  [STATE]   friends 1:dead 2:90 3:92 / enemies 4:100 5:100 6:98
+0:26  [STATE]   friends 1:dead 2:80 3:91 / enemies 4:100 5:99 6:100
+0:27  [STATE]   friends 1:dead 2:66 3:90 / enemies 4:100 5:94 6:100
+0:28  [STATE]   friends 1:dead 2:40 3:90 / enemies 4:99 5:88 6:100
+0:29  [STATE]   friends 1:dead 2:78 3:90 / enemies 4:100 5:91 6:99
+0:30  [STATE]   friends 1:dead 2:65 3:90 / enemies 4:100 5:91 6:100
+0:31  [STATE]   friends 1:dead 2:80 3:91 / enemies 4:100 5:91 6:100
+0:32  [STATE]   friends 1:dead 2:57 3:90 / enemies 4:100 5:81 6:100
+0:33  [STATE]   friends 1:dead 2:18 3:90 / enemies 4:100 5:85 6:100
+0:33  [CC ON TEAM]   2 ← Maim (Kaperij-Cho'gall-US) | 1s | trinket: available
+0:34  [STATE]   friends 1:dead 2:dead 3:91 / enemies 4:100 5:92 6:100
+0:34  [DEATH]  2 (Mistweaver Monk — friendly)
+               HP: 100% at T-15s → 97% at T-10s → 73% at T-5s → 78% at T-3s → dead
+               Top damage in final 10s: Paypigpapi-Illidan-US — Lightning Bolt (166k), Mahoraga-GrizzlyHills-US — Fists of Fury (159k), Mahoraga-GrizzlyHills-US — Rushing Wind Kick (99k)
+
+KILL SEQUENCE
+0:09  [ENEMY CD]             Incarnation: Tree of Life + Bloodlust + Ascendance active
+0:16  [DEFENSIVE AVAILABLE]  1: Ice Block available but unused
+0:16  [DEFENSIVE AVAILABLE]  2: Life Cocoon available but unused
+0:17  [KILL]                 1 (Frost Mage) dead (Killer: Paypigpapi-Illidan-US — Tempest (96k))
+
+0:34  [MATCH END]   damp: 10%
+  friends 1:dead(0:17) 2:dead(0:34) 3:90% / enemies 4:100% 5:97% 6:100%

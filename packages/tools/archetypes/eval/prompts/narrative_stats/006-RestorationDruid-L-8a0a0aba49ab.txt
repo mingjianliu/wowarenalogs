@@ -1,0 +1,120 @@
+[ARCHETYPE: Restoration Druid — short_tunnel]
+These matches averaged only 99 seconds with a tunnel score of 0.586, reflecting focused single-target pressure in a fast kill-or-die pacing. Offensive CC was sparse at 4.2 events per team and DR chains were minimal at 0.06, indicating limited setup complexity before damage landed. Cooldown usage was optimal 58% of the time but 51% of cooldowns were never activated, consistent with matches resolving before full cooldown rotations were relevant.
+
+Key behavioral patterns observed in this match type:
+CD timing: 58% Optimal / 13% Early / 7% Late / 2% Reactive
+CD never used: 51%
+CD response latency: 7853ms median
+Outgoing CC per match: 4.2 mean
+Healing gap rate during burst: 2%
+Offensive participation: 53%
+Purge rate: 1.14/min
+Missed cleanse rate: 29%
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Enhancement Shaman | Bracket: 3v3 | Result: Loss | Duration: 0:53
+  My team: Beast Mastery Hunter, Restoration Druid, Enhancement Shaman
+  Enemy team: Devourer Demon Hunter, Discipline Priest, Arms Warrior
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Enhancement Shaman): CAN offensive purge
+  Team purgers: none
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Nevlazit-TwistingNether-EU (Enhancement Shaman — log owner):
+    Hex [30s]
+  2: Ltbreezy-Outland-EU (Beast Mastery Hunter):
+    Bestial Wrath [90s]
+  3: Thespycen-Outland-EU (Restoration Druid):
+    Stampeding Roar [120s], Incapacitating Roar [30s], Frenzied Regeneration [36s], Tranquility [180s], Incarnation: Tree of Life [180s], Ironbark [90s]
+  4: Rainerrxx-Silvermoon-EU (Discipline Priest — enemy):
+    Power Infusion [120s]
+  5: Brunorc-Silvermoon-EU (Arms Warrior — enemy):
+    Avatar [90s]
+  6: Rouantou-Draenor-EU (Devourer Demon Hunter — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:00  [STATE]   friends 2:100 3:100
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:06  [STATE]   friends 1:100 2:100
+0:07  [CC CAST]   Sundering (by 1) → nil [non-player target]
+0:08  [CC ON TEAM]   1 ← Storm Bolt (Brunorc-Silvermoon-EU) | 1s | trinket: used
+0:09  [STATE]   friends 1:98 2:84 3:100 / enemies 6:100 4:100 5:86
+0:09  [TRINKET]   1 used PvP trinket
+0:10  [STATE]   friends 1:97 2:83 3:100 / enemies 6:100 4:100 5:82
+0:10  [CC ON TEAM]   1 ← Champion's Spear (Brunorc-Silvermoon-EU) | 6s | trinket: ON CD (120s left)
+0:11  [STATE]   friends 1:86 2:83 3:100 / enemies 6:100 4:100 5:68
+0:11  [OFFENSIVE WINDOW]   0:11–0:31 | High | 1.04M on 1 (Enhancement Shaman) | CDs: Avatar + Power Infusion
+0:11  [ENEMY CD]   5 (Arms Warrior): Avatar
+0:12  [STATE]   friends 1:84 2:82 3:100 / enemies 6:100 4:100 5:65
+0:13  [STATE]   friends 1:70 2:82 3:100 / enemies 6:100 4:100 5:80
+0:13  [ENEMY CD]   4 (Discipline Priest): Power Infusion
+0:13  [ENEMY BUFF]   5: Power Infusion (purgeable)
+0:13  [ENEMY BUFF]   4: Power Infusion (purgeable)
+0:14  [STATE]   friends 1:62 2:82 3:100 / enemies 6:100 4:100 5:96
+0:14  [TEAMMATE CD]   3 (Restoration Druid): Ironbark
+      [RES] rdy:Δ+3:Ironbark  cd:—  enemy:Power Infusion/Discipline Priest(1s),Avatar/Arms Warrior(2s)  cc:1/Champion's Spear-2s,1/Disarm-2s[disarm]
+0:14  [DMG SPIKE]   1 (Enhancement Shaman): 1.04M in 10s
+0:15  [STATE]   friends 1:41 2:80 3:100 / enemies 6:95 4:100 5:100
+0:15  [TEAMMATE CD]   2 (Beast Mastery Hunter): Bestial Wrath
+      [RES] rdy:Hex,2:Bestial Wrath,3:Stampeding Roar,3:Incapacitating Roar,3:Frenzied Regeneration,3:Tranquility,3:Incarnation: Tree of Life  cd:3:Ironbark(89s)  enemy:Power Infusion/Discipline Priest(2s),Avatar/Arms Warrior(4s)  cc:1/Champion's Spear-1s,1/Disarm-1s[disarm]
+0:16  [STATE]   friends 1:60 2:80 3:100 / enemies 6:97 4:100 5:100
+0:17  [STATE]   friends 1:48 2:81 3:100 / enemies 6:94 4:100 5:84
+0:18  [STATE]   friends 1:58 2:83 3:100 / enemies 6:94 4:100 5:81
+0:19  [STATE]   friends 1:63 2:85 3:100 / enemies 6:85 4:100 5:64
+0:20  [STATE]   friends 1:53 2:85 3:100 / enemies 6:78 4:99 5:30
+0:21  [STATE]   friends 1:67 2:89 3:100
+0:23  [CC ON TEAM]   1 ← Intimidating Shout (Brunorc-Silvermoon-EU) | 1s | trinket: ON CD (107s left)
+0:23  [CC ON TEAM]   2 ← Intimidating Shout (Brunorc-Silvermoon-EU) | 1s | trinket: used
+0:23  [TRINKET]   2 used PvP trinket
+0:24  [STATE]   friends 1:39 2:68 3:100 / enemies 6:81 4:100 5:30
+0:25  [STATE]   friends 1:53 2:62 3:100 / enemies 6:77 4:100 5:35
+0:26  [STATE]   friends 1:47 2:63 3:100 / enemies 6:79 4:100 5:50
+0:27  [STATE]   friends 1:73 2:63 3:100 / enemies 6:81 4:100 5:66
+0:28  [STATE]   friends 1:69 2:64 3:100 / enemies 6:84 4:100 5:86
+0:28  [ENEMY BUFF END]   5: Power Infusion
+0:28  [ENEMY BUFF END]   4: Power Infusion
+0:29  [STATE]   friends 1:71 2:61 / enemies 6:90 4:100 5:93
+0:30  [STATE]   friends 1:71 2:76 3:100 / enemies 6:95 4:100 5:94
+0:31  [STATE]   friends 1:74 2:75 3:100 / enemies 6:96 4:100 5:93
+0:31  [DMG SPIKE]   1 (Enhancement Shaman): 0.83M in 10s
+0:32  [STATE]   friends 1:58 2:77 3:97 / enemies 6:96 4:100 5:94
+0:33  [STATE]   friends 1:40 2:78 3:97 / enemies 6:100 4:100 5:99
+0:33  [CLEANSE]   1 dispelled Blaze of Light off 1
+0:34  [STATE]   friends 1:42 2:79 3:98 / enemies 6:100 4:100 5:96
+0:35  [STATE]   friends 1:66 2:84 3:100 / enemies 6:100 4:100 5:92
+0:36  [STATE]   friends 1:67 2:83 3:100 / enemies 6:100 4:100 5:85
+0:37  [STATE]   friends 1:56 2:84 3:99 / enemies 6:100 4:100 5:77
+0:38  [STATE]   friends 1:39 2:86 3:100 / enemies 6:98 4:100 5:76
+0:38  [CC ON TEAM]   3 ← Imprison (Rouantou-Draenor-EU) | 3s | trinket: used
+0:39  [STATE]   friends 1:38 2:86 3:100 / enemies 6:95 4:100 5:77
+0:40  [STATE]   friends 1:42 2:86 3:100 / enemies 6:97 4:100 5:81
+0:40  [CC ON TEAM]   3 ← Storm Bolt (Brunorc-Silvermoon-EU) | 1s | trinket: used
+0:41  [STATE]   friends 1:34 2:88 3:100 / enemies 6:100 4:100 5:80
+0:41  [TRINKET]   3 used PvP trinket
+0:42  [STATE]   friends 1:36 2:88 3:100 / enemies 6:100 4:100 5:79
+0:42  [DMG SPIKE]   1 (Enhancement Shaman): 0.33M in 10s
+0:42  [CLEANSE]   1 dispelled Blaze of Light off 1
+0:43  [STATE]   friends 1:17 2:89 3:100 / enemies 6:100 4:100 5:78
+0:43  [CC ON TEAM]   3 ← Sigil of Misery (Rouantou-Draenor-EU) | 3s | trinket: ON CD (89s left)
+0:44  [STATE]   friends 1:17 2:90 3:100 / enemies 6:100 4:100 5:67
+0:45  [STATE]   friends 1:11 2:90 3:100 / enemies 4:100 5:67
+0:46  [STATE]   friends 1:dead 2:90 / enemies 4:100 5:75
+0:46  [DEATH]  1 (Enhancement Shaman — friendly)
+               HP: 74% at T-15s → 67% at T-10s → 34% at T-5s → 22% at T-3s → dead
+               Top damage in final 10s: Brunorc-Silvermoon-EU — Execute (162k), Rouantou-Draenor-EU — Consume (114k), Rouantou-Draenor-EU — Reap (100k)
+0:47  [STATE]   friends 1:dead 2:90 / enemies 4:100 5:75
+0:48  [STATE]   friends 1:dead 2:80 3:100 / enemies 6:99 4:100 5:100
+0:49  [STATE]   friends 1:dead 2:67 3:100 / enemies 6:99 4:100 5:100
+0:50  [STATE]   friends 1:dead 2:61 3:100 / enemies 6:100 4:100 5:100
+0:51  [STATE]   friends 1:dead 2:60 3:100 / enemies 6:99 4:100 5:100
+0:52  [STATE]   friends 1:dead 2:61 3:100 / enemies 6:100 4:100 5:99
+0:53  [STATE]   friends 1:dead 2:60 3:78 / enemies 6:100 4:100 5:99
+
+0:53  [MATCH END]   damp: 10%
+  friends 1:dead(0:46) 2:60% 3:71% / enemies 6:100% 4:100% 5:98%

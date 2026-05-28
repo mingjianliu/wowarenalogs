@@ -1,0 +1,219 @@
+[MATCH TYPE: dampening_burst_cycle]
+**Opponents:** Enemy runs a long round cycling through 2-3 coordinated burst pushes as dampening sets in. Enemies wait for CD availability before committing. Between pushes they maintain CC pressure.
+
+**Your role:** Distribute major cooldowns across multiple real burst windows. Getting caught without defensives on the third push is the most common failure.
+
+Key behavioral patterns observed in this match type:
+CD timing: 52% Optimal / 8% Early / 14% Late / 3% Reactive
+CD never used: 22%
+CD response latency: 7669ms median
+Outgoing CC per match: 8.0 mean
+Healing gap rate during burst: 4%
+Offensive participation: 62%
+Purge rate: 2.63/min
+Missed cleanse rate: 39%
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Enhancement Shaman | Bracket: 3v3 | Result: Loss | Duration: 1:35
+  My team: Enhancement Shaman, Restoration Druid, Windwalker Monk
+  Enemy team: Marksmanship Hunter, Holy Priest, Frost Death Knight
+
+DATA DICTIONARY / UNITS
+  Damage units: M = Million (1,000,000), k = Thousand (1,000)
+  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage
+  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+
+PURGE RESPONSIBILITY
+  Log owner (Enhancement Shaman): CAN offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 10% at match end
+
+## CC Chains
+  Marksmanship Hunter (Daddykek-BleedingHollow-US): 2 CC — 1× Incapacitate, 1× Stun | 0 reduced, 0 immune
+  Holy Priest (Kurorox-AltarofStorms-US): 2 CC — 1× Cyclone, 1× Incapacitate | 0 reduced, 0 immune
+  Frost Death Knight (Colbz-Stormrage-US): 2 CC — 1× Stun, 1× Cyclone | 0 reduced, 0 immune
+
+## Enemy Cooldown Timeline
+  #1 — 0:07–0:22 | Score: 1.2 [LOW] | Dampening: 10%
+    CDs: Power Infusion (Kurorox-AltarofStorms-US) + Empower Rune Weapon (Colbz-Stormrage-US) + Empower Rune Weapon (Colbz-Stormrage-US)
+    Damage: 0.17M (0.5× match avg) | healer free
+    Most pressured: Paypigpapi-Illidan-US HP: 100% start → 100% mid → 77% end
+  #2 — 0:24–0:37 | Score: 1.9 [LOW] | Dampening: 10%
+    CDs: Pillar of Frost (Colbz-Stormrage-US) + Empower Rune Weapon (Colbz-Stormrage-US) + Explosive Shot (Daddykek-BleedingHollow-US)
+    Damage: 1.63M (2.8× match avg) | healer free
+    Most pressured: Mahoraga-GrizzlyHills-US HP: 100% start → 38% mid → 100% end
+  #3 — 0:57–1:12 | Score: 2.7 [MODERATE] | Dampening: 10%
+    CDs: Trueshot (Daddykek-BleedingHollow-US) + Empower Rune Weapon (Colbz-Stormrage-US)
+    Damage: 1.01M (1.7× match avg) | healer free
+    Most pressured: Mahoraga-GrizzlyHills-US HP: 68% start → 83% mid → 98% end
+  #4 — 1:14–1:26 | Score: 1.5 [LOW] | Dampening: 10%
+    CDs: Pillar of Frost (Colbz-Stormrage-US) + Empower Rune Weapon (Colbz-Stormrage-US)
+    Damage: 1.88M (3.2× match avg) | healer free
+    Most pressured: Paypigpapi-Illidan-US HP: 66% start → 72% mid → 45% end
+  CDs not recovered before match ended: Marksmanship Hunter: Trueshot — not used again after 0:57; Marksmanship Hunter: Explosive Shot — not used again after 1:28; Holy Priest: Power Infusion — not used again after 0:07; Frost Death Knight: Empower Rune Weapon — not used again after 1:06; Frost Death Knight: Pillar of Frost — not used again after 1:14; Frost Death Knight: Empower Rune Weapon — not used again after 1:24
+
+## Kill Attempt Windows
+  0:07–0:22  [LOW]  0.86M on Windwalker Monk | CDs: Power Infusion + Empower Rune Weapon + Empower Rune Weapon
+  0:24–0:37  [LOW]  0.86M on Windwalker Monk | CDs: Pillar of Frost + Empower Rune Weapon + Explosive Shot
+  0:57–1:12  [MODERATE]  0.65M on Windwalker Monk | CDs: Trueshot + Empower Rune Weapon
+  1:14–1:26  [LOW]  0.98M on Enhancement Shaman | CDs: Pillar of Frost + Empower Rune Weapon
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Paypigpapi-Illidan-US (Enhancement Shaman — log owner):
+    Hex [30s], Ascendance (Enhancement) [180s]
+  2: Kaperij-Cho'gall-US (Restoration Druid):
+    Mighty Bash [60s], Barkskin [60s], Stampeding Roar [120s], Frenzied Regeneration [36s], Tranquility [180s], Incarnation: Tree of Life [180s], Ironbark [90s]
+  3: Mahoraga-GrizzlyHills-US (Windwalker Monk):
+    Paralysis [45s, 2 Charges], Leg Sweep [60s], Touch of Karma [90s]
+  4: Daddykek-BleedingHollow-US (Marksmanship Hunter — enemy):
+    Explosive Shot [30s], Trueshot [120s]
+  5: Kurorox-AltarofStorms-US (Holy Priest — enemy):
+    Power Infusion [120s]
+  6: Colbz-Stormrage-US (Frost Death Knight — enemy):
+    Empower Rune Weapon [30s], Pillar of Frost [45s]
+
+MATCH TIMELINE
+  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)
+
+0:07  [OFFENSIVE WINDOW]   0:07–0:22 | Low | 0.86M on 3 (Windwalker Monk) | CDs: Power Infusion + Empower Rune Weapon + Empower Rune Weapon
+0:07  [ENEMY BUFF]   6: Power Infusion (purgeable)
+0:07  [ENEMY CD]   5 (Holy Priest): Power Infusion
+0:07  [ENEMY BUFF]   5: Power Infusion (purgeable)
+0:07  [ENEMY CD]   6 (Frost Death Knight): Empower Rune Weapon [1/6]
+0:15  [ENEMY CD]   6 (Frost Death Knight): Empower Rune Weapon [2/6]
+0:20  [TEAMMATE CC]   3 (Windwalker Monk): Paralysis
+0:21  [TEAMMATE CD]   2 (Restoration Druid): Incarnation: Tree of Life
+0:22  [STATE]   friends 1:76 2:100 3:100 / enemies 4:100 5:100 6:87
+0:22  [ENEMY BUFF END]   6: Power Infusion
+0:22  [ENEMY BUFF END]   5: Power Infusion
+0:22  [CC ON TEAM]   3 ← Blinding Sleet (Colbz-Stormrage-US) | 2s | trinket: available
+0:23  [CC ON TEAM]   1 ← Blinding Sleet (Colbz-Stormrage-US) | 3s | trinket: available
+0:23  [STATE]   friends 1:79 2:100 3:100 / enemies 4:100 5:100 6:100
+0:24  [STATE]   friends 1:99 2:100 3:100 / enemies 4:100 5:100 6:100
+0:24  [CC ON TEAM]   2 ← Intimidation (Daddykek-BleedingHollow-US) | 3s | trinket: used
+0:24  [OFFENSIVE WINDOW]   0:24–0:37 | Low | 0.86M on 3 (Windwalker Monk) | CDs: Pillar of Frost + Empower Rune Weapon + Explosive Shot
+0:24  [ENEMY CD]   6 (Frost Death Knight): Pillar of Frost [1/2]
+0:25  [STATE]   friends 1:100 2:100 3:98 / enemies 4:100 5:100 6:100
+0:25  [CC ON TEAM]   3 ← Absolute Zero (Colbz-Stormrage-US) | 3s | trinket: available
+0:25  [CC ON TEAM]   2 ← Absolute Zero (Colbz-Stormrage-US) | 2s | trinket: used
+0:25  [TEAMMATE CD]   2 (Restoration Druid): Barkskin
+0:26  [STATE]   friends 1:99 2:100 3:100 / enemies 4:100 5:100 6:100
+0:26  [DMG SPIKE]   3 (Windwalker Monk): 0.86M in 10s [P95 Danger] [BURST] (99% -> 87% HP)
+0:26  [ENEMY CD]   6 (Frost Death Knight): Empower Rune Weapon [3/6]
+0:26  [CC ON TEAM]   2 ← Strangulate (Colbz-Stormrage-US) | 2s | trinket: used
+0:27  [STATE]   friends 1:100 2:99 3:90 / enemies 4:100 5:100 6:100
+0:27  [DMG SPIKE]   2 (Restoration Druid): 0.41M in 10s [P95 Danger] [BURST] (100% -> 70% HP)
+0:28  [STATE]   friends 1:99 2:98 3:76 / enemies 4:100 5:100 6:100
+0:28  [CC ON TEAM]   1 ← Binding Shot (Daddykek-BleedingHollow-US) | 3s | trinket: available
+0:28  [TEAMMATE CD]   3 (Windwalker Monk): Touch of Karma
+0:28  [TRINKET]   2 used PvP trinket
+0:29  [STATE]   friends 1:91 2:90 3:28 / enemies 4:100 5:100 6:100
+0:29  [TEAMMATE CD]   2 (Restoration Druid): Ironbark
+0:30  [STATE]   friends 1:80 2:71 3:26 / enemies 4:100 5:100 6:100
+0:31  [STATE]   friends 1:74 2:71 3:37 / enemies 4:100 5:100 6:100
+0:31  [CC ON TEAM]   1 ← Holy Word: Chastise (Kurorox-AltarofStorms-US) | 1s | trinket: available
+0:31  [CC ON TEAM]   3 ← Binding Shot (Daddykek-BleedingHollow-US) | 1s | trinket: available
+0:32  [STATE]   friends 1:75 2:71 3:61 / enemies 4:100 5:100 6:100
+0:32  [CC ON TEAM]   2 ← Scorpid Venom (Daddykek-BleedingHollow-US) | 3s | trinket: ON CD (87s left)
+0:33  [STATE]   friends 1:75 2:73 3:94 / enemies 4:100 5:100 6:97
+0:33  [CLEANSE]   3 dispelled 2 effects: Remorseless Winter off 3, Chains of Ice off 3
+0:34  [STATE]   friends 1:84 2:81 3:100 / enemies 4:99 5:100 6:96
+0:34  [ENEMY CD]   4 (Marksmanship Hunter): Explosive Shot [1/2]
+0:35  [STATE]   friends 1:98 2:88 3:99 / enemies 4:100 5:100 6:100
+0:35  [TEAMMATE CC]   3 (Windwalker Monk): Leg Sweep
+0:35  [CC CAST]   Leg Sweep (by 3) → 4
+0:35  [CC ON TEAM]   2 ← Spider Venom (Daddykek-BleedingHollow-US) | 1s | trinket: ON CD (84s left)
+0:36  [STATE]   friends 1:97 2:91 3:85 / enemies 4:100 5:100 6:100
+0:36  [CLEANSE]   2 dispelled Chains of Ice off 2
+0:37  [STATE]   friends 1:100 2:85 3:97 / enemies 4:76 5:100 6:100
+0:37  [OWNER CD]   Ascendance (Enhancement)
+      [RES] rdy:Hex,Ascendance (Enhancement),2:Mighty Bash,2:Stampeding Roar,2:Frenzied Regeneration,2:Tranquility  cd:2:Barkskin(48s),2:Incarnation: Tree of Life(164s),2:Ironbark(82s),3:Paralysis(29s),3:Leg Sweep(58s),3:Touch of Karma(81s)
+0:37  [ENEMY CD]   6 (Frost Death Knight): Empower Rune Weapon [4/6]
+0:37  [TEAMMATE CC]   2 (Restoration Druid): Mighty Bash
+0:38  [STATE]   friends 1:100 2:71 3:99 / enemies 4:54 5:100 6:100
+0:39  [STATE]   friends 1:99 2:72 3:100 / enemies 4:72 5:100 6:100
+0:39  [CLEANSE]   2 dispelled Remorseless Winter off 2
+0:40  [STATE]   friends 1:100 2:73 3:100 / enemies 4:57 5:81 6:97
+0:41  [STATE]   friends 1:100 2:76 3:100 / enemies 4:69 5:69 6:100
+0:42  [STATE]   friends 1:100 2:78 3:100 / enemies 4:68 5:76 6:100
+0:43  [STATE]   friends 1:100 2:80 3:100 / enemies 4:66 5:78 6:100
+0:44  [STATE]   friends 1:100 2:82 3:100 / enemies 4:60 5:81 6:100
+0:45  [STATE]   friends 1:100 2:100 3:100 / enemies 4:86 5:91 6:100
+0:52  [STATE]   friends 1:99 2:100 3:100 / enemies 4:49 5:100 6:72
+0:52  [BUFF FADED]   Ascendance (Enhancement)
+0:53  [STATE]   friends 1:99 2:100 3:100 / enemies 4:63 5:100 6:58
+0:53  [TEAMMATE CC]   3 (Windwalker Monk): Paralysis
+0:54  [STATE]   friends 1:99 2:99 3:98 / enemies 4:64 5:100 6:51
+0:55  [STATE]   friends 1:100 2:100 3:93 / enemies 4:68 5:100 6:37
+0:56  [STATE]   friends 1:99 2:100 3:89 / enemies 4:72 5:100 6:41
+0:56  [DMG SPIKE]   3 (Windwalker Monk): 0.50M in 10s [P95 Danger] [BURST] (90% -> 73% HP)
+0:57  [STATE]   friends 1:100 2:100 3:96 / enemies 4:80 5:100 6:72
+0:57  [OFFENSIVE WINDOW]   0:57–1:12 | Moderate | 0.65M on 3 (Windwalker Monk) | CDs: Trueshot + Empower Rune Weapon
+0:57  [ENEMY CD]   4 (Marksmanship Hunter): Trueshot
+0:58  [STATE]   friends 1:98 2:100 3:68 / enemies 4:82 5:100 6:69
+0:59  [STATE]   friends 1:100 2:100 3:72 / enemies 4:83 5:100 6:69
+1:00  [STATE]   friends 1:100 2:99 3:85 / enemies 4:85 5:100 6:74
+1:01  [STATE]   friends 1:99 2:100 3:88 / enemies 4:85 5:100 6:83
+1:01  [CLEANSE]   2 dispelled Chains of Ice off 2
+1:03  [CLEANSE]   3 dispelled 2 effects: Chains of Ice off 3, Concussive Shot off 3
+1:04  [CC ON TEAM]   2 ← Psychic Scream (Kurorox-AltarofStorms-US) | 2s | trinket: ON CD (55s left)
+1:05  [STATE]   friends 1:100 2:100 3:84 / enemies 4:88 5:96 6:73
+1:06  [STATE]   friends 1:100 2:100 3:77 / enemies 4:72 5:100 6:79
+1:06  [ENEMY CD]   6 (Frost Death Knight): Empower Rune Weapon [5/6]
+1:07  [STATE]   friends 1:99 2:100 3:74 / enemies 4:72 5:100 6:80
+1:07  [CLEANSE]   3 dispelled Chains of Ice off 1
+1:07  [CC ON TEAM]   1 ← Holy Word: Chastise (Kurorox-AltarofStorms-US) | 3s | trinket: available
+1:08  [STATE]   friends 1:88 2:100 3:78 / enemies 4:71 5:99 6:82
+1:09  [STATE]   friends 1:84 2:100 3:78 / enemies 4:63 5:99 6:83
+1:10  [STATE]   friends 1:75 2:100 3:100 / enemies 4:59 5:99 6:86
+1:10  [DMG SPIKE]   3 (Windwalker Monk): 0.65M in 10s [P95 Danger] [BURST] (100% -> 5% HP)
+1:11  [STATE]   friends 1:72 2:100 3:95 / enemies 4:58 5:98 6:84
+1:12  [STATE]   friends 1:65 2:100 3:100 / enemies 4:88 5:100 6:85
+1:13  [STATE]   friends 1:66 2:96 3:98 / enemies 4:73 5:100 6:89
+1:14  [STATE]   friends 1:64 2:97 3:95 / enemies 4:71 5:99 6:90
+1:14  [OFFENSIVE WINDOW]   1:14–1:26 | Low | 0.98M on 1 (Enhancement Shaman) | CDs: Pillar of Frost + Empower Rune Weapon
+1:14  [ENEMY CD]   6 (Frost Death Knight): Pillar of Frost [2/2]
+1:14  [CC ON TEAM]   2 ← Intimidation (Daddykek-BleedingHollow-US) | 3s | trinket: ON CD (45s left)
+1:15  [STATE]   friends 1:68 2:98 3:90 / enemies 4:71 5:100 6:83
+1:15  [CC ON TEAM]   2 ← Strangulate (Colbz-Stormrage-US) | 4s | trinket: ON CD (44s left)
+1:16  [STATE]   friends 1:70 2:96 3:88 / enemies 4:70 5:99 6:99
+1:17  [STATE]   friends 1:73 2:98 3:80 / enemies 4:87 5:100 6:100
+1:17  [CC ON TEAM]   3 ← Binding Shot (Daddykek-BleedingHollow-US) | 3s | trinket: available
+1:17  [CC ON TEAM]   1 ← Binding Shot (Daddykek-BleedingHollow-US) | 1s | trinket: available
+1:18  [STATE]   friends 1:77 2:93 3:76 / enemies 4:81 5:100 6:99
+1:19  [STATE]   friends 1:72 2:94 3:54 / enemies 4:82 5:99 6:100
+1:20  [STATE]   friends 1:74 2:93 3:dead / enemies 4:76 5:100 6:99
+1:20  [DMG SPIKE]   1 (Enhancement Shaman): 0.98M in 10s [P95 Danger] [BURST] (73% -> 42% HP)
+1:20  [DEATH]  3 (Windwalker Monk — friendly)
+               HP: 83% at T-15s → 100% at T-10s → 87% at T-5s → 81% at T-3s → dead
+               Top damage in final 10s: Colbz-Stormrage-US — Obliterate (151k), Colbz-Stormrage-US — Frost Strike (94k), Daddykek-BleedingHollow-US — Aimed Shot (75k)
+1:20  [TEAMMATE CD]   2 (Restoration Druid): Tranquility
+      [RES] rdy:Δ+3:Paralysis-Ascendance (Enhancement),2:Mighty Bash  cd:Ascendance (Enhancement)(137s),2:Mighty Bash(17s)  enemy:Pillar of Frost/Frost Death Knight(6s)
+1:21  [STATE]   friends 1:78 2:100 3:dead / enemies 4:87 5:100 6:100
+1:22  [STATE]   friends 1:80 2:100 3:dead / enemies 4:94 5:100 6:100
+1:23  [STATE]   friends 1:84 2:100 3:dead / enemies 4:92 5:100 6:100
+1:24  [STATE]   friends 1:82 2:100 3:dead / enemies 4:93 5:100 6:100
+1:24  [ENEMY CD]   6 (Frost Death Knight): Empower Rune Weapon [6/6]
+1:25  [STATE]   friends 1:71 2:100 3:dead / enemies 4:96 5:100 6:99
+1:26  [STATE]   friends 1:52 2:100 3:dead / enemies 4:96 5:100 6:99
+1:27  [STATE]   friends 1:61 2:100 3:dead / enemies 4:98 5:100 6:99
+1:27  [CC ON TEAM]   2 ← Mind Control (Kurorox-AltarofStorms-US) | 6s | trinket: ON CD (32s left)
+1:28  [STATE]   friends 1:45 2:100 3:dead / enemies 4:98 5:100 6:100
+1:28  [ENEMY CD]   4 (Marksmanship Hunter): Explosive Shot [2/2]
+1:29  [STATE]   friends 1:40 2:100 3:dead / enemies 4:98 5:100 6:100
+1:30  [STATE]   friends 1:41 2:100 3:dead / enemies 4:100 5:100 6:100
+1:31  [STATE]   friends 1:42 2:100 3:dead / enemies 4:100 5:100 6:100
+1:32  [STATE]   friends 1:32 3:dead / enemies 4:100 6:100
+1:33  [STATE]   friends 1:22 3:dead / enemies 4:100 5:100 6:100
+1:34  [STATE]   friends 1:dead 3:dead / enemies 4:100 5:100 6:100
+1:34  [DEATH]  1 (Enhancement Shaman — friendly)
+               HP: 74% at T-15s → 73% at T-10s → 39% at T-5s → 33% at T-3s → dead
+               Top damage in final 10s: Daddykek-BleedingHollow-US — Rapid Fire (147k), Daddykek-BleedingHollow-US — Black Arrow (137k), Colbz-Stormrage-US — Frost Strike (131k)
+1:35  [STATE]   friends 1:dead 3:dead / enemies 4:100 5:100 6:100
+
+1:35  [MATCH END]   damp: 10%
+  friends 1:dead(1:34) 2:100% 3:dead(1:20) / enemies 4:100% 5:100% 6:100%

@@ -31,6 +31,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" data-theme="night">
       <head>
         <link type="text/css" href="https://wow.zamimg.com/css/basic.css?16" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* App-router global head; the pages/_document heuristic does not apply here. */}
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+          rel="stylesheet"
+        />
         <Script id="wowhead-config" strategy="beforeInteractive">
           {'window.whTooltips = { colorLinks: true, iconSize: true };'}
         </Script>

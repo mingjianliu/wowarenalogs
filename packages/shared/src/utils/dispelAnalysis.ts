@@ -1,6 +1,6 @@
 import { CombatExtraSpellAction, CombatUnitSpec, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
-import { spellEffectData } from '../data/spellEffectData';
+import { getEnglishSpellName, spellEffectData } from '../data/spellEffectData';
 import spellIdListsData from '../data/spellIdLists.json';
 import spellsData from '../data/spells.json';
 import { fmtTime, getPressureThreshold, specToString } from './cooldowns';
@@ -186,6 +186,18 @@ function unitCastSpellIds(unit: ICombatUnit): Set<string> {
 }
 
 /**
+ * Extracts the BUFF/DEBUFF marker from an aura event's raw log line.
+ * Combat-log parameter index 11 holds this for SPELL_AURA_APPLIED, SPELL_AURA_REMOVED,
+ * and SPELL_AURA_BROKEN(_SPELL). Returns null when the marker is absent (older fixtures
+ * or edge log lines) so callers can decide how to treat unknowns.
+ */
+function getAuraType(aura: { logLine: { parameters: (string | number)[] } }): 'BUFF' | 'DEBUFF' | null {
+  const raw = aura.logLine.parameters[11];
+  if (raw === 'BUFF' || raw === 'DEBUFF') return raw;
+  return null;
+}
+
+/**
  * Returns true if a talent-gated spell is confirmed available for the unit.
  * - Has talent data and took the talent → true
  * - Has talent data and didn't take it → false
@@ -349,6 +361,8 @@ export interface IDispelEvent {
   /** Damage taken by the dispeller in the 4s before the dispel — baseline context */
   penaltyDamageBaseline?: number;
   isSpellSteal: boolean;
+  /** True when the dispel was performed by a pet/NPC merged into the player's actionOut (e.g. Warlock Felhunter Devour Magic, Imp Singe Magic). */
+  isPetDispel: boolean;
 }
 
 export interface IMissedCleanseWindow {
@@ -506,18 +520,27 @@ export function reconstructDispelSummary(
   friends: ICombatUnit[],
   enemies: ICombatUnit[],
   combat: { startTime: number; endTime: number },
+  // B45: friendly pet/guardian units whose dispels should be attributed to their owner player
+  friendlyPets: ICombatUnit[] = [],
 ): IDispelSummary {
   const friendlyIds = new Set(friends.map((u) => u.id));
   const enemyIds = new Set(enemies.map((u) => u.id));
+  // B45: pets are also considered friendly sources; owner lookup is via ownerId
+  const friendlyPetIds = new Set(friendlyPets.map((u) => u.id));
+  const friendlyPlayerById = new Map(friends.map((u) => [u.id, u]));
   const teamDispelTypes = buildTeamDispelTypes(friends);
   const teamDispelCapability = buildTeamDispelCapability(friends);
-  const unitMap = new Map<string, ICombatUnit>([...friends, ...enemies].map((u) => [u.id, u]));
+  const unitMap = new Map<string, ICombatUnit>([...friends, ...enemies, ...friendlyPets].map((u) => [u.id, u]));
 
   const allyCleanse: IDispelEvent[] = [];
   const ourPurges: IDispelEvent[] = [];
   const hostilePurges: IDispelEvent[] = [];
 
-  for (const unit of [...friends, ...enemies]) {
+  for (const unit of [...friends, ...friendlyPets, ...enemies]) {
+    const isPetUnit = friendlyPetIds.has(unit.id);
+    // For pet units, attribute the dispel to the owner player (if known)
+    const ownerPlayer = isPetUnit ? friendlyPlayerById.get(unit.ownerId) : undefined;
+
     for (const action of unit.actionOut) {
       const isDispel = action.logLine.event === LogEvent.SPELL_DISPEL;
       const isSteal = action.logLine.event === LogEvent.SPELL_STOLEN;
@@ -531,23 +554,32 @@ export function reconstructDispelSummary(
       const destUnit = unitMap.get(action.destUnitId);
       const penaltyDesc = DISPEL_PENALTY_SPELLS.get(removedSpellId);
 
+      // B45: pet dispels are attributed to the owner player; source name shows the player
+      // so Claude sees "[CLEANSE] Warlock dispelled X (pet)" rather than "[CLEANSE] Imp dispelled X"
+      const sourceName = ownerPlayer ? ownerPlayer.name : unit.name;
+      const sourceSpec = ownerPlayer ? specToString(ownerPlayer.spec) : specToString(unit.spec);
+
       const event: IDispelEvent = {
         timeSeconds: (action.timestamp - combat.startTime) / 1000,
         dispelSpellId: action.spellId ?? '',
-        dispelSpellName: action.spellName ?? '',
+        dispelSpellName: getEnglishSpellName(action.spellId ?? '', action.spellName),
         removedSpellId,
-        removedSpellName: action.extraSpellName,
-        sourceName: unit.name,
-        sourceSpec: specToString(unit.spec),
+        removedSpellName: getEnglishSpellName(removedSpellId, action.extraSpellName),
+        sourceName,
+        sourceSpec,
         targetName: action.destUnitName,
         targetSpec: destUnit ? specToString(destUnit.spec) : 'Unknown',
         priority,
         hasDispelPenalty: penaltyDesc !== undefined,
         penaltyDescription: penaltyDesc,
         isSpellSteal: isSteal,
+        // B45: pet unit actions are always pet dispels; player actions only when srcUnit ≠ player
+        isPetDispel: isPetUnit || action.srcUnitId !== unit.id,
       };
 
-      const srcFriendly = friendlyIds.has(unit.id);
+      // Treat a pet owned by a friendly player as a friendly source
+      // Pets passed via friendlyPets are always friendly — we already filtered them by reaction
+      const srcFriendly = friendlyIds.has(unit.id) || isPetUnit;
       const srcEnemy = enemyIds.has(unit.id);
       const destFriendly = friendlyIds.has(action.destUnitId);
       const destEnemy = enemyIds.has(action.destUnitId);
@@ -607,6 +639,14 @@ export function reconstructDispelSummary(
       // Only CC applied by enemies
       if (!enemyIds.has(aura.srcUnitId)) continue;
 
+      // B11 fix: skip BUFF auras. When a friendly Mage spellsteals an enemy buff (e.g.
+      // Blessing of Freedom 1044), the resulting SPELL_AURA_APPLIED on the Mage carries
+      // the original enemy as srcUnit — but the aura is a BUFF on our side, not a debuff
+      // the healer should cleanse. Without this filter the loop fabricates a missed
+      // cleanse window for every spellsteal.
+      const auraType = getAuraType(aura);
+      if (auraType !== null && auraType !== 'DEBUFF') continue;
+
       const priority = getPriority(spellId);
       if (priority !== 'Critical' && priority !== 'High') continue;
 
@@ -619,7 +659,10 @@ export function reconstructDispelSummary(
 
       if (aura.logLine.event === LogEvent.SPELL_AURA_APPLIED) {
         const bucket = appliedTimes.get(spellId) ?? [];
-        appliedTimes.set(spellId, [...bucket, { ts: aura.timestamp, spellName: aura.spellName ?? spellId }]);
+        appliedTimes.set(spellId, [
+          ...bucket,
+          { ts: aura.timestamp, spellName: getEnglishSpellName(spellId, aura.spellName) },
+        ]);
       } else if (
         aura.logLine.event === LogEvent.SPELL_AURA_REMOVED ||
         aura.logLine.event === LogEvent.SPELL_AURA_BROKEN ||
@@ -771,6 +814,11 @@ export function reconstructDispelSummary(
         if (!spellId) continue;
         // Only consider buffs applied by the enemy's own side — skip debuffs our team placed on them
         if (!enemyIds.has(aura.srcUnitId)) continue;
+        // Symmetric to the cleanse fix: only treat actual buffs on enemies as purge targets.
+        // A debuff briefly hitting an enemy with an enemy as srcUnit (reflects, cross-team
+        // weirdness) is not something our offensive purge should handle.
+        const auraType = getAuraType(aura);
+        if (auraType !== null && auraType !== 'BUFF') continue;
         if (getDispelType(spellId) !== 'Magic') continue;
         if (PURGE_BLOCKLIST.has(spellId)) continue;
         const priority = getPriority(spellId);
@@ -778,7 +826,10 @@ export function reconstructDispelSummary(
 
         if (aura.logLine.event === LogEvent.SPELL_AURA_APPLIED) {
           const bucket = appliedTimes.get(spellId) ?? [];
-          appliedTimes.set(spellId, [...bucket, { ts: aura.timestamp, spellName: aura.spellName ?? spellId }]);
+          appliedTimes.set(spellId, [
+            ...bucket,
+            { ts: aura.timestamp, spellName: getEnglishSpellName(spellId, aura.spellName) },
+          ]);
         } else if (
           aura.logLine.event === LogEvent.SPELL_AURA_REMOVED ||
           aura.logLine.event === LogEvent.SPELL_AURA_BROKEN ||

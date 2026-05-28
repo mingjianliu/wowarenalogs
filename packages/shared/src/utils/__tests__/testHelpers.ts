@@ -39,6 +39,26 @@ export function makeDamageEvent(timestamp: number, amount: number, destUnitId = 
   };
 }
 
+/** Minimal SPELL_HEAL event (CombatHpUpdateAction shape). */
+export function makeHealEvent(timestamp: number, srcUnitId: string, amount: number, overhealAmount = 0): AnyObj {
+  return {
+    logLine: { event: LogEvent.SPELL_HEAL, timestamp, parameters: [] },
+    timestamp,
+    amount,
+    effectiveAmount: amount - overhealAmount,
+    srcUnitId,
+    srcUnitName: 'Healer',
+    destUnitId: 'player-1',
+    destUnitName: 'Target',
+    spellId: '1',
+    spellName: 'TestHeal',
+    advancedActorMaxHp: 500_000,
+    advancedActorCurrentHp: 400_000,
+    advancedActorPositionX: 0,
+    advancedActorPositionY: 0,
+  };
+}
+
 /** Minimal SPELL_CAST_SUCCESS event (CombatAction shape). */
 export function makeSpellCastEvent(
   spellId: string,
@@ -47,16 +67,19 @@ export function makeSpellCastEvent(
   destUnitName = 'Target',
   srcUnitId = 'player-1',
   srcUnitName = 'Player',
+  destUnitFlags = 0,
+  spellName?: string,
 ): AnyObj {
   return {
     logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp, parameters: [] },
     timestamp,
     spellId,
-    spellName: spellId,
+    spellName: spellName ?? spellId,
     srcUnitId,
     srcUnitName,
     destUnitId,
     destUnitName,
+    destUnitFlags,
     effectiveAmount: 0,
     advancedActorMaxHp: 0,
     advancedActorCurrentHp: 0,
@@ -72,9 +95,12 @@ export function makeAuraEvent(
   timestamp: number,
   srcUnitId = 'enemy-1',
   destUnitId = 'player-1',
+  auraType: 'BUFF' | 'DEBUFF' = 'DEBUFF',
 ): AnyObj {
+  const parameters: (string | number)[] = [];
+  parameters[11] = auraType;
   return {
-    logLine: { event, timestamp, parameters: [] },
+    logLine: { event, timestamp, parameters },
     timestamp,
     spellId,
     spellName: spellId,
@@ -127,15 +153,19 @@ export function makeUnit(
     reaction?: CombatUnitReaction;
     spellCastEvents?: AnyObj[];
     auraEvents?: AnyObj[];
+    actionIn?: AnyObj[];
+    actionOut?: AnyObj[];
     damageIn?: AnyObj[];
+    healOut?: AnyObj[];
     advancedActions?: AnyObj[];
     info?: AnyObj | undefined;
+    ownerId?: string;
   } = {},
 ): ICombatUnit {
   return {
     id,
     name: overrides.name ?? id,
-    ownerId: '',
+    ownerId: overrides.ownerId ?? '',
     isWellFormed: true,
     reaction: overrides.reaction ?? CombatUnitReaction.Friendly,
     affiliation: CombatUnitAffiliation.Mine,
@@ -146,7 +176,7 @@ export function makeUnit(
     damageIn: (overrides.damageIn ?? []) as ICombatUnit['damageIn'],
     damageOut: [],
     healIn: [],
-    healOut: [],
+    healOut: (overrides.healOut ?? []) as ICombatUnit['healOut'],
     absorbsIn: [],
     absorbsOut: [],
     absorbsDamaged: [],
@@ -154,8 +184,8 @@ export function makeUnit(
     supportDamageOut: [],
     supportHealIn: [],
     supportHealOut: [],
-    actionIn: [],
-    actionOut: [],
+    actionIn: (overrides.actionIn ?? []) as ICombatUnit['actionIn'],
+    actionOut: (overrides.actionOut ?? []) as ICombatUnit['actionOut'],
     auraEvents: (overrides.auraEvents ?? []) as ICombatUnit['auraEvents'],
     spellCastEvents: (overrides.spellCastEvents ?? []) as ICombatUnit['spellCastEvents'],
     deathRecords: [],
@@ -167,4 +197,68 @@ export function makeUnit(
 /** Build a minimal AtomicArenaCombat-compatible combat object. */
 export function makeCombat(startTime: number, endTime: number): { startTime: number; endTime: number } {
   return { startTime, endTime };
+}
+
+/** Minimal SPELL_INTERRUPT event (CombatExtraSpellAction shape). */
+export function makeInterruptEvent(
+  kickSpellId: string,
+  kickSpellName: string,
+  interruptedSpellId: string,
+  interruptedSpellName: string,
+  timestamp: number,
+  srcUnitId = 'enemy-1',
+  srcUnitName = 'Enemy',
+): AnyObj {
+  return {
+    logLine: { event: LogEvent.SPELL_INTERRUPT, timestamp, parameters: [] },
+    timestamp,
+    spellId: interruptedSpellId,
+    spellName: interruptedSpellName,
+    extraSpellId: kickSpellId,
+    extraSpellName: kickSpellName,
+    srcUnitId,
+    srcUnitName,
+    destUnitId: 'player-1',
+    destUnitName: 'Target',
+    effectiveAmount: 0,
+    advancedActorMaxHp: 0,
+    advancedActorCurrentHp: 0,
+  };
+}
+
+/**
+ * Minimal SPELL_DISPEL event stub (CombatExtraSpellAction shape).
+ * srcUnitId: the unit that performed the dispel (may be a pet ID)
+ * destUnitId: the target that was dispelled
+ * dispelSpellId: the ability used to dispel (e.g. Detox '115450')
+ * removedSpellId: the effect that was removed (e.g. Polymorph '118')
+ * removedSpellName: display name of the removed effect
+ */
+export function makeDispelAction(
+  timestamp: number,
+  srcUnitId: string,
+  destUnitId: string,
+  dispelSpellId: string,
+  removedSpellId: string,
+  removedSpellName: string,
+  destUnitName = 'Target',
+  srcUnitName = 'Source',
+): AnyObj {
+  return {
+    logLine: { event: LogEvent.SPELL_DISPEL, timestamp, parameters: [] },
+    timestamp,
+    spellId: dispelSpellId,
+    spellName: dispelSpellId,
+    extraSpellId: removedSpellId,
+    extraSpellName: removedSpellName,
+    srcUnitId,
+    srcUnitName,
+    destUnitId,
+    destUnitName,
+    effectiveAmount: 0,
+    advancedActorMaxHp: 0,
+    advancedActorCurrentHp: 0,
+    advancedActorPositionX: 0,
+    advancedActorPositionY: 0,
+  };
 }

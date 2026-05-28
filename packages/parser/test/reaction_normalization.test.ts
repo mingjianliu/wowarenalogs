@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CombatUnitReaction, CombatUnitType } from '../src/types';
 import { LoaderResults, loadLogFile } from './testLogLoader';
 

@@ -1,0 +1,269 @@
+[ARCHETYPE: Holy Paladin — heavy_burst_cc_swap]
+These are the longest and most demanding rounds (170 seconds average), featuring 3.8 burst windows per match, a peak burst score of 23.3, and 10.93 CC events per minute — placing them at the intersection of heavy burst and heavy CC thresholds. Holy Paladin healers respond with their highest cooldown efficiency: 69.1% optimal timing and only 24% of cooldowns going unused, though the missed cleanse rate of 50.4% and a 6.5% healing gap rate indicate that the volume of pressure still creates coverage lapses. The cc_then_burst setup style appears in 46.2% of matches, the highest proportion across all clusters, reflecting structured coordination from opponents that forces healers into reactive defensive decisions throughout the round.
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Arms Warrior | Bracket: Rated Solo Shuffle | Result: Loss | Duration: 2:39
+  My team: Fire Mage, Holy Paladin, Arms Warrior
+  Enemy team: Marksmanship Hunter, Mistweaver Monk, Beast Mastery Hunter
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Arms Warrior): CANNOT offensive purge
+  Team purgers: Fire Mage
+
+DAMPENING (Rated Solo Shuffle): started at 10%, ended at 50% at match end
+  ⚠ Severe dampening (50%) — sustained healing was severely compromised; kill windows in the final phase required significantly less setup.
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Сноррег-Гордунни-EU (Arms Warrior — log owner):
+    Avatar [90s], Intimidating Shout [90s, 2 Charges], Die by the Sword [120s, 2 Charges], Bladestorm (Arms) [90s]
+  2: Zivac-Kazzak-EU (Fire Mage):
+    Ice Block [240s], Dragon's Breath [45s], Combustion [120s, 2 Charges]
+  3: Dadeluxe-Aegwynn-EU (Holy Paladin):
+    Lay on Hands [600s], Divine Shield [300s], Hammer of Justice [45s], Blessing of Protection [300s], Blessing of Spellwarding [300s], Avenging Wrath [120s], Blessing of Sacrifice [120s], Aura Mastery [180s, 2 Charges]
+  4: Avent-Neptulon-EU (Marksmanship Hunter — enemy):
+    Trueshot [120s], Explosive Shot [30s]
+  5: Thräd-Silvermoon-EU (Beast Mastery Hunter — enemy):
+    Bestial Wrath [90s]
+  6: Tisza-ArgentDawn-EU (Mistweaver Monk — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:09  [STATE]   friends 1:100 2:100 3:100
+0:12  [STATE]   friends 1:100 2:100 3:100
+0:15  [STATE]   friends 1:100 2:100 3:100
+0:18  [STATE]   friends 1:99 2:100 3:100
+0:20  [CC ON TEAM]   3 ← Binding Shot (Thräd-Silvermoon-EU) | 3s
+0:21  [STATE]   friends 1:99 2:100 3:99 / enemies 6:100 5:100
+0:22  [STATE]   friends 1:99 2:100 3:99 / enemies 6:100 5:100
+0:22  [CC ON TEAM]   3 ← Freezing Trap (Thräd-Silvermoon-EU) | 6s
+0:22  [TEAMMATE CD]   2 (Fire Mage): Combustion
+      [RES] rdy:Δ+Avatar,Intimidating Shout,Die by the Sword,2:Ice Block,2:Combustion,3:Hammer of Justice,3:Blessing of Protection,3:Avenging Wrath,3:Blessing of Sacrifice,3:Aura Mastery  cd:—  cc:3/Binding Shot-0s[stun]
+0:23  [STATE]   friends 1:99 2:100 3:99 / enemies 6:75 5:100
+0:23  [OWNER CD]   Avatar
+      [RES] rdy:Avatar,Intimidating Shout,Die by the Sword,Bladestorm (Arms),2:Ice Block,2:Dragon's Breath,3:Lay on Hands,3:Divine Shield,3:Hammer of Justice,3:Blessing of Protection,3:Blessing of Spellwarding,3:Avenging Wrath,3:Blessing of Sacrifice,3:Aura Mastery  cd:2:Combustion(119s)  cc:3/Freezing Trap-5s
+0:24  [STATE]   friends 1:99 2:100 3:99 / enemies 6:75 5:100
+0:24  [ENEMY CD]   5 (Beast Mastery Hunter): Bestial Wrath
+0:25  [STATE]   friends 1:100 2:100 3:99 / enemies 4:100 6:74 5:100
+0:26  [STATE]   friends 1:100 2:99 3:99 / enemies 4:100 6:79 5:100
+0:26  [CC ON TEAM]   3 ← Scorpid Venom (Thräd-Silvermoon-EU) | 3s
+0:27  [STATE]   friends 1:96 2:96 3:98 / enemies 4:99 6:84 5:100
+0:28  [STATE]   friends 1:78 2:82 3:98 / enemies 4:99 6:87 5:100
+0:28  [TEAMMATE CD]   3 (Holy Paladin): Aura Mastery
+      [RES] rdy:Δ+Intimidating Shout,Die by the Sword,3:Blessing of Protection,3:Aura Mastery  cd:—  enemy:Bestial Wrath/Beast Mastery Hunter(5s)  cc:3/Scorpid Venom-1s
+0:29  [STATE]   friends 1:51 2:72 3:98 / enemies 4:88 6:92 5:100
+0:30  [STATE]   friends 1:51 2:73 3:98 / enemies 4:74 6:93 5:100
+0:30  [CC ON TEAM]   3 ← Spider Venom (Thräd-Silvermoon-EU) | 3s
+0:31  [STATE]   friends 1:51 2:74 3:98 / enemies 4:63 6:94 5:100
+0:31  [OWNER CD]   Die by the Sword
+      [RES] rdy:Δ+Intimidating Shout,Die by the Sword,2:Ice Block,2:Dragon's Breath,3:Divine Shield,3:Blessing of Protection,3:Avenging Wrath,3:Blessing of Sacrifice-Avatar  cd:Avatar(83s)  enemy:Bestial Wrath/Beast Mastery Hunter(7s)  cc:3/Spider Venom-2s
+0:32  [STATE]   friends 1:51 2:74 3:98 / enemies 4:44 6:96 5:100
+0:33  [STATE]   friends 1:51 2:63 3:99 / enemies 4:45 6:97 5:100
+0:33  [TEAMMATE CD]   3 (Holy Paladin): Blessing of Protection
+      [RES] rdy:Δ+Intimidating Shout,2:Ice Block,3:Blessing of Protection,3:Avenging Wrath,3:Blessing of Sacrifice  cd:—  enemy:Bestial Wrath/Beast Mastery Hunter(9s)
+0:34  [STATE]   friends 1:59 2:69 3:99 / enemies 4:47 6:98 5:100
+0:35  [STATE]   friends 1:61 2:70 3:99 / enemies 4:49 6:100 5:100
+0:35  [CC ON TEAM]   3 ← Scorpid Venom (Avent-Neptulon-EU) | 1s
+0:35  [CC ON TEAM]   3 ← Spider Venom (Avent-Neptulon-EU) | 2s
+0:36  [STATE]   friends 1:61 2:70 3:98 / enemies 4:38 6:100 5:100
+0:36  [OFFENSIVE WINDOW]   0:36–0:51 | Moderate | 0.74M on 2 (Fire Mage) | CDs: Trueshot + Explosive Shot
+0:36  [ENEMY CD]   4 (Marksmanship Hunter): Trueshot
+0:37  [STATE]   friends 1:61 2:70 3:98 / enemies 4:49 6:100 5:100
+0:38  [STATE]   friends 1:70 2:72 3:98 / enemies 4:58 6:100 5:100
+0:39  [STATE]   friends 1:66 2:84 3:98 / enemies 4:53 6:100 5:100
+0:39  [BUFF FADED]   Die by the Sword
+0:40  [STATE]   friends 1:65 2:80 3:97 / enemies 4:58 6:100 5:100
+0:40  [ENEMY CD]   4 (Marksmanship Hunter): Explosive Shot
+0:40  [CC ON TEAM]   3 ← Leg Sweep (Tisza-ArgentDawn-EU) | 4s
+0:41  [STATE]   friends 1:81 2:82 3:96 / enemies 4:44 6:100 5:100
+0:42  [STATE]   friends 1:51 2:79 3:93 / enemies 4:31 6:100 5:100
+0:43  [STATE]   friends 1:42 2:72 3:93 / enemies 4:29 6:100 5:100
+0:43  [BUFF FADED]   Avatar
+0:44  [STATE]   friends 1:38 2:71 3:93 / enemies 4:30 6:100 5:100
+0:44  [OWNER CD]   Intimidating Shout → Tisza-ArgentDawn-EU (100% HP)
+      [RES] rdy:Δ+2:Ice Block,3:Divine Shield,3:Avenging Wrath,3:Blessing of Sacrifice-Avatar,Die by the Sword,2:Combustion  cd:Avatar(69s),Die by the Sword(106s),2:Combustion(98s)  enemy:Trueshot/Marksmanship Hunter(8s),Explosive Shot/Marksmanship Hunter(5s),Bestial Wrath/Beast Mastery Hunter(21s)
+0:44  [CC CAST]   Intimidating Shout (by 1) → 6
+0:45  [STATE]   friends 1:47 2:80 3:94 / enemies 4:61 6:100 5:100
+0:46  [STATE]   friends 1:59 2:82 3:94 / enemies 4:65 6:100 5:100
+0:47  [STATE]   friends 1:57 2:81 3:94 / enemies 4:68 6:100 5:100
+0:48  [STATE]   friends 1:53 2:78 3:91 / enemies 4:71 6:100 5:100
+0:49  [STATE]   friends 1:71 2:80 3:88 / enemies 4:74 6:100 5:100
+0:50  [STATE]   friends 1:81 2:100 3:88 / enemies 4:75 6:100 5:100
+0:50  [DMG SPIKE]   2 (Fire Mage): 0.74M in 10s
+0:51  [STATE]   friends 1:97 2:97 3:88 / enemies 4:77 6:100 5:100
+0:51  [CC ON TEAM]   3 ← Intimidation (Avent-Neptulon-EU) | 1s
+0:52  [STATE]   friends 1:97 2:96 3:88 / enemies 4:80 6:100 5:100
+0:52  [CC ON TEAM]   3 ← Freezing Trap (Avent-Neptulon-EU) | 3s
+0:53  [STATE]   friends 1:98 2:95 3:88 / enemies 4:82 6:100 5:100
+0:54  [STATE]   friends 1:100 2:93 3:88 / enemies 4:87 6:100 5:100
+0:54  [ENEMY CD]   5 (Beast Mastery Hunter): Bestial Wrath
+0:54  [CC ON TEAM]   1 ← Freezing Trap (Thräd-Silvermoon-EU) | 2s
+0:55  [STATE]   friends 1:100 2:84 3:88 / enemies 4:96 6:100 5:100
+0:56  [STATE]   friends 1:100 2:55 3:88 / enemies 4:100 6:100 5:100
+0:56  [CLEANSE]   3 dispelled Freezing Trap off 1
+0:57  [STATE]   friends 1:91 2:41 3:85 / enemies 4:92 6:100 5:100
+0:57  [TEAMMATE CD]   3 (Holy Paladin): Blessing of Sacrifice
+      [RES] rdy:Δ+3:Blessing of Sacrifice  cd:—  enemy:Trueshot/Marksmanship Hunter(21s),Explosive Shot/Marksmanship Hunter(18s),Bestial Wrath/Beast Mastery Hunter(3s)
+0:58  [STATE]   friends 1:88 2:43 3:85 / enemies 4:100 6:100 5:100
+0:59  [STATE]   friends 1:87 2:34 3:76 / enemies 4:99 6:100 5:100
+1:00  [STATE]   friends 1:87 2:18 3:65 / enemies 4:100 6:100 5:100
+1:00  [TEAMMATE CD]   3 (Holy Paladin): Avenging Wrath
+      [RES] rdy:Δ-Intimidating Shout,3:Blessing of Protection,3:Blessing of Sacrifice  cd:Intimidating Shout(75s),3:Blessing of Protection(273s),3:Blessing of Sacrifice(118s)  enemy:Trueshot/Marksmanship Hunter(23s),Explosive Shot/Marksmanship Hunter(20s),Bestial Wrath/Beast Mastery Hunter(6s)
+1:00  [TEAMMATE CD]   2 (Fire Mage): Ice Block
+      [RES] rdy:Δ+2:Ice Block,2:Dragon's Breath,3:Divine Shield,3:Avenging Wrath-Avatar,Intimidating Shout  cd:Avatar(53s),Intimidating Shout(74s)  enemy:Trueshot/Marksmanship Hunter(24s),Explosive Shot/Marksmanship Hunter(20s),Bestial Wrath/Beast Mastery Hunter(6s)
+1:01  [STATE]   friends 1:85 2:38 3:60 / enemies 4:96 6:100 5:100
+1:02  [STATE]   friends 1:89 2:86 3:60 / enemies 4:72 6:100 5:100
+1:03  [STATE]   friends 1:91 2:91 3:68 / enemies 4:70 6:100 5:100
+1:03  [CC ON TEAM]   3 ← Paralysis (Tisza-ArgentDawn-EU) | 2s
+1:04  [STATE]   friends 1:91 2:94 3:67 / enemies 4:55 6:100 5:100
+1:04  [TEAMMATE CD]   3 (Holy Paladin): Hammer of Justice
+      [RES] rdy:Δ+2:Dragon's Breath-Avatar  cd:Avatar(49s)  enemy:Trueshot/Marksmanship Hunter(28s),Explosive Shot/Marksmanship Hunter(25s),Bestial Wrath/Beast Mastery Hunter(10s)  cc:2/Binding Shot-5s[root]
+1:05  [STATE]   friends 1:92 2:94 3:66 / enemies 4:53 6:100 5:97
+1:06  [STATE]   friends 1:94 2:98 3:76 / enemies 4:51 6:100 5:85
+1:07  [STATE]   friends 1:96 2:100 3:76 / enemies 4:55 6:100 5:79
+1:08  [STATE]   friends 1:98 2:100 3:76 / enemies 4:57 6:100 5:66
+1:09  [STATE]   friends 1:99 2:100 3:95 / enemies 4:61 6:100 5:48
+1:09  [DMG SPIKE]   2 (Fire Mage): 0.54M in 10s
+1:10  [STATE]   friends 1:98 2:87 3:93 / enemies 4:60 6:100 5:49
+1:10  [CC ON TEAM]   2 ← Binding Shot (Avent-Neptulon-EU) | 1s
+1:10  [CC ON TEAM]   2 ← Binding Shot (Thräd-Silvermoon-EU) | 1s
+1:11  [STATE]   friends 1:99 2:72 3:95 / enemies 4:62 6:100 5:31
+1:12  [STATE]   friends 1:100 2:77 3:98 / enemies 4:62 6:100 5:49
+1:13  [STATE]   friends 1:100 2:64 3:98 / enemies 4:67 6:100 5:54
+1:14  [STATE]   friends 1:100 2:79 3:98 / enemies 4:70 6:100 5:81
+1:15  [STATE]   friends 1:100 2:75 3:98 / enemies 4:73 6:100 5:91
+1:16  [STATE]   friends 1:100 2:82 3:100 / enemies 4:71 6:100 5:95
+1:17  [STATE]   friends 1:83 2:77 3:100 / enemies 4:98 6:100 5:97
+1:18  [STATE]   friends 1:80 2:69 3:100 / enemies 4:93 6:100 5:100
+1:19  [STATE]   friends 1:78 2:61 3:100 / enemies 4:94 6:100 5:100
+1:19  [OFFENSIVE WINDOW]   1:19–1:39 | High | 0.60M on 2 (Fire Mage) | CDs: Explosive Shot + Bestial Wrath
+1:19  [ENEMY CD]   4 (Marksmanship Hunter): Explosive Shot
+1:20  [STATE]   friends 1:80 2:78 3:99 / enemies 4:99 6:100 5:100
+1:20  [DMG SPIKE]   2 (Fire Mage): 0.60M in 10s
+1:21  [STATE]   friends 1:79 2:73 3:99 / enemies 4:100 6:100 5:100
+1:22  [STATE]   friends 1:79 2:68 3:100 / enemies 4:82 6:100 5:100
+1:23  [STATE]   friends 1:80 2:78 3:100 / enemies 4:73 6:100 5:100
+1:24  [STATE]   friends 1:82 2:98 3:100 / enemies 4:79 6:100 5:100
+1:24  [ENEMY CD]   5 (Beast Mastery Hunter): Bestial Wrath
+1:25  [STATE]   friends 1:60 2:100 3:98 / enemies 4:99 6:100 5:100
+1:27  [STATE]   friends 1:65 2:89 3:98
+1:27  [CC ON TEAM]   3 ← Scorpid Venom (Thräd-Silvermoon-EU) | 3s
+1:28  [STATE]   friends 1:65 2:83 3:97 / enemies 4:93 6:100 5:100
+1:29  [STATE]   friends 1:87 2:57 3:98 / enemies 4:86 6:100 5:100
+1:30  [STATE]   friends 1:86 2:60 3:97 / enemies 4:88 6:100 5:100
+1:30  [CC ON TEAM]   3 ← Spider Venom (Thräd-Silvermoon-EU) | 3s
+1:31  [STATE]   friends 1:80 2:38 3:97 / enemies 4:81 6:100 5:100
+1:32  [STATE]   friends 1:92 2:47 3:97 / enemies 4:82 6:100 5:100
+1:32  [CC ON TEAM]   2 ← Song of Chi-Ji (Tisza-ArgentDawn-EU) | 1s
+1:32  [CC ON TEAM]   1 ← Song of Chi-Ji (Tisza-ArgentDawn-EU) | 1s | trinket: used
+1:32  [CC ON TEAM]   3 ← Intimidation (Avent-Neptulon-EU) | 1s
+1:33  [STATE]   friends 1:77 2:41 3:97 / enemies 4:93 6:100 5:100
+1:33  [TRINKET]   1 used PvP trinket
+1:34  [STATE]   friends 1:77 2:40 3:97 / enemies 4:95 6:100 5:100
+1:35  [STATE]   friends 1:79 2:51 3:95 / enemies 4:98 6:100 5:100
+1:35  [TEAMMATE CD]   2 (Fire Mage): Combustion
+      [RES] rdy:Δ-Avatar,Intimidating Shout,Die by the Sword,2:Ice Block,2:Combustion,3:Hammer of Justice,3:Blessing of Protection,3:Avenging Wrath,3:Blessing of Sacrifice,3:Aura Mastery  cd:Avatar(18s),Intimidating Shout(39s),Die by the Sword(55s),2:Ice Block(205s),2:Combustion(47s),3:Hammer of Justice(14s),3:Blessing of Protection(238s),3:Avenging Wrath(84s),3:Blessing of Sacrifice(82s),3:Aura Mastery(113s)  enemy:Explosive Shot/Marksmanship Hunter(17s),Bestial Wrath/Beast Mastery Hunter(11s)
+1:36  [STATE]   friends 1:82 2:59 3:95 / enemies 4:88 6:100 5:100
+1:37  [STATE]   friends 1:84 2:79 3:95 / enemies 4:85 6:100
+1:38  [STATE]   friends 1:86 2:71 3:92 / enemies 4:66 6:100
+1:39  [STATE]   friends 1:88 2:77 3:92 / enemies 4:53 6:100 5:100
+1:40  [STATE]   friends 1:91 2:88 3:90 / enemies 4:52 6:100 5:100
+1:41  [STATE]   friends 1:92 2:72 3:90 / enemies 4:60 6:100 5:100
+1:41  [CC ON TEAM]   2 ← Freezing Trap (Avent-Neptulon-EU) | 1s | trinket: used
+1:41  [TRINKET]   2 used PvP trinket
+1:42  [STATE]   friends 1:93 2:70 3:89 / enemies 4:41 6:100 5:100
+1:43  [STATE]   friends 1:92 2:70 3:89 / enemies 4:36 6:100 5:100
+1:44  [STATE]   friends 1:92 2:71 3:88 / enemies 4:31 5:100
+1:45  [STATE]   friends 1:92 2:68 3:84 / enemies 4:15 5:100
+1:45  [TEAMMATE CD]   2 (Fire Mage): Dragon's Breath
+      [RES] rdy:Δ-2:Ice Block,3:Hammer of Justice,3:Avenging Wrath  cd:2:Ice Block(195s),3:Hammer of Justice(4s),3:Avenging Wrath(74s)  enemy:Explosive Shot/Marksmanship Hunter(27s),Bestial Wrath/Beast Mastery Hunter(21s)
+1:45  [CC CAST]   Dragon's Breath (by 2) → nil [non-player target]
+1:46  [STATE]   friends 1:92 2:71 3:83 / enemies 4:16 6:100 5:100
+1:47  [STATE]   friends 1:94 2:84 3:83 / enemies 4:17 6:100 5:100
+1:48  [STATE]   friends 1:95 2:85 3:85 / enemies 4:42 6:100 5:100
+1:49  [STATE]   friends 1:95 2:81 3:85 / enemies 4:44 6:100 5:100
+1:50  [STATE]   friends 1:100 2:84 3:85 / enemies 4:45 5:90
+1:51  [STATE]   friends 1:100 2:95 3:90 / enemies 4:46 5:81
+1:53  [CC ON TEAM]   3 ← Freezing Trap (Thräd-Silvermoon-EU) | 6s
+1:54  [STATE]   friends 1:100 2:100 3:100 / enemies 4:42 5:66
+1:55  [STATE]   friends 1:100 2:100 3:100 / enemies 4:24 5:65
+1:56  [STATE]   friends 1:100 2:100 3:100 / enemies 4:36 6:100 5:65
+1:57  [STATE]   friends 1:100 2:100 3:100 / enemies 4:36 6:100 5:65
+1:57  [CC ON TEAM]   2 ← Binding Shot (Thräd-Silvermoon-EU) | 1s | trinket: ON CD (105s left)
+1:58  [STATE]   friends 1:100 2:100 3:100 / enemies 4:40 6:100 5:68
+1:58  [ENEMY CD]   5 (Beast Mastery Hunter): Bestial Wrath
+1:59  [STATE]   friends 1:100 2:85 3:100 / enemies 4:44 6:100 5:69
+2:00  [STATE]   friends 1:100 2:76 3:100 / enemies 4:47 6:100 5:84
+2:00  [CC ON TEAM]   3 ← Scorpid Venom (Avent-Neptulon-EU) | 2s
+2:00  [CC ON TEAM]   1 ← Binding Shot (Avent-Neptulon-EU) | 3s | trinket: ON CD (93s left)
+2:01  [STATE]   friends 1:100 2:72 3:99 / enemies 4:50 6:100 5:85
+2:02  [STATE]   friends 1:100 2:64 3:99 / enemies 4:53 6:100 5:90
+2:02  [DMG SPIKE]   2 (Fire Mage): 0.80M in 10s
+2:02  [CC ON TEAM]   3 ← Freezing Trap (Thräd-Silvermoon-EU) | 1s
+2:03  [STATE]   friends 1:100 2:45 3:100 / enemies 4:62 6:100 5:97
+2:03  [TEAMMATE CD]   3 (Holy Paladin): Divine Shield
+      [RES] rdy:Δ+Avatar,3:Divine Shield-Intimidating Shout,Die by the Sword,2:Dragon's Breath,2:Combustion  cd:Intimidating Shout(12s),Die by the Sword(28s),2:Dragon's Breath(28s),2:Combustion(20s)  enemy:Bestial Wrath/Beast Mastery Hunter(5s)  cc:1/Binding Shot-1s[stun]
+2:04  [STATE]   friends 1:100 2:97 3:100 / enemies 4:77 6:100 5:100
+2:05  [STATE]   friends 1:95 2:78 3:100 / enemies 4:81 6:100 5:100
+2:06  [STATE]   friends 1:96 2:90 3:100 / enemies 4:90 6:100 5:100
+2:07  [STATE]   friends 1:89 2:78 3:100 / enemies 4:99 6:100 5:100
+2:08  [STATE]   friends 1:70 2:64 3:100 / enemies 4:100 6:100 5:100
+2:08  [ENEMY CD]   4 (Marksmanship Hunter): Trueshot
+2:09  [STATE]   friends 1:67 2:52 3:100 / enemies 4:100 6:100 5:100
+2:10  [STATE]   friends 1:67 2:49 3:100 / enemies 4:93 6:100
+2:11  [STATE]   friends 1:67 2:42 3:100 / enemies 4:93 6:100 5:100
+2:12  [STATE]   friends 1:67 2:10 3:96 / enemies 4:95 6:100 5:100
+2:12  [OWNER CD]   Intimidating Shout → Avent-Neptulon-EU (95% HP)
+      [RES] rdy:Δ+Avatar-Intimidating Shout,2:Ice Block,2:Dragon's Breath,3:Divine Shield,3:Avenging Wrath,3:Blessing of Sacrifice  cd:Intimidating Shout(3s),2:Ice Block(168s),2:Dragon's Breath(19s),3:Divine Shield(291s),3:Avenging Wrath(48s),3:Blessing of Sacrifice(46s)  enemy:Trueshot/Marksmanship Hunter(3s),Bestial Wrath/Beast Mastery Hunter(14s)
+2:12  [CC CAST]   Intimidating Shout (by 1) → 4
+2:15  [STATE]   friends 1:64 2:34 3:86
+2:18  [STATE]   friends 1:27 2:42 3:84
+2:19  [OWNER CD]   Die by the Sword
+      [RES] rdy:Δ+Avatar-Die by the Sword,2:Ice Block,2:Dragon's Breath,3:Divine Shield,3:Blessing of Protection,3:Avenging Wrath,3:Blessing of Sacrifice  cd:Die by the Sword(12s),2:Ice Block(161s),2:Dragon's Breath(12s),3:Divine Shield(284s),3:Blessing of Protection(194s),3:Avenging Wrath(41s),3:Blessing of Sacrifice(39s)  enemy:Trueshot/Marksmanship Hunter(10s),Bestial Wrath/Beast Mastery Hunter(21s)
+2:21  [STATE]   friends 1:32 2:45 3:80
+2:21  [OFFENSIVE WINDOW]   2:21–2:44 | High | 0.60M on 2 (Fire Mage) | CDs: Explosive Shot + Bestial Wrath
+2:21  [ENEMY CD]   4 (Marksmanship Hunter): Explosive Shot
+2:24  [STATE]   friends 1:40 2:48 3:74
+2:24  [CC ON TEAM]   3 ← Intimidation (Avent-Neptulon-EU) | 3s | trinket: used
+2:25  [STATE]   friends 1:38 2:43 3:74 / enemies 4:100 6:100 5:98
+2:26  [STATE]   friends 1:38 2:44 3:74 / enemies 4:100 6:100 5:100
+2:27  [STATE]   friends 1:38 2:44 3:74 / enemies 4:99 6:100 5:100
+2:27  [BUFF FADED]   Die by the Sword
+2:27  [CC ON TEAM]   3 ← Freezing Trap (Thräd-Silvermoon-EU) | 1s | trinket: used
+2:28  [STATE]   friends 1:41 2:56 3:74 / enemies 4:99 6:100 5:100
+2:28  [TRINKET]   3 used PvP trinket
+2:29  [STATE]   friends 1:41 2:56 3:74 / enemies 4:83 6:100 5:100
+2:29  [ENEMY CD]   5 (Beast Mastery Hunter): Bestial Wrath
+2:29  [DMG SPIKE]   2 (Fire Mage): 0.60M in 10s
+2:30  [STATE]   friends 1:47 2:50 3:71 / enemies 4:84 6:100 5:100
+2:31  [STATE]   friends 1:57 2:52 3:71 / enemies 4:85 6:100 5:100
+2:31  [OWNER CD]   Avatar
+      [RES] rdy:Δ+2:Combustion-2:Ice Block,3:Divine Shield,3:Blessing of Protection,3:Avenging Wrath,3:Blessing of Sacrifice,3:Aura Mastery  cd:2:Ice Block(149s),3:Divine Shield(272s),3:Blessing of Protection(182s),3:Avenging Wrath(28s),3:Blessing of Sacrifice(26s),3:Aura Mastery(57s)  enemy:Trueshot/Marksmanship Hunter(23s),Explosive Shot/Marksmanship Hunter(10s),Bestial Wrath/Beast Mastery Hunter(2s)
+2:32  [STATE]   friends 1:59 2:23 3:69 / enemies 4:82 6:100 5:100
+2:32  [CC ON TEAM]   2 ← Leg Sweep (Tisza-ArgentDawn-EU) | 4s | trinket: ON CD (70s left)
+2:32  [CC ON TEAM]   3 ← Leg Sweep (Tisza-ArgentDawn-EU) | 2s | trinket: ON CD (87s left)
+2:32  [CC ON TEAM]   1 ← Leg Sweep (Tisza-ArgentDawn-EU) | 4s | trinket: ON CD (62s left)
+2:32  [CC ON TEAM]   3 ← Scorpid Venom (Thräd-Silvermoon-EU) | 3s | trinket: ON CD (86s left)
+2:33  [STATE]   friends 1:62 2:4 3:68 / enemies 4:79 6:100 5:100
+2:34  [STATE]   friends 1:64 2:28 3:68 / enemies 4:78 6:100 5:100
+2:35  [STATE]   friends 1:66 2:19 3:68 / enemies 4:76 6:100 5:100
+2:35  [TEAMMATE CD]   3 (Holy Paladin): Aura Mastery
+      [RES] rdy:Δ+2:Combustion-2:Ice Block,3:Divine Shield,3:Blessing of Protection,3:Avenging Wrath,3:Blessing of Sacrifice,3:Aura Mastery  cd:2:Ice Block(145s),3:Divine Shield(268s),3:Blessing of Protection(178s),3:Avenging Wrath(25s),3:Blessing of Sacrifice(23s),3:Aura Mastery(54s)  enemy:Trueshot/Marksmanship Hunter(26s),Explosive Shot/Marksmanship Hunter(14s),Bestial Wrath/Beast Mastery Hunter(5s)  cc:1/Leg Sweep-1s[stun],2/Leg Sweep-0s[stun],3/Scorpid Venom-1s
+2:35  [CC ON TEAM]   3 ← Spider Venom (Thräd-Silvermoon-EU) | 3s | trinket: ON CD (83s left)
+2:36  [STATE]   friends 1:74 2:14 3:68 / enemies 4:75 6:100 5:100
+2:37  [STATE]   friends 1:75 2:10 3:68 / enemies 4:74 6:100 5:100
+2:38  [STATE]   friends 1:73 2:7 3:68 / enemies 4:69 6:100 5:100
+2:39  [STATE]   friends 1:74 2:dead 3:68 / enemies 4:71 6:100 5:100
+2:39  [TEAMMATE CD]   2 (Fire Mage): Combustion
+      [RES] rdy:Δ+Intimidating Shout,Die by the Sword,2:Combustion,3:Hammer of Justice-3:Divine Shield  cd:3:Divine Shield(264s)  enemy:Explosive Shot/Marksmanship Hunter(18s),Bestial Wrath/Beast Mastery Hunter(9s)
+2:39  [DEATH]  2 (Fire Mage — friendly)
+               HP: 43% at T-15s → 59% at T-10s → 26% at T-5s → 12% at T-3s → dead
+               Top damage in final 10s: [pet] — Кровопролитие (109k), [pet] — Команда Взять! (96k), Avent-Neptulon-EU — Быстрая стрельба (94k)
+
+2:39  [MATCH END]   damp: 50%
+  friends 1:73% 2:dead(2:39) 3:68% / enemies 4:72% 6:100% 5:100%

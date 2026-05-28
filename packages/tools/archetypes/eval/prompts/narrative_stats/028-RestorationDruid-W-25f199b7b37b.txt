@@ -1,0 +1,279 @@
+[ARCHETYPE: Restoration Druid — cc_heavy_swap]
+Matches lasted only 130 seconds with 11.82 CC events per minute, the highest CC density across all clusters, and a setup style dominated by cc_then_burst at 51%. Tunnel score of 0.522 and balanced offensive participation at 51% indicate a swap-oriented offensive pattern rather than sustained single-target pressure. DR chain rate was low at 0.08 and 45% of cooldowns were never used, consistent with fast-paced matches that ended before later-game resources were needed.
+
+Key behavioral patterns observed in this match type:
+CD timing: 52% Optimal / 11% Early / 10% Late / 5% Reactive
+CD never used: 45%
+CD response latency: 6958ms median
+Outgoing CC per match: 6.0 mean
+Healing gap rate during burst: 2%
+Offensive participation: 51%
+Missed cleanse rate: 17%
+
+ARENA MATCH — ANALYSIS REQUEST
+
+MATCH FACTS
+  Spec: Restoration Druid (Healer) | Bracket: 3v3 | Result: Win | Duration: 1:45
+  My team: Retribution Paladin, Arms Warrior, Restoration Druid
+  Enemy team: Shadow Priest, Arms Warrior, Restoration Shaman
+  Damage units: M = 1,000,000  |  k = 1,000  (e.g. "0.84M" = 840,000 dmg)
+
+PURGE RESPONSIBILITY
+  Log owner (Restoration Druid): CANNOT offensive purge
+  Team purgers: none
+
+DAMPENING (3v3): started at 10%, ended at 10% at match end
+
+PLAYER LOADOUT (major CDs ≥30s available this match)
+  1: Yoruichiuwu-Tichondrius-US (Restoration Druid — log owner):
+    Stampeding Roar [120s], Incapacitating Roar [30s], Frenzied Regeneration [36s], Tranquility [180s], Incarnation: Tree of Life [180s], Ironbark [90s]
+  2: Tandue-Tichondrius-US (Retribution Paladin):
+    Lay on Hands [600s], Hammer of Justice [45s], Blessing of Protection [300s], Blessing of Spellwarding [300s], Avenging Wrath [120s]
+  3: Swishin-BurningLegion-US (Arms Warrior):
+    Avatar [90s, 2 Charges], Intimidating Shout [90s], Die by the Sword [120s], Bladestorm (Arms) [90s]
+  4: Verbane-Frostmourne-US (Shadow Priest — enemy):
+    Power Infusion [120s]
+  5: Mòrg-Tichondrius-US (Arms Warrior — enemy):
+    Avatar [90s]
+  6: Weekend-SilverHand-US (Restoration Shaman — enemy):
+    none tracked
+
+MATCH TIMELINE
+
+0:03  [STATE]   friends 1:100 2:100 3:100
+0:03  [OWNER CAST]   774 → 3
+0:04  [OWNER CAST]   774 → 2
+0:05  [OWNER CAST]   774 → self
+0:06  [STATE]   friends 1:100 2:100 3:100
+0:06  [OWNER CAST]   Prowl
+0:06  [OWNER CD]   Dash
+      [RES] rdy:Δ+2:Hammer of Justice,3:Avatar  cd:—
+0:08  [CC ON TEAM]   3 ← Storm Bolt (Mòrg-Tichondrius-US) | 3s
+0:09  [STATE]   friends 1:100 2:96 3:99 / enemies 4:96 5:97 6:100
+0:09  [ENEMY BUFF]   5: Power Infusion (purgeable)
+0:09  [ENEMY CD]   4 (Shadow Priest): Power Infusion
+0:09  [ENEMY BUFF]   4: Power Infusion (purgeable)
+0:09  [MISSED CLEANSE]   Vampiric Touch on 2 | 61s | 57k taken during | dispel: Magic
+0:09  [MISSED CLEANSE]   Shadow Word: Madness on 2 | 6s | 55k taken during | dispel: Magic
+0:10  [STATE]   friends 1:100 2:96 3:98 / enemies 4:96 5:98 6:100
+0:11  [STATE]   friends 1:100 2:92 3:91 / enemies 4:100 5:97 6:100
+0:12  [STATE]   friends 1:100 2:91 3:90 / enemies 4:96 5:94 6:100
+0:12  [OWNER CAST]   49376 → 6
+0:12  [TEAMMATE CD]   3 (Arms Warrior): Avatar
+      [RES] rdy:Δ+Incarnation: Tree of Life,Ironbark,2:Hammer of Justice,3:Avatar,3:Intimidating Shout,3:Die by the Sword  cd:—  enemy:Power Infusion/Shadow Priest(3s)
+0:12  [OWNER CAST]   1822 → 6
+0:13  [STATE]   friends 1:100 2:90 3:89 / enemies 4:93 5:91 6:100
+0:13  [CC ON TEAM]   2 ← Intimidating Shout (Mòrg-Tichondrius-US) | 1s
+0:13  [CC ON TEAM]   3 ← Intimidating Shout (Mòrg-Tichondrius-US) | 1s
+0:14  [STATE]   friends 1:100 2:87 3:89 / enemies 4:91 5:90 6:100
+0:14  [CC ON TEAM]   1 ← Silence (Verbane-Frostmourne-US) | 4s
+0:15  [STATE]   friends 1:100 2:94 3:87 / enemies 4:79 5:83 6:99
+0:15  [CC ON TEAM]   2 ← Champion's Spear (Mòrg-Tichondrius-US) | 6s
+0:15  [CC ON TEAM]   3 ← Champion's Spear (Mòrg-Tichondrius-US) | 6s
+0:16  [STATE]   friends 1:100 2:90 3:85 / enemies 4:61 5:81 6:98
+0:16  [CC ON TEAM]   2 ← Shockwave (Mòrg-Tichondrius-US) | 2s
+0:17  [STATE]   friends 1:100 2:88 3:85 / enemies 4:46 5:78 6:100
+0:18  [STATE]   friends 1:100 2:86 3:82 / enemies 4:45 5:82 6:100
+0:18  [OWNER CD]   Nature's Swiftness
+      [RES] rdy:Δ-3:Avatar  cd:3:Avatar(84s)  enemy:Power Infusion/Shadow Priest(9s)  cc:2/Champion's Spear-2s,3/Champion's Spear-2s
+0:19  [STATE]   friends 1:100 2:83 3:80 / enemies 4:45 5:87 6:96
+0:19  [TEAMMATE CD]   2 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ+Incarnation: Tree of Life,Ironbark,3:Intimidating Shout,3:Die by the Sword  cd:—  enemy:Power Infusion/Shadow Priest(10s)  cc:2/Champion's Spear-2s,3/Champion's Spear-2s
+0:20  [STATE]   friends 1:99 2:81 3:77 / enemies 4:48 5:93 6:100
+0:20  [ENEMY CD]   5 (Arms Warrior): Avatar
+0:20  [MISSED CLEANSE]   Vampiric Touch on 1 | 37s | 28k taken during | dispel: Magic
+0:20  [DMG SPIKE]   3 (Arms Warrior): 0.53M in 10s
+0:21  [STATE]   friends 1:99 2:71 3:68 / enemies 4:27 5:73 6:99
+0:21  [CC ON TEAM]   1 ← Psychic Scream (Verbane-Frostmourne-US) | 2s | trinket: used
+0:21  [CC ON TEAM]   3 ← Psychic Scream (Verbane-Frostmourne-US) | 1s
+0:22  [STATE]   friends 1:98 2:55 3:58 / enemies 4:37 5:80 6:97
+0:22  [TRINKET]   1 used PvP trinket
+0:22  [OWNER CD]   Ironbark → 2 (41% HP)
+      [RES] rdy:Δ+Ironbark,3:Die by the Sword  cd:—  enemy:Power Infusion/Shadow Priest(14s),Avatar/Arms Warrior(3s)
+0:22  [OWNER CAST]   33763 → 2
+0:23  [STATE]   friends 1:98 2:41 3:49 / enemies 4:43 5:72 6:100
+0:23  [MISSED CLEANSE]   Vampiric Touch on 3 | 5s | 275k taken during | dispel: Magic
+0:24  [STATE]   friends 1:98 2:52 3:37 / enemies 4:46 5:73 6:99
+0:24  [OWNER CAST]   48438
+0:24  [TEAMMATE CD]   3 (Arms Warrior): Die by the Sword
+      [RES] rdy:Δ+Incarnation: Tree of Life,3:Die by the Sword  cd:—  enemy:Power Infusion/Shadow Priest(15s),Avatar/Arms Warrior(4s)
+0:24  [ENEMY BUFF END]   5: Power Infusion
+0:24  [ENEMY BUFF END]   4: Power Infusion
+0:25  [STATE]   friends 1:99 2:68 3:30 / enemies 4:35 5:76 6:100
+0:25  [MISSED CLEANSE]   Shadow Word: Madness on 3 | 6s | 197k taken during | dispel: Magic
+0:25  [OWNER CAST]   18562 → 3
+0:26  [STATE]   friends 1:99 2:94 3:58 / enemies 4:43 5:92 6:100
+0:26  [OWNER CD]   Innervate → self
+      [RES] rdy:Δ-Ironbark,2:Hammer of Justice,3:Die by the Sword  cd:Ironbark(86s),2:Hammer of Justice(38s),3:Die by the Sword(118s)  enemy:Power Infusion/Shadow Priest(17s),Avatar/Arms Warrior(6s)
+0:26  [OWNER CAST]   774 → 3
+0:27  [STATE]   friends 1:99 2:100 3:67 / enemies 4:41 5:92 6:100
+0:27  [CC ON TEAM]   2 ← Cascading Horrors (Verbane-Frostmourne-US) | 2s
+0:28  [STATE]   friends 1:98 2:100 3:66 / enemies 4:50 5:85 6:100
+0:28  [OWNER CD]   Incarnation: Tree of Life
+      [RES] rdy:Stampeding Roar,Incapacitating Roar,Frenzied Regeneration,Tranquility,Incarnation: Tree of Life,2:Lay on Hands,2:Blessing of Protection,2:Blessing of Spellwarding,2:Avenging Wrath,3:Intimidating Shout,3:Bladestorm (Arms)  cd:Ironbark(85s),2:Hammer of Justice(36s),3:Avatar(74s),3:Die by the Sword(116s)  enemy:Power Infusion/Shadow Priest(19s),Avatar/Arms Warrior(8s)  cc:2/Cascading Horrors-2s
+0:28  [CC ON TEAM]   1 ← Cascading Horrors (Verbane-Frostmourne-US) | 2s | trinket: ON CD (85s left)
+0:29  [STATE]   friends 1:92 2:100 3:68 / enemies 4:71 5:86 6:100
+0:29  [MISSED CLEANSE]   Shadow Word: Madness on 1 | 9s | 183k taken during | dispel: Magic
+0:29  [TEAMMATE CD]   3 (Arms Warrior): Intimidating Shout
+      [RES] rdy:Δ+3:Intimidating Shout-2:Hammer of Justice  cd:2:Hammer of Justice(35s)  enemy:Power Infusion/Shadow Priest(20s),Avatar/Arms Warrior(9s)  cc:1/Cascading Horrors-1s,2/Cascading Horrors-0s
+0:29  [CC CAST]   Intimidating Shout (by 3) → 6
+0:29  [DMG SPIKE]   2 (Retribution Paladin): 0.54M in 10s
+0:30  [STATE]   friends 1:93 2:94 3:65 / enemies 4:69 5:79 6:100
+0:30  [OWNER CAST]   155777 → 3
+0:30  [OWNER CAST]   774 → 3
+0:31  [STATE]   friends 1:86 2:85 3:67 / enemies 4:72 5:86 6:98
+0:31  [OWNER CAST]   8936 → 3
+0:31  [DMG SPIKE]   3 (Arms Warrior): 0.58M in 10s
+0:32  [STATE]   friends 1:76 2:79 3:70 / enemies 4:77 5:90 6:99
+0:32  [OWNER CAST]   8936 → self
+0:33  [STATE]   friends 1:84 2:76 3:79 / enemies 4:74 5:93 6:100
+0:34  [STATE]   friends 1:78 2:70 3:70 / enemies 4:58 5:95 6:100
+0:34  [MISSED CLEANSE]   Shadow Word: Madness on 2 | 6s | 235k taken during | dispel: Magic
+0:34  [OWNER CAST]   8936 → 2
+0:34  [BUFF FADED]   Ironbark
+0:35  [STATE]   friends 1:69 2:73 3:57 / enemies 4:60 5:97 6:100
+0:35  [OWNER CAST]   48438
+0:36  [STATE]   friends 1:66 2:72 3:63 / enemies 4:62 5:93 6:94
+0:36  [CC ON TEAM]   3 ← Storm Bolt (Mòrg-Tichondrius-US) | 1s
+0:36  [OWNER CAST]   18562 → 2
+0:37  [STATE]   friends 1:75 2:99 3:81 / enemies 4:75 5:93 6:93
+0:38  [STATE]   friends 1:70 2:94 3:78 / enemies 4:82 5:89 6:96
+0:38  [OWNER CAST]   155777 → self
+0:38  [OWNER CAST]   774 → self
+0:38  [MISSED CLEANSE]   Shadow Word: Madness on 1 | 6s | 165k taken during | dispel: Magic
+0:39  [STATE]   friends 1:94 2:100 3:99 / enemies 4:85 5:84 6:100
+0:39  [OWNER CAST]   8936 → 3
+0:40  [STATE]   friends 1:95 2:92 3:99 / enemies 4:94 5:88 6:98
+0:41  [STATE]   friends 1:100 2:92 3:100 / enemies 4:88 5:87 6:100
+0:42  [STATE]   friends 1:100 2:100 3:96 / enemies 4:88 5:87 6:100
+0:42  [OWNER CAST]   Cyclone → Grounding Totem [absorbed: Grounding Totem]
+0:42  [CC CAST]   Cyclone (by 1) → Grounding Totem [non-player target]
+0:43  [STATE]   friends 1:98 2:100 3:98 / enemies 4:95 5:90 6:100
+0:44  [STATE]   friends 1:98 2:99 3:99 / enemies 4:89 5:95 6:100
+0:45  [STATE]   friends 1:98 2:90 3:94 / enemies 4:97 5:97 6:100
+0:45  [OWNER CAST]   774 → self
+0:46  [STATE]   friends 1:100 2:89 3:79 / enemies 4:95 5:98 6:100
+0:46  [OWNER CAST]   33763 → 2
+0:47  [STATE]   friends 1:99 2:90 3:75 / enemies 4:80 5:100 6:100
+0:47  [OWNER CAST]   33763 → 2
+0:48  [STATE]   friends 1:99 2:90 3:68 / enemies 4:72 5:92 6:100
+0:49  [OWNER CAST]   48438
+0:49  [STATE]   friends 1:100 2:79 3:63 / enemies 4:63 5:88 6:100
+0:49  [DMG SPIKE]   2 (Retribution Paladin): 0.80M in 10s
+0:49  [MISSED CLEANSE]   Shadow Word: Madness on 2 | 6s | 492k taken during | dispel: Magic
+0:50  [STATE]   friends 1:100 2:78 3:65 / enemies 4:65 5:99 6:100
+0:50  [OWNER CAST]   18562 → 3
+0:51  [STATE]   friends 1:99 2:81 3:93 / enemies 4:dead 5:96 6:100
+0:51  [DMG SPIKE]   3 (Arms Warrior): 0.60M in 10s
+0:51  [OWNER CAST]   774 → 2
+0:51  [DEATH]  4 (Shadow Priest — enemy)
+0:51  [ROSTER]  enemy 4 removed (dead)
+0:52  [STATE]   friends 1:100 2:100 3:100 / enemies 4:dead 5:83 6:95
+0:52  [OWNER CAST]   768
+0:52  [CLEANSE]   1 dispelled Earthgrab off 1
+0:53  [STATE]   friends 1:100 2:81 3:86 / enemies 4:dead 5:70 6:100
+0:54  [STATE]   friends 1:100 2:67 3:90 / enemies 4:dead 5:60 6:96
+0:54  [OWNER CAST]   49376 → 6
+0:54  [OWNER CAST]   22570 → 6
+0:55  [STATE]   friends 1:98 2:53 3:76 / enemies 4:dead 5:54 6:97
+0:56  [STATE]   friends 1:100 2:49 3:70 / enemies 4:dead 5:42 6:94
+0:56  [OWNER CAST]   155777 → 2
+0:56  [OWNER CAST]   774 → 2
+0:57  [STATE]   friends 1:100 2:49 3:69
+0:57  [OWNER CAST]   197626 → 6
+0:59  [OWNER CAST]   48438
+1:00  [STATE]   friends 1:100 2:48 3:51
+1:01  [OWNER CAST]   8936 → 2
+1:02  [OWNER CAST]   18562 → 3
+1:03  [STATE]   friends 1:100 2:81 3:69
+1:03  [OWNER CAST]   155777 → 3
+1:03  [OWNER CAST]   774 → 3
+1:04  [CC ON TEAM]   1 ← Lightning Lasso (Weekend-SilverHand-US) | 1s | trinket: ON CD (48s left)
+1:05  [STATE]   friends 1:100 2:100 3:89 / enemies 4:dead 5:79 6:39
+1:06  [STATE]   friends 1:97 2:95 3:92 / enemies 4:dead 5:81 6:51
+1:06  [OWNER CAST]   197626 → 6
+1:07  [STATE]   friends 1:97 2:96 3:96 / enemies 4:dead 5:82 6:40
+1:08  [STATE]   friends 1:100 2:95 3:98 / enemies 4:dead 5:83 6:26
+1:08  [OWNER CAST]   5176 → 6
+1:08  [CC ON TEAM]   2 ← Storm Bolt (Mòrg-Tichondrius-US) | 1s | trinket: used
+1:09  [STATE]   friends 1:99 2:94 3:100 / enemies 4:dead 5:85 6:22
+1:09  [TRINKET]   2 used PvP trinket
+1:09  [OWNER CAST]   5176 → 6
+1:10  [STATE]   friends 1:100 2:95 3:100 / enemies 4:dead 5:100 6:31
+1:11  [STATE]   friends 1:100 2:94 3:100 / enemies 4:dead 5:100 6:31
+1:11  [OWNER CAST]   774 → 2
+1:12  [STATE]   friends 1:99 2:98 3:100 / enemies 4:dead 5:100 6:46
+1:12  [OWNER CAST]   48438
+1:13  [STATE]   friends 1:100 2:99 3:100 / enemies 4:dead 5:93 6:40
+1:13  [CC ON TEAM]   2 ← Shockwave (Mòrg-Tichondrius-US) | 2s | trinket: ON CD (117s left)
+1:13  [CC ON TEAM]   3 ← Shockwave (Mòrg-Tichondrius-US) | 3s
+1:13  [OWNER CAST]   33763 → 2
+1:14  [STATE]   friends 1:100 2:99 3:100 / enemies 4:dead 5:95 6:46
+1:15  [STATE]   friends 1:100 2:92 3:99 / enemies 4:dead 5:98 6:54
+1:16  [STATE]   friends 1:100 2:100 3:100 / enemies 4:dead 5:100 6:58
+1:16  [OWNER CAST]   197626 → 6
+1:17  [STATE]   friends 1:100 2:95 3:100 / enemies 4:dead 5:100 6:61
+1:17  [OWNER CAST]   768
+1:18  [STATE]   friends 1:100 2:96 3:100 / enemies 4:dead 5:100 6:53
+1:18  [OWNER CAST]   106785
+1:19  [STATE]   friends 1:100 2:100 3:100 / enemies 4:dead 5:97 6:34
+1:20  [STATE]   friends 1:100 2:100 3:100 / enemies 4:dead 5:100 6:52
+1:20  [OWNER CD]   Shadowmeld
+      [RES] rdy:Δ+2:Hammer of Justice-Incarnation: Tree of Life,3:Intimidating Shout  cd:Incarnation: Tree of Life(128s),3:Intimidating Shout(39s)  cc:2/Disarm-5s[disarm]
+1:20  [OWNER CAST]   1822 → 5
+1:21  [STATE]   friends 1:100 2:100 3:100 / enemies 4:dead 5:100 6:58
+1:21  [OWNER CAST]   106785
+1:22  [STATE]   friends 1:100 2:100 3:100 / enemies 4:dead 5:92 6:61
+1:22  [OWNER CAST]   106785
+1:23  [STATE]   friends 1:100 2:100 3:100 / enemies 4:dead 5:90 6:65
+1:24  [STATE]   friends 1:100 2:100 3:100
+1:24  [TEAMMATE CD]   3 (Arms Warrior): Avatar
+      [RES] rdy:Δ-Incarnation: Tree of Life,Ironbark,3:Avatar,3:Intimidating Shout,3:Die by the Sword  cd:Incarnation: Tree of Life(124s),Ironbark(29s),3:Avatar(18s),3:Intimidating Shout(35s),3:Die by the Sword(60s)  cc:2/Disarm-1s[disarm]
+1:24  [OWNER CAST]   774 → 3
+1:24  [CLEANSE]   1 dispelled 2 effects: Earthgrab off 1, Earthbind off 1
+1:25  [OWNER CAST]   33763 → self
+1:26  [STATE]   friends 1:100 2:93 3:96 / enemies 4:dead 5:79 6:100
+1:26  [TEAMMATE CD]   2 (Retribution Paladin): Hammer of Justice
+      [RES] rdy:Δ-Incarnation: Tree of Life,Ironbark,3:Intimidating Shout,3:Die by the Sword  cd:Incarnation: Tree of Life(122s),Ironbark(26s),3:Intimidating Shout(33s),3:Die by the Sword(58s)
+1:27  [STATE]   friends 1:100 2:86 3:97 / enemies 4:dead 5:76 6:100
+1:27  [OWNER CAST]   768
+1:28  [STATE]   friends 1:100 2:76 3:98 / enemies 4:dead 5:76 6:96
+1:28  [OWNER CAST]   1079 → 6
+1:29  [STATE]   friends 1:100 2:71 3:93 / enemies 4:dead 5:78 6:97
+1:29  [OWNER CAST]   1822 → 6
+1:30  [STATE]   friends 1:90 2:62 3:95 / enemies 4:dead 5:70 6:96
+1:31  [STATE]   friends 1:91 2:62 3:96 / enemies 4:dead 5:69 6:96
+1:32  [STATE]   friends 1:92 2:64 3:90 / enemies 4:dead 5:63 6:85
+1:32  [OWNER CAST]   22568 → 6
+1:32  [ENEMY CD]   5 (Arms Warrior): Avatar
+1:33  [STATE]   friends 1:88 2:66 3:89 / enemies 4:dead 5:53 6:54
+1:33  [OWNER CAST]   197626 → 6
+1:34  [STATE]   friends 1:89 2:66 3:80 / enemies 4:dead 5:57 6:23
+1:35  [STATE]   friends 1:91 2:62 3:49 / enemies 4:dead 5:65 6:dead
+1:35  [DEATH]  6 (Restoration Shaman — enemy)
+1:35  [ROSTER]  enemy 6 removed (dead)
+1:35  [OWNER CAST]   774 → 2
+1:35  [CC ON TEAM]   2 ← Intimidating Shout (Mòrg-Tichondrius-US) | 2s | trinket: ON CD (94s left)
+1:36  [STATE]   friends 1:92 2:60 3:49 / enemies 4:dead 5:63 6:dead
+1:36  [OWNER CAST]   48438
+1:37  [STATE]   friends 1:98 2:60 3:49 / enemies 4:dead 5:57 6:dead
+1:38  [STATE]   friends 1:100 2:59 3:48 / enemies 4:dead 5:47 6:dead
+1:38  [OWNER CAST]   18562 → 3
+1:38  [TEAMMATE CD]   2 (Retribution Paladin): Blessing of Protection
+      [RES] rdy:Δ-2:Hammer of Justice  cd:2:Hammer of Justice(33s)  enemy:Avatar/Arms Warrior(6s)
+1:39  [STATE]   friends 1:100 2:71 3:83 / enemies 4:dead 5:34 6:dead
+1:39  [OWNER CAST]   155777 → 2
+1:39  [OWNER CAST]   774 → 2
+1:40  [STATE]   friends 1:100 2:84 3:91 / enemies 4:dead 5:30 6:dead
+1:41  [STATE]   friends 1:100 2:89 3:96 / enemies 4:dead 5:35 6:dead
+1:42  [STATE]   friends 1:100 2:96 3:100 / enemies 4:dead 5:23 6:dead
+1:42  [OWNER CAST]   5176 → 5
+1:42  [OWNER CAST]   197626 → 5
+1:43  [STATE]   friends 1:100 2:100 3:81 / enemies 4:dead 5:12 6:dead
+1:44  [STATE]   friends 1:100 2:100 3:74 / enemies 4:dead 5:dead 6:dead
+1:44  [DEATH]  5 (Arms Warrior — enemy)
+1:44  [ROSTER]  enemy 5 removed (dead)
+1:45  [STATE]   friends 1:100 2:100 3:76 / enemies 4:dead 5:dead 6:dead
+
+1:45  [MATCH END]   damp: 10%
+  friends 1:100% 2:100% 3:76% / enemies 4:dead(0:51) 5:dead(1:44) 6:dead(1:35)

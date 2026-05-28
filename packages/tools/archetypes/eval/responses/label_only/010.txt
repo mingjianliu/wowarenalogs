@@ -1,0 +1,13 @@
+Archetype: Mistweaver Monk — heavy_burst_tunnel. Loss.
+
+The enemy ran the exact same setup every burst window: Freezing Trap on the Mistweaver, Hammer of Justice on the Shaman, then full damage CDs. It worked five times without your team adjusting. That's the match in a single sentence.
+
+Your Mistweaver's individual decisions were largely correct. Life Cocoon at 1:05 with the Shaman at 69% under Bestial Wrath was right. Leg Sweep at 0:43 hitting both the Paladin and Hunter was right. Paralysis cycling on the Disc Priest was right. Cleanses were thorough and timely, including the four-effect clear on the Shaman at 1:43 during a live burst window.
+
+The problem is structural: Freezing Trap on the Mistweaver was the setup for every kill attempt, and your team had no trap-interrupt coverage. The Warrior needed to be positioned to stop Freezing Trap casts, or the Mistweaver needed to break traps faster through Leg Sweep. After the Mistweaver's trinket was burned at 1:30, any subsequent trap effectively removed your healer for 3–6 seconds with no escape. The final death sequence at 2:03–2:09 is the consequence: Power Infusion plus Bestial Wrath pushing the Shaman from 93% to dead in 15 seconds while the Mistweaver was dealing with the aftermath of the previous trap.
+
+The Hex at 0:21 on the full-HP Disc Priest while the Shaman was at 40% HP and still under incoming damage is a timing concern. Hex when you're low and fighting to survive is a correct instinct, but 0:21 is very early in the match and the Paladin's Execution Sentence was still active with 9 seconds remaining. Hex priority at this point should consider whether the Paladin or Disc Priest represents the higher threat to survival in the next 5 seconds.
+
+Ascendance at 0:24 was offensive, which is fine for the short-term fight on the Paladin (who dropped to 57% quickly), but Ascendance in a match where you're being tunneled needs to accomplish something offensive before the enemy refocuses on you. Here it bought the Paladin being pressured but didn't create a kill condition before the enemy healer was back up.
+
+For this matchup: position the Warrior to interrupt Freezing Trap casts, or have a plan for Leg Sweep the moment a trap lands on the Mistweaver to generate breathing room. Without solving the trap problem, the match structure will repeat and eventually the healer won't be able to recover.

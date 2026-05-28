@@ -1,0 +1,11 @@
+Win against a heavy_burst_tunnel comp that opened with Bloodlust + Ascendance + Avatar simultaneously. You survived the opener and won through consistent Mage burst. Here's what to clean up.
+
+Your Mortal Coil at 0:21 targeted the Arms Warrior at 58% HP while Avatar was still active. The Warrior's damage was going to fall off naturally when Avatar expired — you wanted that CC on the Shaman or Evoker to reduce the sustained incoming pressure on your Mage, who was at 62–73% and falling through the window. Burning your only horror on a damage cooldown that's about to expire is low value.
+
+Dark Pact at 0:49 while your Mage was dropping from 54% downward was a self-oriented heal in a moment where your damage dealer needed CC assistance. The Monk correctly identified this and used Life Cocoon at 0:53. You should have used Shadowfury or banked Mortal Coil for that window to disrupt the Arms Warrior, who was doing the most work in that sequence.
+
+The Shadowfury + Leg Sweep double CC at 1:22–1:24 catching Warrior and Shaman simultaneously was excellent setup. The Mage's 0.74M spike window immediately after confirms the damage was there. The Evoker survived that window because of healing, not because your pressure was wrong — one more CC chain would have closed it. That's a communication/coordination issue, not an execution error.
+
+Mortal Coil at 2:12 into the Evoker at 14% to delay healing while the Mage finished the kill was textbook. Leg Sweep at 2:20 to lock down the two remaining enemies and secure the mop-up was clean. The finish was well coordinated.
+
+Focus going forward: in burst windows against multi-CD comps, CC the active damage dealer (not the one winding down), and treat Dark Pact as a last resort rather than a proactive cast when your teammates need disruption more than you need health.
