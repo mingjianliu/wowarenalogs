@@ -43,7 +43,6 @@ Active work items. Completed/N/A items archived in `TRACKER_ARCHIVE.md`.
 | F125    | Backlog | Re-integrate Healer Exposure during Burst — bring back the structured `HEALER EXPOSURE DURING ENEMY BURST WINDOWS` block in the timeline prompt (`buildMatchPromptNew`) | `printMatchPrompts.ts`, `healerExposureAnalysis.ts` |
 | F126    | Backlog | Track Pre-emptive CC Avoidance — correlate Fade/Grounding/Spellwarding/Pre-Dome events with incoming enemy CC in logs to print a special `[CC AVOIDED]` annotation in the timeline | `ccTrinketAnalysis.ts`, `printMatchPrompts.ts` |
 | F127    | Backlog | Late/Failed CD Trade Flag — calculate timestamp delta between defensive CD usage and friendly deaths to annotate `[FAILED CD TRADE]` (or `[LATE CD TRADE]`) in the timeline | `cooldowns.ts`, `printMatchPrompts.ts` |
-| F128    | Backlog | Shaman Totem Death Tracking — trace unit death events matching the Shaman's active totems and print `[TOTEM DESTROYED]` in the timeline | `printMatchPrompts.ts`, `cooldowns.ts` |
 | F129    | Backlog | Identify Healer Playstyle Archetypes — detect and label Fistweaving vs. Caster Monk sub-specs (e.g. Tiger Palm/Blackout Kick counts > 5/m) | `printMatchPrompts.ts`, `cooldowns.ts` |
 | F130    | Backlog | Spirit of Redemption State — explicitly flag Priest ghost form state to prevent AI hallucinations during this phase | `printMatchPrompts.ts`, `cooldowns.ts` |
 | F131    | Backlog | Cleanse Cooldown Tracking — track healer Cleanse cooldown state and flag wasteful slow dispels | `dispelAnalysis.ts`, `printMatchPrompts.ts` |
