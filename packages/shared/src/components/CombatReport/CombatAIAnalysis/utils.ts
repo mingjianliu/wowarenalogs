@@ -13,8 +13,6 @@ export {
   HEALING_WINDOW_EARLY_CD_SECONDS,
   HEALING_WINDOW_MIN_HPS,
   lastCastBefore,
-  MAJOR_ENEMY_BUFF_IDS,
-  getActiveEnemyBuffsAtMs,
   PASSIVE_SPELL_BLOCKLIST,
   type ICDExpiryEvent,
   type IEnemyBuffInterval,

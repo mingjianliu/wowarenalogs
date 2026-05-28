@@ -1,4 +1,4 @@
-import { CombatExtraSpellAction, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
+import { CombatExtraSpellAction, CombatUnitClass, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
 import { getEnglishSpellName } from '../data/spellEffectData';
 import { ccSpellIds, disarmSpellIds, rootSpellIds, spells } from '../data/spellTags';
@@ -87,6 +87,16 @@ export interface IInterruptInstance {
   sourceSpec: string;
 }
 
+export interface ICCAvoidedInstance {
+  atSeconds: number;
+  spellId: string;
+  spellName: string;
+  avoidanceSpellName: string;
+  avoidanceSpellId: string;
+  sourceName: string;
+  sourceSpec: string;
+}
+
 export interface IPlayerCCTrinketSummary {
   playerName: string;
   playerSpec: string;
@@ -102,6 +112,8 @@ export interface IPlayerCCTrinketSummary {
   disarmInstances: IRootInstance[];
   /** Kicks (interrupts) landed by enemies. */
   interruptInstances: IInterruptInstance[];
+  /** CC avoidance/mitigation/breaks */
+  ccAvoidedInstances: ICCAvoidedInstance[];
 }
 
 // ---------------------------------------------------------------------------
@@ -418,6 +430,140 @@ export function analyzePlayerCCAndTrinket(
   }
   interruptInstances.sort((a, b) => a.atSeconds - b.atSeconds);
 
+  // ─── CC Avoidance Correlation Logic ───────────────────────────────────────
+  const ccAvoidedInstances: ICCAvoidedInstance[] = [];
+
+  // Track active buff intervals on the player
+  const buffSpecs = new Map<string, string>([
+    ['586', 'Fade'],
+    ['1246965', 'Psychic Shroud'],
+    ['377362', 'Precognition'],
+    ['378464', 'Nullifying Shroud'],
+    ['23920', 'Spell Reflection'],
+    ['354610', 'Glimpse'],
+    ['227847', 'Bladestorm'],
+    ['389774', 'Bladestorm'],
+  ]);
+
+  const activeBuffs: Array<{ spellId: string; name: string; applyMs: number; removeMs: number }> = [];
+  const pendingBuffs = new Map<string, { applyMs: number; name: string }>();
+
+  for (const aura of player.auraEvents) {
+    const spellId = aura.spellId;
+    if (!spellId || !buffSpecs.has(spellId)) continue;
+
+    const event = aura.logLine.event;
+    if (event === LogEvent.SPELL_AURA_APPLIED) {
+      pendingBuffs.set(spellId, {
+        applyMs: aura.timestamp,
+        name: buffSpecs.get(spellId) ?? '',
+      });
+    } else if (event === LogEvent.SPELL_AURA_REMOVED) {
+      const pending = pendingBuffs.get(spellId);
+      if (pending) {
+        activeBuffs.push({
+          spellId,
+          name: pending.name,
+          applyMs: pending.applyMs,
+          removeMs: aura.timestamp,
+        });
+        pendingBuffs.delete(spellId);
+      }
+    }
+  }
+
+  for (const [spellId, pending] of pendingBuffs.entries()) {
+    activeBuffs.push({
+      spellId,
+      name: pending.name,
+      applyMs: pending.applyMs,
+      removeMs: combat.endTime,
+    });
+  }
+
+  // 1. Buff-Based Avoidance (dodging/reflecting/immunizing targeted casts)
+  for (const enemy of enemies) {
+    for (const cast of enemy.spellCastEvents) {
+      if (cast.logLine.event !== LogEvent.SPELL_CAST_SUCCESS) continue;
+      if (!cast.spellId || !ccSpellIds.has(cast.spellId)) continue;
+
+      if (cast.destUnitId === player.id || cast.destUnitName === player.name) {
+        const castTimeMs = cast.logLine.timestamp;
+        const gotCCd = ccInstances.some(
+          (cc) => Math.abs(cc.atSeconds * 1000 - (castTimeMs - matchStartMs)) <= 1500 && cc.spellId === cast.spellId,
+        );
+
+        if (!gotCCd) {
+          const activeBuff = activeBuffs.find((b) => castTimeMs >= b.applyMs && castTimeMs <= b.removeMs);
+          if (activeBuff) {
+            ccAvoidedInstances.push({
+              atSeconds: (castTimeMs - matchStartMs) / 1000,
+              spellId: cast.spellId,
+              spellName: getEnglishSpellName(cast.spellId, cast.spellName),
+              avoidanceSpellName: activeBuff.name,
+              avoidanceSpellId: activeBuff.spellId,
+              sourceName: enemy.name,
+              sourceSpec: enemySpecMap.get(enemy.id) ?? 'Unknown',
+            });
+          }
+        }
+      }
+    }
+  }
+
+  // 2. Grounding Totem Redirects (only tracked on Shaman players to avoid multi-teammate duplication)
+  if (player.class === CombatUnitClass.Shaman) {
+    for (const enemy of enemies) {
+      for (const cast of enemy.spellCastEvents) {
+        if (cast.logLine.event !== LogEvent.SPELL_CAST_SUCCESS) continue;
+        if (!cast.spellId || !ccSpellIds.has(cast.spellId)) continue;
+
+        if (cast.destUnitName?.toLowerCase().includes('grounding totem')) {
+          const castTimeMs = cast.logLine.timestamp;
+          ccAvoidedInstances.push({
+            atSeconds: (castTimeMs - matchStartMs) / 1000,
+            spellId: cast.spellId,
+            spellName: getEnglishSpellName(cast.spellId, cast.spellName),
+            avoidanceSpellName: 'Grounding Totem',
+            avoidanceSpellId: '8177',
+            sourceName: enemy.name,
+            sourceSpec: enemySpecMap.get(enemy.id) ?? 'Unknown',
+          });
+        }
+      }
+    }
+  }
+
+  // 3. Shadow Word: Death Breaks (only Priest players)
+  if (player.class === CombatUnitClass.Priest) {
+    const breakableCCs = new Set(['118', '51514', '3355', '5782', '8122', '19386']); // Polymorph, Hex, Freezing Trap, Fear, Psychic Scream, Wyvern Sting
+    for (const cc of ccInstances) {
+      const ccAppliedTimeMs = cc.atSeconds * 1000 + matchStartMs;
+      if (breakableCCs.has(cc.spellId) && cc.durationSeconds <= 1.0) {
+        const swdCast = player.spellCastEvents.find(
+          (e) =>
+            e.spellId === '32379' &&
+            e.logLine.event === LogEvent.SPELL_CAST_SUCCESS &&
+            e.logLine.timestamp >= ccAppliedTimeMs - 500 &&
+            e.logLine.timestamp <= ccAppliedTimeMs,
+        );
+        if (swdCast) {
+          ccAvoidedInstances.push({
+            atSeconds: cc.atSeconds,
+            spellId: cc.spellId,
+            spellName: cc.spellName,
+            avoidanceSpellName: 'Shadow Word: Death',
+            avoidanceSpellId: '32379',
+            sourceName: cc.sourceName,
+            sourceSpec: cc.sourceSpec,
+          });
+        }
+      }
+    }
+  }
+
+  ccAvoidedInstances.sort((a, b) => a.atSeconds - b.atSeconds);
+
   return {
     playerName: player.name,
     playerSpec: specToString(player.spec),
@@ -429,6 +575,7 @@ export function analyzePlayerCCAndTrinket(
     rootInstances,
     disarmInstances,
     interruptInstances,
+    ccAvoidedInstances,
   };
 }
 
