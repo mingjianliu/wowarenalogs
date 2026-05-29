@@ -229,8 +229,10 @@ async function main() {
     ) {
       modifierType = 'reduce_cd';
       value = Math.abs(value);
-      // If it's reduction in ms, convert to seconds.
-      // Reduction amounts > 500 are almost certainly ms.
+      // DB2 stores some CD-reduction effects in ms and others in seconds with no unit
+      // flag. Heuristic: no real talent reduces a cooldown by >500s, so any value >500
+      // is assumed to be milliseconds and converted to seconds. If a future talent ever
+      // legitimately reduces a CD by >500s, this would misclassify it — revisit then.
       if (value > 500) {
         value = Math.round(value / 1000);
       }
