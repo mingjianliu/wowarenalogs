@@ -142,7 +142,7 @@ describe('enemyCDs — formatting', () => {
     const pressure: any = [{ fromSeconds: 12, totalDamage: 500_000, targetSpec: 'Mage' }];
 
     const res = formatKillAttemptWindowsForContext(bursts, pressure);
-    expect(res.join('\n')).toContain('0:10–0:20  [HIGH]  0.50M on Mage');
+    expect(res.join('\n')).toContain('0:10–0:20  0.50M on Mage | CDs: Wings');
 
     // Unconfirmed case
     const res2 = formatKillAttemptWindowsForContext(bursts, []);
