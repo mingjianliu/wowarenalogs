@@ -4526,3 +4526,42 @@ describe('buildMatchTimeline — F113/F114: Event-Gating and [STATE] pruning', (
     });
   });
 });
+
+describe('buildMatchTimeline — KILL SEQUENCE block (characterization)', () => {
+  it('emits a KILL SEQUENCE with [KILL] line for a sub-90s match with a friendly death', () => {
+    const owner = makeOwner('Feramonk', CombatUnitSpec.Priest_Holy);
+    // Build a real unit for the dying player so damageIn attribution works
+    const dyingUnit = makeUnit('dying-1', {
+      name: 'Simplesauce',
+      damageIn: [
+        {
+          logLine: { timestamp: 38_000 },
+          effectiveAmount: -100_000,
+          srcUnitName: 'Natjkis',
+          srcUnitFlags: 0x00000040, // hostile player
+          spellName: 'Obliterate',
+        } as any,
+      ],
+    });
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        matchEndMs: 80_000,
+        friendlyDeaths: [{ spec: 'Unholy Death Knight', name: 'Simplesauce', atSeconds: 40 }],
+        friends: [owner, dyingUnit],
+      }),
+    );
+    expect(result).toContain('KILL SEQUENCE');
+    expect(result).toContain('[KILL]');
+  });
+
+  it('omits KILL SEQUENCE for matches >= 90s', () => {
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        matchEndMs: 120_000,
+        friendlyDeaths: [{ spec: 'Unholy Death Knight', name: 'Simplesauce', atSeconds: 40 }],
+      }),
+    );
+    expect(result).not.toContain('KILL SEQUENCE');
+  });
+});
