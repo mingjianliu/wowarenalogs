@@ -496,7 +496,7 @@ describe('extractAoeCCEvents', () => {
 });
 
 describe('formatOutgoingCCChainsForContext', () => {
-  it('returns an empty array if there are no notable (non-Full duration) DR applications', () => {
+  it('emits all CC chains (F121 sufficiency: no longer suppresses Full-duration chains)', () => {
     const chains: IOutgoingCCChain[] = [
       {
         targetName: 'Enemy1',
@@ -516,9 +516,8 @@ describe('formatOutgoingCCChainsForContext', () => {
       },
     ];
 
-    // Note: formatOutgoingCCChainsForContext is intentionally NOT imported yet to fail compile/run.
     const result = formatOutgoingCCChainsForContext(chains);
-    expect(result).toEqual([]);
+    expect(result).toEqual(['## CC Chains', '  Retribution Paladin (Enemy1): 1 CC — 1× Cyclone | 0 reduced, 0 immune']);
   });
 
   it('formats notable DR applications with reduced or immune levels', () => {
@@ -570,7 +569,7 @@ describe('formatOutgoingCCChainsForContext', () => {
 
     const result = formatOutgoingCCChainsForContext(chains);
     expect(result).toEqual([
-      'CC APPLIED ON ENEMIES (DR summary):',
+      '## CC Chains',
       '  Retribution Paladin (RetPal): 4 CC — 4× Cyclone | 2 reduced, 1 immune ⚠ 1 hit immune — switch CC category or target after 2 applications',
     ]);
   });
