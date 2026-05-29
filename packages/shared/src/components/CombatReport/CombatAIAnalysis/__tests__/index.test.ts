@@ -85,6 +85,7 @@ function makeCCTrinketSummary(
     rootInstances: [],
     disarmInstances: [],
     interruptInstances: [],
+    ccAvoidedInstances: [],
   };
 }
 

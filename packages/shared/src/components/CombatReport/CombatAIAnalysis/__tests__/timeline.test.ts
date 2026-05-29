@@ -303,6 +303,7 @@ function makeEmptyCCTrinketSummary(playerName: string): IPlayerCCTrinketSummary 
     rootInstances: [],
     disarmInstances: [],
     interruptInstances: [],
+    ccAvoidedInstances: [],
   };
 }
 
@@ -3472,6 +3473,7 @@ describe('buildResourceSnapshot — F72 compact [RES] format', () => {
       rootInstances: [],
       disarmInstances: [],
       interruptInstances: [],
+      ccAvoidedInstances: [],
     };
   }
 
@@ -3797,6 +3799,7 @@ describe('buildResourceSnapshot — root/disarm/kick in cc: line', () => {
       ],
       disarmInstances: [],
       interruptInstances: [],
+      ccAvoidedInstances: [],
     };
   }
 
@@ -3821,6 +3824,7 @@ describe('buildResourceSnapshot — root/disarm/kick in cc: line', () => {
         },
       ],
       interruptInstances: [],
+      ccAvoidedInstances: [],
     };
   }
 
@@ -3924,6 +3928,7 @@ describe('buildJsonSituationSnapshot — root/disarm/kick in cc array', () => {
       ],
       disarmInstances: [],
       interruptInstances: [],
+      ccAvoidedInstances: [],
     };
   }
 
@@ -3948,6 +3953,7 @@ describe('buildJsonSituationSnapshot — root/disarm/kick in cc array', () => {
         },
       ],
       interruptInstances: [],
+      ccAvoidedInstances: [],
     };
   }
 
