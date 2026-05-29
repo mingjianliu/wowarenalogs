@@ -238,12 +238,30 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   const unitsByName = new Map(friends.map((u) => [u.name, u]));
 
   for (const death of friendlyDeaths) {
+    const dyingUnit = unitsByName.get(death.name);
+    let unusedDefensives = '';
+    if (dyingUnit) {
+      // F145: Teammate Defensive Persistence Check — find big buttons that were available at death
+      const allPlayerCDs = [
+        ...ownerCDs.filter(() => owner.name === death.name),
+        ...teammateCDs.filter((tc) => tc.player.name === death.name).flatMap((tc) => tc.cds),
+      ];
+      const readyAtDeath = allPlayerCDs
+        .filter((cd) => cd.tag === 'Defensive' || cd.tag === 'External')
+        .filter((cd) =>
+          cd.availableWindows.some((w) => death.atSeconds >= w.fromSeconds && death.atSeconds <= w.toSeconds),
+        )
+        .map((cd) => cd.spellName);
+
+      if (readyAtDeath.length > 0) {
+        unusedDefensives = ` (Unused: ${readyAtDeath.join(', ')})`;
+      }
+    }
+
     const notePart = death.note ? ` [${death.note}]` : '';
     const deathLines: string[] = [
-      `${fmtTime(death.atSeconds)}  [DEATH]  ${pid(death.name)} (${death.spec} — friendly)${notePart}`,
+      `${fmtTime(death.atSeconds)}  [DEATH]  ${pid(death.name)} (${death.spec} — friendly)${unusedDefensives}${notePart}`,
     ];
-
-    const dyingUnit = unitsByName.get(death.name);
     if (dyingUnit) {
       // HP trajectory
       const checkpoints = [15, 10, 5, 3];

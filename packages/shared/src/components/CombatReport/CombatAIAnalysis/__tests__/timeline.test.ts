@@ -370,6 +370,30 @@ describe('buildMatchTimeline — [DEATH] events', () => {
     expect(result).toContain('Natjkis (Affliction Warlock — enemy)');
   });
 
+  it('F145: flags unused major defensives on a teammate death', () => {
+    const teammate = { ...makeOwner('Simplesauce'), damageIn: [], auraEvents: [] } as any;
+    const loh: IMajorCooldownInfo = {
+      spellId: '633',
+      spellName: 'Lay on Hands',
+      tag: 'Defensive',
+      cooldownSeconds: 600,
+      maxChargesDetected: 1,
+      casts: [],
+      availableWindows: [{ fromSeconds: 0, toSeconds: 600, durationSeconds: 600 }],
+      neverUsed: true,
+    };
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        friends: [makeOwner('Feramonk'), teammate],
+        friendlyDeaths: [{ spec: 'Unholy Death Knight', name: 'Simplesauce', atSeconds: 118 }],
+        teammateCDs: [{ player: teammate, spec: 'Unholy Death Knight', cds: [loh] }],
+      }),
+    );
+    expect(result).toContain('[DEATH]');
+    expect(result).toContain('Simplesauce');
+    expect(result).toContain('(Unused: Lay on Hands)');
+  });
+
   it('includes HP trajectory when advanced data is present', () => {
     const matchStartMs = 1_000_000;
     const deathAtSeconds = 118;
