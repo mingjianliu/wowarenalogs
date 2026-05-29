@@ -580,10 +580,20 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       } else if (cc.trinketState === 'available_unused') {
         trinketNote = ' | trinket: available';
       }
+
+      // F148: Cleanse Success Verification — check if this CC was removed by a friendly dispel
+      const isCleansed = dispelSummary.allyCleanse.some(
+        (d) =>
+          d.removedSpellId === cc.spellId &&
+          d.targetName === summary.playerName &&
+          Math.abs(d.timeSeconds - (cc.atSeconds + cc.durationSeconds)) < 0.5,
+      );
+      const cleansedNote = isCleansed ? ' [CLEANSED]' : '';
+
       // passive_trinket → player has no active trinket, no annotation
       addEntry(
         cc.atSeconds,
-        `${fmtTime(cc.atSeconds)}  [CC ON TEAM]   ${pid(summary.playerName)} ← ${cc.spellName} (${pid(cc.sourceName)}) | ${cc.durationSeconds.toFixed(0)}s${trinketNote}`,
+        `${fmtTime(cc.atSeconds)}  [CC ON TEAM]   ${pid(summary.playerName)} ← ${cc.spellName} (${pid(cc.sourceName)}) | ${cc.durationSeconds.toFixed(0)}s${trinketNote}${cleansedNote}`,
       );
     }
 

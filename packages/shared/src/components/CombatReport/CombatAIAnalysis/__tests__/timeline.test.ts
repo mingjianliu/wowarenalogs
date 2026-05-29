@@ -1071,6 +1071,51 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     expect(result).not.toContain('(pet)');
   });
 
+  it('F148: annotates [CC ON TEAM] with [CLEANSED] when a friendly dispel removed it', () => {
+    const cc: ICCInstance = {
+      atSeconds: 10,
+      durationSeconds: 2, // ended early
+      spellId: '605',
+      spellName: 'Mind Control',
+      sourceName: 'Dzinked',
+      sourceSpec: 'Shadow Priest',
+      damageTakenDuring: 0,
+      trinketState: 'available_unused',
+      drInfo: null,
+      distanceYards: null,
+      losBlocked: null,
+    };
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        ccTrinketSummaries: [{ ...makeEmptyCCTrinketSummary('Feramonk'), ccInstances: [cc] }],
+        dispelSummary: {
+          ...makeEmptyDispelSummary(),
+          allyCleanse: [
+            {
+              timeSeconds: 12, // 10 + 2
+              dispelSpellId: '115450',
+              dispelSpellName: 'Detox',
+              removedSpellId: '605',
+              removedSpellName: 'Mind Control',
+              sourceName: 'Feramonk',
+              sourceSpec: 'Mistweaver Monk',
+              targetName: 'Feramonk',
+              targetSpec: 'Mistweaver Monk',
+              priority: 'High',
+              hasDispelPenalty: false,
+              isSpellSteal: false,
+              isPetDispel: false,
+            },
+          ],
+        },
+      }),
+    );
+    expect(result).toContain('[CC ON TEAM]');
+    expect(result).toContain('Mind Control');
+    expect(result).toContain('2s');
+    expect(result).toContain('[CLEANSED]');
+  });
+
   it('emits [DMG SPIKE] only for windows ≥300k', () => {
     const windows: IDamageBucket[] = [
       {

@@ -697,20 +697,7 @@ export function reconstructDispelSummary(
         const removal = removals.find((r) => r.ts >= applyTs);
         if (!removal) continue;
 
-        eff.totalCCWindows++;
-
         const durationSeconds = (removal.ts - applyTs) / 1000;
-
-        // CC broke from incoming damage — not a missed cleanse, but not a healer cleanse either
-        if (removal.brokenByDamage) {
-          eff.brokenCount++;
-          continue;
-        }
-
-        if (durationSeconds < MISSED_CLEANSE_THRESHOLD_S) {
-          eff.cleanseCount++;
-          continue;
-        }
 
         // Was removed by a friendly dispel near that removal time?
         const removedByDispel = allyCleanse.some(
@@ -720,9 +707,23 @@ export function reconstructDispelSummary(
             Math.abs(d.timeSeconds - (removal.ts - combat.startTime) / 1000) < 0.5,
         );
 
+        // CC broke from incoming damage — not a missed cleanse, but not a healer cleanse either
+        if (removal.brokenByDamage) {
+          eff.totalCCWindows++;
+          eff.brokenCount++;
+          continue;
+        }
+
         if (removedByDispel) {
+          eff.totalCCWindows++;
           eff.cleanseCount++;
-        } else {
+          continue;
+        }
+
+        // Only count as a window (missed opportunity) if it lasted long enough for a human to react
+        if (durationSeconds >= MISSED_CLEANSE_THRESHOLD_S) {
+          eff.totalCCWindows++;
+
           // dispelType is non-null here (null case is filtered above)
           const windowDispelType = getDispelType(spellId) as DispelType;
 
