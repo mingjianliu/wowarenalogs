@@ -860,7 +860,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     } else if (keyMomentSeconds.has(t)) {
       shouldEmit = true; // Key moment snapshot
     } else {
-      // Check if any player's HP changed by at least 5% or status changed since last emitted tick
+      // Check if any player's HP changed by at least 10% or status changed since last emitted tick
       for (const p of [...currentFriendlies, ...currentEnemies]) {
         const lastHp = lastEmittedHp.get(p.name);
         const lastStatus = lastEmittedStatus.get(p.name) ?? 'alive';
