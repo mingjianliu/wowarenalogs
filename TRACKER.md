@@ -9,6 +9,7 @@ Active work items. Completed/N/A items archived in `TRACKER_ARCHIVE.md`.
 | #   | Status  | Description                                                                                                                                                                                                                                  | File(s)                |
 | --- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | B10 | ❌ Open | Trinket item ID lists stale — `ADAPTATION_ITEM_IDS` and `RELENTLESS_ITEM_IDS` are hardcoded and not updated each season. New season gear silently unrecognized → trinket type classified Unknown → trinket analysis disabled for that player | `ccTrinketAnalysis.ts` |
+| B11 | ❌ Open | Spell Localization Normalization — Logs from non-English clients contain localized spell names, confusing the AI analysis (e.g., Match 010 eval). Prompt builders must map all parsed `spellId`s through `getEnglishSpellName()` before formatting the timeline. | `printMatchPrompts.ts`, `timelineHelpers.ts` |
 
 ---
 
@@ -49,6 +50,9 @@ Active work items. Completed/N/A items archived in `TRACKER_ARCHIVE.md`.
 | F133    | Backlog | Evoker Obsidian Scales Spec Restriction Fix — expand Obsidian Scales tracking to dev/pres/aug specs in `cooldowns.ts` | `cooldowns.ts` |
 | F134    | Backlog | Parser Pet Casts Omission — merge pet `spellCastEvents` (e.g., Freeze, Axe Toss, Seduction) into their owners' cast history so they can be parsed as cooldown trades | `CombatData.ts`, `BattlegroundData.ts` |
 | F136    | Backlog | Healer Match-End HPS & Mana Metrics — include overall match-end healer HPS, overhealing %, and final mana pool states in the prompt facts/timeline | `printMatchPrompts.ts`, `matchTimeline.ts` |
+| F137    | S5      | Prompt Perspective Anchoring — AI occasionally hallucinates the log owner's class/spec or attributes enemy actions to the player, especially in high-density mirrors (e.g. 100-game eval matches 021, 038). Add a prominent `[PERSPECTIVE: Log Owner - <Spec>]` banner immediately above the timeline. | `printMatchPrompts.ts` |
+| F138    | S5      | Periodic State Refresh (Delta Tracking) — Delta state tracking (`rdy:Δ`) significantly reduces token bloat but causes the LLM to lose track of available CDs in late-dampening long matches (identified in 100-game eval). Re-emit a full `[RES]` block every 60 seconds to refresh context. | `resourceSnapshot.ts` |
+| F139    | Backlog | Target & Chronological Disambiguation — AI occasionally misidentifies CC targets (e.g., Match 021) or misunderstands chronological state markers (e.g., interpreting end-of-spike HP as HP-at-cast-time in Match 001). Review timeline formatting for structural ambiguity around targets and state-after-event vs state-before-event. | `matchTimeline.ts` |
 
 ---
 
