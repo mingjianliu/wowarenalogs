@@ -42,19 +42,19 @@ describe('archetypeInference — math helpers', () => {
     expect(vec[6]).toBe(1.5);
   });
 
-  it('normalize scales vector based on min/max params', () => {
+  it('normalize applies z-score scaling using mean/std params', () => {
     const v = [10, 20];
     const params = {
-      min: [0, 0],
-      max: [100, 100],
+      mean: [0, 0],
+      std: [100, 100],
     };
     const res = normalize(v, params);
     expect(res).toEqual([0.1, 0.2]);
   });
 
-  it('normalize handles zero-range (min=max)', () => {
+  it('normalize guards against zero std (std=0 → divisor 1)', () => {
     const v = [10];
-    const params = { min: [10], max: [10] };
+    const params = { mean: [10], std: [0] };
     const res = normalize(v, params);
     expect(res).toEqual([0]);
   });
@@ -69,13 +69,13 @@ describe('archetypeInference — math helpers', () => {
 describe('classifyCluster', () => {
   const mockModel = {
     normParams: {
-      min: [0, 0, 0, 0, 0, 0, 0],
-      max: [10, 10, 1, 10, 10, 10, 10],
+      mean: [0, 0, 0, 0, 0, 0, 0],
+      std: [1, 1, 1, 1, 1, 1, 1],
     },
     featureNames: [],
     centroids: [
-      [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1], // Cluster 0
-      [0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9], // Cluster 1
+      [1, 1, 0.1, 0.7, 1, 2.4, 1], // Cluster 0 ≈ lowActivity feature vector
+      [9, 9, 0.9, 9.2, 9, 9.2, 9], // Cluster 1 ≈ highActivity feature vector
     ],
   };
 
