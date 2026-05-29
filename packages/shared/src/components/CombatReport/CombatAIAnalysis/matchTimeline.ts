@@ -166,6 +166,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   let prevReadyNamesState: string[] | null = null;
   let prevOnCDNamesState: string[] | null = null;
   let lastSnapshotTime = -100;
+  // F138: force a full (non-delta) [RES] at least every 60s so the model does not
+  // lose track of available CDs across long, late-dampening matches.
+  let lastFullSnapshotTime = -100;
+  const FULL_SNAPSHOT_REFRESH_SECONDS = 60;
 
   function resourceSnapshot(timeSeconds: number): string {
     if (timeSeconds - lastSnapshotTime < 2.0) {
@@ -182,8 +186,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     }));
     const currentReadyNames = computeReadyNames(timeSeconds, ownerCDs, teammateCDsWithLabel);
     const currentOnCDNames = computeOnCDDisplayNames(timeSeconds, ownerCDs, teammateCDsWithLabel);
-    const prevReadyNames = prevReadyNamesState ?? undefined;
-    const prevOnCDNames = prevOnCDNamesState ?? undefined;
+    const forceFullRefresh = timeSeconds - lastFullSnapshotTime >= FULL_SNAPSHOT_REFRESH_SECONDS;
+    const prevReadyNames = forceFullRefresh ? undefined : (prevReadyNamesState ?? undefined);
+    const prevOnCDNames = forceFullRefresh ? undefined : (prevOnCDNamesState ?? undefined);
+    if (forceFullRefresh) lastFullSnapshotTime = timeSeconds;
     prevReadyNamesState = currentReadyNames;
     prevOnCDNamesState = currentOnCDNames;
     return snapshotFn({

@@ -4428,6 +4428,29 @@ describe('buildMatchTimeline — B38: Healer CD promotion', () => {
   });
 });
 
+describe('buildMatchTimeline — F138 periodic full [RES] refresh', () => {
+  it('re-emits a full rdy: list (not delta) at least every 60s in long matches', () => {
+    // An always-ready CD (never cast) should appear by name in the full rdy: form.
+    const alwaysReady = makeCD('Divine Toll', 60, true);
+    alwaysReady.spellId = '2';
+    // A second CD cast at 6s and 66s forces a [RES] emission at both timestamps.
+    const trigger = makeCD('Avenging Wrath', 120);
+    trigger.casts = [{ timeSeconds: 6 }, { timeSeconds: 66 }] as IMajorCooldownInfo['casts'];
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner: makeOwner('Feramonk'),
+        ownerCDs: [alwaysReady, trigger],
+      }),
+    );
+
+    // Full form prints "rdy:Divine Toll"; delta form would print "rdy:Δ".
+    // Without the 60s refresh, the 1:06 snapshot would be delta and omit the name.
+    const fullRdyCount = (result.match(/rdy:Divine Toll/g) ?? []).length;
+    expect(fullRdyCount).toBeGreaterThanOrEqual(2);
+  });
+});
+
 describe('buildMatchTimeline — F113/F114: Event-Gating and [STATE] pruning', () => {
   it('suppresses all [STATE] ticks in a low-activity game (no critical windows)', () => {
     const matchStartMs = 0;
