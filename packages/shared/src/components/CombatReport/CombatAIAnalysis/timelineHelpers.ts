@@ -1,7 +1,9 @@
 import { CombatUnitType, getUnitReaction, getUnitType, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
 import { getEnglishSpellName, spellEffectData } from '../../../data/spellEffectData';
-import { IMajorCooldownInfo, PASSIVE_SPELL_BLOCKLIST } from '../../../utils/cooldowns';
+import { fmtTime, IMajorCooldownInfo, PASSIVE_SPELL_BLOCKLIST } from '../../../utils/cooldowns';
+import { getDampeningPercentage } from '../../../utils/dampening';
+import { getHpPercentAtTime } from '../../../utils/killWindowTargetSelection';
 
 export { PASSIVE_SPELL_BLOCKLIST };
 
@@ -389,4 +391,74 @@ export function getTopDamageSourcesInWindow(unit: ICombatUnit, endMs: number, wi
     .sort((a, b) => b[1] - a[1])
     .slice(0, topN)
     .map(([k, v]) => `${k} (${Math.round(v / 1000)}k)`);
+}
+
+// ── [MATCH END] block (F96) ───────────────────────────────────────────────────
+
+export function buildMatchEndBlock(params: {
+  matchStartMs: number;
+  matchEndMs: number;
+  matchEndSeconds: number;
+  bracket?: string;
+  owner: ICombatUnit;
+  friends: ICombatUnit[];
+  enemies: ICombatUnit[];
+  friendlyDeaths: Array<{ name: string; atSeconds: number }>;
+  enemyDeaths: Array<{ name: string; atSeconds: number }>;
+  pid: (name: string) => string;
+  enemyPid: (name: string) => string;
+}): string[] {
+  const { matchEndMs, matchEndSeconds, bracket, owner, friends, enemies, friendlyDeaths, enemyDeaths, pid, enemyPid } =
+    params;
+
+  const lines: string[] = [];
+
+  // Final dampening — only when bracket is available
+  const finalDampPct = bracket ? getDampeningPercentage(bracket, [...friends, ...enemies], matchEndMs) : null;
+  const dampStr = finalDampPct !== null ? `   damp: ${Math.round(finalDampPct)}%` : '';
+
+  lines.push('');
+  lines.push(`${fmtTime(matchEndSeconds)}  [MATCH END]${dampStr}`);
+
+  // Build sets of dead players for quick lookup
+  const deadFriendlyNames = new Set(friendlyDeaths.map((d) => d.name));
+  const deadEnemyNames = new Set(enemyDeaths.map((d) => d.name));
+  // For players who died multiple times, use the last death timestamp
+  const friendDeathTimeByName = new Map<string, number>();
+  for (const d of friendlyDeaths) friendDeathTimeByName.set(d.name, d.atSeconds);
+  const enemyDeathTimeByName = new Map<string, number>();
+  for (const d of enemyDeaths) enemyDeathTimeByName.set(d.name, d.atSeconds);
+
+  // B36: stable ordering — log owner always first, then other friendlies in their original order.
+  const orderedFriendsForEnd = [owner, ...friends.filter((u) => u.id !== owner.id)];
+  const friendParts = orderedFriendsForEnd.map((u) => {
+    if (deadFriendlyNames.has(u.name)) {
+      const deathAt = friendDeathTimeByName.get(u.name) ?? 0;
+      return `${pid(u.name)}:dead(${fmtTime(deathAt)})`;
+    }
+    const pct = getHpPercentAtTime(u, matchEndSeconds, params.matchStartMs);
+    // B18/B23: clamp to 100%
+    const clamped = pct !== null ? Math.min(Math.round(pct), 100) : null;
+    return `${pid(u.name)}:${clamped !== null ? `${clamped}%` : '?'}`;
+  });
+
+  const enemyParts = enemies.map((u) => {
+    if (deadEnemyNames.has(u.name)) {
+      const deathAt = enemyDeathTimeByName.get(u.name) ?? 0;
+      return `${enemyPid(u.name)}:dead(${fmtTime(deathAt)})`;
+    }
+    const pct = getHpPercentAtTime(u, matchEndSeconds, params.matchStartMs);
+    // B18: clamp to 100%
+    const clamped = pct !== null ? Math.min(Math.round(pct), 100) : null;
+    return `${enemyPid(u.name)}:${clamped !== null ? `${clamped}%` : '?'}`;
+  });
+
+  const stateParts: string[] = [];
+  if (friendParts.length > 0) stateParts.push(`friends ${friendParts.join(' ')}`);
+  if (enemyParts.length > 0) stateParts.push(`enemies ${enemyParts.join(' ')}`);
+  if (stateParts.length > 0) {
+    lines.push(`  ${stateParts.join(' / ')}`);
+  }
+
+  return lines;
 }
