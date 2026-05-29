@@ -112,8 +112,9 @@ export interface IPlayerCCTrinketSummary {
   disarmInstances: IRootInstance[];
   /** Kicks (interrupts) landed by enemies. */
   interruptInstances: IInterruptInstance[];
-  /** CC avoidance/mitigation/breaks */
-  ccAvoidedInstances: ICCAvoidedInstance[];
+  /** CC avoidance/mitigation/breaks. Optional: always populated by analyzePlayerCCAndTrinket,
+   * but hand-built summaries (tests/fixtures) may omit it; consumers guard with `if (summary.ccAvoidedInstances)`. */
+  ccAvoidedInstances?: ICCAvoidedInstance[];
 }
 
 // ---------------------------------------------------------------------------
