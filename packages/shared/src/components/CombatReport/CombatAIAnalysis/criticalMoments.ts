@@ -451,7 +451,7 @@ export function identifyCriticalMoments(
     moments.push({
       timeSeconds: death.atSeconds,
       impactScore: 100,
-      impactLabel: 'Moderate',
+      impactLabel: 'Critical',
       roleLabel: 'Kill',
       title: `${death.spec} death`,
       enemyState,

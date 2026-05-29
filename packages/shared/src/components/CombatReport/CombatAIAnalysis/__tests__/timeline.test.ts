@@ -1669,12 +1669,13 @@ describe('buildMatchTimeline — F65 [OWNER CAST] target labels', () => {
 
   it('appends [totem/pet] when [OWNER CAST] target is a Guardian (totem, destUnitFlags 0x2000)', () => {
     const GUARDIAN_FLAGS = 0x00002000;
+    // Use spell ID '1' (no CD data → stays [OWNER CAST], not B38-promoted)
     const result = buildMatchTimeline(
       makeBaseParams({
         owner: {
           ...makeOwner('Feramonk'),
           spellCastEvents: [
-            makeSpellCastEvent('88625', 30_000, 'totem-1', 'Tremor Totem', 'player-1', 'Feramonk', GUARDIAN_FLAGS),
+            makeSpellCastEvent('1', 30_000, 'totem-1', 'Tremor Totem', 'player-1', 'Feramonk', GUARDIAN_FLAGS),
           ],
         } as any,
       }),
@@ -2592,9 +2593,9 @@ describe('buildMatchTimeline — [ENEMY BUFF] events', () => {
 });
 
 describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
-  // Holy Prism (114165) is in HEALER_CAST_SPELL_ID_TO_NAME but has no cooldownSeconds in
-  // spellEffectData, so B38 promotion to [OWNER CD] does not fire — it stays as [OWNER CAST].
-  const HEALER_SPELL_ID = '114165'; // Holy Prism
+  // Holy Shock (20473) has a 6s cooldown in spellEffectData — well below the 30s B38 threshold,
+  // so it stays as [OWNER CAST]. Holy Prism's 45s CD now B38-promotes to [OWNER CD].
+  const HEALER_SPELL_ID = '20473'; // Holy Shock (CD 6s — stays [OWNER CAST]; Holy Prism's 45s CD now B38-promotes to [OWNER CD])
   const MATCH_START_MS = 1_000_000;
 
   function makeOwnerWithCast(castTimestampMs: number): ICombatUnit {
@@ -2636,7 +2637,7 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(ccMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Prism'));
+    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Shock'));
     expect(castLine).toBeDefined();
     expect(castLine).toContain('[completed before CC landed]');
   });
@@ -2654,7 +2655,7 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(ccMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Prism'));
+    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Shock'));
     expect(castLine).toBeDefined();
     expect(castLine).toContain('[succeeded after CC arrived — within 1s in log]');
   });
@@ -2670,7 +2671,7 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(sharedMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Prism'));
+    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Shock'));
     expect(castLine).toBeDefined();
     expect(castLine).toContain('[same server tick as CC — cast succeeded per log]');
   });
@@ -2688,7 +2689,7 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(ccMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Prism'));
+    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Shock'));
     expect(castLine).toBeDefined();
     expect(castLine).not.toContain('[completed before');
     expect(castLine).not.toContain('[succeeded after');
@@ -2706,7 +2707,7 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Prism'));
+    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Shock'));
     expect(castLine).toBeDefined();
     expect(castLine).not.toContain('[completed before');
     expect(castLine).not.toContain('[succeeded after');
@@ -2727,7 +2728,7 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(ccMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Prism'));
+    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Shock'));
     expect(castLine).toBeDefined();
     expect(castLine).toContain('[completed before CC landed]');
   });
@@ -2746,7 +2747,7 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(ccMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Prism'));
+    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Shock'));
     expect(castLine).toBeDefined();
     expect(castLine).toContain('[succeeded after CC arrived — within 1s in log]');
   });
