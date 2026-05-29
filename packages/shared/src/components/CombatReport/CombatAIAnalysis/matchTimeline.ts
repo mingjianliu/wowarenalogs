@@ -8,9 +8,7 @@ import {
   getUnitHpAtTimestamp,
   IDamageBucket,
   IMajorCooldownInfo,
-  isHealerSpec,
   specToBenchmarkKey,
-  specToString,
 } from '../../../utils/cooldowns';
 import { canDefensiveCleanse, IDispelEvent, IDispelSummary } from '../../../utils/dispelAnalysis';
 import { extractAoeCCEvents, IOutgoingCCChain } from '../../../utils/drAnalysis';
@@ -25,6 +23,7 @@ import {
   ResourceSnapshotParams,
 } from './resourceSnapshot';
 import {
+  buildKillSequenceBlock,
   buildMatchEndBlock,
   computeHealingInWindow,
   DMG_SPIKE_THRESHOLD,
@@ -36,7 +35,6 @@ import {
   HEALING_WINDOW_EARLY_CD_SECONDS,
   HEALING_WINDOW_MIN_HPS,
   isCriticalNonPlayerUnit,
-  lastCastBefore,
   PASSIVE_SPELL_BLOCKLIST,
 } from './timelineHelpers';
 
@@ -919,136 +917,23 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     outputLines.push(...entry.lines);
   }
 
-  // ── [KILL SEQUENCE] block (F113) ──────────────────────────────────────────
-
-  if (matchEndSeconds < 90) {
-    const firstFriendlyDeath = friendlyDeaths[0];
-    const firstEnemyDeath = enemyDeaths[0];
-    const firstDeath = !firstFriendlyDeath
-      ? firstEnemyDeath
-      : !firstEnemyDeath
-        ? firstFriendlyDeath
-        : firstFriendlyDeath.atSeconds < firstEnemyDeath.atSeconds
-          ? firstFriendlyDeath
-          : firstEnemyDeath;
-
-    if (firstDeath) {
-      const deathTime = firstDeath.atSeconds;
-      const killSeqEntries: Array<{ timeSeconds: number; label: string; text: string }> = [];
-
-      // 1. Healer CC
-      const isFriendlyDeath = friends.some((f) => f.name === firstDeath.name);
-      const dyingTeam = isFriendlyDeath ? friends : (enemies ?? []);
-      const dyingHealer = dyingTeam.find((u) => isHealerSpec(u.spec));
-
-      if (dyingHealer) {
-        // Detailed CC summary is available for friends.
-        const healerSummary = ccTrinketSummaries.find((s) => s.playerName === dyingHealer.name);
-        if (healerSummary) {
-          const relevantCC = [...healerSummary.ccInstances]
-            .filter((cc) => cc.atSeconds <= deathTime && cc.atSeconds + cc.durationSeconds >= deathTime - 12)
-            .sort((a, b) => b.atSeconds - a.atSeconds)[0];
-          if (relevantCC) {
-            killSeqEntries.push({
-              timeSeconds: relevantCC.atSeconds,
-              label: '[HEALER CC]',
-              text: `${pid(dyingHealer.name)} (${specToString(dyingHealer.spec)}) ← ${relevantCC.spellName} (by ${pid(relevantCC.sourceName)})`,
-            });
-          }
-        }
-      }
-
-      // 2. Enemy CD active
-      if (isFriendlyDeath) {
-        const activeBurst = enemyCDTimeline.alignedBurstWindows.find(
-          (w) => w.fromSeconds <= deathTime && w.toSeconds >= deathTime - 12,
-        );
-        if (activeBurst) {
-          const cdNames = activeBurst.activeCDs.map((c) => c.spellName).join(' + ');
-          killSeqEntries.push({
-            timeSeconds: activeBurst.fromSeconds,
-            label: '[ENEMY CD]',
-            text: `${cdNames} active`,
-          });
-        } else {
-          const individualCDs = enemyCDTimeline.players.flatMap((p) =>
-            p.offensiveCDs.filter((cd) => cd.castTimeSeconds <= deathTime && cd.castTimeSeconds >= deathTime - 15),
-          );
-          if (individualCDs.length > 0) {
-            const latest = [...individualCDs].sort((a, b) => b.castTimeSeconds - a.castTimeSeconds)[0];
-            killSeqEntries.push({
-              timeSeconds: latest.castTimeSeconds,
-              label: '[ENEMY CD]',
-              text: `${latest.spellName} active`,
-            });
-          }
-        }
-      }
-
-      // 3. Defensive available but unused (only for friendly deaths)
-      if (isFriendlyDeath) {
-        const dyingUnit = friends.find((f) => f.name === firstDeath.name);
-        if (dyingUnit) {
-          const allFriendlyCDs = [
-            ...ownerCDs.map((cd) => ({ player: owner, cd })),
-            ...teammateCDs.flatMap((t) => t.cds.map((cd) => ({ player: t.player, cd }))),
-          ];
-          const unusedDefensives = allFriendlyCDs.filter(({ player, cd }) => {
-            if (cd.tag !== 'Defensive' && cd.tag !== 'External') return false;
-
-            // Relevant if: own CD, or an external, or any healer defensive CD (usually team-relevant)
-            const isDyingPlayer = player.name === dyingUnit.name;
-            const isExternal = cd.tag === 'External';
-            const isHealerCD = isHealerSpec(player.spec);
-
-            const isRelevant = isDyingPlayer || isExternal || isHealerCD;
-            if (!isRelevant) return false;
-
-            const lastCast = lastCastBefore(cd, deathTime);
-            return !lastCast || lastCast.timeSeconds + cd.cooldownSeconds <= deathTime;
-          });
-
-          if (unusedDefensives.length > 0) {
-            const topUnused = [...unusedDefensives]
-              .sort((a, b) => b.cd.cooldownSeconds - a.cd.cooldownSeconds)
-              .slice(0, 2);
-            topUnused.forEach((u) => {
-              killSeqEntries.push({
-                timeSeconds: Math.max(0, deathTime - 1),
-                label: '[DEFENSIVE AVAILABLE]',
-                text: `${pid(u.player.name)}: ${u.cd.spellName} available but unused`,
-              });
-            });
-          }
-        }
-      }
-
-      // 4. Kill source
-      const dyingUnit = isFriendlyDeath
-        ? friends.find((f) => f.name === firstDeath.name)
-        : (enemies ?? []).find((e) => e.name === firstDeath.name);
-      if (dyingUnit) {
-        const topSources = getTopDamageSourcesInWindow(dyingUnit, matchStartMs + deathTime * 1000, 5000);
-        if (topSources.length > 0) {
-          killSeqEntries.push({
-            timeSeconds: deathTime,
-            label: '[KILL]',
-            text: `${pid(firstDeath.name)} (${firstDeath.spec}) dead (Killer: ${topSources[0]})`,
-          });
-        }
-      }
-
-      if (killSeqEntries.length > 0) {
-        outputLines.push('');
-        outputLines.push('KILL SEQUENCE');
-        killSeqEntries
-          .sort((a, b) => a.timeSeconds - b.timeSeconds)
-          .forEach((e) => {
-            outputLines.push(`${fmtTime(e.timeSeconds)}  ${e.label.padEnd(22)} ${e.text}`);
-          });
-      }
-    }
-  }
+  outputLines.push(
+    ...buildKillSequenceBlock({
+      matchStartMs,
+      matchEndSeconds,
+      owner,
+      friends,
+      enemies: enemies ?? [],
+      ownerCDs,
+      teammateCDs,
+      enemyCDTimeline,
+      ccTrinketSummaries,
+      friendlyDeaths,
+      enemyDeaths,
+      isHealer,
+      pid,
+    }),
+  );
 
   outputLines.push(
     ...buildMatchEndBlock({
