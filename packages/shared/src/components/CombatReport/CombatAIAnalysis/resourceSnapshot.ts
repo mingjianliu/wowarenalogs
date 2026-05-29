@@ -79,17 +79,12 @@ export function buildPlayerLoadout(
     lines.push(`    none tracked`);
   }
 
-  // Build a combined playerIdMap that encodes side to avoid key collision.
-  // buildMatchTimeline's pid() function uses this map; friendly names are tried
-  // first (covering owner + teammates), then enemy names.
+  // playerIdMap carries only friendly (owner + teammate) name→ID entries; pid() in
+  // buildMatchTimeline / buildResourceSnapshot looks up friendlies here. Enemies are
+  // resolved separately via the returned enemyIdMap, so there is no collision risk
+  // and enemy entries are deliberately NOT mixed into this map.
   const playerIdMap = new Map<string, number>();
   for (const [name, id] of friendlyIdMap) playerIdMap.set(name, id);
-  // Enemy names are added with a sentinel suffix internally so that a name collision
-  // does not silently overwrite the friendly entry.  We store them under
-  // "\x00enemy:name" — a key that normal lookups by display name will never hit.
-  // The buildMatchTimeline pid() helper resolves enemy names via enemyIdMap which
-  // is included in the returned object.
-  for (const [name, id] of enemyIdMap) playerIdMap.set('\x00enemy:' + name, id);
 
   return { text: lines.join('\n'), playerIdMap, friendlyIdMap, enemyIdMap };
 }
