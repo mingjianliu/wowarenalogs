@@ -36,6 +36,34 @@ const TRINKET_RESPONSE_WINDOW_MS = 5000;
  */
 const SIGNIFICANT_CC_DAMAGE = 30_000;
 
+/**
+ * Buffs/abilities that can cause a targeted CC cast to whiff (dodge, reflect, immunity,
+ * untargetable). Maps the buff's spell ID → display name shown as the avoidance reason.
+ * Seasonal maintenance: update IDs here when these abilities change.
+ */
+const CC_AVOIDANCE_BUFF_SPELLS = new Map<string, string>([
+  ['586', 'Fade'],
+  ['1246965', 'Psychic Shroud'],
+  ['377362', 'Precognition'],
+  ['378464', 'Nullifying Shroud'],
+  ['23920', 'Spell Reflection'],
+  ['354610', 'Glimpse'],
+  ['227847', 'Bladestorm'],
+  ['389774', 'Bladestorm'],
+]);
+
+/** Shaman Grounding Totem — redirects the first targeted hostile spell. */
+const GROUNDING_TOTEM_SPELL_ID = '8177';
+
+/** Priest Shadow Word: Death — can break a freshly-applied breakable CC on the caster. */
+const SHADOW_WORD_DEATH_SPELL_ID = '32379';
+
+/**
+ * CCs that a Priest can break by self-damaging via Shadow Word: Death (instant breaks).
+ * Polymorph, Hex, Freezing Trap, Fear, Psychic Scream, Wyvern Sting.
+ */
+const SWD_BREAKABLE_CC_SPELL_IDS = new Set(['118', '51514', '3355', '5782', '8122', '19386']);
+
 // ---------------------------------------------------------------------------
 // Interfaces
 // ---------------------------------------------------------------------------
@@ -435,29 +463,18 @@ export function analyzePlayerCCAndTrinket(
   const ccAvoidedInstances: ICCAvoidedInstance[] = [];
 
   // Track active buff intervals on the player
-  const buffSpecs = new Map<string, string>([
-    ['586', 'Fade'],
-    ['1246965', 'Psychic Shroud'],
-    ['377362', 'Precognition'],
-    ['378464', 'Nullifying Shroud'],
-    ['23920', 'Spell Reflection'],
-    ['354610', 'Glimpse'],
-    ['227847', 'Bladestorm'],
-    ['389774', 'Bladestorm'],
-  ]);
-
   const activeBuffs: Array<{ spellId: string; name: string; applyMs: number; removeMs: number }> = [];
   const pendingBuffs = new Map<string, { applyMs: number; name: string }>();
 
   for (const aura of player.auraEvents) {
     const spellId = aura.spellId;
-    if (!spellId || !buffSpecs.has(spellId)) continue;
+    if (!spellId || !CC_AVOIDANCE_BUFF_SPELLS.has(spellId)) continue;
 
     const event = aura.logLine.event;
     if (event === LogEvent.SPELL_AURA_APPLIED) {
       pendingBuffs.set(spellId, {
         applyMs: aura.timestamp,
-        name: buffSpecs.get(spellId) ?? '',
+        name: CC_AVOIDANCE_BUFF_SPELLS.get(spellId) ?? '',
       });
     } else if (event === LogEvent.SPELL_AURA_REMOVED) {
       const pending = pendingBuffs.get(spellId);
@@ -526,7 +543,7 @@ export function analyzePlayerCCAndTrinket(
             spellId: cast.spellId,
             spellName: getEnglishSpellName(cast.spellId, cast.spellName),
             avoidanceSpellName: 'Grounding Totem',
-            avoidanceSpellId: '8177',
+            avoidanceSpellId: GROUNDING_TOTEM_SPELL_ID,
             sourceName: enemy.name,
             sourceSpec: enemySpecMap.get(enemy.id) ?? 'Unknown',
           });
@@ -537,13 +554,12 @@ export function analyzePlayerCCAndTrinket(
 
   // 3. Shadow Word: Death Breaks (only Priest players)
   if (player.class === CombatUnitClass.Priest) {
-    const breakableCCs = new Set(['118', '51514', '3355', '5782', '8122', '19386']); // Polymorph, Hex, Freezing Trap, Fear, Psychic Scream, Wyvern Sting
     for (const cc of ccInstances) {
       const ccAppliedTimeMs = cc.atSeconds * 1000 + matchStartMs;
-      if (breakableCCs.has(cc.spellId) && cc.durationSeconds <= 1.0) {
+      if (SWD_BREAKABLE_CC_SPELL_IDS.has(cc.spellId) && cc.durationSeconds <= 1.0) {
         const swdCast = player.spellCastEvents.find(
           (e) =>
-            e.spellId === '32379' &&
+            e.spellId === SHADOW_WORD_DEATH_SPELL_ID &&
             e.logLine.event === LogEvent.SPELL_CAST_SUCCESS &&
             e.logLine.timestamp >= ccAppliedTimeMs - 500 &&
             e.logLine.timestamp <= ccAppliedTimeMs,
@@ -554,7 +570,7 @@ export function analyzePlayerCCAndTrinket(
             spellId: cc.spellId,
             spellName: cc.spellName,
             avoidanceSpellName: 'Shadow Word: Death',
-            avoidanceSpellId: '32379',
+            avoidanceSpellId: SHADOW_WORD_DEATH_SPELL_ID,
             sourceName: cc.sourceName,
             sourceSpec: cc.sourceSpec,
           });
