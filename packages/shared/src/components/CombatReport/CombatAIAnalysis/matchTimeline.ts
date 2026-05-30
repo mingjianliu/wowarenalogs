@@ -848,6 +848,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       const isDead = deathAt !== undefined && t >= Math.floor(deathAt);
       const pct = getUnitHpAtTimestamp(unit, tsMs, sampleWindowMs);
       const clamped = pct !== null ? Math.min(pct, 100) : null;
+
       if (isDead) {
         friendlyParts.push(`${label(unit.name)}:dead`);
       } else if (clamped !== null) {
@@ -864,6 +865,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
             const isDead = deathAt !== undefined && t >= Math.floor(deathAt);
             const pct = getUnitHpAtTimestamp(unit, tsMs, sampleWindowMs);
             const clamped = pct !== null ? Math.min(pct, 100) : null;
+
             if (isDead) {
               enemyParts.push(`${label(unit.name)}:dead`);
             } else if (clamped !== null) {

@@ -51,9 +51,9 @@ async function run() {
 
     // Core sanity checks on the generated prompt
     const checks = [
-      { key: 'MATCH FACTS', exists: prompt.includes('MATCH FACTS') },
-      { key: 'PLAYER LOADOUT', exists: prompt.includes('PLAYER LOADOUT') },
-      { key: 'MATCH TIMELINE', exists: prompt.includes('MATCH TIMELINE') },
+      { key: 'metadata', exists: prompt.includes('<metadata>') },
+      { key: 'player_loadout', exists: prompt.includes('<player_loadout>') },
+      { key: 'match_timeline', exists: prompt.includes('<match_timeline>') },
       { key: '[MATCH END]', exists: prompt.includes('[MATCH END]') },
       { key: 'No NaN values', exists: !prompt.includes('NaN') },
       { key: 'No undefined labels', exists: !prompt.includes('undefined') },

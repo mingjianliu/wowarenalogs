@@ -2,6 +2,7 @@ import { getEffectiveCombatDuration } from '@wowarenalogs/parser';
 import _ from 'lodash';
 import moment from 'moment';
 
+import { computeOverallHealingMetrics, getUnitManaAtTimestamp, isHealerSpec } from '../../../utils/cooldowns';
 import { getDampeningPercentage } from '../../../utils/dampening';
 import { Utils } from '../../../utils/utils';
 import { TimestampDisplay } from '../../common/TimestampDisplay';
@@ -162,24 +163,39 @@ export const Meters = () => {
                 HEALING
               </th>
             </tr>
-            {playersSortedByHeals.map((u, _i) => (
-              <tr key={`${u.id}`}>
-                <td className="bg-base-200">
-                  <CombatUnitName unit={u} navigateToPlayerView />
-                </td>
-                <td className="bg-base-200">{`${Utils.printCombatNumber(playerTotalHealOut.get(u.id) || 0)}`}</td>
-                <td className="bg-base-200">
-                  {`${Utils.printCombatNumber((playerTotalHealOut.get(u.id) || 0) / (effectiveDuration || 1))}/s`}
-                </td>
-                <td className="bg-base-200">
-                  <progress
-                    className="progress w-20 progress-success"
-                    value={Math.floor(((playerTotalHealOut.get(u.id) || 0) * 100) / maxHeal)}
-                    max={100}
-                  />
-                </td>
-              </tr>
-            ))}
+            {playersSortedByHeals.map((u, _i) => {
+              const isHealer = isHealerSpec(u.spec);
+              const metrics = isHealer ? computeOverallHealingMetrics(u, combat.startTime, combat.endTime) : null;
+              const mana = isHealer ? getUnitManaAtTimestamp(u, combat.endTime) : null;
+              const manaPct = mana ? Math.round((mana.current / mana.max) * 100) : null;
+
+              return (
+                <tr key={`${u.id}`}>
+                  <td className="bg-base-200">
+                    <div className="flex flex-col">
+                      <CombatUnitName unit={u} navigateToPlayerView />
+                      {isHealer && (
+                        <span className="text-xs opacity-60">
+                          {metrics ? `${metrics.overhealPct}% Overheal` : ''}
+                          {manaPct !== null ? ` | ${manaPct}% Final Mana` : ''}
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="bg-base-200">{`${Utils.printCombatNumber(playerTotalHealOut.get(u.id) || 0)}`}</td>
+                  <td className="bg-base-200">
+                    {`${Utils.printCombatNumber((playerTotalHealOut.get(u.id) || 0) / (effectiveDuration || 1))}/s`}
+                  </td>
+                  <td className="bg-base-200">
+                    <progress
+                      className="progress w-20 progress-success"
+                      value={Math.floor(((playerTotalHealOut.get(u.id) || 0) * 100) / maxHeal)}
+                      max={100}
+                    />
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

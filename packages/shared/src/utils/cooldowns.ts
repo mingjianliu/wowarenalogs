@@ -1,6 +1,7 @@
 import {
   AtomicArenaCombat,
   classMetadata,
+  CombatUnitPowerType,
   CombatUnitSpec,
   ICombatUnit,
   LogEvent,
@@ -190,6 +191,56 @@ export function getUnitHpAtTimestamp(unit: ICombatUnit, timestampMs: number, max
     }
   }
   return best?.pct ?? null;
+}
+
+/**
+ * Returns the power state (current/max) of `unit` for a specific power type
+ * (defaults to Mana) at the given timestamp by finding the nearest advancedAction.
+ * Returns null when no data exists.
+ */
+export function getUnitManaAtTimestamp(
+  unit: ICombatUnit,
+  timestampMs: number,
+  maxDtMs = 10_000,
+): { current: number; max: number } | null {
+  let best: { dt: number; current: number; max: number } | null = null;
+  for (const a of unit.advancedActions) {
+    if (a.advancedActorId !== unit.id) continue;
+    const manaPower = a.advancedActorPowers.find((p) => p.type === CombatUnitPowerType.Mana);
+    if (!manaPower) continue;
+
+    const dt = Math.abs(a.logLine.timestamp - timestampMs);
+    if (dt > maxDtMs) continue;
+    if (best === null || dt < best.dt) {
+      best = { dt, current: manaPower.current, max: manaPower.max };
+    }
+  }
+  return best ? { current: best.current, max: best.max } : null;
+}
+
+/**
+ * Computes overall healing metrics (HPS and Overheal %) for a unit across a given duration.
+ */
+export function computeOverallHealingMetrics(
+  unit: ICombatUnit,
+  matchStartMs: number,
+  matchEndMs: number,
+): { hps: number; overhealPct: number } {
+  const durationSeconds = (matchEndMs - matchStartMs) / 1000;
+  if (durationSeconds <= 0) return { hps: 0, overhealPct: 0 };
+
+  let totalAmount = 0;
+  let totalEffective = 0;
+  for (const h of unit.healOut) {
+    if (h.logLine.timestamp >= matchStartMs && h.logLine.timestamp <= matchEndMs) {
+      totalAmount += h.amount;
+      totalEffective += h.effectiveAmount;
+    }
+  }
+
+  const hps = totalEffective / durationSeconds;
+  const overhealPct = totalAmount > 0 ? Math.round(((totalAmount - totalEffective) / totalAmount) * 100) : 0;
+  return { hps, overhealPct };
 }
 
 export interface IAvailableWindow {
