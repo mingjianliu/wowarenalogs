@@ -128,8 +128,8 @@ describe('buildPlayerLoadout', () => {
       [],
       makeEnemyTimeline(),
     );
-    expect(text).toContain('Feramonk (Mistweaver Monk — log owner)');
-    expect(text).toContain('Life Cocoon [120s]');
+    expect(text).toContain('<unit id="1" name="Feramonk" spec="Mistweaver Monk" role="log owner">');
+    expect(text).toContain('<cooldowns>Life Cocoon [120s]</cooldowns>');
   });
 
   it('includes teammates without the (log owner) label', () => {
@@ -146,9 +146,8 @@ describe('buildPlayerLoadout', () => {
       ],
       makeEnemyTimeline(),
     );
-    expect(text).toContain('Simplesauce (Unholy Death Knight)');
-    expect(text).not.toContain('Simplesauce (Unholy Death Knight — log owner)');
-    expect(text).toContain('Anti-Magic Shell [60s]');
+    expect(text).toContain('<unit id="2" name="Simplesauce" spec="Unholy Death Knight" role="teammate">');
+    expect(text).toContain('<cooldowns>Anti-Magic Shell [60s]</cooldowns>');
   });
 
   it('includes enemies from CD timeline with (enemy) label', () => {
@@ -174,8 +173,8 @@ describe('buildPlayerLoadout', () => {
         },
       ]),
     );
-    expect(text).toContain('Dzinked (Holy Paladin — enemy)');
-    expect(text).toContain('Avenging Crusader [120s]');
+    expect(text).toContain('<unit id="2" name="Dzinked" spec="Holy Paladin" role="enemy">');
+    expect(text).toContain('<cooldowns>Avenging Crusader [120s]</cooldowns>');
   });
 
   it('deduplicates enemy CDs that were cast multiple times', () => {
@@ -272,9 +271,9 @@ describe('buildPlayerLoadout', () => {
     expect(playerIdMap.get('Feramonk')).toBe(1);
     expect(playerIdMap.get('Simplesauce')).toBe(2);
     expect(enemyIdMap.get('Dzinked')).toBe(3);
-    expect(text).toContain('1: Feramonk');
-    expect(text).toContain('2: Simplesauce');
-    expect(text).toContain('3: Dzinked');
+    expect(text).toContain('<unit id="1" name="Feramonk"');
+    expect(text).toContain('<unit id="2" name="Simplesauce"');
+    expect(text).toContain('<unit id="3" name="Dzinked"');
   });
 });
 

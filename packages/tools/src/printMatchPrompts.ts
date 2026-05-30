@@ -1069,10 +1069,11 @@ export function buildMatchPromptNew(
 
   const lines: string[] = [];
 
-  // Context block
-  lines.push('ARENA MATCH — ANALYSIS REQUEST');
+  lines.push('<match_context>');
   lines.push('');
-  lines.push('MATCH FACTS');
+
+  // Metadata
+  lines.push('<metadata>');
   lines.push(
     `  Spec: ${ownerSpec}${isHealer ? ' (Healer)' : ''} | Bracket: ${combat.startInfo?.bracket ?? 'Unknown'} | Result: ${resultStr} | Duration: ${fmtTime(durationSeconds)}`,
   );
@@ -1085,21 +1086,26 @@ export function buildMatchPromptNew(
       `  WARNING: only ${friends.length}/${bracketSize} friendly players recorded (likely disconnect or late-join). Do not evaluate team composition or teammate coordination — roster data is incomplete.`,
     );
   }
+  lines.push('</metadata>');
   lines.push('');
 
-  lines.push('DATA DICTIONARY / UNITS');
+  lines.push('<dictionary>');
   lines.push('  Damage units: M = Million (1,000,000), k = Thousand (1,000)');
   lines.push('  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage');
+  lines.push('</dictionary>');
   lines.push('');
 
-  lines.push('PURGE RESPONSIBILITY');
+  lines.push('<purge_responsibility>');
   lines.push(`  Log owner (${ownerSpec}): ${ownerCanPurge ? 'CAN offensive purge' : 'CANNOT offensive purge'}`);
   lines.push(`  Team purgers: ${teamPurgers.length > 0 ? teamPurgers.join(', ') : 'none'}`);
+  lines.push('</purge_responsibility>');
   lines.push('');
 
   const specBaselineLines = formatSpecBaselines(ownerSpec, ownerCDs, benchmarks);
   if (specBaselineLines.length > 0) {
-    lines.push(...specBaselineLines);
+    lines.push('<spec_baselines>');
+    lines.push(...specBaselineLines.map((l) => `  ${l}`));
+    lines.push('</spec_baselines>');
     lines.push('');
   }
 
@@ -1108,7 +1114,9 @@ export function buildMatchPromptNew(
     benchmarks,
   );
   if (dtpsBaselineLines.length > 0) {
-    lines.push(...dtpsBaselineLines);
+    lines.push('<dtps_baselines>');
+    lines.push(...dtpsBaselineLines.map((l) => `  ${l}`));
+    lines.push('</dtps_baselines>');
     lines.push('');
   }
 
@@ -1119,21 +1127,38 @@ export function buildMatchPromptNew(
     combat.endTime,
   );
   if (dampeningLines.length > 0) {
-    lines.push(...dampeningLines);
+    lines.push('<dampening_curve>');
+    lines.push(...dampeningLines.map((l) => `  ${l}`));
+    lines.push('</dampening_curve>');
     lines.push('');
   }
 
   const ccLines = formatOutgoingCCChainsForContext(outgoingCCChains);
   if (ccLines.length > 0) {
-    lines.push(...ccLines);
+    lines.push('<outgoing_cc_chains>');
+    lines.push(...ccLines.map((l) => `  ${l}`));
+    lines.push('</outgoing_cc_chains>');
     lines.push('');
   }
 
-  lines.push(...formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds));
-  lines.push('');
+  const enemyCDTimelineLines = formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds);
+  if (enemyCDTimelineLines.length > 0) {
+    lines.push('<enemy_cooldown_timeline>');
+    lines.push(...enemyCDTimelineLines.map((l) => `  ${l}`));
+    lines.push('</enemy_cooldown_timeline>');
+    lines.push('');
+  }
 
-  lines.push(...formatKillAttemptWindowsForContext(enemyCDTimeline.alignedBurstWindows, pressureWindows));
-  lines.push('');
+  const killAttemptWindowsLines = formatKillAttemptWindowsForContext(
+    enemyCDTimeline.alignedBurstWindows,
+    pressureWindows,
+  );
+  if (killAttemptWindowsLines.length > 0) {
+    lines.push('<kill_attempt_windows>');
+    lines.push(...killAttemptWindowsLines.map((l) => `  ${l}`));
+    lines.push('</kill_attempt_windows>');
+    lines.push('');
+  }
 
   // Player loadout
   const {
@@ -1172,7 +1197,16 @@ export function buildMatchPromptNew(
     bracket: combat.startInfo?.bracket ?? '3v3',
     gateCcAvoidanceToDanger: ccAvoidanceMode === 'gated',
   };
-  lines.push(buildMatchTimeline(params));
+  lines.push('<match_timeline>');
+  lines.push(
+    buildMatchTimeline(params)
+      .split('\n')
+      .map((l) => `  ${l}`)
+      .join('\n'),
+  );
+  lines.push('</match_timeline>');
+  lines.push('');
+  lines.push('</match_context>');
 
   return lines.join('\n');
 }
@@ -1261,10 +1295,11 @@ export function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false):
 
   const lines: string[] = [];
 
-  // Context block
-  lines.push('ARENA MATCH — ANALYSIS REQUEST');
+  lines.push('<match_context>');
   lines.push('');
-  lines.push('MATCH FACTS');
+
+  // Metadata
+  lines.push('<metadata>');
   lines.push(
     `  Spec: ${ownerSpec}${isHealer ? ' (Healer)' : ''} | Bracket: ${combat.startInfo?.bracket ?? 'Unknown'} | Result: ${resultStr} | Duration: ${fmtTime(durationSeconds)}`,
   );
@@ -1277,21 +1312,26 @@ export function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false):
       `  WARNING: only ${friends.length}/${bracketSize} friendly players recorded (likely disconnect or late-join). Do not evaluate team composition or teammate coordination — roster data is incomplete.`,
     );
   }
+  lines.push('</metadata>');
   lines.push('');
 
-  lines.push('DATA DICTIONARY / UNITS');
+  lines.push('<dictionary>');
   lines.push('  Damage units: M = Million (1,000,000), k = Thousand (1,000)');
   lines.push('  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage');
+  lines.push('</dictionary>');
   lines.push('');
 
-  lines.push('PURGE RESPONSIBILITY');
+  lines.push('<purge_responsibility>');
   lines.push(`  Log owner (${ownerSpec}): ${ownerCanPurge ? 'CAN offensive purge' : 'CANNOT offensive purge'}`);
   lines.push(`  Team purgers: ${teamPurgers.length > 0 ? teamPurgers.join(', ') : 'none'}`);
+  lines.push('</purge_responsibility>');
   lines.push('');
 
   const specBaselineLines = formatSpecBaselines(ownerSpec, ownerCDs, benchmarks);
   if (specBaselineLines.length > 0) {
-    lines.push(...specBaselineLines);
+    lines.push('<spec_baselines>');
+    lines.push(...specBaselineLines.map((l) => `  ${l}`));
+    lines.push('</spec_baselines>');
     lines.push('');
   }
 
@@ -1300,7 +1340,9 @@ export function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false):
     benchmarks,
   );
   if (dtpsBaselineLines.length > 0) {
-    lines.push(...dtpsBaselineLines);
+    lines.push('<dtps_baselines>');
+    lines.push(...dtpsBaselineLines.map((l) => `  ${l}`));
+    lines.push('</dtps_baselines>');
     lines.push('');
   }
 
@@ -1311,21 +1353,38 @@ export function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false):
     combat.endTime,
   );
   if (dampeningLines.length > 0) {
-    lines.push(...dampeningLines);
+    lines.push('<dampening_curve>');
+    lines.push(...dampeningLines.map((l) => `  ${l}`));
+    lines.push('</dampening_curve>');
     lines.push('');
   }
 
   const ccLines = formatOutgoingCCChainsForContext(outgoingCCChains);
   if (ccLines.length > 0) {
-    lines.push(...ccLines);
+    lines.push('<outgoing_cc_chains>');
+    lines.push(...ccLines.map((l) => `  ${l}`));
+    lines.push('</outgoing_cc_chains>');
     lines.push('');
   }
 
-  lines.push(...formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds));
-  lines.push('');
+  const enemyCDTimelineLines = formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds);
+  if (enemyCDTimelineLines.length > 0) {
+    lines.push('<enemy_cooldown_timeline>');
+    lines.push(...enemyCDTimelineLines.map((l) => `  ${l}`));
+    lines.push('</enemy_cooldown_timeline>');
+    lines.push('');
+  }
 
-  lines.push(...formatKillAttemptWindowsForContext(enemyCDTimeline.alignedBurstWindows, pressureWindows));
-  lines.push('');
+  const killAttemptWindowsLines = formatKillAttemptWindowsForContext(
+    enemyCDTimeline.alignedBurstWindows,
+    pressureWindows,
+  );
+  if (killAttemptWindowsLines.length > 0) {
+    lines.push('<kill_attempt_windows>');
+    lines.push(...killAttemptWindowsLines.map((l) => `  ${l}`));
+    lines.push('</kill_attempt_windows>');
+    lines.push('');
+  }
 
   // Player loadout
   const {
@@ -1361,7 +1420,16 @@ export function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false):
     bracket: combat.startInfo?.bracket ?? '3v3',
     resourceSnapshotFn: buildJsonSituationSnapshot,
   };
-  lines.push(buildMatchTimeline(params));
+  lines.push('<match_timeline>');
+  lines.push(
+    buildMatchTimeline(params)
+      .split('\n')
+      .map((l) => `  ${l}`)
+      .join('\n'),
+  );
+  lines.push('</match_timeline>');
+  lines.push('');
+  lines.push('</match_context>');
 
   return lines.join('\n');
 }

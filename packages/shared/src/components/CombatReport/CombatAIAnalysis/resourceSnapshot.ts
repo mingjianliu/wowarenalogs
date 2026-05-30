@@ -28,7 +28,7 @@ export function buildPlayerLoadout(
   enemyIdMap: Map<string, number>;
 } {
   const lines: string[] = [];
-  lines.push('PLAYER LOADOUT (major CDs ≥30s available this match)');
+  lines.push('<player_loadout>');
 
   // Use separate maps to prevent a friendly and enemy sharing a display name from
   // overwriting each other's ID entry.  The combined playerIdMap returned uses a
@@ -39,18 +39,22 @@ export function buildPlayerLoadout(
 
   const fmtCDLabel = (cd: IMajorCooldownInfo) =>
     `${cd.spellName} [${cd.cooldownSeconds}s${cd.maxChargesDetected > 1 ? `, ${cd.maxChargesDetected} Charges` : ''}]`;
-  const ownerCDStr = ownerCDs.length > 0 ? ownerCDs.map(fmtCDLabel).join(', ') : 'none tracked';
+
   const ownerId = nextId++;
   friendlyIdMap.set(owner.name, ownerId);
-  lines.push(`  ${ownerId}: ${owner.name} (${ownerSpec} — log owner):`);
-  lines.push(`    ${ownerCDStr}`);
+  const ownerCDStr = ownerCDs.length > 0 ? ownerCDs.map(fmtCDLabel).join(', ') : 'none tracked';
+
+  lines.push(`  <unit id="${ownerId}" name="${owner.name}" spec="${ownerSpec}" role="log owner">`);
+  lines.push(`    <cooldowns>${ownerCDStr}</cooldowns>`);
+  lines.push('  </unit>');
 
   for (const { player, spec, cds } of teammateCDs) {
     const cdStr = cds.length > 0 ? cds.map(fmtCDLabel).join(', ') : 'none tracked';
     const pid = nextId++;
     friendlyIdMap.set(player.name, pid);
-    lines.push(`  ${pid}: ${player.name} (${spec}):`);
-    lines.push(`    ${cdStr}`);
+    lines.push(`  <unit id="${pid}" name="${player.name}" spec="${spec}" role="teammate">`);
+    lines.push(`    <cooldowns>${cdStr}</cooldowns>`);
+    lines.push('  </unit>');
   }
 
   for (const player of enemyCDTimeline.players) {
@@ -65,8 +69,10 @@ export function buildPlayerLoadout(
         uniqueCDs.push(`${cd.spellName} [${cd.cooldownSeconds}s]`);
       }
     }
-    lines.push(`  ${pid}: ${player.playerName} (${player.specName} — enemy):`);
-    lines.push(`    ${uniqueCDs.length > 0 ? uniqueCDs.join(', ') : 'none tracked'}`);
+    const cdStr = uniqueCDs.length > 0 ? uniqueCDs.join(', ') : 'none tracked';
+    lines.push(`  <unit id="${pid}" name="${player.playerName}" spec="${player.specName}" role="enemy">`);
+    lines.push(`    <cooldowns>${cdStr}</cooldowns>`);
+    lines.push('  </unit>');
   }
 
   // Assign IDs to any enemy units not already covered by enemyCDTimeline.players
@@ -75,9 +81,12 @@ export function buildPlayerLoadout(
     if (enemyIdMap.has(enemy.name)) continue;
     const pid = nextId++;
     enemyIdMap.set(enemy.name, pid);
-    lines.push(`  ${pid}: ${enemy.name} (${specToString(enemy.spec)} — enemy):`);
-    lines.push(`    none tracked`);
+    lines.push(`  <unit id="${pid}" name="${enemy.name}" spec="${specToString(enemy.spec)}" role="enemy">`);
+    lines.push(`    <cooldowns>none tracked</cooldowns>`);
+    lines.push('  </unit>');
   }
+
+  lines.push('</player_loadout>');
 
   // playerIdMap carries only friendly (owner + teammate) name→ID entries; pid() in
   // buildMatchTimeline / buildResourceSnapshot looks up friendlies here. Enemies are
