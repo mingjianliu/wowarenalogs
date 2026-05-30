@@ -29,7 +29,7 @@ const MIN_CD_SECONDS = 30;
 
 /**
  * Passive proc spells that emit SPELL_CAST_SUCCESS but are not intentional player casts.
- * Filtering these removes noise from the [OWNER CAST] timeline.
+ * Filtering these removes noise from the [YOU] [CAST] timeline.
  */
 export const PASSIVE_SPELL_BLOCKLIST = new Set([
   'Reclamation',

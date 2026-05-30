@@ -82,7 +82,7 @@ export function isCriticalNonPlayerUnit(unit: ICombatUnit): boolean {
 // ── Critical moment identification helpers ─────────────────────────────────
 
 /**
- * Healer spell IDs that should appear as [OWNER CAST] gap-fillers when they are NOT
+ * Healer spell IDs that should appear as [YOU] [CAST] gap-fillers when they are NOT
  * already tracked by ownerCDs (to avoid double-counting).  Keep in sync with
  * classMetadata.ts as new specs / abilities ship.
  *

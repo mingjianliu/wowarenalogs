@@ -240,7 +240,7 @@ describe('buildPlayerLoadout', () => {
       [],
       makeEnemyTimeline([{ playerName: 'Ghost', specName: 'Arms Warrior', offensiveCDs: [] }]),
     );
-    // Player must appear so Claude can resolve their numeric ID from [HP] ticks and [OWNER CAST] targets
+    // Player must appear so Claude can resolve their numeric ID from [HP] ticks and [YOU] [CAST] targets
     expect(text).toContain('Ghost');
     expect(text).toContain('none tracked');
     expect(enemyIdMap.get('Ghost')).toBeDefined();
@@ -565,7 +565,7 @@ describe('buildMatchTimeline — [DEATH] events', () => {
 });
 
 describe('buildMatchTimeline — CD events', () => {
-  it('emits [OWNER CD] for each cast', () => {
+  it('emits [YOU] [CD] for each cast', () => {
     const result = buildMatchTimeline(
       makeBaseParams({
         ownerCDs: [
@@ -582,12 +582,12 @@ describe('buildMatchTimeline — CD events', () => {
         ],
       }),
     );
-    expect(result).toContain('[OWNER CD]');
+    expect(result).toContain('[YOU] [CD]');
     expect(result).toContain('Life Cocoon');
     expect(result).toContain('0:27');
   });
 
-  it('includes target name and HP when available on [OWNER CD]', () => {
+  it('includes target name and HP when available on [YOU] [CD]', () => {
     const result = buildMatchTimeline(
       makeBaseParams({
         ownerCDs: [
@@ -607,7 +607,7 @@ describe('buildMatchTimeline — CD events', () => {
     expect(result).toContain('→ Gardianmini (27% HP)');
   });
 
-  it('emits [TEAMMATE CD] for each teammate cast', () => {
+  it('emits [TEAM] [CD] for each teammate cast', () => {
     const result = buildMatchTimeline(
       makeBaseParams({
         teammateCDs: [
@@ -630,7 +630,7 @@ describe('buildMatchTimeline — CD events', () => {
         ],
       }),
     );
-    expect(result).toContain('[TEAMMATE CD]');
+    expect(result).toContain('[TEAM] [CD]');
     expect(result).toContain('Simplesauce (Unholy Death Knight): Anti-Magic Shell');
     expect(result).toContain('1:48');
   });
@@ -1444,10 +1444,10 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
   });
 });
 
-describe('buildMatchTimeline — [OWNER CAST] (F61 healer gap-filler)', () => {
-  it('emits [OWNER CD] (B38 promotion) for major-CD healer spell not tracked in ownerCDs when isHealer=true', () => {
+describe('buildMatchTimeline — [YOU] [CAST] (F61 healer gap-filler)', () => {
+  it('emits [YOU] [CD] (B38 promotion) for major-CD healer spell not tracked in ownerCDs when isHealer=true', () => {
     // Healing Tide Totem (108280) has cooldownSeconds 180 in spellEffectData — B38 promotes it
-    // from [OWNER CAST] to [OWNER CD] so it appears with the stronger event type.
+    // from [YOU] [CAST] to [YOU] [CD] so it appears with the stronger event type.
     const owner = makeUnit('unit-1', {
       name: 'Feramonk',
       spellCastEvents: [makeSpellCastEvent('108280', 30_000, 'team-1')], // HTT at T=30s
@@ -1461,13 +1461,13 @@ describe('buildMatchTimeline — [OWNER CAST] (F61 healer gap-filler)', () => {
         matchEndMs: 60_000,
       }),
     );
-    expect(result).toContain('[OWNER CD]');
-    expect(result).not.toContain('[OWNER CAST]   Healing Tide Totem');
+    expect(result).toContain('[YOU] [CD]');
+    expect(result).not.toContain('[YOU] [CAST]   Healing Tide Totem');
     expect(result).toContain('Healing Tide Totem');
     expect(result).toContain('0:30');
   });
 
-  it('does not emit [OWNER CAST] when spell is already tracked in ownerCDs within ±1s', () => {
+  it('does not emit [YOU] [CAST] when spell is already tracked in ownerCDs within ±1s', () => {
     const owner = makeUnit('unit-1', {
       name: 'Feramonk',
       spellCastEvents: [makeSpellCastEvent('10060', 20_000, 'team-1')], // PI at T=20s
@@ -1491,10 +1491,10 @@ describe('buildMatchTimeline — [OWNER CAST] (F61 healer gap-filler)', () => {
         matchEndMs: 60_000,
       }),
     );
-    expect(result).not.toContain('[OWNER CAST]');
+    expect(result).not.toContain('[YOU] [CAST]');
   });
 
-  it('does not emit [OWNER CAST] when isHealer is false', () => {
+  it('does not emit [YOU] [CAST] when isHealer is false', () => {
     const owner = makeUnit('unit-1', {
       name: 'Feramonk',
       spellCastEvents: [makeSpellCastEvent('108280', 30_000, 'team-1')], // HTT at T=30s
@@ -1508,10 +1508,10 @@ describe('buildMatchTimeline — [OWNER CAST] (F61 healer gap-filler)', () => {
         matchEndMs: 60_000,
       }),
     );
-    expect(result).not.toContain('[OWNER CAST]');
+    expect(result).not.toContain('[YOU] [CAST]');
   });
 
-  it('emits [OWNER CAST] for any spell the owner casts, not just the healer whitelist', () => {
+  it('emits [YOU] [CAST] for any spell the owner casts, not just the healer whitelist', () => {
     // Spell ID '9999' is not in HEALER_CAST_SPELL_ID_TO_NAME — after F65 it must still appear.
     const owner = makeUnit('unit-1', {
       name: 'Feramonk',
@@ -1526,14 +1526,14 @@ describe('buildMatchTimeline — [OWNER CAST] (F61 healer gap-filler)', () => {
         matchEndMs: 60_000,
       }),
     );
-    expect(result).toContain('[OWNER CAST]');
+    expect(result).toContain('[YOU] [CAST]');
     // spellName echoes spellId in the mock (makeSpellCastEvent sets spellName = spellId)
     expect(result).toContain('9999');
   });
 
   it('B104: uses the log spellName when the spell ID is absent from curated metadata', () => {
     // Spell ID '47540' (Penance) is not in spellEffects.json nor HEALER_CAST_SPELL_ID_TO_NAME.
-    // Pre-fix, the [OWNER CAST] line emitted the raw numeric ID. Now it must fall back to
+    // Pre-fix, the [YOU] [CAST] line emitted the raw numeric ID. Now it must fall back to
     // the spellName attached to the log event.
     const owner = makeUnit('unit-1', {
       name: 'Feramonk',
@@ -1548,16 +1548,16 @@ describe('buildMatchTimeline — [OWNER CAST] (F61 healer gap-filler)', () => {
         matchEndMs: 60_000,
       }),
     );
-    const ownerCastLine = result.split('\n').find((l) => l.includes('[OWNER CAST]'));
+    const ownerCastLine = result.split('\n').find((l) => l.includes('[YOU] [CAST]'));
     expect(ownerCastLine).toBeDefined();
     expect(ownerCastLine).toContain('Penance');
     // The raw spell ID must NOT appear as the cast label (it may still appear elsewhere
     // in the line as part of a target/source name, so we anchor on the cast token position).
-    expect(ownerCastLine).not.toMatch(/\[OWNER CAST\]\s+47540\b/);
+    expect(ownerCastLine).not.toMatch(/\[YOU\] \[CAST\]\s+47540\b/);
   });
 });
 
-describe('buildMatchTimeline — F65 [OWNER CAST] target labels', () => {
+describe('buildMatchTimeline — F65 [YOU] [CAST] target labels', () => {
   it('appends "self" when the owner targets themselves', () => {
     const owner = makeUnit('unit-1', {
       name: 'Feramonk',
@@ -1572,7 +1572,7 @@ describe('buildMatchTimeline — F65 [OWNER CAST] target labels', () => {
         matchEndMs: 60_000,
       }),
     );
-    expect(result).toContain('[OWNER CAST]');
+    expect(result).toContain('[YOU] [CAST]');
     expect(result).toContain('→ self');
   });
 
@@ -1648,7 +1648,7 @@ describe('buildMatchTimeline — F65 [OWNER CAST] target labels', () => {
         matchEndMs: 60_000,
       }),
     );
-    expect(result).toContain('[OWNER CAST]');
+    expect(result).toContain('[YOU] [CAST]');
     expect(result).not.toContain('→');
   });
 
@@ -1666,7 +1666,7 @@ describe('buildMatchTimeline — F65 [OWNER CAST] target labels', () => {
         matchEndMs: 60_000,
       }),
     );
-    expect(result).toContain('[OWNER CAST]');
+    expect(result).toContain('[YOU] [CAST]');
     expect(result).not.toContain('→');
   });
 
@@ -1689,8 +1689,8 @@ describe('buildMatchTimeline — F65 [OWNER CAST] target labels', () => {
     expect(result).toContain('Healing Tide Totem');
   });
 
-  it('suppresses trinket cast from [OWNER CAST] when the same timestamp is already tracked by [TRINKET]', () => {
-    // Trinket use at T=64s — should appear as [TRINKET] only, not also as [OWNER CAST].
+  it('suppresses trinket cast from [YOU] [CAST] when the same timestamp is already tracked by [TRINKET]', () => {
+    // Trinket use at T=64s — should appear as [TRINKET] only, not also as [YOU] [CAST].
     const owner = makeUnit('unit-1', {
       name: 'Feramonk',
       spellCastEvents: [makeSpellCastEvent('42292', 64_000, '', 'nil')], // PvP trinket spell ID
@@ -1706,10 +1706,10 @@ describe('buildMatchTimeline — F65 [OWNER CAST] target labels', () => {
       }),
     );
     expect(result).toContain('[TRINKET]');
-    expect(result).not.toContain('[OWNER CAST]');
+    expect(result).not.toContain('[YOU] [CAST]');
   });
 
-  it('still deduplicates against ownerCDs (does not double-emit spells tracked as [OWNER CD])', () => {
+  it('still deduplicates against ownerCDs (does not double-emit spells tracked as [YOU] [CD])', () => {
     const owner = makeUnit('unit-1', {
       name: 'Feramonk',
       spellCastEvents: [makeSpellCastEvent('108280', 30_000, 'unit-1', 'Feramonk')],
@@ -1733,13 +1733,13 @@ describe('buildMatchTimeline — F65 [OWNER CAST] target labels', () => {
         matchEndMs: 60_000,
       }),
     );
-    expect(result).toContain('[OWNER CD]');
-    expect(result).not.toContain('[OWNER CAST]');
+    expect(result).toContain('[YOU] [CD]');
+    expect(result).not.toContain('[YOU] [CAST]');
   });
 
-  it('appends [totem/pet] when [OWNER CAST] target is a Guardian (totem, destUnitFlags 0x2000)', () => {
+  it('appends [totem/pet] when [YOU] [CAST] target is a Guardian (totem, destUnitFlags 0x2000)', () => {
     const GUARDIAN_FLAGS = 0x00002000;
-    // Use spell ID '1' (no CD data → stays [OWNER CAST], not B38-promoted)
+    // Use spell ID '1' (no CD data → stays [YOU] [CAST], not B38-promoted)
     const result = buildMatchTimeline(
       makeBaseParams({
         owner: {
@@ -1750,14 +1750,14 @@ describe('buildMatchTimeline — F65 [OWNER CAST] target labels', () => {
         } as any,
       }),
     );
-    expect(result).toContain('[OWNER CAST]');
+    expect(result).toContain('[YOU] [CAST]');
     expect(result).toContain('[totem/pet]');
     expect(result).toContain('Tremor Totem');
   });
 
-  it('appends [totem/pet] when [OWNER CAST] target is a Pet (destUnitFlags 0x1000)', () => {
+  it('appends [totem/pet] when [YOU] [CAST] target is a Pet (destUnitFlags 0x1000)', () => {
     const PET_FLAGS = 0x00001000;
-    // Use spell ID '1' (not in spellEffectData → no CD → stays [OWNER CAST], not B38-promoted)
+    // Use spell ID '1' (not in spellEffectData → no CD → stays [YOU] [CAST], not B38-promoted)
     const result = buildMatchTimeline(
       makeBaseParams({
         owner: {
@@ -1766,7 +1766,7 @@ describe('buildMatchTimeline — F65 [OWNER CAST] target labels', () => {
         } as any,
       }),
     );
-    expect(result).toContain('[OWNER CAST]');
+    expect(result).toContain('[YOU] [CAST]');
     expect(result).toContain('[totem/pet]');
   });
 
@@ -1787,8 +1787,8 @@ describe('buildMatchTimeline — F65 [OWNER CAST] target labels', () => {
     expect(result).not.toContain('[totem/pet]');
   });
 
-  it('B44: [OWNER CD] also carries totemNote when dest is a Guardian', () => {
-    // Spell ID '108280' = Healing Tide Totem — has CD ≥ 30s → promoted to [OWNER CD] via B38
+  it('B44: [YOU] [CD] also carries totemNote when dest is a Guardian', () => {
+    // Spell ID '108280' = Healing Tide Totem — has CD ≥ 30s → promoted to [YOU] [CD] via B38
     const GUARDIAN_FLAGS = 0x00002000;
     const result = buildMatchTimeline(
       makeBaseParams({
@@ -1801,13 +1801,13 @@ describe('buildMatchTimeline — F65 [OWNER CAST] target labels', () => {
         ownerCDs: [],
       }),
     );
-    expect(result).toContain('[OWNER CD]');
+    expect(result).toContain('[YOU] [CD]');
     expect(result).toContain('[totem/pet]');
   });
 });
 
-describe('buildMatchTimeline — F95 [OWNER CC]', () => {
-  it('emits [OWNER CC] for offensive CC casts by the owner when isHealer=true', () => {
+describe('buildMatchTimeline — F95 [YOU] [CC]', () => {
+  it('emits [YOU] [CC] for offensive CC casts by the owner when isHealer=true', () => {
     // Mind Control = spellId 605
     const owner = makeUnit('unit-1', {
       name: 'Feramonk',
@@ -1822,13 +1822,13 @@ describe('buildMatchTimeline — F95 [OWNER CC]', () => {
         matchEndMs: 60000,
       }),
     );
-    expect(result).toContain('[OWNER CC]');
+    expect(result).toContain('[YOU] [CC]');
     expect(result).toContain('Mind Control');
     expect(result).toContain('0:10');
     expect(result).toContain('[RES]');
   });
 
-  it('emits [OWNER CC] for Hex (30s CD) even though it would normally be promoted to [OWNER CD]', () => {
+  it('emits [YOU] [CC] for Hex (30s CD) even though it would normally be promoted to [YOU] [CD]', () => {
     // Hex = spellId 51514, CD 30s
     const owner = makeUnit('unit-1', {
       name: 'Feramonk',
@@ -1843,12 +1843,12 @@ describe('buildMatchTimeline — F95 [OWNER CC]', () => {
         matchEndMs: 60000,
       }),
     );
-    expect(result).toContain('[OWNER CC]');
-    expect(result).not.toContain('[OWNER CD]   Hex');
+    expect(result).toContain('[YOU] [CC]');
+    expect(result).not.toContain('[YOU] [CD]   Hex');
     expect(result).toContain('Hex');
   });
 
-  it('does NOT emit [OWNER CC] for non-healers (currently scoped to healer gap-filler)', () => {
+  it('does NOT emit [YOU] [CC] for non-healers (currently scoped to healer gap-filler)', () => {
     const owner = makeUnit('unit-1', {
       name: 'Feramonk',
       spellCastEvents: [makeSpellCastEvent('605', 10000, 'enemy-1', 'Natjkis')],
@@ -1861,10 +1861,10 @@ describe('buildMatchTimeline — F95 [OWNER CC]', () => {
         matchEndMs: 60000,
       }),
     );
-    expect(result).not.toContain('[OWNER CC]');
+    expect(result).not.toContain('[YOU] [CC]');
   });
 
-  it('emits [OWNER CC] for a major CC in ownerCDs (e.g. Psychic Scream)', () => {
+  it('emits [YOU] [CC] for a major CC in ownerCDs (e.g. Psychic Scream)', () => {
     const owner = makeUnit('unit-1', { name: 'Feramonk' });
     const screamCD: IMajorCooldownInfo = {
       spellId: '8122',
@@ -1882,11 +1882,11 @@ describe('buildMatchTimeline — F95 [OWNER CC]', () => {
         ownerCDs: [screamCD],
       }),
     );
-    expect(result).toContain('[OWNER CC]');
+    expect(result).toContain('[YOU] [CC]');
     expect(result).toContain('Psychic Scream');
   });
 
-  it('emits [TEAMMATE CC] for a major CC in teammateCDs (e.g. Hammer of Justice)', () => {
+  it('emits [TEAM] [CC] for a major CC in teammateCDs (e.g. Hammer of Justice)', () => {
     const teammate = makeUnit('unit-2', { name: 'Simplesauce' });
     const hojCD: IMajorCooldownInfo = {
       spellId: '853',
@@ -1903,7 +1903,7 @@ describe('buildMatchTimeline — F95 [OWNER CC]', () => {
         teammateCDs: [{ player: teammate, spec: 'Holy Paladin', cds: [hojCD] }],
       }),
     );
-    expect(result).toContain('[TEAMMATE CC]');
+    expect(result).toContain('[TEAM] [CC]');
     expect(result).toContain('Hammer of Justice');
   });
 });
@@ -2664,8 +2664,8 @@ describe('buildMatchTimeline — [ENEMY BUFF] events', () => {
 
 describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
   // Holy Shock (20473) has a 6s cooldown in spellEffectData — well below the 30s B38 threshold,
-  // so it stays as [OWNER CAST]. Holy Prism's 45s CD now B38-promotes to [OWNER CD].
-  const HEALER_SPELL_ID = '20473'; // Holy Shock (CD 6s — stays [OWNER CAST]; Holy Prism's 45s CD now B38-promotes to [OWNER CD])
+  // so it stays as [YOU] [CAST]. Holy Prism's 45s CD now B38-promotes to [YOU] [CD].
+  const HEALER_SPELL_ID = '20473'; // Holy Shock (CD 6s — stays [YOU] [CAST]; Holy Prism's 45s CD now B38-promotes to [YOU] [CD])
   const MATCH_START_MS = 1_000_000;
 
   function makeOwnerWithCast(castTimestampMs: number): ICombatUnit {
@@ -2694,7 +2694,7 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
     return { ...makeEmptyCCTrinketSummary('Feramonk'), ccInstances: [cc] };
   }
 
-  it('annotates [OWNER CAST] with [completed before CC landed] when cast ms < CC ms in same second', () => {
+  it('annotates [YOU] [CAST] with [completed before CC landed] when cast ms < CC ms in same second', () => {
     // cast at 21.100s, CC at 21.700s — both display as 0:21
     const castMs = MATCH_START_MS + 21_100;
     const ccMs = MATCH_START_MS + 21_700;
@@ -2707,12 +2707,12 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(ccMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Shock'));
+    const castLine = result.split('\n').find((l) => l.includes('[YOU] [CAST]') && l.includes('Holy Shock'));
     expect(castLine).toBeDefined();
     expect(castLine).toContain('[completed before CC landed]');
   });
 
-  it('annotates [OWNER CAST] with [succeeded after CC arrived] when cast ms > CC ms in same second', () => {
+  it('annotates [YOU] [CAST] with [succeeded after CC arrived] when cast ms > CC ms in same second', () => {
     // CC at 21.100s, cast at 21.800s — both display as 0:21
     const ccMs = MATCH_START_MS + 21_100;
     const castMs = MATCH_START_MS + 21_800;
@@ -2725,12 +2725,12 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(ccMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Shock'));
+    const castLine = result.split('\n').find((l) => l.includes('[YOU] [CAST]') && l.includes('Holy Shock'));
     expect(castLine).toBeDefined();
     expect(castLine).toContain('[succeeded after CC arrived — within 1s in log]');
   });
 
-  it('annotates [OWNER CAST] with [same server tick as CC] when cast ms === CC ms', () => {
+  it('annotates [YOU] [CAST] with [same server tick as CC] when cast ms === CC ms', () => {
     const sharedMs = MATCH_START_MS + 21_500;
     const result = buildMatchTimeline(
       makeBaseParams({
@@ -2741,12 +2741,12 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(sharedMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Shock'));
+    const castLine = result.split('\n').find((l) => l.includes('[YOU] [CAST]') && l.includes('Holy Shock'));
     expect(castLine).toBeDefined();
     expect(castLine).toContain('[same server tick as CC — cast succeeded per log]');
   });
 
-  it('does not annotate [OWNER CAST] when cast and CC are more than 1s apart', () => {
+  it('does not annotate [YOU] [CAST] when cast and CC are more than 1s apart', () => {
     // cast at 21.000s (0:21), CC at 23.000s (0:23) — 2s apart, outside ±1000ms proximity window
     const castMs = MATCH_START_MS + 21_000;
     const ccMs = MATCH_START_MS + 23_000;
@@ -2759,14 +2759,14 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(ccMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Shock'));
+    const castLine = result.split('\n').find((l) => l.includes('[YOU] [CAST]') && l.includes('Holy Shock'));
     expect(castLine).toBeDefined();
     expect(castLine).not.toContain('[completed before');
     expect(castLine).not.toContain('[succeeded after');
     expect(castLine).not.toContain('[same server tick');
   });
 
-  it('does not annotate [OWNER CAST] when there are no CC events', () => {
+  it('does not annotate [YOU] [CAST] when there are no CC events', () => {
     const castMs = MATCH_START_MS + 21_500;
     const result = buildMatchTimeline(
       makeBaseParams({
@@ -2777,14 +2777,14 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Shock'));
+    const castLine = result.split('\n').find((l) => l.includes('[YOU] [CAST]') && l.includes('Holy Shock'));
     expect(castLine).toBeDefined();
     expect(castLine).not.toContain('[completed before');
     expect(castLine).not.toContain('[succeeded after');
     expect(castLine).not.toContain('[same server tick');
   });
 
-  it('annotates [OWNER CAST] with [completed before CC landed] when cast is in second N and CC is at start of second N+1 (boundary case)', () => {
+  it('annotates [YOU] [CAST] with [completed before CC landed] when cast is in second N and CC is at start of second N+1 (boundary case)', () => {
     // cast at 21.950s (displayed 0:21), CC at 22.050s (displayed 0:22)
     // 100ms apart — should annotate even though displayed seconds differ
     const castMs = MATCH_START_MS + 21_950;
@@ -2798,12 +2798,12 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(ccMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Shock'));
+    const castLine = result.split('\n').find((l) => l.includes('[YOU] [CAST]') && l.includes('Holy Shock'));
     expect(castLine).toBeDefined();
     expect(castLine).toContain('[completed before CC landed]');
   });
 
-  it('annotates [OWNER CAST] with [succeeded after CC arrived] when CC is in second N and cast is at start of second N+1 (boundary case)', () => {
+  it('annotates [YOU] [CAST] with [succeeded after CC arrived] when CC is in second N and cast is at start of second N+1 (boundary case)', () => {
     // CC at 21.950s (displayed 0:21), cast at 22.050s (displayed 0:22)
     // 100ms apart — should annotate even though displayed seconds differ
     const ccMs = MATCH_START_MS + 21_950;
@@ -2817,7 +2817,7 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
         ccTrinketSummaries: [makeCCSummary(ccMs)],
       }),
     );
-    const castLine = result.split('\n').find((l) => l.includes('[OWNER CAST]') && l.includes('Holy Shock'));
+    const castLine = result.split('\n').find((l) => l.includes('[YOU] [CAST]') && l.includes('Holy Shock'));
     expect(castLine).toBeDefined();
     expect(castLine).toContain('[succeeded after CC arrived — within 1s in log]');
   });
@@ -2825,10 +2825,10 @@ describe('buildMatchTimeline — F68 cast/CC disambiguation', () => {
 
 // ── buildMatchTimeline — B38: major CD promotion ──────────────────────────────
 
-describe('buildMatchTimeline — B38: major CD promotion from [OWNER CAST] to [OWNER CD]', () => {
+describe('buildMatchTimeline — B38: major CD promotion from [YOU] [CAST] to [YOU] [CD]', () => {
   const MATCH_START_MS = 1_000_000;
 
-  it('B38: emits [OWNER CD] (not [OWNER CAST]) when healer casts a spell with CD >= 30s not in ownerCDs', () => {
+  it('B38: emits [YOU] [CD] (not [YOU] [CAST]) when healer casts a spell with CD >= 30s not in ownerCDs', () => {
     // Avenging Crusader: spellId 216331, cooldownSeconds 60 in spellEffectData
     const castMs = MATCH_START_MS + 10_000;
     const owner: ICombatUnit = {
@@ -2846,18 +2846,18 @@ describe('buildMatchTimeline — B38: major CD promotion from [OWNER CAST] to [O
       }),
     );
 
-    expect(result).toContain('[OWNER CD]');
+    expect(result).toContain('[YOU] [CD]');
     expect(result).toContain('Avenging Crusader');
     const ownerCastLines = result
       .split('\n')
-      .filter((l) => l.includes('[OWNER CAST]') && l.includes('Avenging Crusader'));
-    expect(ownerCastLines).toHaveLength(0); // must NOT appear as [OWNER CAST]
+      .filter((l) => l.includes('[YOU] [CAST]') && l.includes('Avenging Crusader'));
+    expect(ownerCastLines).toHaveLength(0); // must NOT appear as [YOU] [CAST]
   });
 
-  it('B38: emits [OWNER CAST] for low-CD healer spells (CD < 30s)', () => {
+  it('B38: emits [YOU] [CAST] for low-CD healer spells (CD < 30s)', () => {
     // Pain Suppression (33206) has cooldownSeconds 180 — should be promoted (sanity: still in ownerCDs path normally)
-    // Use a spell NOT in spellEffectData or with CD < 30s to verify the fallthrough stays as [OWNER CAST]
-    // Holy Light (82326) has no cooldown in spellEffectData — stays [OWNER CAST]
+    // Use a spell NOT in spellEffectData or with CD < 30s to verify the fallthrough stays as [YOU] [CAST]
+    // Holy Light (82326) has no cooldown in spellEffectData — stays [YOU] [CAST]
     const castMs = MATCH_START_MS + 5_000;
     const owner: ICombatUnit = {
       ...makeOwner('Feramonk', CombatUnitSpec.Paladin_Holy),
@@ -3134,7 +3134,7 @@ describe('buildMatchTimeline [BUFF FADED] events', () => {
     expect(timeline).not.toContain('[BUFF FADED]');
   });
 
-  it('[BUFF FADED] appears after [OWNER CD] in sorted timeline output', () => {
+  it('[BUFF FADED] appears after [YOU] [CD] in sorted timeline output', () => {
     const ownerId = 'owner-1';
     const owner = makeUnit(ownerId, { name: 'Healer' });
 
@@ -3157,7 +3157,7 @@ describe('buildMatchTimeline [BUFF FADED] events', () => {
     });
 
     const lines = timeline.split('\n');
-    const ownerCDIndex = lines.findIndex((l) => l.includes('[OWNER CD]') && l.includes('Pain Suppression'));
+    const ownerCDIndex = lines.findIndex((l) => l.includes('[YOU] [CD]') && l.includes('Pain Suppression'));
     const expiredIndex = lines.findIndex((l) => l.includes('[BUFF FADED]'));
     expect(ownerCDIndex).toBeGreaterThanOrEqual(0);
     expect(expiredIndex).toBeGreaterThan(ownerCDIndex);
@@ -3298,7 +3298,7 @@ describe('buildMatchTimeline — [HEALING] line on healing amplifier CDs', () =>
     };
   }
 
-  it('appends a [HEALING] line to [OWNER CD] entries for PI when healing occurred', () => {
+  it('appends a [HEALING] line to [YOU] [CD] entries for PI when healing occurred', () => {
     // PI cast at 10s; window is 10–25s. Healing at 12s (bucket 0–5), 17s (bucket 5–10), 22s (bucket 10–15)
     const healOut = [
       makeHealEvent(matchStartMs + 12_000, 'healer-1', 150_000),
@@ -3306,7 +3306,7 @@ describe('buildMatchTimeline — [HEALING] line on healing amplifier CDs', () =>
       makeHealEvent(matchStartMs + 22_000, 'healer-1', 50_000),
     ];
     const timeline = buildMatchTimeline(makeBaseParams(healOut, [makePICD(10)]));
-    expect(timeline).toContain('[OWNER CD]   Power Infusion');
+    expect(timeline).toContain('[YOU] [CD]   Power Infusion');
     expect(timeline).toContain('[HEALING]');
     expect(timeline).toContain('0–5s: 30.0k HPS');
     expect(timeline).toContain('5–10s: 20.0k HPS');
@@ -3356,7 +3356,7 @@ describe('buildMatchTimeline — [HEALING] line on healing amplifier CDs', () =>
     // PI cast at 5s (early), duration 15s → window [5s, 20s]. Heal at 25s is outside → maxBucketHps = 0.
     const healOut = [makeHealEvent(matchStartMs + 25_000, 'healer-1', 100_000)];
     const timeline = buildMatchTimeline(makeBaseParams(healOut, [makePICD(5)]));
-    expect(timeline).toContain('[OWNER CD]   Power Infusion');
+    expect(timeline).toContain('[YOU] [CD]   Power Infusion');
     expect(timeline).not.toContain('[HEALING]');
   });
 
@@ -3364,7 +3364,7 @@ describe('buildMatchTimeline — [HEALING] line on healing amplifier CDs', () =>
     // PI cast at 3s (early), 500 effective heal in window → falls in bucket [0–5s] → 100 HPS max bucket — below 1k threshold.
     const healOut = [makeHealEvent(matchStartMs + 5_000, 'healer-1', 500)];
     const timeline = buildMatchTimeline(makeBaseParams(healOut, [makePICD(3)]));
-    expect(timeline).toContain('[OWNER CD]   Power Infusion');
+    expect(timeline).toContain('[YOU] [CD]   Power Infusion');
     expect(timeline).not.toContain('[HEALING]');
   });
 
@@ -4377,9 +4377,9 @@ describe('buildMatchTimeline — [RES] deduplication (F115/F104)', () => {
     expect(resLines.length).toBe(2);
 
     const lines = result.split('\n').map((l) => l.trim());
-    const bubbleIdx = lines.findIndex((l) => l.includes('0:10  [OWNER CD]   Bubble'));
-    const otherIdx = lines.findIndex((l) => l.includes('0:11  [OWNER CD]   Bubble'));
-    const nextIdx = lines.findIndex((l) => l.includes('0:14  [OWNER CD]   Bubble'));
+    const bubbleIdx = lines.findIndex((l) => l.includes('0:10  [YOU] [CD]   Bubble'));
+    const otherIdx = lines.findIndex((l) => l.includes('0:11  [YOU] [CD]   Bubble'));
+    const nextIdx = lines.findIndex((l) => l.includes('0:14  [YOU] [CD]   Bubble'));
 
     expect(lines[bubbleIdx + 1]).toContain('[RES]');
     expect(lines[otherIdx + 1]).not.toContain('[RES]');
@@ -4451,7 +4451,7 @@ describe('buildMatchTimeline — B106/F84: [STATE] ordering', () => {
 });
 
 describe('buildMatchTimeline — B38: Healer CD promotion', () => {
-  it('promotes untagged healer casts with CD >= 30s to [OWNER CD]', () => {
+  it('promotes untagged healer casts with CD >= 30s to [YOU] [CD]', () => {
     const matchStartMs = 0;
     const matchEndMs = 60_000;
     const owner = makeUnit('u1', {
@@ -4473,7 +4473,7 @@ describe('buildMatchTimeline — B38: Healer CD promotion', () => {
       }),
     );
 
-    expect(result).toContain('0:10  [OWNER CD]   Pain Suppression');
+    expect(result).toContain('0:10  [YOU] [CD]   Pain Suppression');
   });
 
   it('does NOT promote untagged casts with CD < 30s', () => {
@@ -4498,8 +4498,8 @@ describe('buildMatchTimeline — B38: Healer CD promotion', () => {
       }),
     );
 
-    expect(result).toContain('0:10  [OWNER CAST]   Flash Heal');
-    expect(result).not.toContain('[OWNER CD]   Flash Heal');
+    expect(result).toContain('0:10  [YOU] [CAST]   Flash Heal');
+    expect(result).not.toContain('[YOU] [CD]   Flash Heal');
   });
 });
 

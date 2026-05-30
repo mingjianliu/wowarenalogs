@@ -83,7 +83,7 @@ export interface BuildMatchTimelineParams {
    */
   outgoingCCChains?: IOutgoingCCChain[];
   /**
-   * Override the resource snapshot function injected after each [OWNER CD] and [TEAMMATE CD] event.
+   * Override the resource snapshot function injected after each [YOU] [CD] and [TEAM] [CD] event.
    * Defaults to buildResourceSnapshot (text format). Pass buildJsonSituationSnapshot for JSON format.
    */
   resourceSnapshotFn?: (params: ResourceSnapshotParams) => string;
@@ -139,7 +139,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   }
 
   /**
-   * Resolves a cast's destUnitName to a display label for [OWNER CAST] entries.
+   * Resolves a cast's destUnitName to a display label for [YOU] [CAST] entries.
    * Returns "self" for self-casts, a numeric ID for known players, or the raw name.
    * Returns "" when destUnitName is empty (AoE spells with no specific log target).
    */
@@ -317,7 +317,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     }
   }
 
-  // ── [OWNER CD] events ───────────────────────────────────────────────────────
+  // ── [YOU] [CD] events ───────────────────────────────────────────────────────
 
   // F114 (Variant C): precompute which amplifier-spell casts get a [HEALING] block.
   // Per spell, emit only the first eligible cast and the worst subsequent eligible
@@ -378,7 +378,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         }
       }
 
-      const prefix = ccSpellIds.has(cd.spellId) ? '[OWNER CC]' : '[OWNER CD]';
+      const prefix = ccSpellIds.has(cd.spellId) ? '[YOU] [CC]' : '[YOU] [CD]';
       addEntry(
         cast.timeSeconds,
         `${fmtTime(cast.timeSeconds)}  ${prefix}   ${cd.spellName}${targetPart}`,
@@ -398,7 +398,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     );
   }
 
-  // ── [OWNER CAST] healer gap-filler (F61) ────────────────────────────────────
+  // ── [YOU] [CAST] healer gap-filler (F61) ────────────────────────────────────
 
   if (isHealer) {
     const trackedCastsBySpellId = new Map<string, Set<number>>();
@@ -464,17 +464,17 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
             : ' [totem/pet]';
       }
 
-      // F95: Offensive CC casts should carry a CC annotation or use an [OWNER CC] prefix.
+      // F95: Offensive CC casts should carry a CC annotation or use an [YOU] [CC] prefix.
       if (ccSpellIds.has(e.spellId)) {
         addEntry(
           timeSeconds,
-          `${fmtTime(timeSeconds)}  [OWNER CC]   ${displayName}${targetPart}${totemNote}${orderNote}`,
+          `${fmtTime(timeSeconds)}  [YOU] [CC]   ${displayName}${targetPart}${totemNote}${orderNote}`,
           resourceSnapshot(timeSeconds),
         );
         continue;
       }
 
-      // B38: promote major-CD spells (CD ≥ 30s) to [OWNER CD] format when extractMajorCooldowns
+      // B38: promote major-CD spells (CD ≥ 30s) to [YOU] [CD] format when extractMajorCooldowns
       // missed them (e.g. missing talent data). This keeps Avenging Crusader etc. from appearing
       // as filler casts when they are significant cooldown activations.
       const effectData = spellEffectData[e.spellId];
@@ -482,7 +482,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       if (cdSeconds >= 30) {
         addEntry(
           timeSeconds,
-          `${fmtTime(timeSeconds)}  [OWNER CD]   ${displayName}${targetPart}${totemNote}`,
+          `${fmtTime(timeSeconds)}  [YOU] [CD]   ${displayName}${targetPart}${totemNote}`,
           resourceSnapshot(timeSeconds),
         );
         continue;
@@ -490,17 +490,17 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
       addEntry(
         timeSeconds,
-        `${fmtTime(timeSeconds)}  [OWNER CAST]   ${displayName}${targetPart}${totemNote}${orderNote}`,
+        `${fmtTime(timeSeconds)}  [YOU] [CAST]   ${displayName}${targetPart}${totemNote}${orderNote}`,
       );
     }
   }
 
-  // ── [TEAMMATE CD] events ────────────────────────────────────────────────────
+  // ── [TEAM] [CD] events ────────────────────────────────────────────────────
 
   for (const { player, spec, cds } of teammateCDs) {
     for (const cd of cds) {
       for (const cast of cd.casts) {
-        const prefix = ccSpellIds.has(cd.spellId) ? '[TEAMMATE CC]' : '[TEAMMATE CD]';
+        const prefix = ccSpellIds.has(cd.spellId) ? '[TEAM] [CC]' : '[TEAM] [CD]';
         addEntry(
           cast.timeSeconds,
           `${fmtTime(cast.timeSeconds)}  ${prefix}   ${pid(player.name)} (${spec}): ${cd.spellName}`,
@@ -939,6 +939,9 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   const outputLines: string[] = [
     'MATCH TIMELINE',
     '  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)',
+    '',
+    `[PERSPECTIVE: Log Owner - ${ownerSpec}]`,
+    `(You are the ${ownerSpec} in this match. Your actions are marked with [YOU].)`,
     '',
   ];
   for (const entry of entries) {
