@@ -75,7 +75,7 @@ async function main() {
   const entries: IndexEntry[] = [];
   const seenMatchIds = new Set<string>();
   const specCounts = new Map<string, number>();
-  let page = 0;
+  let page = Number(process.env.START_PAGE ?? 0);
 
   console.log(
     `Quota: ${QUOTA_PER_SPEC} per spec (${NUM_HEALER_SPECS} specs × ${QUOTA_PER_SPEC} = up to ${NUM_HEALER_SPECS * QUOTA_PER_SPEC} total)\n`,

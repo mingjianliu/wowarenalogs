@@ -9,6 +9,14 @@ fs.mkdirSync(scoresDir, { recursive: true });
 const index = JSON.parse(fs.readFileSync(indexFile, 'utf8'));
 
 for (const entry of index) {
+  const ordinalStr = String(entry.ordinal).padStart(3, '0');
+  const scorePath = path.join(scoresDir, `${ordinalStr}.json`);
+  
+  if (fs.existsSync(scorePath)) {
+    console.log(`Skipping Match ${ordinalStr} (Score already exists)`);
+    continue;
+  }
+
   const promptPath = path.join(promptsDir, entry.file.split('/')[1]);
   if (!fs.existsSync(promptPath)) continue;
   
@@ -78,7 +86,6 @@ for (const entry of index) {
     }
   };
 
-  const ordinalStr = String(entry.ordinal).padStart(3, '0');
   fs.writeFileSync(path.join(scoresDir, `${ordinalStr}.json`), JSON.stringify(result, null, 2));
 }
 
