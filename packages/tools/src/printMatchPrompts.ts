@@ -43,7 +43,6 @@ import {
 } from '../../shared/src/components/CombatReport/CombatAIAnalysis/utils';
 import { JSON_SYSTEM_PROMPT, NEW_SYSTEM_PROMPT, SYSTEM_PROMPT } from '../../shared/src/prompts/analyzeSystemPrompts';
 import { analyzePlayerCCAndTrinket, formatCCTrinketForContext } from '../../shared/src/utils/ccTrinketAnalysis';
-import { extractShapeshiftIntervals, extractStasisEvents } from '../../shared/src/utils/combatStates';
 import {
   annotateDefensiveTimings,
   computePressureWindows,
@@ -990,7 +989,6 @@ export function buildMatchPromptNew(
   combat: ParsedCombat,
   forceHealer = false,
   ccAvoidanceMode: 'none' | 'continuous' | 'gated' = 'continuous',
-  stateFormat: 'inline' | 'summary' | 'verbose' = 'summary',
 ): string {
   const allUnits = Object.values(combat.units);
   const friends = allUnits.filter(
@@ -1172,12 +1170,6 @@ export function buildMatchPromptNew(
   lines.push('');
 
   // Timeline
-  const stasisEvents = extractStasisEvents(owner, combat);
-  const shapeshiftIntervals = [...combat.units.values()]
-    .filter((u) => u.type === CombatUnitType.Player)
-    .map((u) => ({ player: u, intervals: extractShapeshiftIntervals(u, combat) }))
-    .filter((x) => x.intervals.length > 0);
-
   const params: BuildMatchTimelineParams = {
     owner,
     ownerSpec,
@@ -1204,9 +1196,6 @@ export function buildMatchPromptNew(
     outgoingCCChains,
     bracket: combat.startInfo?.bracket ?? '3v3',
     gateCcAvoidanceToDanger: ccAvoidanceMode === 'gated',
-    stasisEvents,
-    shapeshiftIntervals,
-    stateFormat,
   };
   lines.push('<match_timeline>');
   lines.push(
@@ -1226,11 +1215,7 @@ export function buildMatchPromptNew(
 // Build JSON snapshot prompt — same as buildMatchPromptNew() but uses [SIT] JSON format
 // ---------------------------------------------------------------------------
 
-export function buildMatchPromptJson(
-  combat: ParsedCombat,
-  forceHealer = false,
-  stateFormat: 'inline' | 'summary' | 'verbose' = 'summary',
-): string {
+export function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false): string {
   const allUnits = Object.values(combat.units);
   const friends = allUnits.filter(
     (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
@@ -1411,12 +1396,6 @@ export function buildMatchPromptJson(
   lines.push('');
 
   // Timeline — with JSON situation snapshot function
-  const stasisEvents = extractStasisEvents(owner, combat);
-  const shapeshiftIntervals = [...combat.units.values()]
-    .filter((u) => u.type === CombatUnitType.Player)
-    .map((u) => ({ player: u, intervals: extractShapeshiftIntervals(u, combat) }))
-    .filter((x) => x.intervals.length > 0);
-
   const params: BuildMatchTimelineParams = {
     owner,
     ownerSpec,
@@ -1440,9 +1419,6 @@ export function buildMatchPromptJson(
     outgoingCCChains,
     bracket: combat.startInfo?.bracket ?? '3v3',
     resourceSnapshotFn: buildJsonSituationSnapshot,
-    stasisEvents,
-    shapeshiftIntervals,
-    stateFormat,
   };
   lines.push('<match_timeline>');
   lines.push(
@@ -1476,7 +1452,6 @@ interface PrintMatchOptions {
   compareJsonMode?: boolean;
   compareCcMode?: boolean;
   forceHealer?: boolean;
-  stateFormat?: 'inline' | 'summary' | 'verbose';
 }
 
 async function printMatch(
@@ -1504,9 +1479,9 @@ async function printMatch(
       `  CC Avoidance A/B/C compare for match ${matchIndex}: calling Claude x3 (A: none, B: continuous, C: gated)...\n`,
     );
     try {
-      const promptA = buildMatchPromptNew(combat, options.forceHealer ?? false, 'none', options.stateFormat);
-      const promptB = buildMatchPromptNew(combat, options.forceHealer ?? false, 'continuous', options.stateFormat);
-      const promptC = buildMatchPromptNew(combat, options.forceHealer ?? false, 'gated', options.stateFormat);
+      const promptA = buildMatchPromptNew(combat, options.forceHealer ?? false, 'none');
+      const promptB = buildMatchPromptNew(combat, options.forceHealer ?? false, 'continuous');
+      const promptC = buildMatchPromptNew(combat, options.forceHealer ?? false, 'gated');
 
       const [responseA, responseB, responseC] = await Promise.all([
         callClaude(promptA, 'new'),
@@ -1617,7 +1592,6 @@ interface RunOptions {
   filterMaxDuration?: number;
   filterResult?: string;
   verbose?: boolean;
-  stateFormat?: 'inline' | 'summary' | 'verbose';
 }
 export async function processStub(
   stub: MatchStub,
@@ -1688,9 +1662,9 @@ export async function processStub(
 
     // compare mode always uses the new timeline prompt as input (includes [RESOURCES] blocks)
     const prompt = options.compareJsonMode
-      ? buildMatchPromptJson(combat, forceHealer, options.stateFormat)
+      ? buildMatchPromptJson(combat, forceHealer)
       : options.compareMode || options.useNewPrompt
-        ? buildMatchPromptNew(combat, forceHealer, 'continuous', options.stateFormat)
+        ? buildMatchPromptNew(combat, forceHealer)
         : buildMatchPrompt(combat, forceHealer);
     if (!prompt) {
       if (verbose) process.stderr.write(`empty prompt\n`);
@@ -1840,9 +1814,9 @@ async function runLocal(logDir: string, aiMode: boolean, options: RunOptions = {
       if (options.filterResult && resultStr.toLowerCase() !== options.filterResult.toLowerCase()) continue;
 
       const prompt = compareJsonMode
-        ? buildMatchPromptJson(combat, forceHealer, options.stateFormat)
+        ? buildMatchPromptJson(combat, forceHealer)
         : compareMode || useNewPrompt || compareCcMode
-          ? buildMatchPromptNew(combat, forceHealer, 'continuous', options.stateFormat)
+          ? buildMatchPromptNew(combat, forceHealer)
           : buildMatchPrompt(combat, forceHealer);
       if (!prompt) continue;
       matchCount++;
@@ -1861,11 +1835,6 @@ async function runLocal(logDir: string, aiMode: boolean, options: RunOptions = {
 
 async function main() {
   const args = process.argv.slice(2);
-  const stateFormatArg = args.find((a) => a.startsWith('--state-format='));
-  const stateFormatStr = stateFormatArg ? stateFormatArg.split('=')[1] : 'summary';
-  const stateFormat = ['inline', 'summary', 'verbose'].includes(stateFormatStr)
-    ? (stateFormatStr as 'inline' | 'summary' | 'verbose')
-    : 'summary';
   const localMode = args.includes('--local');
   const aiMode = args.includes('--ai');
   const testPromptMode = args.includes('--test-prompt');
@@ -1902,7 +1871,6 @@ async function main() {
     filterMaxDuration,
     filterResult,
     verbose,
-    stateFormat,
   };
 
   if (compareMode) {
