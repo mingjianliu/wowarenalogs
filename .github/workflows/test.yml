@@ -15,10 +15,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: 'npm'
+      - name: cache apt packages
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-apt-packages
+        with:
+          path: /var/cache/apt
+          key: ${{ runner.os }}-apt-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-${{ env.cache-name }}-
       - name: install system dependencies
         run: sudo apt-get update && sudo apt-get install -y build-essential libcairo2-dev libjpeg-dev libpango1.0-dev libgif-dev librsvg2-dev libpixman-1-dev
-      - name: clean npm cache
-        run: npm cache clean -f
       - name: install dependencies
         run: npm ci
       - name: preload sha check 1

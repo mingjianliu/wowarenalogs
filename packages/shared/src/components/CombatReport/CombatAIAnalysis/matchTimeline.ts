@@ -507,6 +507,16 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         continue;
       }
 
+      let stasisAnnotation = '';
+      const activeStasis = stasisEvents.find((s) => timeSeconds >= s.startSeconds && timeSeconds < s.releaseSeconds);
+      if (activeStasis && activeStasis.spells.includes(displayName)) {
+        if (stateFormat === 'summary') {
+          continue; // Suppress buffered heals in summary mode
+        } else if (stateFormat === 'inline') {
+          stasisAnnotation = ' [STASIS STORED]';
+        }
+      }
+
       // B38: promote major-CD spells (CD ≥ 30s) to [YOU] [CD] format when extractMajorCooldowns
       // missed them (e.g. missing talent data). This keeps Avenging Crusader etc. from appearing
       // as filler casts when they are significant cooldown activations.
@@ -515,7 +525,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       if (cdSeconds >= 30) {
         addEntry(
           timeSeconds,
-          `${fmtTime(timeSeconds)}  [YOU] [CD]   ${displayName}${targetPart}${totemNote}`,
+          `${fmtTime(timeSeconds)}  [YOU] [CD]   ${displayName}${targetPart}${totemNote}${stasisAnnotation}`,
           resourceSnapshot(timeSeconds),
         );
         continue;
@@ -523,7 +533,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
       addEntry(
         timeSeconds,
-        `${fmtTime(timeSeconds)}  [YOU] [CAST]   ${displayName}${targetPart}${totemNote}${orderNote}`,
+        `${fmtTime(timeSeconds)}  [YOU] [CAST]   ${displayName}${targetPart}${totemNote}${orderNote}${stasisAnnotation}`,
       );
     }
   }
@@ -899,12 +909,21 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       const pct = getUnitHpAtTimestamp(unit, tsMs, sampleWindowMs);
       const clamped = pct !== null ? Math.min(pct, 100) : null;
 
+      let formStr = '';
+      if (stateFormat === 'inline') {
+        const formRecord = shapeshiftIntervals.find((s) => s.player.id === unit.id);
+        if (formRecord) {
+          const activeForm = formRecord.intervals.find((i) => t >= i.startSeconds && t <= i.endSeconds);
+          if (activeForm) formStr = `:${activeForm.form.toLowerCase()}`;
+        }
+      }
+
       if (isDead) {
         friendlyParts.push(`${label(unit.name)}:dead`);
       } else if (clamped !== null) {
-        friendlyParts.push(`${label(unit.name)}:${clamped}`);
+        friendlyParts.push(`${label(unit.name)}:${clamped}${formStr}`);
       }
-      return { name: unit.name, isDead, hp: clamped };
+      return { name: unit.name, isDead, hp: clamped, formStr };
     });
 
     const enemyParts: string[] = [];
@@ -916,12 +935,21 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
             const pct = getUnitHpAtTimestamp(unit, tsMs, sampleWindowMs);
             const clamped = pct !== null ? Math.min(pct, 100) : null;
 
+            let formStr = '';
+            if (stateFormat === 'inline') {
+              const formRecord = shapeshiftIntervals.find((s) => s.player.id === unit.id);
+              if (formRecord) {
+                const activeForm = formRecord.intervals.find((i) => t >= i.startSeconds && t <= i.endSeconds);
+                if (activeForm) formStr = `:${activeForm.form.toLowerCase()}`;
+              }
+            }
+
             if (isDead) {
               enemyParts.push(`${label(unit.name)}:dead`);
             } else if (clamped !== null) {
-              enemyParts.push(`${label(unit.name)}:${clamped}`);
+              enemyParts.push(`${label(unit.name)}:${clamped}${formStr}`);
             }
-            return { name: unit.name, isDead, hp: clamped };
+            return { name: unit.name, isDead, hp: clamped, formStr };
           })
         : [];
 
@@ -984,11 +1012,135 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     addEntry(t, `${fmtTime(t)}  [STATE]   ${stateParts}`);
   }
 
-  // ── Sort and format ───────────────────────────────────────────────────────
+  // 9. Add Form shifts (Verbose mode only)
+  if (stateFormat === 'verbose') {
+    for (const { player, intervals } of shapeshiftIntervals) {
+      const isOwner = player.id === owner.id;
+      const prefix = isOwner ? '[YOU]' : friends.some((f) => f.id === player.id) ? '[TEAM]' : '[ENEMY]';
+      const pLabel = isOwner ? '' : ` ${pid(player.name)}`;
+
+      for (const interval of intervals) {
+        addEntry(
+          interval.startSeconds,
+          `${fmtTime(interval.startSeconds)}  ${prefix} [SHIFT]${pLabel} entered ${interval.form} Form`,
+        );
+      }
+    }
+  }
+
+  // 10. Process Stasis Events
+  for (const stasis of stasisEvents) {
+    if (stateFormat === 'summary') {
+      addEntry(
+        stasis.releaseSeconds,
+        `${fmtTime(stasis.releaseSeconds)}  [YOU] [STASIS RELEASE] → ${stasis.spells.join(', ')}`,
+      );
+    }
+  }
+
+  // ── Sort, Collapse, and Format ───────────────────────────────────────────────────────
 
   entries.sort((a, b) => a.timeSeconds - b.timeSeconds);
 
+  // F151: Repetitive Cast Folding
+  // Collapse multiple consecutive identical [YOU] [CAST] lines that occur within a short time
+  // and outside of dangerous windows.
+  const collapsedEntries: Array<{ timeSeconds: number; lines: string[] }> = [];
+
+  let currentFold: {
+    spellName: string;
+    targetPart: string;
+    count: number;
+    firstTime: number;
+    lastTime: number;
+    linesToReplace: string[];
+  } | null = null;
+
+  const pushFold = () => {
+    if (!currentFold) return;
+    if (currentFold.count > 1) {
+      // Create a collapsed line
+      const foldDuration = Math.max(1, Math.round(currentFold.lastTime - currentFold.firstTime));
+      collapsedEntries.push({
+        timeSeconds: currentFold.firstTime,
+        lines: [
+          `${fmtTime(currentFold.firstTime)}  [YOU] [CAST]   ×${currentFold.count} ${currentFold.spellName}${currentFold.targetPart} [over ${foldDuration}s]`,
+        ],
+      });
+    } else {
+      // Just emit the single original line
+      collapsedEntries.push({
+        timeSeconds: currentFold.firstTime,
+        lines: currentFold.linesToReplace,
+      });
+    }
+    currentFold = null;
+  };
+
+  const castRegex = /\[YOU\] \[CAST\]\s+([^→[]+)(?:(→ [^[]+))?/;
+
+  for (const entry of entries) {
+    if (entry.lines.length === 1 && !isDangerousTime(entry.timeSeconds)) {
+      const match = entry.lines[0].match(castRegex);
+      if (match) {
+        const spellName = match[1].trim();
+        const targetPart = match[2] ? match[2] : '';
+
+        if (
+          currentFold &&
+          currentFold.spellName === spellName &&
+          currentFold.targetPart === targetPart &&
+          entry.timeSeconds - currentFold.lastTime <= 5
+        ) {
+          // Continue folding
+          currentFold.count++;
+          currentFold.lastTime = entry.timeSeconds;
+        } else {
+          // Start new fold
+          pushFold();
+          currentFold = {
+            spellName,
+            targetPart,
+            count: 1,
+            firstTime: entry.timeSeconds,
+            lastTime: entry.timeSeconds,
+            linesToReplace: entry.lines,
+          };
+        }
+        continue;
+      }
+    }
+
+    // Not a foldable line or we are in danger time, flush current fold and push this entry
+    pushFold();
+    collapsedEntries.push(entry);
+  }
+  pushFold();
+
+  const summaryLines: string[] = [];
+  if (stateFormat === 'summary' && shapeshiftIntervals.length > 0) {
+    summaryLines.push('## NOTABLE STATES');
+    for (const { player, intervals } of shapeshiftIntervals) {
+      const bearTime = intervals
+        .filter((i) => i.form === 'Bear')
+        .reduce((acc, i) => acc + (i.endSeconds - i.startSeconds), 0);
+      const catTime = intervals
+        .filter((i) => i.form === 'Cat')
+        .reduce((acc, i) => acc + (i.endSeconds - i.startSeconds), 0);
+      const pLabel = player.id === owner.id ? 'YOU' : pid(player.name);
+
+      if (bearTime > 0) summaryLines.push(`- ${pLabel} spent ${Math.round(bearTime)}s in Bear Form.`);
+      if (catTime > 0) summaryLines.push(`- ${pLabel} spent ${Math.round(catTime)}s in Cat Form.`);
+    }
+    if (summaryLines.length > 1) {
+      summaryLines.push('');
+    } else {
+      summaryLines.length = 0; // Empty if no valid times found
+    }
+  }
+
   const outputLines: string[] = [
+    ...summaryLines,
     'MATCH TIMELINE',
     '  Units: M = Million damage (1,000,000), k = Thousand damage (1,000)',
     '',
@@ -996,7 +1148,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     `(You are the ${ownerSpec} in this match. Your actions are marked with [YOU].)`,
     '',
   ];
-  for (const entry of entries) {
+  for (const entry of collapsedEntries) {
     outputLines.push(...entry.lines);
   }
 
