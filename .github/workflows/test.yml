@@ -22,7 +22,10 @@ jobs:
           cache-name: cache-apt-packages
         with:
           path: /var/cache/apt
-          key: ${{ runner.os }}-apt-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          # Key on this workflow file: the apt package list lives in the "install system
+          # dependencies" step below, so the cache must bust when that list changes — not
+          # when package-lock.json (npm deps) changes.
+          key: ${{ runner.os }}-apt-${{ env.cache-name }}-${{ hashFiles('.github/workflows/test.yml') }}
           restore-keys: |
             ${{ runner.os }}-apt-${{ env.cache-name }}-
       - name: install system dependencies
