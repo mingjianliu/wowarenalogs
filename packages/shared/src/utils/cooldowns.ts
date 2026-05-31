@@ -116,7 +116,7 @@ const SPEC_EXCLUSIVE_SPELLS: Record<string, CombatUnitSpec[]> = {
   '58875': [CombatUnitSpec.Shaman_Enhancement], // Spirit Walk
   '98008': [CombatUnitSpec.Shaman_Restoration], // Spirit Link Totem
   '204293': [CombatUnitSpec.Shaman_Restoration], // Spirit Link
-  '204336': [CombatUnitSpec.Shaman_Restoration], // Grounding Totem
+  '204336': [CombatUnitSpec.Shaman_Elemental, CombatUnitSpec.Shaman_Enhancement, CombatUnitSpec.Shaman_Restoration], // Grounding Totem
   // Mage
   '12042': [CombatUnitSpec.Mage_Arcane], // Arcane Power
   '205025': [CombatUnitSpec.Mage_Arcane], // Presence of Mind

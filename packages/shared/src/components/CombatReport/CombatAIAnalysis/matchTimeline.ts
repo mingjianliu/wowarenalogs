@@ -120,6 +120,22 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   const enemyBuffIntervals = extractEnemyMajorBuffIntervals(enemies ?? [], matchStartMs, matchEndMs);
 
+  // F143: Pre-calculate Grounding Totem absorbs
+  const groundingAbsorbs: Array<{ timeSeconds: number; spellName: string; totemOwnerId: string }> = [];
+  if (allUnits) {
+    for (const unit of allUnits) {
+      if (unit.name.toLowerCase().includes('grounding totem') && unit.ownerId) {
+        for (const absorb of unit.absorbsIn) {
+          groundingAbsorbs.push({
+            timeSeconds: (absorb.timestamp - matchStartMs) / 1000,
+            spellName: absorb.spellName ?? 'Unknown',
+            totemOwnerId: unit.ownerId,
+          });
+        }
+      }
+    }
+  }
+
   /**
    * Returns the short numeric ID for a friendly player name, or the raw name
    * if no mapping exists.  Enemy names must be resolved via enemyPid() to avoid
@@ -379,9 +395,26 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       }
 
       const prefix = ccSpellIds.has(cd.spellId) ? '[YOU] [CC]' : '[YOU] [CD]';
+
+      let groundingNote = '';
+      if (cd.spellName === 'Grounding Totem') {
+        const absorbs = groundingAbsorbs
+          .filter(
+            (a) =>
+              a.totemOwnerId === owner.id &&
+              a.timeSeconds >= cast.timeSeconds &&
+              a.timeSeconds <= cast.timeSeconds + 3.5,
+          )
+          .map((a) => a.spellName);
+        if (absorbs.length > 0) {
+          const uniqueAbsorbs = Array.from(new Set(absorbs));
+          groundingNote = ` [ABSORBED: ${uniqueAbsorbs.join(', ')}]`;
+        }
+      }
+
       addEntry(
         cast.timeSeconds,
-        `${fmtTime(cast.timeSeconds)}  ${prefix}   ${cd.spellName}${targetPart}`,
+        `${fmtTime(cast.timeSeconds)}  ${prefix}   ${cd.spellName}${targetPart}${groundingNote}`,
         ...extraLines,
       );
     }
@@ -501,9 +534,26 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     for (const cd of cds) {
       for (const cast of cd.casts) {
         const prefix = ccSpellIds.has(cd.spellId) ? '[TEAM] [CC]' : '[TEAM] [CD]';
+
+        let groundingNote = '';
+        if (cd.spellName === 'Grounding Totem') {
+          const absorbs = groundingAbsorbs
+            .filter(
+              (a) =>
+                a.totemOwnerId === player.id &&
+                a.timeSeconds >= cast.timeSeconds &&
+                a.timeSeconds <= cast.timeSeconds + 3.5,
+            )
+            .map((a) => a.spellName);
+          if (absorbs.length > 0) {
+            const uniqueAbsorbs = Array.from(new Set(absorbs));
+            groundingNote = ` [ABSORBED: ${uniqueAbsorbs.join(', ')}]`;
+          }
+        }
+
         addEntry(
           cast.timeSeconds,
-          `${fmtTime(cast.timeSeconds)}  ${prefix}   ${pid(player.name)} (${spec}): ${cd.spellName}`,
+          `${fmtTime(cast.timeSeconds)}  ${prefix}   ${pid(player.name)} (${spec}): ${cd.spellName}${groundingNote}`,
           resourceSnapshot(cast.timeSeconds),
         );
       }
