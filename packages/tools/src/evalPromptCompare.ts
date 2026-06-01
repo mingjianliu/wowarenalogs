@@ -92,8 +92,14 @@ export function extractCoreResponse(fullResponse: string): string {
   if (match) {
     return match[1].trim();
   }
-  return fullResponse.replace(/<[^>]*>/g, '').trim();
+  let clean = fullResponse;
+  const reflectionMatch = clean.match(/<meta_eval_reflection>[\s\S]*?<\/meta_eval_reflection>/);
+  if (reflectionMatch) {
+    clean = clean.replace(reflectionMatch[0], '');
+  }
+  return clean.replace(/<[^>]*>/g, '').trim();
 }
+
 
 export function extractReflection(fullResponse: string): string {
   const match = fullResponse.match(/<meta_eval_reflection>([\s\S]*?)<\/meta_eval_reflection>/);
@@ -171,8 +177,16 @@ Finally, state:
 
 async function main() {
   const args = process.argv.slice(2);
-  const phaseArg = args.find(a => a.startsWith('--phase='));
-  const phase = phaseArg ? phaseArg.split('=')[1] : args[args.indexOf('--phase') + 1];
+  let phase: string | undefined;
+  const phaseIndex = args.indexOf('--phase');
+  if (phaseIndex !== -1 && args[phaseIndex + 1]) {
+    phase = args[phaseIndex + 1];
+  } else {
+    const phaseArg = args.find(a => a.startsWith('--phase='));
+    if (phaseArg) {
+      phase = phaseArg.split('=')[1];
+    }
+  }
 
   if (phase !== 'control' && phase !== 'treatment') {
     console.error('Error: Must specify --phase control or --phase treatment');
@@ -290,9 +304,10 @@ async function main() {
     await fs.writeJson(STATE_FILE, state, { spaces: 2 });
     console.log(`Saved state to ${STATE_FILE}`);
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    const dryRun = args.includes('--dry-run');
+    const apiKey = process.env.ANTHROPIC_API_KEY || (dryRun ? 'mock_key' : '');
     if (!apiKey) {
-      console.error('ANTHROPIC_API_KEY env variable missing.');
+      console.error('Error: ANTHROPIC_API_KEY env variable missing (run with --dry-run to skip API calls).');
       process.exit(1);
     }
 
@@ -301,7 +316,6 @@ async function main() {
     await fs.ensureDir(path.join(controlDir, 'responses'));
 
     const tokenUsage: Record<string, { input: number; output: number }> = {};
-    const dryRun = args.includes('--dry-run') || apiKey === 'mock_key';
 
     for (const matchId of matchIds) {
       const logPath = path.join(RAW_LOGS_DIR, `${matchId}.log`);
@@ -326,8 +340,13 @@ async function main() {
           outputTokens: 50,
         };
       } else {
-        console.log(`Running Claude evaluation on Control for ${matchId}...`);
-        res = await callClaudeAPI(apiKey, SYSTEM_PROMPT, prompt);
+        try {
+          console.log(`Running Claude evaluation on Control for ${matchId}...`);
+          res = await callClaudeAPI(apiKey, SYSTEM_PROMPT, prompt);
+        } catch (e) {
+          console.error(`Error calling Claude API for match ${matchId} in Control:`, e);
+          continue;
+        }
       }
 
       await fs.writeFile(path.join(controlDir, 'responses', `${matchId}.txt`), res.text, 'utf8');
@@ -344,9 +363,10 @@ async function main() {
       process.exit(1);
     }
     const state = (await fs.readJson(STATE_FILE)) as State;
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    const dryRun = args.includes('--dry-run');
+    const apiKey = process.env.ANTHROPIC_API_KEY || (dryRun ? 'mock_key' : '');
     if (!apiKey) {
-      console.error('ANTHROPIC_API_KEY env variable missing.');
+      console.error('Error: ANTHROPIC_API_KEY env variable missing (run with --dry-run to skip API calls).');
       process.exit(1);
     }
 
@@ -356,7 +376,6 @@ async function main() {
 
     const treatmentTokens: Record<string, { input: number; output: number }> = {};
     const finalJudgments: Record<string, string> = {};
-    const dryRun = args.includes('--dry-run') || apiKey === 'mock_key';
 
     for (const matchId of state.matchIds) {
       const logPath = path.join(RAW_LOGS_DIR, `${matchId}.log`);
@@ -382,8 +401,13 @@ async function main() {
           outputTokens: 60,
         };
       } else {
-        console.log(`Running Claude evaluation on Treatment for ${matchId}...`);
-        res = await callClaudeAPI(apiKey, SYSTEM_PROMPT, wrappedPrompt);
+        try {
+          console.log(`Running Claude evaluation on Treatment for ${matchId}...`);
+          res = await callClaudeAPI(apiKey, SYSTEM_PROMPT, wrappedPrompt);
+        } catch (e) {
+          console.error(`Error calling Claude API for match ${matchId} in Treatment:`, e);
+          continue;
+        }
       }
 
       await fs.writeFile(path.join(treatmentDir, 'responses', `${matchId}.txt`), res.text, 'utf8');
@@ -391,6 +415,10 @@ async function main() {
 
       const controlDir = path.join(OUTPUT_DIR, 'control');
       const controlRespPath = path.join(controlDir, 'responses', `${matchId}.txt`);
+      if (!(await fs.pathExists(controlRespPath))) {
+        console.warn(`Control response for match ${matchId} does not exist, skipping.`);
+        continue;
+      }
       const controlResp = await fs.readFile(controlRespPath, 'utf8');
       const treatmentCore = extractCoreResponse(res.text);
 
@@ -402,8 +430,13 @@ async function main() {
         console.log(`[DRY RUN] Skipping Judge API call for ${matchId}`);
         judgment = `Mock judgment for ${matchId}\n- Verdict: Version B Winner\n- Reasoning: Mock judgment reasoning.`;
       } else {
-        console.log(`Running Judge evaluation for ${matchId}...`);
-        judgment = await callMetaEvalJudge(apiKey, controlResp, treatmentCore);
+        try {
+          console.log(`Running Judge evaluation for ${matchId}...`);
+          judgment = await callMetaEvalJudge(apiKey, controlResp, treatmentCore);
+        } catch (e) {
+          console.error(`Error calling Judge API for match ${matchId}:`, e);
+          judgment = `Error running Judge evaluation for ${matchId}.\n- Verdict: Unknown\n- Reasoning: API call failed.`;
+        }
       }
 
       await fs.writeFile(path.join(judgmentsDir, `${matchId}.txt`), judgment, 'utf8');
