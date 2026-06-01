@@ -363,6 +363,9 @@ export interface IDispelEvent {
   isSpellSteal: boolean;
   /** True when the dispel was performed by a pet/NPC merged into the player's actionOut (e.g. Warlock Felhunter Devour Magic, Imp Singe Magic). */
   isPetDispel: boolean;
+  wasFatal?: boolean;
+  fatalUnitName?: string;
+  fatalUnitSpec?: string;
 }
 
 export interface IMissedCleanseWindow {
@@ -516,6 +519,16 @@ function isPurgerFullyBlockedDuringWindow(
   return isWindowFullyCovered(ccWindows, windowStartMs, windowEndMs);
 }
 
+export function getFatalDeath(unit: ICombatUnit, dispelTimestamp: number): { name: string; spec: string } | null {
+  const fatalDeath = (unit.deathRecords ?? []).find(
+    (d) => d.timestamp >= dispelTimestamp && d.timestamp <= dispelTimestamp + 4000,
+  );
+  if (fatalDeath) {
+    return { name: unit.name, spec: specToString(unit.spec) };
+  }
+  return null;
+}
+
 export function reconstructDispelSummary(
   friends: ICombatUnit[],
   enemies: ICombatUnit[],
@@ -575,6 +588,7 @@ export function reconstructDispelSummary(
         isSpellSteal: isSteal,
         // B45: pet unit actions are always pet dispels; player actions only when srcUnit ≠ player
         isPetDispel: isPetUnit || action.srcUnitId !== unit.id,
+        wasFatal: false,
       };
 
       // Treat a pet owned by a friendly player as a friendly source
@@ -584,15 +598,26 @@ export function reconstructDispelSummary(
       const destFriendly = friendlyIds.has(action.destUnitId);
       const destEnemy = enemyIds.has(action.destUnitId);
 
+      const targetUnitForPenalty = ownerPlayer ?? unit;
+
+      if (penaltyDesc !== undefined) {
+        const fatalDeath = getFatalDeath(targetUnitForPenalty, action.timestamp);
+        if (fatalDeath) {
+          event.wasFatal = true;
+          event.fatalUnitName = fatalDeath.name;
+          event.fatalUnitSpec = fatalDeath.spec;
+        }
+      }
+
       if (srcFriendly && destFriendly) {
         // We cleansed a debuff off our ally
         if (penaltyDesc !== undefined) {
           // Measure backlash: damage to the dispeller in the window before and after
           const ts = action.timestamp;
-          event.penaltyDamageTaken = unit.damageIn
+          event.penaltyDamageTaken = targetUnitForPenalty.damageIn
             .filter((d) => d.logLine.timestamp >= ts && d.logLine.timestamp <= ts + PENALTY_WINDOW_MS)
             .reduce((sum, d) => sum + Math.abs(d.effectiveAmount), 0);
-          event.penaltyDamageBaseline = unit.damageIn
+          event.penaltyDamageBaseline = targetUnitForPenalty.damageIn
             .filter((d) => d.logLine.timestamp >= ts - PENALTY_WINDOW_MS && d.logLine.timestamp < ts)
             .reduce((sum, d) => sum + Math.abs(d.effectiveAmount), 0);
         }

@@ -150,6 +150,32 @@ describe('dispelAnalysis — summary reconstruction', () => {
     expect(res.ccEfficiency[1].missedCount).toBe(0);
   });
 
+  it('detects a fatal dispel when the dispeller dies within 4s of dispel', () => {
+    const healer = makeUnit('h', { name: 'Healer', spec: CombatUnitSpec.Priest_Holy });
+    (healer as any).id = 'h';
+    const target = makeUnit('t', { name: 'Target', spec: CombatUnitSpec.Warrior_Arms });
+    (target as any).id = 't';
+
+    const action = makeExtraAction(MATCH_START + 10_000, LogEvent.SPELL_DISPEL, {
+      extraSpellId: '316099', // UA - has dispel penalty
+      destUnitId: 't',
+      destUnitName: 'Target',
+      srcUnitId: 'h',
+    });
+    (healer as any).actionOut = [action];
+
+    // Mock death of the healer at MATCH_START + 12_000 (2s after dispel)
+    (healer as any).deathRecords = [{ timestamp: MATCH_START + 12_000 }];
+
+    const enemy = makeUnit('e1', { reaction: CombatUnitReaction.Hostile });
+
+    const res = reconstructDispelSummary([healer, target] as any, [enemy] as any, makeCombat());
+    expect(res.allyCleanse).toHaveLength(1);
+    expect(res.allyCleanse[0].wasFatal).toBe(true);
+    expect(res.allyCleanse[0].fatalUnitName).toBe('Healer');
+    expect(res.allyCleanse[0].fatalUnitSpec).toBe('Holy Priest');
+  });
+
   it('detects missed purge and identifies if all eligible purgers were on CD (B108)', () => {
     const purger = makeUnit('dh1', { name: 'DH', spec: CombatUnitSpec.DemonHunter_Havoc });
     (purger as any).id = 'dh1';

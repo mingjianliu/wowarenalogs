@@ -711,11 +711,15 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     for (const group of cleanseGroups.values()) {
       const first = group[0];
       const petTag = group.some((c) => c.isPetDispel) ? ' (pet)' : '';
+      const fatalCleanse = group.find((c) => c.wasFatal);
+      const fatalTag = fatalCleanse
+        ? ` [FATAL DISPEL: ${pid(fatalCleanse.fatalUnitName ?? fatalCleanse.sourceName)}]`
+        : '';
       const removedSpellName = getEnglishSpellName(first.removedSpellId, first.removedSpellName);
       if (group.length === 1) {
         addEntry(
           first.timeSeconds,
-          `${fmtTime(first.timeSeconds)}  [CLEANSE]   ${pid(first.sourceName)} dispelled ${removedSpellName} off ${pid(first.targetName)}${petTag}`,
+          `${fmtTime(first.timeSeconds)}  [CLEANSE]   ${pid(first.sourceName)} dispelled ${removedSpellName} off ${pid(first.targetName)}${petTag}${fatalTag}`,
         );
       } else {
         const effects = group
@@ -723,7 +727,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
           .join(', ');
         addEntry(
           first.timeSeconds,
-          `${fmtTime(first.timeSeconds)}  [CLEANSE]   ${pid(first.sourceName)} dispelled ${group.length} effects: ${effects}${petTag}`,
+          `${fmtTime(first.timeSeconds)}  [CLEANSE]   ${pid(first.sourceName)} dispelled ${group.length} effects: ${effects}${petTag}${fatalTag}`,
         );
       }
     }

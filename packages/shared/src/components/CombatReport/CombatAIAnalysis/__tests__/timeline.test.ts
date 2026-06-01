@@ -1094,6 +1094,38 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     expect(result).not.toContain('(pet)');
   });
 
+  it('emits [FATAL DISPEL: ...] when a dispel event was fatal', () => {
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        dispelSummary: {
+          ...makeEmptyDispelSummary(),
+          allyCleanse: [
+            {
+              timeSeconds: 44,
+              dispelSpellId: '115450',
+              dispelSpellName: 'Detox',
+              removedSpellId: '34914',
+              removedSpellName: 'Vampiric Touch',
+              sourceName: 'Feramonk',
+              sourceSpec: 'Mistweaver Monk',
+              targetName: 'Simplesauce',
+              targetSpec: 'Unholy Death Knight',
+              priority: 'High',
+              hasDispelPenalty: false,
+              isSpellSteal: false,
+              isPetDispel: false,
+              wasFatal: true,
+              fatalUnitName: 'Feramonk',
+              fatalUnitSpec: 'Mistweaver Monk',
+            },
+          ],
+        },
+      }),
+    );
+    expect(result).toContain('[CLEANSE]');
+    expect(result).toContain('[FATAL DISPEL: Feramonk]');
+  });
+
   it('F148: annotates [CC ON TEAM] with [CLEANSED] when a friendly dispel removed it', () => {
     const cc: ICCInstance = {
       atSeconds: 10,
