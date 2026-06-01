@@ -3,7 +3,7 @@ import { CombatAbsorbAction, CombatUnitType, getUnitType, ICombatUnit, LogEvent 
 import { getEnglishSpellName, spellEffectData } from '../../../data/spellEffectData';
 import { ccSpellIds } from '../../../data/spellTags';
 import { IPlayerCCTrinketSummary } from '../../../utils/ccTrinketAnalysis';
-import { IFormInterval, IStasisEvent } from '../../../utils/combatStates';
+import { IFormInterval, ISpiritOfRedemptionInterval, IStasisEvent } from '../../../utils/combatStates';
 import {
   fmtTime,
   getUnitHpAtTimestamp,
@@ -92,6 +92,7 @@ export interface BuildMatchTimelineParams {
   gateCcAvoidanceToDanger?: boolean;
   stasisEvents?: IStasisEvent[];
   shapeshiftIntervals?: Array<{ player: ICombatUnit; intervals: IFormInterval[] }>;
+  spiritOfRedemptionIntervals?: Array<{ player: ICombatUnit; intervals: ISpiritOfRedemptionInterval[] }>;
   stateFormat?: 'inline' | 'summary' | 'verbose';
 }
 
@@ -122,6 +123,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     gateCcAvoidanceToDanger,
     stasisEvents = [],
     shapeshiftIntervals = [],
+    spiritOfRedemptionIntervals: _spiritOfRedemptionIntervals = [],
     stateFormat = 'summary',
   } = params;
 
