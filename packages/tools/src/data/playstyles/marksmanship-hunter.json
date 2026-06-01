@@ -1,0 +1,12 @@
+[
+  {
+    "categoryName": "Black Arrow DoT Pressure - Bleak Powder Burst MM",
+    "associatedClusterRank": 1,
+    "keyHealingCD": "Exhilaration (reduced by 30s via Natural Mending), Rejuvenating Wind",
+    "keyDefensiveOrHealAmpCD": "Survival of the Fittest (2 charges via Padded Armor, CD reduced by Lone Survivor), Aspect of the Turtle (reduced by 15s via Born To Be Wild)",
+    "rotationSummary": "This player opens with Rapid Fire to fish for Lock and Load and Bulletstorm procs, layering Black Arrow DoTs and Bleak Powder to sustain persistent shadow-damage pressure while funneling Aimed Shot windows through Precise Shots and Master Marksman resets. Trueshot (further reduced by Calling the Shots) is used to amplify burst windows with Salvo, Volley, and Quick Draw acceleration.",
+    "playstyleDescription": "This build centers on the Blighted Quiver / Black Arrow / Bleak Powder cluster to maintain continuous DoT pressure on targets, supplemented by Umbral Reach for extended range dominance. Trueshot windows are the primary burst phase, stacking Bulletstorm charges through Rapid Fire before detonating with Aimed Shot spam powered by Precise Shots, Lock and Load, and Quick Draw procs. Withering Fire and Unnatural Causes provide passive attrition value between cooldown windows. Defensively, the player runs a layered survival toolkit: double-charge Survival of the Fittest for back-to-back peel, Turtle with reduced CD for hard stops, and Exhilaration with Natural Mending for proactive self-healing. The Specialized Arsenal and Trigger Finger nodes suggest comfort with multi-target or cleave scenarios, while Feathered Frenzy and Windrunner Quiver provide additional Aimed Shot and Rapid Fire throughput. Overall this is a methodical, attrition-oriented MM Hunter who converts sustained shadow DoT pressure into burst kill windows during Trueshot.",
+    "sampleCount": 1,
+    "lastUpdated": "2026-06-01T16:00:39.574Z"
+  }
+]

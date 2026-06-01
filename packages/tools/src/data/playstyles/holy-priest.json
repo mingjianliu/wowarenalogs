@@ -1,0 +1,12 @@
+[
+  {
+    "categoryName": "Passive Holy Priest - Minimal Engagement",
+    "associatedClusterRank": 3,
+    "keyHealingCD": "Unknown - insufficient rotation data",
+    "keyDefensiveOrHealAmpCD": "Unknown - insufficient rotation data",
+    "rotationSummary": "Player opened with a single dispel cast (驅散魔法 / Dispel Magic) and showed no recorded multi-spell combos or crisis responses, suggesting extremely limited active engagement in combat. No meaningful rotation pattern could be established from the available data.",
+    "playstyleDescription": "This player demonstrates virtually no measurable rotation activity in arena. The only recorded opener cast is 驅散魔法 (Dispel Magic), an offensive or defensive utility spell with no follow-up combo sequences detected. There are zero recorded 3-spell combos and zero crisis responses below 40% HP, indicating the player either died very early in encounters, spent most of the session disconnected or disengaged, or is a very new player not yet engaging with Holy Priest's healing and cooldown toolkit. The talent cluster match is rank 13 with an extremely high Jaccard distance of 0.930 to the medoid, meaning their build is highly divergent even from a niche minority cluster taken by only 4% of top players, suggesting a non-standard or auto-assigned talent configuration. Despite talent-modified cooldowns for Desperate Prayer and Divine Hymn being available, there is no evidence these were meaningfully utilized.",
+    "sampleCount": 2,
+    "lastUpdated": "2026-06-01T16:00:59.552Z"
+  }
+]

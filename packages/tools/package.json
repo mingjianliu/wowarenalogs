@@ -26,6 +26,7 @@
     "start:printMatchPrompts": "ts-node --files ./src/printMatchPrompts.ts",
     "start:refreshSpellMetadata": "ts-node --files ./src/refreshSpellMetadata.ts",
     "start:simlog": "dotenv -- ts-node --files ./src/simlog.ts",
+    "start:analyzeSpecPlaystyle": "dotenv -- ts-node --files ./src/analyzeSpecPlaystyle.ts",
     "test:integration": "ts-node --files ./src/__tests__/realDataIntegration.ts"
   },
   "devDependencies": {
