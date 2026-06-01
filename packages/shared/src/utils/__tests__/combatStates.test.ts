@@ -11,7 +11,7 @@ import {
   LogEvent,
 } from '@wowarenalogs/parser';
 
-import { extractShapeshiftIntervals, extractStasisEvents } from '../combatStates';
+import { extractShapeshiftIntervals, extractSpiritOfRedemptionIntervals, extractStasisEvents } from '../combatStates';
 
 describe('combatStates', () => {
   const mockCombat = {
@@ -96,6 +96,33 @@ describe('combatStates', () => {
     expect(intervals).toHaveLength(2);
     expect(intervals[0]).toEqual({ form: 'Bear', startSeconds: 1, endSeconds: 3 });
     expect(intervals[1]).toEqual({ form: 'Cat', startSeconds: 4, endSeconds: 8 });
+  });
+
+  it('extractSpiritOfRedemptionIntervals extracts ghost form intervals', () => {
+    const ghostUnit: ICombatUnit = {
+      ...mockUnit,
+      auraEvents: [
+        {
+          logLine: { event: LogEvent.SPELL_AURA_APPLIED, timestamp: 2000 },
+          spellId: '27827',
+          spellName: 'Spirit of Redemption',
+        } as any,
+        {
+          logLine: { event: LogEvent.SPELL_AURA_REMOVED, timestamp: 5000 },
+          spellId: '27827',
+          spellName: 'Spirit of Redemption',
+        } as any,
+        {
+          logLine: { event: LogEvent.SPELL_AURA_APPLIED, timestamp: 7000 },
+          spellId: '215982',
+          spellName: 'Spirit of Redemption',
+        } as any,
+      ],
+    };
+    const intervals = extractSpiritOfRedemptionIntervals(ghostUnit, mockCombat);
+    expect(intervals).toHaveLength(2);
+    expect(intervals[0]).toEqual({ startSeconds: 2, endSeconds: 5 });
+    expect(intervals[1]).toEqual({ startSeconds: 7, endSeconds: 10 }); // capped at combat.endTime
   });
 
   it('extractStasisEvents extracts buffered spells', () => {

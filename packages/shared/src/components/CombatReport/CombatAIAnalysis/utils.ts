@@ -44,7 +44,9 @@ export { buildMatchTimeline, type BuildMatchTimelineParams } from './matchTimeli
 
 export {
   extractShapeshiftIntervals,
+  extractSpiritOfRedemptionIntervals,
   extractStasisEvents,
   type IFormInterval,
+  type ISpiritOfRedemptionInterval,
   type IStasisEvent,
 } from '../../../utils/combatStates';
