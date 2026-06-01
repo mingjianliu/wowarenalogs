@@ -87,6 +87,23 @@ function wrapPrompt(corePrompt: string): string {
   return `<core_prompt>\n${corePrompt}\n</core_prompt>\n\n<meta_eval_instructions>\n${REFLECTION_INSTRUCTIONS}\n</meta_eval_instructions>`;
 }
 
+export function extractCoreResponse(fullResponse: string): string {
+  const match = fullResponse.match(/<core_response>([\s\S]*?)<\/core_response>/);
+  if (match) {
+    return match[1].trim();
+  }
+  return fullResponse.replace(/<[^>]*>/g, '').trim();
+}
+
+export function extractReflection(fullResponse: string): string {
+  const match = fullResponse.match(/<meta_eval_reflection>([\s\S]*?)<\/meta_eval_reflection>/);
+  return match ? match[1].trim() : '';
+}
+
+export function calculateEstimatedCoreTokens(text: string): number {
+  return Math.ceil(text.length / 3.8);
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const phaseArg = args.find(a => a.startsWith('--phase='));
