@@ -104,6 +104,32 @@ export function calculateEstimatedCoreTokens(text: string): number {
   return Math.ceil(text.length / 3.8);
 }
 
+export function extractVerdict(judgment: string): string {
+  const match = judgment.match(/(?:[*-]?\s*(?:\*\*)?Verdict(?:\*\*)?:\s*|Verdict:\s*)([^\r\n]+)/i);
+  if (match) {
+    let verdict = match[1].trim();
+    if (verdict.startsWith('[') && verdict.endsWith(']')) {
+      verdict = verdict.slice(1, -1).trim();
+    }
+    // Remove trailing period or asterisks
+    verdict = verdict.replace(/[.*]+$/, '').trim();
+    
+    // Normalize to standard options if they are contained in the text
+    const lower = verdict.toLowerCase();
+    if (lower.includes('version a winner') || lower.includes('winner: version a') || lower.includes('winner: a')) {
+      return 'Version A Winner';
+    }
+    if (lower.includes('version b winner') || lower.includes('winner: version b') || lower.includes('winner: b')) {
+      return 'Version B Winner';
+    }
+    if (lower.includes('tie') || lower.includes('equal')) {
+      return 'Tie';
+    }
+    return verdict;
+  }
+  return 'Unknown';
+}
+
 async function callMetaEvalJudge(
   apiKey: string,
   controlResponse: string,
@@ -385,6 +411,89 @@ async function main() {
     }
 
     await fs.writeJson(path.join(treatmentDir, 'tokens.json'), treatmentTokens, { spaces: 2 });
+
+    // Generate comparison report
+    console.log('Synthesizing comparison report...');
+    const controlDir = path.join(OUTPUT_DIR, 'control');
+    const controlTokensPath = path.join(controlDir, 'tokens.json');
+    const treatmentTokensPath = path.join(treatmentDir, 'tokens.json');
+
+    if (!(await fs.pathExists(controlTokensPath))) {
+      console.error('Error: control/tokens.json not found. Make sure control phase ran successfully.');
+      process.exit(1);
+    }
+
+    const controlTokens = await fs.readJson(controlTokensPath);
+    const treatmentTokensObj = await fs.readJson(treatmentTokensPath);
+
+    let totalControlInput = 0;
+    let totalTreatmentInput = 0;
+    let totalControlOutput = 0;
+    let totalTreatmentOutput = 0;
+    const tableRows: string[] = [];
+    const verdictCounts: Record<string, number> = {};
+
+    for (const matchId of state.matchIds) {
+      const cTokens = controlTokens[matchId] || { input: 0, output: 0 };
+      const tTokens = treatmentTokensObj[matchId] || { input: 0, output: 0 };
+
+      // Subtract REFLECTION_INSTRUCTIONS token overhead from treatment input
+      const reflectionInstructionsTokens = calculateEstimatedCoreTokens(REFLECTION_INSTRUCTIONS);
+      const treatmentInputAdjusted = Math.max(0, tTokens.input - reflectionInstructionsTokens);
+
+      // Load raw treatment response to extract reflection output overhead
+      const treatmentRespPath = path.join(treatmentDir, 'responses', `${matchId}.txt`);
+      let rawTreatmentResponse = '';
+      if (await fs.pathExists(treatmentRespPath)) {
+        rawTreatmentResponse = await fs.readFile(treatmentRespPath, 'utf8');
+      }
+
+      const reflectionText = extractReflection(rawTreatmentResponse);
+      const reflectionTokens = calculateEstimatedCoreTokens(reflectionText);
+      const treatmentOutputAdjusted = Math.max(0, tTokens.output - reflectionTokens);
+
+      totalControlInput += cTokens.input;
+      totalTreatmentInput += treatmentInputAdjusted;
+      totalControlOutput += cTokens.output;
+      totalTreatmentOutput += treatmentOutputAdjusted;
+
+      const judgment = finalJudgments[matchId] || '';
+      const verdict = extractVerdict(judgment);
+      const spec = state.specDistribution[matchId] || 'Unknown';
+
+      verdictCounts[verdict] = (verdictCounts[verdict] || 0) + 1;
+
+      tableRows.push(`| ${matchId} | ${spec} | ${cTokens.input} | ${treatmentInputAdjusted} | ${verdict} |`);
+    }
+
+    const numMatches = state.matchIds.length;
+    const avgControlInput = numMatches > 0 ? Math.round(totalControlInput / numMatches) : 0;
+    const avgTreatmentInput = numMatches > 0 ? Math.round(totalTreatmentInput / numMatches) : 0;
+    const avgControlOutput = numMatches > 0 ? Math.round(totalControlOutput / numMatches) : 0;
+    const avgTreatmentOutput = numMatches > 0 ? Math.round(totalTreatmentOutput / numMatches) : 0;
+
+    const report = `# A/B Prompt Comparison Report
+
+## 1. Executive Summary
+- **Matches Evaluated**: ${numMatches}
+- **Avg Input Token Delta (excl. overhead)**: ${avgTreatmentInput - avgControlInput} (${avgControlInput} -> ${avgTreatmentInput})
+- **Avg Output Token Delta (excl. overhead)**: ${avgTreatmentOutput - avgControlOutput} (${avgControlOutput} -> ${avgTreatmentOutput})
+
+## 2. Match Details
+| Match ID | Spec | Control Input | Treatment Input | Verdict |
+| :--- | :--- | :--- | :--- | :--- |
+${tableRows.join('\n')}
+
+## 3. Judge Verdicts
+${Object.entries(verdictCounts)
+  .map(([v, count]) => `- **${v}**: ${count}`)
+  .join('\n')}
+
+See full details in \`packages/tools/local-batch/compare/treatment/judgments/\`.
+`;
+
+    await fs.writeFile(path.join(OUTPUT_DIR, 'comparison-report.md'), report, 'utf8');
+    console.log(`Comparison report synthesized at: ${path.join(OUTPUT_DIR, 'comparison-report.md')}`);
     console.log('Treatment phase completed successfully.');
   }
 }
