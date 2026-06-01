@@ -70,6 +70,23 @@ async function callClaudeAPI(
   };
 }
 
+const REFLECTION_INSTRUCTIONS = `You are evaluating an experimental modification to the coaching instructions.
+Please read the combat log prompt below, which is wrapped in a <core_prompt> tag.
+
+When generating your analysis, format your output as follows:
+1. Wrap your normal, customer-facing coaching feedback in a <core_response> tag. This must contain the complete coaching feedback formatted according to the instructions in the prompt.
+2. After the <core_response> tag, wrap a meta-evaluation of your own response in a <meta_eval_reflection> tag.
+
+Inside the <meta_eval_reflection> tag, answer:
+1. **Feature Usefulness**: How directly did the new prompt data help analyze the outcome?
+2. **Response Bias**: Did the injection bias your analysis towards certain players or classes?
+3. **Noise & Confusion**: Did any of the new information cause distraction, timing contradictions, or logic errors?
+4. **Self-Reflection**: How well did you follow the instructions? What elements of the analysis were most and least helpful? Any self-criticism or suggestions for improvement of the prompt structure or system instructions.`;
+
+function wrapPrompt(corePrompt: string): string {
+  return `<core_prompt>\n${corePrompt}\n</core_prompt>\n\n<meta_eval_instructions>\n${REFLECTION_INSTRUCTIONS}\n</meta_eval_instructions>`;
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const phaseArg = args.find(a => a.startsWith('--phase='));
@@ -239,6 +256,59 @@ async function main() {
     console.log('Control phase completed successfully.');
   } else {
     console.log('Starting Treatment Phase...');
+
+    if (!(await fs.pathExists(STATE_FILE))) {
+      console.error('No state.json found. Run control phase first.');
+      process.exit(1);
+    }
+    const state = (await fs.readJson(STATE_FILE)) as State;
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      console.error('ANTHROPIC_API_KEY env variable missing.');
+      process.exit(1);
+    }
+
+    const treatmentDir = path.join(OUTPUT_DIR, 'treatment');
+    await fs.ensureDir(path.join(treatmentDir, 'prompts'));
+    await fs.ensureDir(path.join(treatmentDir, 'responses'));
+
+    const treatmentTokens: Record<string, { input: number; output: number }> = {};
+    const dryRun = args.includes('--dry-run') || apiKey === 'mock_key';
+
+    for (const matchId of state.matchIds) {
+      const logPath = path.join(RAW_LOGS_DIR, `${matchId}.log`);
+      const text = await fs.readFile(logPath, 'utf8');
+      const combats = await parseLogText(text);
+      const combat = combats.find(c => getHealerSpec(c) !== null) ?? combats[0];
+
+      if (!combat) {
+        console.warn(`No valid combat found in log for match ${matchId}`);
+        continue;
+      }
+
+      const corePrompt = buildMatchPromptNew(combat, true);
+      const wrappedPrompt = wrapPrompt(corePrompt);
+      await fs.writeFile(path.join(treatmentDir, 'prompts', `${matchId}.txt`), wrappedPrompt, 'utf8');
+
+      let res: { text: string; inputTokens: number; outputTokens: number };
+      if (dryRun) {
+        console.log(`[DRY RUN] Skipping Claude API call for ${matchId}`);
+        res = {
+          text: `<core_response>Mock treatment response text for ${matchId}</core_response>\n<meta_eval_reflection>Mock treatment reflection for ${matchId}</meta_eval_reflection>`,
+          inputTokens: 120,
+          outputTokens: 60,
+        };
+      } else {
+        console.log(`Running Claude evaluation on Treatment for ${matchId}...`);
+        res = await callClaudeAPI(apiKey, SYSTEM_PROMPT, wrappedPrompt);
+      }
+
+      await fs.writeFile(path.join(treatmentDir, 'responses', `${matchId}.txt`), res.text, 'utf8');
+      treatmentTokens[matchId] = { input: res.inputTokens, output: res.outputTokens };
+    }
+
+    await fs.writeJson(path.join(treatmentDir, 'tokens.json'), treatmentTokens, { spaces: 2 });
+    console.log('Treatment phase completed successfully.');
   }
 }
 

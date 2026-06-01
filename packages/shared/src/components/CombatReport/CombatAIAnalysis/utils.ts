@@ -41,3 +41,10 @@ export {
 } from './resourceSnapshot';
 
 export { buildMatchTimeline, type BuildMatchTimelineParams } from './matchTimeline';
+
+export {
+  extractShapeshiftIntervals,
+  extractStasisEvents,
+  type IFormInterval,
+  type IStasisEvent,
+} from '../../../utils/combatStates';

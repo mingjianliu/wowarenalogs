@@ -34,6 +34,7 @@ import os from 'os';
 import path from 'path';
 
 import {
+  buildJsonSituationSnapshot,
   buildMatchArc,
   buildMatchTimeline,
   BuildMatchTimelineParams,
@@ -42,7 +43,6 @@ import {
 } from '../../shared/src/components/CombatReport/CombatAIAnalysis/utils';
 import { JSON_SYSTEM_PROMPT, NEW_SYSTEM_PROMPT, SYSTEM_PROMPT } from '../../shared/src/prompts/analyzeSystemPrompts';
 import { analyzePlayerCCAndTrinket, formatCCTrinketForContext } from '../../shared/src/utils/ccTrinketAnalysis';
-import { extractShapeshiftIntervals, extractStasisEvents } from '../../shared/src/utils/combatStates';
 import {
   annotateDefensiveTimings,
   computePressureWindows,
@@ -300,9 +300,9 @@ export async function callClaude(
   prompt: string,
   mode: 'standard' | 'test' | 'new' | 'hybrid' | 'baseline' | 'json' = 'standard',
 ): Promise<string> {
-  const apiKey = process.env.ANTHROPHIC_API_KEY;
+  const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return '[AI SKIPPED — set ANTHROPHIC_API_KEY env var to enable]';
+    return '[AI SKIPPED — set ANTHROPIC_API_KEY env var to enable]';
   }
   const client = new Anthropic({ apiKey });
   const systemPrompt =
@@ -330,8 +330,8 @@ export async function callClaude(
 }
 
 async function callClaudeJudge(matchPrompt: string, responseA: string, responseB: string): Promise<string> {
-  const apiKey = process.env.ANTHROPHIC_API_KEY;
-  if (!apiKey) return '[AI SKIPPED — set ANTHROPHIC_API_KEY env var to enable]';
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return '[AI SKIPPED — set ANTHROPIC_API_KEY env var to enable]';
   const client = new Anthropic({ apiKey });
 
   const judgeSystem = `You are a prompt engineer evaluating two AI-generated WoW arena match analyses produced from identical match data. Your job is to give a blunt, concrete verdict on which prompt design produced better output. You have no stake in either approach — judge purely on output quality.`;
@@ -376,8 +376,8 @@ Then:
 }
 
 async function callClaudeJsonJudge(responseA: string, responseB: string): Promise<string> {
-  const apiKey = process.env.ANTHROPHIC_API_KEY;
-  if (!apiKey) return '[AI SKIPPED — set ANTHROPHIC_API_KEY env var to enable]';
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return '[AI SKIPPED — set ANTHROPIC_API_KEY env var to enable]';
   const client = new Anthropic({ apiKey });
 
   const judgeSystem = `You are a prompt engineer evaluating two AI-generated WoW arena match analyses produced from identical match data but different snapshot formats. Your job is to give a blunt, concrete verdict on which format produced better counterfactual reasoning. You have no stake in either approach.`;
@@ -427,8 +427,8 @@ async function callClaudeCcAvoidJudge(
   responseB: string,
   responseC: string,
 ): Promise<string> {
-  const apiKey = process.env.ANTHROPHIC_API_KEY;
-  if (!apiKey) return '[AI SKIPPED — set ANTHROPHIC_API_KEY env var to enable]';
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return '[AI SKIPPED — set ANTHROPIC_API_KEY env var to enable]';
   const client = new Anthropic({ apiKey });
 
   const judgeSystem = `You are a prompt engineer evaluating three AI-generated WoW arena match analyses produced from identical match data but different timeline configurations. Your job is to give a blunt, concrete verdict on which format produced better counterfactual reasoning and coaching feedback, and check for bias or noise.`;
@@ -969,7 +969,7 @@ export function buildMatchPrompt(combat: ParsedCombat, forceHealer = false): str
 
   const enemyEndParts = enemies.map((u) => {
     const death = enemyDeaths.find((d) => d.name === u.name);
-    if (death) return `${specToString(u.spec)} (${u.name}): dead at ${fmtTime(d.atSeconds)}`;
+    if (death) return `${specToString(u.spec)} (${u.name}): dead at ${fmtTime(death.atSeconds)}`;
     const pct = getHpPercentAtTime(u, durationSeconds, combat.startTime);
     const clamped = pct !== null ? Math.min(Math.round(pct), 100) : null;
     return `${specToString(u.spec)} (${u.name}): ${clamped !== null ? `${clamped}% HP` : '? HP'}`;
@@ -989,7 +989,6 @@ export function buildMatchPromptNew(
   combat: ParsedCombat,
   forceHealer = false,
   ccAvoidanceMode: 'none' | 'continuous' | 'gated' = 'continuous',
-  stateFormat: 'inline' | 'summary' | 'verbose' = 'summary',
 ): string {
   const allUnits = Object.values(combat.units);
   const friends = allUnits.filter(
@@ -1171,12 +1170,6 @@ export function buildMatchPromptNew(
   lines.push('');
 
   // Timeline
-  const stasisEvents = extractStasisEvents(owner, combat);
-  const shapeshiftIntervals = [...combat.units.values()]
-    .filter((u) => u.type === CombatUnitType.Player)
-    .map((u) => ({ player: u, intervals: extractShapeshiftIntervals(u, combat) }))
-    .filter((x) => x.intervals.length > 0);
-
   const params: BuildMatchTimelineParams = {
     owner,
     ownerSpec,
@@ -1203,9 +1196,6 @@ export function buildMatchPromptNew(
     outgoingCCChains,
     bracket: combat.startInfo?.bracket ?? '3v3',
     gateCcAvoidanceToDanger: ccAvoidanceMode === 'gated',
-    stasisEvents,
-    shapeshiftIntervals,
-    stateFormat,
   };
   lines.push('<match_timeline>');
   lines.push(
@@ -1225,11 +1215,7 @@ export function buildMatchPromptNew(
 // Build JSON snapshot prompt — same as buildMatchPromptNew() but uses [SIT] JSON format
 // ---------------------------------------------------------------------------
 
-export function buildMatchPromptJson(
-  combat: ParsedCombat,
-  forceHealer = false,
-  stateFormat: 'inline' | 'summary' | 'verbose' = 'summary',
-): string {
+export function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false): string {
   const allUnits = Object.values(combat.units);
   const friends = allUnits.filter(
     (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
@@ -1410,22 +1396,13 @@ export function buildMatchPromptJson(
   lines.push('');
 
   // Timeline — with JSON situation snapshot function
-  const stasisEvents = extractStasisEvents(owner, combat);
-  const shapeshiftIntervals = [...combat.units.values()]
-    .filter((u) => u.type === CombatUnitType.Player)
-    .map((u) => ({ player: u, intervals: extractShapeshiftIntervals(u, combat) }))
-    .filter((x) => x.intervals.length > 0);
-
   const params: BuildMatchTimelineParams = {
     owner,
     ownerSpec,
     ownerCDs,
     teammateCDs,
     enemyCDTimeline,
-    ccTrinketSummaries:
-      ccAvoidanceMode === 'none'
-        ? ccTrinketSummaries.map((s) => ({ ...s, ccAvoidedInstances: [] }))
-        : ccTrinketSummaries,
+    ccTrinketSummaries,
     dispelSummary,
     friendlyDeaths,
     enemyDeaths,
@@ -1441,727 +1418,7 @@ export function buildMatchPromptJson(
     enemyIdMap,
     outgoingCCChains,
     bracket: combat.startInfo?.bracket ?? '3v3',
-    gateCcAvoidanceToDanger: ccAvoidanceMode === 'gated',
-    stasisEvents,
-    shapeshiftIntervals,
-    stateFormat,
-  };
-  lines.push('<match_timeline>');
-  lines.push(
-    buildMatchTimeline(params)
-      .split('\n')
-      .map((l) => `  ${l}`)
-      .join('\n'),
-  );
-  lines.push('</match_timeline>');
-  lines.push('');
-  lines.push('</match_context>');
-
-  return lines.join('\n');
-}
-
-// ---------------------------------------------------------------------------
-// Build JSON snapshot prompt — same as buildMatchPromptNew() but uses [SIT] JSON format
-// ---------------------------------------------------------------------------
-
-export function buildMatchPromptJson(
-  combat: ParsedCombat,
-  forceHealer = false,
-  stateFormat: 'inline' | 'summary' | 'verbose' = 'summary',
-): string {
-  const allUnits = Object.values(combat.units);
-  const friends = allUnits.filter(
-    (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
-  ) as ICombatUnit[];
-  const enemies = allUnits.filter(
-    (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Hostile,
-  ) as ICombatUnit[];
-  const friendlyPets = allUnits.filter(
-    (u) =>
-      (u.type === CombatUnitType.Pet || u.type === CombatUnitType.Guardian) &&
-      u.reaction === CombatUnitReaction.Friendly,
-  ) as ICombatUnit[];
-
-  if (friends.length === 0 || enemies.length === 0) return '';
-  const durationSeconds = (combat.endTime - combat.startTime) / 1000;
-  if (durationSeconds < 10) return '';
-
-  const byPlayerId = friends.find((p) => p.id === combat.playerId);
-  const owner = byPlayerId
-    ? byPlayerId
-    : forceHealer
-      ? (friends.find((p) => isHealerSpec(p.spec)) ?? friends[0])
-      : (friends.find((p) => !isHealerSpec(p.spec)) ?? friends.find((p) => isHealerSpec(p.spec)) ?? friends[0]);
-
-  const ownerSpec = specToString(owner.spec);
-  const isHealer = isHealerSpec(owner.spec);
-  const myTeam = friends.map((p) => specToString(p.spec)).join(', ');
-  const enemyTeam = enemies.map((p) => specToString(p.spec)).join(', ');
-
-  const combatAny = combat as unknown as Record<string, unknown>;
-  const playerWon =
-    typeof combatAny['winningTeamId'] === 'string' ? combatAny['winningTeamId'] === combat.playerTeamId : null;
-  const resultStr = playerWon === true ? 'Win' : playerWon === false ? 'Loss' : 'Unknown';
-
-  const ownerCDs = extractMajorCooldowns(owner, combat);
-  const teammateCDs = friends
-    .filter((p) => p.id !== owner.id)
-    .map((p) => ({ player: p, spec: specToString(p.spec), cds: extractMajorCooldowns(p, combat) }));
-  const enemyCDTimeline = reconstructEnemyCDTimeline(enemies, combat, owner, friends);
-  const pressureWindows = computePressureWindows(friends, combat);
-  const healingGaps = isHealer ? detectHealingGaps(owner, friends, enemies, combat) : [];
-  const dispelSummary = reconstructDispelSummary(friends, enemies, combat, friendlyPets);
-  const ccTrinketSummaries = friends.map((p) => analyzePlayerCCAndTrinket(p, enemies, combat));
-  const outgoingCCChains = analyzeOutgoingCCChains(friends, enemies, combat);
-  const ownerCanPurge = canOffensivePurge(owner);
-  const teamPurgers = friends.filter((p) => p.id !== owner.id && canOffensivePurge(p)).map((p) => specToString(p.spec));
-
-  const friendlyDeaths = friends
-    .flatMap((p) => [
-      ...p.deathRecords.map((d) => ({
-        spec: specToString(p.spec),
-        name: p.name,
-        atSeconds: (d.timestamp - combat.startTime) / 1000,
-      })),
-      // B17: include Spirit of Redemption deaths (UNIT_DIED with unconsciousKill=1).
-      // Holy Priests who die with SoR have no normal deathRecord — only a consciousDeathRecord.
-      ...(p.spec === CombatUnitSpec.Priest_Holy
-        ? p.consciousDeathRecords.map((d) => ({
-            spec: specToString(p.spec),
-            name: p.name,
-            atSeconds: (d.timestamp - combat.startTime) / 1000,
-            note: 'Spirit of Redemption — healer casting as ghost',
-          }))
-        : []),
-    ])
-    .sort((a, b) => a.atSeconds - b.atSeconds);
-
-  const enemyDeaths = enemies
-    .flatMap((p) =>
-      p.deathRecords.map((d) => ({
-        spec: specToString(p.spec),
-        name: p.name,
-        atSeconds: (d.timestamp - combat.startTime) / 1000,
-      })),
-    )
-    .sort((a, b) => a.atSeconds - b.atSeconds);
-
-  const lines: string[] = [];
-
-  lines.push('<match_context>');
-  lines.push('');
-
-  // Metadata
-  lines.push('<metadata>');
-  lines.push(
-    `  Spec: ${ownerSpec}${isHealer ? ' (Healer)' : ''} | Bracket: ${combat.startInfo?.bracket ?? 'Unknown'} | Result: ${resultStr} | Duration: ${fmtTime(durationSeconds)}`,
-  );
-  lines.push(`  My team: ${myTeam}`);
-  lines.push(`  Enemy team: ${enemyTeam}`);
-  // B21: warn when team roster is incomplete (e.g. 2 players logged in a 3v3 match)
-  const bracketSize = combat.startInfo?.bracket === '2v2' ? 2 : combat.startInfo?.bracket === '3v3' ? 3 : null;
-  if (bracketSize !== null && friends.length < bracketSize) {
-    lines.push(
-      `  WARNING: only ${friends.length}/${bracketSize} friendly players recorded (likely disconnect or late-join). Do not evaluate team composition or teammate coordination — roster data is incomplete.`,
-    );
-  }
-  lines.push('</metadata>');
-  lines.push('');
-
-  lines.push('<dictionary>');
-  lines.push('  Damage units: M = Million (1,000,000), k = Thousand (1,000)');
-  lines.push('  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage');
-  lines.push('</dictionary>');
-  lines.push('');
-
-  lines.push('<purge_responsibility>');
-  lines.push(`  Log owner (${ownerSpec}): ${ownerCanPurge ? 'CAN offensive purge' : 'CANNOT offensive purge'}`);
-  lines.push(`  Team purgers: ${teamPurgers.length > 0 ? teamPurgers.join(', ') : 'none'}`);
-  lines.push('</purge_responsibility>');
-  lines.push('');
-
-  const specBaselineLines = formatSpecBaselines(ownerSpec, ownerCDs, benchmarks);
-  if (specBaselineLines.length > 0) {
-    lines.push('<spec_baselines>');
-    lines.push(...specBaselineLines.map((l) => `  ${l}`));
-    lines.push('</spec_baselines>');
-    lines.push('');
-  }
-
-  const dtpsBaselineLines = formatDTPSBaselines(
-    friends.map((p) => specToString(p.spec)),
-    benchmarks,
-  );
-  if (dtpsBaselineLines.length > 0) {
-    lines.push('<dtps_baselines>');
-    lines.push(...dtpsBaselineLines.map((l) => `  ${l}`));
-    lines.push('</dtps_baselines>');
-    lines.push('');
-  }
-
-  const dampeningLines = formatDampeningForContext(
-    combat.startInfo?.bracket ?? '3v3',
-    [...friends, ...enemies],
-    combat.startTime,
-    combat.endTime,
-  );
-  if (dampeningLines.length > 0) {
-    lines.push('<dampening_curve>');
-    lines.push(...dampeningLines.map((l) => `  ${l}`));
-    lines.push('</dampening_curve>');
-    lines.push('');
-  }
-
-  const ccLines = formatOutgoingCCChainsForContext(outgoingCCChains);
-  if (ccLines.length > 0) {
-    lines.push('<outgoing_cc_chains>');
-    lines.push(...ccLines.map((l) => `  ${l}`));
-    lines.push('</outgoing_cc_chains>');
-    lines.push('');
-  }
-
-  const enemyCDTimelineLines = formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds);
-  if (enemyCDTimelineLines.length > 0) {
-    lines.push('<enemy_cooldown_timeline>');
-    lines.push(...enemyCDTimelineLines.map((l) => `  ${l}`));
-    lines.push('</enemy_cooldown_timeline>');
-    lines.push('');
-  }
-
-  const killAttemptWindowsLines = formatKillAttemptWindowsForContext(
-    enemyCDTimeline.alignedBurstWindows,
-    pressureWindows,
-  );
-  if (killAttemptWindowsLines.length > 0) {
-    lines.push('<kill_attempt_windows>');
-    lines.push(...killAttemptWindowsLines.map((l) => `  ${l}`));
-    lines.push('</kill_attempt_windows>');
-    lines.push('');
-  }
-
-  // Player loadout
-  const {
-    text: loadoutText,
-    playerIdMap,
-    enemyIdMap,
-  } = buildPlayerLoadout(owner, ownerSpec, ownerCDs, teammateCDs, enemyCDTimeline, enemies);
-  lines.push(loadoutText);
-  lines.push('');
-
-  // Timeline — with JSON situation snapshot function
-  const stasisEvents = extractStasisEvents(owner, combat);
-  const shapeshiftIntervals = [...combat.units.values()]
-    .filter((u) => u.type === CombatUnitType.Player)
-    .map((u) => ({ player: u, intervals: extractShapeshiftIntervals(u, combat) }))
-    .filter((x) => x.intervals.length > 0);
-
-  const params: BuildMatchTimelineParams = {
-    owner,
-    ownerSpec,
-    ownerCDs,
-    teammateCDs,
-    enemyCDTimeline,
-    ccTrinketSummaries:
-      ccAvoidanceMode === 'none'
-        ? ccTrinketSummaries.map((s) => ({ ...s, ccAvoidedInstances: [] }))
-        : ccTrinketSummaries,
-    dispelSummary,
-    friendlyDeaths,
-    enemyDeaths,
-    pressureWindows,
-    healingGaps,
-    friends,
-    enemies,
-    allUnits,
-    matchStartMs: combat.startTime,
-    matchEndMs: combat.endTime,
-    isHealer,
-    playerIdMap,
-    enemyIdMap,
-    outgoingCCChains,
-    bracket: combat.startInfo?.bracket ?? '3v3',
-    gateCcAvoidanceToDanger: ccAvoidanceMode === 'gated',
-    stasisEvents,
-    shapeshiftIntervals,
-    stateFormat,
-  };
-  lines.push('<match_timeline>');
-  lines.push(
-    buildMatchTimeline(params)
-      .split('\n')
-      .map((l) => `  ${l}`)
-      .join('\n'),
-  );
-  lines.push('</match_timeline>');
-  lines.push('');
-  lines.push('</match_context>');
-
-  return lines.join('\n');
-}
-
-// ---------------------------------------------------------------------------
-// Build JSON snapshot prompt — same as buildMatchPromptNew() but uses [SIT] JSON format
-// ---------------------------------------------------------------------------
-
-export function buildMatchPromptJson(
-  combat: ParsedCombat,
-  forceHealer = false,
-  stateFormat: 'inline' | 'summary' | 'verbose' = 'summary',
-): string {
-  const allUnits = Object.values(combat.units);
-  const friends = allUnits.filter(
-    (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
-  ) as ICombatUnit[];
-  const enemies = allUnits.filter(
-    (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Hostile,
-  ) as ICombatUnit[];
-  const friendlyPets = allUnits.filter(
-    (u) =>
-      (u.type === CombatUnitType.Pet || u.type === CombatUnitType.Guardian) &&
-      u.reaction === CombatUnitReaction.Friendly,
-  ) as ICombatUnit[];
-
-  if (friends.length === 0 || enemies.length === 0) return '';
-  const durationSeconds = (combat.endTime - combat.startTime) / 1000;
-  if (durationSeconds < 10) return '';
-
-  const byPlayerId = friends.find((p) => p.id === combat.playerId);
-  const owner = byPlayerId
-    ? byPlayerId
-    : forceHealer
-      ? (friends.find((p) => isHealerSpec(p.spec)) ?? friends[0])
-      : (friends.find((p) => !isHealerSpec(p.spec)) ?? friends.find((p) => isHealerSpec(p.spec)) ?? friends[0]);
-
-  const ownerSpec = specToString(owner.spec);
-  const isHealer = isHealerSpec(owner.spec);
-  const myTeam = friends.map((p) => specToString(p.spec)).join(', ');
-  const enemyTeam = enemies.map((p) => specToString(p.spec)).join(', ');
-
-  const combatAny = combat as unknown as Record<string, unknown>;
-  const playerWon =
-    typeof combatAny['winningTeamId'] === 'string' ? combatAny['winningTeamId'] === combat.playerTeamId : null;
-  const resultStr = playerWon === true ? 'Win' : playerWon === false ? 'Loss' : 'Unknown';
-
-  const ownerCDs = extractMajorCooldowns(owner, combat);
-  const teammateCDs = friends
-    .filter((p) => p.id !== owner.id)
-    .map((p) => ({ player: p, spec: specToString(p.spec), cds: extractMajorCooldowns(p, combat) }));
-  const enemyCDTimeline = reconstructEnemyCDTimeline(enemies, combat, owner, friends);
-  const pressureWindows = computePressureWindows(friends, combat);
-  const healingGaps = isHealer ? detectHealingGaps(owner, friends, enemies, combat) : [];
-  const dispelSummary = reconstructDispelSummary(friends, enemies, combat, friendlyPets);
-  const ccTrinketSummaries = friends.map((p) => analyzePlayerCCAndTrinket(p, enemies, combat));
-  const outgoingCCChains = analyzeOutgoingCCChains(friends, enemies, combat);
-  const ownerCanPurge = canOffensivePurge(owner);
-  const teamPurgers = friends.filter((p) => p.id !== owner.id && canOffensivePurge(p)).map((p) => specToString(p.spec));
-
-  const friendlyDeaths = friends
-    .flatMap((p) => [
-      ...p.deathRecords.map((d) => ({
-        spec: specToString(p.spec),
-        name: p.name,
-        atSeconds: (d.timestamp - combat.startTime) / 1000,
-      })),
-      // B17: include Spirit of Redemption deaths (UNIT_DIED with unconsciousKill=1).
-      // Holy Priests who die with SoR have no normal deathRecord — only a consciousDeathRecord.
-      ...(p.spec === CombatUnitSpec.Priest_Holy
-        ? p.consciousDeathRecords.map((d) => ({
-            spec: specToString(p.spec),
-            name: p.name,
-            atSeconds: (d.timestamp - combat.startTime) / 1000,
-            note: 'Spirit of Redemption — healer casting as ghost',
-          }))
-        : []),
-    ])
-    .sort((a, b) => a.atSeconds - b.atSeconds);
-
-  const enemyDeaths = enemies
-    .flatMap((p) =>
-      p.deathRecords.map((d) => ({
-        spec: specToString(p.spec),
-        name: p.name,
-        atSeconds: (d.timestamp - combat.startTime) / 1000,
-      })),
-    )
-    .sort((a, b) => a.atSeconds - b.atSeconds);
-
-  const lines: string[] = [];
-
-  lines.push('<match_context>');
-  lines.push('');
-
-  // Metadata
-  lines.push('<metadata>');
-  lines.push(
-    `  Spec: ${ownerSpec}${isHealer ? ' (Healer)' : ''} | Bracket: ${combat.startInfo?.bracket ?? 'Unknown'} | Result: ${resultStr} | Duration: ${fmtTime(durationSeconds)}`,
-  );
-  lines.push(`  My team: ${myTeam}`);
-  lines.push(`  Enemy team: ${enemyTeam}`);
-  // B21: warn when team roster is incomplete (e.g. 2 players logged in a 3v3 match)
-  const bracketSize = combat.startInfo?.bracket === '2v2' ? 2 : combat.startInfo?.bracket === '3v3' ? 3 : null;
-  if (bracketSize !== null && friends.length < bracketSize) {
-    lines.push(
-      `  WARNING: only ${friends.length}/${bracketSize} friendly players recorded (likely disconnect or late-join). Do not evaluate team composition or teammate coordination — roster data is incomplete.`,
-    );
-  }
-  lines.push('</metadata>');
-  lines.push('');
-
-  lines.push('<dictionary>');
-  lines.push('  Damage units: M = Million (1,000,000), k = Thousand (1,000)');
-  lines.push('  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage');
-  lines.push('</dictionary>');
-  lines.push('');
-
-  lines.push('<purge_responsibility>');
-  lines.push(`  Log owner (${ownerSpec}): ${ownerCanPurge ? 'CAN offensive purge' : 'CANNOT offensive purge'}`);
-  lines.push(`  Team purgers: ${teamPurgers.length > 0 ? teamPurgers.join(', ') : 'none'}`);
-  lines.push('</purge_responsibility>');
-  lines.push('');
-
-  const specBaselineLines = formatSpecBaselines(ownerSpec, ownerCDs, benchmarks);
-  if (specBaselineLines.length > 0) {
-    lines.push('<spec_baselines>');
-    lines.push(...specBaselineLines.map((l) => `  ${l}`));
-    lines.push('</spec_baselines>');
-    lines.push('');
-  }
-
-  const dtpsBaselineLines = formatDTPSBaselines(
-    friends.map((p) => specToString(p.spec)),
-    benchmarks,
-  );
-  if (dtpsBaselineLines.length > 0) {
-    lines.push('<dtps_baselines>');
-    lines.push(...dtpsBaselineLines.map((l) => `  ${l}`));
-    lines.push('</dtps_baselines>');
-    lines.push('');
-  }
-
-  const dampeningLines = formatDampeningForContext(
-    combat.startInfo?.bracket ?? '3v3',
-    [...friends, ...enemies],
-    combat.startTime,
-    combat.endTime,
-  );
-  if (dampeningLines.length > 0) {
-    lines.push('<dampening_curve>');
-    lines.push(...dampeningLines.map((l) => `  ${l}`));
-    lines.push('</dampening_curve>');
-    lines.push('');
-  }
-
-  const ccLines = formatOutgoingCCChainsForContext(outgoingCCChains);
-  if (ccLines.length > 0) {
-    lines.push('<outgoing_cc_chains>');
-    lines.push(...ccLines.map((l) => `  ${l}`));
-    lines.push('</outgoing_cc_chains>');
-    lines.push('');
-  }
-
-  const enemyCDTimelineLines = formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds);
-  if (enemyCDTimelineLines.length > 0) {
-    lines.push('<enemy_cooldown_timeline>');
-    lines.push(...enemyCDTimelineLines.map((l) => `  ${l}`));
-    lines.push('</enemy_cooldown_timeline>');
-    lines.push('');
-  }
-
-  const killAttemptWindowsLines = formatKillAttemptWindowsForContext(
-    enemyCDTimeline.alignedBurstWindows,
-    pressureWindows,
-  );
-  if (killAttemptWindowsLines.length > 0) {
-    lines.push('<kill_attempt_windows>');
-    lines.push(...killAttemptWindowsLines.map((l) => `  ${l}`));
-    lines.push('</kill_attempt_windows>');
-    lines.push('');
-  }
-
-  // Player loadout
-  const {
-    text: loadoutText,
-    playerIdMap,
-    enemyIdMap,
-  } = buildPlayerLoadout(owner, ownerSpec, ownerCDs, teammateCDs, enemyCDTimeline, enemies);
-  lines.push(loadoutText);
-  lines.push('');
-
-  // Timeline — with JSON situation snapshot function
-  const stasisEvents = extractStasisEvents(owner, combat);
-  const shapeshiftIntervals = [...combat.units.values()]
-    .filter((u) => u.type === CombatUnitType.Player)
-    .map((u) => ({ player: u, intervals: extractShapeshiftIntervals(u, combat) }))
-    .filter((x) => x.intervals.length > 0);
-
-  const params: BuildMatchTimelineParams = {
-    owner,
-    ownerSpec,
-    ownerCDs,
-    teammateCDs,
-    enemyCDTimeline,
-    ccTrinketSummaries:
-      ccAvoidanceMode === 'none'
-        ? ccTrinketSummaries.map((s) => ({ ...s, ccAvoidedInstances: [] }))
-        : ccTrinketSummaries,
-    dispelSummary,
-    friendlyDeaths,
-    enemyDeaths,
-    pressureWindows,
-    healingGaps,
-    friends,
-    enemies,
-    allUnits,
-    matchStartMs: combat.startTime,
-    matchEndMs: combat.endTime,
-    isHealer,
-    playerIdMap,
-    enemyIdMap,
-    outgoingCCChains,
-    bracket: combat.startInfo?.bracket ?? '3v3',
-    gateCcAvoidanceToDanger: ccAvoidanceMode === 'gated',
-    stasisEvents,
-    shapeshiftIntervals,
-    stateFormat,
-  };
-  lines.push('<match_timeline>');
-  lines.push(
-    buildMatchTimeline(params)
-      .split('\n')
-      .map((l) => `  ${l}`)
-      .join('\n'),
-  );
-  lines.push('</match_timeline>');
-  lines.push('');
-  lines.push('</match_context>');
-
-  return lines.join('\n');
-}
-
-// ---------------------------------------------------------------------------
-// Build JSON snapshot prompt — same as buildMatchPromptNew() but uses [SIT] JSON format
-// ---------------------------------------------------------------------------
-
-export function buildMatchPromptJson(
-  combat: ParsedCombat,
-  forceHealer = false,
-  stateFormat: 'inline' | 'summary' | 'verbose' = 'summary',
-): string {
-  const allUnits = Object.values(combat.units);
-  const friends = allUnits.filter(
-    (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
-  ) as ICombatUnit[];
-  const enemies = allUnits.filter(
-    (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Hostile,
-  ) as ICombatUnit[];
-  const friendlyPets = allUnits.filter(
-    (u) =>
-      (u.type === CombatUnitType.Pet || u.type === CombatUnitType.Guardian) &&
-      u.reaction === CombatUnitReaction.Friendly,
-  ) as ICombatUnit[];
-
-  if (friends.length === 0 || enemies.length === 0) return '';
-  const durationSeconds = (combat.endTime - combat.startTime) / 1000;
-  if (durationSeconds < 10) return '';
-
-  const byPlayerId = friends.find((p) => p.id === combat.playerId);
-  const owner = byPlayerId
-    ? byPlayerId
-    : forceHealer
-      ? (friends.find((p) => isHealerSpec(p.spec)) ?? friends[0])
-      : (friends.find((p) => !isHealerSpec(p.spec)) ?? friends.find((p) => isHealerSpec(p.spec)) ?? friends[0]);
-
-  const ownerSpec = specToString(owner.spec);
-  const isHealer = isHealerSpec(owner.spec);
-  const myTeam = friends.map((p) => specToString(p.spec)).join(', ');
-  const enemyTeam = enemies.map((p) => specToString(p.spec)).join(', ');
-
-  const combatAny = combat as unknown as Record<string, unknown>;
-  const playerWon =
-    typeof combatAny['winningTeamId'] === 'string' ? combatAny['winningTeamId'] === combat.playerTeamId : null;
-  const resultStr = playerWon === true ? 'Win' : playerWon === false ? 'Loss' : 'Unknown';
-
-  const ownerCDs = extractMajorCooldowns(owner, combat);
-  const teammateCDs = friends
-    .filter((p) => p.id !== owner.id)
-    .map((p) => ({ player: p, spec: specToString(p.spec), cds: extractMajorCooldowns(p, combat) }));
-  const enemyCDTimeline = reconstructEnemyCDTimeline(enemies, combat, owner, friends);
-  const pressureWindows = computePressureWindows(friends, combat);
-  const healingGaps = isHealer ? detectHealingGaps(owner, friends, enemies, combat) : [];
-  const dispelSummary = reconstructDispelSummary(friends, enemies, combat, friendlyPets);
-  const ccTrinketSummaries = friends.map((p) => analyzePlayerCCAndTrinket(p, enemies, combat));
-  const outgoingCCChains = analyzeOutgoingCCChains(friends, enemies, combat);
-  const ownerCanPurge = canOffensivePurge(owner);
-  const teamPurgers = friends.filter((p) => p.id !== owner.id && canOffensivePurge(p)).map((p) => specToString(p.spec));
-
-  const friendlyDeaths = friends
-    .flatMap((p) => [
-      ...p.deathRecords.map((d) => ({
-        spec: specToString(p.spec),
-        name: p.name,
-        atSeconds: (d.timestamp - combat.startTime) / 1000,
-      })),
-      // B17: include Spirit of Redemption deaths (UNIT_DIED with unconsciousKill=1).
-      // Holy Priests who die with SoR have no normal deathRecord — only a consciousDeathRecord.
-      ...(p.spec === CombatUnitSpec.Priest_Holy
-        ? p.consciousDeathRecords.map((d) => ({
-            spec: specToString(p.spec),
-            name: p.name,
-            atSeconds: (d.timestamp - combat.startTime) / 1000,
-            note: 'Spirit of Redemption — healer casting as ghost',
-          }))
-        : []),
-    ])
-    .sort((a, b) => a.atSeconds - b.atSeconds);
-
-  const enemyDeaths = enemies
-    .flatMap((p) =>
-      p.deathRecords.map((d) => ({
-        spec: specToString(p.spec),
-        name: p.name,
-        atSeconds: (d.timestamp - combat.startTime) / 1000,
-      })),
-    )
-    .sort((a, b) => a.atSeconds - b.atSeconds);
-
-  const lines: string[] = [];
-
-  lines.push('<match_context>');
-  lines.push('');
-
-  // Metadata
-  lines.push('<metadata>');
-  lines.push(
-    `  Spec: ${ownerSpec}${isHealer ? ' (Healer)' : ''} | Bracket: ${combat.startInfo?.bracket ?? 'Unknown'} | Result: ${resultStr} | Duration: ${fmtTime(durationSeconds)}`,
-  );
-  lines.push(`  My team: ${myTeam}`);
-  lines.push(`  Enemy team: ${enemyTeam}`);
-  // B21: warn when team roster is incomplete (e.g. 2 players logged in a 3v3 match)
-  const bracketSize = combat.startInfo?.bracket === '2v2' ? 2 : combat.startInfo?.bracket === '3v3' ? 3 : null;
-  if (bracketSize !== null && friends.length < bracketSize) {
-    lines.push(
-      `  WARNING: only ${friends.length}/${bracketSize} friendly players recorded (likely disconnect or late-join). Do not evaluate team composition or teammate coordination — roster data is incomplete.`,
-    );
-  }
-  lines.push('</metadata>');
-  lines.push('');
-
-  lines.push('<dictionary>');
-  lines.push('  Damage units: M = Million (1,000,000), k = Thousand (1,000)');
-  lines.push('  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage');
-  lines.push('</dictionary>');
-  lines.push('');
-
-  lines.push('<purge_responsibility>');
-  lines.push(`  Log owner (${ownerSpec}): ${ownerCanPurge ? 'CAN offensive purge' : 'CANNOT offensive purge'}`);
-  lines.push(`  Team purgers: ${teamPurgers.length > 0 ? teamPurgers.join(', ') : 'none'}`);
-  lines.push('</purge_responsibility>');
-  lines.push('');
-
-  const specBaselineLines = formatSpecBaselines(ownerSpec, ownerCDs, benchmarks);
-  if (specBaselineLines.length > 0) {
-    lines.push('<spec_baselines>');
-    lines.push(...specBaselineLines.map((l) => `  ${l}`));
-    lines.push('</spec_baselines>');
-    lines.push('');
-  }
-
-  const dtpsBaselineLines = formatDTPSBaselines(
-    friends.map((p) => specToString(p.spec)),
-    benchmarks,
-  );
-  if (dtpsBaselineLines.length > 0) {
-    lines.push('<dtps_baselines>');
-    lines.push(...dtpsBaselineLines.map((l) => `  ${l}`));
-    lines.push('</dtps_baselines>');
-    lines.push('');
-  }
-
-  const dampeningLines = formatDampeningForContext(
-    combat.startInfo?.bracket ?? '3v3',
-    [...friends, ...enemies],
-    combat.startTime,
-    combat.endTime,
-  );
-  if (dampeningLines.length > 0) {
-    lines.push('<dampening_curve>');
-    lines.push(...dampeningLines.map((l) => `  ${l}`));
-    lines.push('</dampening_curve>');
-    lines.push('');
-  }
-
-  const ccLines = formatOutgoingCCChainsForContext(outgoingCCChains);
-  if (ccLines.length > 0) {
-    lines.push('<outgoing_cc_chains>');
-    lines.push(...ccLines.map((l) => `  ${l}`));
-    lines.push('</outgoing_cc_chains>');
-    lines.push('');
-  }
-
-  const enemyCDTimelineLines = formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds);
-  if (enemyCDTimelineLines.length > 0) {
-    lines.push('<enemy_cooldown_timeline>');
-    lines.push(...enemyCDTimelineLines.map((l) => `  ${l}`));
-    lines.push('</enemy_cooldown_timeline>');
-    lines.push('');
-  }
-
-  const killAttemptWindowsLines = formatKillAttemptWindowsForContext(
-    enemyCDTimeline.alignedBurstWindows,
-    pressureWindows,
-  );
-  if (killAttemptWindowsLines.length > 0) {
-    lines.push('<kill_attempt_windows>');
-    lines.push(...killAttemptWindowsLines.map((l) => `  ${l}`));
-    lines.push('</kill_attempt_windows>');
-    lines.push('');
-  }
-
-  // Player loadout
-  const {
-    text: loadoutText,
-    playerIdMap,
-    enemyIdMap,
-  } = buildPlayerLoadout(owner, ownerSpec, ownerCDs, teammateCDs, enemyCDTimeline, enemies);
-  lines.push(loadoutText);
-  lines.push('');
-
-  // Timeline — with JSON situation snapshot function
-  const stasisEvents = extractStasisEvents(owner, combat);
-  const shapeshiftIntervals = [...combat.units.values()]
-    .filter((u) => u.type === CombatUnitType.Player)
-    .map((u) => ({ player: u, intervals: extractShapeshiftIntervals(u, combat) }))
-    .filter((x) => x.intervals.length > 0);
-
-  const params: BuildMatchTimelineParams = {
-    owner,
-    ownerSpec,
-    ownerCDs,
-    teammateCDs,
-    enemyCDTimeline,
-    ccTrinketSummaries:
-      ccAvoidanceMode === 'none'
-        ? ccTrinketSummaries.map((s) => ({ ...s, ccAvoidedInstances: [] }))
-        : ccTrinketSummaries,
-    dispelSummary,
-    friendlyDeaths,
-    enemyDeaths,
-    pressureWindows,
-    healingGaps,
-    friends,
-    enemies,
-    allUnits,
-    matchStartMs: combat.startTime,
-    matchEndMs: combat.endTime,
-    isHealer,
-    playerIdMap,
-    enemyIdMap,
-    outgoingCCChains,
-    bracket: combat.startInfo?.bracket ?? '3v3',
-    gateCcAvoidanceToDanger: ccAvoidanceMode === 'gated',
-    stasisEvents,
-    shapeshiftIntervals,
-    stateFormat,
+    resourceSnapshotFn: buildJsonSituationSnapshot,
   };
   lines.push('<match_timeline>');
   lines.push(
@@ -2195,7 +1452,6 @@ interface PrintMatchOptions {
   compareJsonMode?: boolean;
   compareCcMode?: boolean;
   forceHealer?: boolean;
-  stateFormat?: 'inline' | 'summary' | 'verbose';
 }
 
 async function printMatch(
@@ -2214,20 +1470,18 @@ async function printMatch(
     compareCcMode = false,
   } = options;
   const sep = '='.repeat(80);
-  console.log(`
-${sep}`);
+  console.log(`\n${sep}`);
   console.log(`MATCH ${matchIndex} — ${matchLabel}`);
   console.log(sep);
 
   if (compareCcMode && combat) {
     process.stderr.write(
-      `  CC Avoidance A/B/C compare for match ${matchIndex}: calling Claude x3 (A: none, B: continuous, C: gated)...
-`,
+      `  CC Avoidance A/B/C compare for match ${matchIndex}: calling Claude x3 (A: none, B: continuous, C: gated)...\n`,
     );
     try {
-      const promptA = buildMatchPromptNew(combat, options.forceHealer ?? false, 'none', options.stateFormat);
-      const promptB = buildMatchPromptNew(combat, options.forceHealer ?? false, 'continuous', options.stateFormat);
-      const promptC = buildMatchPromptNew(combat, options.forceHealer ?? false, 'gated', options.stateFormat);
+      const promptA = buildMatchPromptNew(combat, options.forceHealer ?? false, 'none');
+      const promptB = buildMatchPromptNew(combat, options.forceHealer ?? false, 'continuous');
+      const promptC = buildMatchPromptNew(combat, options.forceHealer ?? false, 'gated');
 
       const [responseA, responseB, responseC] = await Promise.all([
         callClaude(promptA, 'new'),
@@ -2235,39 +1489,24 @@ ${sep}`);
         callClaude(promptC, 'new'),
       ]);
 
-      console.log(`
---- TIMELINE A (None — Control) ---
-`);
+      console.log('\n--- TIMELINE A (None — Control) ---\n');
       console.log(extractTimelineFromPrompt(promptA));
-      console.log(`
---- ANALYSIS A (None) ---
-`);
+      console.log('\n--- ANALYSIS A (None) ---\n');
       console.log(responseA);
 
-      console.log(`
---- TIMELINE B (Continuous — Full Exposure) ---
-`);
+      console.log('\n--- TIMELINE B (Continuous — Full Exposure) ---\n');
       console.log(extractTimelineFromPrompt(promptB));
-      console.log(`
---- ANALYSIS B (Continuous) ---
-`);
+      console.log('\n--- ANALYSIS B (Continuous) ---\n');
       console.log(responseB);
 
-      console.log(`
---- TIMELINE C (Gated — Dangerous Window Only) ---
-`);
+      console.log('\n--- TIMELINE C (Gated — Dangerous Window Only) ---\n');
       console.log(extractTimelineFromPrompt(promptC));
-      console.log(`
---- ANALYSIS C (Gated) ---
-`);
+      console.log('\n--- ANALYSIS C (Gated) ---\n');
       console.log(responseC);
 
-      process.stderr.write(`  Calling CC Avoidance Judge...
-`);
+      process.stderr.write(`  Calling CC Avoidance Judge...\n`);
       const judgment = await callClaudeCcAvoidJudge(promptB, responseA, responseB, responseC);
-      console.log(`
---- JUDGE VERDICT ---
-`);
+      console.log('\n--- JUDGE VERDICT ---\n');
       console.log(judgment);
     } catch (e) {
       console.log(`[Compare failed: ${e}]`);
@@ -2275,32 +1514,22 @@ ${sep}`);
     return;
   }
 
-  console.log(`
---- PROMPT ---
-`);
+  console.log('\n--- PROMPT ---\n');
   console.log(prompt);
 
   if (compareMode) {
     process.stderr.write(
-      `  A/B compare for match ${matchIndex}: calling Claude x2 (baseline vs new with [RESOURCES] + counterfactual rules)....
-`,
+      `  A/B compare for match ${matchIndex}: calling Claude x2 (baseline vs new with [RESOURCES] + counterfactual rules)...\n`,
     );
     try {
       const [responseA, responseB] = await Promise.all([callClaude(prompt, 'baseline'), callClaude(prompt, 'new')]);
-      console.log(`
---- ANALYSIS A (baseline — raw timeline, no counterfactual rules) ---
-`);
+      console.log('\n--- ANALYSIS A (baseline — raw timeline, no counterfactual rules) ---\n');
       console.log(responseA);
-      console.log(`
---- ANALYSIS B (new — [RES] compact format + 4 counterfactual reasoning checks) ---
-`);
+      console.log('\n--- ANALYSIS B (new — [RES] compact format + 4 counterfactual reasoning checks) ---\n');
       console.log(responseB);
-      process.stderr.write(`  Calling Claude judge...
-`);
+      process.stderr.write(`  Calling Claude judge...\n`);
       const judgment = await callClaudeJudge(prompt, responseA, responseB);
-      console.log(`
---- JUDGE VERDICT ---
-`);
+      console.log('\n--- JUDGE VERDICT ---\n');
       console.log(judgment);
     } catch (e) {
       console.log(`[Compare failed: ${e}]`);
@@ -2310,25 +1539,17 @@ ${sep}`);
 
   if (compareJsonMode) {
     process.stderr.write(
-      `  JSON A/B compare for match ${matchIndex}: calling Claude x2 ([RES] text vs [SIT] JSON)....
-`,
+      `  JSON A/B compare for match ${matchIndex}: calling Claude x2 ([RES] text vs [SIT] JSON)...\n`,
     );
     try {
       const [responseA, responseB] = await Promise.all([callClaude(prompt, 'new'), callClaude(prompt, 'json')]);
-      console.log(`
---- ANALYSIS A ([RES] text format — current) ---
-`);
+      console.log('\n--- ANALYSIS A ([RES] text format — current) ---\n');
       console.log(responseA);
-      console.log(`
---- ANALYSIS B ([SIT] JSON format — F73 candidate) ---
-`);
+      console.log('\n--- ANALYSIS B ([SIT] JSON format — F73 candidate) ---\n');
       console.log(responseB);
-      process.stderr.write(`  Calling JSON judge...
-`);
+      process.stderr.write(`  Calling JSON judge...\n`);
       const judgment = await callClaudeJsonJudge(responseA, responseB);
-      console.log(`
---- JUDGE VERDICT ---
-`);
+      console.log('\n--- JUDGE VERDICT ---\n');
       console.log(judgment);
     } catch (e) {
       console.log(`[Compare failed: ${e}]`);
@@ -2343,11 +1564,8 @@ ${sep}`);
       : testPromptMode
         ? 'AI RESPONSE (test-prompt mode — includes feedback section)'
         : 'AI RESPONSE';
-    console.log(`
---- ${label} ---
-`);
-    process.stderr.write(`  Calling Claude for match ${matchIndex}${modeTag}...
-`);
+    console.log(`\n--- ${label} ---\n`);
+    process.stderr.write(`  Calling Claude for match ${matchIndex}${modeTag}...\n`);
     const mode = useNewPrompt ? 'new' : testPromptMode ? 'test' : 'standard';
     try {
       const response = await callClaude(prompt, mode);
@@ -2374,7 +1592,6 @@ interface RunOptions {
   filterMaxDuration?: number;
   filterResult?: string;
   verbose?: boolean;
-  stateFormat?: 'inline' | 'summary' | 'verbose';
 }
 export async function processStub(
   stub: MatchStub,
@@ -2390,8 +1607,7 @@ export async function processStub(
   try {
     text = await logCache.getLogText(stub.id, stub.logObjectUrl);
   } catch (e) {
-    process.stderr.write(`download/cache failed: ${e}
-`);
+    process.stderr.write(`download/cache failed: ${e}\n`);
     return false;
   }
 
@@ -2399,8 +1615,7 @@ export async function processStub(
   try {
     combats = await parseLogText(text);
   } catch (e) {
-    process.stderr.write(`parse failed: ${e}
-`);
+    process.stderr.write(`parse failed: ${e}\n`);
     return false;
   }
 
@@ -2409,15 +1624,11 @@ export async function processStub(
     // Apply filters
     const durationSec = (combat.endTime - combat.startTime) / 1000;
     if (options.filterMinDuration && durationSec < options.filterMinDuration) {
-      if (verbose)
-        process.stderr.write(`too short (${Math.round(durationSec)}s)
-`);
+      if (verbose) process.stderr.write(`too short (${Math.round(durationSec)}s)\n`);
       continue;
     }
     if (options.filterMaxDuration && durationSec > options.filterMaxDuration) {
-      if (verbose)
-        process.stderr.write(`too long (${Math.round(durationSec)}s)
-`);
+      if (verbose) process.stderr.write(`too long (${Math.round(durationSec)}s)\n`);
       continue;
     }
 
@@ -2435,9 +1646,7 @@ export async function processStub(
         : (friends.find((p) => !isHealerSpec(p.spec)) ?? friends.find((p) => isHealerSpec(p.spec)) ?? friends[0]);
 
     if (options.filterSpec && specToString(owner.spec).toLowerCase() !== options.filterSpec.toLowerCase()) {
-      if (verbose)
-        process.stderr.write(`spec mismatch (${specToString(owner.spec)})
-`);
+      if (verbose) process.stderr.write(`spec mismatch (${specToString(owner.spec)})\n`);
       continue;
     }
 
@@ -2447,28 +1656,23 @@ export async function processStub(
     const resultStr: 'Win' | 'Loss' | 'Unknown' = playerWon === true ? 'Win' : playerWon === false ? 'Loss' : 'Unknown';
 
     if (options.filterResult && resultStr.toLowerCase() !== options.filterResult.toLowerCase()) {
-      if (verbose)
-        process.stderr.write(`result mismatch (${resultStr})
-`);
+      if (verbose) process.stderr.write(`result mismatch (${resultStr})\n`);
       continue;
     }
 
     // compare mode always uses the new timeline prompt as input (includes [RESOURCES] blocks)
     const prompt = options.compareJsonMode
-      ? buildMatchPromptJson(combat, forceHealer, options.stateFormat)
+      ? buildMatchPromptJson(combat, forceHealer)
       : options.compareMode || options.useNewPrompt
-        ? buildMatchPromptNew(combat, forceHealer, 'continuous', options.stateFormat)
+        ? buildMatchPromptNew(combat, forceHealer)
         : buildMatchPrompt(combat, forceHealer);
     if (!prompt) {
-      if (verbose)
-        process.stderr.write(`empty prompt
-`);
+      if (verbose) process.stderr.write(`empty prompt\n`);
       continue;
     }
 
     foundInThisStub = true;
-    process.stderr.write(`MATCH ${matchIndex} found!
-`);
+    process.stderr.write(`MATCH ${matchIndex} found!\n`);
     const label = `${stub.id} (${stub.startInfo?.bracket ?? 'Unknown'}, ${date}) - ${specToString(owner.spec)} ${resultStr} ${Math.round(durationSec)}s`;
     await printMatch(label, prompt, matchIndex, aiMode, options, combat);
     break; // only take one combat per stub to match index logic
@@ -2479,8 +1683,7 @@ export async function processStub(
 
 async function runCloud(count: number, bracket: string, aiMode: boolean, options: RunOptions = {}) {
   const { verbose = false } = options;
-  console.log(`Fetching ${count} matches (bracket: ${bracket}) from ${API_BASE}...
-`);
+  console.log(`Fetching ${count} matches (bracket: ${bracket}) from ${API_BASE}...\n`);
 
   await logCache.init();
 
@@ -2503,15 +1706,11 @@ async function runCloud(count: number, bracket: string, aiMode: boolean, options
 
       // Pre-filter with stub metadata
       if (options.filterMinDuration && stub.durationInSeconds && stub.durationInSeconds < options.filterMinDuration) {
-        if (verbose)
-          process.stderr.write(`Skipping ${stub.id} (metadata): too short (${stub.durationInSeconds}s)
-`);
+        if (verbose) process.stderr.write(`Skipping ${stub.id} (metadata): too short (${stub.durationInSeconds}s)\n`);
         continue;
       }
       if (options.filterMaxDuration && stub.durationInSeconds && stub.durationInSeconds > options.filterMaxDuration) {
-        if (verbose)
-          process.stderr.write(`Skipping ${stub.id} (metadata): too long (${stub.durationInSeconds}s)
-`);
+        if (verbose) process.stderr.write(`Skipping ${stub.id} (metadata): too long (${stub.durationInSeconds}s)\n`);
         continue;
       }
 
@@ -2519,9 +1718,7 @@ async function runCloud(count: number, bracket: string, aiMode: boolean, options
         const playerWon = stub.winningTeamId === stub.playerTeamId;
         const resultStr = playerWon ? 'Win' : 'Loss';
         if (resultStr.toLowerCase() !== options.filterResult.toLowerCase()) {
-          if (verbose)
-            process.stderr.write(`Skipping ${stub.id} (metadata): result mismatch (${resultStr})
-`);
+          if (verbose) process.stderr.write(`Skipping ${stub.id} (metadata): result mismatch (${resultStr})\n`);
           continue;
         }
       }
@@ -2532,9 +1729,7 @@ async function runCloud(count: number, bracket: string, aiMode: boolean, options
           const stubSpec = ownerStub.spec.toLowerCase().replace(/[^a-z0-9]/g, '');
           const filterSpec = options.filterSpec.toLowerCase().replace(/[^a-z0-9]/g, '');
           if (!stubSpec.includes(filterSpec) && !filterSpec.includes(stubSpec)) {
-            if (verbose)
-              process.stderr.write(`Skipping ${stub.id} (metadata): spec mismatch (${ownerStub.spec})
-`);
+            if (verbose) process.stderr.write(`Skipping ${stub.id} (metadata): spec mismatch (${ownerStub.spec})\n`);
             continue;
           }
         }
@@ -2549,8 +1744,7 @@ async function runCloud(count: number, bracket: string, aiMode: boolean, options
     }
   }
 
-  console.log(`
-${'='.repeat(80)}`);
+  console.log(`\n${'='.repeat(80)}`);
   console.log(`Total matches printed: ${matchCount}`);
 }
 
@@ -2576,8 +1770,7 @@ async function runLocal(logDir: string, aiMode: boolean, options: RunOptions = {
     process.exit(1);
   }
 
-  console.log(`Scanning ${files.length} log file(s) in ${logDir}
-`);
+  console.log(`Scanning ${files.length} log file(s) in ${logDir}\n`);
   let matchCount = 0;
 
   for (const logPath of files) {
@@ -2621,9 +1814,9 @@ async function runLocal(logDir: string, aiMode: boolean, options: RunOptions = {
       if (options.filterResult && resultStr.toLowerCase() !== options.filterResult.toLowerCase()) continue;
 
       const prompt = compareJsonMode
-        ? buildMatchPromptJson(combat, forceHealer, options.stateFormat)
+        ? buildMatchPromptJson(combat, forceHealer)
         : compareMode || useNewPrompt || compareCcMode
-          ? buildMatchPromptNew(combat, forceHealer, 'continuous', options.stateFormat)
+          ? buildMatchPromptNew(combat, forceHealer)
           : buildMatchPrompt(combat, forceHealer);
       if (!prompt) continue;
       matchCount++;
@@ -2632,8 +1825,7 @@ async function runLocal(logDir: string, aiMode: boolean, options: RunOptions = {
     }
   }
 
-  console.log(`
-${'='.repeat(80)}`);
+  console.log(`\n${'='.repeat(80)}`);
   console.log(`Total matches printed: ${matchCount}`);
 }
 
@@ -2643,11 +1835,6 @@ ${'='.repeat(80)}`);
 
 async function main() {
   const args = process.argv.slice(2);
-  const stateFormatArg = args.find((a) => a.startsWith('--state-format='));
-  const stateFormatStr = stateFormatArg ? stateFormatArg.split('=')[1] : 'summary';
-  const stateFormat = ['inline', 'summary', 'verbose'].includes(stateFormatStr)
-    ? (stateFormatStr as 'inline' | 'summary' | 'verbose')
-    : 'summary';
   const localMode = args.includes('--local');
   const aiMode = args.includes('--ai');
   const testPromptMode = args.includes('--test-prompt');
@@ -2684,24 +1871,20 @@ async function main() {
     filterMaxDuration,
     filterResult,
     verbose,
-    stateFormat,
   };
 
   if (compareMode) {
-    if (!process.env.ANTHROPHIC_API_KEY) {
-      process.stderr.write(`Warning: --compare requires ANTHROPHIC_API_KEY. Responses will be skipped.
-`);
+    if (!process.env.ANTHROPIC_API_KEY) {
+      process.stderr.write('Warning: --compare requires ANTHROPIC_API_KEY. Responses will be skipped.\n');
     } else {
       process.stderr.write(
-        `Compare mode — baseline vs new ([RESOURCES] + counterfactual rules), judge side-by-side.
-`,
+        'Compare mode — baseline vs new ([RESOURCES] + counterfactual rules), judge side-by-side.\n',
       );
     }
   } else if (aiMode) {
-    if (!process.env.ANTHROPHIC_API_KEY) {
+    if (!process.env.ANTHROPIC_API_KEY) {
       process.stderr.write(
-        `Warning: --ai flag set but ANTHROPHIC_API_KEY not found in environment. Responses will be skipped.
-`,
+        'Warning: --ai flag set but ANTHROPIC_API_KEY not found in environment. Responses will be skipped.\n',
       );
     } else {
       const modeLabel = useNewPrompt
@@ -2709,31 +1892,26 @@ async function main() {
         : testPromptMode
           ? ' (test-prompt mode — responses include ## Prompt Feedback section)'
           : '';
-      process.stderr.write(`AI mode enabled — will call Claude after each match prompt${modeLabel}.
-`);
+      process.stderr.write(`AI mode enabled — will call Claude after each match prompt${modeLabel}.\n`);
     }
   }
 
   if (compareJsonMode) {
-    if (!process.env.ANTHROPHIC_API_KEY) {
-      process.stderr.write(`Warning: --compare-json requires ANTHROPHIC_API_KEY. Responses will be skipped.
-`);
+    if (!process.env.ANTHROPIC_API_KEY) {
+      process.stderr.write('Warning: --compare-json requires ANTHROPIC_API_KEY. Responses will be skipped.\n');
     } else {
       process.stderr.write(
-        `JSON compare mode — [RES] text vs [SIT] JSON, judge on counterfactual reasoning quality.
-`,
+        'JSON compare mode — [RES] text vs [SIT] JSON, judge on counterfactual reasoning quality.\n',
       );
     }
   }
 
   if (compareCcMode) {
-    if (!process.env.ANTHROPHIC_API_KEY) {
-      process.stderr.write(`Warning: --compare-cc requires ANTHROPHIC_API_KEY. Responses will be skipped.
-`);
+    if (!process.env.ANTHROPIC_API_KEY) {
+      process.stderr.write('Warning: --compare-cc requires ANTHROPIC_API_KEY. Responses will be skipped.\n');
     } else {
       process.stderr.write(
-        `CC Avoidance compare mode — A: None vs B: Continuous vs C: Gated, judge on bias and noise.
-`,
+        'CC Avoidance compare mode — A: None vs B: Continuous vs C: Gated, judge on bias and noise.\n',
       );
     }
   }
