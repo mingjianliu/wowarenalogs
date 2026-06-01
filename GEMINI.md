@@ -78,6 +78,10 @@ npm run -w @wowarenalogs/tools start:collectBenchmarks
 ### 4. Healer Prompt Improvement
 Workflows for evaluating and improving healer-specific AI analysis:
 - **Detailed Reference**: [docs/commands/improve-healer-prompts.md](docs/commands/improve-healer-prompts.md), [docs/commands/eval-healer-prompts.md](docs/commands/eval-healer-prompts.md)
+
+### 5. System Prompt A/B Testing
+Workflow for testing modifications to AI system prompts with stateful comparisons and LLM Judge evaluation:
+- **Detailed Reference**: [docs/prompt-ab-testing-workflow.md](docs/prompt-ab-testing-workflow.md)
 </specialized_workflows>
 
 <subagent_delegation>
@@ -111,6 +115,8 @@ Refer to these files for deep context on specific areas:
 - [AI_CONTEXT_REFACTOR.md](AI_CONTEXT_REFACTOR.md) — Context management and prompt-building strategy.
 - [docs/design-dispel-analysis.md](docs/design-dispel-analysis.md) — Technical spec for talent-aware dispel logic.
 - [docs/design-enemy-cd-timeline.md](docs/design-enemy-cd-timeline.md) — Technical spec for buff-expiry tracking.
+- [docs/prompt-ab-testing-workflow.md](docs/prompt-ab-testing-workflow.md) — Standard workflow for system prompt A/B testing and evaluation.
+
 
 ### Project Management & Audits
 - [TRACKER.md](TRACKER.md) — Active tasks, feature status, and known bugs.

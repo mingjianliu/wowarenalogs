@@ -65,4 +65,4 @@ See [docs/repo-overview.md](docs/repo-overview.md) for monorepo structure, core 
 ## Active Work
 - AI-powered cooldown analysis (`CombatAIAnalysis` component + `/api/analyze` endpoint)
 - See `TRACKER.md` for feature/bug status, `AI_FEATURES.md` for design philosophy, `AI_UTILS.md` for per-utility detail
-- Detailed workflows: [docs/commands/analyze-arena.md](docs/commands/analyze-arena.md), [docs/commands/collect-benchmarks.md](docs/commands/collect-benchmarks.md)
+- Detailed workflows: [docs/commands/analyze-arena.md](docs/commands/analyze-arena.md), [docs/commands/collect-benchmarks.md](docs/commands/collect-benchmarks.md), [docs/prompt-ab-testing-workflow.md](docs/prompt-ab-testing-workflow.md)
