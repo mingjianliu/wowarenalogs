@@ -34,7 +34,6 @@ import os from 'os';
 import path from 'path';
 
 import {
-  buildJsonSituationSnapshot,
   buildMatchArc,
   buildMatchTimeline,
   BuildMatchTimelineParams,
@@ -283,8 +282,7 @@ export async function fetchStubs(bracket: string, count: number, offset = 0, min
 
 export async function parseLogText(text: string): Promise<ParsedCombat[]> {
   const { WoWCombatLogParser } = await import('@wowarenalogs/parser');
-  const lines = text.split('
-');
+  const lines = text.split('\n');
   const parser = new WoWCombatLogParser('retail');
   const combats: ParsedCombat[] = [];
   parser.on('arena_match_ended', (c: IArenaMatch) => combats.push(c));
@@ -980,8 +978,7 @@ export function buildMatchPrompt(combat: ParsedCombat, forceHealer = false): str
   if (friendlyEndParts.length > 0) lines.push(`  Friendly: ${friendlyEndParts.join(' | ')}`);
   if (enemyEndParts.length > 0) lines.push(`  Enemy: ${enemyEndParts.join(' | ')}`);
 
-  return lines.join('
-');
+  return lines.join('\n');
 }
 
 // ---------------------------------------------------------------------------
@@ -1213,18 +1210,15 @@ export function buildMatchPromptNew(
   lines.push('<match_timeline>');
   lines.push(
     buildMatchTimeline(params)
-      .split('
-')
+      .split('\n')
       .map((l) => `  ${l}`)
-      .join('
-'),
+      .join('\n'),
   );
   lines.push('</match_timeline>');
   lines.push('');
   lines.push('</match_context>');
 
-  return lines.join('
-');
+  return lines.join('\n');
 }
 
 // ---------------------------------------------------------------------------
@@ -1455,18 +1449,15 @@ export function buildMatchPromptJson(
   lines.push('<match_timeline>');
   lines.push(
     buildMatchTimeline(params)
-      .split('
-')
+      .split('\n')
       .map((l) => `  ${l}`)
-      .join('
-'),
+      .join('\n'),
   );
   lines.push('</match_timeline>');
   lines.push('');
   lines.push('</match_context>');
 
-  return lines.join('
-');
+  return lines.join('\n');
 }
 
 // ---------------------------------------------------------------------------
@@ -1697,18 +1688,15 @@ export function buildMatchPromptJson(
   lines.push('<match_timeline>');
   lines.push(
     buildMatchTimeline(params)
-      .split('
-')
+      .split('\n')
       .map((l) => `  ${l}`)
-      .join('
-'),
+      .join('\n'),
   );
   lines.push('</match_timeline>');
   lines.push('');
   lines.push('</match_context>');
 
-  return lines.join('
-');
+  return lines.join('\n');
 }
 
 // ---------------------------------------------------------------------------
@@ -1939,18 +1927,15 @@ export function buildMatchPromptJson(
   lines.push('<match_timeline>');
   lines.push(
     buildMatchTimeline(params)
-      .split('
-')
+      .split('\n')
       .map((l) => `  ${l}`)
-      .join('
-'),
+      .join('\n'),
   );
   lines.push('</match_timeline>');
   lines.push('');
   lines.push('</match_context>');
 
-  return lines.join('
-');
+  return lines.join('\n');
 }
 
 // ---------------------------------------------------------------------------
@@ -2181,18 +2166,15 @@ export function buildMatchPromptJson(
   lines.push('<match_timeline>');
   lines.push(
     buildMatchTimeline(params)
-      .split('
-')
+      .split('\n')
       .map((l) => `  ${l}`)
-      .join('
-'),
+      .join('\n'),
   );
   lines.push('</match_timeline>');
   lines.push('');
   lines.push('</match_context>');
 
-  return lines.join('
-');
+  return lines.join('\n');
 }
 
 // ---------------------------------------------------------------------------
@@ -2200,12 +2182,10 @@ export function buildMatchPromptJson(
 // ---------------------------------------------------------------------------
 
 function extractTimelineFromPrompt(prompt: string): string {
-  const lines = prompt.split('
-');
+  const lines = prompt.split('\n');
   const startIdx = lines.findIndex((l) => l.includes('MATCH TIMELINE'));
   if (startIdx === -1) return '';
-  return lines.slice(startIdx, startIdx + 150).join('
-');
+  return lines.slice(startIdx, startIdx + 150).join('\n');
 }
 
 interface PrintMatchOptions {
@@ -2255,39 +2235,39 @@ ${sep}`);
         callClaude(promptC, 'new'),
       ]);
 
-      console.log('
+      console.log(`
 --- TIMELINE A (None — Control) ---
-');
+`);
       console.log(extractTimelineFromPrompt(promptA));
-      console.log('
+      console.log(`
 --- ANALYSIS A (None) ---
-');
+`);
       console.log(responseA);
 
-      console.log('
+      console.log(`
 --- TIMELINE B (Continuous — Full Exposure) ---
-');
+`);
       console.log(extractTimelineFromPrompt(promptB));
-      console.log('
+      console.log(`
 --- ANALYSIS B (Continuous) ---
-');
+`);
       console.log(responseB);
 
-      console.log('
+      console.log(`
 --- TIMELINE C (Gated — Dangerous Window Only) ---
-');
+`);
       console.log(extractTimelineFromPrompt(promptC));
-      console.log('
+      console.log(`
 --- ANALYSIS C (Gated) ---
-');
+`);
       console.log(responseC);
 
       process.stderr.write(`  Calling CC Avoidance Judge...
 `);
       const judgment = await callClaudeCcAvoidJudge(promptB, responseA, responseB, responseC);
-      console.log('
+      console.log(`
 --- JUDGE VERDICT ---
-');
+`);
       console.log(judgment);
     } catch (e) {
       console.log(`[Compare failed: ${e}]`);
@@ -2295,9 +2275,9 @@ ${sep}`);
     return;
   }
 
-  console.log('
+  console.log(`
 --- PROMPT ---
-');
+`);
   console.log(prompt);
 
   if (compareMode) {
@@ -2307,20 +2287,20 @@ ${sep}`);
     );
     try {
       const [responseA, responseB] = await Promise.all([callClaude(prompt, 'baseline'), callClaude(prompt, 'new')]);
-      console.log('
+      console.log(`
 --- ANALYSIS A (baseline — raw timeline, no counterfactual rules) ---
-');
+`);
       console.log(responseA);
-      console.log('
+      console.log(`
 --- ANALYSIS B (new — [RES] compact format + 4 counterfactual reasoning checks) ---
-');
+`);
       console.log(responseB);
       process.stderr.write(`  Calling Claude judge...
 `);
       const judgment = await callClaudeJudge(prompt, responseA, responseB);
-      console.log('
+      console.log(`
 --- JUDGE VERDICT ---
-');
+`);
       console.log(judgment);
     } catch (e) {
       console.log(`[Compare failed: ${e}]`);
@@ -2335,20 +2315,20 @@ ${sep}`);
     );
     try {
       const [responseA, responseB] = await Promise.all([callClaude(prompt, 'new'), callClaude(prompt, 'json')]);
-      console.log('
+      console.log(`
 --- ANALYSIS A ([RES] text format — current) ---
-');
+`);
       console.log(responseA);
-      console.log('
+      console.log(`
 --- ANALYSIS B ([SIT] JSON format — F73 candidate) ---
-');
+`);
       console.log(responseB);
       process.stderr.write(`  Calling JSON judge...
 `);
       const judgment = await callClaudeJsonJudge(responseA, responseB);
-      console.log('
+      console.log(`
 --- JUDGE VERDICT ---
-');
+`);
       console.log(judgment);
     } catch (e) {
       console.log(`[Compare failed: ${e}]`);
@@ -2429,12 +2409,14 @@ export async function processStub(
     // Apply filters
     const durationSec = (combat.endTime - combat.startTime) / 1000;
     if (options.filterMinDuration && durationSec < options.filterMinDuration) {
-      if (verbose) process.stderr.write(`too short (${Math.round(durationSec)}s)
+      if (verbose)
+        process.stderr.write(`too short (${Math.round(durationSec)}s)
 `);
       continue;
     }
     if (options.filterMaxDuration && durationSec > options.filterMaxDuration) {
-      if (verbose) process.stderr.write(`too long (${Math.round(durationSec)}s)
+      if (verbose)
+        process.stderr.write(`too long (${Math.round(durationSec)}s)
 `);
       continue;
     }
@@ -2453,7 +2435,8 @@ export async function processStub(
         : (friends.find((p) => !isHealerSpec(p.spec)) ?? friends.find((p) => isHealerSpec(p.spec)) ?? friends[0]);
 
     if (options.filterSpec && specToString(owner.spec).toLowerCase() !== options.filterSpec.toLowerCase()) {
-      if (verbose) process.stderr.write(`spec mismatch (${specToString(owner.spec)})
+      if (verbose)
+        process.stderr.write(`spec mismatch (${specToString(owner.spec)})
 `);
       continue;
     }
@@ -2464,7 +2447,8 @@ export async function processStub(
     const resultStr: 'Win' | 'Loss' | 'Unknown' = playerWon === true ? 'Win' : playerWon === false ? 'Loss' : 'Unknown';
 
     if (options.filterResult && resultStr.toLowerCase() !== options.filterResult.toLowerCase()) {
-      if (verbose) process.stderr.write(`result mismatch (${resultStr})
+      if (verbose)
+        process.stderr.write(`result mismatch (${resultStr})
 `);
       continue;
     }
@@ -2476,7 +2460,8 @@ export async function processStub(
         ? buildMatchPromptNew(combat, forceHealer, 'continuous', options.stateFormat)
         : buildMatchPrompt(combat, forceHealer);
     if (!prompt) {
-      if (verbose) process.stderr.write(`empty prompt
+      if (verbose)
+        process.stderr.write(`empty prompt
 `);
       continue;
     }
@@ -2518,12 +2503,14 @@ async function runCloud(count: number, bracket: string, aiMode: boolean, options
 
       // Pre-filter with stub metadata
       if (options.filterMinDuration && stub.durationInSeconds && stub.durationInSeconds < options.filterMinDuration) {
-        if (verbose) process.stderr.write(`Skipping ${stub.id} (metadata): too short (${stub.durationInSeconds}s)
+        if (verbose)
+          process.stderr.write(`Skipping ${stub.id} (metadata): too short (${stub.durationInSeconds}s)
 `);
         continue;
       }
       if (options.filterMaxDuration && stub.durationInSeconds && stub.durationInSeconds > options.filterMaxDuration) {
-        if (verbose) process.stderr.write(`Skipping ${stub.id} (metadata): too long (${stub.durationInSeconds}s)
+        if (verbose)
+          process.stderr.write(`Skipping ${stub.id} (metadata): too long (${stub.durationInSeconds}s)
 `);
         continue;
       }
@@ -2532,7 +2519,8 @@ async function runCloud(count: number, bracket: string, aiMode: boolean, options
         const playerWon = stub.winningTeamId === stub.playerTeamId;
         const resultStr = playerWon ? 'Win' : 'Loss';
         if (resultStr.toLowerCase() !== options.filterResult.toLowerCase()) {
-          if (verbose) process.stderr.write(`Skipping ${stub.id} (metadata): result mismatch (${resultStr})
+          if (verbose)
+            process.stderr.write(`Skipping ${stub.id} (metadata): result mismatch (${resultStr})
 `);
           continue;
         }
@@ -2544,7 +2532,8 @@ async function runCloud(count: number, bracket: string, aiMode: boolean, options
           const stubSpec = ownerStub.spec.toLowerCase().replace(/[^a-z0-9]/g, '');
           const filterSpec = options.filterSpec.toLowerCase().replace(/[^a-z0-9]/g, '');
           if (!stubSpec.includes(filterSpec) && !filterSpec.includes(stubSpec)) {
-            if (verbose) process.stderr.write(`Skipping ${stub.id} (metadata): spec mismatch (${ownerStub.spec})
+            if (verbose)
+              process.stderr.write(`Skipping ${stub.id} (metadata): spec mismatch (${ownerStub.spec})
 `);
             continue;
           }
@@ -2656,7 +2645,9 @@ async function main() {
   const args = process.argv.slice(2);
   const stateFormatArg = args.find((a) => a.startsWith('--state-format='));
   const stateFormatStr = stateFormatArg ? stateFormatArg.split('=')[1] : 'summary';
-  const stateFormat = ['inline', 'summary', 'verbose'].includes(stateFormatStr) ? (stateFormatStr as 'inline' | 'summary' | 'verbose') : 'summary';
+  const stateFormat = ['inline', 'summary', 'verbose'].includes(stateFormatStr)
+    ? (stateFormatStr as 'inline' | 'summary' | 'verbose')
+    : 'summary';
   const localMode = args.includes('--local');
   const aiMode = args.includes('--ai');
   const testPromptMode = args.includes('--test-prompt');
@@ -2698,19 +2689,19 @@ async function main() {
 
   if (compareMode) {
     if (!process.env.ANTHROPHIC_API_KEY) {
-      process.stderr.write('Warning: --compare requires ANTHROPHIC_API_KEY. Responses will be skipped.
-');
+      process.stderr.write(`Warning: --compare requires ANTHROPHIC_API_KEY. Responses will be skipped.
+`);
     } else {
       process.stderr.write(
-        'Compare mode — baseline vs new ([RESOURCES] + counterfactual rules), judge side-by-side.
-',
+        `Compare mode — baseline vs new ([RESOURCES] + counterfactual rules), judge side-by-side.
+`,
       );
     }
   } else if (aiMode) {
     if (!process.env.ANTHROPHIC_API_KEY) {
       process.stderr.write(
-        'Warning: --ai flag set but ANTHROPHIC_API_KEY not found in environment. Responses will be skipped.
-',
+        `Warning: --ai flag set but ANTHROPHIC_API_KEY not found in environment. Responses will be skipped.
+`,
       );
     } else {
       const modeLabel = useNewPrompt
@@ -2725,24 +2716,24 @@ async function main() {
 
   if (compareJsonMode) {
     if (!process.env.ANTHROPHIC_API_KEY) {
-      process.stderr.write('Warning: --compare-json requires ANTHROPHIC_API_KEY. Responses will be skipped.
-');
+      process.stderr.write(`Warning: --compare-json requires ANTHROPHIC_API_KEY. Responses will be skipped.
+`);
     } else {
       process.stderr.write(
-        'JSON compare mode — [RES] text vs [SIT] JSON, judge on counterfactual reasoning quality.
-',
+        `JSON compare mode — [RES] text vs [SIT] JSON, judge on counterfactual reasoning quality.
+`,
       );
     }
   }
 
   if (compareCcMode) {
     if (!process.env.ANTHROPHIC_API_KEY) {
-      process.stderr.write('Warning: --compare-cc requires ANTHROPHIC_API_KEY. Responses will be skipped.
-');
+      process.stderr.write(`Warning: --compare-cc requires ANTHROPHIC_API_KEY. Responses will be skipped.
+`);
     } else {
       process.stderr.write(
-        'CC Avoidance compare mode — A: None vs B: Continuous vs C: Gated, judge on bias and noise.
-',
+        `CC Avoidance compare mode — A: None vs B: Continuous vs C: Gated, judge on bias and noise.
+`,
       );
     }
   }

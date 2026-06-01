@@ -1,22 +1,15 @@
-import { CombatAbsorbAction, CombatUnitType, getUnitType, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
+import { ICombatUnit } from '@wowarenalogs/parser';
 
-import { getEnglishSpellName, spellEffectData } from '../../../data/spellEffectData';
+import { spellEffectData } from '../../../data/spellEffectData';
 import { ccSpellIds } from '../../../data/spellTags';
 import { IPlayerCCTrinketSummary } from '../../../utils/ccTrinketAnalysis';
 import { IFormInterval, IStasisEvent } from '../../../utils/combatStates';
-import {
-  fmtTime,
-  getUnitHpAtTimestamp,
-  IDamageBucket,
-  IMajorCooldownInfo,
-  isHealerSpec,
-  pid,
-} from '../../../utils/cooldowns';
+import { fmtTime, getUnitHpAtTimestamp, IMajorCooldownInfo } from '../../../utils/cooldowns';
+import { IDispelSummary } from '../../../utils/dispelAnalysis';
+import { IPlayerOutgoingCCChain } from '../../../utils/drAnalysis';
 import { extractEnemyMajorBuffIntervals } from '../../../utils/enemyCDs';
 import { IFriendlyDeathRecord } from '../../../utils/healingGaps';
 import { IPlayerPressureWindow } from '../../../utils/offensiveWindows';
-import { IPlayerOutgoingCCChain } from '../../../utils/drAnalysis';
-import { IDispelSummary } from '../../../utils/dispelAnalysis';
 
 export interface BuildMatchTimelineParams {
   owner: ICombatUnit;
@@ -61,20 +54,17 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     teammateCDs,
     enemyCDTimeline,
     ccTrinketSummaries,
-    dispelSummary,
     friendlyDeaths,
     enemyDeaths,
     pressureWindows,
     healingGaps,
     friends,
     enemies,
-    allUnits,
     matchStartMs,
     matchEndMs,
     isHealer,
     playerIdMap,
     enemyIdMap,
-    outgoingCCChains,
     resourceSnapshotFn,
     bracket,
     gateCcAvoidanceToDanger,
@@ -245,7 +235,16 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       castTime,
       `${fmtTime(castTime)}  [ENEMY] [CD]   ${cdNames} (${window.dangerLabel})`,
       resourceSnapshotFn
-        ? resourceSnapshotFn({ owner, combat, timeSeconds: castTime, ownerCDs, teammateCDs, enemyCDTimeline, friends, enemies })
+        ? resourceSnapshotFn({
+            owner,
+            combat,
+            timeSeconds: castTime,
+            ownerCDs,
+            teammateCDs,
+            enemyCDTimeline,
+            friends,
+            enemies,
+          })
         : undefined,
     );
   }
@@ -302,7 +301,16 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
           timeSeconds,
           `${fmtTime(timeSeconds)}  [${isOwner ? 'YOU' : 'TEAM'}] [CC AVOIDED] ${pLabel}: ${avoided.spellName} (${avoided.reason})`,
           resourceSnapshotFn
-            ? resourceSnapshotFn({ owner, combat, timeSeconds, ownerCDs, teammateCDs, enemyCDTimeline, friends, enemies })
+            ? resourceSnapshotFn({
+                owner,
+                combat,
+                timeSeconds,
+                ownerCDs,
+                teammateCDs,
+                enemyCDTimeline,
+                friends,
+                enemies,
+              })
             : undefined,
         );
       }
@@ -315,7 +323,16 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
           timeSeconds,
           `${fmtTime(timeSeconds)}  [${isOwner ? 'YOU' : 'TEAM'}] [TRINKET]  ${pLabel}: PvP trinket`,
           resourceSnapshotFn
-            ? resourceSnapshotFn({ owner, combat, timeSeconds, ownerCDs, teammateCDs, enemyCDTimeline, friends, enemies })
+            ? resourceSnapshotFn({
+                owner,
+                combat,
+                timeSeconds,
+                ownerCDs,
+                teammateCDs,
+                enemyCDTimeline,
+                friends,
+                enemies,
+              })
             : undefined,
         );
       }
@@ -327,9 +344,9 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     if (pw.targetUnit.id === owner.id || friends.some((f) => f.id === pw.targetUnit.id)) {
       addEntry(
         pw.fromSeconds,
-        `${fmtTime(pw.fromSeconds)}  [DMG SPIKE]   ${pid(pw.targetUnit.name)} took ${
-          (pw.totalDamage / 1_000_000).toFixed(2)
-        }M in ${pw.durationSeconds}s (${pw.peakDamagePerSecond.toFixed(0)}k/s)`,
+        `${fmtTime(pw.fromSeconds)}  [DMG SPIKE]   ${pid(pw.targetUnit.name)} took ${(
+          pw.totalDamage / 1_000_000
+        ).toFixed(2)}M in ${pw.durationSeconds}s (${pw.peakDamagePerSecond.toFixed(0)}k/s)`,
         resourceSnapshotFn
           ? resourceSnapshotFn({
               owner,
@@ -346,9 +363,9 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     } else {
       addEntry(
         pw.fromSeconds,
-        `${fmtTime(pw.fromSeconds)}  [ENEMY DMG SPIKE]   ${enemyPid(pw.targetUnit.name)} took ${
-          (pw.totalDamage / 1_000_000).toFixed(2)
-        }M in ${pw.durationSeconds}s (${pw.peakDamagePerSecond.toFixed(0)}k/s)`,
+        `${fmtTime(pw.fromSeconds)}  [ENEMY DMG SPIKE]   ${enemyPid(pw.targetUnit.name)} took ${(
+          pw.totalDamage / 1_000_000
+        ).toFixed(2)}M in ${pw.durationSeconds}s (${pw.peakDamagePerSecond.toFixed(0)}k/s)`,
         resourceSnapshotFn
           ? resourceSnapshotFn({
               owner,
@@ -580,8 +597,12 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   if (stateFormat === 'summary' && shapeshiftIntervals.length > 0) {
     summaryLines.push('## NOTABLE STATES');
     for (const { player, intervals } of shapeshiftIntervals) {
-      const bearTime = intervals.filter(i => i.form === 'Bear').reduce((acc, i) => acc + (i.endSeconds - i.startSeconds), 0);
-      const catTime = intervals.filter(i => i.form === 'Cat').reduce((acc, i) => acc + (i.endSeconds - i.startSeconds), 0);
+      const bearTime = intervals
+        .filter((i) => i.form === 'Bear')
+        .reduce((acc, i) => acc + (i.endSeconds - i.startSeconds), 0);
+      const catTime = intervals
+        .filter((i) => i.form === 'Cat')
+        .reduce((acc, i) => acc + (i.endSeconds - i.startSeconds), 0);
       const pLabel = player.id === owner.id ? 'YOU' : pid(player.name);
 
       if (bearTime > 0) summaryLines.push(`- ${pLabel} spent ${Math.round(bearTime)}s in Bear Form.`);
@@ -635,12 +656,13 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     // and outside of dangerous windows.
     if (entry.text.includes('[YOU] [CAST]') && !resourceSnapshotFn) {
       const parts = entry.text.split('   ');
-      const time = parts[0].trim();
       const spellAndTarget = parts[1].split(' [STASIS STORED]')[0]; // Remove Stasis annotation for folding
       const [spellName, ...targetParts] = spellAndTarget.split(' → on: ');
       const targetPart = targetParts.length > 0 ? ` → on: ${targetParts.join(' → on: ')}` : '';
 
-      const isCriticalWindow = pressureWindows.some((pw) => entry.timeSeconds >= pw.fromSeconds && entry.timeSeconds <= pw.toSeconds);
+      const isCriticalWindow = pressureWindows.some(
+        (pw) => entry.timeSeconds >= pw.fromSeconds && entry.timeSeconds <= pw.toSeconds,
+      );
 
       if (
         currentFold &&
@@ -687,6 +709,5 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     }),
   );
 
-  return outputLines.join('
-');
+  return outputLines.join('\n');
 }
