@@ -43,6 +43,7 @@ import { analyzePlayerCCAndTrinket, formatCCTrinketForContext } from '../../shar
 import { extractShapeshiftIntervals, extractStasisEvents } from '../../shared/src/utils/combatStates';
 import {
   annotateDefensiveTimings,
+  computeOverallHealingMetrics,
   computePressureWindows,
   detectOverlappedDefensives,
   detectPanicDefensives,
@@ -51,6 +52,7 @@ import {
   formatOverlappedDefensivesForContext,
   formatPanicDefensivesForContext,
   getUnitHpAtTimestamp,
+  getUnitManaAtTimestamp,
   IEnemyCDTimelineForTiming,
   isHealerSpec,
   specToString,
@@ -807,12 +809,26 @@ export function buildMatchPromptNew(
   lines.push('');
 
   // Metadata
+  const healerMetrics: string[] = [];
+  friends
+    .filter((p) => isHealerSpec(p.spec))
+    .forEach((h) => {
+      const { hps, overhealPct } = computeOverallHealingMetrics(h, combat.startTime, combat.endTime);
+      const finalMana = getUnitManaAtTimestamp(h, combat.endTime);
+      healerMetrics.push(
+        `  Healer Performance (${specToString(h.spec)}): ${Math.round(hps / 1000)}k HPS | ${overhealPct}% Overheal | ${Math.round((finalMana?.current ?? 0) / 1000)}k Final Mana`,
+      );
+    });
+
   lines.push('<metadata>');
   lines.push(
     `  Spec: ${ownerSpec}${isHealer ? ' (Healer)' : ''} | Bracket: ${combat.startInfo?.bracket ?? 'Unknown'} | Result: ${resultStr} | Duration: ${fmtTime(durationSeconds)}`,
   );
   lines.push(`  My team: ${myTeam}`);
   lines.push(`  Enemy team: ${enemyTeam}`);
+  if (healerMetrics.length > 0) {
+    lines.push(...healerMetrics);
+  }
   // B21: warn when team roster is incomplete (e.g. 2 players logged in a 3v3 match)
   const bracketSize = combat.startInfo?.bracket === '2v2' ? 2 : combat.startInfo?.bracket === '3v3' ? 3 : null;
   if (bracketSize !== null && friends.length < bracketSize) {
