@@ -11,6 +11,14 @@ Instead of ad-hoc manual inspections, the system uses a **two-phase stateful bat
 
 ---
 
+## Anthropic API Key Bypass Option (For All AIs)
+
+For all AI agents (including Gemini, Claude Code, Antigravity, etc.) or human developers, you do not need an Anthropic API key to run evaluations. Instead, you can simply create a new sub-agent and role-play the response AI:
+1. Generate the prompt text using the CLI or print tools (e.g., `npm run -w @wowarenalogs/tools start:printMatchPrompts -- --count 1 --new-prompt --test-prompt`).
+2. Create a new sub-agent (e.g., via `define_subagent`) and load the system prompts/instructions.
+3. Submit the generated match prompts to that sub-agent.
+4. Role-play the response AI to generate and verify the output yourself.
+
 ## The Workflow Steps
 
 ```mermaid
