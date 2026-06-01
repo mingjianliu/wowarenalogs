@@ -135,7 +135,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         for (const absorb of unit.absorbsIn) {
           groundingAbsorbs.push({
             timeSeconds: (absorb.timestamp - matchStartMs) / 1000,
-            spellName: absorb.spellName ?? 'Unknown',
+            spellName: getEnglishSpellName(absorb.spellId ?? '', absorb.spellName ?? 'Unknown'),
             totemOwnerId: unit.ownerId,
           });
         }

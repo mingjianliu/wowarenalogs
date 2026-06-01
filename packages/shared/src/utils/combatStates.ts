@@ -1,6 +1,8 @@
 // packages/shared/src/utils/combatStates.ts
 import { AtomicArenaCombat, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
+import { getEnglishSpellName } from '../data/spellEffectData';
+
 export interface IFormInterval {
   form: 'Bear' | 'Cat';
   startSeconds: number;
@@ -74,13 +76,14 @@ export function extractStasisEvents(unit: ICombatUnit, combat: AtomicArenaCombat
   let startSeconds = 0;
   let bufferedSpells: string[] = [];
 
-  const evokerHeals = new Set([
-    'Dream Breath',
-    'Spiritbloom',
-    'Reversion',
-    'Emerald Blossom',
-    'Verdant Embrace',
-    'Living Flame',
+  const evokerHealIds = new Set([
+    '355936', // Dream Breath
+    '367226', // Spiritbloom
+    '366155', // Reversion
+    '355913', // Emerald Blossom
+    '360995', // Verdant Embrace
+    '361469', // Living Flame
+    '364343', // Echo
   ]);
 
   // Evokers buffer heals when Stasis (370537) is active.
@@ -119,8 +122,8 @@ export function extractStasisEvents(unit: ICombatUnit, combat: AtomicArenaCombat
       });
       isBuffering = false;
     } else if (isBuffering && e.logLine.event === LogEvent.SPELL_CAST_SUCCESS) {
-      if (e.spellName && evokerHeals.has(e.spellName) && bufferedSpells.length < 3) {
-        bufferedSpells.push(e.spellName);
+      if (e.spellId && evokerHealIds.has(e.spellId) && bufferedSpells.length < 3) {
+        bufferedSpells.push(getEnglishSpellName(e.spellId, e.spellName ?? 'Unknown'));
       }
     }
   }

@@ -1167,12 +1167,12 @@ async function runCloud(count: number, bracket: string, aiMode: boolean, options
 async function runLocal(logDir: string, aiMode: boolean, options: RunOptions = {}) {
   const { forceHealer = false, useNewPrompt = false } = options;
   const files = (await fs.readdir(logDir))
-    .filter((f) => f.endsWith('.txt') && f.startsWith('WoWCombatLog'))
+    .filter((f) => f.endsWith('.txt') || f.endsWith('.log'))
     .map((f) => path.join(logDir, f))
     .sort();
 
   if (files.length === 0) {
-    console.error(`No WoWCombatLog*.txt files found in ${logDir}`);
+    console.error(`No .txt or .log files found in ${logDir}`);
     process.exit(1);
   }
 
