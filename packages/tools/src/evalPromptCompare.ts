@@ -104,6 +104,45 @@ export function calculateEstimatedCoreTokens(text: string): number {
   return Math.ceil(text.length / 3.8);
 }
 
+async function callMetaEvalJudge(
+  apiKey: string,
+  controlResponse: string,
+  treatmentResponse: string,
+): Promise<string> {
+  const judgeSystem = `You are a prompt engineer evaluating two AI-generated WoW arena match analyses. Your job is to give a blunt, objective verdict on which prompt design produced better coaching feedback.`;
+
+  const userMessage = `Evaluate the following two coaching analyses for the same WoW arena match:
+
+CONTROL RESPONSE (Version A):
+---
+${controlResponse}
+---
+
+TREATMENT RESPONSE (Version B):
+---
+${treatmentResponse}
+---
+
+Rate Version B compared to Version A on:
+1. **Feature Usefulness** (Scale 1-5): Did the new/modified prompt information in Version B lead to more concrete, actionable, and correct coaching advice?
+2. **Response Bias** (Scale 1-5): Did the new information steer the AI into introducing incorrect assumptions, unearned praise, or unfair blame for mistakes?
+3. **Noise & Confusion** (Scale 1-5): Did the new data cause the model to write redundant comments or contradict itself?
+
+Finally, state:
+- **Verdict**: [Version A Winner / Version B Winner / Tie]
+- **Reasoning**: One sentence explanation.`;
+
+  const client = new Anthropic({ apiKey });
+  const message = await client.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 2048,
+    temperature: 0.2,
+    system: judgeSystem,
+    messages: [{ role: 'user', content: userMessage }],
+  });
+  return message.content[0].type === 'text' ? message.content[0].text : '';
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const phaseArg = args.find(a => a.startsWith('--phase='));
@@ -290,6 +329,7 @@ async function main() {
     await fs.ensureDir(path.join(treatmentDir, 'responses'));
 
     const treatmentTokens: Record<string, { input: number; output: number }> = {};
+    const finalJudgments: Record<string, string> = {};
     const dryRun = args.includes('--dry-run') || apiKey === 'mock_key';
 
     for (const matchId of state.matchIds) {
@@ -322,6 +362,26 @@ async function main() {
 
       await fs.writeFile(path.join(treatmentDir, 'responses', `${matchId}.txt`), res.text, 'utf8');
       treatmentTokens[matchId] = { input: res.inputTokens, output: res.outputTokens };
+
+      const controlDir = path.join(OUTPUT_DIR, 'control');
+      const controlRespPath = path.join(controlDir, 'responses', `${matchId}.txt`);
+      const controlResp = await fs.readFile(controlRespPath, 'utf8');
+      const treatmentCore = extractCoreResponse(res.text);
+
+      const judgmentsDir = path.join(treatmentDir, 'judgments');
+      await fs.ensureDir(judgmentsDir);
+
+      let judgment: string;
+      if (dryRun) {
+        console.log(`[DRY RUN] Skipping Judge API call for ${matchId}`);
+        judgment = `Mock judgment for ${matchId}\n- Verdict: Version B Winner\n- Reasoning: Mock judgment reasoning.`;
+      } else {
+        console.log(`Running Judge evaluation for ${matchId}...`);
+        judgment = await callMetaEvalJudge(apiKey, controlResp, treatmentCore);
+      }
+
+      await fs.writeFile(path.join(judgmentsDir, `${matchId}.txt`), judgment, 'utf8');
+      finalJudgments[matchId] = judgment;
     }
 
     await fs.writeJson(path.join(treatmentDir, 'tokens.json'), treatmentTokens, { spaces: 2 });
