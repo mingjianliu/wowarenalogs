@@ -54,19 +54,25 @@ async function callClaudeAPI(
   systemPrompt: string,
   userPrompt: string,
 ): Promise<{ text: string; inputTokens: number; outputTokens: number }> {
-  const client = new Anthropic({ apiKey });
-  const message = await client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 4096,
-    temperature: 0.3,
-    system: systemPrompt,
-    messages: [{ role: 'user', content: userPrompt }],
-  });
-  const textContent = message.content[0].type === 'text' ? message.content[0].text : '';
+  const reqId = 'claude_' + Math.random().toString(36).substring(7);
+  const reqFile = path.join(OUTPUT_DIR, `req_${reqId}.json`);
+  const respFile = path.join(OUTPUT_DIR, `resp_${reqId}.json`);
+
+  await fs.writeJson(reqFile, { systemPrompt, userPrompt });
+  console.log(`[IPC_REQUEST] ${reqId}`);
+
+  while (!(await fs.pathExists(respFile))) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+
+  const resp = await fs.readJson(respFile);
+  await fs.remove(reqFile);
+  await fs.remove(respFile);
+
   return {
-    text: textContent,
-    inputTokens: message.usage.input_tokens,
-    outputTokens: message.usage.output_tokens,
+    text: resp.text,
+    inputTokens: calculateEstimatedCoreTokens(systemPrompt + userPrompt),
+    outputTokens: calculateEstimatedCoreTokens(resp.text),
   };
 }
 
@@ -164,15 +170,22 @@ Finally, state:
 - **Verdict**: [Version A Winner / Version B Winner / Tie]
 - **Reasoning**: One sentence explanation.`;
 
-  const client = new Anthropic({ apiKey });
-  const message = await client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 2048,
-    temperature: 0.2,
-    system: judgeSystem,
-    messages: [{ role: 'user', content: userMessage }],
-  });
-  return message.content[0].type === 'text' ? message.content[0].text : '';
+  const reqId = 'judge_' + Math.random().toString(36).substring(7);
+  const reqFile = path.join(OUTPUT_DIR, `req_${reqId}.json`);
+  const respFile = path.join(OUTPUT_DIR, `resp_${reqId}.json`);
+
+  await fs.writeJson(reqFile, { systemPrompt: judgeSystem, userPrompt: userMessage });
+  console.log(`[IPC_REQUEST] ${reqId}`);
+
+  while (!(await fs.pathExists(respFile))) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+
+  const resp = await fs.readJson(respFile);
+  await fs.remove(reqFile);
+  await fs.remove(respFile);
+
+  return resp.text;
 }
 
 async function main() {
@@ -305,11 +318,7 @@ async function main() {
     console.log(`Saved state to ${STATE_FILE}`);
 
     const dryRun = args.includes('--dry-run');
-    const apiKey = process.env.ANTHROPIC_API_KEY || (dryRun ? 'mock_key' : '');
-    if (!apiKey) {
-      console.error('Error: ANTHROPIC_API_KEY env variable missing (run with --dry-run to skip API calls).');
-      process.exit(1);
-    }
+    const apiKey = 'roleplayer';
 
     const controlDir = path.join(OUTPUT_DIR, 'control');
     await fs.ensureDir(path.join(controlDir, 'prompts'));
@@ -331,8 +340,17 @@ async function main() {
       const prompt = buildMatchPromptNew(combat, true);
       await fs.writeFile(path.join(controlDir, 'prompts', `${matchId}.txt`), prompt, 'utf8');
 
+      const responsePath = path.join(controlDir, 'responses', `${matchId}.txt`);
       let res: { text: string; inputTokens: number; outputTokens: number };
-      if (dryRun) {
+      if (await fs.pathExists(responsePath)) {
+        console.log(`Reusing existing Control response for ${matchId}...`);
+        const text = await fs.readFile(responsePath, 'utf8');
+        res = {
+          text,
+          inputTokens: calculateEstimatedCoreTokens(SYSTEM_PROMPT + prompt),
+          outputTokens: calculateEstimatedCoreTokens(text),
+        };
+      } else if (dryRun) {
         console.log(`[DRY RUN] Skipping Claude API call for ${matchId}`);
         res = {
           text: `Mock response text for ${matchId}`,
@@ -349,7 +367,7 @@ async function main() {
         }
       }
 
-      await fs.writeFile(path.join(controlDir, 'responses', `${matchId}.txt`), res.text, 'utf8');
+      await fs.writeFile(responsePath, res.text, 'utf8');
       tokenUsage[matchId] = { input: res.inputTokens, output: res.outputTokens };
     }
 
@@ -364,11 +382,7 @@ async function main() {
     }
     const state = (await fs.readJson(STATE_FILE)) as State;
     const dryRun = args.includes('--dry-run');
-    const apiKey = process.env.ANTHROPIC_API_KEY || (dryRun ? 'mock_key' : '');
-    if (!apiKey) {
-      console.error('Error: ANTHROPIC_API_KEY env variable missing (run with --dry-run to skip API calls).');
-      process.exit(1);
-    }
+    const apiKey = 'roleplayer';
 
     const treatmentDir = path.join(OUTPUT_DIR, 'treatment');
     await fs.ensureDir(path.join(treatmentDir, 'prompts'));
@@ -392,8 +406,17 @@ async function main() {
       const wrappedPrompt = wrapPrompt(corePrompt);
       await fs.writeFile(path.join(treatmentDir, 'prompts', `${matchId}.txt`), wrappedPrompt, 'utf8');
 
+      const treatmentRespPath = path.join(treatmentDir, 'responses', `${matchId}.txt`);
       let res: { text: string; inputTokens: number; outputTokens: number };
-      if (dryRun) {
+      if (await fs.pathExists(treatmentRespPath)) {
+        console.log(`Reusing existing Treatment response for ${matchId}...`);
+        const text = await fs.readFile(treatmentRespPath, 'utf8');
+        res = {
+          text,
+          inputTokens: calculateEstimatedCoreTokens(SYSTEM_PROMPT + wrappedPrompt),
+          outputTokens: calculateEstimatedCoreTokens(text),
+        };
+      } else if (dryRun) {
         console.log(`[DRY RUN] Skipping Claude API call for ${matchId}`);
         res = {
           text: `<core_response>Mock treatment response text for ${matchId}</core_response>\n<meta_eval_reflection>Mock treatment reflection for ${matchId}</meta_eval_reflection>`,
@@ -410,7 +433,7 @@ async function main() {
         }
       }
 
-      await fs.writeFile(path.join(treatmentDir, 'responses', `${matchId}.txt`), res.text, 'utf8');
+      await fs.writeFile(treatmentRespPath, res.text, 'utf8');
       treatmentTokens[matchId] = { input: res.inputTokens, output: res.outputTokens };
 
       const controlDir = path.join(OUTPUT_DIR, 'control');
@@ -425,8 +448,12 @@ async function main() {
       const judgmentsDir = path.join(treatmentDir, 'judgments');
       await fs.ensureDir(judgmentsDir);
 
+      const judgmentPath = path.join(judgmentsDir, `${matchId}.txt`);
       let judgment: string;
-      if (dryRun) {
+      if (await fs.pathExists(judgmentPath)) {
+        console.log(`Reusing existing judgment for ${matchId}...`);
+        judgment = await fs.readFile(judgmentPath, 'utf8');
+      } else if (dryRun) {
         console.log(`[DRY RUN] Skipping Judge API call for ${matchId}`);
         judgment = `Mock judgment for ${matchId}\n- Verdict: Version B Winner\n- Reasoning: Mock judgment reasoning.`;
       } else {
@@ -439,7 +466,7 @@ async function main() {
         }
       }
 
-      await fs.writeFile(path.join(judgmentsDir, `${matchId}.txt`), judgment, 'utf8');
+      await fs.writeFile(judgmentPath, judgment, 'utf8');
       finalJudgments[matchId] = judgment;
     }
 

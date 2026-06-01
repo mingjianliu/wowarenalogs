@@ -40,6 +40,7 @@ import {
 } from '../../shared/src/components/CombatReport/CombatAIAnalysis/utils';
 import { NEW_SYSTEM_PROMPT, SYSTEM_PROMPT } from '../../shared/src/prompts/analyzeSystemPrompts';
 import { analyzePlayerCCAndTrinket, formatCCTrinketForContext } from '../../shared/src/utils/ccTrinketAnalysis';
+import { extractShapeshiftIntervals, extractStasisEvents } from '../../shared/src/utils/combatStates';
 import {
   annotateDefensiveTimings,
   computePressureWindows,
@@ -903,6 +904,12 @@ export function buildMatchPromptNew(
   lines.push('');
 
   // Timeline
+  const stasisEvents = extractStasisEvents(owner, combat);
+  const shapeshiftIntervals = allUnits
+    .filter((u) => u.type === CombatUnitType.Player)
+    .map((u) => ({ player: u, intervals: extractShapeshiftIntervals(u, combat) }))
+    .filter((x) => x.intervals.length > 0);
+
   const params: BuildMatchTimelineParams = {
     owner,
     ownerSpec,
@@ -929,6 +936,8 @@ export function buildMatchPromptNew(
     outgoingCCChains,
     bracket: combat.startInfo?.bracket ?? '3v3',
     gateCcAvoidanceToDanger: ccAvoidanceMode === 'gated',
+    stasisEvents,
+    shapeshiftIntervals,
   };
   lines.push('<match_timeline>');
   lines.push(
