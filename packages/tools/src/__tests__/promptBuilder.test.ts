@@ -3,7 +3,7 @@ import { CombatUnitReaction, CombatUnitType } from '@wowarenalogs/parser';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { buildMatchPromptJson, buildMatchPromptNew, parseLogText } from '../printMatchPrompts';
+import { buildMatchPromptNew, parseLogText } from '../printMatchPrompts';
 
 async function run() {
   const logPath = path.join(__dirname, '../../scratch_logs/WoWCombatLog_3v3_tww_1120_reduced.txt');
@@ -116,17 +116,6 @@ async function run() {
   console.log(`Has CC summary in new prompt: ${hasCCSummary}`);
   if (!hasCCSummary) {
     throw new Error('CC APPLIED ON ENEMIES (DR summary) missing from buildMatchPromptNew output');
-  }
-
-  const promptJson = buildMatchPromptJson(combat);
-  console.log('--- PROMPT JSON OUTPUT ---');
-  console.log(promptJson);
-  console.log('-------------------------');
-
-  const hasCCSummaryJson = promptJson.includes('CC APPLIED ON ENEMIES (DR summary):');
-  console.log(`Has CC summary in JSON prompt: ${hasCCSummaryJson}`);
-  if (!hasCCSummaryJson) {
-    throw new Error('CC APPLIED ON ENEMIES (DR summary) missing from buildMatchPromptJson output');
   }
 
   console.log('Verification PASSED!');

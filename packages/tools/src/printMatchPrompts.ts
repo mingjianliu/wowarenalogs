@@ -14,8 +14,6 @@
  *   npm run -w @wowarenalogs/tools start:printMatchPrompts -- --count 3 --ai  (also calls Claude and prints responses)
  *   npm run -w @wowarenalogs/tools start:printMatchPrompts -- --count 3 --ai --test-prompt  (adds ## Prompt Feedback to each response)
  *   npm run -w @wowarenalogs/tools start:printMatchPrompts -- --count 1 --new-prompt  (uses raw timeline prompt path)
- *   npm run -w @wowarenalogs/tools start:printMatchPrompts -- --count 1 --compare --healer  (A/B: new vs hybrid + judge)
- *   npm run -w @wowarenalogs/tools start:printMatchPrompts -- --count 10 --compare-json --healer  (A/B: [RES] text vs [SIT] JSON + judge)
  *   npm run -w @wowarenalogs/tools start:printMatchPrompts -- --count 5 --spec Priest_Discipline --result Win --min-duration 60 --verbose
  */
 
@@ -34,14 +32,13 @@ import os from 'os';
 import path from 'path';
 
 import {
-  buildJsonSituationSnapshot,
   buildMatchArc,
   buildMatchTimeline,
   BuildMatchTimelineParams,
   buildPlayerLoadout,
   identifyCriticalMoments,
 } from '../../shared/src/components/CombatReport/CombatAIAnalysis/utils';
-import { JSON_SYSTEM_PROMPT, NEW_SYSTEM_PROMPT, SYSTEM_PROMPT } from '../../shared/src/prompts/analyzeSystemPrompts';
+import { NEW_SYSTEM_PROMPT, SYSTEM_PROMPT } from '../../shared/src/prompts/analyzeSystemPrompts';
 import { analyzePlayerCCAndTrinket, formatCCTrinketForContext } from '../../shared/src/utils/ccTrinketAnalysis';
 import {
   annotateDefensiveTimings,
@@ -107,113 +104,6 @@ After your findings, add a short section titled "## Prompt Feedback" with:
 5. **One prompt rule change**: If you could rewrite one rule in your system instructions to produce better analysis, what would it be and why?
 
 Keep this section under 200 words. Be blunt — this feedback is for internal use to improve the prompting pipeline, not for the player.`;
-
-// Hybrid system prompt — incorporates structured verdict labels and two-pass identification
-// from ChatGPT suggestion, layered onto the existing raw-timeline rules.
-const HYBRID_SYSTEM_PROMPT = `You are an expert World of Warcraft arena PvP analyst reviewing raw match timeline data for a player performing at Gladiator or R1 level.
-
-Core rules:
-- Evaluate only what the data shows. Never invent events, timestamps, or spells not present in the data.
-- Only reference a spell if it appears in PLAYER LOADOUT or the timeline. Never say "you should have used X" if X is not listed — it may not be in the player's build.
-- Express uncertainty explicitly. Avoid "must", "always", "should have" — prefer "likely", "probably", "the log suggests", "without HP data it's unclear whether...".
-- This player already plays correctly most of the time. Focus on timing, trades, and decision quality — not rule-based mistakes.
-- For purge analysis: check PURGE RESPONSIBILITY before attributing missed purges. Do not blame the log owner for purges if they cannot offensive purge.
-- Ability absence: if a spell appears in PLAYER LOADOUT but has no cast in the timeline, that absence is notable only when (a) another ability from the same player appears in the timeline AND (b) the absent ability's function would have been relevant to a specific identified moment. Flag absence as a potential decision gap with stated uncertainty — never treat it as confirmed.
-- Teammate ability absence follows the same rule. If talent-gating is plausible, flag that caveat explicitly.
-
-Your task is two-pass:
-
-PASS 1 — Identify decision windows. Read the full timeline and silently identify up to 5 decision windows that most affected match outcome, ranked by: death risk > major CD overlap > momentum swing. Do not write this list in your output — use it to anchor PASS 2.
-
-PASS 2 — Evaluate each window. For each window from PASS 1, evaluate:
-1. Was this the correct trade given the available information?
-2. What was the most likely alternative decision?
-3. What is the estimated impact difference between the two choices?
-4. What uncertainty prevents a definitive verdict?
-
-Output format — exactly 5 findings maximum (fewer only if fewer meaningful decision points exist), ranked by estimated match impact. Most impactful first:
-
-## Finding 1: [short title]
-**What happened:** [one sentence]
-**Alternative:** [the most likely correct play — one sentence]
-**Impact:** [why the difference matters — specific to timing, CD value, or match outcome]
-**Verdict:** GOOD / SUBOPTIMAL / BAD
-**Severity:** HIGH (likely changes outcome) / MEDIUM / LOW
-**Fix:** [one concrete behavioral adjustment directly applicable in the next game — one line only]
-
-## Finding 2: ...
-## Finding 3: ...
-
-After your findings, add a Data Utility section:
-
-## Data Utility
-
-### Used — directly informed a finding
-- [event type or specific event]: [how it was used]
-
-### Present but unused
-- [event type or specific event]: [why it didn't contribute]
-
-### Missing — would have changed confidence or a finding
-- [what you needed]: [which finding it would affect]
-
-### One change
-[Single most impactful prompt or data improvement you'd make]
-
-Do not add a summary, "what went well" section, or general recommendations beyond the numbered findings and Data Utility section.`;
-
-// Baseline new-prompt — the raw-timeline prompt BEFORE counterfactual reasoning rules were added.
-// Used for A/B testing to measure the impact of the [RESOURCES] annotation + reasoning checks.
-const BASELINE_NEW_SYSTEM_PROMPT = `You are an expert World of Warcraft arena PvP analyst reviewing raw match timeline data for a player performing at Gladiator or R1 level.
-
-Core rules:
-- Evaluate only what the data shows. Never invent events, timestamps, or spells not present in the data.
-- Only reference a spell if it appears in PLAYER LOADOUT or the timeline. Never say "you should have used X" if X is not listed — it may not be in the player's build.
-- Express uncertainty explicitly. Avoid "must", "always", "should have" — prefer "likely", "probably", "the log suggests", "without HP data it's unclear whether...".
-- This player already plays correctly most of the time. Focus on timing, trades, and decision quality — not rule-based mistakes.
-- For purge analysis: check PURGE RESPONSIBILITY before attributing missed purges. Do not blame the log owner for purges if they cannot offensive purge.
-- Ability absence: if a spell appears in PLAYER LOADOUT but has no cast in the timeline, that absence is notable only when (a) another ability from the same player appears in the timeline AND (b) the absent ability's function would have been relevant to a specific identified moment. Flag absence as a potential decision gap with stated uncertainty — never treat it as confirmed.
-- Teammate ability absence follows the same rule. If talent-gating is plausible, flag that caveat explicitly.
-
-Your task:
-You are given a PLAYER LOADOUT (all major CDs available this match) and a MATCH TIMELINE (raw chronological events — no pre-selected moments, no pre-drawn conclusions).
-
-Identify the most important decision points yourself. Read the full timeline, build your own causal narrative about what happened and why, then evaluate the decisions that most affected match outcome.
-
-For each decision point you identify, evaluate:
-1. Was this the correct trade given the available information?
-2. What was the most likely alternative decision?
-3. What is the estimated impact difference between the two choices?
-4. What uncertainty prevents a definitive verdict?
-
-Output format — exactly 5 findings maximum (fewer only if fewer meaningful decision points exist), ranked by estimated match impact. Most impactful first:
-
-## Finding 1: [short title]
-**What happened:** [one sentence]
-**Alternative:** [the most likely correct play — one sentence]
-**Impact:** [why the difference matters — specific to timing, CD value, or match outcome]
-**Confidence:** [High/Medium/Low] — [one sentence on key uncertainty]
-
-## Finding 2: ...
-## Finding 3: ...
-
-After your findings, add a Data Utility section:
-
-## Data Utility
-
-### Used — directly informed a finding
-- [event type or specific event]: [how it was used]
-
-### Present but unused
-- [event type or specific event]: [why it didn't contribute]
-
-### Missing — would have changed confidence or a finding
-- [what you needed]: [which finding it would affect]
-
-### One change
-[Single most impactful prompt or data improvement you'd make]
-
-Do not add a summary, "what went well" section, or general recommendations beyond the numbered findings and Data Utility section.`;
 
 export type ParsedCombat = IArenaMatch | IShuffleRound;
 
@@ -296,27 +186,13 @@ export async function parseLogText(text: string): Promise<ParsedCombat[]> {
 // AI call
 // ---------------------------------------------------------------------------
 
-export async function callClaude(
-  prompt: string,
-  mode: 'standard' | 'test' | 'new' | 'hybrid' | 'baseline' | 'json' = 'standard',
-): Promise<string> {
+export async function callClaude(prompt: string, mode: 'standard' | 'test' | 'new' = 'standard'): Promise<string> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return '[AI SKIPPED — set ANTHROPIC_API_KEY env var to enable]';
   }
   const client = new Anthropic({ apiKey });
-  const systemPrompt =
-    mode === 'json'
-      ? JSON_SYSTEM_PROMPT
-      : mode === 'hybrid'
-        ? HYBRID_SYSTEM_PROMPT
-        : mode === 'baseline'
-          ? BASELINE_NEW_SYSTEM_PROMPT
-          : mode === 'new'
-            ? NEW_SYSTEM_PROMPT
-            : mode === 'test'
-              ? TEST_SYSTEM_PROMPT
-              : SYSTEM_PROMPT;
+  const systemPrompt = mode === 'new' ? NEW_SYSTEM_PROMPT : mode === 'test' ? TEST_SYSTEM_PROMPT : SYSTEM_PROMPT;
   const message = await client.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 6144,
@@ -326,149 +202,6 @@ export async function callClaude(
   });
   const content = message.content[0];
   if (content.type !== 'text') return '[AI returned non-text response]';
-  return content.text;
-}
-
-async function callClaudeJudge(matchPrompt: string, responseA: string, responseB: string): Promise<string> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return '[AI SKIPPED — set ANTHROPIC_API_KEY env var to enable]';
-  const client = new Anthropic({ apiKey });
-
-  const judgeSystem = `You are a prompt engineer evaluating two AI-generated WoW arena match analyses produced from identical match data. Your job is to give a blunt, concrete verdict on which prompt design produced better output. You have no stake in either approach — judge purely on output quality.`;
-
-  const userMessage = `Below are two analyses of the same WoW arena match. Both used the same raw timeline data as input.
-
-ANALYSIS A — Current prompt (Findings with Confidence field + Data Utility section):
----
-${responseA}
----
-
-ANALYSIS B — Hybrid prompt (two-pass identification, Verdict/Severity/Fix instead of Confidence):
----
-${responseB}
----
-
-Rate each analysis on four dimensions (score 1–5 each):
-
-**Actionability** — Does the output give advice the player can act on immediately in their next game?
-**Evidence discipline** — Are claims grounded in specific timeline events, not inference-on-inference?
-**Insight depth** — Does it surface non-obvious decision points the player might not have noticed?
-**Signal/noise** — Is the output free of filler, redundant framing, or padding?
-
-For each dimension, state the score for A and B and one sentence on why.
-
-Then:
-- **Winner overall:** A / B / Tie
-- **Deciding factor:** one sentence
-- **Top improvement for the loser:** one concrete prompt change (not "be more specific" — name what to add or remove)
-- **One element from the loser worth keeping:** what should be transplanted into the winner`;
-
-  const message = await client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 2048,
-    temperature: 0.2,
-    system: judgeSystem,
-    messages: [{ role: 'user', content: userMessage }],
-  });
-  const content = message.content[0];
-  if (content.type !== 'text') return '[Judge returned non-text response]';
-  return content.text;
-}
-
-async function callClaudeJsonJudge(responseA: string, responseB: string): Promise<string> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return '[AI SKIPPED — set ANTHROPIC_API_KEY env var to enable]';
-  const client = new Anthropic({ apiKey });
-
-  const judgeSystem = `You are a prompt engineer evaluating two AI-generated WoW arena match analyses produced from identical match data but different snapshot formats. Your job is to give a blunt, concrete verdict on which format produced better counterfactual reasoning. You have no stake in either approach.`;
-
-  const userMessage = `Both analyses used the same match. Analysis A used the current [RES] free-text snapshot format. Analysis B used a new [SIT] JSON format with explicit boolean fields (enemy_burst_active, healer_free).
-
-ANALYSIS A — [RES] text format:
----
-${responseA}
----
-
-ANALYSIS B — [SIT] JSON format:
----
-${responseB}
----
-
-Rate each analysis on four dimensions (score 1–5 each):
-
-**Reasoning precision** — Does the model correctly apply the four counterfactual checks (Trade Equity, Overlap Attribution, Counterfactual Path, Specific Future Consequence)? Does it cite actual snapshot field values as evidence?
-**Field utilization** — Does the model demonstrate it used the snapshot data correctly? Does it distinguish enemy_burst_active=true vs false, healer_free=true vs false?
-**Actionability** — Does the output give advice the player can act on immediately in their next game?
-**Signal/noise** — Is the output free of filler, vague hedging, or padding?
-
-For each dimension, state the score for A and B and one sentence on why.
-
-Then:
-- **Winner overall:** A / B / Tie
-- **Deciding factor:** one sentence on whether the format change was responsible for any quality difference
-- **Format verdict:** one sentence on whether [SIT] JSON or [RES] text is the better primitive for Claude's counterfactual reasoning
-- **One improvement for the winner:** a concrete prompt or data change`;
-
-  const message = await client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 2048,
-    temperature: 0.2,
-    system: judgeSystem,
-    messages: [{ role: 'user', content: userMessage }],
-  });
-  const content = message.content[0];
-  if (content.type !== 'text') return '[Judge returned non-text response]';
-  return content.text;
-}
-
-async function callClaudeCcAvoidJudge(
-  prompt: string,
-  responseA: string,
-  responseB: string,
-  responseC: string,
-): Promise<string> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return '[AI SKIPPED — set ANTHROPIC_API_KEY env var to enable]';
-  const client = new Anthropic({ apiKey });
-
-  const judgeSystem = `You are a prompt engineer evaluating three AI-generated WoW arena match analyses produced from identical match data but different timeline configurations. Your job is to give a blunt, concrete verdict on which format produced better counterfactual reasoning and coaching feedback, and check for bias or noise.`;
-
-  const userMessage = `Below are three analyses of the same WoW arena match. They differ only in how CC avoidance is displayed in the timeline:
-- Analysis A (None - Control): No [CC AVOIDED] annotations.
-- Analysis B (Continuous): [CC AVOIDED] annotations shown at all times.
-- Analysis C (Gated): [CC AVOIDED] annotations shown only during dangerous windows.
-
-ANALYSIS A:
----
-${responseA}
----
-
-ANALYSIS B:
----
-${responseB}
----
-
-ANALYSIS C:
----
-${responseC}
----
-
-Please rate each analysis on:
-1. **Bias & Hallucination** — Did the presence of CC avoidance in B or C cause the model to write unearned praise or miss mistakes (positive bias)? Did the absence of it in A cause the model to make incorrect assumptions (e.g. asking to use Grounding/Death when they actually did)?
-2. **Noise vs. Signal** — Did B feel too cluttered or distract the model's focus compared to A and C?
-3. **Coaching Value** — Which analysis yields the most accurate and high-value decision/coaching recommendations?
-
-Provide a verdict on which timeline configuration (A: None, B: Continuous, C: Gated) is the winner, and a 1-sentence explanation of why.`;
-
-  const message = await client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 2048,
-    temperature: 0.2,
-    system: judgeSystem,
-    messages: [{ role: 'user', content: userMessage }],
-  });
-  const content = message.content[0];
-  if (content.type !== 'text') return '[Judge returned non-text response]';
   return content.text;
 }
 
@@ -1211,246 +944,9 @@ export function buildMatchPromptNew(
   return lines.join('\n');
 }
 
-// ---------------------------------------------------------------------------
-// Build JSON snapshot prompt — same as buildMatchPromptNew() but uses [SIT] JSON format
-// ---------------------------------------------------------------------------
-
-export function buildMatchPromptJson(combat: ParsedCombat, forceHealer = false): string {
-  const allUnits = Object.values(combat.units);
-  const friends = allUnits.filter(
-    (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
-  ) as ICombatUnit[];
-  const enemies = allUnits.filter(
-    (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Hostile,
-  ) as ICombatUnit[];
-  const friendlyPets = allUnits.filter(
-    (u) =>
-      (u.type === CombatUnitType.Pet || u.type === CombatUnitType.Guardian) &&
-      u.reaction === CombatUnitReaction.Friendly,
-  ) as ICombatUnit[];
-
-  if (friends.length === 0 || enemies.length === 0) return '';
-  const durationSeconds = (combat.endTime - combat.startTime) / 1000;
-  if (durationSeconds < 10) return '';
-
-  const byPlayerId = friends.find((p) => p.id === combat.playerId);
-  const owner = byPlayerId
-    ? byPlayerId
-    : forceHealer
-      ? (friends.find((p) => isHealerSpec(p.spec)) ?? friends[0])
-      : (friends.find((p) => !isHealerSpec(p.spec)) ?? friends.find((p) => isHealerSpec(p.spec)) ?? friends[0]);
-
-  const ownerSpec = specToString(owner.spec);
-  const isHealer = isHealerSpec(owner.spec);
-  const myTeam = friends.map((p) => specToString(p.spec)).join(', ');
-  const enemyTeam = enemies.map((p) => specToString(p.spec)).join(', ');
-
-  const combatAny = combat as unknown as Record<string, unknown>;
-  const playerWon =
-    typeof combatAny['winningTeamId'] === 'string' ? combatAny['winningTeamId'] === combat.playerTeamId : null;
-  const resultStr = playerWon === true ? 'Win' : playerWon === false ? 'Loss' : 'Unknown';
-
-  const ownerCDs = extractMajorCooldowns(owner, combat);
-  const teammateCDs = friends
-    .filter((p) => p.id !== owner.id)
-    .map((p) => ({ player: p, spec: specToString(p.spec), cds: extractMajorCooldowns(p, combat) }));
-  const enemyCDTimeline = reconstructEnemyCDTimeline(enemies, combat, owner, friends);
-  const pressureWindows = computePressureWindows(friends, combat);
-  const healingGaps = isHealer ? detectHealingGaps(owner, friends, enemies, combat) : [];
-  const dispelSummary = reconstructDispelSummary(friends, enemies, combat, friendlyPets);
-  const ccTrinketSummaries = friends.map((p) => analyzePlayerCCAndTrinket(p, enemies, combat));
-  const outgoingCCChains = analyzeOutgoingCCChains(friends, enemies, combat);
-  const ownerCanPurge = canOffensivePurge(owner);
-  const teamPurgers = friends.filter((p) => p.id !== owner.id && canOffensivePurge(p)).map((p) => specToString(p.spec));
-
-  const friendlyDeaths = friends
-    .flatMap((p) => [
-      ...p.deathRecords.map((d) => ({
-        spec: specToString(p.spec),
-        name: p.name,
-        atSeconds: (d.timestamp - combat.startTime) / 1000,
-      })),
-      // B17: include Spirit of Redemption deaths (UNIT_DIED with unconsciousKill=1).
-      // Holy Priests who die with SoR have no normal deathRecord — only a consciousDeathRecord.
-      ...(p.spec === CombatUnitSpec.Priest_Holy
-        ? p.consciousDeathRecords.map((d) => ({
-            spec: specToString(p.spec),
-            name: p.name,
-            atSeconds: (d.timestamp - combat.startTime) / 1000,
-            note: 'Spirit of Redemption — healer casting as ghost',
-          }))
-        : []),
-    ])
-    .sort((a, b) => a.atSeconds - b.atSeconds);
-
-  const enemyDeaths = enemies
-    .flatMap((p) =>
-      p.deathRecords.map((d) => ({
-        spec: specToString(p.spec),
-        name: p.name,
-        atSeconds: (d.timestamp - combat.startTime) / 1000,
-      })),
-    )
-    .sort((a, b) => a.atSeconds - b.atSeconds);
-
-  const lines: string[] = [];
-
-  lines.push('<match_context>');
-  lines.push('');
-
-  // Metadata
-  lines.push('<metadata>');
-  lines.push(
-    `  Spec: ${ownerSpec}${isHealer ? ' (Healer)' : ''} | Bracket: ${combat.startInfo?.bracket ?? 'Unknown'} | Result: ${resultStr} | Duration: ${fmtTime(durationSeconds)}`,
-  );
-  lines.push(`  My team: ${myTeam}`);
-  lines.push(`  Enemy team: ${enemyTeam}`);
-  // B21: warn when team roster is incomplete (e.g. 2 players logged in a 3v3 match)
-  const bracketSize = combat.startInfo?.bracket === '2v2' ? 2 : combat.startInfo?.bracket === '3v3' ? 3 : null;
-  if (bracketSize !== null && friends.length < bracketSize) {
-    lines.push(
-      `  WARNING: only ${friends.length}/${bracketSize} friendly players recorded (likely disconnect or late-join). Do not evaluate team composition or teammate coordination — roster data is incomplete.`,
-    );
-  }
-  lines.push('</metadata>');
-  lines.push('');
-
-  lines.push('<dictionary>');
-  lines.push('  Damage units: M = Million (1,000,000), k = Thousand (1,000)');
-  lines.push('  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage');
-  lines.push('</dictionary>');
-  lines.push('');
-
-  lines.push('<purge_responsibility>');
-  lines.push(`  Log owner (${ownerSpec}): ${ownerCanPurge ? 'CAN offensive purge' : 'CANNOT offensive purge'}`);
-  lines.push(`  Team purgers: ${teamPurgers.length > 0 ? teamPurgers.join(', ') : 'none'}`);
-  lines.push('</purge_responsibility>');
-  lines.push('');
-
-  const specBaselineLines = formatSpecBaselines(ownerSpec, ownerCDs, benchmarks);
-  if (specBaselineLines.length > 0) {
-    lines.push('<spec_baselines>');
-    lines.push(...specBaselineLines.map((l) => `  ${l}`));
-    lines.push('</spec_baselines>');
-    lines.push('');
-  }
-
-  const dtpsBaselineLines = formatDTPSBaselines(
-    friends.map((p) => specToString(p.spec)),
-    benchmarks,
-  );
-  if (dtpsBaselineLines.length > 0) {
-    lines.push('<dtps_baselines>');
-    lines.push(...dtpsBaselineLines.map((l) => `  ${l}`));
-    lines.push('</dtps_baselines>');
-    lines.push('');
-  }
-
-  const dampeningLines = formatDampeningForContext(
-    combat.startInfo?.bracket ?? '3v3',
-    [...friends, ...enemies],
-    combat.startTime,
-    combat.endTime,
-  );
-  if (dampeningLines.length > 0) {
-    lines.push('<dampening_curve>');
-    lines.push(...dampeningLines.map((l) => `  ${l}`));
-    lines.push('</dampening_curve>');
-    lines.push('');
-  }
-
-  const ccLines = formatOutgoingCCChainsForContext(outgoingCCChains);
-  if (ccLines.length > 0) {
-    lines.push('<outgoing_cc_chains>');
-    lines.push(...ccLines.map((l) => `  ${l}`));
-    lines.push('</outgoing_cc_chains>');
-    lines.push('');
-  }
-
-  const enemyCDTimelineLines = formatEnemyCDTimelineForContext(enemyCDTimeline, durationSeconds);
-  if (enemyCDTimelineLines.length > 0) {
-    lines.push('<enemy_cooldown_timeline>');
-    lines.push(...enemyCDTimelineLines.map((l) => `  ${l}`));
-    lines.push('</enemy_cooldown_timeline>');
-    lines.push('');
-  }
-
-  const killAttemptWindowsLines = formatKillAttemptWindowsForContext(
-    enemyCDTimeline.alignedBurstWindows,
-    pressureWindows,
-  );
-  if (killAttemptWindowsLines.length > 0) {
-    lines.push('<kill_attempt_windows>');
-    lines.push(...killAttemptWindowsLines.map((l) => `  ${l}`));
-    lines.push('</kill_attempt_windows>');
-    lines.push('');
-  }
-
-  // Player loadout
-  const {
-    text: loadoutText,
-    playerIdMap,
-    enemyIdMap,
-  } = buildPlayerLoadout(owner, ownerSpec, ownerCDs, teammateCDs, enemyCDTimeline, enemies);
-  lines.push(loadoutText);
-  lines.push('');
-
-  // Timeline — with JSON situation snapshot function
-  const params: BuildMatchTimelineParams = {
-    owner,
-    ownerSpec,
-    ownerCDs,
-    teammateCDs,
-    enemyCDTimeline,
-    ccTrinketSummaries,
-    dispelSummary,
-    friendlyDeaths,
-    enemyDeaths,
-    pressureWindows,
-    healingGaps,
-    friends,
-    enemies,
-    allUnits,
-    matchStartMs: combat.startTime,
-    matchEndMs: combat.endTime,
-    isHealer,
-    playerIdMap,
-    enemyIdMap,
-    outgoingCCChains,
-    bracket: combat.startInfo?.bracket ?? '3v3',
-    resourceSnapshotFn: buildJsonSituationSnapshot,
-  };
-  lines.push('<match_timeline>');
-  lines.push(
-    buildMatchTimeline(params)
-      .split('\n')
-      .map((l) => `  ${l}`)
-      .join('\n'),
-  );
-  lines.push('</match_timeline>');
-  lines.push('');
-  lines.push('</match_context>');
-
-  return lines.join('\n');
-}
-
-// ---------------------------------------------------------------------------
-// Print one match (prompt + optional AI response)
-// ---------------------------------------------------------------------------
-
-function extractTimelineFromPrompt(prompt: string): string {
-  const lines = prompt.split('\n');
-  const startIdx = lines.findIndex((l) => l.includes('MATCH TIMELINE'));
-  if (startIdx === -1) return '';
-  return lines.slice(startIdx, startIdx + 150).join('\n');
-}
-
 interface PrintMatchOptions {
   testPromptMode?: boolean;
   useNewPrompt?: boolean;
-  compareMode?: boolean;
-  compareJsonMode?: boolean;
-  compareCcMode?: boolean;
   forceHealer?: boolean;
 }
 
@@ -1460,102 +956,15 @@ async function printMatch(
   matchIndex: number,
   aiMode: boolean,
   options: PrintMatchOptions = {},
-  combat?: ParsedCombat,
 ): Promise<void> {
-  const {
-    testPromptMode = false,
-    useNewPrompt = false,
-    compareMode = false,
-    compareJsonMode = false,
-    compareCcMode = false,
-  } = options;
+  const { testPromptMode = false, useNewPrompt = false } = options;
   const sep = '='.repeat(80);
   console.log(`\n${sep}`);
   console.log(`MATCH ${matchIndex} — ${matchLabel}`);
   console.log(sep);
 
-  if (compareCcMode && combat) {
-    process.stderr.write(
-      `  CC Avoidance A/B/C compare for match ${matchIndex}: calling Claude x3 (A: none, B: continuous, C: gated)...\n`,
-    );
-    try {
-      const promptA = buildMatchPromptNew(combat, options.forceHealer ?? false, 'none');
-      const promptB = buildMatchPromptNew(combat, options.forceHealer ?? false, 'continuous');
-      const promptC = buildMatchPromptNew(combat, options.forceHealer ?? false, 'gated');
-
-      const [responseA, responseB, responseC] = await Promise.all([
-        callClaude(promptA, 'new'),
-        callClaude(promptB, 'new'),
-        callClaude(promptC, 'new'),
-      ]);
-
-      console.log('\n--- TIMELINE A (None — Control) ---\n');
-      console.log(extractTimelineFromPrompt(promptA));
-      console.log('\n--- ANALYSIS A (None) ---\n');
-      console.log(responseA);
-
-      console.log('\n--- TIMELINE B (Continuous — Full Exposure) ---\n');
-      console.log(extractTimelineFromPrompt(promptB));
-      console.log('\n--- ANALYSIS B (Continuous) ---\n');
-      console.log(responseB);
-
-      console.log('\n--- TIMELINE C (Gated — Dangerous Window Only) ---\n');
-      console.log(extractTimelineFromPrompt(promptC));
-      console.log('\n--- ANALYSIS C (Gated) ---\n');
-      console.log(responseC);
-
-      process.stderr.write(`  Calling CC Avoidance Judge...\n`);
-      const judgment = await callClaudeCcAvoidJudge(promptB, responseA, responseB, responseC);
-      console.log('\n--- JUDGE VERDICT ---\n');
-      console.log(judgment);
-    } catch (e) {
-      console.log(`[Compare failed: ${e}]`);
-    }
-    return;
-  }
-
   console.log('\n--- PROMPT ---\n');
   console.log(prompt);
-
-  if (compareMode) {
-    process.stderr.write(
-      `  A/B compare for match ${matchIndex}: calling Claude x2 (baseline vs new with [RESOURCES] + counterfactual rules)...\n`,
-    );
-    try {
-      const [responseA, responseB] = await Promise.all([callClaude(prompt, 'baseline'), callClaude(prompt, 'new')]);
-      console.log('\n--- ANALYSIS A (baseline — raw timeline, no counterfactual rules) ---\n');
-      console.log(responseA);
-      console.log('\n--- ANALYSIS B (new — [RES] compact format + 4 counterfactual reasoning checks) ---\n');
-      console.log(responseB);
-      process.stderr.write(`  Calling Claude judge...\n`);
-      const judgment = await callClaudeJudge(prompt, responseA, responseB);
-      console.log('\n--- JUDGE VERDICT ---\n');
-      console.log(judgment);
-    } catch (e) {
-      console.log(`[Compare failed: ${e}]`);
-    }
-    return;
-  }
-
-  if (compareJsonMode) {
-    process.stderr.write(
-      `  JSON A/B compare for match ${matchIndex}: calling Claude x2 ([RES] text vs [SIT] JSON)...\n`,
-    );
-    try {
-      const [responseA, responseB] = await Promise.all([callClaude(prompt, 'new'), callClaude(prompt, 'json')]);
-      console.log('\n--- ANALYSIS A ([RES] text format — current) ---\n');
-      console.log(responseA);
-      console.log('\n--- ANALYSIS B ([SIT] JSON format — F73 candidate) ---\n');
-      console.log(responseB);
-      process.stderr.write(`  Calling JSON judge...\n`);
-      const judgment = await callClaudeJsonJudge(responseA, responseB);
-      console.log('\n--- JUDGE VERDICT ---\n');
-      console.log(judgment);
-    } catch (e) {
-      console.log(`[Compare failed: ${e}]`);
-    }
-    return;
-  }
 
   if (aiMode) {
     const modeTag = useNewPrompt ? ' [new-prompt]' : testPromptMode ? ' [test-prompt]' : '';
@@ -1584,9 +993,6 @@ interface RunOptions {
   testPromptMode?: boolean;
   forceHealer?: boolean;
   useNewPrompt?: boolean;
-  compareMode?: boolean;
-  compareJsonMode?: boolean;
-  compareCcMode?: boolean;
   filterSpec?: string;
   filterMinDuration?: number;
   filterMaxDuration?: number;
@@ -1660,12 +1066,9 @@ export async function processStub(
       continue;
     }
 
-    // compare mode always uses the new timeline prompt as input (includes [RESOURCES] blocks)
-    const prompt = options.compareJsonMode
-      ? buildMatchPromptJson(combat, forceHealer)
-      : options.compareMode || options.useNewPrompt
-        ? buildMatchPromptNew(combat, forceHealer)
-        : buildMatchPrompt(combat, forceHealer);
+    const prompt = options.useNewPrompt
+      ? buildMatchPromptNew(combat, forceHealer)
+      : buildMatchPrompt(combat, forceHealer);
     if (!prompt) {
       if (verbose) process.stderr.write(`empty prompt\n`);
       continue;
@@ -1674,7 +1077,7 @@ export async function processStub(
     foundInThisStub = true;
     process.stderr.write(`MATCH ${matchIndex} found!\n`);
     const label = `${stub.id} (${stub.startInfo?.bracket ?? 'Unknown'}, ${date}) - ${specToString(owner.spec)} ${resultStr} ${Math.round(durationSec)}s`;
-    await printMatch(label, prompt, matchIndex, aiMode, options, combat);
+    await printMatch(label, prompt, matchIndex, aiMode, options);
     break; // only take one combat per stub to match index logic
   }
 
@@ -1753,13 +1156,7 @@ async function runCloud(count: number, bracket: string, aiMode: boolean, options
 // ---------------------------------------------------------------------------
 
 async function runLocal(logDir: string, aiMode: boolean, options: RunOptions = {}) {
-  const {
-    forceHealer = false,
-    useNewPrompt = false,
-    compareMode = false,
-    compareJsonMode = false,
-    compareCcMode = false,
-  } = options;
+  const { forceHealer = false, useNewPrompt = false } = options;
   const files = (await fs.readdir(logDir))
     .filter((f) => f.endsWith('.txt') && f.startsWith('WoWCombatLog'))
     .map((f) => path.join(logDir, f))
@@ -1813,15 +1210,11 @@ async function runLocal(logDir: string, aiMode: boolean, options: RunOptions = {
 
       if (options.filterResult && resultStr.toLowerCase() !== options.filterResult.toLowerCase()) continue;
 
-      const prompt = compareJsonMode
-        ? buildMatchPromptJson(combat, forceHealer)
-        : compareMode || useNewPrompt || compareCcMode
-          ? buildMatchPromptNew(combat, forceHealer)
-          : buildMatchPrompt(combat, forceHealer);
+      const prompt = useNewPrompt ? buildMatchPromptNew(combat, forceHealer) : buildMatchPrompt(combat, forceHealer);
       if (!prompt) continue;
       matchCount++;
       const label = `${fileName} - ${specToString(owner.spec)} ${resultStr} ${Math.round(durationSec)}s`;
-      await printMatch(label, prompt, matchCount, aiMode, options, combat);
+      await printMatch(label, prompt, matchCount, aiMode, options);
     }
   }
 
@@ -1840,9 +1233,6 @@ async function main() {
   const testPromptMode = args.includes('--test-prompt');
   const forceHealer = args.includes('--healer');
   const useNewPrompt = args.includes('--new-prompt');
-  const compareMode = args.includes('--compare');
-  const compareJsonMode = args.includes('--compare-json');
-  const compareCcMode = args.includes('--compare-cc');
   const verbose = args.includes('--verbose');
   const countIdx = args.indexOf('--count');
   const bracketIdx = args.indexOf('--bracket');
@@ -1863,9 +1253,6 @@ async function main() {
     testPromptMode,
     forceHealer,
     useNewPrompt,
-    compareMode,
-    compareJsonMode,
-    compareCcMode,
     filterSpec,
     filterMinDuration,
     filterMaxDuration,
@@ -1873,15 +1260,7 @@ async function main() {
     verbose,
   };
 
-  if (compareMode) {
-    if (!process.env.ANTHROPIC_API_KEY) {
-      process.stderr.write('Warning: --compare requires ANTHROPIC_API_KEY. Responses will be skipped.\n');
-    } else {
-      process.stderr.write(
-        'Compare mode — baseline vs new ([RESOURCES] + counterfactual rules), judge side-by-side.\n',
-      );
-    }
-  } else if (aiMode) {
+  if (aiMode) {
     if (!process.env.ANTHROPIC_API_KEY) {
       process.stderr.write(
         'Warning: --ai flag set but ANTHROPIC_API_KEY not found in environment. Responses will be skipped.\n',
@@ -1893,26 +1272,6 @@ async function main() {
           ? ' (test-prompt mode — responses include ## Prompt Feedback section)'
           : '';
       process.stderr.write(`AI mode enabled — will call Claude after each match prompt${modeLabel}.\n`);
-    }
-  }
-
-  if (compareJsonMode) {
-    if (!process.env.ANTHROPIC_API_KEY) {
-      process.stderr.write('Warning: --compare-json requires ANTHROPIC_API_KEY. Responses will be skipped.\n');
-    } else {
-      process.stderr.write(
-        'JSON compare mode — [RES] text vs [SIT] JSON, judge on counterfactual reasoning quality.\n',
-      );
-    }
-  }
-
-  if (compareCcMode) {
-    if (!process.env.ANTHROPIC_API_KEY) {
-      process.stderr.write('Warning: --compare-cc requires ANTHROPIC_API_KEY. Responses will be skipped.\n');
-    } else {
-      process.stderr.write(
-        'CC Avoidance compare mode — A: None vs B: Continuous vs C: Gated, judge on bias and noise.\n',
-      );
     }
   }
 
