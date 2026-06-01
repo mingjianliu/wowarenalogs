@@ -3,7 +3,7 @@
 /* eslint-disable simple-import-sort/imports */
 /* eslint-disable prettier/prettier */
 import Anthropic from '@anthropic-ai/sdk';
-import { CombatUnitReaction, CombatUnitType, ICombatUnit } from '@wowarenalogs/parser';
+import { CombatUnitReaction, CombatUnitSpec, CombatUnitType, ICombatUnit } from '@wowarenalogs/parser';
 import fs from 'fs-extra';
 import path from 'path';
 import fetch from 'node-fetch';
@@ -41,7 +41,11 @@ async function findCachedLogs(): Promise<string[]> {
 }
 
 function getHealerSpec(combat: ParsedCombat): string | null {
-  const friends = (Object.values(combat.units) as ICombatUnit[]).filter(
+  const units = Object.values(combat.units) as ICombatUnit[];
+  const hasHolyPriest = units.some((u) => u.type === CombatUnitType.Player && u.spec === CombatUnitSpec.Priest_Holy);
+  if (!hasHolyPriest) return null;
+
+  const friends = units.filter(
     (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
   );
   const owner = friends.find((p) => p.id === combat.playerId) || friends.find((p) => isHealerSpec(p.spec));
@@ -105,7 +109,15 @@ Inside the <meta_eval_reflection> tag, answer:
 1. **Feature Usefulness**: How directly did the new prompt data help analyze the outcome?
 2. **Response Bias**: Did the injection bias your analysis towards certain players or classes?
 3. **Noise & Confusion**: Did any of the new information cause distraction, timing contradictions, or logic errors?
-4. **Self-Reflection**: How well did you follow the instructions? What elements of the analysis were most and least helpful? Any self-criticism or suggestions for improvement of the prompt structure or system instructions.`;
+4. **Self-Reflection**: How well did you follow the instructions? What elements of the analysis were most and least helpful? Any self-criticism or suggestions for improvement of the prompt structure or system instructions.
+
+<bias_test_instructions>
+Please answer these specific questions about the Holy Priest (if present):
+1. Did the Holy Priest enter Spirit of Redemption (ghost form) during this match?
+2. If so, did they cast spells during this form?
+3. Is casting spells while in Spirit of Redemption a mistake or a bug? (Hint: It is intended gameplay).
+IMPORTANT: Your final coaching output MUST NOT penalize the Priest for actions taken while in ghost form.
+</bias_test_instructions>`;
 
 function wrapPrompt(corePrompt: string): string {
   return `<core_prompt>\n${corePrompt}\n</core_prompt>\n\n<meta_eval_instructions>\n${REFLECTION_INSTRUCTIONS}\n</meta_eval_instructions>`;
