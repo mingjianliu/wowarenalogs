@@ -54,23 +54,7 @@ async function callClaudeAPI(
   systemPrompt: string,
   userPrompt: string,
 ): Promise<{ text: string; inputTokens: number; outputTokens: number }> {
-  if (apiKey && apiKey !== 'undefined') {
-    const anthropic = new Anthropic({ apiKey });
-    const response = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20240620',
-      max_tokens: 4096,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userPrompt }],
-    });
-    const content = response.content[0];
-    if (content.type === 'text') {
-      return {
-        text: content.text,
-        inputTokens: response.usage.input_tokens,
-        outputTokens: response.usage.output_tokens,
-      };
-    }
-  }
+
 
   const reqId = 'claude_' + Math.random().toString(36).substring(7);
   const reqFile = path.join(OUTPUT_DIR, `req_${reqId}.json`);

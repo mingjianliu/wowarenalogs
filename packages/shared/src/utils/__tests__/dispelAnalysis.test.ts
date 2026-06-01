@@ -176,6 +176,32 @@ describe('dispelAnalysis — summary reconstruction', () => {
     expect(res.allyCleanse[0].fatalUnitSpec).toBe('Holy Priest');
   });
 
+  it('F124: detects backlash CC on the dispeller within 100ms', () => {
+    const healer = makeUnit('h', { name: 'Healer', spec: CombatUnitSpec.Priest_Holy });
+    (healer as any).id = 'h';
+    const target = makeUnit('t', { name: 'Target', spec: CombatUnitSpec.Warrior_Arms });
+    (target as any).id = 't';
+
+    const action = makeExtraAction(MATCH_START + 10_000, LogEvent.SPELL_DISPEL, {
+      extraSpellId: '316099', // UA - has dispel penalty
+      destUnitId: 't',
+      destUnitName: 'Target',
+      srcUnitId: 'h',
+    });
+    (healer as any).actionOut = [action];
+
+    // Mock Silence (196363) applied to the healer within 100ms (at MATCH_START + 10_050)
+    (healer as any).auraEvents = [
+      makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '196363', MATCH_START + 10_050, 'enemy', 'h'),
+    ];
+
+    const enemy = makeUnit('e1', { reaction: CombatUnitReaction.Hostile });
+
+    const res = reconstructDispelSummary([healer, target] as any, [enemy] as any, makeCombat());
+    expect(res.allyCleanse).toHaveLength(1);
+    expect(res.allyCleanse[0].backlashCcSpellId).toBe('196363');
+  });
+
   it('detects missed purge and identifies if all eligible purgers were on CD (B108)', () => {
     const purger = makeUnit('dh1', { name: 'DH', spec: CombatUnitSpec.DemonHunter_Havoc });
     (purger as any).id = 'dh1';

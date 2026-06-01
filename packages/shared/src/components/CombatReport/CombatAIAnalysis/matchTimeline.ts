@@ -666,10 +666,16 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       );
       const cleansedNote = isCleansed ? ' [CLEANSED]' : '';
 
+      const baseDuration = spellEffectData[cc.spellId]?.durationSeconds;
+      const baseDurationStr = baseDuration !== undefined ? ` (base ${baseDuration}s)` : '';
+      const drStr = cc.drInfo ? ` [DR: ${cc.drInfo.category} ${cc.drInfo.level}]` : '';
+      const isBacklash = cc.spellId === '34914' || cc.spellId === '196363';
+      const backlashStr = isBacklash ? ' [DISPEL BACKLASH CC]' : '';
+
       // passive_trinket → player has no active trinket, no annotation
       addEntry(
         cc.atSeconds,
-        `${fmtTime(cc.atSeconds)}  [CC ON TEAM]   ${pid(summary.playerName)} ← ${cc.spellName} (${pid(cc.sourceName)}) | ${cc.durationSeconds.toFixed(0)}s${trinketNote}${cleansedNote}`,
+        `${fmtTime(cc.atSeconds)}  [CC ON TEAM]   ${pid(summary.playerName)} ← ${cc.spellName} (${pid(cc.sourceName)}) | ${cc.durationSeconds.toFixed(0)}s${baseDurationStr}${drStr}${backlashStr}${trinketNote}${cleansedNote}`,
       );
     }
 

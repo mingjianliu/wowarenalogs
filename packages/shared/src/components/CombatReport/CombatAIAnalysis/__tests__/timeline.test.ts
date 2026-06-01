@@ -826,6 +826,49 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     expect(result).toContain('0:37');
   });
 
+  it('F124: emits [CC ON TEAM] with base duration, DR category/level, and dispel backlash annotations', () => {
+    const cc: ICCInstance = {
+      atSeconds: 37,
+      durationSeconds: 4,
+      spellId: '118',
+      spellName: 'Polymorph',
+      sourceName: 'Dzinked',
+      sourceSpec: 'Frost Mage',
+      damageTakenDuring: 50_000,
+      trinketState: 'available_unused',
+      drInfo: { category: 'Disorient', level: '50%' as const, sequenceIndex: 1 },
+      distanceYards: null,
+      losBlocked: null,
+    };
+    const ccBacklash: ICCInstance = {
+      atSeconds: 45,
+      durationSeconds: 3,
+      spellId: '196363',
+      spellName: 'Silence',
+      sourceName: 'Dzinked',
+      sourceSpec: 'Shadow Priest',
+      damageTakenDuring: 10_000,
+      trinketState: 'passive_trinket',
+      drInfo: null,
+      distanceYards: null,
+      losBlocked: null,
+    };
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        ccTrinketSummaries: [
+          {
+            ...makeEmptyCCTrinketSummary('Feramonk'),
+            ccInstances: [cc, ccBacklash],
+          },
+        ],
+      }),
+    );
+
+    expect(result).toContain('Feramonk ← Polymorph (Dzinked) | 4s (base 60s) [DR: Disorient 50%]');
+    expect(result).toContain('Feramonk ← Silence (Dzinked) | 3s [DISPEL BACKLASH CC]');
+  });
+
   it('emits [CC ON TEAM] with trinket: used when trinket was consumed', () => {
     const cc: ICCInstance = {
       atSeconds: 15,

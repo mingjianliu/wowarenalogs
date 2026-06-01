@@ -27,6 +27,13 @@ const POST_CC_PRESSURE_WINDOW_S = 5;
 const DISPEL_PENALTY_SPELLS = new Map<string, string>([
   ['316099', 'Silences & damages the dispeller (Unstable Affliction)'],
   ['342938', 'Silences & damages the dispeller (Unstable Affliction)'],
+  ['34914', 'Horrifies the dispeller (Vampiric Touch)'],
+]);
+
+const BACKLASH_CC_SPELL_IDS = new Map<string, { backlashSpellId: string }>([
+  ['34914', { backlashSpellId: '34914' }],
+  ['316099', { backlashSpellId: '196363' }],
+  ['342938', { backlashSpellId: '196363' }],
 ]);
 
 // Static spec → dispel-type maps. These represent specs whose cleanse ability is treated as
@@ -366,6 +373,7 @@ export interface IDispelEvent {
   wasFatal?: boolean;
   fatalUnitName?: string;
   fatalUnitSpec?: string;
+  backlashCcSpellId?: string;
 }
 
 export interface IMissedCleanseWindow {
@@ -606,6 +614,20 @@ export function reconstructDispelSummary(
           event.wasFatal = true;
           event.fatalUnitName = fatalDeath.name;
           event.fatalUnitSpec = fatalDeath.spec;
+        }
+
+        const backlashInfo = BACKLASH_CC_SPELL_IDS.get(removedSpellId);
+        if (backlashInfo) {
+          const match = (targetUnitForPenalty.auraEvents ?? []).find(
+            (aura) =>
+              aura.logLine.event === LogEvent.SPELL_AURA_APPLIED &&
+              aura.spellId === backlashInfo.backlashSpellId &&
+              aura.timestamp >= action.timestamp &&
+              aura.timestamp <= action.timestamp + 100,
+          );
+          if (match) {
+            event.backlashCcSpellId = match.spellId ?? undefined;
+          }
         }
       }
 
