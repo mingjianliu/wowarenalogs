@@ -45,7 +45,34 @@ We will add `packages/shared/src/utils/combatStates.ts` to implement the followi
 
 ---
 
-## 3. Verification Plan
+## 3. State Inference A/B Testing (`--compare-state`)
+
+To evaluate the utility and bias footprint of this new state data, we will add a `--compare-state` CLI flag to `printMatchPrompts.ts`.
+
+### Parameter Control
+We will modify `buildMatchPromptNew` to accept `injectStateInfo: boolean = true`.
+* When `false`: `stasisEvents` and `shapeshiftIntervals` are forced empty, reverting the prompt to baseline (Control).
+* When `true`: The state events are calculated and injected normally (Test).
+
+### Prompt B Injection
+For the Test Prompt (Prompt B), we will append the following metadata/questions block at the end of the prompt to force the primary LLM to self-evaluate:
+```markdown
+### State Inference Evaluation
+Please explicitly address the following at the end of your analysis:
+1. Did you utilize the Evoker Stasis release events or Druid Shapeshift durations in your analysis? If so, which specific timestamps or states?
+2. How did this state information affect your final assessment of the player's performance, defensive survival (e.g. Bear Form), or stasis throughput?
+3. Did the presence of this state information cause any confusion or lead you to make any inferences that might be incorrect/biased?
+```
+
+### Judge Evaluation
+`printMatchPrompts.ts` will run:
+* **Prompt A:** Generated with `injectStateInfo = false` (baseline).
+* **Prompt B:** Generated with `injectStateInfo = true` (test + meta-questions).
+* Call Claude on both, output both responses, and call a customized `callClaudeStateJudge` to compare quality and check for bias.
+
+---
+
+## 4. Verification Plan
 
 * **Unit Tests:** Add `packages/shared/src/utils/__tests__/combatStates.test.ts` to assert that:
   * Form intervals are accurately computed, including form-hold to match end.
