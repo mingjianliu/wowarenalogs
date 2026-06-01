@@ -9,6 +9,7 @@ import path from 'path';
 import fetch from 'node-fetch';
 import { isHealerSpec, specToString } from '../../shared/src/utils/cooldowns';
 import { buildMatchPromptNew, fetchStubs, ParsedCombat, parseLogText, MatchStub } from './printMatchPrompts';
+import { SYSTEM_PROMPT } from '../../shared/src/prompts/analyzeSystemPrompts';
 
 const OUTPUT_DIR = path.join(__dirname, '../local-batch/compare');
 const RAW_LOGS_DIR = path.join(OUTPUT_DIR, 'raw-logs');
@@ -46,6 +47,27 @@ function getHealerSpec(combat: ParsedCombat): string | null {
   const owner = friends.find((p) => p.id === combat.playerId) || friends.find((p) => isHealerSpec(p.spec));
   if (!owner || !isHealerSpec(owner.spec)) return null;
   return specToString(owner.spec);
+}
+
+async function callClaudeAPI(
+  apiKey: string,
+  systemPrompt: string,
+  userPrompt: string,
+): Promise<{ text: string; inputTokens: number; outputTokens: number }> {
+  const client = new Anthropic({ apiKey });
+  const message = await client.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 4096,
+    temperature: 0.3,
+    system: systemPrompt,
+    messages: [{ role: 'user', content: userPrompt }],
+  });
+  const textContent = message.content[0].type === 'text' ? message.content[0].text : '';
+  return {
+    text: textContent,
+    inputTokens: message.usage.input_tokens,
+    outputTokens: message.usage.output_tokens,
+  };
 }
 
 async function main() {
@@ -168,6 +190,53 @@ async function main() {
     };
     await fs.writeJson(STATE_FILE, state, { spaces: 2 });
     console.log(`Saved state to ${STATE_FILE}`);
+
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      console.error('ANTHROPIC_API_KEY env variable missing.');
+      process.exit(1);
+    }
+
+    const controlDir = path.join(OUTPUT_DIR, 'control');
+    await fs.ensureDir(path.join(controlDir, 'prompts'));
+    await fs.ensureDir(path.join(controlDir, 'responses'));
+
+    const tokenUsage: Record<string, { input: number; output: number }> = {};
+    const dryRun = args.includes('--dry-run') || apiKey === 'mock_key';
+
+    for (const matchId of matchIds) {
+      const logPath = path.join(RAW_LOGS_DIR, `${matchId}.log`);
+      const text = await fs.readFile(logPath, 'utf8');
+      const combats = await parseLogText(text);
+      const combat = combats.find(c => getHealerSpec(c) !== null) ?? combats[0];
+
+      if (!combat) {
+        console.warn(`No valid combat found in log for match ${matchId}`);
+        continue;
+      }
+
+      const prompt = buildMatchPromptNew(combat, true);
+      await fs.writeFile(path.join(controlDir, 'prompts', `${matchId}.txt`), prompt, 'utf8');
+
+      let res: { text: string; inputTokens: number; outputTokens: number };
+      if (dryRun) {
+        console.log(`[DRY RUN] Skipping Claude API call for ${matchId}`);
+        res = {
+          text: `Mock response text for ${matchId}`,
+          inputTokens: 100,
+          outputTokens: 50,
+        };
+      } else {
+        console.log(`Running Claude evaluation on Control for ${matchId}...`);
+        res = await callClaudeAPI(apiKey, SYSTEM_PROMPT, prompt);
+      }
+
+      await fs.writeFile(path.join(controlDir, 'responses', `${matchId}.txt`), res.text, 'utf8');
+      tokenUsage[matchId] = { input: res.inputTokens, output: res.outputTokens };
+    }
+
+    await fs.writeJson(path.join(controlDir, 'tokens.json'), tokenUsage, { spaces: 2 });
+    console.log('Control phase completed successfully.');
   } else {
     console.log('Starting Treatment Phase...');
   }
