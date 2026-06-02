@@ -36,11 +36,13 @@ import {
   buildMatchTimeline,
   BuildMatchTimelineParams,
   buildPlayerLoadout,
+  extractShapeshiftIntervals,
+  extractSpiritOfRedemptionIntervals,
+  extractStasisEvents,
   identifyCriticalMoments,
 } from '../../shared/src/components/CombatReport/CombatAIAnalysis/utils';
 import { NEW_SYSTEM_PROMPT, SYSTEM_PROMPT } from '../../shared/src/prompts/analyzeSystemPrompts';
 import { analyzePlayerCCAndTrinket, formatCCTrinketForContext } from '../../shared/src/utils/ccTrinketAnalysis';
-import { extractShapeshiftIntervals, extractStasisEvents } from '../../shared/src/utils/combatStates';
 import {
   annotateDefensiveTimings,
   computeOverallHealingMetrics,
@@ -794,13 +796,22 @@ export function buildMatchPromptNew(
     .sort((a, b) => a.atSeconds - b.atSeconds);
 
   const enemyDeaths = enemies
-    .flatMap((p) =>
-      p.deathRecords.map((d) => ({
+    .flatMap((p) => [
+      ...p.deathRecords.map((d) => ({
         spec: specToString(p.spec),
         name: p.name,
         atSeconds: (d.timestamp - combat.startTime) / 1000,
       })),
-    )
+      // B17: include Spirit of Redemption deaths (UNIT_DIED with unconsciousKill=1).
+      ...(p.spec === CombatUnitSpec.Priest_Holy
+        ? p.consciousDeathRecords.map((d) => ({
+            spec: specToString(p.spec),
+            name: p.name,
+            atSeconds: (d.timestamp - combat.startTime) / 1000,
+            note: 'Spirit of Redemption — healer casting as ghost',
+          }))
+        : []),
+    ])
     .sort((a, b) => a.atSeconds - b.atSeconds);
 
   const lines: string[] = [];
@@ -925,6 +936,10 @@ export function buildMatchPromptNew(
     .filter((u) => u.type === CombatUnitType.Player)
     .map((u) => ({ player: u, intervals: extractShapeshiftIntervals(u, combat) }))
     .filter((x) => x.intervals.length > 0);
+  const spiritOfRedemptionIntervals = allUnits
+    .filter((u) => u.type === CombatUnitType.Player && u.spec === CombatUnitSpec.Priest_Holy)
+    .map((u) => ({ player: u as ICombatUnit, intervals: extractSpiritOfRedemptionIntervals(u as ICombatUnit, combat) }))
+    .filter((x) => x.intervals.length > 0);
 
   const params: BuildMatchTimelineParams = {
     owner,
@@ -954,6 +969,7 @@ export function buildMatchPromptNew(
     gateCcAvoidanceToDanger: ccAvoidanceMode === 'gated',
     stasisEvents,
     shapeshiftIntervals,
+    spiritOfRedemptionIntervals,
   };
   lines.push('<match_timeline>');
   lines.push(

@@ -3,7 +3,7 @@ import { CombatAbsorbAction, CombatUnitType, getUnitType, ICombatUnit, LogEvent 
 import { getEnglishSpellName, spellEffectData } from '../../../data/spellEffectData';
 import { ccSpellIds } from '../../../data/spellTags';
 import { IPlayerCCTrinketSummary } from '../../../utils/ccTrinketAnalysis';
-import { IFormInterval, IStasisEvent } from '../../../utils/combatStates';
+import { IFormInterval, ISpiritOfRedemptionInterval, IStasisEvent } from '../../../utils/combatStates';
 import {
   fmtTime,
   getUnitHpAtTimestamp,
@@ -92,6 +92,7 @@ export interface BuildMatchTimelineParams {
   gateCcAvoidanceToDanger?: boolean;
   stasisEvents?: IStasisEvent[];
   shapeshiftIntervals?: Array<{ player: ICombatUnit; intervals: IFormInterval[] }>;
+  spiritOfRedemptionIntervals?: Array<{ player: ICombatUnit; intervals: ISpiritOfRedemptionInterval[] }>;
   stateFormat?: 'inline' | 'summary' | 'verbose';
 }
 
@@ -122,6 +123,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     gateCcAvoidanceToDanger,
     stasisEvents = [],
     shapeshiftIntervals = [],
+    spiritOfRedemptionIntervals = [],
     stateFormat = 'summary',
   } = params;
 
@@ -903,11 +905,19 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     const friendlyParts: string[] = [];
     const currentFriendlies = friendlyHpUnits.map(({ unit, label }) => {
       const deathAt = friendlyDeathAtByName.get(unit.name);
-      const isDead = deathAt !== undefined && t >= Math.floor(deathAt);
+      let isDead = deathAt !== undefined && t >= Math.floor(deathAt);
+
+      const isGhost = spiritOfRedemptionIntervals.some(
+        (i) => i.player.name === unit.name && i.intervals.some((int) => t >= int.startSeconds && t <= int.endSeconds),
+      );
+
       const pct = getUnitHpAtTimestamp(unit, tsMs, sampleWindowMs);
       const clamped = pct !== null ? Math.min(pct, 100) : null;
 
-      if (isDead) {
+      if (isGhost) {
+        friendlyParts.push(`${label(unit.name)}:ghost`);
+        isDead = false;
+      } else if (isDead) {
         friendlyParts.push(`${label(unit.name)}:dead`);
       } else if (clamped !== null) {
         friendlyParts.push(`${label(unit.name)}:${clamped}`);
@@ -920,11 +930,20 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       criticalWindowSet.has(t) && enemyHpUnits.length > 0
         ? enemyHpUnits.map(({ unit, label }) => {
             const deathAt = enemyDeathAtByName.get(unit.name);
-            const isDead = deathAt !== undefined && t >= Math.floor(deathAt);
+            let isDead = deathAt !== undefined && t >= Math.floor(deathAt);
+
+            const isGhost = spiritOfRedemptionIntervals.some(
+              (i) =>
+                i.player.name === unit.name && i.intervals.some((int) => t >= int.startSeconds && t <= int.endSeconds),
+            );
+
             const pct = getUnitHpAtTimestamp(unit, tsMs, sampleWindowMs);
             const clamped = pct !== null ? Math.min(pct, 100) : null;
 
-            if (isDead) {
+            if (isGhost) {
+              enemyParts.push(`${label(unit.name)}:ghost`);
+              isDead = false;
+            } else if (isDead) {
               enemyParts.push(`${label(unit.name)}:dead`);
             } else if (clamped !== null) {
               enemyParts.push(`${label(unit.name)}:${clamped}`);
@@ -1003,6 +1022,23 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         addEntry(
           interval.startSeconds,
           `${fmtTime(interval.startSeconds)}  ${prefix} [SHIFT]${pLabel} entered ${interval.form} Form`,
+        );
+      }
+    }
+
+    for (const { player, intervals } of spiritOfRedemptionIntervals) {
+      const isOwner = player.id === owner.id;
+      const prefix = isOwner ? '[YOU]' : friends.some((f) => f.id === player.id) ? '[TEAM]' : '[ENEMY]';
+      const pLabel = isOwner ? '' : ` ${pid(player.name)}`;
+
+      for (const interval of intervals) {
+        addEntry(
+          interval.startSeconds,
+          `${fmtTime(interval.startSeconds)}  ${prefix} [SPIRIT OF REDEMPTION]${pLabel} entered Spirit of Redemption (Ghost Form)`,
+        );
+        addEntry(
+          interval.endSeconds,
+          `${fmtTime(interval.endSeconds)}  ${prefix} [SPIRIT OF REDEMPTION]${pLabel} form expired`,
         );
       }
     }

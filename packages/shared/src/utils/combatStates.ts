@@ -9,10 +9,51 @@ export interface IFormInterval {
   endSeconds: number;
 }
 
+export interface ISpiritOfRedemptionInterval {
+  startSeconds: number;
+  endSeconds: number;
+}
+
 export interface IStasisEvent {
   startSeconds: number;
   releaseSeconds: number;
   spells: string[];
+}
+
+export function extractSpiritOfRedemptionIntervals(
+  unit: ICombatUnit,
+  combat: AtomicArenaCombat,
+): ISpiritOfRedemptionInterval[] {
+  const intervals: ISpiritOfRedemptionInterval[] = [];
+  let ghostStart: number | null = null;
+
+  for (const aura of unit.auraEvents) {
+    const isGhost = aura.spellId === '27827' || aura.spellId === '215982' || aura.spellId === '215769';
+
+    if (aura.logLine.event === LogEvent.SPELL_AURA_APPLIED) {
+      if (isGhost) {
+        ghostStart = aura.logLine.timestamp;
+      }
+    } else if (aura.logLine.event === LogEvent.SPELL_AURA_REMOVED) {
+      if (isGhost && ghostStart !== null) {
+        intervals.push({
+          startSeconds: (ghostStart - combat.startTime) / 1000,
+          endSeconds: (aura.logLine.timestamp - combat.startTime) / 1000,
+        });
+        ghostStart = null;
+      }
+    }
+  }
+
+  // Handle ghost form held until the end of the match
+  if (ghostStart !== null) {
+    intervals.push({
+      startSeconds: (ghostStart - combat.startTime) / 1000,
+      endSeconds: (combat.endTime - combat.startTime) / 1000,
+    });
+  }
+
+  return intervals;
 }
 
 export function extractShapeshiftIntervals(unit: ICombatUnit, combat: AtomicArenaCombat): IFormInterval[] {
