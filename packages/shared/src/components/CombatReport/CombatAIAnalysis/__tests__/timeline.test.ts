@@ -11,6 +11,7 @@ import {
 import { ICCInstance, IPlayerCCTrinketSummary } from '../../../../utils/ccTrinketAnalysis';
 import { IDamageBucket, IMajorCooldownInfo } from '../../../../utils/cooldowns';
 import { IDispelSummary } from '../../../../utils/dispelAnalysis';
+import { DISPEL_FEATURE_FLAGS } from '../../../../utils/dispelFeatureFlags';
 import { IOutgoingCCChain } from '../../../../utils/drAnalysis';
 import { IAlignedBurstWindow, IEnemyCDTimeline } from '../../../../utils/enemyCDs';
 import { IHealingGap } from '../../../../utils/healingGaps';
@@ -28,7 +29,6 @@ import {
   HEALING_WINDOW_EARLY_CD_SECONDS,
   HEALING_WINDOW_MIN_HPS,
 } from '../utils';
-import { DISPEL_FEATURE_FLAGS } from '../../../../utils/dispelFeatureFlags';
 
 beforeAll(() => {
   DISPEL_FEATURE_FLAGS.F18_FATAL_DISPEL = true;

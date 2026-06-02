@@ -544,6 +544,24 @@ export function getFatalDeath(unit: ICombatUnit, dispelTimestamp: number): { nam
   return null;
 }
 
+/**
+ * Checks if a specific CC/debuff removal was due to a friendly dispel.
+ *
+ * NOTE: Short CC that is neither dispelled nor broken by damage counts as nothing.
+ * Previously, any short CC was misclassified as a cleanse.
+ */
+export function wasRemovedByAllyDispel(
+  allyCleanse: IDispelEvent[],
+  spellId: string,
+  targetName: string,
+  removalSeconds: number,
+): boolean {
+  return allyCleanse.some(
+    (d) =>
+      d.removedSpellId === spellId && d.targetName === targetName && Math.abs(d.timeSeconds - removalSeconds) < 0.5,
+  );
+}
+
 export function reconstructDispelSummary(
   friends: ICombatUnit[],
   enemies: ICombatUnit[],
@@ -758,11 +776,11 @@ export function reconstructDispelSummary(
         const durationSeconds = (removal.ts - applyTs) / 1000;
 
         // Was removed by a friendly dispel near that removal time?
-        const removedByDispel = allyCleanse.some(
-          (d) =>
-            d.removedSpellId === spellId &&
-            d.targetName === unit.name &&
-            Math.abs(d.timeSeconds - (removal.ts - combat.startTime) / 1000) < 0.5,
+        const removedByDispel = wasRemovedByAllyDispel(
+          allyCleanse,
+          spellId,
+          unit.name,
+          (removal.ts - combat.startTime) / 1000,
         );
 
         // CC broke from incoming damage — not a missed cleanse, but not a healer cleanse either

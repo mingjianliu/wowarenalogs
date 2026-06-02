@@ -11,7 +11,12 @@ import {
   IMajorCooldownInfo,
   specToBenchmarkKey,
 } from '../../../utils/cooldowns';
-import { canDefensiveCleanse, IDispelEvent, IDispelSummary } from '../../../utils/dispelAnalysis';
+import {
+  canDefensiveCleanse,
+  IDispelEvent,
+  IDispelSummary,
+  wasRemovedByAllyDispel,
+} from '../../../utils/dispelAnalysis';
 import { DISPEL_FEATURE_FLAGS } from '../../../utils/dispelFeatureFlags';
 import { extractAoeCCEvents, IOutgoingCCChain } from '../../../utils/drAnalysis';
 import { IEnemyCDTimeline } from '../../../utils/enemyCDs';
@@ -673,19 +678,26 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       }
 
       // F148: Cleanse Success Verification — check if this CC was removed by a friendly dispel
-      const isCleansed = dispelSummary.allyCleanse.some(
-        (d) =>
-          d.removedSpellId === cc.spellId &&
-          d.targetName === summary.playerName &&
-          Math.abs(d.timeSeconds - (cc.atSeconds + cc.durationSeconds)) < 0.5,
+      const isCleansed = wasRemovedByAllyDispel(
+        dispelSummary.allyCleanse,
+        cc.spellId,
+        summary.playerName,
+        cc.atSeconds + cc.durationSeconds,
       );
       const cleansedNote = isCleansed ? ' [CLEANSED]' : '';
 
       const baseDuration = spellEffectData[cc.spellId]?.durationSeconds;
-      const baseDurationStr = DISPEL_FEATURE_FLAGS.F124_ENHANCED_CC_ANNOTATIONS && baseDuration !== undefined ? ` (base ${baseDuration}s)` : '';
-      const drStr = DISPEL_FEATURE_FLAGS.F124_ENHANCED_CC_ANNOTATIONS && cc.drInfo ? ` [DR: ${cc.drInfo.category} ${cc.drInfo.level}]` : '';
+      const baseDurationStr =
+        DISPEL_FEATURE_FLAGS.F124_ENHANCED_CC_ANNOTATIONS && baseDuration !== undefined
+          ? ` (base ${baseDuration}s)`
+          : '';
+      const drStr =
+        DISPEL_FEATURE_FLAGS.F124_ENHANCED_CC_ANNOTATIONS && cc.drInfo
+          ? ` [DR: ${cc.drInfo.category} ${cc.drInfo.level}]`
+          : '';
       const isBacklash = cc.spellId === '34914' || cc.spellId === '196363';
-      const backlashStr = DISPEL_FEATURE_FLAGS.F124_ENHANCED_CC_ANNOTATIONS && isBacklash ? ' [DISPEL BACKLASH CC]' : '';
+      const backlashStr =
+        DISPEL_FEATURE_FLAGS.F124_ENHANCED_CC_ANNOTATIONS && isBacklash ? ' [DISPEL BACKLASH CC]' : '';
 
       // passive_trinket → player has no active trinket, no annotation
       addEntry(
