@@ -8,7 +8,7 @@
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
-    "test": "npx tsdx test",
+    "test": "npx tsdx test --passWithNoTests=false",
     "codegen": "graphql-codegen --config codegen.yml",
     "codegen:dev": "graphql-codegen --config codegen.dev.yml --verbose"
   },
