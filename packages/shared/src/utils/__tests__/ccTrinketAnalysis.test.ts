@@ -560,4 +560,40 @@ describe('analyzePlayerCCAndTrinket — CC Avoidance', () => {
     expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Shadow Word: Death');
     expect(result.ccAvoidedInstances[0].avoidanceSpellId).toBe('32379');
   });
+
+  it('tracks CC avoidance when a buff is refreshed or initial APPLIED is missing', () => {
+    // Buff refreshed at T+5s (missing initial SPELL_AURA_APPLIED)
+    const precogRefresh = makeAuraEvent(
+      LogEvent.SPELL_AURA_REFRESH,
+      '377362',
+      MATCH_START + 5_000,
+      'player-1',
+      'player-1',
+      'BUFF',
+    );
+    const precogRemove = makeAuraEvent(
+      LogEvent.SPELL_AURA_REMOVED,
+      '377362',
+      MATCH_START + 15_000,
+      'player-1',
+      'player-1',
+      'BUFF',
+    );
+
+    const enemyCast = makeSpellCastEvent('118', MATCH_START + 10_000, 'player-1', 'Player', 'enemy-1', 'EnemyA');
+
+    const player = makeUnit('player-1', {
+      class: CombatUnitClass.Mage,
+      spec: CombatUnitSpec.Mage_Frost,
+      auraEvents: [precogRefresh, precogRemove],
+    });
+    const enemy = makeEnemy('enemy-1', 'EnemyA');
+    enemy.spellCastEvents = [enemyCast as any];
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+
+    expect(result.ccAvoidedInstances).toHaveLength(1);
+    expect(result.ccAvoidedInstances[0].spellId).toBe('118');
+    expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Precognition');
+  });
 });
