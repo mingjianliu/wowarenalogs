@@ -41,7 +41,7 @@ Active work items. Completed/N/A items archived in `TRACKER_ARCHIVE.md`.
 | F125    | Backlog | Re-integrate Healer Exposure during Burst — bring back the structured `HEALER EXPOSURE DURING ENEMY BURST WINDOWS` block in the timeline prompt (`buildMatchPromptNew`) | `printMatchPrompts.ts`, `healerExposureAnalysis.ts` |
 | F127    | Backlog | Late/Failed CD Trade Flag — calculate timestamp delta between defensive CD usage and friendly deaths to annotate `[FAILED CD TRADE]` (or `[LATE CD TRADE]`) in the timeline | `cooldowns.ts`, `printMatchPrompts.ts` |
 | F129    | Backlog | Identify Healer Playstyle Archetypes — detect and label Fistweaving vs. Caster Monk sub-specs (e.g. Tiger Palm/Blackout Kick counts > 5/m) | `printMatchPrompts.ts`, `cooldowns.ts` |
-| F130    | Backlog | Spirit of Redemption State — explicitly flag Priest ghost form state to prevent AI hallucinations during this phase | `printMatchPrompts.ts`, `cooldowns.ts` |
+| F130    | ✅ Done | Spirit of Redemption State — explicitly flag Priest ghost form state to prevent AI hallucinations during this phase | `printMatchPrompts.ts`, `cooldowns.ts` |
 | F131    | Backlog | Cleanse Cooldown Tracking — track healer Cleanse cooldown state and flag wasteful slow dispels | `dispelAnalysis.ts`, `printMatchPrompts.ts` |
 | F132    | Backlog | Spec-Aware Dispel Cooldown Tracking — adjust dispel CD tracking from a hardcoded 8s window to support 60s cooldowns (e.g., Cauterizing Flame) and no-cooldown cleanses (Druid, Mage) | `dispelAnalysis.ts` |
 | F133    | Backlog | Evoker Obsidian Scales Spec Restriction Fix — expand Obsidian Scales tracking to dev/pres/aug specs in `cooldowns.ts` | `cooldowns.ts` |
