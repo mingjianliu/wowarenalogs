@@ -28,7 +28,7 @@ export function extractSpiritOfRedemptionIntervals(
   let ghostStart: number | null = null;
 
   for (const aura of unit.auraEvents) {
-    const isGhost = aura.spellId === '27827' || aura.spellId === '215982';
+    const isGhost = aura.spellId === '27827' || aura.spellId === '215982' || aura.spellId === '215769';
 
     if (aura.logLine.event === LogEvent.SPELL_AURA_APPLIED) {
       if (isGhost) {
