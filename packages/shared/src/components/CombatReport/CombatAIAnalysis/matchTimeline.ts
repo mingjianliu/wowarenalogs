@@ -1,4 +1,11 @@
-import { CombatAbsorbAction, CombatUnitType, getUnitType, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
+import {
+  CombatAbsorbAction,
+  CombatUnitReaction,
+  CombatUnitType,
+  getUnitType,
+  ICombatUnit,
+  LogEvent,
+} from '@wowarenalogs/parser';
 
 import { getEnglishSpellName, spellEffectData } from '../../../data/spellEffectData';
 import { ccSpellIds } from '../../../data/spellTags';
@@ -365,7 +372,12 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   if (allUnits) {
     for (const unit of allUnits) {
       if (unit.deathRecords && unit.deathRecords.length > 0 && isCriticalNonPlayerUnit(unit)) {
-        const reactionStr = unit.reaction === 1 ? 'Friendly' : unit.reaction === 2 ? 'Enemy' : 'Unknown';
+        const reactionStr =
+          unit.reaction === CombatUnitReaction.Friendly
+            ? 'Friendly'
+            : unit.reaction === CombatUnitReaction.Hostile
+              ? 'Enemy'
+              : 'Unknown';
         for (const deathRecord of unit.deathRecords) {
           const atSeconds = (deathRecord.timestamp - matchStartMs) / 1000;
           const durationS = (matchEndMs - matchStartMs) / 1000;

@@ -75,7 +75,6 @@ export const CRITICAL_NON_PLAYER_NPC_IDS = new Set<string>([
 ]);
 
 export function isCriticalNonPlayerUnit(unit: ICombatUnit): boolean {
-  if (unit.type === CombatUnitType.Pet) return true;
   const npcId = getNpcIdFromGuid(unit.id);
   if (npcId && CRITICAL_NON_PLAYER_NPC_IDS.has(npcId)) return true;
   return false;
