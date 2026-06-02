@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CombatUnitReaction, CombatUnitSpec, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
+import { CombatUnitReaction, CombatUnitSpec, CombatUnitType, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
 import {
   makeAdvancedAction,
@@ -15,6 +15,7 @@ import { DISPEL_FEATURE_FLAGS } from '../../../../utils/dispelFeatureFlags';
 import { IOutgoingCCChain } from '../../../../utils/drAnalysis';
 import { IAlignedBurstWindow, IEnemyCDTimeline } from '../../../../utils/enemyCDs';
 import { IHealingGap } from '../../../../utils/healingGaps';
+import { isCriticalNonPlayerUnit } from '../timelineHelpers';
 import {
   buildJsonSituationSnapshot,
   buildMatchTimeline,
@@ -4788,5 +4789,39 @@ describe('buildMatchTimeline — Grounding Totem NPC ID detection', () => {
       }),
     );
     expect(result).toContain('[YOU] [CD]   Grounding Totem [ABSORBED: Polymorph]');
+  });
+});
+
+describe('isCriticalNonPlayerUnit', () => {
+  it('returns true for whitelisted critical NPCs', () => {
+    // 19668 is Shadowfiend
+    const shadowfiend = {
+      id: 'Creature-0-3132-1504-17829-19668-00002FBA9E',
+      type: CombatUnitType.Pet,
+    } as unknown as ICombatUnit;
+    expect(isCriticalNonPlayerUnit(shadowfiend)).toBe(true);
+
+    // 5925 is Grounding Totem
+    const groundingTotem = {
+      id: 'Creature-0-3132-1504-17829-5925-00002FBA9E',
+      type: CombatUnitType.Pet,
+    } as unknown as ICombatUnit;
+    expect(isCriticalNonPlayerUnit(groundingTotem)).toBe(true);
+  });
+
+  it('returns false for generic pets that are not in the whitelist', () => {
+    const genericPet = {
+      id: 'Pet-0-3132-1504-17829-99999-00002FBA9E',
+      type: CombatUnitType.Pet,
+    } as unknown as ICombatUnit;
+    expect(isCriticalNonPlayerUnit(genericPet)).toBe(false);
+  });
+
+  it('returns false for player units', () => {
+    const playerUnit = {
+      id: 'Player-3676-0834375A',
+      type: CombatUnitType.Player,
+    } as unknown as ICombatUnit;
+    expect(isCriticalNonPlayerUnit(playerUnit)).toBe(false);
   });
 });
