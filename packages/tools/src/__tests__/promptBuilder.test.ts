@@ -1,5 +1,5 @@
 /* eslint-disable no-console, @typescript-eslint/no-explicit-any */
-import { CombatUnitReaction, CombatUnitType } from '@wowarenalogs/parser';
+import { CombatExtraSpellAction, CombatUnitReaction, CombatUnitType } from '@wowarenalogs/parser';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
@@ -107,15 +107,37 @@ async function run() {
     },
   ] as any;
 
+  // Inject an offensive purge action to verify F142
+  const purgeAction = Object.create(CombatExtraSpellAction.prototype);
+  Object.assign(purgeAction, {
+    timestamp: start + 12000,
+    logLine: { event: 'SPELL_DISPEL', timestamp: start + 12000, parameters: [] },
+    spellId: '528', // Dispel Magic
+    spellName: 'Dispel Magic',
+    extraSpellId: '1022', // Blessing of Protection
+    extraSpellName: 'Blessing of Protection',
+    srcUnitId: friendly.id,
+    destUnitId: enemy.id,
+    destUnitName: enemy.name,
+  });
+  friendly.actionOut = [purgeAction];
+
   const promptNew = buildMatchPromptNew(combat);
   console.log('--- PROMPT NEW OUTPUT ---');
   console.log(promptNew);
   console.log('-------------------------');
 
-  const hasCCSummary = promptNew.includes('CC APPLIED ON ENEMIES (DR summary):');
+  const hasCCSummary = promptNew.includes('## CC Chains');
   console.log(`Has CC summary in new prompt: ${hasCCSummary}`);
   if (!hasCCSummary) {
-    throw new Error('CC APPLIED ON ENEMIES (DR summary) missing from buildMatchPromptNew output');
+    throw new Error('## CC Chains missing from buildMatchPromptNew output');
+  }
+
+  const hasPurgeSummary =
+    promptNew.includes('Offensive Dispel Summary:') && promptNew.includes('Blessing of Protection');
+  console.log(`Has purge summary in new prompt: ${hasPurgeSummary}`);
+  if (!hasPurgeSummary) {
+    throw new Error('Offensive Dispel Summary missing or incorrect in buildMatchPromptNew output');
   }
 
   console.log('Verification PASSED!');

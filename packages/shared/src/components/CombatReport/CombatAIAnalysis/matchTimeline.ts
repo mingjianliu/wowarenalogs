@@ -12,6 +12,7 @@ import {
   specToBenchmarkKey,
 } from '../../../utils/cooldowns';
 import { canDefensiveCleanse, IDispelEvent, IDispelSummary } from '../../../utils/dispelAnalysis';
+import { DISPEL_FEATURE_FLAGS } from '../../../utils/dispelFeatureFlags';
 import { extractAoeCCEvents, IOutgoingCCChain } from '../../../utils/drAnalysis';
 import { IEnemyCDTimeline } from '../../../utils/enemyCDs';
 import { IHealingGap } from '../../../utils/healingGaps';
@@ -95,6 +96,18 @@ export interface BuildMatchTimelineParams {
   spiritOfRedemptionIntervals?: Array<{ player: ICombatUnit; intervals: ISpiritOfRedemptionInterval[] }>;
   stateFormat?: 'inline' | 'summary' | 'verbose';
 }
+
+const HIGH_VALUE_PURGEABLE_BUFFS = new Set<string>([
+  '10060', // Power Infusion
+  '113858', // Dark Soul: Instability
+  '113861', // Dark Soul: Misery
+  '190319', // Combustion
+  '12472', // Icy Veins
+  '1022', // Blessing of Protection
+  '1044', // Blessing of Freedom
+  '198111', // Temporal Shield
+  '110909', // Alter Time
+]);
 
 export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   const {
@@ -668,10 +681,16 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       );
       const cleansedNote = isCleansed ? ' [CLEANSED]' : '';
 
+      const baseDuration = spellEffectData[cc.spellId]?.durationSeconds;
+      const baseDurationStr = DISPEL_FEATURE_FLAGS.F124_ENHANCED_CC_ANNOTATIONS && baseDuration !== undefined ? ` (base ${baseDuration}s)` : '';
+      const drStr = DISPEL_FEATURE_FLAGS.F124_ENHANCED_CC_ANNOTATIONS && cc.drInfo ? ` [DR: ${cc.drInfo.category} ${cc.drInfo.level}]` : '';
+      const isBacklash = cc.spellId === '34914' || cc.spellId === '196363';
+      const backlashStr = DISPEL_FEATURE_FLAGS.F124_ENHANCED_CC_ANNOTATIONS && isBacklash ? ' [DISPEL BACKLASH CC]' : '';
+
       // passive_trinket → player has no active trinket, no annotation
       addEntry(
         cc.atSeconds,
-        `${fmtTime(cc.atSeconds)}  [CC ON TEAM]   ${pid(summary.playerName)} ← ${cc.spellName} (${pid(cc.sourceName)}) | ${cc.durationSeconds.toFixed(0)}s${trinketNote}${cleansedNote}`,
+        `${fmtTime(cc.atSeconds)}  [CC ON TEAM]   ${pid(summary.playerName)} ← ${cc.spellName} (${pid(cc.sourceName)}) | ${cc.durationSeconds.toFixed(0)}s${baseDurationStr}${drStr}${backlashStr}${trinketNote}${cleansedNote}`,
       );
     }
 
@@ -701,6 +720,17 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     );
   }
 
+  if (DISPEL_FEATURE_FLAGS.F152_MISSED_PURGES_TIMELINE) {
+    for (const miss of dispelSummary.missedPurgeWindows) {
+      if (HIGH_VALUE_PURGEABLE_BUFFS.has(miss.spellId)) {
+        addEntry(
+          miss.timeSeconds,
+          `${fmtTime(miss.timeSeconds)}  [MISSED PURGE OPPORTUNITY]   ${miss.spellName} active on ${enemyPid(miss.enemyName)} (unpurged for ${Math.round(miss.durationSeconds)}s)`,
+        );
+      }
+    }
+  }
+
   // B14: Consolidate same-second same-source cleanses (e.g. Mass Dispel) into one line.
   {
     const cleanseGroups = new Map<string, IDispelEvent[]>();
@@ -713,11 +743,15 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     for (const group of cleanseGroups.values()) {
       const first = group[0];
       const petTag = group.some((c) => c.isPetDispel) ? ' (pet)' : '';
+      const fatalCleanse = DISPEL_FEATURE_FLAGS.F18_FATAL_DISPEL ? group.find((c) => c.wasFatal) : undefined;
+      const fatalTag = fatalCleanse
+        ? ` [FATAL DISPEL: ${pid(fatalCleanse.fatalUnitName ?? fatalCleanse.sourceName)}]`
+        : '';
       const removedSpellName = getEnglishSpellName(first.removedSpellId, first.removedSpellName);
       if (group.length === 1) {
         addEntry(
           first.timeSeconds,
-          `${fmtTime(first.timeSeconds)}  [CLEANSE]   ${pid(first.sourceName)} dispelled ${removedSpellName} off ${pid(first.targetName)}${petTag}`,
+          `${fmtTime(first.timeSeconds)}  [CLEANSE]   ${pid(first.sourceName)} dispelled ${removedSpellName} off ${pid(first.targetName)}${petTag}${fatalTag}`,
         );
       } else {
         const effects = group
@@ -725,7 +759,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
           .join(', ');
         addEntry(
           first.timeSeconds,
-          `${fmtTime(first.timeSeconds)}  [CLEANSE]   ${pid(first.sourceName)} dispelled ${group.length} effects: ${effects}${petTag}`,
+          `${fmtTime(first.timeSeconds)}  [CLEANSE]   ${pid(first.sourceName)} dispelled ${group.length} effects: ${effects}${petTag}${fatalTag}`,
         );
       }
     }

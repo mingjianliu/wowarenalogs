@@ -255,66 +255,30 @@ async function main() {
 
     console.log(`Corpus target count: ${count}`);
 
-    const cachedFiles = await findCachedLogs();
-    const matchIds: string[] = [];
-    const specDistribution: Record<string, string> = {};
+    let matchIds: string[] = [];
+    let specDistribution: Record<string, string> = {};
+    let stateLoaded = false;
 
-    for (const filePath of cachedFiles) {
-      if (matchIds.length >= count) break;
-
+    if (args.includes('--reuse-state') && await fs.pathExists(STATE_FILE)) {
       try {
-        const text = await fs.readFile(filePath, 'utf8');
-        const combats = await parseLogText(text);
-
-        let healerSpec: string | null = null;
-        for (const combat of combats) {
-          healerSpec = getHealerSpec(combat);
-          if (healerSpec) break;
-        }
-
-        if (healerSpec) {
-          const matchId = path.basename(filePath, path.extname(filePath));
-          if (matchIds.includes(matchId)) continue;
-
-          const destPath = path.join(RAW_LOGS_DIR, `${matchId}.log`);
-          await fs.copy(filePath, destPath);
-
-          matchIds.push(matchId);
-          specDistribution[matchId] = healerSpec;
-          console.log(`Reused cached log: ${matchId} (${healerSpec})`);
-        }
+        const state = await fs.readJson(STATE_FILE) as State;
+        matchIds = state.matchIds;
+        specDistribution = state.specDistribution;
+        stateLoaded = true;
+        console.log(`Reusing existing state.json with ${matchIds.length} matches.`);
       } catch (e) {
-        console.error(`Error processing cached file ${filePath}:`, e);
+        console.error('Error reading state.json:', e);
       }
     }
 
-    let offset = 0;
-    while (matchIds.length < count) {
-      console.log(`Fetching stubs for remaining quota (offset=${offset})...`);
-      let stubs: MatchStub[] = [];
-      try {
-        stubs = await fetchStubs('3v3', 50, offset, 1800);
-      } catch (e) {
-        console.error('Failed to fetch stubs:', e);
-        break;
-      }
+    if (!stateLoaded) {
+      const cachedFiles = await findCachedLogs();
 
-      if (stubs.length === 0) {
-        console.log('No more stubs returned from API.');
-        break;
-      }
-
-      for (const stub of stubs) {
+      for (const filePath of cachedFiles) {
         if (matchIds.length >= count) break;
-        if (matchIds.includes(stub.id)) continue;
 
         try {
-          const res = await fetch(stub.logObjectUrl);
-          if (!res.ok) {
-            console.warn(`Failed to download log for stub ${stub.id}: ${res.statusText}`);
-            continue;
-          }
-          const text = await res.text();
+          const text = await fs.readFile(filePath, 'utf8');
           const combats = await parseLogText(text);
 
           let healerSpec: string | null = null;
@@ -324,28 +288,80 @@ async function main() {
           }
 
           if (healerSpec) {
-            const destPath = path.join(RAW_LOGS_DIR, `${stub.id}.log`);
-            await fs.writeFile(destPath, text, 'utf8');
+            const matchId = path.basename(filePath, path.extname(filePath));
+            if (matchIds.includes(matchId)) continue;
 
-            matchIds.push(stub.id);
-            specDistribution[stub.id] = healerSpec;
-            console.log(`Downloaded stub: ${stub.id} (${healerSpec})`);
+            const destPath = path.join(RAW_LOGS_DIR, `${matchId}.log`);
+            await fs.copy(filePath, destPath);
+
+            matchIds.push(matchId);
+            specDistribution[matchId] = healerSpec;
+            console.log(`Reused cached log: ${matchId} (${healerSpec})`);
           }
         } catch (e) {
-          console.error(`Error processing stub ${stub.id}:`, e);
+          console.error(`Error processing cached file ${filePath}:`, e);
         }
       }
 
-      offset += 50;
-    }
+      let offset = 0;
+      while (matchIds.length < count) {
+        console.log(`Fetching stubs for remaining quota (offset=${offset})...`);
+        let stubs: MatchStub[] = [];
+        try {
+          stubs = await fetchStubs('3v3', 50, offset, 1800);
+        } catch (e) {
+          console.error('Failed to fetch stubs:', e);
+          break;
+        }
 
-    const state: State = {
-      matchIds,
-      specDistribution,
-      createdAt: new Date().toISOString(),
-    };
-    await fs.writeJson(STATE_FILE, state, { spaces: 2 });
-    console.log(`Saved state to ${STATE_FILE}`);
+        if (stubs.length === 0) {
+          console.log('No more stubs returned from API.');
+          break;
+        }
+
+        for (const stub of stubs) {
+          if (matchIds.length >= count) break;
+          if (matchIds.includes(stub.id)) continue;
+
+          try {
+            const res = await fetch(stub.logObjectUrl);
+            if (!res.ok) {
+              console.warn(`Failed to download log for stub ${stub.id}: ${res.statusText}`);
+              continue;
+            }
+            const text = await res.text();
+            const combats = await parseLogText(text);
+
+            let healerSpec: string | null = null;
+            for (const combat of combats) {
+              healerSpec = getHealerSpec(combat);
+              if (healerSpec) break;
+            }
+
+            if (healerSpec) {
+              const destPath = path.join(RAW_LOGS_DIR, `${stub.id}.log`);
+              await fs.writeFile(destPath, text, 'utf8');
+
+              matchIds.push(stub.id);
+              specDistribution[stub.id] = healerSpec;
+              console.log(`Downloaded stub: ${stub.id} (${healerSpec})`);
+            }
+          } catch (e) {
+            console.error(`Error processing stub ${stub.id}:`, e);
+          }
+        }
+
+        offset += 50;
+      }
+
+      const state: State = {
+        matchIds,
+        specDistribution,
+        createdAt: new Date().toISOString(),
+      };
+      await fs.writeJson(STATE_FILE, state, { spaces: 2 });
+      console.log(`Saved state to ${STATE_FILE}`);
+    }
 
     const dryRun = args.includes('--dry-run');
     const apiKey = 'roleplayer';

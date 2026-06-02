@@ -7,6 +7,7 @@ import { fmtTime, getPressureThreshold, specToString } from './cooldowns';
 import { getPlayerTalentedSpellIds, getSpecTalentTreeSpellIds } from './talents';
 
 export type DispelPriority = 'Critical' | 'High' | 'Medium' | 'Low';
+import { DISPEL_FEATURE_FLAGS } from './dispelFeatureFlags';
 
 type SpellEntry = { type: string; priority?: boolean };
 const SPELLS = spellsData as Record<string, SpellEntry>;
@@ -27,6 +28,19 @@ const POST_CC_PRESSURE_WINDOW_S = 5;
 const DISPEL_PENALTY_SPELLS = new Map<string, string>([
   ['316099', 'Silences & damages the dispeller (Unstable Affliction)'],
   ['342938', 'Silences & damages the dispeller (Unstable Affliction)'],
+  ['34914', 'Horrifies the dispeller (Vampiric Touch)'],
+]);
+
+const BACKLASH_CC_SPELL_IDS = new Map<string, { backlashSpellId: string }>([
+  ['34914', { backlashSpellId: '34914' }],
+  ['316099', { backlashSpellId: '196363' }],
+  ['342938', { backlashSpellId: '196363' }],
+]);
+
+const DISPEL_COOLDOWNS_BY_SPELL = new Map<string, number>([
+  ['374251', 60], // Cauterizing Flame (Preservation Evoker)
+  ['475', 0], // Remove Curse (Mage)
+  ['2782', 0], // Remove Corruption (Druid)
 ]);
 
 // Static spec → dispel-type maps. These represent specs whose cleanse ability is treated as
@@ -363,6 +377,10 @@ export interface IDispelEvent {
   isSpellSteal: boolean;
   /** True when the dispel was performed by a pet/NPC merged into the player's actionOut (e.g. Warlock Felhunter Devour Magic, Imp Singe Magic). */
   isPetDispel: boolean;
+  wasFatal?: boolean;
+  fatalUnitName?: string;
+  fatalUnitSpec?: string;
+  backlashCcSpellId?: string;
 }
 
 export interface IMissedCleanseWindow {
@@ -516,6 +534,16 @@ function isPurgerFullyBlockedDuringWindow(
   return isWindowFullyCovered(ccWindows, windowStartMs, windowEndMs);
 }
 
+export function getFatalDeath(unit: ICombatUnit, dispelTimestamp: number): { name: string; spec: string } | null {
+  const fatalDeath = (unit.deathRecords ?? []).find(
+    (d) => d.timestamp >= dispelTimestamp && d.timestamp <= dispelTimestamp + 4000,
+  );
+  if (fatalDeath) {
+    return { name: unit.name, spec: specToString(unit.spec) };
+  }
+  return null;
+}
+
 export function reconstructDispelSummary(
   friends: ICombatUnit[],
   enemies: ICombatUnit[],
@@ -575,6 +603,7 @@ export function reconstructDispelSummary(
         isSpellSteal: isSteal,
         // B45: pet unit actions are always pet dispels; player actions only when srcUnit ≠ player
         isPetDispel: isPetUnit || action.srcUnitId !== unit.id,
+        wasFatal: false,
       };
 
       // Treat a pet owned by a friendly player as a friendly source
@@ -584,15 +613,44 @@ export function reconstructDispelSummary(
       const destFriendly = friendlyIds.has(action.destUnitId);
       const destEnemy = enemyIds.has(action.destUnitId);
 
+      const targetUnitForPenalty = ownerPlayer ?? unit;
+
+      if (penaltyDesc !== undefined) {
+        if (DISPEL_FEATURE_FLAGS.F18_FATAL_DISPEL) {
+          const fatalDeath = getFatalDeath(targetUnitForPenalty, action.timestamp);
+          if (fatalDeath) {
+            event.wasFatal = true;
+            event.fatalUnitName = fatalDeath.name;
+            event.fatalUnitSpec = fatalDeath.spec;
+          }
+        }
+
+        if (DISPEL_FEATURE_FLAGS.F124_ENHANCED_CC_ANNOTATIONS) {
+          const backlashInfo = BACKLASH_CC_SPELL_IDS.get(removedSpellId);
+          if (backlashInfo) {
+            const match = (targetUnitForPenalty.auraEvents ?? []).find(
+              (aura) =>
+                aura.logLine.event === LogEvent.SPELL_AURA_APPLIED &&
+                aura.spellId === backlashInfo.backlashSpellId &&
+                aura.timestamp >= action.timestamp &&
+                aura.timestamp <= action.timestamp + 100,
+            );
+            if (match) {
+              event.backlashCcSpellId = match.spellId ?? undefined;
+            }
+          }
+        }
+      }
+
       if (srcFriendly && destFriendly) {
         // We cleansed a debuff off our ally
         if (penaltyDesc !== undefined) {
           // Measure backlash: damage to the dispeller in the window before and after
           const ts = action.timestamp;
-          event.penaltyDamageTaken = unit.damageIn
+          event.penaltyDamageTaken = targetUnitForPenalty.damageIn
             .filter((d) => d.logLine.timestamp >= ts && d.logLine.timestamp <= ts + PENALTY_WINDOW_MS)
             .reduce((sum, d) => sum + Math.abs(d.effectiveAmount), 0);
-          event.penaltyDamageBaseline = unit.damageIn
+          event.penaltyDamageBaseline = targetUnitForPenalty.damageIn
             .filter((d) => d.logLine.timestamp >= ts - PENALTY_WINDOW_MS && d.logLine.timestamp < ts)
             .reduce((sum, d) => sum + Math.abs(d.effectiveAmount), 0);
         }
@@ -758,13 +816,16 @@ export function reconstructDispelSummary(
 
             const activeDispellerNames = new Set(activeDispellers.map((u) => u.name));
             const applyRelative = (applyTs - combat.startTime) / 1000;
-            // Standard defensive dispel cooldown is 8 seconds. Look at the preceding 8s window.
-            const recentCleanses = allyCleanse.filter(
-              (c) =>
-                activeDispellerNames.has(c.sourceName) &&
-                c.timeSeconds < applyRelative &&
-                c.timeSeconds >= applyRelative - 8,
-            );
+            // Look back dynamically based on the spell ID of each dispel event
+            const recentCleanses = allyCleanse.filter((c) => {
+              if (!activeDispellerNames.has(c.sourceName)) return false;
+              if (c.timeSeconds >= applyRelative) return false;
+              const cd = DISPEL_FEATURE_FLAGS.F131_F132_CLEANSE_COOLDOWNS
+                ? (DISPEL_COOLDOWNS_BY_SPELL.get(c.dispelSpellId) ?? 8)
+                : 8;
+              if (cd === 0) return false;
+              return c.timeSeconds + cd > applyRelative;
+            });
 
             const dispellersWhoUsedCD = new Set(recentCleanses.map((c) => c.sourceName));
 
@@ -987,6 +1048,11 @@ export function formatDispelContextForAI(summary: IDispelSummary): string[] {
       lines.push(
         `  Worst missed cleanse: ${worst.spellName} [${worst.priority}] on ${worst.targetSpec} at ${fmtTime(worst.timeSeconds)} (${Math.round(worst.durationSeconds)}s${dmgStr})`,
       );
+      if (DISPEL_FEATURE_FLAGS.F131_F132_CLEANSE_COOLDOWNS && worst.cleanseWasOnCD && worst.cdBurnedOn) {
+        lines.push(
+          `    - Note: Cleanse was on cooldown (burned on ${worst.cdBurnedOn.spellName} [${worst.cdBurnedOn.priority} priority] ${worst.cdBurnedOn.secondsBefore.toFixed(1)}s before)`,
+        );
+      }
       const highDamageMisses = significantMissed.filter((w) => w.postCcDamage > 100_000);
       if (highDamageMisses.length > 0) {
         lines.push(`  High-damage missed cleanses: ${highDamageMisses.length} with >100k dmg taken during CC`);

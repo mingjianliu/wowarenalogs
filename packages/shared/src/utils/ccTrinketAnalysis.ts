@@ -274,7 +274,8 @@ export function analyzePlayerCCAndTrinket(
       }
     }
 
-    if (!ccSpellIds.has(spellId)) continue;
+    const isBacklashPossible = spellId === '196363' || spellId === '34914';
+    if (!ccSpellIds.has(spellId) && !isBacklashPossible) continue;
 
     // FIX 2: key by spellId+caster so re-applications from the same caster don't
     // overwrite the pending entry before the first removal fires.
@@ -349,65 +350,75 @@ export function analyzePlayerCCAndTrinket(
   const zoneId = combat.startInfo.zoneId;
 
   // Build ICCInstance list (without drInfo — computed after sort)
-  const ccInstancesUnsorted: Omit<ICCInstance, 'drInfo'>[] = ccWindows.map((w) => {
-    const damageTakenDuring = player.damageIn
-      .filter((d) => enemyIds.has(d.srcUnitId) && d.logLine.timestamp >= w.applyMs && d.logLine.timestamp <= w.removeMs)
-      .reduce((sum, d) => sum + Math.abs(d.effectiveAmount), 0);
-
-    const trinketUsedInWindow = trinketCastTimestamps.some(
-      (ts) => ts >= w.applyMs && ts <= w.applyMs + TRINKET_RESPONSE_WINDOW_MS,
-    );
-
-    let trinketState: ICCInstance['trinketState'];
-    let trinketCDSecondsLeft: number | undefined;
-    if (trinketType === 'Relentless') {
-      trinketState = 'passive_trinket';
-    } else if (trinketUsedInWindow) {
-      trinketState = 'used';
-    } else if (isTrinketAvailable(trinketCastTimestamps, trinketCooldownMs, w.applyMs)) {
-      trinketState = 'available_unused';
-    } else {
-      trinketState = 'on_cooldown';
-      let lastCast = -Infinity;
-      for (const ts of trinketCastTimestamps) {
-        if (ts <= w.applyMs) lastCast = ts;
-        else break;
+  const ccInstancesUnsorted: Omit<ICCInstance, 'drInfo'>[] = ccWindows
+    .filter((w) => {
+      if (w.spellId === '34914') {
+        const durationS = (w.removeMs - w.applyMs) / 1000;
+        return durationS <= 4; // Horror is 3s; DoT is 21s
       }
-      if (lastCast !== -Infinity) {
-        const remainingMs = trinketCooldownMs - (w.applyMs - lastCast);
-        trinketCDSecondsLeft = Math.ceil(remainingMs / 1000);
+      return true;
+    })
+    .map((w) => {
+      const damageTakenDuring = player.damageIn
+        .filter(
+          (d) => enemyIds.has(d.srcUnitId) && d.logLine.timestamp >= w.applyMs && d.logLine.timestamp <= w.removeMs,
+        )
+        .reduce((sum, d) => sum + Math.abs(d.effectiveAmount), 0);
+
+      const trinketUsedInWindow = trinketCastTimestamps.some(
+        (ts) => ts >= w.applyMs && ts <= w.applyMs + TRINKET_RESPONSE_WINDOW_MS,
+      );
+
+      let trinketState: ICCInstance['trinketState'];
+      let trinketCDSecondsLeft: number | undefined;
+      if (trinketType === 'Relentless') {
+        trinketState = 'passive_trinket';
+      } else if (trinketUsedInWindow) {
+        trinketState = 'used';
+      } else if (isTrinketAvailable(trinketCastTimestamps, trinketCooldownMs, w.applyMs)) {
+        trinketState = 'available_unused';
+      } else {
+        trinketState = 'on_cooldown';
+        let lastCast = -Infinity;
+        for (const ts of trinketCastTimestamps) {
+          if (ts <= w.applyMs) lastCast = ts;
+          else break;
+        }
+        if (lastCast !== -Infinity) {
+          const remainingMs = trinketCooldownMs - (w.applyMs - lastCast);
+          trinketCDSecondsLeft = Math.ceil(remainingMs / 1000);
+        }
       }
-    }
 
-    // LoS + distance at CC application time
-    const casterUnit = enemyUnitMap.get(w.srcUnitId);
-    const casterPos = casterUnit ? getUnitPositionAtTime(casterUnit, w.applyMs) : null;
-    const targetPos = getUnitPositionAtTime(player, w.applyMs);
+      // LoS + distance at CC application time
+      const casterUnit = enemyUnitMap.get(w.srcUnitId);
+      const casterPos = casterUnit ? getUnitPositionAtTime(casterUnit, w.applyMs) : null;
+      const targetPos = getUnitPositionAtTime(player, w.applyMs);
 
-    const distanceYards = casterPos && targetPos ? Math.round(distanceBetween(casterPos, targetPos) * 10) / 10 : null;
+      const distanceYards = casterPos && targetPos ? Math.round(distanceBetween(casterPos, targetPos) * 10) / 10 : null;
 
-    const losBlocked =
-      casterPos && targetPos
-        ? (() => {
-            const los = hasLineOfSight(zoneId, casterPos, targetPos);
-            return los === null ? null : !los;
-          })()
-        : null;
+      const losBlocked =
+        casterPos && targetPos
+          ? (() => {
+              const los = hasLineOfSight(zoneId, casterPos, targetPos);
+              return los === null ? null : !los;
+            })()
+          : null;
 
-    return {
-      atSeconds: (w.applyMs - matchStartMs) / 1000,
-      durationSeconds: (w.removeMs - w.applyMs) / 1000,
-      spellId: w.spellId,
-      spellName: w.spellName,
-      sourceName: w.srcName,
-      sourceSpec: enemySpecMap.get(w.srcUnitId) ?? 'Unknown',
-      damageTakenDuring,
-      trinketState,
-      trinketCDSecondsLeft,
-      distanceYards,
-      losBlocked,
-    };
-  });
+      return {
+        atSeconds: (w.applyMs - matchStartMs) / 1000,
+        durationSeconds: (w.removeMs - w.applyMs) / 1000,
+        spellId: w.spellId,
+        spellName: w.spellName,
+        sourceName: w.srcName,
+        sourceSpec: enemySpecMap.get(w.srcUnitId) ?? 'Unknown',
+        damageTakenDuring,
+        trinketState,
+        trinketCDSecondsLeft,
+        distanceYards,
+        losBlocked,
+      };
+    });
 
   const sorted = [...ccInstancesUnsorted].sort((a, b) => a.atSeconds - b.atSeconds);
   const drAnnotations = computeIncomingDR(sorted, matchStartMs);

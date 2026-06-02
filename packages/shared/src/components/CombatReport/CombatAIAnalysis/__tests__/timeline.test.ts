@@ -28,6 +28,15 @@ import {
   HEALING_WINDOW_EARLY_CD_SECONDS,
   HEALING_WINDOW_MIN_HPS,
 } from '../utils';
+import { DISPEL_FEATURE_FLAGS } from '../../../../utils/dispelFeatureFlags';
+
+beforeAll(() => {
+  DISPEL_FEATURE_FLAGS.F18_FATAL_DISPEL = true;
+  DISPEL_FEATURE_FLAGS.F124_ENHANCED_CC_ANNOTATIONS = true;
+  DISPEL_FEATURE_FLAGS.F131_F132_CLEANSE_COOLDOWNS = true;
+  DISPEL_FEATURE_FLAGS.F142_OFFENSIVE_DISPEL_SUMMARY = true;
+  DISPEL_FEATURE_FLAGS.F152_MISSED_PURGES_TIMELINE = true;
+});
 
 // ── Factories ─────────────────────────────────────────────────────────────────
 
@@ -826,6 +835,49 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     expect(result).toContain('0:37');
   });
 
+  it('F124: emits [CC ON TEAM] with base duration, DR category/level, and dispel backlash annotations', () => {
+    const cc: ICCInstance = {
+      atSeconds: 37,
+      durationSeconds: 4,
+      spellId: '118',
+      spellName: 'Polymorph',
+      sourceName: 'Dzinked',
+      sourceSpec: 'Frost Mage',
+      damageTakenDuring: 50_000,
+      trinketState: 'available_unused',
+      drInfo: { category: 'Disorient', level: '50%' as const, sequenceIndex: 1 },
+      distanceYards: null,
+      losBlocked: null,
+    };
+    const ccBacklash: ICCInstance = {
+      atSeconds: 45,
+      durationSeconds: 3,
+      spellId: '196363',
+      spellName: 'Silence',
+      sourceName: 'Dzinked',
+      sourceSpec: 'Shadow Priest',
+      damageTakenDuring: 10_000,
+      trinketState: 'passive_trinket',
+      drInfo: null,
+      distanceYards: null,
+      losBlocked: null,
+    };
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        ccTrinketSummaries: [
+          {
+            ...makeEmptyCCTrinketSummary('Feramonk'),
+            ccInstances: [cc, ccBacklash],
+          },
+        ],
+      }),
+    );
+
+    expect(result).toContain('Feramonk ← Polymorph (Dzinked) | 4s (base 60s) [DR: Disorient 50%]');
+    expect(result).toContain('Feramonk ← Silence (Dzinked) | 3s [DISPEL BACKLASH CC]');
+  });
+
   it('emits [CC ON TEAM] with trinket: used when trinket was consumed', () => {
     const cc: ICCInstance = {
       atSeconds: 15,
@@ -1092,6 +1144,38 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     expect(result).toContain('[CLEANSE]');
     expect(result).toContain('Feramonk dispelled Polymorph off Simplesauce');
     expect(result).not.toContain('(pet)');
+  });
+
+  it('emits [FATAL DISPEL: ...] when a dispel event was fatal', () => {
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        dispelSummary: {
+          ...makeEmptyDispelSummary(),
+          allyCleanse: [
+            {
+              timeSeconds: 44,
+              dispelSpellId: '115450',
+              dispelSpellName: 'Detox',
+              removedSpellId: '34914',
+              removedSpellName: 'Vampiric Touch',
+              sourceName: 'Feramonk',
+              sourceSpec: 'Mistweaver Monk',
+              targetName: 'Simplesauce',
+              targetSpec: 'Unholy Death Knight',
+              priority: 'High',
+              hasDispelPenalty: false,
+              isSpellSteal: false,
+              isPetDispel: false,
+              wasFatal: true,
+              fatalUnitName: 'Feramonk',
+              fatalUnitSpec: 'Mistweaver Monk',
+            },
+          ],
+        },
+      }),
+    );
+    expect(result).toContain('[CLEANSE]');
+    expect(result).toContain('[FATAL DISPEL: Feramonk]');
   });
 
   it('F148: annotates [CC ON TEAM] with [CLEANSED] when a friendly dispel removed it', () => {
@@ -4631,5 +4715,35 @@ describe('buildMatchTimeline — KILL SEQUENCE block (characterization)', () => 
       }),
     );
     expect(result).not.toContain('KILL SEQUENCE');
+  });
+});
+
+describe('buildMatchTimeline — F152 Missed Purges', () => {
+  it('F152: formats missed whitelisted purges in the timeline', () => {
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner: makeOwner('Purger', CombatUnitSpec.Priest_Shadow),
+        dispelSummary: {
+          ...makeEmptyDispelSummary(),
+          missedPurgeWindows: [
+            {
+              timeSeconds: 10,
+              durationSeconds: 15,
+              expectedBuffDurationSeconds: 20,
+              enemyName: 'Dzinked',
+              enemySpec: 'Holy Paladin',
+              spellName: 'Power Infusion',
+              spellId: '10060', // whitelisted
+              priority: 'High',
+              purgeWasOnCD: false,
+              teamUnderPressure: false,
+            },
+          ],
+        },
+      }),
+    );
+    expect(result).toContain('[MISSED PURGE OPPORTUNITY]');
+    expect(result).toContain('Power Infusion active on Dzinked');
+    expect(result).toContain('15s');
   });
 });

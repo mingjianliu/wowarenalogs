@@ -7,7 +7,16 @@ import {
   formatDispelContextForAI,
   reconstructDispelSummary,
 } from '../dispelAnalysis';
+import { DISPEL_FEATURE_FLAGS } from '../dispelFeatureFlags';
 import { makeAuraEvent, makeUnit } from './testHelpers';
+
+beforeAll(() => {
+  DISPEL_FEATURE_FLAGS.F18_FATAL_DISPEL = true;
+  DISPEL_FEATURE_FLAGS.F124_ENHANCED_CC_ANNOTATIONS = true;
+  DISPEL_FEATURE_FLAGS.F131_F132_CLEANSE_COOLDOWNS = true;
+  DISPEL_FEATURE_FLAGS.F142_OFFENSIVE_DISPEL_SUMMARY = true;
+  DISPEL_FEATURE_FLAGS.F152_MISSED_PURGES_TIMELINE = true;
+});
 
 // Mock talents module to bypass complex lookups
 jest.mock('../talents', () => ({
@@ -131,6 +140,44 @@ describe('dispelAnalysis — summary reconstruction', () => {
     expect(res.missedCleanseWindows[0].cleanseWasOnCD).toBe(true);
   });
 
+  it('F131/F132: respects dynamic cleanse cooldowns based on spell ID', () => {
+    const healer = makeUnit('h', { name: 'Healer', spec: CombatUnitSpec.Evoker_Preservation });
+    (healer as any).id = 'h';
+    const target = makeUnit('t', { name: 'Target', spec: CombatUnitSpec.Warrior_Arms });
+    (target as any).id = 't';
+
+    // Evoker uses Cauterizing Flame (374251, 60s CD) at MATCH_START + 5s
+    const firstCleanse = makeExtraAction(MATCH_START + 5_000, LogEvent.SPELL_DISPEL, {
+      spellId: '374251',
+      extraSpellId: '118',
+      destUnitId: 't',
+      destUnitName: 'Target',
+      srcUnitId: 'h',
+    });
+    (healer as any).actionOut = [firstCleanse];
+
+    // CC applied at 10s (within 60s window)
+    const ccApply = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '118', MATCH_START + 10_000, 'e1', 't');
+    const ccRemove = makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '118', MATCH_START + 20_000, 'e1', 't');
+    (target as any).auraEvents = [ccApply, ccRemove];
+
+    const enemy = makeUnit('e1', { reaction: CombatUnitReaction.Hostile });
+
+    const res = reconstructDispelSummary([healer, target] as any, [enemy] as any, makeCombat());
+    expect(res.missedCleanseWindows).toHaveLength(1);
+    // Should be on cooldown because 60s window covers 10s
+    expect(res.missedCleanseWindows[0].cleanseWasOnCD).toBe(true);
+
+    // CC applied at 70s (outside 60s window)
+    const ccApplyLate = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '118', MATCH_START + 70_000, 'e1', 't');
+    const ccRemoveLate = makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '118', MATCH_START + 80_000, 'e1', 't');
+    (target as any).auraEvents = [ccApplyLate, ccRemoveLate];
+
+    const resLate = reconstructDispelSummary([healer, target] as any, [enemy] as any, makeCombat());
+    // Should NOT be on cooldown because 60s window has expired
+    expect(resLate.missedCleanseWindows[0].cleanseWasOnCD).toBe(false);
+  });
+
   it('skips missed cleanse if all dispellers were blocked (B97)', () => {
     const healer = makeUnit('h', { name: 'Healer', spec: CombatUnitSpec.Priest_Holy });
     const target = makeUnit('t', { name: 'Target', spec: CombatUnitSpec.Warrior_Arms });
@@ -148,6 +195,58 @@ describe('dispelAnalysis — summary reconstruction', () => {
 
     const res = reconstructDispelSummary([healer, target] as any, [enemy] as any, makeCombat());
     expect(res.ccEfficiency[1].missedCount).toBe(0);
+  });
+
+  it('detects a fatal dispel when the dispeller dies within 4s of dispel', () => {
+    const healer = makeUnit('h', { name: 'Healer', spec: CombatUnitSpec.Priest_Holy });
+    (healer as any).id = 'h';
+    const target = makeUnit('t', { name: 'Target', spec: CombatUnitSpec.Warrior_Arms });
+    (target as any).id = 't';
+
+    const action = makeExtraAction(MATCH_START + 10_000, LogEvent.SPELL_DISPEL, {
+      extraSpellId: '316099', // UA - has dispel penalty
+      destUnitId: 't',
+      destUnitName: 'Target',
+      srcUnitId: 'h',
+    });
+    (healer as any).actionOut = [action];
+
+    // Mock death of the healer at MATCH_START + 12_000 (2s after dispel)
+    (healer as any).deathRecords = [{ timestamp: MATCH_START + 12_000 }];
+
+    const enemy = makeUnit('e1', { reaction: CombatUnitReaction.Hostile });
+
+    const res = reconstructDispelSummary([healer, target] as any, [enemy] as any, makeCombat());
+    expect(res.allyCleanse).toHaveLength(1);
+    expect(res.allyCleanse[0].wasFatal).toBe(true);
+    expect(res.allyCleanse[0].fatalUnitName).toBe('Healer');
+    expect(res.allyCleanse[0].fatalUnitSpec).toBe('Holy Priest');
+  });
+
+  it('F124: detects backlash CC on the dispeller within 100ms', () => {
+    const healer = makeUnit('h', { name: 'Healer', spec: CombatUnitSpec.Priest_Holy });
+    (healer as any).id = 'h';
+    const target = makeUnit('t', { name: 'Target', spec: CombatUnitSpec.Warrior_Arms });
+    (target as any).id = 't';
+
+    const action = makeExtraAction(MATCH_START + 10_000, LogEvent.SPELL_DISPEL, {
+      extraSpellId: '316099', // UA - has dispel penalty
+      destUnitId: 't',
+      destUnitName: 'Target',
+      srcUnitId: 'h',
+    });
+    (healer as any).actionOut = [action];
+
+    // Mock Silence (196363) applied to the healer within 100ms (at MATCH_START + 10_050)
+    (healer as any).auraEvents = [
+      makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '196363', MATCH_START + 10_050, 'enemy', 'h'),
+    ];
+
+    const enemy = makeUnit('e1', { reaction: CombatUnitReaction.Hostile });
+
+    const res = reconstructDispelSummary([healer, target] as any, [enemy] as any, makeCombat());
+    expect(res.allyCleanse).toHaveLength(1);
+    expect(res.allyCleanse[0].backlashCcSpellId).toBe('196363');
   });
 
   it('detects missed purge and identifies if all eligible purgers were on CD (B108)', () => {
