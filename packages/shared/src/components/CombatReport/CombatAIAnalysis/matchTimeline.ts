@@ -95,6 +95,18 @@ export interface BuildMatchTimelineParams {
   stateFormat?: 'inline' | 'summary' | 'verbose';
 }
 
+const HIGH_VALUE_PURGEABLE_BUFFS = new Set<string>([
+  '10060', // Power Infusion
+  '113858', // Dark Soul: Instability
+  '113861', // Dark Soul: Misery
+  '190319', // Combustion
+  '12472', // Icy Veins
+  '1022', // Blessing of Protection
+  '1044', // Blessing of Freedom
+  '198111', // Temporal Shield
+  '110909', // Alter Time
+]);
+
 export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   const {
     owner,
@@ -703,6 +715,15 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       miss.timeSeconds,
       `${fmtTime(miss.timeSeconds)}  [UNCLEANSED DEBUFF]   ${spellName} on ${pid(miss.targetName)} | ${miss.durationSeconds.toFixed(0)}s | ${dmgK}k taken during | dispel: ${miss.dispelType}`,
     );
+  }
+
+  for (const miss of dispelSummary.missedPurgeWindows) {
+    if (HIGH_VALUE_PURGEABLE_BUFFS.has(miss.spellId)) {
+      addEntry(
+        miss.timeSeconds,
+        `${fmtTime(miss.timeSeconds)}  [MISSED PURGE OPPORTUNITY]   ${miss.spellName} active on ${enemyPid(miss.enemyName)} (unpurged for ${Math.round(miss.durationSeconds)}s)`,
+      );
+    }
   }
 
   // B14: Consolidate same-second same-source cleanses (e.g. Mass Dispel) into one line.

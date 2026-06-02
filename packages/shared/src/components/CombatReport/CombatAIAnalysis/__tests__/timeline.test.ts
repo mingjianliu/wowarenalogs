@@ -4708,3 +4708,33 @@ describe('buildMatchTimeline — KILL SEQUENCE block (characterization)', () => 
     expect(result).not.toContain('KILL SEQUENCE');
   });
 });
+
+describe('buildMatchTimeline — F152 Missed Purges', () => {
+  it('F152: formats missed whitelisted purges in the timeline', () => {
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner: makeOwner('Purger', CombatUnitSpec.Priest_Shadow),
+        dispelSummary: {
+          ...makeEmptyDispelSummary(),
+          missedPurgeWindows: [
+            {
+              timeSeconds: 10,
+              durationSeconds: 15,
+              expectedBuffDurationSeconds: 20,
+              enemyName: 'Dzinked',
+              enemySpec: 'Holy Paladin',
+              spellName: 'Power Infusion',
+              spellId: '10060', // whitelisted
+              priority: 'High',
+              purgeWasOnCD: false,
+              teamUnderPressure: false,
+            },
+          ],
+        },
+      }),
+    );
+    expect(result).toContain('[MISSED PURGE OPPORTUNITY]');
+    expect(result).toContain('Power Infusion active on Dzinked');
+    expect(result).toContain('15s');
+  });
+});
