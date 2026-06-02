@@ -57,6 +57,7 @@ import {
   isHealerSpec,
   specToString,
 } from '../../shared/src/utils/cooldowns';
+import { DISPEL_FEATURE_FLAGS } from '../../shared/src/utils/dispelFeatureFlags';
 import { formatDampeningForContext } from '../../shared/src/utils/dampening';
 import {
   canOffensivePurge,
@@ -848,6 +849,18 @@ export function buildMatchPromptNew(
   lines.push('<purge_responsibility>');
   lines.push(`  Log owner (${ownerSpec}): ${ownerCanPurge ? 'CAN offensive purge' : 'CANNOT offensive purge'}`);
   lines.push(`  Team purgers: ${teamPurgers.length > 0 ? teamPurgers.join(', ') : 'none'}`);
+
+  if (DISPEL_FEATURE_FLAGS.F142_OFFENSIVE_DISPEL_SUMMARY) {
+    const purgeCounts = new Map<string, number>();
+    for (const purge of dispelSummary.ourPurges) {
+      purgeCounts.set(purge.removedSpellName, (purgeCounts.get(purge.removedSpellName) ?? 0) + 1);
+    }
+    if (purgeCounts.size > 0) {
+      const purgesStr = [...purgeCounts.entries()].map(([spell, count]) => `${count}x ${spell}`).join(', ');
+      lines.push(`  Offensive Dispel Summary: ${dispelSummary.ourPurges.length} total purges/spellsteals (${purgesStr})`);
+    }
+  }
+
   lines.push('</purge_responsibility>');
   lines.push('');
 
