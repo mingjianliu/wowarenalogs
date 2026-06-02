@@ -58,7 +58,7 @@ async function callClaudeAPI(
   systemPrompt: string,
   userPrompt: string,
 ): Promise<{ text: string; inputTokens: number; outputTokens: number }> {
-  if (apiKey && apiKey !== 'undefined') {
+  if (apiKey && apiKey !== 'undefined' && apiKey !== 'roleplayer') {
     const anthropic = new Anthropic({ apiKey });
     const response = await anthropic.messages.create({
       model: 'claude-3-5-sonnet-20240620',
