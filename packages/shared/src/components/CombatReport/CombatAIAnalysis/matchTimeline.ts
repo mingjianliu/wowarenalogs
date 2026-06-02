@@ -36,7 +36,9 @@ import {
   DMG_SPIKE_THRESHOLD,
   extractEnemyMajorBuffIntervals,
   extractOwnerCDBuffExpiry,
+  getNpcIdFromGuid,
   getTopDamageSourcesInWindow,
+  GROUNDING_TOTEM_NPC_ID,
   HEALER_CAST_SPELL_ID_TO_NAME,
   HEALING_AMPLIFIER_SPELL_IDS,
   HEALING_WINDOW_EARLY_CD_SECONDS,
@@ -151,7 +153,8 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   const groundingAbsorbs: Array<{ timeSeconds: number; spellName: string; totemOwnerId: string }> = [];
   if (allUnits) {
     for (const unit of allUnits) {
-      if (unit.name.toLowerCase().includes('grounding totem') && unit.ownerId) {
+      const npcId = getNpcIdFromGuid(unit.id);
+      if ((npcId === GROUNDING_TOTEM_NPC_ID || unit.name.toLowerCase().includes('grounding totem')) && unit.ownerId) {
         for (const absorb of unit.absorbsIn) {
           groundingAbsorbs.push({
             timeSeconds: (absorb.timestamp - matchStartMs) / 1000,
@@ -361,7 +364,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   if (allUnits) {
     for (const unit of allUnits) {
-      if (unit.deathRecords.length > 0 && isCriticalNonPlayerUnit(unit)) {
+      if (unit.deathRecords && unit.deathRecords.length > 0 && isCriticalNonPlayerUnit(unit)) {
         const reactionStr = unit.reaction === 1 ? 'Friendly' : unit.reaction === 2 ? 'Enemy' : 'Unknown';
         for (const deathRecord of unit.deathRecords) {
           const atSeconds = (deathRecord.timestamp - matchStartMs) / 1000;
