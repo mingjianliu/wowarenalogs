@@ -36,6 +36,12 @@ const BACKLASH_CC_SPELL_IDS = new Map<string, { backlashSpellId: string }>([
   ['342938', { backlashSpellId: '196363' }],
 ]);
 
+const DISPEL_COOLDOWNS_BY_SPELL = new Map<string, number>([
+  ['374251', 60], // Cauterizing Flame (Preservation Evoker)
+  ['475', 0], // Remove Curse (Mage)
+  ['2782', 0], // Remove Corruption (Druid)
+]);
+
 // Static spec → dispel-type maps. These represent specs whose cleanse ability is treated as
 // baseline (virtually always present in arena). A few cleanses are technically talent-gated
 // in the class/spec tree but are skipped so universally that treating them as static avoids
@@ -805,13 +811,14 @@ export function reconstructDispelSummary(
 
             const activeDispellerNames = new Set(activeDispellers.map((u) => u.name));
             const applyRelative = (applyTs - combat.startTime) / 1000;
-            // Standard defensive dispel cooldown is 8 seconds. Look at the preceding 8s window.
-            const recentCleanses = allyCleanse.filter(
-              (c) =>
-                activeDispellerNames.has(c.sourceName) &&
-                c.timeSeconds < applyRelative &&
-                c.timeSeconds >= applyRelative - 8,
-            );
+            // Look back dynamically based on the spell ID of each dispel event
+            const recentCleanses = allyCleanse.filter((c) => {
+              if (!activeDispellerNames.has(c.sourceName)) return false;
+              if (c.timeSeconds >= applyRelative) return false;
+              const cd = DISPEL_COOLDOWNS_BY_SPELL.get(c.dispelSpellId) ?? 8;
+              if (cd === 0) return false;
+              return c.timeSeconds + cd > applyRelative;
+            });
 
             const dispellersWhoUsedCD = new Set(recentCleanses.map((c) => c.sourceName));
 
@@ -1034,6 +1041,11 @@ export function formatDispelContextForAI(summary: IDispelSummary): string[] {
       lines.push(
         `  Worst missed cleanse: ${worst.spellName} [${worst.priority}] on ${worst.targetSpec} at ${fmtTime(worst.timeSeconds)} (${Math.round(worst.durationSeconds)}s${dmgStr})`,
       );
+      if (worst.cleanseWasOnCD && worst.cdBurnedOn) {
+        lines.push(
+          `    - Note: Cleanse was on cooldown (burned on ${worst.cdBurnedOn.spellName} [${worst.cdBurnedOn.priority} priority] ${worst.cdBurnedOn.secondsBefore.toFixed(1)}s before)`,
+        );
+      }
       const highDamageMisses = significantMissed.filter((w) => w.postCcDamage > 100_000);
       if (highDamageMisses.length > 0) {
         lines.push(`  High-damage missed cleanses: ${highDamageMisses.length} with >100k dmg taken during CC`);

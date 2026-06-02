@@ -131,6 +131,44 @@ describe('dispelAnalysis — summary reconstruction', () => {
     expect(res.missedCleanseWindows[0].cleanseWasOnCD).toBe(true);
   });
 
+  it('F131/F132: respects dynamic cleanse cooldowns based on spell ID', () => {
+    const healer = makeUnit('h', { name: 'Healer', spec: CombatUnitSpec.Evoker_Preservation });
+    (healer as any).id = 'h';
+    const target = makeUnit('t', { name: 'Target', spec: CombatUnitSpec.Warrior_Arms });
+    (target as any).id = 't';
+
+    // Evoker uses Cauterizing Flame (374251, 60s CD) at MATCH_START + 5s
+    const firstCleanse = makeExtraAction(MATCH_START + 5_000, LogEvent.SPELL_DISPEL, {
+      spellId: '374251',
+      extraSpellId: '118',
+      destUnitId: 't',
+      destUnitName: 'Target',
+      srcUnitId: 'h',
+    });
+    (healer as any).actionOut = [firstCleanse];
+
+    // CC applied at 10s (within 60s window)
+    const ccApply = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '118', MATCH_START + 10_000, 'e1', 't');
+    const ccRemove = makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '118', MATCH_START + 20_000, 'e1', 't');
+    (target as any).auraEvents = [ccApply, ccRemove];
+
+    const enemy = makeUnit('e1', { reaction: CombatUnitReaction.Hostile });
+
+    const res = reconstructDispelSummary([healer, target] as any, [enemy] as any, makeCombat());
+    expect(res.missedCleanseWindows).toHaveLength(1);
+    // Should be on cooldown because 60s window covers 10s
+    expect(res.missedCleanseWindows[0].cleanseWasOnCD).toBe(true);
+
+    // CC applied at 70s (outside 60s window)
+    const ccApplyLate = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '118', MATCH_START + 70_000, 'e1', 't');
+    const ccRemoveLate = makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '118', MATCH_START + 80_000, 'e1', 't');
+    (target as any).auraEvents = [ccApplyLate, ccRemoveLate];
+
+    const resLate = reconstructDispelSummary([healer, target] as any, [enemy] as any, makeCombat());
+    // Should NOT be on cooldown because 60s window has expired
+    expect(resLate.missedCleanseWindows[0].cleanseWasOnCD).toBe(false);
+  });
+
   it('skips missed cleanse if all dispellers were blocked (B97)', () => {
     const healer = makeUnit('h', { name: 'Healer', spec: CombatUnitSpec.Priest_Holy });
     const target = makeUnit('t', { name: 'Target', spec: CombatUnitSpec.Warrior_Arms });
