@@ -716,7 +716,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         }
         addEntry(
           avoided.atSeconds,
-          `${fmtTime(avoided.atSeconds)}  [CC AVOIDED]   ${pid(summary.playerName)} avoided ${avoided.spellName} via ${avoided.avoidanceSpellName} (by ${enemyPid(avoided.sourceName)})`,
+          `${fmtTime(avoided.atSeconds)}  [CC AVOIDED?]   ${pid(summary.playerName)} likely mitigated ${avoided.spellName} via ${avoided.avoidanceSpellName} (by ${enemyPid(avoided.sourceName)})`,
         );
       }
     }

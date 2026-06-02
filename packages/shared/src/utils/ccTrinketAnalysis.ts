@@ -482,7 +482,16 @@ export function analyzePlayerCCAndTrinket(
     if (!spellId || !CC_AVOIDANCE_BUFF_SPELLS.has(spellId)) continue;
 
     const event = aura.logLine.event;
-    if (event === LogEvent.SPELL_AURA_APPLIED) {
+    if (event === LogEvent.SPELL_AURA_APPLIED || event === LogEvent.SPELL_AURA_REFRESH) {
+      const pending = pendingBuffs.get(spellId);
+      if (pending) {
+        activeBuffs.push({
+          spellId,
+          name: pending.name,
+          applyMs: pending.applyMs,
+          removeMs: aura.timestamp,
+        });
+      }
       pendingBuffs.set(spellId, {
         applyMs: aura.timestamp,
         name: CC_AVOIDANCE_BUFF_SPELLS.get(spellId) ?? '',
