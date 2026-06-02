@@ -6,6 +6,7 @@ import {
   canOffensivePurge,
   formatDispelContextForAI,
   reconstructDispelSummary,
+  wasRemovedByAllyDispel,
 } from '../dispelAnalysis';
 import { DISPEL_FEATURE_FLAGS } from '../dispelFeatureFlags';
 import { makeAuraEvent, makeUnit } from './testHelpers';
@@ -329,5 +330,21 @@ describe('dispelAnalysis — formatting', () => {
     const lines = formatDispelContextForAI(summary);
     expect(lines).toContain('  No significant CC applied to your team.');
     expect(lines).toContain('  Missed purge windows: None (Critical/High)');
+  });
+});
+
+describe('wasRemovedByAllyDispel', () => {
+  it('correctly matches removal time within 0.5s tolerance', () => {
+    const allyCleanse = [
+      {
+        timeSeconds: 10.2,
+        removedSpellId: '118',
+        targetName: 'Player1',
+      } as any,
+    ];
+    expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.0)).toBe(true);
+    expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.6)).toBe(true);
+    expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.7)).toBe(false);
+    expect(wasRemovedByAllyDispel(allyCleanse, '999', 'Player1', 10.0)).toBe(false);
   });
 });
