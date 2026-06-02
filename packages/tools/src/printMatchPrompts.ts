@@ -848,6 +848,16 @@ export function buildMatchPromptNew(
   lines.push('<purge_responsibility>');
   lines.push(`  Log owner (${ownerSpec}): ${ownerCanPurge ? 'CAN offensive purge' : 'CANNOT offensive purge'}`);
   lines.push(`  Team purgers: ${teamPurgers.length > 0 ? teamPurgers.join(', ') : 'none'}`);
+
+  const purgeCounts = new Map<string, number>();
+  for (const purge of dispelSummary.ourPurges) {
+    purgeCounts.set(purge.removedSpellName, (purgeCounts.get(purge.removedSpellName) ?? 0) + 1);
+  }
+  if (purgeCounts.size > 0) {
+    const purgesStr = [...purgeCounts.entries()].map(([spell, count]) => `${count}x ${spell}`).join(', ');
+    lines.push(`  Offensive Dispel Summary: ${dispelSummary.ourPurges.length} total purges/spellsteals (${purgesStr})`);
+  }
+
   lines.push('</purge_responsibility>');
   lines.push('');
 
