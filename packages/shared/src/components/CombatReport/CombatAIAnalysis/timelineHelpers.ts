@@ -37,13 +37,15 @@ export function getNpcIdFromGuid(guid: string): string | null {
   return null;
 }
 
+export const GROUNDING_TOTEM_NPC_ID = '5925';
+
 export const CRITICAL_NON_PLAYER_NPC_IDS = new Set<string>([
   // Shaman Totems
   '3527', // Healing Stream Totem
   '59764', // Healing Tide Totem
   '100943', // Earthen Wall Totem
   '53006', // Spirit Link Totem
-  '5925', // Grounding Totem
+  GROUNDING_TOTEM_NPC_ID, // Grounding Totem
   '5913', // Tremor Totem
   '105427', // Totem of Wrath / Skyfury Totem
   '10467', // Mana Tide Totem

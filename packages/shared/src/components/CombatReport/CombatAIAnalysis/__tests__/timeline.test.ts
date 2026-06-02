@@ -11,6 +11,7 @@ import {
 import { ICCInstance, IPlayerCCTrinketSummary } from '../../../../utils/ccTrinketAnalysis';
 import { IDamageBucket, IMajorCooldownInfo } from '../../../../utils/cooldowns';
 import { IDispelSummary } from '../../../../utils/dispelAnalysis';
+import { DISPEL_FEATURE_FLAGS } from '../../../../utils/dispelFeatureFlags';
 import { IOutgoingCCChain } from '../../../../utils/drAnalysis';
 import { IAlignedBurstWindow, IEnemyCDTimeline } from '../../../../utils/enemyCDs';
 import { IHealingGap } from '../../../../utils/healingGaps';
@@ -28,7 +29,6 @@ import {
   HEALING_WINDOW_EARLY_CD_SECONDS,
   HEALING_WINDOW_MIN_HPS,
 } from '../utils';
-import { DISPEL_FEATURE_FLAGS } from '../../../../utils/dispelFeatureFlags';
 
 beforeAll(() => {
   DISPEL_FEATURE_FLAGS.F18_FATAL_DISPEL = true;
@@ -4745,5 +4745,48 @@ describe('buildMatchTimeline — F152 Missed Purges', () => {
     expect(result).toContain('[MISSED PURGE OPPORTUNITY]');
     expect(result).toContain('Power Infusion active on Dzinked');
     expect(result).toContain('15s');
+  });
+});
+
+describe('buildMatchTimeline — Grounding Totem NPC ID detection', () => {
+  it('F143: detects Grounding Totem by NPC ID 5925 and annotates absorbs', () => {
+    const totemGuid = 'Creature-0-3132-1504-17829-5925-00002FBA9E';
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner: {
+          ...makeOwner('Feramonk'),
+          id: 'player-1',
+          spellCastEvents: [makeSpellCastEvent('204336', 30_000, '', undefined, 'player-1', 'Feramonk')],
+        } as any,
+        ownerCDs: [
+          {
+            spellId: '204336',
+            spellName: 'Grounding Totem',
+            casts: [
+              {
+                timeSeconds: 30,
+              },
+            ],
+          } as any,
+        ],
+        allUnits: [
+          {
+            id: totemGuid,
+            name: 'Non-English Grounding Totem Name',
+            ownerId: 'player-1',
+            deathRecords: [],
+            absorbsIn: [
+              {
+                timestamp: 31_000,
+                spellId: '118',
+                spellName: 'Polymorph',
+                effectiveAmount: 0,
+              },
+            ],
+          } as any,
+        ],
+      }),
+    );
+    expect(result).toContain('[YOU] [CD]   Grounding Totem [ABSORBED: Polymorph]');
   });
 });
