@@ -61,6 +61,11 @@ export interface RosterEntry {
   spec: string;
   cls: ClassKey;
   isOwner: boolean;
+  /** Effective output in thousands/sec — HPS for healers, DPS otherwise. */
+  rate: number;
+  rateType: 'HPS' | 'DPS';
+  /** Best same-role output rate in this match — the bar fills relative to it. */
+  baseline: number;
 }
 
 export interface DeathEntry {
@@ -98,13 +103,41 @@ export interface MatchAnalysisData {
 
 type CombatContext = AtomicArenaCombat;
 
-function buildRoster(units: ICombatUnit[], ownerId: string): RosterEntry[] {
-  return units.map((p) => ({
-    name: p.name,
-    spec: specToString(p.spec),
-    cls: classKeyOf(p),
-    isOwner: p.id === ownerId,
-  }));
+function buildRoster(units: ICombatUnit[], ownerId: string, durationSec: number): RosterEntry[] {
+  return units.map((p) => {
+    const healer = isHealerSpec(p.spec);
+    // Mirror CombatReportContext's totals so the hero rate matches the summary tab.
+    const totalDamageOut = p.damageOut.reduce((sum, a) => sum + Math.abs(a.effectiveAmount), 0);
+    const totalHealOut =
+      p.healOut.reduce((sum, a) => {
+        if (a.logLine.event === 'SPELL_PERIODIC_HEAL' || a.logLine.event === 'SPELL_HEAL') {
+          return sum + (a.logLine.parameters[30] - a.logLine.parameters[32]);
+        }
+        return sum + Math.abs(a.effectiveAmount);
+      }, 0) + p.absorbsOut.reduce((sum, a) => sum + Math.abs(a.effectiveAmount), 0);
+    const total = healer ? totalHealOut : totalDamageOut;
+    return {
+      name: p.name,
+      spec: specToString(p.spec),
+      cls: classKeyOf(p),
+      isOwner: p.id === ownerId,
+      rate: (durationSec > 0 ? total / durationSec : 0) / 1000,
+      rateType: healer ? 'HPS' : 'DPS',
+      baseline: 0,
+    };
+  });
+}
+
+// Scale every bar against the strongest same-role output in the match, so HPS bars
+// compare to the best healer and DPS bars to the best damage dealer.
+function applyOutputBaselines(roster: RosterEntry[]): void {
+  const maxOf = (role: 'HPS' | 'DPS') =>
+    Math.max(0.001, ...roster.filter((r) => r.rateType === role).map((r) => r.rate));
+  const maxHps = maxOf('HPS');
+  const maxDps = maxOf('DPS');
+  roster.forEach((r) => {
+    r.baseline = r.rateType === 'HPS' ? maxHps : maxDps;
+  });
 }
 
 function collectDeaths(units: ICombatUnit[], startTime: number, side: 'friendly' | 'enemy'): DeathEntry[] {
@@ -167,6 +200,10 @@ export function computeMatchAnalysisData(
 
   const zone = zoneMetadata[combat.startInfo.zoneId]?.name ?? combat.startInfo.zoneId;
 
+  const friendsRoster = buildRoster(friends, owner.id, durationSeconds);
+  const enemiesRoster = buildRoster(enemies, owner.id, durationSeconds);
+  applyOutputBaselines([...friendsRoster, ...enemiesRoster]);
+
   return {
     owner,
     ownerSpec,
@@ -177,8 +214,8 @@ export function computeMatchAnalysisData(
     zone,
     result,
     durationSeconds,
-    friends: buildRoster(friends, owner.id),
-    enemies: buildRoster(enemies, owner.id),
+    friends: friendsRoster,
+    enemies: enemiesRoster,
     friendlyDeaths,
     enemyDeaths,
     burstWindows: enemyCDTimeline.alignedBurstWindows,

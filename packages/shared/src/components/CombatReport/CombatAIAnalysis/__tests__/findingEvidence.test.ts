@@ -86,10 +86,20 @@ function makeData(overrides: Partial<MatchAnalysisData> = {}): MatchAnalysisData
     zone: 'Mugambala',
     result: 'Win',
     durationSeconds: 120,
-    friends: [{ name: 'Zigris', spec: 'Beast Mastery Hunter', cls: 'hunter', isOwner: true }],
+    friends: [
+      {
+        name: 'Zigris',
+        spec: 'Beast Mastery Hunter',
+        cls: 'hunter',
+        isOwner: true,
+        rate: 0,
+        rateType: 'DPS',
+        baseline: 0,
+      },
+    ],
     enemies: [
-      { name: 'Astrobiology', spec: 'Fire Mage', cls: 'mage', isOwner: false },
-      { name: 'Masons', spec: 'Holy Paladin', cls: 'paladin', isOwner: false },
+      { name: 'Astrobiology', spec: 'Fire Mage', cls: 'mage', isOwner: false, rate: 0, rateType: 'DPS', baseline: 0 },
+      { name: 'Masons', spec: 'Holy Paladin', cls: 'paladin', isOwner: false, rate: 0, rateType: 'HPS', baseline: 0 },
     ],
     friendlyDeaths: [],
     enemyDeaths: [{ spec: 'Fire Mage', name: 'Astrobiology', cls: 'mage', atSeconds: 120, side: 'enemy' }],

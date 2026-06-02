@@ -1,14 +1,11 @@
-// Match timeline spine: enemy burst windows, your CD casts, finding markers, deaths.
-
 import { fmtTime } from '../../../../utils/cooldowns';
-import { AIFinding } from '../aiFindings';
 import { MatchAnalysisData } from '../matchAnalysisData';
 
 interface TimelineStripProps {
   data: MatchAnalysisData;
-  findings: AIFinding[];
-  activeFinding?: number;
-  onFindingClick?: (rank: number) => void;
+  findings: { rank: number; atSeconds: number }[];
+  activeFinding: number;
+  onFindingClick: (rank: number) => void;
 }
 
 export function TimelineStrip({ data, findings, activeFinding, onFindingClick }: TimelineStripProps) {
@@ -44,10 +41,9 @@ export function TimelineStrip({ data, findings, activeFinding, onFindingClick }:
             </span>
           </div>
         </div>
-        <div className="text-[10.5px] text-zinc-500 tabular-nums">0:00 → {fmtTime(matchSeconds)}</div>
       </div>
 
-      <svg viewBox={`0 0 ${W} 132`} className="w-full" preserveAspectRatio="none" style={{ height: 132 }}>
+      <svg viewBox={`0 0 ${W} 196`} className="w-full" preserveAspectRatio="none" style={{ height: 196 }}>
         <defs>
           <linearGradient id="ai-damp-bg" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#101015" />
@@ -58,7 +54,7 @@ export function TimelineStrip({ data, findings, activeFinding, onFindingClick }:
             <stop offset="100%" stopColor="rgba(255,90,74,0.05)" />
           </linearGradient>
         </defs>
-        <rect x={pad} y={20} width={innerW} height={92} rx="6" fill="url(#ai-damp-bg)" stroke="#1a1a1d" />
+        <rect x={pad} y={20} width={innerW} height={118} rx="6" fill="url(#ai-damp-bg)" stroke="#1a1a1d" />
 
         {ticks.map((s) => (
           <g key={s}>
@@ -66,85 +62,92 @@ export function TimelineStrip({ data, findings, activeFinding, onFindingClick }:
               x1={xAt(s)}
               y1={20}
               x2={xAt(s)}
-              y2={112}
+              y2={138}
               stroke="#1d1d22"
               strokeWidth="1"
               strokeDasharray={s % (tickStep * 2) === 0 ? '' : '2 4'}
             />
-            <text x={xAt(s)} y={128} fontSize="9.5" fill="#52525b" textAnchor="middle" fontFamily="var(--ai-font-mono)">
+            <text x={xAt(s)} y={151} fontSize="9.5" fill="#52525b" textAnchor="middle" fontFamily="var(--ai-font-mono)">
               {fmtTime(s)}
             </text>
           </g>
         ))}
 
-        {/* enemy burst windows */}
+        {/* enemy burst windows — colour only; danger + dampening read out below the plot */}
         {data.burstWindows.map((b, i) => {
           const x = xAt(b.fromSeconds);
           const w = Math.max(6, xAt(b.toSeconds) - x);
+          const crit = b.dangerLabel === 'Critical';
+          const meterColor = crit ? '#ff5a4a' : '#fbbf6b';
+          const filled = crit ? 3 : 2; // visual danger level (no raw score)
           return (
             <g key={`burst-${i}`}>
               <rect
                 x={x}
                 y={22}
                 width={w}
-                height={88}
+                height={114}
                 fill="url(#ai-burst-grad)"
                 stroke="rgba(255,90,74,0.5)"
                 strokeWidth="1"
                 rx="3"
               />
-              <text x={x + 4} y={36} fontSize="9.5" fill="#ff8a7d" fontWeight="600" fontFamily="var(--ai-font-mono)">
-                BURST {i + 1} · {b.dangerScore.toFixed(1)} {b.dangerLabel}
+              {/* RISK lane: signal-strength meter + qualitative label */}
+              {[0, 1, 2].map((bi) => {
+                const bh = 4 + bi * 3;
+                return (
+                  <rect
+                    key={bi}
+                    x={x + bi * 5}
+                    y={170 - bh}
+                    width={3.5}
+                    height={bh}
+                    rx={1}
+                    fill={bi < filled ? meterColor : 'none'}
+                    stroke={meterColor}
+                    strokeWidth="0.75"
+                    opacity={bi < filled ? 1 : 0.3}
+                  />
+                );
+              })}
+              <text
+                x={x + 18}
+                y={169}
+                fontSize="9.5"
+                fill={meterColor}
+                fontWeight="600"
+                fontFamily="var(--ai-font-mono)"
+              >
+                {b.dangerLabel}
               </text>
-              <text x={x + 4} y={48} fontSize="9" fill="#ff8a7d" opacity="0.7" fontFamily="var(--ai-font-mono)">
-                {(b.damageInWindow / 1_000_000).toFixed(2)}M · damp {Math.round(b.dampeningPct * 100)}%
+              {/* DAMP lane */}
+              <text x={x} y={186} fontSize="9" fill="#9ca3af" fontFamily="var(--ai-font-mono)">
+                {Math.round(b.dampeningPct * 100)}% damp
               </text>
             </g>
           );
         })}
 
-        {/* your CD casts */}
-        <text x={pad} y={72} fontSize="9.5" fill="#71717a" fontFamily="var(--ai-font-mono)">
-          You
-        </text>
-        {data.ownerCDs.flatMap((cd) =>
-          cd.casts.map((c, i) => {
-            const x = xAt(c.timeSeconds);
-            const reactive = c.timingLabel === 'Reactive';
-            return (
-              <g key={`${cd.spellName}-${i}`}>
-                <line x1={x} y1={60} x2={x} y2={86} stroke={reactive ? '#fbbf6b' : '#a1a1aa'} strokeWidth="1.5" />
-                <circle
-                  cx={x}
-                  cy={70}
-                  r="3.5"
-                  fill={reactive ? '#fbbf6b' : '#a1a1aa'}
-                  stroke="#0c0c0e"
-                  strokeWidth="1.5"
-                />
-                <text
-                  x={x + 5}
-                  y={67}
-                  fontSize="8.5"
-                  fill={reactive ? '#fbbf6b' : '#d4d4d8'}
-                  fontFamily="var(--ai-font-mono)"
-                >
-                  {cd.spellName.split(' ')[0]}
-                </text>
-              </g>
-            );
-          }),
-        )}
-
-        {/* finding markers */}
+        {/* lane labels */}
         <text x={pad} y={14} fontSize="9.5" fill="#f9b13a" fontFamily="var(--ai-font-mono)" fontWeight="600">
           Findings
         </text>
+        <text x={pad} y={102} fontSize="9.5" fill="#71717a" fontFamily="var(--ai-font-mono)">
+          You
+        </text>
+        <text x={pad} y={169} fontSize="8.5" fill="#52525b" fontFamily="var(--ai-font-mono)" letterSpacing="0.5">
+          RISK
+        </text>
+        <text x={pad} y={186} fontSize="8.5" fill="#52525b" fontFamily="var(--ai-font-mono)" letterSpacing="0.5">
+          DAMP
+        </text>
+
+        {/* finding markers */}
         {findings.map((f) => {
           const x = xAt(f.atSeconds);
           const isActive = activeFinding === f.rank;
           return (
-            <g key={f.rank} style={{ cursor: 'pointer' }} onClick={() => onFindingClick?.(f.rank)}>
+            <g key={f.rank} style={{ cursor: 'pointer' }} onClick={() => onFindingClick(f.rank)}>
               <line x1={x} y1={14} x2={x} y2={20} stroke="#f28c18" strokeWidth="1.5" />
               <circle
                 cx={x}
@@ -175,14 +178,65 @@ export function TimelineStrip({ data, findings, activeFinding, onFindingClick }:
           const color = d.side === 'enemy' ? '#7ee0a0' : '#ff5a4a';
           return (
             <g key={`death-${i}`}>
-              <line x1={x} y1={22} x2={x} y2={110} stroke={color} strokeWidth="1.5" strokeDasharray="3 2" />
-              <circle cx={x} cy={102} r="4" fill={color} />
-              <text x={x - 6} y={106} fontSize="9" fill={color} textAnchor="end" fontFamily="var(--ai-font-mono)">
+              <line x1={x} y1={22} x2={x} y2={136} stroke={color} strokeWidth="1.5" strokeDasharray="3 2" />
+              <circle cx={x} cy={126} r="4" fill={color} />
+              <text x={x - 6} y={130} fontSize="9" fill={color} textAnchor="end" fontFamily="var(--ai-font-mono)">
                 ☠ {d.spec}
               </text>
             </g>
           );
         })}
+
+        {/* your CD casts — rendered LAST so the opaque chips sit on top of every grid/death line */}
+        {(() => {
+          const abbr = (name: string) => (name.includes(':') ? name.split(':')[1].trim() : name);
+          const casts = data.ownerCDs
+            .flatMap((cd) => cd.casts.map((c) => ({ ...c, spellName: cd.spellName })))
+            .sort((a, b) => a.timeSeconds - b.timeSeconds);
+          let prevRight = -Infinity;
+          let level = 0;
+          const ROWS = [36, 62]; // chip top positions, both above the You marker row
+          return casts.map((c, i) => {
+            const x = xAt(c.timeSeconds);
+            const label = abbr(c.spellName);
+            const w = label.length * 6 + 16;
+            const chipX = x + 7;
+            if (chipX < prevRight + 6) level = (level + 1) % ROWS.length;
+            else level = 0;
+            prevRight = chipX + w;
+            const chipY = ROWS[level];
+            const reactive = c.timingLabel === 'Reactive';
+            const tickColor = reactive ? '#fbbf6b' : '#cbd5e1';
+            return (
+              <g key={`${c.spellName}-${i}`}>
+                <line x1={x} y1={86} x2={x} y2={120} stroke={tickColor} strokeWidth="1.5" />
+                <circle cx={x} cy={100} r="3.5" fill={tickColor} stroke="#0c0c0e" strokeWidth="1.5" />
+                <line x1={x} y1={chipY + 15} x2={x} y2={98} stroke={tickColor} strokeWidth="1" opacity="0.45" />
+                <rect
+                  x={chipX}
+                  y={chipY}
+                  width={w}
+                  height={15}
+                  rx="3.5"
+                  fill="#09090b"
+                  stroke={tickColor}
+                  strokeOpacity="0.75"
+                  strokeWidth="1"
+                />
+                <text
+                  x={chipX + 7}
+                  y={chipY + 10.5}
+                  fontSize="9.5"
+                  fill={reactive ? '#fbbf6b' : '#f4f4f5'}
+                  fontWeight="500"
+                  fontFamily="var(--ai-font-mono)"
+                >
+                  {label}
+                </text>
+              </g>
+            );
+          });
+        })()}
       </svg>
     </div>
   );

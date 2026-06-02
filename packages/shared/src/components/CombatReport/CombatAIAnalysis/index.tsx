@@ -699,7 +699,7 @@ const inFlightRequests = new Map<string, Promise<AnalysisResult>>();
 
 // Scoped design tokens — fonts + near-black palette applied only inside the AI tab.
 const AI_VIEW_STYLE = {
-  '--ai-font-display': '"Space Grotesk", "IBM Plex Sans", system-ui, sans-serif',
+  '--ai-font-display': '"IBM Plex Sans", system-ui, sans-serif',
   '--ai-font-sans': '"IBM Plex Sans", system-ui, sans-serif',
   '--ai-font-mono': '"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace',
   fontFamily: 'var(--ai-font-sans)',
@@ -867,7 +867,7 @@ export function CombatAIAnalysis() {
             {findings.length > 0 && (
               <button
                 onClick={handleAnalyze}
-                className="flex items-center gap-1.5 text-[12px] text-zinc-100 px-3 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition"
+                className="shrink-0 whitespace-nowrap flex items-center gap-1.5 text-[12px] text-zinc-100 px-3 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition"
               >
                 <RefreshIcon /> Re-analyze
               </button>
@@ -916,19 +916,22 @@ export function CombatAIAnalysis() {
 
             {result && findings.length > 0 && (
               <>
-                <div className="flex items-center justify-between mb-3 px-1">
-                  <h2 className="text-[12px] uppercase tracking-[0.14em] text-zinc-500 font-semibold">
+                <div className="flex items-center justify-between gap-4 mb-3 px-1">
+                  <h2 className="text-[12px] uppercase tracking-[0.14em] text-zinc-500 font-semibold whitespace-nowrap">
                     Findings · ranked by match impact
                   </h2>
-                  <div className="flex items-center gap-3 text-[11px] text-zinc-500">
+                  <div className="flex items-center gap-3 text-[11px] text-zinc-500 shrink-0">
                     <button
-                      className="hover:text-zinc-300 transition"
+                      className="whitespace-nowrap hover:text-zinc-300 transition"
                       onClick={() => setExpandedRanks(new Set(findings.map((f) => f.rank)))}
                     >
                       Expand all
                     </button>
                     <span className="text-zinc-800">·</span>
-                    <button className="hover:text-zinc-300 transition" onClick={() => setExpandedRanks(new Set())}>
+                    <button
+                      className="whitespace-nowrap hover:text-zinc-300 transition"
+                      onClick={() => setExpandedRanks(new Set())}
+                    >
                       Collapse all
                     </button>
                   </div>

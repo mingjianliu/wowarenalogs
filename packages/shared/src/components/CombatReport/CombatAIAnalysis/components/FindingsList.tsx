@@ -193,7 +193,7 @@ function FindingCard({ finding: f, data, expanded, isFocused, onToggle }: Findin
                 </div>
                 <p className="text-[12px] text-zinc-400 leading-relaxed">{f.confidenceNote}</p>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3 mt-auto pt-2">
                 <div>
                   <div className="text-[10px] uppercase tracking-[0.12em] text-zinc-500 font-semibold mb-1">Anchor</div>
                   <div className="text-[12px] text-zinc-300 font-mono tabular-nums">{fmtTime(f.atSeconds)}</div>
