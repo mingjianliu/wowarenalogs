@@ -4918,3 +4918,98 @@ describe('buildMatchTimeline — Rot Pressure Detection (F147)', () => {
     expect(result).not.toContain('[ROT PRESSURE]');
   });
 });
+
+describe('buildMatchTimeline — Repetitive Cast Folding (F151)', () => {
+  it('folds consecutive identical casts in low pressure', () => {
+    const spell1 = makeSpellCastEvent('585', 10_000, 'enemy-1', 'Enemy', 'unit-1', 'Priest'); // Smite
+    const spell2 = makeSpellCastEvent('585', 12_000, 'enemy-1', 'Enemy', 'unit-1', 'Priest');
+    const spell3 = makeSpellCastEvent('585', 14_000, 'enemy-1', 'Enemy', 'unit-1', 'Priest');
+
+    const p1 = makeUnit('unit-1', {
+      name: 'Priest',
+      spec: CombatUnitSpec.Priest_Discipline,
+      spellCastEvents: [spell1, spell2, spell3],
+      advancedActions: [
+        makeAdvancedAction(10_000, 0, 0, 100_000, 100_000),
+        makeAdvancedAction(12_000, 0, 0, 100_000, 100_000),
+        makeAdvancedAction(14_000, 0, 0, 100_000, 100_000),
+      ],
+    });
+
+    const params = makeBaseParams({
+      owner: p1,
+      friends: [p1],
+      matchStartMs: 0,
+      matchEndMs: 30_000,
+      playerIdMap: new Map([['Priest', 1]]),
+      enemyIdMap: new Map([['Enemy', 2]]),
+    });
+
+    const result = buildMatchTimeline(params);
+    expect(result).toContain('0:10  [YOU] [CAST]   Smite (x3) → 2');
+    expect(result).not.toContain('0:12  [YOU] [CAST]');
+    expect(result).not.toContain('0:14  [YOU] [CAST]');
+  });
+
+  it('does NOT fold consecutive identical casts in critical windows', () => {
+    const spell1 = makeSpellCastEvent('585', 10_000, 'enemy-1', 'Enemy', 'unit-1', 'Priest'); // Smite
+    const spell2 = makeSpellCastEvent('585', 12_000, 'enemy-1', 'Enemy', 'unit-1', 'Priest');
+
+    const p1 = makeUnit('unit-1', {
+      name: 'Priest',
+      spec: CombatUnitSpec.Priest_Discipline,
+      spellCastEvents: [spell1, spell2],
+      advancedActions: [
+        makeAdvancedAction(10_000, 0, 0, 100_000, 100_000),
+        makeAdvancedAction(12_000, 0, 0, 100_000, 100_000),
+      ],
+    });
+
+    // Make t=10 and t=12 fall in a critical window by adding a friendly death at t=18 (18_000ms)
+    const params = makeBaseParams({
+      owner: p1,
+      friends: [p1],
+      friendlyDeaths: [{ spec: 'Discipline Priest', name: 'Priest', atSeconds: 18 }],
+      matchStartMs: 0,
+      matchEndMs: 30_000,
+      playerIdMap: new Map([['Priest', 1]]),
+      enemyIdMap: new Map([['Enemy', 2]]),
+    });
+
+    const result = buildMatchTimeline(params);
+    expect(result).toContain('0:10  [YOU] [CAST]   Smite → 2');
+    expect(result).toContain('0:12  [YOU] [CAST]   Smite → 2');
+    expect(result).not.toContain('Smite (x2)');
+  });
+
+  it('does NOT fold consecutive casts with annotations or different targets', () => {
+    // Diff targets: t=10 to EnemyA, t=12 to EnemyB
+    const spell1 = makeSpellCastEvent('585', 10_000, 'enemy-A', 'EnemyA', 'unit-1', 'Priest');
+    const spell2 = makeSpellCastEvent('585', 12_000, 'enemy-B', 'EnemyB', 'unit-1', 'Priest');
+
+    const p1 = makeUnit('unit-1', {
+      name: 'Priest',
+      spec: CombatUnitSpec.Priest_Discipline,
+      spellCastEvents: [spell1, spell2],
+      advancedActions: [
+        makeAdvancedAction(10_000, 0, 0, 100_000, 100_000),
+        makeAdvancedAction(12_000, 0, 0, 100_000, 100_000),
+      ],
+    });
+
+    const params = makeBaseParams({
+      owner: p1,
+      friends: [p1],
+      matchStartMs: 0,
+      matchEndMs: 30_000,
+      playerIdMap: new Map([['Priest', 1]]),
+      enemyIdMap: new Map([['EnemyA', 2], ['EnemyB', 3]]),
+    });
+
+    const result = buildMatchTimeline(params);
+    expect(result).toContain('0:10  [YOU] [CAST]   Smite → 2');
+    expect(result).toContain('0:12  [YOU] [CAST]   Smite → 3');
+    expect(result).not.toContain('Smite (x2)');
+  });
+});
+
