@@ -167,11 +167,23 @@ export const CombatReportContextProvider = (props: IProps) => {
       mPlayerTotalSupportIn.set(p.id, totalSupportIn);
 
       const totalHealOut = p.healOut.reduce((sum, action) => {
-        if (action.logLine.event === 'SPELL_PERIODIC_HEAL') {
+        if (
+          action.logLine.event === 'SPELL_PERIODIC_HEAL' &&
+          typeof action.logLine.parameters[30] === 'number' &&
+          typeof action.logLine.parameters[32] === 'number' &&
+          !isNaN(action.logLine.parameters[30]) &&
+          !isNaN(action.logLine.parameters[32])
+        ) {
           // TODO: the parser needs to give us more info about overhealing
           return sum + (action.logLine.parameters[30] - action.logLine.parameters[32]);
         }
-        if (action.logLine.event === 'SPELL_HEAL') {
+        if (
+          action.logLine.event === 'SPELL_HEAL' &&
+          typeof action.logLine.parameters[30] === 'number' &&
+          typeof action.logLine.parameters[32] === 'number' &&
+          !isNaN(action.logLine.parameters[30]) &&
+          !isNaN(action.logLine.parameters[32])
+        ) {
           // TODO: the parser needs to give us more info about overhealing
           return sum + (action.logLine.parameters[30] - action.logLine.parameters[32]);
         }

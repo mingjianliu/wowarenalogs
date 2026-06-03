@@ -8,8 +8,8 @@ Active work items. Completed/N/A items archived in `TRACKER_ARCHIVE.md`.
 
 | #   | Status  | Description                                                                                                                                                                                                                                  | File(s)                |
 | --- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| B06 | ❌ Open  | Unguarded log parameter math (`parameters[30] - parameters[32]`) causes `NaN` UI outputs for short log lines.                                                                                           | `packages/shared/src/components/CombatReport/CombatAIAnalysis/matchAnalysisData.ts` |
-| B07 | ❌ Open  | Hardcoded performance comparison scalars in dataset vector generation render relative metric variance calculations meaningless.                                                                         | `packages/tools/src/data/processAndUploadVectors.ts` |
+| B06 | ✅ Done  | Unguarded log parameter math (`parameters[30] - parameters[32]`) causes `NaN` UI outputs for short log lines.                                                                                           | `packages/shared/src/components/CombatReport/CombatAIAnalysis/matchAnalysisData.ts` |
+| B07 | ✅ Done  | Hardcoded performance comparison scalars in dataset vector generation render relative metric variance calculations meaningless.                                                                         | `packages/tools/src/processAndUploadVectors.ts` |
 | B08 | ❌ Open  | Non-English Grounding Totem test fixture name contains English substring, bypassing NPC ID fallback path validation.                                                                                     | `packages/shared/src/components/CombatReport/CombatAIAnalysis/__tests__/timeline.test.ts` |
 
 ---

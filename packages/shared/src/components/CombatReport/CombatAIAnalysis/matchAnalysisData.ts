@@ -110,7 +110,13 @@ function buildRoster(units: ICombatUnit[], ownerId: string, durationSec: number)
     const totalDamageOut = p.damageOut.reduce((sum, a) => sum + Math.abs(a.effectiveAmount), 0);
     const totalHealOut =
       p.healOut.reduce((sum, a) => {
-        if (a.logLine.event === 'SPELL_PERIODIC_HEAL' || a.logLine.event === 'SPELL_HEAL') {
+        if (
+          (a.logLine.event === 'SPELL_PERIODIC_HEAL' || a.logLine.event === 'SPELL_HEAL') &&
+          typeof a.logLine.parameters[30] === 'number' &&
+          typeof a.logLine.parameters[32] === 'number' &&
+          !isNaN(a.logLine.parameters[30]) &&
+          !isNaN(a.logLine.parameters[32])
+        ) {
           return sum + (a.logLine.parameters[30] - a.logLine.parameters[32]);
         }
         return sum + Math.abs(a.effectiveAmount);
