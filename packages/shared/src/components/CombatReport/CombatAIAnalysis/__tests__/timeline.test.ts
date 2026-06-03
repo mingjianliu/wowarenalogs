@@ -4773,7 +4773,7 @@ describe('buildMatchTimeline — Grounding Totem NPC ID detection', () => {
         allUnits: [
           {
             id: totemGuid,
-            name: 'Non-English Grounding Totem Name',
+            name: 'Erdungstotem',
             ownerId: 'player-1',
             deathRecords: [],
             absorbsIn: [
