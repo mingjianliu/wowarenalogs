@@ -298,7 +298,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   for (const milestone of milestones) {
     if (initialDampening >= milestone) {
-      addEntry(0, `00:00  [DAMPENING ALERT: ${milestone}%]`);
+      addEntry(0, `${fmtTime(0)}  [DAMPENING ALERT: ${milestone}%]`);
       emittedMilestones.add(milestone);
     }
   }
