@@ -89,9 +89,9 @@ async function main() {
       }
     }
 
-    const offensiveIndex = 0.5; // Placeholder
-    const ccDensity = 1.0; // Placeholder
-    const reactionLatency = 1.5; // Placeholder
+    const offensiveIndex = typeof matchData.offensiveIndex === 'number' ? matchData.offensiveIndex : 0.5;
+    const ccDensity = typeof matchData.ccDensity === 'number' ? matchData.ccDensity : 1.0;
+    const reactionLatency = typeof matchData.reactionLatency === 'number' ? matchData.reactionLatency : 1.5;
 
     const talentIds = matchData.pythonResult?.nodes_info
       ? Object.keys(matchData.pythonResult.nodes_info)
