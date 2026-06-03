@@ -27,12 +27,12 @@ interface DampeningEvent {
  * flatMapping all players on every sample interval.
  */
 function buildDampeningEvents(players: ICombatUnit[]): DampeningEvent[] {
-  return players
-    .flatMap((p) => p.auraEvents)
+  return (players ?? [])
+    .flatMap((p) => p?.auraEvents ?? [])
     .filter((a) => {
-      if (a.spellId !== '110310') return false;
-      if (a.logLine.event !== 'SPELL_AURA_APPLIED_DOSE') return false;
-      return typeof a.logLine.parameters[12] === 'number';
+      if (!a || a.spellId !== '110310') return false;
+      if (!a.logLine || a.logLine.event !== 'SPELL_AURA_APPLIED_DOSE') return false;
+      return typeof a.logLine.parameters?.[12] === 'number';
     })
     .map((a) => ({ timestamp: a.timestamp, stacks: a.logLine.parameters[12] as number }))
     .sort((a, b) => a.timestamp - b.timestamp);

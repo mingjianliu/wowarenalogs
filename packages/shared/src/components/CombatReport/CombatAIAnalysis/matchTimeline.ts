@@ -18,6 +18,7 @@ import {
   IMajorCooldownInfo,
   specToBenchmarkKey,
 } from '../../../utils/cooldowns';
+import { getDampeningPercentage } from '../../../utils/dampening';
 import {
   canDefensiveCleanse,
   IDispelEvent,
@@ -287,6 +288,42 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     if (timeSeconds > matchEndSeconds) return;
 
     entries.push({ timeSeconds, lines: lines.filter(Boolean) });
+  }
+
+  // ── Dampening Milestone Alerts (F149) ──────────────────────────────────────
+  const initialDampening = getDampeningPercentage(bracket ?? '3v3', friends.concat(enemies ?? []), matchStartMs);
+  const emittedMilestones = new Set<number>();
+  const milestones = [30, 50, 70, 90];
+
+  for (const milestone of milestones) {
+    if (initialDampening >= milestone) {
+      addEntry(0, `00:00  [DAMPENING ALERT: ${milestone}%]`);
+      emittedMilestones.add(milestone);
+    }
+  }
+
+  const dampeningEvents = friends
+    .concat(enemies ?? [])
+    .flatMap((p) => p.auraEvents ?? [])
+    .filter(
+      (a) =>
+        a.spellId === '110310' &&
+        a.logLine.event === 'SPELL_AURA_APPLIED_DOSE' &&
+        typeof a.logLine.parameters[12] === 'number',
+    )
+    .map((a) => ({
+      timeSeconds: (a.timestamp - matchStartMs) / 1000,
+      stacks: a.logLine.parameters[12] as number,
+    }))
+    .sort((a, b) => a.timeSeconds - b.timeSeconds);
+
+  for (const milestone of milestones) {
+    if (emittedMilestones.has(milestone)) continue;
+    const firstCrossing = dampeningEvents.find((e) => e.stacks >= milestone);
+    if (firstCrossing) {
+      addEntry(firstCrossing.timeSeconds, `${fmtTime(firstCrossing.timeSeconds)}  [DAMPENING ALERT: ${milestone}%]`);
+      emittedMilestones.add(milestone);
+    }
   }
 
   // ── [OFFENSIVE WINDOW] synthesized headers ─────────────────────────────────
