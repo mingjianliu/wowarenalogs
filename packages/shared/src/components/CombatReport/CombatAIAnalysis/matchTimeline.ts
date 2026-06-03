@@ -126,15 +126,43 @@ const HIGH_VALUE_PURGEABLE_BUFFS = new Set<string>([
 ]);
 
 const DOT_SPELL_IDS = new Set<string>([
-  '980', '172', '30108', '461531', '63106', '205179', '361695', // Warlock
-  '589', '34914', '2944', '390978', // Priest
-  '164812', '8921', '164815', '93402', '202347', '1079', '155722', '1822', '192090', '106830', // Druid
-  '1943', '703', '2818', '122233', '121411', // Rogue
-  '191587', '55078', '55095', // DK
+  '980',
+  '172',
+  '30108',
+  '461531',
+  '63106',
+  '205179',
+  '361695', // Warlock
+  '589',
+  '34914',
+  '2944',
+  '390978', // Priest
+  '164812',
+  '8921',
+  '164815',
+  '93402',
+  '202347',
+  '1079',
+  '155722',
+  '1822',
+  '192090',
+  '106830', // Druid
+  '1943',
+  '703',
+  '2818',
+  '122233',
+  '121411', // Rogue
+  '191587',
+  '55078',
+  '55095', // DK
   '188389', // Shaman
-  '269747', '271788', '118253', '217200', // Hunter
+  '269747',
+  '271788',
+  '118253',
+  '217200', // Hunter
   '12654', // Mage
-  '115767', '84617', // Warrior
+  '115767',
+  '84617', // Warrior
   '357209', // Evoker
 ]);
 
@@ -163,7 +191,7 @@ const DOT_SPELL_NAMES = new Set<string>([
   'serpent sting',
   'ignite',
   'deep wounds',
-  'fire breath'
+  'fire breath',
 ]);
 
 interface IDotInterval {
@@ -173,11 +201,7 @@ interface IDotInterval {
   endMs: number;
 }
 
-function extractPlayerDotIntervals(
-  player: ICombatUnit,
-  matchStartMs: number,
-  matchEndMs: number,
-): IDotInterval[] {
+function extractPlayerDotIntervals(player: ICombatUnit, matchStartMs: number, matchEndMs: number): IDotInterval[] {
   const intervals: IDotInterval[] = [];
   const openDots = new Map<string, number>();
 
