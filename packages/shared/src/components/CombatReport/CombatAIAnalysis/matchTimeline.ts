@@ -288,6 +288,35 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   const matchDurationS = (matchEndMs - matchStartMs) / 1000;
   const enemyBuffIntervals = extractEnemyMajorBuffIntervals(enemies ?? [], matchStartMs, matchEndMs);
 
+  const criticalWindowSet = new Set<number>(); // which tick-seconds are in a critical window
+  for (const d of friendlyDeaths) {
+    // [T-10, T] window before death
+    for (let t = Math.max(0, Math.ceil(d.atSeconds - 10)); t <= Math.floor(d.atSeconds); t++) {
+      criticalWindowSet.add(t);
+    }
+  }
+  for (const d of enemyDeaths) {
+    for (let t = Math.max(0, Math.ceil(d.atSeconds - 10)); t <= Math.floor(d.atSeconds); t++) {
+      criticalWindowSet.add(t);
+    }
+  }
+  for (const pw of pressureWindows) {
+    if (pw.totalDamage >= DMG_SPIKE_THRESHOLD) {
+      // ±5s centred on the spike start — clamp both edges
+      const from = Math.max(0, Math.ceil(pw.fromSeconds - 5));
+      const to = Math.min(Math.floor(matchDurationS), Math.floor(pw.fromSeconds + 5));
+      for (let t = from; t <= to; t++) criticalWindowSet.add(t);
+    }
+  }
+  for (const summary of ccTrinketSummaries) {
+    for (const cc of summary.ccInstances) {
+      // [cc.atSeconds, cc.atSeconds + 10] look-ahead — clamp right edge
+      const from = Math.max(0, Math.ceil(cc.atSeconds));
+      const to = Math.min(Math.floor(matchDurationS), Math.floor(cc.atSeconds + 10));
+      for (let t = from; t <= to; t++) criticalWindowSet.add(t);
+    }
+  }
+
   // F143: Pre-calculate Grounding Totem absorbs
   const groundingAbsorbs: Array<{ timeSeconds: number; spellName: string; totemOwnerId: string }> = [];
   if (allUnits) {
@@ -689,6 +718,25 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       .filter((s) => s.playerName === owner.name)
       .flatMap((s) => s.ccInstances.map((cc) => Math.round(matchStartMs + cc.atSeconds * 1000)));
 
+    let activeFold: {
+      displayName: string;
+      targetLabel: string;
+      startTimeSeconds: number;
+      count: number;
+    } | null = null;
+
+    const flushFold = () => {
+      if (!activeFold) return;
+      const { displayName, targetLabel, startTimeSeconds, count } = activeFold;
+      const targetPart = targetLabel ? ` → ${targetLabel}` : '';
+      const countPart = count > 1 ? ` (x${count})` : '';
+      addEntry(
+        startTimeSeconds,
+        `${fmtTime(startTimeSeconds)}  [YOU] [CAST]   ${displayName}${countPart}${targetPart}`,
+      );
+      activeFold = null;
+    };
+
     for (const e of owner.spellCastEvents ?? []) {
       if (e.logLine.event !== LogEvent.SPELL_CAST_SUCCESS) continue;
       if (!e.spellId) continue;
@@ -746,6 +794,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
       // F95: Offensive CC casts should carry a CC annotation or use an [YOU] [CC] prefix.
       if (ccSpellIds.has(e.spellId)) {
+        flushFold();
         addEntry(
           timeSeconds,
           `${fmtTime(timeSeconds)}  [YOU] [CC]   ${displayName}${targetPart}${totemNote}${orderNote}`,
@@ -760,6 +809,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       const effectData = spellEffectData[e.spellId];
       const cdSeconds = effectData?.cooldownSeconds ?? effectData?.charges?.chargeCooldownSeconds ?? 0;
       if (cdSeconds >= 30) {
+        flushFold();
         addEntry(
           timeSeconds,
           `${fmtTime(timeSeconds)}  [YOU] [CD]   ${displayName}${targetPart}${totemNote}${stasisAnnotation}`,
@@ -768,11 +818,37 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         continue;
       }
 
-      addEntry(
-        timeSeconds,
-        `${fmtTime(timeSeconds)}  [YOU] [CAST]   ${displayName}${targetPart}${totemNote}${orderNote}${stasisAnnotation}`,
-      );
+      // F151 Repetitive Cast Folding:
+      // Simple casts outside critical windows are foldable.
+      const isFoldable =
+        totemNote === '' &&
+        orderNote === '' &&
+        stasisAnnotation === '' &&
+        !criticalWindowSet.has(Math.floor(timeSeconds));
+
+      if (isFoldable) {
+        if (activeFold && activeFold.displayName === displayName && activeFold.targetLabel === targetLabel) {
+          activeFold.count++;
+        } else {
+          flushFold();
+          activeFold = {
+            displayName,
+            targetLabel,
+            startTimeSeconds: timeSeconds,
+            count: 1,
+          };
+        }
+      } else {
+        flushFold();
+        addEntry(
+          timeSeconds,
+          `${fmtTime(timeSeconds)}  [YOU] [CAST]   ${displayName}${targetPart}${totemNote}${orderNote}${stasisAnnotation}`,
+        );
+      }
     }
+
+    // Flush any remaining active folds at loop end
+    flushFold();
   }
 
   // ── [TEAM] [CD] events ────────────────────────────────────────────────────
@@ -1030,35 +1106,6 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         gap.fromSeconds,
         `${fmtTime(gap.fromSeconds)}  [HEALER INACTIVITY]   ${pid(owner.name)} inactive ${gap.durationSeconds.toFixed(1)}s (${gap.freeCastSeconds.toFixed(1)}s free) while ${pid(gap.mostDamagedName)} under pressure`,
       );
-    }
-  }
-
-  const criticalWindowSet = new Set<number>(); // which tick-seconds are in a critical window
-  for (const d of friendlyDeaths) {
-    // [T-10, T] window before death
-    for (let t = Math.max(0, Math.ceil(d.atSeconds - 10)); t <= Math.floor(d.atSeconds); t++) {
-      criticalWindowSet.add(t);
-    }
-  }
-  for (const d of enemyDeaths) {
-    for (let t = Math.max(0, Math.ceil(d.atSeconds - 10)); t <= Math.floor(d.atSeconds); t++) {
-      criticalWindowSet.add(t);
-    }
-  }
-  for (const pw of pressureWindows) {
-    if (pw.totalDamage >= DMG_SPIKE_THRESHOLD) {
-      // ±5s centred on the spike start — clamp both edges
-      const from = Math.max(0, Math.ceil(pw.fromSeconds - 5));
-      const to = Math.min(Math.floor(matchDurationS), Math.floor(pw.fromSeconds + 5));
-      for (let t = from; t <= to; t++) criticalWindowSet.add(t);
-    }
-  }
-  for (const summary of ccTrinketSummaries) {
-    for (const cc of summary.ccInstances) {
-      // [cc.atSeconds, cc.atSeconds + 10] look-ahead — clamp right edge
-      const from = Math.max(0, Math.ceil(cc.atSeconds));
-      const to = Math.min(Math.floor(matchDurationS), Math.floor(cc.atSeconds + 10));
-      for (let t = from; t <= to; t++) criticalWindowSet.add(t);
     }
   }
 
