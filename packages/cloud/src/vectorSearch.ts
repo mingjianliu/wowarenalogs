@@ -1,37 +1,39 @@
-// packages/cloud/src/vectorSearch.ts
-import { FieldValue, Firestore } from '@google-cloud/firestore';
-
-const db = new Firestore();
+import { cosineSimilarity } from '@wowarenalogs/shared/src/utils/vectorMath';
+import fs from 'fs-extra';
+import path from 'path';
 
 export interface NearestMatchResult {
   id: string;
   distance: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any; // The raw match data
+  data: any;
 }
 
-export async function findNearestProMatches(
+// Local index file path
+const REFERENCE_VECTORS_PATH = path.join(__dirname, '../../tools/src/data/reference_vectors.json');
+
+export async function findNearestProMatchesLocal(
   spec: string,
   userVector: number[],
   limit = 5,
 ): Promise<NearestMatchResult[]> {
-  const collectionRef = db.collection('reference_matches');
+  if (!fs.existsSync(REFERENCE_VECTORS_PATH)) {
+    return [];
+  }
 
-  // Vector search query
-  const vectorQuery = collectionRef
-    .where('spec', '==', spec) // Pre-filter by spec
-    .findNearest('embedding', FieldValue.vector(userVector), {
-      limit,
-      distanceMeasure: 'COSINE',
-      // @ts-expect-error exact spec args
-      distanceResultField: 'vector_distance',
-    });
+  const allMatches: any[] = await fs.readJson(REFERENCE_VECTORS_PATH);
 
-  const snapshot = await vectorQuery.get();
+  const results = allMatches
+    .filter((m) => m.spec === spec)
+    .map((m) => {
+      const similarity = cosineSimilarity(userVector, m.embedding);
+      return {
+        id: m.matchId,
+        distance: 1 - similarity, // Distance is 1 - similarity
+        data: m,
+      };
+    })
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, limit);
 
-  return snapshot.docs.map((doc) => ({
-    id: doc.id,
-    distance: doc.get('vector_distance'),
-    data: doc.data(),
-  }));
+  return results;
 }
