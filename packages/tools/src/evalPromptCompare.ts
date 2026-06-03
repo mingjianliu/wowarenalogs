@@ -53,7 +53,7 @@ function getHealerSpec(combat: ParsedCombat): string | null {
   return specToString(owner.spec);
 }
 
-async function callIpcExchange(reqId: string, requestData: any, timeoutMs = 300000): Promise<any> {
+async function callIpcExchange(reqId: string, requestData: unknown, timeoutMs = 300000): Promise<unknown> {
   const reqFile = path.join(OUTPUT_DIR, `req_${reqId}.json`);
   const respFile = path.join(OUTPUT_DIR, `resp_${reqId}.json`);
 
@@ -63,7 +63,7 @@ async function callIpcExchange(reqId: string, requestData: any, timeoutMs = 3000
   const startTime = Date.now();
   while (!(await fs.pathExists(respFile))) {
     if (Date.now() - startTime > timeoutMs) {
-      await fs.remove(reqFile).catch(() => {});
+      await fs.remove(reqFile).catch(() => undefined);
       throw new Error(`Timeout waiting for IPC response file ${respFile} after ${timeoutMs / 1000} seconds.`);
     }
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -74,8 +74,8 @@ async function callIpcExchange(reqId: string, requestData: any, timeoutMs = 3000
     return resp;
   } finally {
     await Promise.all([
-      fs.remove(reqFile).catch(() => {}),
-      fs.remove(respFile).catch(() => {}),
+      fs.remove(reqFile).catch(() => undefined),
+      fs.remove(respFile).catch(() => undefined),
     ]);
   }
 }
@@ -104,7 +104,7 @@ async function callClaudeAPI(
   }
 
   const reqId = 'claude_' + Math.random().toString(36).substring(7);
-  const resp = await callIpcExchange(reqId, { systemPrompt, userPrompt });
+  const resp = (await callIpcExchange(reqId, { systemPrompt, userPrompt })) as { text?: string } | null | undefined;
 
   if (!resp || typeof resp.text !== 'string') {
     throw new Error(`Invalid response received via IPC for request ${reqId}`);
@@ -220,7 +220,7 @@ Finally, state:
 - **Reasoning**: One sentence explanation.`;
 
   const reqId = 'judge_' + Math.random().toString(36).substring(7);
-  const resp = await callIpcExchange(reqId, { systemPrompt: judgeSystem, userPrompt: userMessage });
+  const resp = (await callIpcExchange(reqId, { systemPrompt: judgeSystem, userPrompt: userMessage })) as { text?: string } | null | undefined;
 
   if (!resp || typeof resp.text !== 'string') {
     throw new Error(`Invalid response received via IPC for request ${reqId}`);
