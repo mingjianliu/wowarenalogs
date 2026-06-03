@@ -19,4 +19,38 @@ describe('Vector Indexing', () => {
     const magnitude = Math.sqrt(vector.reduce((acc, val) => acc + val * val, 0));
     expect(magnitude).toBeCloseTo(1);
   });
+
+  it('should not collide sequential modulo talent IDs', () => {
+    // 82500 % 300 = 100
+    // 82800 % 300 = 100
+    // Under the old system, both would map to 200 + 100 = 300.
+    // Under the new bit-mixed hashing system, they should map to different indices.
+    const mockData1 = {
+      talentIds: [82500],
+      rotationSequences: {},
+      totalSequences: 0,
+      offensiveIndex: 0,
+      ccDensity: 0,
+      reactionLatency: 0,
+    };
+    const mockData2 = {
+      talentIds: [82800],
+      rotationSequences: {},
+      totalSequences: 0,
+      offensiveIndex: 0,
+      ccDensity: 0,
+      reactionLatency: 0,
+    };
+
+    const vector1 = generateMatchVector(mockData1, {}, 1);
+    const vector2 = generateMatchVector(mockData2, {}, 1);
+
+    // Find the non-zero talent index for each vector
+    const index1 = vector1.findIndex((val, i) => i >= 200 && i < 500 && val > 0);
+    const index2 = vector2.findIndex((val, i) => i >= 200 && i < 500 && val > 0);
+
+    expect(index1).not.toBe(-1);
+    expect(index2).not.toBe(-1);
+    expect(index1).not.toBe(index2);
+  });
 });

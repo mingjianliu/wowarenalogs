@@ -155,6 +155,7 @@ dist
 .aider*
 packages/parser/perf/results/
 packages/tools/local-batch/
+packages/tools/src/data/reference_vectors.json
 scratch/healer-eval/
 .gemini/settings.json
 .claude/

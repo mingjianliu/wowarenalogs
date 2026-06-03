@@ -27,6 +27,8 @@
     "start:refreshSpellMetadata": "ts-node --files ./src/refreshSpellMetadata.ts",
     "start:simlog": "dotenv -- ts-node --files ./src/simlog.ts",
     "start:analyzeSpecPlaystyle": "dotenv -- ts-node --files ./src/analyzeSpecPlaystyle.ts",
+    "start:buildHealerPlaystyles": "dotenv -- ts-node --files ./src/buildHealerPlaystyleCorpus.ts",
+    "start:processAndUploadVectors": "dotenv -- ts-node --files ./src/processAndUploadVectors.ts",
     "test:integration": "ts-node --files ./src/__tests__/realDataIntegration.ts"
   },
   "devDependencies": {

@@ -36,9 +36,16 @@ export function generateMatchVector(
     rawVector[index] += tfidf; // Additive in case of hash collisions
   }
 
-  // Dimensions 200-499: Talent Binary (Modulo 300 buckets)
+  // Dimensions 200-499: Talent Binary (Modulo 300 buckets with a bit mixer to avoid sequential collisions)
   for (const id of data.talentIds) {
-    const index = 200 + (id % 300);
+    // MurmurHash3 32-bit finalizer bit mixer
+    let hash = id;
+    hash ^= hash >>> 16;
+    hash = Math.imul(hash, 0x85ebca6b);
+    hash ^= hash >>> 13;
+    hash = Math.imul(hash, 0xc2b2ae35);
+    hash ^= hash >>> 16;
+    const index = 200 + (Math.abs(hash) % 300);
     rawVector[index] = 1;
   }
 

@@ -53,6 +53,33 @@ function getHealerSpec(combat: ParsedCombat): string | null {
   return specToString(owner.spec);
 }
 
+async function callIpcExchange(reqId: string, requestData: any, timeoutMs = 300000): Promise<any> {
+  const reqFile = path.join(OUTPUT_DIR, `req_${reqId}.json`);
+  const respFile = path.join(OUTPUT_DIR, `resp_${reqId}.json`);
+
+  await fs.writeJson(reqFile, requestData);
+  console.log(`[IPC_REQUEST] ${reqId}`);
+
+  const startTime = Date.now();
+  while (!(await fs.pathExists(respFile))) {
+    if (Date.now() - startTime > timeoutMs) {
+      await fs.remove(reqFile).catch(() => {});
+      throw new Error(`Timeout waiting for IPC response file ${respFile} after ${timeoutMs / 1000} seconds.`);
+    }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+
+  try {
+    const resp = await fs.readJson(respFile);
+    return resp;
+  } finally {
+    await Promise.all([
+      fs.remove(reqFile).catch(() => {}),
+      fs.remove(respFile).catch(() => {}),
+    ]);
+  }
+}
+
 async function callClaudeAPI(
   apiKey: string,
   systemPrompt: string,
@@ -77,19 +104,11 @@ async function callClaudeAPI(
   }
 
   const reqId = 'claude_' + Math.random().toString(36).substring(7);
-  const reqFile = path.join(OUTPUT_DIR, `req_${reqId}.json`);
-  const respFile = path.join(OUTPUT_DIR, `resp_${reqId}.json`);
+  const resp = await callIpcExchange(reqId, { systemPrompt, userPrompt });
 
-  await fs.writeJson(reqFile, { systemPrompt, userPrompt });
-  console.log(`[IPC_REQUEST] ${reqId}`);
-
-  while (!(await fs.pathExists(respFile))) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  if (!resp || typeof resp.text !== 'string') {
+    throw new Error(`Invalid response received via IPC for request ${reqId}`);
   }
-
-  const resp = await fs.readJson(respFile);
-  await fs.remove(reqFile);
-  await fs.remove(respFile);
 
   return {
     text: resp.text,
@@ -201,19 +220,11 @@ Finally, state:
 - **Reasoning**: One sentence explanation.`;
 
   const reqId = 'judge_' + Math.random().toString(36).substring(7);
-  const reqFile = path.join(OUTPUT_DIR, `req_${reqId}.json`);
-  const respFile = path.join(OUTPUT_DIR, `resp_${reqId}.json`);
+  const resp = await callIpcExchange(reqId, { systemPrompt: judgeSystem, userPrompt: userMessage });
 
-  await fs.writeJson(reqFile, { systemPrompt: judgeSystem, userPrompt: userMessage });
-  console.log(`[IPC_REQUEST] ${reqId}`);
-
-  while (!(await fs.pathExists(respFile))) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  if (!resp || typeof resp.text !== 'string') {
+    throw new Error(`Invalid response received via IPC for request ${reqId}`);
   }
-
-  const resp = await fs.readJson(respFile);
-  await fs.remove(reqFile);
-  await fs.remove(respFile);
 
   return resp.text;
 }
