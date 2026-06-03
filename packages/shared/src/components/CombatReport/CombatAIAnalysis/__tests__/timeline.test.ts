@@ -4825,3 +4825,39 @@ describe('isCriticalNonPlayerUnit', () => {
     expect(isCriticalNonPlayerUnit(playerUnit)).toBe(false);
   });
 });
+
+describe('buildMatchTimeline — Dampening Milestone Alerts (F149)', () => {
+  it('emits dampening alert immediately at t=0 when initial dampening matches or exceeds milestone', () => {
+    const p1 = makeUnit('p1', { name: 'Priest', spec: CombatUnitSpec.Priest_Discipline, info: { teamId: '0' } });
+    const p2 = makeUnit('p2', { name: 'Paladin', spec: CombatUnitSpec.Paladin_Holy, info: { teamId: '1' } });
+    const params = makeBaseParams({
+      bracket: '2v2',
+      friends: [p1],
+      enemies: [p2],
+      matchStartMs: 0,
+      matchEndMs: 60_000,
+    });
+    const result = buildMatchTimeline(params);
+    expect(result).toContain('0:00  [DAMPENING ALERT: 30%]');
+    expect(result).not.toContain('0:00  [DAMPENING ALERT: 50%]');
+  });
+
+  it('emits dampening alert at the exact second milestone is reached/crossed', () => {
+    const dose1 = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED_DOSE as any, '110310', 45_000, 'h', 'h');
+    (dose1.logLine as any).parameters[12] = 32; // 32% at 45s
+    const dose2 = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED_DOSE as any, '110310', 90_000, 'h', 'h');
+    (dose2.logLine as any).parameters[12] = 51; // 51% at 90s
+
+    const p = makeUnit('Feramonk', { name: 'Feramonk', auraEvents: [dose1 as any, dose2 as any] });
+    const params = makeBaseParams({
+      bracket: '3v3',
+      friends: [p],
+      matchStartMs: 0,
+      matchEndMs: 120_000,
+    });
+    const result = buildMatchTimeline(params);
+    expect(result).toContain('0:45  [DAMPENING ALERT: 30%]');
+    expect(result).toContain('1:30  [DAMPENING ALERT: 50%]');
+    expect(result).not.toContain('[DAMPENING ALERT: 70%]');
+  });
+});
