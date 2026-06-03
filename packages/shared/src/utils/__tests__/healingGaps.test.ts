@@ -104,7 +104,7 @@ describe('healingGaps — formatting', () => {
       mostDamagedAmount: 150000,
     };
     const res = formatHealingGapsForContext([gap]);
-    expect(res.join('\n')).toContain('[HEALER INACTIVITY] From 0:10 to 0:20 (10.0s duration, 5.0s free window)');
+    expect(res.join('\n')).toContain('[INACTIVITY] From 0:10 to 0:20 (10.0s duration, 5.0s free window)');
     expect(res.join('\n')).toContain('Warrior (Player1) took 150k damage');
   });
 });
