@@ -532,7 +532,17 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   for (const death of friendlyDeaths) {
     const dyingUnit = unitsByName.get(death.name);
     let unusedDefensives = '';
+    let trinketAvailable = false;
     if (dyingUnit) {
+      const summary = ccTrinketSummaries.find((s) => s.playerName === death.name);
+      if (summary && (summary.trinketType === 'Gladiator' || summary.trinketType === 'Adaptation')) {
+        const cooldownSec = summary.trinketCooldownSeconds;
+        const lastUse = summary.trinketUseTimes
+          .filter((t) => t <= death.atSeconds)
+          .sort((a, b) => b - a)[0];
+        trinketAvailable = lastUse === undefined || (death.atSeconds - lastUse) >= cooldownSec;
+      }
+
       // F145: Teammate Defensive Persistence Check — find big buttons that were available at death
       const allPlayerCDs = [
         ...ownerCDs.filter(() => owner.name === death.name),
@@ -550,9 +560,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       }
     }
 
+    const trinketPart = trinketAvailable ? ' (PvP Trinket available)' : '';
     const notePart = death.note ? ` [${death.note}]` : '';
     const deathLines: string[] = [
-      `${fmtTime(death.atSeconds)}  [DEATH]  ${pid(death.name)} (${death.spec} — friendly)${unusedDefensives}${notePart}`,
+      `${fmtTime(death.atSeconds)}  [DEATH]  ${pid(death.name)} (${death.spec} — friendly)${unusedDefensives}${trinketPart}${notePart}`,
     ];
     if (dyingUnit) {
       // HP trajectory
