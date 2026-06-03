@@ -17,6 +17,7 @@ import {
   IDamageBucket,
   IMajorCooldownInfo,
   specToBenchmarkKey,
+  specToString,
 } from '../../../utils/cooldowns';
 import { buildDampeningEvents, getDampeningPercentage } from '../../../utils/dampening';
 import {
@@ -124,6 +125,111 @@ const HIGH_VALUE_PURGEABLE_BUFFS = new Set<string>([
   '110909', // Alter Time
 ]);
 
+const DOT_SPELL_IDS = new Set<string>([
+  '980', '172', '30108', '461531', '63106', '205179', '361695', // Warlock
+  '589', '34914', '2944', '390978', // Priest
+  '164812', '8921', '164815', '93402', '202347', '1079', '155722', '1822', '192090', '106830', // Druid
+  '1943', '703', '2818', '122233', '121411', // Rogue
+  '191587', '55078', '55095', // DK
+  '188389', // Shaman
+  '269747', '271788', '118253', '217200', // Hunter
+  '12654', // Mage
+  '115767', '84617', // Warrior
+  '357209', // Evoker
+]);
+
+const DOT_SPELL_NAMES = new Set<string>([
+  'agony',
+  'corruption',
+  'unstable affliction',
+  'wither',
+  'shadow word: pain',
+  'vampiric touch',
+  'devouring plague',
+  'sunfire',
+  'moonfire',
+  'stellar flare',
+  'rip',
+  'rake',
+  'thrash',
+  'rupture',
+  'garrote',
+  'deadly poison',
+  'crimson tempest',
+  'virulent plague',
+  'blood plague',
+  'frost fever',
+  'flame shock',
+  'serpent sting',
+  'ignite',
+  'deep wounds',
+  'fire breath'
+]);
+
+interface IDotInterval {
+  spellId: string;
+  spellName: string;
+  startMs: number;
+  endMs: number;
+}
+
+function extractPlayerDotIntervals(
+  player: ICombatUnit,
+  matchStartMs: number,
+  matchEndMs: number,
+): IDotInterval[] {
+  const intervals: IDotInterval[] = [];
+  const openDots = new Map<string, number>();
+
+  const sortedEvents = [...(player.auraEvents ?? [])].sort((a, b) => a.logLine.timestamp - b.logLine.timestamp);
+
+  for (const event of sortedEvents) {
+    const ts = event.logLine.timestamp;
+    if (ts > matchEndMs) continue;
+
+    const spellId = event.spellId ?? '';
+    const spellName = getEnglishSpellName(spellId, event.spellName);
+    const spellNameLower = spellName.toLowerCase();
+
+    const isDot = DOT_SPELL_IDS.has(spellId) || [...DOT_SPELL_NAMES].some((name) => spellNameLower.includes(name));
+    if (!isDot) continue;
+
+    const auraType = event.logLine.parameters[11];
+    if (auraType === 'BUFF') continue;
+
+    const stateKey = `${spellId}:${event.srcUnitId}`;
+    if (event.logLine.event === LogEvent.SPELL_AURA_APPLIED) {
+      if (!openDots.has(stateKey)) {
+        openDots.set(stateKey, ts);
+      }
+    } else if (event.logLine.event === LogEvent.SPELL_AURA_REMOVED) {
+      const startMs = openDots.get(stateKey);
+      if (startMs !== undefined) {
+        intervals.push({
+          spellId,
+          spellName,
+          startMs,
+          endMs: ts,
+        });
+        openDots.delete(stateKey);
+      }
+    }
+  }
+
+  for (const [stateKey, startMs] of openDots) {
+    const spellId = stateKey.split(':')[0];
+    const spellName = getEnglishSpellName(spellId, '');
+    intervals.push({
+      spellId,
+      spellName,
+      startMs,
+      endMs: matchEndMs,
+    });
+  }
+
+  return intervals;
+}
+
 export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   const {
     owner,
@@ -155,6 +261,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     stateFormat = 'summary',
   } = params;
 
+  const matchDurationS = (matchEndMs - matchStartMs) / 1000;
   const enemyBuffIntervals = extractEnemyMajorBuffIntervals(enemies ?? [], matchStartMs, matchEndMs);
 
   // F143: Pre-calculate Grounding Totem absorbs
@@ -315,6 +422,35 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     if (firstCrossing) {
       addEntry(firstCrossing.timeSeconds, `${fmtTime(firstCrossing.timeSeconds)}  [DAMPENING ALERT: ${milestone}%]`);
       emittedMilestones.add(milestone);
+    }
+  }
+
+  // ── Rot Pressure Detection (F147) ──────────────────────────────────────────
+  for (const player of allPlayers) {
+    const dotIntervals = extractPlayerDotIntervals(player, matchStartMs, matchEndMs);
+    let consecutiveRotSeconds = 0;
+    let emittedForThisBlock = false;
+
+    for (let t = 0; t <= Math.floor(matchDurationS); t++) {
+      const tsMs = matchStartMs + t * 1000;
+      const activeDots = dotIntervals.filter((i) => tsMs >= i.startMs && tsMs <= i.endMs);
+      const dotCount = activeDots.length;
+
+      const hp = getUnitHpAtTimestamp(player, tsMs, 5000);
+
+      if (hp !== null && hp < 40 && dotCount >= 3) {
+        consecutiveRotSeconds++;
+        if (consecutiveRotSeconds >= 4 && !emittedForThisBlock) {
+          addEntry(
+            t,
+            `${fmtTime(t)}  [ROT PRESSURE]   ${pid(player.name)} (${specToString(player.spec)}) at ${Math.round(hp)}% HP with ${dotCount} active DoTs`,
+          );
+          emittedForThisBlock = true;
+        }
+      } else {
+        consecutiveRotSeconds = 0;
+        emittedForThisBlock = false;
+      }
     }
   }
 
@@ -873,7 +1009,6 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     }
   }
 
-  const matchDurationS = (matchEndMs - matchStartMs) / 1000;
   const criticalWindowSet = new Set<number>(); // which tick-seconds are in a critical window
   for (const d of friendlyDeaths) {
     // [T-10, T] window before death
