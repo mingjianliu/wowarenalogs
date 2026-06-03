@@ -210,6 +210,7 @@ _AI prompt data quality fixes (B11–B47, 2026):_
 | F136 | ✅ Done | Healer Match-End HPS & Mana Metrics — include overall match-end healer HPS, overhealing %, and final mana pool states in the prompt facts/timeline | `printMatchPrompts.ts`, `matchTimeline.ts` |
 | F142 | ✅ Done | Offensive Dispel Summary (Priest/Shaman) — AI often misses the "total pressure" contribution of offensive purges. Add a summarized `Total Successful Purges` metric to the Match Facts for these specs. | `printMatchPrompts.ts` |
 | F152 | ✅ Done | Enemy Purgeable Buff Timeline — Add a section showing when the enemy has high-value purgeable buffs (PI, Dark Soul) to help the AI identify missed offensive utility opportunities. | `printMatchPrompts.ts` |
+| F149 | ✅ Done | Dampening Milestone Alerts — Insert `[DAMPENING ALERT: 30%]` lines in the timeline to shift the AI's persona from throughput-focused to efficiency/positioning-focused in late games. | `printMatchPrompts.ts` |
 
 ---
 

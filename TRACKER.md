@@ -49,7 +49,6 @@ Active work items. Completed/N/A items archived in `TRACKER_ARCHIVE.md`.
 | F144    | S5      | Long-Match Mana Context — In games > 5m, add a `[MANA]` state marker to the timeline to help the AI distinguish between throughput failure and resource exhaustion. | `printMatchPrompts.ts`, `resourceSnapshot.ts` |
 | F146    | Backlog | Healer Inactivity & Trinket Status — Add clear labels for `[INACTIVITY]` gaps > 3s and explicitly flag whether a teammate died with a PvP Trinket available. | `matchTimeline.ts` |
 | F147    | S5      | Rot Pressure Detection — Add a `[ROT PRESSURE]` tag when 3+ dots are active on a target and HP is sub-40% for >3s to prevent the AI from incorrectly reporting "no coordinated burst." | `printMatchPrompts.ts` |
-| F149    | S5      | Dampening Milestone Alerts — Insert `[DAMPENING ALERT: 30%]` lines in the timeline to shift the AI's persona from throughput-focused to efficiency/positioning-focused in late games. | `printMatchPrompts.ts` |
 | F151    | S5      | Repetitive Cast Folding — Collapse multiple consecutive identical casts (e.g., `×5 Smite`) during low-pressure windows to reduce token bloat and noise. | `timelineHelpers.ts` |
 
 ---
