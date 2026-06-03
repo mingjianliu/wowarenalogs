@@ -18,7 +18,7 @@ import {
   IMajorCooldownInfo,
   specToBenchmarkKey,
 } from '../../../utils/cooldowns';
-import { getDampeningPercentage } from '../../../utils/dampening';
+import { buildDampeningEvents, getDampeningPercentage } from '../../../utils/dampening';
 import {
   canDefensiveCleanse,
   IDispelEvent,
@@ -291,7 +291,8 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   }
 
   // ── Dampening Milestone Alerts (F149) ──────────────────────────────────────
-  const initialDampening = getDampeningPercentage(bracket ?? '3v3', friends.concat(enemies ?? []), matchStartMs);
+  const allPlayers = friends.concat(enemies ?? []);
+  const initialDampening = getDampeningPercentage(bracket ?? '3v3', allPlayers, matchStartMs);
   const emittedMilestones = new Set<number>();
   const milestones = [30, 50, 70, 90];
 
@@ -302,20 +303,11 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     }
   }
 
-  const dampeningEvents = friends
-    .concat(enemies ?? [])
-    .flatMap((p) => p.auraEvents ?? [])
-    .filter(
-      (a) =>
-        a.spellId === '110310' &&
-        a.logLine.event === 'SPELL_AURA_APPLIED_DOSE' &&
-        typeof a.logLine.parameters[12] === 'number',
-    )
-    .map((a) => ({
-      timeSeconds: (a.timestamp - matchStartMs) / 1000,
-      stacks: a.logLine.parameters[12] as number,
-    }))
-    .sort((a, b) => a.timeSeconds - b.timeSeconds);
+  const events = buildDampeningEvents(allPlayers);
+  const dampeningEvents = events.map((e) => ({
+    timeSeconds: (e.timestamp - matchStartMs) / 1000,
+    stacks: e.stacks,
+  }));
 
   for (const milestone of milestones) {
     if (emittedMilestones.has(milestone)) continue;

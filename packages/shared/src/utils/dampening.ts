@@ -12,7 +12,7 @@ import { tanksOrHealers } from './utils';
 // Internal types
 // ---------------------------------------------------------------------------
 
-interface DampeningEvent {
+export interface DampeningEvent {
   timestamp: number;
   stacks: number;
 }
@@ -26,7 +26,7 @@ interface DampeningEvent {
  * ascending by timestamp. Called once per timeline computation to avoid
  * flatMapping all players on every sample interval.
  */
-function buildDampeningEvents(players: ICombatUnit[]): DampeningEvent[] {
+export function buildDampeningEvents(players: ICombatUnit[]): DampeningEvent[] {
   return (players ?? [])
     .flatMap((p) => p?.auraEvents ?? [])
     .filter((a) => {
@@ -52,18 +52,20 @@ function getDampeningFromEvents(events: DampeningEvent[], upToTimestamp: number,
 }
 
 // FIX 4: bracket string is checked first; player count is only a fallback for unknown strings.
-function computeRules(bracket: string, players: ICombatUnit[]): '2v2' | '2v2_dps' | '3v3' | 'Rated Solo Shuffle' {
-  if (bracket === 'Rated Solo Shuffle') {
+function computeRules(bracket?: string, players?: ICombatUnit[]): '2v2' | '2v2_dps' | '3v3' | 'Rated Solo Shuffle' {
+  const safeBracket = bracket ?? '';
+  const safePlayers = players ?? [];
+  if (safeBracket === 'Rated Solo Shuffle') {
     return 'Rated Solo Shuffle';
   }
-  if (bracket.includes('3v3') || bracket.includes('Three')) {
+  if (safeBracket.includes('3v3') || safeBracket.includes('Three')) {
     return '3v3';
   }
-  if (players.length > 4) {
+  if (safePlayers.length > 4) {
     return '3v3';
   }
-  const team0HasHealer = players.some((c) => c.info?.teamId === '0' && tanksOrHealers.includes(c.spec));
-  const team1HasHealer = players.some((c) => c.info?.teamId === '1' && tanksOrHealers.includes(c.spec));
+  const team0HasHealer = safePlayers.some((c) => c?.info?.teamId === '0' && tanksOrHealers.includes(c?.spec));
+  const team1HasHealer = safePlayers.some((c) => c?.info?.teamId === '1' && tanksOrHealers.includes(c?.spec));
   if (team0HasHealer && team1HasHealer) {
     return '2v2';
   }
@@ -176,6 +178,7 @@ export function formatDampeningForContext(
   endTime: number,
 ): string[] {
   const timeline = computeDampeningTimeline(bracket, players, startTime, endTime);
+  if (timeline.length === 0) return [];
   const initialDamp = timeline[0].dampening;
   const finalDamp = timeline[timeline.length - 1].dampening;
 
