@@ -4861,3 +4861,57 @@ describe('buildMatchTimeline — Dampening Milestone Alerts (F149)', () => {
     expect(result).not.toContain('[DAMPENING ALERT: 70%]');
   });
 });
+
+describe('buildMatchTimeline — Rot Pressure Detection (F147)', () => {
+  it('emits [ROT PRESSURE] when a player has 3+ dots and sub-40% HP for >3s', () => {
+    // 3 dots applied at T=10s
+    const corruption = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '172', 10_000, 'enemy-1', 'p1');
+    const agony = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '980', 10_000, 'enemy-1', 'p1');
+    const siphon = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '63106', 10_000, 'enemy-1', 'p1');
+
+    const p1 = makeUnit('p1', {
+      name: 'Priest',
+      spec: CombatUnitSpec.Priest_Discipline,
+      auraEvents: [corruption, agony, siphon],
+      advancedActions: [
+        makeAdvancedAction(10_000, 0, 0, 100_000, 35_000), // 35% HP
+        makeAdvancedAction(11_000, 0, 0, 100_000, 35_000),
+        makeAdvancedAction(12_000, 0, 0, 100_000, 35_000),
+        makeAdvancedAction(13_000, 0, 0, 100_000, 35_000), // Active for 4 ticks (T=10,11,12,13)
+      ],
+    });
+
+    const params = makeBaseParams({
+      friends: [p1],
+      matchStartMs: 0,
+      matchEndMs: 30_000,
+    });
+    const result = buildMatchTimeline(params);
+    expect(result).toContain('0:13  [ROT PRESSURE]   1 (Discipline Priest) at 35% HP with 3 active DoTs');
+  });
+
+  it('does NOT emit [ROT PRESSURE] if the duration is 3s or less', () => {
+    const corruption = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '172', 10_000, 'enemy-1', 'p1');
+    const agony = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '980', 10_000, 'enemy-1', 'p1');
+    const siphon = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '63106', 10_000, 'enemy-1', 'p1');
+
+    const p1 = makeUnit('p1', {
+      name: 'Priest',
+      spec: CombatUnitSpec.Priest_Discipline,
+      auraEvents: [corruption, agony, siphon],
+      advancedActions: [
+        makeAdvancedAction(10_000, 0, 0, 100_000, 35_000), // 35% HP
+        makeAdvancedAction(11_000, 0, 0, 100_000, 35_000),
+        makeAdvancedAction(12_000, 0, 0, 100_000, 35_000), // 3 ticks total
+      ],
+    });
+
+    const params = makeBaseParams({
+      friends: [p1],
+      matchStartMs: 0,
+      matchEndMs: 30_000,
+    });
+    const result = buildMatchTimeline(params);
+    expect(result).not.toContain('[ROT PRESSURE]');
+  });
+});
