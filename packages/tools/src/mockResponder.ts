@@ -30,6 +30,7 @@ function generateClaudeResponse(userPrompt: string): string {
   const hasPurgeSummary = userPrompt.includes('Offensive Dispel Summary:');
   const hasMissedPurge = userPrompt.includes('[MISSED PURGE OPPORTUNITY]');
   const hasCleanseOnCD = userPrompt.includes('Cleanse was on cooldown');
+  const hasRotPressure = userPrompt.includes('[ROT PRESSURE]');
 
   if (hasFatalDispel) {
     findings += `## Finding 4: Fatal Dispel Detected\n**What happened:** A cleanse was fatal due to backlash damage ([FATAL DISPEL:]).\n**Alternative:** Avoid cleansing when at low health under high penalty debuffs.\n**Impact:** Prevents self-inflicted deaths.\n**Confidence:** High\n\n`;
@@ -46,6 +47,9 @@ function generateClaudeResponse(userPrompt: string): string {
   if (hasCleanseOnCD) {
     findings += `## Finding 4: Cleanse Cooldown Management\n**What happened:** A critical cleanse was missed because the cleanse ability was on cooldown (Cleanse was on cooldown).\n**Alternative:** Pool or prioritize your cleanse cooldown for high-priority CC/debuffs.\n**Impact:** Ensures CC can be broken instantly when needed.\n**Confidence:** High\n\n`;
   }
+  if (hasRotPressure) {
+    findings += `## Finding 4: Rot Pressure Detected\n**What happened:** Target was under heavy rot pressure with 3+ active DoTs while at sub-40% HP ([ROT PRESSURE]).\n**Alternative:** Keep active dispels or trade defensive healing CD to stabilize.\n**Impact:** Prevents rot pressure death.\n**Confidence:** High\n\n`;
+  }
 
   return `<core_response>\n${findings}</core_response>\n\n<meta_eval_reflection>\n1. **Feature Usefulness**: Extremely high.\n2. **Response Bias**: Unbiased.\n3. **Noise & Confusion**: None.\n4. **Self-Reflection**: Followed all constraints.\n</meta_eval_reflection>`;
 }
@@ -57,6 +61,7 @@ function generateJudgeResponse(userPrompt: string): string {
   const hasPurgeSummary = userPrompt.includes('Offensive Dispel Summary');
   const hasMissedPurge = userPrompt.includes('[MISSED PURGE OPPORTUNITY]');
   const hasCleanseOnCD = userPrompt.includes('Cleanse was on cooldown');
+  const hasRotPressure = userPrompt.includes('[ROT PRESSURE]');
 
   const newFeatures: string[] = [];
   if (hasFatalDispel) newFeatures.push('Fatal Dispel tags');
@@ -65,6 +70,7 @@ function generateJudgeResponse(userPrompt: string): string {
   if (hasPurgeSummary) newFeatures.push('Offensive Dispel Summary');
   if (hasMissedPurge) newFeatures.push('Missed Purge Opportunities in timeline');
   if (hasCleanseOnCD) newFeatures.push('Cleanse on cooldown info');
+  if (hasRotPressure) newFeatures.push('Rot Pressure alerts');
 
   if (newFeatures.length > 0) {
     const verdict = 'Version B Winner';
