@@ -1,7 +1,7 @@
 import { generateMatchVector } from '../src/vectorIndexer';
 
 describe('Vector Indexing', () => {
-  it('should generate a 512-dimension vector from match data', () => {
+  it('should generate a 516-dimension vector from match data', () => {
     const mockData = {
       talentIds: [82556, 82564], // Simulated Discipline Priest talents
       rotationSequences: { 'Penance -> PW:S': 3 },
@@ -9,12 +9,15 @@ describe('Vector Indexing', () => {
       offensiveIndex: 0.5,
       ccDensity: 1.2,
       reactionLatency: 0.8,
+      defensiveOverlapRatio: 0.2,
+      effectiveCastRatio: 0.7,
+      ccAvoidanceRate: 0.1,
     };
     const mockGlobalIdf = { 'Penance -> PW:S': 50 }; // docFrequency out of 1282
 
     const vector = generateMatchVector(mockData, mockGlobalIdf, 1282);
 
-    expect(vector.length).toBe(512);
+    expect(vector.length).toBe(516);
     // Ensure it's normalized
     const magnitude = Math.sqrt(vector.reduce((acc, val) => acc + val * val, 0));
     expect(magnitude).toBeCloseTo(1);
@@ -32,6 +35,9 @@ describe('Vector Indexing', () => {
       offensiveIndex: 0,
       ccDensity: 0,
       reactionLatency: 0,
+      defensiveOverlapRatio: 0,
+      effectiveCastRatio: 0,
+      ccAvoidanceRate: 0,
     };
     const mockData2 = {
       talentIds: [82800],
@@ -40,6 +46,9 @@ describe('Vector Indexing', () => {
       offensiveIndex: 0,
       ccDensity: 0,
       reactionLatency: 0,
+      defensiveOverlapRatio: 0,
+      effectiveCastRatio: 0,
+      ccAvoidanceRate: 0,
     };
 
     const vector1 = generateMatchVector(mockData1, {}, 1);

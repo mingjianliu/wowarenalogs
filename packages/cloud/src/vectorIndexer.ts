@@ -7,9 +7,12 @@ export interface MatchEmbeddingData {
   offensiveIndex: number;
   ccDensity: number;
   reactionLatency: number;
+  defensiveOverlapRatio: number;
+  effectiveCastRatio: number;
+  ccAvoidanceRate: number;
 }
 
-const VECTOR_DIMENSIONS = 512;
+const VECTOR_DIMENSIONS = 516;
 
 // Simple hash to map strings to an index between 0 and maxIndex
 function simpleHash(str: string, maxIndex: number): number {
@@ -53,6 +56,9 @@ export function generateMatchVector(
   rawVector[500] = data.offensiveIndex;
   rawVector[501] = data.ccDensity;
   rawVector[502] = data.reactionLatency;
+  rawVector[503] = data.defensiveOverlapRatio;
+  rawVector[504] = data.effectiveCastRatio;
+  rawVector[505] = data.ccAvoidanceRate;
 
   // L2 Normalize the final vector
   return l2Normalize(rawVector);
