@@ -92,6 +92,10 @@ async function main() {
     const offensiveIndex = typeof matchData.offensiveIndex === 'number' ? matchData.offensiveIndex : 0.5;
     const ccDensity = typeof matchData.ccDensity === 'number' ? matchData.ccDensity : 1.0;
     const reactionLatency = typeof matchData.reactionLatency === 'number' ? matchData.reactionLatency : 1.5;
+    const defensiveOverlapRatio =
+      typeof matchData.defensiveOverlapRatio === 'number' ? matchData.defensiveOverlapRatio : 0;
+    const effectiveCastRatio = typeof matchData.effectiveCastRatio === 'number' ? matchData.effectiveCastRatio : 1.0;
+    const ccAvoidanceRate = typeof matchData.ccAvoidanceRate === 'number' ? matchData.ccAvoidanceRate : 0;
 
     const talentIds = matchData.pythonResult?.nodes_info
       ? Object.keys(matchData.pythonResult.nodes_info)
@@ -106,6 +110,9 @@ async function main() {
       offensiveIndex,
       ccDensity,
       reactionLatency,
+      defensiveOverlapRatio,
+      effectiveCastRatio,
+      ccAvoidanceRate,
     };
 
     const vector = generateMatchVector(embeddingInput, globalSequenceDocFrequency, totalDocs);
