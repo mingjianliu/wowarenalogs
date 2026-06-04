@@ -74,6 +74,9 @@ async function main() {
       offensiveIndex: 0.5, // Placeholder from ingestion
       ccDensity: 1.0,
       reactionLatency: 1.5,
+      defensiveOverlapRatio: 0.1,
+      effectiveCastRatio: 0.8,
+      ccAvoidanceRate: 0.2,
     },
     userCrisisEvents: matchData.rotations?.crisisEvents || [],
     nearestNeighbors: proNeighbors.map((n) => ({
@@ -82,6 +85,9 @@ async function main() {
         offensiveIndex: 0.6 + Math.random() * 0.2, // Simulated pro variance
         ccDensity: 1.5 + Math.random() * 0.5,
         reactionLatency: 0.8 + Math.random() * 0.4,
+        defensiveOverlapRatio: 0.05 + Math.random() * 0.05,
+        effectiveCastRatio: 0.9 + Math.random() * 0.05,
+        ccAvoidanceRate: 0.3 + Math.random() * 0.2,
       },
       crisisEvents: n.data.crisisEvents,
     })),

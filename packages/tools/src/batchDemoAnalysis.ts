@@ -34,12 +34,7 @@ async function runDemoForSpec(specToTest: string) {
     return;
   }
 
-  const neighbors = await findNearestProMatchesLocal(
-    matchData.spec,
-    userMatchInIndex.embedding,
-    matchData.bracket,
-    6,
-  );
+  const neighbors = await findNearestProMatchesLocal(matchData.spec, userMatchInIndex.embedding, matchData.bracket, 6);
 
   const proNeighbors = neighbors.filter((n) => n.id !== matchData.matchId).slice(0, 5);
 
@@ -52,6 +47,9 @@ async function runDemoForSpec(specToTest: string) {
       offensiveIndex: 0.4 + Math.random() * 0.2,
       ccDensity: 0.8 + Math.random() * 0.4,
       reactionLatency: 1.2 + Math.random() * 0.5,
+      defensiveOverlapRatio: 0.2 + Math.random() * 0.1,
+      effectiveCastRatio: 0.7 + Math.random() * 0.1,
+      ccAvoidanceRate: 0.1 + Math.random() * 0.1,
     },
     userCrisisEvents: matchData.rotations?.crisisEvents || [],
     nearestNeighbors: proNeighbors.map((n) => ({
@@ -60,6 +58,9 @@ async function runDemoForSpec(specToTest: string) {
         offensiveIndex: 0.6 + Math.random() * 0.2,
         ccDensity: 1.5 + Math.random() * 0.5,
         reactionLatency: 0.7 + Math.random() * 0.3,
+        defensiveOverlapRatio: 0.05 + Math.random() * 0.05,
+        effectiveCastRatio: 0.9 + Math.random() * 0.05,
+        ccAvoidanceRate: 0.3 + Math.random() * 0.2,
       },
       crisisEvents: n.data.crisisEvents,
     })),
