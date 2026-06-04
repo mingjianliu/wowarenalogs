@@ -1,11 +1,12 @@
+import { CombatUnitReaction, CombatUnitType, ICombatUnit } from '@wowarenalogs/parser';
 import fs from 'fs-extra';
-import path from 'path';
 import fetch from 'node-fetch';
-import { CombatUnitType, CombatUnitReaction, ICombatUnit } from '@wowarenalogs/parser';
-import { parseLogText, fetchStubs, ParsedCombat, MatchStub } from './printMatchPrompts';
-import { reconstructDispelSummary } from '../../shared/src/utils/dispelAnalysis';
+import path from 'path';
+
 import { isHealerSpec } from '../../shared/src/utils/cooldowns';
+import { reconstructDispelSummary } from '../../shared/src/utils/dispelAnalysis';
 import { DISPEL_FEATURE_FLAGS } from '../../shared/src/utils/dispelFeatureFlags';
+import { fetchStubs, MatchStub, ParsedCombat, parseLogText } from './printMatchPrompts';
 
 // Set feature flags to true for scan
 DISPEL_FEATURE_FLAGS.F18_FATAL_DISPEL = true;
@@ -102,7 +103,7 @@ function parseTimestampToMs(line: string): number {
 function insertChronologically(lines: string[], lineToInsert: string): string[] {
   const insertMs = parseTimestampToMs(lineToInsert);
   const result = [...lines];
-  const insertIndex = result.findIndex(l => {
+  const insertIndex = result.findIndex((l) => {
     const ms = parseTimestampToMs(l);
     return ms > insertMs;
   });
@@ -121,7 +122,7 @@ async function generateSyntheticLogs() {
     throw new Error(`Template not found at ${templatePath}`);
   }
   const templateContent = await fs.readFile(templatePath, 'utf8');
-  const baseLines = templateContent.split('\n').filter(l => l.trim().length > 0);
+  const baseLines = templateContent.split('\n').filter((l) => l.trim().length > 0);
 
   // Generate 10 games for F18 (Fatal Dispel)
   for (let i = 0; i < 10; i++) {
@@ -166,7 +167,7 @@ async function scanLogsInDirectory(dir: string, currentMap: FeatureMatchList) {
     try {
       const text = await fs.readFile(filePath, 'utf8');
       const combats = await parseLogText(text);
-      const combat = combats.find(c => getHealerSpec(c) !== null) ?? combats[0];
+      const combat = combats.find((c) => getHealerSpec(c) !== null) ?? combats[0];
       if (!combat) continue;
 
       const quals = getQualifyingFeatures(combat);
@@ -261,7 +262,7 @@ async function main() {
           if (!res.ok) continue;
           const text = await res.text();
           const combats = await parseLogText(text);
-          const combat = combats.find(c => getHealerSpec(c) !== null) ?? combats[0];
+          const combat = combats.find((c) => getHealerSpec(c) !== null) ?? combats[0];
           if (!combat) continue;
 
           const quals = getQualifyingFeatures(combat);

@@ -12,7 +12,7 @@ function parseTimestampToMs(line: string): number {
 function insertChronologically(lines: string[], lineToInsert: string): string[] {
   const insertMs = parseTimestampToMs(lineToInsert);
   const result = [...lines];
-  const insertIndex = result.findIndex(l => {
+  const insertIndex = result.findIndex((l) => {
     const ms = parseTimestampToMs(l);
     return ms > insertMs;
   });
@@ -27,7 +27,7 @@ function insertChronologically(lines: string[], lineToInsert: string): string[] 
 async function main() {
   const templatePath = path.join(__dirname, '../../parser/test/testlogs/3v3_tww_1120_reduced.txt');
   const templateContent = await fs.readFile(templatePath, 'utf8');
-  const baseLines = templateContent.split('\n').filter(l => l.trim().length > 0);
+  const baseLines = templateContent.split('\n').filter((l) => l.trim().length > 0);
 
   const { WoWCombatLogParser } = await import('@wowarenalogs/parser');
   const parser = new WoWCombatLogParser('retail');
@@ -61,14 +61,14 @@ async function main() {
       (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Hostile,
     );
     const friendlyPets: any[] = [];
-    
+
     // Enable features in state
     const { DISPEL_FEATURE_FLAGS } = require('../../shared/src/utils/dispelFeatureFlags');
     DISPEL_FEATURE_FLAGS.F18_FATAL_DISPEL = true;
 
     const { reconstructDispelSummary } = require('../../shared/src/utils/dispelAnalysis');
     const dispelSummary = reconstructDispelSummary(friends, enemies, combatParsed, friendlyPets);
-    
+
     console.log('friends count:', friends.length);
     friends.forEach((f: any) => console.log(`  Friend: ${f.name} (id: ${f.id})`));
     console.log('enemies count:', enemies.length);

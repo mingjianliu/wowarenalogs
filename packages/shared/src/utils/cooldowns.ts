@@ -14,7 +14,7 @@ import { DISCOVERY_TAG_RULES } from './discoveryRules';
 import { CD_TALENT_MODIFIERS } from './talentModifiers';
 import { getPlayerTalentedSpellInfo, getSpecTalentTreeSpellInfo } from './talents';
 
-const MAJOR_DEFENSIVE_IDS = new Set<string>(
+export const MAJOR_DEFENSIVE_IDS = new Set<string>(
   (spellIdListsData as unknown as { externalOrBigDefensiveSpellIds?: string[] }).externalOrBigDefensiveSpellIds ?? [],
 );
 

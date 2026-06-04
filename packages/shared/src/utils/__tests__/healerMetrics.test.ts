@@ -7,6 +7,9 @@ describe('computeHealerMetrics', () => {
     const mockCombat: Partial<IArenaMatch> = {
       startTime: 0,
       endTime: 60000, // 60 seconds
+      startInfo: {
+        zoneId: '1672',
+      } as any,
       units: {
         'player-healer': {
           id: 'player-healer',
@@ -37,6 +40,9 @@ describe('computeHealerMetrics', () => {
           ],
           deathRecords: [],
           auraEvents: [],
+          actionIn: [],
+          actionOut: [],
+          advancedActions: [],
         } as unknown as ICombatUnit,
       } as unknown as Record<string, ICombatUnit>,
     };
@@ -46,5 +52,8 @@ describe('computeHealerMetrics', () => {
     expect(metrics.offensiveIndex).toBeCloseTo(0.5); // 50000 / 100000
     expect(metrics.ccDensity).toBeCloseTo(1.0); // 1 cast / 1 min
     expect(metrics.reactionLatency).toBe(1.5); // Fallback since no reactive defensive timings can be analyzed without full logs
+    expect(metrics.defensiveOverlapRatio).toBeDefined();
+    expect(metrics.effectiveCastRatio).toBeDefined();
+    expect(metrics.ccAvoidanceRate).toBeDefined();
   });
 });

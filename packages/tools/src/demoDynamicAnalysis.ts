@@ -11,9 +11,12 @@
 
 import fs from 'fs-extra';
 import path from 'path';
-import { generateMatchVector, MatchEmbeddingData } from '../../cloud/src/vectorIndexer';
+
 import { findNearestProMatchesLocal } from '../../cloud/src/vectorSearch';
-import { buildComparativePrompt, ComparativeAnalysisData } from '../../shared/src/components/CombatReport/CombatAIAnalysis/comparativePrompt';
+import {
+  buildComparativePrompt,
+  ComparativeAnalysisData,
+} from '../../shared/src/components/CombatReport/CombatAIAnalysis/comparativePrompt';
 
 const CORPUS_DIR = path.join(__dirname, '../local-batch/playstyle-data');
 const REFERENCE_VECTORS_PATH = path.join(__dirname, './data/reference_vectors.json');
@@ -38,18 +41,9 @@ async function main() {
 
   // 2. Load Global IDF (we need this to vectorize the user's match correctly)
   // For the demo, we'll re-calculate it quickly or mock it
-  const allMatches: any[] = await fs.readJson(REFERENCE_VECTORS_PATH);
-  const totalDocs = allMatches.length;
-  const globalSequenceDocFrequency: Record<string, number> = {};
-  
-  // (In a real app, this IDF map would be a static asset or cached)
-  allMatches.forEach(m => {
-    // Note: The index already has sequences, but for simplicity in the demo 
-    // we'll just use the pre-computed embedding from the index for the 'user' too
-    // to show the search functionality.
-  });
+  const allMatches: { matchId: string; embedding: number[] }[] = await fs.readJson(REFERENCE_VECTORS_PATH);
 
-  const userMatchInIndex = allMatches.find(m => m.matchId === matchData.matchId);
+  const userMatchInIndex = allMatches.find((m) => m.matchId === matchData.matchId);
   if (!userMatchInIndex) {
     console.error('Sample match not found in index.');
     return;
@@ -60,15 +54,15 @@ async function main() {
   const neighbors = await findNearestProMatchesLocal(
     matchData.spec,
     userMatchInIndex.embedding,
-    6 // Limit 6 so we can exclude the self-match
+    6, // Limit 6 so we can exclude the self-match
   );
 
   // Exclude the user's own match from the comparison
-  const proNeighbors = neighbors.filter(n => n.id !== matchData.matchId).slice(0, 5);
+  const proNeighbors = neighbors.filter((n) => n.id !== matchData.matchId).slice(0, 5);
 
   console.log(`Found ${proNeighbors.length} similar pro matches.`);
   proNeighbors.forEach((n, i) => {
-    console.log(`  ${i+1}. Match ${n.id} (Distance: ${n.distance.toFixed(4)})`);
+    console.log(`  ${i + 1}. Match ${n.id} (Distance: ${n.distance.toFixed(4)})`);
   });
 
   // 4. Generate the Comparative Prompt
@@ -78,18 +72,18 @@ async function main() {
     userMetrics: {
       offensiveIndex: 0.5, // Placeholder from ingestion
       ccDensity: 1.0,
-      reactionLatency: 1.5
+      reactionLatency: 1.5,
     },
     userCrisisEvents: matchData.rotations?.crisisEvents || [],
-    nearestNeighbors: proNeighbors.map(n => ({
+    nearestNeighbors: proNeighbors.map((n) => ({
       distance: n.distance,
       metrics: {
         offensiveIndex: 0.6 + Math.random() * 0.2, // Simulated pro variance
         ccDensity: 1.5 + Math.random() * 0.5,
-        reactionLatency: 0.8 + Math.random() * 0.4
+        reactionLatency: 0.8 + Math.random() * 0.4,
       },
-      crisisEvents: n.data.crisisEvents
-    }))
+      crisisEvents: n.data.crisisEvents,
+    })),
   };
 
   const prompt = buildComparativePrompt(analysisData);

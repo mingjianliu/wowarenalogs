@@ -59,13 +59,13 @@ import {
   isHealerSpec,
   specToString,
 } from '../../shared/src/utils/cooldowns';
-import { DISPEL_FEATURE_FLAGS } from '../../shared/src/utils/dispelFeatureFlags';
 import { formatDampeningForContext } from '../../shared/src/utils/dampening';
 import {
   canOffensivePurge,
   formatDispelContextForAI,
   reconstructDispelSummary,
 } from '../../shared/src/utils/dispelAnalysis';
+import { DISPEL_FEATURE_FLAGS } from '../../shared/src/utils/dispelFeatureFlags';
 import { analyzeOutgoingCCChains, formatOutgoingCCChainsForContext } from '../../shared/src/utils/drAnalysis';
 import {
   formatEnemyCDTimelineForContext,
@@ -868,7 +868,9 @@ export function buildMatchPromptNew(
     }
     if (purgeCounts.size > 0) {
       const purgesStr = [...purgeCounts.entries()].map(([spell, count]) => `${count}x ${spell}`).join(', ');
-      lines.push(`  Offensive Dispel Summary: ${dispelSummary.ourPurges.length} total purges/spellsteals (${purgesStr})`);
+      lines.push(
+        `  Offensive Dispel Summary: ${dispelSummary.ourPurges.length} total purges/spellsteals (${purgesStr})`,
+      );
     }
   }
 

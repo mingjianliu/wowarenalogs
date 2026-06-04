@@ -1,9 +1,10 @@
+import { CombatUnitReaction, CombatUnitType, ICombatUnit } from '@wowarenalogs/parser';
+import { execSync } from 'child_process';
 import fs from 'fs-extra';
 import path from 'path';
-import { execSync } from 'child_process';
-import { CombatUnitType, CombatUnitReaction, ICombatUnit } from '@wowarenalogs/parser';
-import { parseLogText, ParsedCombat } from './printMatchPrompts';
+
 import { isHealerSpec, specToString } from '../../shared/src/utils/cooldowns';
+import { ParsedCombat, parseLogText } from './printMatchPrompts';
 
 const COMPARE_DIR = path.join(__dirname, '../local-batch/compare');
 const RAW_LOGS_DIR = path.join(COMPARE_DIR, 'raw-logs');
@@ -47,7 +48,7 @@ async function writeStateFile(matchIds: string[]) {
     }
     const text = await fs.readFile(destPath, 'utf8');
     const combats = await parseLogText(text);
-    const combat = combats.find(c => getHealerSpec(c) !== null) ?? combats[0];
+    const combat = combats.find((c) => getHealerSpec(c) !== null) ?? combats[0];
     if (combat) {
       specDistribution[matchId] = getHealerSpec(combat) ?? 'Holy Priest';
     } else {
@@ -162,14 +163,14 @@ async function main() {
   console.log(`\n======================================================================`);
   console.log(`FINAL VERDICTS SUMMARY`);
   console.log(`======================================================================`);
-  
+
   const reportFiles = ['F18', 'F124', 'F131_F132', 'F142', 'F152'];
   for (const feat of reportFiles) {
     const reportPath = path.join(COMPARE_DIR, `report_${feat}.md`);
     if (await fs.pathExists(reportPath)) {
       const content = await fs.readFile(reportPath, 'utf8');
       const lines = content.split('\n');
-      const verdictHeaderIndex = lines.findIndex(l => l.includes('## 3. Judge Verdicts'));
+      const verdictHeaderIndex = lines.findIndex((l) => l.includes('## 3. Judge Verdicts'));
       if (verdictHeaderIndex !== -1) {
         console.log(`\nFeature ${feat}:`);
         for (let i = verdictHeaderIndex + 1; i < lines.length && lines[i].trim().startsWith('-'); i++) {

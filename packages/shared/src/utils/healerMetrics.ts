@@ -1,7 +1,14 @@
 import { CombatUnitType, IArenaMatch, IShuffleRound } from '@wowarenalogs/parser';
 
 import { ccSpellIds } from '../data/spellTags';
-import { annotateDefensiveTimings, extractMajorCooldowns, IMajorCooldownInfo } from './cooldowns';
+import { analyzePlayerCCAndTrinket } from './ccTrinketAnalysis';
+import {
+  annotateDefensiveTimings,
+  detectOverlappedDefensives,
+  extractMajorCooldowns,
+  IMajorCooldownInfo,
+  MAJOR_DEFENSIVE_IDS,
+} from './cooldowns';
 import { reconstructEnemyCDTimeline } from './enemyCDs';
 
 function median(values: number[]): number {
@@ -45,6 +52,9 @@ export interface IHealerMetrics {
   offensiveIndex: number;
   ccDensity: number;
   reactionLatency: number;
+  defensiveOverlapRatio: number;
+  effectiveCastRatio: number;
+  ccAvoidanceRate: number;
 }
 
 export function computeHealerMetrics(combat: IArenaMatch | IShuffleRound, playerName: string): IHealerMetrics {
@@ -91,9 +101,30 @@ export function computeHealerMetrics(combat: IArenaMatch | IShuffleRound, player
   const latencyMs = computeCDResponseLatency(annotated, enemyCDTimeline.alignedBurstWindows, combat.startTime);
   const reactionLatency = latencyMs !== null ? latencyMs / 1000 : 1.5;
 
+  // 4. defensiveOverlapRatio
+  const overlaps = detectOverlappedDefensives(friends, combat);
+  const myOverlapCount = overlaps.filter((o) => o.firstCasterName === playerName || o.secondCasterName === playerName)
+    .length;
+  const myTotalDefensives = healerUnit.spellCastEvents.filter((e) => MAJOR_DEFENSIVE_IDS.has(String(e.spellId))).length;
+  const defensiveOverlapRatio = myOverlapCount / (myTotalDefensives + 1);
+
+  // 5. effectiveCastRatio
+  const ccTrinketSummary = analyzePlayerCCAndTrinket(healerUnit, enemies, combat as any);
+  const successCasts = healerUnit.spellCastEvents.filter((e) => e.logLine.event === 'SPELL_CAST_SUCCESS').length;
+  const interuptsOnMe = ccTrinketSummary.interruptInstances.length;
+  const effectiveCastRatio = successCasts / (successCasts + interuptsOnMe + 1);
+
+  // 6. ccAvoidanceRate
+  const avoidedCount = ccTrinketSummary.ccAvoidedInstances.length;
+  const successfulCCCount = ccTrinketSummary.ccInstances.length;
+  const ccAvoidanceRate = avoidedCount / (avoidedCount + successfulCCCount + 1);
+
   return {
     offensiveIndex,
     ccDensity,
     reactionLatency,
+    defensiveOverlapRatio,
+    effectiveCastRatio,
+    ccAvoidanceRate,
   };
 }
