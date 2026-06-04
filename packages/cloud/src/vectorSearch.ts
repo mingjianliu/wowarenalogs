@@ -14,6 +14,7 @@ const REFERENCE_VECTORS_PATH = path.join(__dirname, '../../tools/src/data/refere
 export async function findNearestProMatchesLocal(
   spec: string,
   userVector: number[],
+  bracket: string,
   limit = 5,
 ): Promise<NearestMatchResult[]> {
   if (!fs.existsSync(REFERENCE_VECTORS_PATH)) {
@@ -23,7 +24,7 @@ export async function findNearestProMatchesLocal(
   const allMatches: any[] = await fs.readJson(REFERENCE_VECTORS_PATH);
 
   const results = allMatches
-    .filter((m) => m.spec === spec)
+    .filter((m) => m.spec === spec && m.bracket === bracket)
     .map((m) => {
       const similarity = cosineSimilarity(userVector, m.embedding);
       return {

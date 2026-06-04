@@ -34,7 +34,12 @@ async function runDemoForSpec(specToTest: string) {
     return;
   }
 
-  const neighbors = await findNearestProMatchesLocal(matchData.spec, userMatchInIndex.embedding, 6);
+  const neighbors = await findNearestProMatchesLocal(
+    matchData.spec,
+    userMatchInIndex.embedding,
+    matchData.bracket,
+    6,
+  );
 
   const proNeighbors = neighbors.filter((n) => n.id !== matchData.matchId).slice(0, 5);
 

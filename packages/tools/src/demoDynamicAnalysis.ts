@@ -54,6 +54,7 @@ async function main() {
   const neighbors = await findNearestProMatchesLocal(
     matchData.spec,
     userMatchInIndex.embedding,
+    matchData.bracket,
     6, // Limit 6 so we can exclude the self-match
   );
 
