@@ -7,7 +7,7 @@ import { fmtTime, isHealerSpec, specToString } from './cooldowns';
 // Constants
 // ---------------------------------------------------------------------------
 
-const HEALING_GAP_THRESHOLD_MS = 3500;
+const HEALING_GAP_THRESHOLD_MS = 3000;
 /** Healer must have this many ms of free (non-CC) time to have realistically cast a heal */
 const MIN_FREE_CAST_MS = 1500;
 /** Grace period: ignore tail gaps within this many ms of match end (match may end mid-cast) */
@@ -230,7 +230,7 @@ export function detectHealingGaps(
 
 export function formatHealingGapsForContext(gaps: IHealingGap[]): string[] {
   const lines: string[] = [];
-  lines.push('HEALER INACTIVITY (intervals >3.5s where healer cast no spells while a teammate was under pressure):');
+  lines.push('HEALER INACTIVITY (intervals >3s where healer cast no spells while a teammate was under pressure):');
 
   if (gaps.length === 0) {
     lines.push('  None detected.');
@@ -242,7 +242,7 @@ export function formatHealingGapsForContext(gaps: IHealingGap[]): string[] {
     const dur = g.durationSeconds.toFixed(1);
     const free = g.freeCastSeconds.toFixed(1);
     lines.push(
-      `  [HEALER INACTIVITY] From ${fmtTime(g.fromSeconds)} to ${fmtTime(g.toSeconds)} (${dur}s duration, ${free}s free window), no heals or spells cast while ${g.mostDamagedSpec} (${g.mostDamagedName}) took ${dmgK}k damage.`,
+      `  [INACTIVITY] From ${fmtTime(g.fromSeconds)} to ${fmtTime(g.toSeconds)} (${dur}s duration, ${free}s free window), no heals or spells cast while ${g.mostDamagedSpec} (${g.mostDamagedName}) took ${dmgK}k damage.`,
     );
   }
 

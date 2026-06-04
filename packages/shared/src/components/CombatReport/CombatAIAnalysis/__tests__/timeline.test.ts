@@ -1333,7 +1333,7 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     expect(legend).toContain('840,000 dmg');
   });
 
-  it('emits [HEALER INACTIVITY] only when isHealer is true', () => {
+  it('emits [INACTIVITY] only when isHealer is true', () => {
     const gap: IHealingGap = {
       fromSeconds: 82,
       toSeconds: 86.2,
@@ -1346,9 +1346,9 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     const healerResult = buildMatchTimeline(makeBaseParams({ healingGaps: [gap], isHealer: true }));
     const dpsResult = buildMatchTimeline(makeBaseParams({ healingGaps: [gap], isHealer: false }));
 
-    expect(healerResult).toContain('[HEALER INACTIVITY]');
+    expect(healerResult).toContain('[INACTIVITY]');
     expect(healerResult).toContain('Feramonk inactive 4.2s');
-    expect(dpsResult).not.toContain('[HEALER INACTIVITY]');
+    expect(dpsResult).not.toContain('[INACTIVITY]');
   });
 
   it.skip('emits [HP] ticks every 3s when friends have HP data', () => {
@@ -5057,3 +5057,128 @@ describe('buildMatchTimeline — Repetitive Cast Folding (F151)', () => {
     expect(result).not.toContain('Smite (x2)');
   });
 });
+
+describe('buildMatchTimeline — PvP Trinket status at teammate death (F146)', () => {
+  it('flags teammate death with PvP Trinket available when never used', () => {
+    const p1 = makeUnit('unit-1', {
+      name: 'Priest',
+      spec: CombatUnitSpec.Priest_Discipline,
+      advancedActions: [makeAdvancedAction(10_000, 0, 0, 100_000, 100_000)],
+    });
+    const summary = {
+      playerName: 'Priest',
+      playerSpec: 'Discipline Priest',
+      trinketType: 'Gladiator' as any,
+      trinketCooldownSeconds: 120,
+      ccInstances: [],
+      trinketUseTimes: [],
+      missedTrinketWindows: [],
+      rootInstances: [],
+      disarmInstances: [],
+      interruptInstances: [],
+      ccAvoidedInstances: [],
+    };
+    const params = makeBaseParams({
+      friends: [p1],
+      friendlyDeaths: [{ spec: 'Discipline Priest', name: 'Priest', atSeconds: 10 }],
+      ccTrinketSummaries: [summary],
+      matchStartMs: 0,
+      matchEndMs: 30_000,
+    });
+    const result = buildMatchTimeline(params);
+    expect(result).toContain('0:10  [DEATH]  Priest (Discipline Priest — friendly) (PvP Trinket available)');
+  });
+
+  it('flags teammate death when trinket was used but cooldown expired', () => {
+    const p1 = makeUnit('unit-1', {
+      name: 'Priest',
+      spec: CombatUnitSpec.Priest_Discipline,
+      advancedActions: [makeAdvancedAction(150_000, 0, 0, 100_000, 100_000)],
+    });
+    const summary = {
+      playerName: 'Priest',
+      playerSpec: 'Discipline Priest',
+      trinketType: 'Gladiator' as any,
+      trinketCooldownSeconds: 120,
+      ccInstances: [],
+      trinketUseTimes: [10],
+      missedTrinketWindows: [],
+      rootInstances: [],
+      disarmInstances: [],
+      interruptInstances: [],
+      ccAvoidedInstances: [],
+    };
+    const params = makeBaseParams({
+      friends: [p1],
+      friendlyDeaths: [{ spec: 'Discipline Priest', name: 'Priest', atSeconds: 150 }],
+      ccTrinketSummaries: [summary],
+      matchStartMs: 0,
+      matchEndMs: 180_000,
+    });
+    const result = buildMatchTimeline(params);
+    expect(result).toContain('2:30  [DEATH]  Priest (Discipline Priest — friendly) (PvP Trinket available)');
+  });
+
+  it('does NOT flag teammate death when trinket is on cooldown', () => {
+    const p1 = makeUnit('unit-1', {
+      name: 'Priest',
+      spec: CombatUnitSpec.Priest_Discipline,
+      advancedActions: [makeAdvancedAction(50_000, 0, 0, 100_000, 100_000)],
+    });
+    const summary = {
+      playerName: 'Priest',
+      playerSpec: 'Discipline Priest',
+      trinketType: 'Gladiator' as any,
+      trinketCooldownSeconds: 120,
+      ccInstances: [],
+      trinketUseTimes: [10],
+      missedTrinketWindows: [],
+      rootInstances: [],
+      disarmInstances: [],
+      interruptInstances: [],
+      ccAvoidedInstances: [],
+    };
+    const params = makeBaseParams({
+      friends: [p1],
+      friendlyDeaths: [{ spec: 'Discipline Priest', name: 'Priest', atSeconds: 50 }],
+      ccTrinketSummaries: [summary],
+      matchStartMs: 0,
+      matchEndMs: 60_000,
+    });
+    const result = buildMatchTimeline(params);
+    expect(result).toContain('0:50  [DEATH]  Priest (Discipline Priest — friendly)');
+    expect(result).not.toContain('PvP Trinket available');
+  });
+
+  it('does NOT flag teammate death when trinket type is Relentless', () => {
+    const p1 = makeUnit('unit-1', {
+      name: 'Priest',
+      spec: CombatUnitSpec.Priest_Discipline,
+      advancedActions: [makeAdvancedAction(10_000, 0, 0, 100_000, 100_000)],
+    });
+    const summary = {
+      playerName: 'Priest',
+      playerSpec: 'Discipline Priest',
+      trinketType: 'Relentless' as any,
+      trinketCooldownSeconds: 120,
+      ccInstances: [],
+      trinketUseTimes: [],
+      missedTrinketWindows: [],
+      rootInstances: [],
+      disarmInstances: [],
+      interruptInstances: [],
+      ccAvoidedInstances: [],
+    };
+    const params = makeBaseParams({
+      friends: [p1],
+      friendlyDeaths: [{ spec: 'Discipline Priest', name: 'Priest', atSeconds: 10 }],
+      ccTrinketSummaries: [summary],
+      matchStartMs: 0,
+      matchEndMs: 30_000,
+    });
+    const result = buildMatchTimeline(params);
+    expect(result).toContain('0:10  [DEATH]  Priest (Discipline Priest — friendly)');
+    expect(result).not.toContain('PvP Trinket available');
+  });
+});
+
