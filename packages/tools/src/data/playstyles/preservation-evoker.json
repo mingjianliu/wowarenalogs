@@ -1,0 +1,32 @@
+[
+  {
+    "categoryName": "Echo-Stacking Chronowarden",
+    "associatedClusterRank": 3,
+    "keyHealingCD": "Dream Breath, Spiritbloom, Verdant Embrace",
+    "keyDefensiveOrHealAmpCD": "Merithra's Blessing, Time Dilation, Warp procs",
+    "rotationSummary": "High Echo uptime maintenance; Verdant Embrace spam to trigger Life-Binder; integration of Merithra's Blessing for throughput amplification; Warp-driven mobility.",
+    "playstyleDescription": "A high-throughput mobility style focusing on the Chronowarden hero tree. It leverages constant Echo application combined with Verdant Embrace to maximize Life-Binder procs and maintain defensive coverage via high Time Dilation uptime.",
+    "sampleCount": 42,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  },
+  {
+    "categoryName": "Stasis-Burst Flameshaper",
+    "associatedClusterRank": 9,
+    "keyHealingCD": "Stasis, Dream Breath, Spiritbloom",
+    "keyDefensiveOrHealAmpCD": "Time Dilation, Engulf, Enkindle",
+    "rotationSummary": "Stasis (Opener) -> Echo -> Dream Breath -> Spiritbloom -> Verdant Embrace; Release Stasis for instant recovery; high-priority Time Dilation on burst targets.",
+    "playstyleDescription": "A proactive, burst-oriented style that relies on Stasis to bank high-value healing sequences. Frequently utilizes Flameshaper talents like Engulf to provide immediate health spikes during enemy offensive windows.",
+    "sampleCount": 35,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  },
+  {
+    "categoryName": "Reactive Crisis Manager",
+    "associatedClusterRank": 6,
+    "keyHealingCD": "Rewind, Emerald Communion, Spiritbloom",
+    "keyDefensiveOrHealAmpCD": "Time Dilation, Zephyr, Renewing Blaze",
+    "rotationSummary": "Conservative cooldown usage; priority on smoothing intake with Time Dilation; Rewind and Emerald Communion reserved for critical 'Crisis Events' following major enemy CDs.",
+    "playstyleDescription": "A defensive-first style prioritizing survival and recovery. It focuses on maximizing the value of the ultimate recovery tool, Rewind, and using Time Dilation to prevent sudden deaths rather than for rotational throughput.",
+    "sampleCount": 28,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "categoryName": "Lunar Brawler",
+    "associatedClusterRank": 10,
+    "keyHealingCD": "Tranquility",
+    "keyDefensiveOrHealAmpCD": "Barkskin (Bear Form)",
+    "rotationSummary": "Wrath -> Starsurge -> Moonfire -> Bear Form (defensive)",
+    "playstyleDescription": "Utilizes Moonkin Form for ranged spell pressure and Bear Form for high-armor defensive windows to survive focused attacks.",
+    "sampleCount": 19,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  },
+  {
+    "categoryName": "Wildstalker Assassin",
+    "associatedClusterRank": 3,
+    "keyHealingCD": "Ironbark",
+    "keyDefensiveOrHealAmpCD": "Prowl / Tiger's Dash",
+    "rotationSummary": "Rake -> Maim -> Rip -> Cat Form Bleeds",
+    "playstyleDescription": "Aggressive melee-oriented playstyle that prioritizes Cat Form bleeds and stuns to apply offensive pressure between healing globals.",
+    "sampleCount": 18,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  },
+  {
+    "categoryName": "Keeper of the Grove Attrition",
+    "associatedClusterRank": 2,
+    "keyHealingCD": "Incarnation: Tree of Life",
+    "keyDefensiveOrHealAmpCD": "Cenarion Ward",
+    "rotationSummary": "Rejuvenation -> Lifebloom -> Regrowth weaving",
+    "playstyleDescription": "Focuses on high-uptime HoT maintenance and damage mitigation through consistent Regrowth and Cenarion Ward application.",
+    "sampleCount": 19,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  },
+  {
+    "categoryName": "Verdant Safeguard",
+    "associatedClusterRank": 1,
+    "keyHealingCD": "Ironbark",
+    "keyDefensiveOrHealAmpCD": "Nature's Swiftness (Healing)",
+    "rotationSummary": "Lifebloom -> Rejuvenation [Germination] -> Swiftmend",
+    "playstyleDescription": "Maximum defensive throughput build designed to protect targets with empowered HoTs and high-frequency Ironbark usage.",
+    "sampleCount": 38,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  },
+  {
+    "categoryName": "Cenarion CC Tactician",
+    "associatedClusterRank": 4,
+    "keyHealingCD": "Ironbark",
+    "keyDefensiveOrHealAmpCD": "Nature's Swiftness (Cyclone)",
+    "rotationSummary": "Lifebloom -> Swiftmend -> Nature's Swiftness -> Cyclone",
+    "playstyleDescription": "Control-oriented playstyle that prioritizes crowd control disruption using instant Cyclones and Roots to peel for teammates.",
+    "sampleCount": 47,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  }
+]

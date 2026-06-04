@@ -1,0 +1,32 @@
+[
+  {
+    "categoryName": "Lightsmith Melee Brawler",
+    "associatedClusterRank": 8,
+    "keyHealingCD": "Avenging Crusader, Sacred Weapon",
+    "keyDefensiveOrHealAmpCD": "Holy Bulwark, Blessing of Sacrifice, Aura Mastery",
+    "rotationSummary": "Judgment -> Hammer of Wrath -> Crusader Strike -> Holy Shock (generator) -> Word of Glory (spender).",
+    "playstyleDescription": "A melee-integrated healing style that leverages the Lightsmith hero tree for physical damage mitigation (Holy Bulwark) and increased throughput via Sacred Weapon. It relies on Avenging Crusader to convert high-frequency melee attacks into group-wide healing, effectively maintaining pressure while sustaining the team.",
+    "sampleCount": 12,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  },
+  {
+    "categoryName": "Heralded Caster",
+    "associatedClusterRank": 6,
+    "keyHealingCD": "Avenging Wrath, Divine Toll",
+    "keyDefensiveOrHealAmpCD": "Aura Mastery, Divine Protection, Divine Favor",
+    "rotationSummary": "Holy Shock -> Eternal Flame (main spender) -> Flash of Light (Infusion procs). Maintaining Dawnlight uptime.",
+    "playstyleDescription": "A traditional casting-focused playstyle utilizing the Herald of the Sun hero tree. It prioritizes Eternal Flame for powerful over-time healing and Dawnlight for passive throughput. This build focuses on ranged positioning, mana efficiency via Infusion of Light, and consistent sustain rather than melee-based burst healing.",
+    "sampleCount": 4,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  },
+  {
+    "categoryName": "Hybrid Armaments Sustainer",
+    "associatedClusterRank": 2,
+    "keyHealingCD": "Avenging Crusader, Divine Toll",
+    "keyDefensiveOrHealAmpCD": "Sacred Weapon, Holy Bulwark, Blessing of Sacrifice",
+    "rotationSummary": "Holy Shock -> Judgment -> Word of Glory -> Holy Light (hard cast during infusions).",
+    "playstyleDescription": "A variation of the Lightsmith build that balances melee pressure with more frequent hard-casting. It utilizes Holy Armaments for flexible defense/offense but incorporates more traditional casting (Holy Light/Flash of Light) during downtime between Avenging Crusader windows.",
+    "sampleCount": 6,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  }
+]

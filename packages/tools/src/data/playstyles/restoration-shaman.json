@@ -1,0 +1,32 @@
+[
+  {
+    "categoryName": "Totemic Chain-Heal Specialist",
+    "associatedClusterRank": 2,
+    "keyHealingCD": "Surging Totem, Stormstream Totem, Healing Tide Totem",
+    "keyDefensiveOrHealAmpCD": "Lively Totems, Unleash Life, Spiritwalker's Grace",
+    "rotationSummary": "Healing Stream Totem (Lively Totems proc) -> Chain Heal -> Riptide; Maintenance: Surging Totem + Healing Rain",
+    "playstyleDescription": "A high-throughput build leveraging the Totemic hero tree to trigger instant, high-value Chain Heals via 'Lively Totems'. It prioritizes group maintenance with Surging Totem and resets Chain Heal cooldowns frequently for massive burst recovery.",
+    "sampleCount": 85,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  },
+  {
+    "categoryName": "Farseer Earthweaver",
+    "associatedClusterRank": 17,
+    "keyHealingCD": "Ancestral Swiftness, Call of the Ancestors, Primordial Wave",
+    "keyDefensiveOrHealAmpCD": "Earth Shield (Earthen Harmony), Ancestral Vigor, Unleash Life",
+    "rotationSummary": "Riptide -> Unleash Life -> Ancestral Swiftness -> Healing Wave; Secondary: Lava Burst (Ancestral Influence procs)",
+    "playstyleDescription": "A traditional single-target focused build utilizing the Farseer hero tree to duplicate critical heals. It relies on 'Earthweaver' and 'Earthen Harmony' to stabilize targets under heavy focus, using Ancestral Swiftness to deliver massive, un-interruptible Healing Wave chains.",
+    "sampleCount": 18,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  },
+  {
+    "categoryName": "Offensive Totemic Tactician",
+    "associatedClusterRank": 3,
+    "keyHealingCD": "Surging Totem, Stormstream Totem, Ascendance (Deeply Rooted Elements)",
+    "keyDefensiveOrHealAmpCD": "Static Field Totem, Capacitor Totem, Grounding Totem",
+    "rotationSummary": "Flame Shock -> Lava Burst -> Static Field (Displace/Peel) -> Healing Stream -> Chain Heal",
+    "playstyleDescription": "A hybrid aggressive variant of the Totemic build. While maintaining the core Chain Heal engine, it prioritizes offensive pressure via Lava Burst and utility-based disruption using Static Field Totem to create kill windows or force defensive cooldowns.",
+    "sampleCount": 12,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  }
+]

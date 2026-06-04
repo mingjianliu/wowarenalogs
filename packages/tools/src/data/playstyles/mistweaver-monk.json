@@ -1,0 +1,32 @@
+[
+  {
+    "categoryName": "Master of Harmony Caster (Statue Turret)",
+    "associatedClusterRank": 1,
+    "keyHealingCD": "Sheilun's Gift, Enveloping Mist, Revival",
+    "keyDefensiveOrHealAmpCD": "Life Cocoon, Fortifying Brew, Ring of Peace",
+    "rotationSummary": "Summon Jade Serpent Statue -> Soothing Mist -> Enveloping Mist -> Sheilun's Gift",
+    "playstyleDescription": "The primary 'Caster' style utilizing Master of Harmony. It focuses on stationary throughput via the Jade Serpent Statue and Soothing Mist channeling to deliver high-value Enveloping Mists and maximize Sheilun's Gift procs for burst healing.",
+    "sampleCount": 52,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  },
+  {
+    "categoryName": "Conduit of the Celestials Hybrid (Mobile Brawler)",
+    "associatedClusterRank": 5,
+    "keyHealingCD": "Celestial Conduit, Sheilun's Gift, Invoke Chi-Ji the Red Crane",
+    "keyDefensiveOrHealAmpCD": "Life Cocoon, Fortifying Brew, Chi Torpedo",
+    "rotationSummary": "Rushing Wind Kick -> Spinning Crane Kick -> Soothing Mist -> Sheilun's Gift",
+    "playstyleDescription": "A highly mobile hybrid style leveraging Conduit of the Celestials. It blends melee pressure from Rushing Wind Kick and Spinning Crane Kick with quick transitions into Soothing Mist windows, using Celestial Conduit for high-throughput burst response.",
+    "sampleCount": 37,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  },
+  {
+    "categoryName": "Fistweaver Aggressor (Master of Harmony)",
+    "associatedClusterRank": 6,
+    "keyHealingCD": "Invoke Chi-Ji the Red Crane, Melee Throughput",
+    "keyDefensiveOrHealAmpCD": "Life Cocoon, Thunder Focus Tea, Leg Sweep",
+    "rotationSummary": "Tiger Palm -> Rising Sun Kick -> Blackout Kick -> Rushing Wind Kick",
+    "playstyleDescription": "An aggressive melee-centric playstyle using Master of Harmony. It relies on high uptime of melee rotations (Rising Sun Kick, Blackout Kick) to maintain pressure and healing momentum, using Invoke Chi-Ji to sustain through high-damage windows.",
+    "sampleCount": 14,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  }
+]

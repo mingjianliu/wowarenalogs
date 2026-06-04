@@ -1,0 +1,22 @@
+[
+  {
+    "categoryName": "Oracle Ramp Specialist",
+    "associatedClusterRank": 1,
+    "keyHealingCD": "Power Word: Radiance, Evangelism, Ultimate Penitence",
+    "keyDefensiveOrHealAmpCD": "Pain Suppression, Power Infusion",
+    "rotationSummary": "Atonement setup via PW:S or Penance -> double Power Word: Radiance -> Evangelism ramp.",
+    "playstyleDescription": "The foundational high-rated Discipline strategy focused on scheduled throughput. This playstyle prioritizes massive team-wide healing bursts to counter enemy offensive cooldowns using Oracle's predicted windows.",
+    "sampleCount": 241,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  },
+  {
+    "categoryName": "Voidweaver Offensive Specialist",
+    "associatedClusterRank": 2,
+    "keyHealingCD": "Void Blast, Power Word: Radiance",
+    "keyDefensiveOrHealAmpCD": "Void Shield, Inner Shadow, Pain Suppression",
+    "rotationSummary": "Mind Blast -> Shadow Word: Death -> Penance -> Void Blast (x5).",
+    "playstyleDescription": "Aggressive offensive playstyle utilizing Voidweaver procs to deal heavy damage while providing healing through Atonement and Void Blasts. Emphasizes personal durability through Void Shield.",
+    "sampleCount": 124,
+    "lastUpdated": "2026-06-01T23:00:00Z"
+  }
+]
