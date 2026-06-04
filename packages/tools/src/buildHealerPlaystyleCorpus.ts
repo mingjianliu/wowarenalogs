@@ -81,7 +81,10 @@ async function main() {
     if (
       typeof data.offensiveIndex === 'number' &&
       typeof data.ccDensity === 'number' &&
-      typeof data.reactionLatency === 'number'
+      typeof data.reactionLatency === 'number' &&
+      typeof data.defensiveOverlapRatio === 'number' &&
+      typeof data.effectiveCastRatio === 'number' &&
+      typeof data.ccAvoidanceRate === 'number'
     ) {
       skippedCount++;
       return;
@@ -105,6 +108,9 @@ async function main() {
       data.offensiveIndex = metrics.offensiveIndex;
       data.ccDensity = metrics.ccDensity;
       data.reactionLatency = metrics.reactionLatency;
+      data.defensiveOverlapRatio = metrics.defensiveOverlapRatio;
+      data.effectiveCastRatio = metrics.effectiveCastRatio;
+      data.ccAvoidanceRate = metrics.ccAvoidanceRate;
 
       await fs.writeJson(file, data, { spaces: 2 });
       updatedCount++;
