@@ -103,13 +103,14 @@ export function computeHealerMetrics(combat: IArenaMatch | IShuffleRound, player
 
   // 4. defensiveOverlapRatio
   const overlaps = detectOverlappedDefensives(friends, combat);
-  const myOverlapCount = overlaps.filter((o) => o.firstCasterName === playerName || o.secondCasterName === playerName)
-    .length;
+  const myOverlapCount = overlaps.filter(
+    (o) => o.firstCasterName === playerName || o.secondCasterName === playerName,
+  ).length;
   const myTotalDefensives = healerUnit.spellCastEvents.filter((e) => MAJOR_DEFENSIVE_IDS.has(String(e.spellId))).length;
   const defensiveOverlapRatio = myOverlapCount / (myTotalDefensives + 1);
 
   // 5. effectiveCastRatio
-  const ccTrinketSummary = analyzePlayerCCAndTrinket(healerUnit, enemies, combat as any);
+  const ccTrinketSummary = analyzePlayerCCAndTrinket(healerUnit, enemies, combat);
   const successCasts = healerUnit.spellCastEvents.filter((e) => e.logLine.event === 'SPELL_CAST_SUCCESS').length;
   const interuptsOnMe = ccTrinketSummary.interruptInstances.length;
   const effectiveCastRatio = successCasts / (successCasts + interuptsOnMe + 1);

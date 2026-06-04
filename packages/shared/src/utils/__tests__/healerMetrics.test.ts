@@ -9,7 +9,7 @@ describe('computeHealerMetrics', () => {
       endTime: 60000, // 60 seconds
       startInfo: {
         zoneId: '1672',
-      } as any,
+      } as unknown as IArenaMatch['startInfo'],
       units: {
         'player-healer': {
           id: 'player-healer',
