@@ -17,12 +17,20 @@ jobs:
       CSC_LINK: ''
       CSC_KEY_PASSWORD: ''
     steps:
+      - name: setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.14
       - name: checkout
         uses: actions/checkout@v4
       - name: setup node
         uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: restore distutils for node-gyp (Python 3.12+ dropped it)
+        run: python -m pip install --upgrade setuptools
+      - name: clean npm cache
+        run: npm cache clean -f
       - name: install node-gyp
         run: npm i -g node-gyp@latest
       - name: install dependencies
