@@ -18,6 +18,10 @@ export interface IStasisEvent {
   startSeconds: number;
   releaseSeconds: number;
   spells: string[];
+  // Number of spells actually stored, derived from the Stasis aura's stack
+  // (dose) removals. Used as a fallback when individual spell names cannot be
+  // resolved, so a real release is never rendered as an empty one.
+  storedCount: number;
 }
 
 export function extractSpiritOfRedemptionIntervals(
@@ -111,61 +115,87 @@ export function extractShapeshiftIntervals(unit: ICombatUnit, combat: AtomicAren
   return intervals;
 }
 
+// Stasis (370537) lets a Preservation Evoker store the next 3 spells they cast,
+// then replays them on release. It is a *stacked* aura: applied with charges,
+// each stored spell removes a dose (SPELL_AURA_REMOVED_DOSE), and the final
+// removal (SPELL_AURA_REMOVED) is the release.
+const STASIS_SPELL_ID = '370537';
+
+// Spells Stasis commonly stores for Preservation, used to resolve stored-spell
+// NAMES. Off-GCD utility cast during Stasis (e.g. Hover) does NOT consume a
+// charge and is not stored, so this stays an allow-list rather than "every
+// cast". When a stored spell falls outside this list its name can't be
+// resolved — but the dose-derived storedCount still records that the release
+// was non-empty (see IStasisEvent.storedCount), so it is never shown as empty.
+const STASIS_STORABLE_HEAL_IDS = new Set([
+  '355936', // Dream Breath
+  '367226', // Spiritbloom
+  '366155', // Reversion
+  '355913', // Emerald Blossom
+  '360995', // Verdant Embrace
+  '361469', // Living Flame
+  '364343', // Echo
+]);
+
 export function extractStasisEvents(unit: ICombatUnit, combat: AtomicArenaCombat): IStasisEvent[] {
   const events: IStasisEvent[] = [];
   let isBuffering = false;
   let startSeconds = 0;
   let bufferedSpells: string[] = [];
+  let doseRemovals = 0;
 
-  const evokerHealIds = new Set([
-    '355936', // Dream Breath
-    '367226', // Spiritbloom
-    '366155', // Reversion
-    '355913', // Emerald Blossom
-    '360995', // Verdant Embrace
-    '361469', // Living Flame
-    '364343', // Echo
-  ]);
-
-  // Evokers buffer heals when Stasis (370537) is active.
-  // We scan both aura events (for boundaries) and cast events (for the buffered spells).
+  // We scan aura events (for boundaries and stored-spell doses) and cast events
+  // (for the buffered spell names).
   const mergedEvents = [...unit.auraEvents, ...unit.spellCastEvents]
     .filter(
       (e) =>
         e.logLine.event === LogEvent.SPELL_AURA_APPLIED ||
         e.logLine.event === LogEvent.SPELL_AURA_REMOVED ||
+        e.logLine.event === LogEvent.SPELL_AURA_REMOVED_DOSE ||
         e.logLine.event === LogEvent.SPELL_CAST_SUCCESS,
     )
     .sort((a, b) => {
       if (a.logLine.timestamp !== b.logLine.timestamp) {
         return a.logLine.timestamp - b.logLine.timestamp;
       }
-      // Prioritize Cast Success before Aura Removed to capture spells cast at the exact ms Stasis is removed
+      // At the same ms: count storage casts and doses before the final removal,
+      // so a spell cast at the exact ms Stasis is released is still captured.
       const getPriority = (event: string) => {
         if (event === LogEvent.SPELL_AURA_APPLIED) return 0;
         if (event === LogEvent.SPELL_CAST_SUCCESS) return 1;
-        if (event === LogEvent.SPELL_AURA_REMOVED) return 2;
-        return 3;
+        if (event === LogEvent.SPELL_AURA_REMOVED_DOSE) return 2;
+        if (event === LogEvent.SPELL_AURA_REMOVED) return 3;
+        return 4;
       };
       return getPriority(a.logLine.event) - getPriority(b.logLine.event);
     });
 
   for (const e of mergedEvents) {
-    if (e.spellId === '370537' && e.logLine.event === LogEvent.SPELL_AURA_APPLIED) {
+    if (e.spellId === STASIS_SPELL_ID && e.logLine.event === LogEvent.SPELL_AURA_APPLIED) {
       isBuffering = true;
       startSeconds = (e.logLine.timestamp - combat.startTime) / 1000;
       bufferedSpells = [];
-    } else if (e.spellId === '370537' && e.logLine.event === LogEvent.SPELL_AURA_REMOVED && isBuffering) {
+      doseRemovals = 0;
+    } else if (e.spellId === STASIS_SPELL_ID && e.logLine.event === LogEvent.SPELL_AURA_REMOVED && isBuffering) {
+      // The final removal is itself one stored-spell consumption when doses preceded it.
+      const dosedCount = doseRemovals > 0 ? doseRemovals + 1 : doseRemovals;
       events.push({
         startSeconds,
         releaseSeconds: (e.logLine.timestamp - combat.startTime) / 1000,
         spells: [...bufferedSpells],
+        storedCount: Math.max(bufferedSpells.length, dosedCount),
       });
       isBuffering = false;
-    } else if (isBuffering && e.logLine.event === LogEvent.SPELL_CAST_SUCCESS) {
-      if (e.spellId && evokerHealIds.has(e.spellId) && bufferedSpells.length < 3) {
-        bufferedSpells.push(getEnglishSpellName(e.spellId, e.spellName ?? 'Unknown'));
-      }
+    } else if (isBuffering && e.spellId === STASIS_SPELL_ID && e.logLine.event === LogEvent.SPELL_AURA_REMOVED_DOSE) {
+      doseRemovals += 1;
+    } else if (
+      isBuffering &&
+      e.logLine.event === LogEvent.SPELL_CAST_SUCCESS &&
+      e.spellId &&
+      STASIS_STORABLE_HEAL_IDS.has(e.spellId) &&
+      bufferedSpells.length < 3
+    ) {
+      bufferedSpells.push(getEnglishSpellName(e.spellId, e.spellName ?? 'Unknown'));
     }
   }
 

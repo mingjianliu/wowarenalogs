@@ -537,10 +537,8 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       const summary = ccTrinketSummaries.find((s) => s.playerName === death.name);
       if (summary && (summary.trinketType === 'Gladiator' || summary.trinketType === 'Adaptation')) {
         const cooldownSec = summary.trinketCooldownSeconds;
-        const lastUse = summary.trinketUseTimes
-          .filter((t) => t <= death.atSeconds)
-          .sort((a, b) => b - a)[0];
-        trinketAvailable = lastUse === undefined || (death.atSeconds - lastUse) >= cooldownSec;
+        const lastUse = summary.trinketUseTimes.filter((t) => t <= death.atSeconds).sort((a, b) => b - a)[0];
+        trinketAvailable = lastUse === undefined || death.atSeconds - lastUse >= cooldownSec;
       }
 
       // F145: Teammate Defensive Persistence Check — find big buttons that were available at death
@@ -1354,10 +1352,18 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   // 10. Process Stasis Events
   for (const stasis of stasisEvents) {
     if (stateFormat === 'summary') {
-      addEntry(
-        stasis.releaseSeconds,
-        `${fmtTime(stasis.releaseSeconds)}  [YOU] [STASIS RELEASE] → ${stasis.spells.join(', ')}`,
-      );
+      // Prefer resolved spell names; fall back to the stored-spell count so an
+      // unidentified release is never shown as an empty "→ " (which reads as a
+      // wasted Stasis). Only skip releases that genuinely stored nothing.
+      const contents =
+        stasis.spells.length > 0
+          ? stasis.spells.join(', ')
+          : stasis.storedCount > 0
+            ? `${stasis.storedCount} spell(s) stored (contents not identified)`
+            : '';
+      if (contents) {
+        addEntry(stasis.releaseSeconds, `${fmtTime(stasis.releaseSeconds)}  [YOU] [STASIS RELEASE] → ${contents}`);
+      }
     }
   }
 
