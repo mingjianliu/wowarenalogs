@@ -85,6 +85,7 @@ import {
 import { computeMatchArchetype, formatMatchArchetypeForContext } from '../../shared/src/utils/matchArchetype';
 import { computeOffensiveWindows, formatOffensiveWindowsForContext } from '../../shared/src/utils/offensiveWindows';
 import { benchmarks, formatDTPSBaselines, formatSpecBaselines } from '../../shared/src/utils/specBaselines';
+import { computeHealerMetrics } from '../../shared/src/utils/healerMetrics';
 import { logCache } from './utils/logCache';
 
 const API_BASE = 'https://wowarenalogs.com';
@@ -827,8 +828,13 @@ export function buildMatchPromptNew(
     .forEach((h) => {
       const { hps, overhealPct } = computeOverallHealingMetrics(h, combat.startTime, combat.endTime);
       const finalMana = getUnitManaAtTimestamp(h, combat.endTime);
+      const metrics = computeHealerMetrics(combat, h.name);
+
       healerMetrics.push(
         `  Healer Performance (${specToString(h.spec)}): ${Math.round(hps / 1000)}k HPS | ${overhealPct}% Overheal | ${Math.round((finalMana?.current ?? 0) / 1000)}k Final Mana`,
+      );
+      healerMetrics.push(
+        `  Technical Stats: Overlap Ratio: ${metrics.defensiveOverlapRatio.toFixed(2)} | Effective Cast: ${metrics.effectiveCastRatio.toFixed(2)} | CC Avoidance: ${metrics.ccAvoidanceRate.toFixed(2)}`,
       );
     });
 
