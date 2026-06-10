@@ -1,5 +1,6 @@
-import { findNearestProMatchesLocal } from '../src/vectorSearch';
 import fs from 'fs-extra';
+
+import { findNearestProMatchesLocal, normalizeBracket } from '../src/vectorSearch';
 
 jest.mock('fs-extra', () => ({
   existsSync: jest.fn(),
@@ -58,10 +59,38 @@ describe('findNearestProMatchesLocal', () => {
     (fs.readJson as jest.Mock).mockResolvedValue(mockMatches);
 
     const userVector = [1, 0, 0];
-    // @ts-ignore - we are testing the new signature
     const results = await findNearestProMatchesLocal('Frost Mage', userVector, '2v2', 2);
 
     expect(results).toHaveLength(1);
     expect(results[0].id).toBe('match_2v2');
+  });
+
+  it('should match a solo_shuffle slug query against a "Rated Solo Shuffle" stored label', async () => {
+    (fs.existsSync as jest.Mock).mockReturnValue(true);
+
+    const mockMatches = [
+      { matchId: 'match_solo', spec: 'Frost Mage', bracket: 'Rated Solo Shuffle', embedding: [1, 0, 0] },
+      { matchId: 'match_3v3', spec: 'Frost Mage', bracket: '3v3', embedding: [1, 0, 0] },
+    ];
+
+    (fs.readJson as jest.Mock).mockResolvedValue(mockMatches);
+
+    const userVector = [1, 0, 0];
+    const results = await findNearestProMatchesLocal('Frost Mage', userVector, 'solo_shuffle', 2);
+
+    expect(results).toHaveLength(1);
+    expect(results[0].id).toBe('match_solo');
+  });
+});
+
+describe('normalizeBracket', () => {
+  it('canonicalizes every known representation to a stable slug', () => {
+    expect(normalizeBracket('Rated Solo Shuffle')).toBe('solo_shuffle');
+    expect(normalizeBracket('solo_shuffle')).toBe('solo_shuffle');
+    expect(normalizeBracket('Solo Shuffle')).toBe('solo_shuffle');
+    expect(normalizeBracket('3v3')).toBe('3v3');
+    expect(normalizeBracket('2v2')).toBe('2v2');
+    expect(normalizeBracket(undefined)).toBe('unknown');
+    expect(normalizeBracket(null)).toBe('unknown');
   });
 });

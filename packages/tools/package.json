@@ -28,6 +28,7 @@
     "start:simlog": "dotenv -- ts-node --files ./src/simlog.ts",
     "start:analyzeSpecPlaystyle": "dotenv -- ts-node --files ./src/analyzeSpecPlaystyle.ts",
     "start:buildHealerPlaystyles": "dotenv -- ts-node --files ./src/buildHealerPlaystyleCorpus.ts",
+    "start:buildSoloShuffleCorpus": "dotenv -- ts-node --files ./src/buildSoloShuffleCorpus.ts",
     "start:processAndUploadVectors": "dotenv -- ts-node --files ./src/processAndUploadVectors.ts",
     "test:integration": "ts-node --files ./src/__tests__/realDataIntegration.ts"
   },

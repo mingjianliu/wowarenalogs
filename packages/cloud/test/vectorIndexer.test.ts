@@ -1,4 +1,4 @@
-import { generateMatchVector } from '../src/vectorIndexer';
+import { generateMatchVector, parseMatchEmbeddingData, vectorizeMatch } from '../src/vectorIndexer';
 
 describe('Vector Indexing', () => {
   it('should generate a 516-dimension vector from match data', () => {
@@ -61,5 +61,65 @@ describe('Vector Indexing', () => {
     expect(index1).not.toBe(-1);
     expect(index2).not.toBe(-1);
     expect(index1).not.toBe(index2);
+  });
+});
+
+describe('parseMatchEmbeddingData', () => {
+  it('parses rotation sequences, talents, and scalars from a raw corpus record', () => {
+    const raw = {
+      rotations: { coreSequences: ['Penance -> PW:S (used 3x)', 'Shield -> Smite (used 2x)'] },
+      pythonResult: { nodes_info: { '82556': {}, '82564': {} } },
+      offensiveIndex: 0.42,
+      ccDensity: 1.46,
+      reactionLatency: 0.9,
+      defensiveOverlapRatio: 0.25,
+      effectiveCastRatio: 0.98,
+      ccAvoidanceRate: 0.1,
+    };
+
+    const parsed = parseMatchEmbeddingData(raw);
+
+    expect(parsed.rotationSequences).toEqual({ 'Penance -> PW:S': 3, 'Shield -> Smite': 2 });
+    expect(parsed.totalSequences).toBe(5);
+    expect(parsed.talentIds).toEqual([82556, 82564]);
+    expect(parsed.offensiveIndex).toBe(0.42);
+    expect(parsed.ccAvoidanceRate).toBe(0.1);
+  });
+
+  it('applies defaults when fields are missing', () => {
+    const parsed = parseMatchEmbeddingData({});
+
+    expect(parsed.rotationSequences).toEqual({});
+    expect(parsed.totalSequences).toBe(0);
+    expect(parsed.talentIds).toEqual([]);
+    expect(parsed.offensiveIndex).toBe(0.5);
+    expect(parsed.ccDensity).toBe(1.0);
+    expect(parsed.reactionLatency).toBe(1.5);
+    expect(parsed.defensiveOverlapRatio).toBe(0);
+    expect(parsed.effectiveCastRatio).toBe(1.0);
+    expect(parsed.ccAvoidanceRate).toBe(0);
+  });
+});
+
+describe('vectorizeMatch (live path)', () => {
+  it('reproduces the builder embedding from a raw record + persisted IDF stats', () => {
+    const raw = {
+      rotations: { coreSequences: ['Penance -> PW:S (used 3x)'] },
+      pythonResult: { nodes_info: { '82556': {}, '82564': {} } },
+      offensiveIndex: 0.42,
+      ccDensity: 1.46,
+      reactionLatency: 0.9,
+      defensiveOverlapRatio: 0.25,
+      effectiveCastRatio: 0.98,
+      ccAvoidanceRate: 0.1,
+    };
+    const idf = { totalDocs: 1282, sequenceDocFrequency: { 'Penance -> PW:S': 50 } };
+
+    // The live path must produce exactly what the corpus builder would store: parse → generate.
+    const expected = generateMatchVector(parseMatchEmbeddingData(raw), idf.sequenceDocFrequency, idf.totalDocs);
+    const actual = vectorizeMatch(raw, idf);
+
+    expect(actual).toEqual(expected);
+    expect(actual.length).toBe(516);
   });
 });

@@ -41,7 +41,7 @@ async function parseLogFile(logPath: string) {
   return combats;
 }
 
-function getPythonSpecName(specString: string): string {
+export function getPythonSpecName(specString: string): string {
   return specString.toLowerCase().replace(/_/g, '-').replace(/\s+/g, '-');
 }
 
@@ -68,7 +68,7 @@ export function runPythonBridge(specStr: string, talents: Record<number, number>
   }
 }
 
-function extractRotations(player: any, match: any) {
+export function extractRotations(player: any, match: any) {
   const casts = player.spellCastEvents
     .filter(
       (e: any) => e.spellName && e.logLine?.event === 'SPELL_CAST_SUCCESS' && !PASSIVE_SPELL_BLOCKLIST.has(e.spellName),
@@ -131,7 +131,7 @@ function extractRotations(player: any, match: any) {
   return { opener, coreSequences, crisisEvents };
 }
 
-function inferCDModifiers(specId: number, talentsArray: any[]) {
+export function inferCDModifiers(specId: number, talentsArray: any[]) {
   const info = getPlayerTalentedSpellInfo(specId, talentsArray);
   if (!info) return [];
 
