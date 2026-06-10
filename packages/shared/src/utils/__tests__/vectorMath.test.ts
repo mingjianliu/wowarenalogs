@@ -1,4 +1,4 @@
-import { computeTfIdf, l2Normalize, meanStd, zScore } from '../vectorMath';
+import { computeTfIdf, l2Normalize, meanStd, weightedConcat, zScore } from '../vectorMath';
 
 describe('Vector Math Utilities', () => {
   it('should L2 normalize an array of numbers', () => {
@@ -33,5 +33,53 @@ describe('Vector Math Utilities', () => {
   it('zScore standardizes and is 0 when std is 0', () => {
     expect(zScore(7, 5, 2)).toBeCloseTo(1);
     expect(zScore(5, 5, 0)).toBe(0);
+  });
+
+  it('weightedConcat L2-normalizes each block, scales by sqrt(weight), and renormalizes', () => {
+    const out = weightedConcat(
+      [
+        [1, 0],
+        [1, 0],
+      ],
+      [0.5, 0.5],
+    );
+    expect(out).toHaveLength(4);
+    expect(out[0]).toBeCloseTo(0.7071);
+    expect(out[1]).toBeCloseTo(0);
+    expect(out[2]).toBeCloseTo(0.7071);
+    expect(out[3]).toBeCloseTo(0);
+    expect(Math.sqrt(out.reduce((s, v) => s + v * v, 0))).toBeCloseTo(1);
+  });
+
+  it('weightedConcat makes cosine the weighted average of per-block cosines', () => {
+    const a = weightedConcat(
+      [
+        [1, 0],
+        [1, 0],
+      ],
+      [0.5, 0.5],
+    );
+    const b = weightedConcat(
+      [
+        [1, 0],
+        [0, 1],
+      ],
+      [0.5, 0.5],
+    );
+    // block0 cosine = 1, block1 cosine = 0 → weighted avg = 0.5
+    const dot = a.reduce((s, v, i) => s + v * b[i], 0);
+    expect(dot).toBeCloseTo(0.5);
+  });
+
+  it('weightedConcat tolerates a zero block (renormalizes over present blocks)', () => {
+    const out = weightedConcat(
+      [
+        [1, 0],
+        [0, 0],
+      ],
+      [0.5, 0.5],
+    );
+    expect(Math.sqrt(out.reduce((s, v) => s + v * v, 0))).toBeCloseTo(1);
+    expect(out[0]).toBeCloseTo(1);
   });
 });

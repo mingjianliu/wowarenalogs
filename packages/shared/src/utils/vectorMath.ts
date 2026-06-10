@@ -39,3 +39,20 @@ export function meanStd(values: number[]): { mean: number; std: number } {
 export function zScore(value: number, mean: number, std: number): number {
   return std > 0 ? (value - mean) / std : 0;
 }
+
+/**
+ * Combine feature blocks into a single embedding. Each block is L2-normalized to a unit sub-vector,
+ * scaled by sqrt(weight), and concatenated; the full vector is then L2-normalized. With weights that
+ * sum to 1 and all blocks present, cosine(A,B) = Σ_block weight · cos_block(A,B). The final
+ * normalization keeps the vector unit-length even when a block is all-zero (its weight is
+ * redistributed to the present blocks).
+ */
+export function weightedConcat(blocks: number[][], weights: number[]): number[] {
+  const combined: number[] = [];
+  for (let i = 0; i < blocks.length; i++) {
+    const unit = l2Normalize(blocks[i]);
+    const scale = Math.sqrt(weights[i]);
+    for (const value of unit) combined.push(value * scale);
+  }
+  return l2Normalize(combined);
+}
