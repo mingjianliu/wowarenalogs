@@ -67,7 +67,7 @@ consistently.
 
 ## Tier 2 — Embedding design dilutes the signal it sells
 
-### F5. Talent block dominates; rotation barely counts ⬜
+### F5. Talent block dominates; rotation barely counts ✅
 
 Vector layout: `[200 TF-IDF | 300 talent-binary | 6 scalars | 10 dead]`, L2-normalized as a whole
 (`vectorIndexer.ts:32-64`). ~30–45 talent bits set to `1` own most of the magnitude; rotation
@@ -78,7 +78,7 @@ scalars aren't comparable in cosine space.
 **Fix options:** per-block weighting/standardization, or drop scalars from the embedding entirely
 and compare them separately (the prompt already does scalar "Global Metric Gaps" directly).
 
-### F6. Scalars unstandardized and mixed-scale ⬜
+### F6. Scalars unstandardized and mixed-scale ✅
 
 `reactionLatency` is in seconds (~1.5) while the rest are 0–1 ratios, so within the scalar
 sub-block latency dominates. Z-score against corpus mean/std before embedding — same approach
@@ -107,7 +107,7 @@ produces slug `solo_shuffle`) never matches `"Rated Solo Shuffle"` → zero neig
 
 ## Tier 3 — Correctness / cleanup
 
-### F8. Hash collisions lose info ⬜
+### F8. Hash collisions lose info ✅
 
 `vectorIndexer.ts:38,51` — rotations hash into 200 buckets with a weak additive hash (mixes
 unrelated sequences); ~40 talents into 300 buckets invites birthday collisions, and a collision
@@ -115,12 +115,12 @@ re-sets `1` so two talents become indistinguishable. Corpus is fixed (1,282) —
 vocabulary (`sequence→index`, `talentId→index`) instead of hashing. No collisions, interpretable
 dimensions.
 
-### F9. Dead dimensions ⬜
+### F9. Dead dimensions ✅
 
 `VECTOR_DIMENSIONS = 516` but only 0–505 are used; 506–515 are permanently zero. The 512→516 bump
 was arbitrary.
 
-### F10. IDF can go negative ⬜
+### F10. IDF can go negative ✅
 
 `vectorMath.ts:11` — `log(N/(1+df))` < 0 when a sequence appears in nearly all docs. Use a smoothed
 form, e.g. `log((1+N)/(1+df)) + 1`.
@@ -230,8 +230,10 @@ it stop once every observed spec hits quota. Output was correct regardless.
 2. ✅ **F13** — audit metric coverage. Surfaced F15.
 3. ✅ **F15** — re-collected Solo Shuffle corpus (50/spec, real metrics); flagged missing metrics as
    null. Solo Shuffle comparison now runs on real data.
-4. **F5 + F6** — rework embedding weighting/standardization; drop/redefine the 3 dead metrics per
-   the F13 audit (bigger design change; changes what gets stored, so do after F15).
-5. **F8 + F9 + F10 + F11 + F12** — correctness/cleanup, fold in alongside the above where natural.
+4. ✅ **F5 + F6** — rework embedding weighting/standardization; drop/redefine the 3 dead metrics per
+   the F13 audit (bigger design change; changes what gets stored, so do after F15). F8/F9/F10 also
+   resolved as part of this rework.
+5. **F11 + F12** — correctness/cleanup, fold in alongside the above where natural. (F8/F9/F10
+   resolved as part of item 4.)
 6. **F1 + F2 + F14** — wire into production once the data path is trustworthy (key lookups on
    matchId+spec).
