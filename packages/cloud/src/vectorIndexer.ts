@@ -1,4 +1,4 @@
-import { computeTfIdf, l2Normalize } from '@wowarenalogs/shared/src/utils/vectorMath';
+import { computeTfIdf, meanStd, weightedConcat, zScore } from '@wowarenalogs/shared/src/utils/vectorMath';
 
 export interface MatchEmbeddingData {
   talentIds: number[];
@@ -10,71 +10,74 @@ export interface MatchEmbeddingData {
   defensiveOverlapRatio: number;
   effectiveCastRatio: number;
   ccAvoidanceRate: number;
+  metricsAvailable: boolean;
+}
+
+export interface IBehaviorNormParams {
+  offensiveIndex: { mean: number; std: number };
+  ccDensity: { mean: number; std: number };
+  reactionLatency: { mean: number; std: number };
+}
+
+export interface IBlockWeights {
+  talent: number;
+  rotation: number;
+  behavior: number;
 }
 
 /**
- * TF-IDF document-frequency stats captured at corpus-build time. Persisting these is what makes a
- * *live* vectorization path possible: a fresh user match must be embedded against the same global
- * sequence frequencies the reference corpus used, or its TF-IDF dimensions land in a different space.
+ * Everything needed to vectorize a match into the corpus space. Persisted as reference_model.json
+ * and passed to both the corpus builder and the live `vectorizeMatch` path.
  */
-export interface IdfStats {
+export interface IReferenceModel {
   totalDocs: number;
   sequenceDocFrequency: Record<string, number>;
+  sequenceVocab: Record<string, number>; // sequence text -> dimension index
+  talentVocab: Record<string, number>; // talent id (string) -> dimension index
+  behaviorNormParams: IBehaviorNormParams;
+  blockWeights: IBlockWeights;
+  dims: { talent: number; rotation: number; behavior: number; total: number };
 }
 
-const VECTOR_DIMENSIONS = 516;
+const REACTION_LATENCY_SENTINEL = 1.5;
+const BEHAVIOR_DIMS = 3;
+const DEFAULT_BLOCK_WEIGHTS: IBlockWeights = { talent: 1 / 3, rotation: 1 / 3, behavior: 1 / 3 };
 
 /** Matches a corpus rotation entry like `"Penance -> PW:S (used 3x)"` → ["…", "Penance -> PW:S", "3"]. */
 const SEQUENCE_USAGE_RE = /^(.*?) \(used (\d+)x\)$/;
 
-// Simple hash to map strings to an index between 0 and maxIndex
-function simpleHash(str: string, maxIndex: number): number {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash << 5) - hash + str.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash) % maxIndex;
-}
-
-export function generateMatchVector(
-  data: MatchEmbeddingData,
-  globalSequenceDocFrequency: Record<string, number>,
-  totalDocs: number,
-): number[] {
-  const rawVector = new Array(VECTOR_DIMENSIONS).fill(0);
-
-  // Dimensions 0-199: Rotation TF-IDF (Hashed into 200 buckets for simplicity if exact vocabulary isn't defined)
-  for (const [seq, freq] of Object.entries(data.rotationSequences)) {
-    const docFreq = globalSequenceDocFrequency[seq] || 0;
-    const tfidf = computeTfIdf(freq, data.totalSequences, totalDocs, docFreq);
-    const index = simpleHash(seq, 200);
-    rawVector[index] += tfidf; // Additive in case of hash collisions
-  }
-
-  // Dimensions 200-499: Talent Binary (Modulo 300 buckets with a bit mixer to avoid sequential collisions)
+export function generateMatchVector(data: MatchEmbeddingData, model: IReferenceModel): number[] {
+  // Talent block — exact vocab, binary.
+  const talentBlock = new Array(model.dims.talent).fill(0);
   for (const id of data.talentIds) {
-    // MurmurHash3 32-bit finalizer bit mixer
-    let hash = id;
-    hash ^= hash >>> 16;
-    hash = Math.imul(hash, 0x85ebca6b);
-    hash ^= hash >>> 13;
-    hash = Math.imul(hash, 0xc2b2ae35);
-    hash ^= hash >>> 16;
-    const index = 200 + (Math.abs(hash) % 300);
-    rawVector[index] = 1;
+    const idx = model.talentVocab[String(id)];
+    if (idx !== undefined) talentBlock[idx] = 1;
   }
 
-  // Dimensions 500-502: Performance Scalars
-  rawVector[500] = data.offensiveIndex;
-  rawVector[501] = data.ccDensity;
-  rawVector[502] = data.reactionLatency;
-  rawVector[503] = data.defensiveOverlapRatio;
-  rawVector[504] = data.effectiveCastRatio;
-  rawVector[505] = data.ccAvoidanceRate;
+  // Rotation block — exact vocab, smoothed TF-IDF.
+  const rotationBlock = new Array(model.dims.rotation).fill(0);
+  for (const [seq, freq] of Object.entries(data.rotationSequences)) {
+    const idx = model.sequenceVocab[seq];
+    if (idx === undefined) continue; // out-of-vocabulary sequence contributes nothing
+    rotationBlock[idx] = computeTfIdf(freq, data.totalSequences, model.totalDocs, model.sequenceDocFrequency[seq] || 0);
+  }
 
-  // L2 Normalize the final vector
-  return l2Normalize(rawVector);
+  // Behavior block — 3 z-scored scalars. Absent metrics → neutral zeros; latency sentinel → 0.
+  const np = model.behaviorNormParams;
+  const behaviorBlock = data.metricsAvailable
+    ? [
+        zScore(data.offensiveIndex, np.offensiveIndex.mean, np.offensiveIndex.std),
+        zScore(data.ccDensity, np.ccDensity.mean, np.ccDensity.std),
+        data.reactionLatency === REACTION_LATENCY_SENTINEL
+          ? 0
+          : zScore(data.reactionLatency, np.reactionLatency.mean, np.reactionLatency.std),
+      ]
+    : [0, 0, 0];
+
+  return weightedConcat(
+    [talentBlock, rotationBlock, behaviorBlock],
+    [model.blockWeights.talent, model.blockWeights.rotation, model.blockWeights.behavior],
+  );
 }
 
 /** Loose shape of a corpus/match record — only the fields the embedding reads. */
@@ -121,6 +124,15 @@ export function parseMatchEmbeddingData(raw: RawMatchRecord): MatchEmbeddingData
         .filter((id) => !isNaN(id))
     : [];
 
+  const metricsAvailable = [
+    raw?.offensiveIndex,
+    raw?.ccDensity,
+    raw?.reactionLatency,
+    raw?.defensiveOverlapRatio,
+    raw?.effectiveCastRatio,
+    raw?.ccAvoidanceRate,
+  ].every((v) => typeof v === 'number');
+
   return {
     talentIds,
     rotationSequences,
@@ -131,14 +143,71 @@ export function parseMatchEmbeddingData(raw: RawMatchRecord): MatchEmbeddingData
     defensiveOverlapRatio: num(raw?.defensiveOverlapRatio, 0),
     effectiveCastRatio: num(raw?.effectiveCastRatio, 1.0),
     ccAvoidanceRate: num(raw?.ccAvoidanceRate, 0),
+    metricsAvailable,
   };
 }
 
 /**
- * Vectorize a single raw match record into the 516-dim embedding using persisted IDF stats.
- * This is the live path: fresh user match + corpus IDF stats → an embedding comparable to the index.
+ * First pass over the corpus: derive the exact vocabularies, document frequencies, and behavior
+ * normalization parameters needed to vectorize every match (and any future live match) consistently.
  */
-export function vectorizeMatch(raw: RawMatchRecord, idf: IdfStats): number[] {
-  const data = parseMatchEmbeddingData(raw);
-  return generateMatchVector(data, idf.sequenceDocFrequency, idf.totalDocs);
+export function buildReferenceModel(
+  records: RawMatchRecord[],
+  blockWeights: IBlockWeights = DEFAULT_BLOCK_WEIGHTS,
+): IReferenceModel {
+  const sequenceVocab: Record<string, number> = {};
+  const talentVocab: Record<string, number> = {};
+  const sequenceDocFrequency: Record<string, number> = {};
+  const offensiveValues: number[] = [];
+  const ccValues: number[] = [];
+  const latencyValues: number[] = [];
+
+  for (const raw of records) {
+    const data = parseMatchEmbeddingData(raw);
+
+    for (const seq of Object.keys(data.rotationSequences)) {
+      if (!(seq in sequenceVocab)) sequenceVocab[seq] = Object.keys(sequenceVocab).length;
+      sequenceDocFrequency[seq] = (sequenceDocFrequency[seq] || 0) + 1;
+    }
+    for (const id of data.talentIds) {
+      const key = String(id);
+      if (!(key in talentVocab)) talentVocab[key] = Object.keys(talentVocab).length;
+    }
+
+    if (data.metricsAvailable) {
+      offensiveValues.push(data.offensiveIndex);
+      ccValues.push(data.ccDensity);
+      if (data.reactionLatency !== REACTION_LATENCY_SENTINEL) latencyValues.push(data.reactionLatency);
+    }
+  }
+
+  const talentDim = Object.keys(talentVocab).length;
+  const rotationDim = Object.keys(sequenceVocab).length;
+
+  return {
+    totalDocs: records.length,
+    sequenceDocFrequency,
+    sequenceVocab,
+    talentVocab,
+    behaviorNormParams: {
+      offensiveIndex: meanStd(offensiveValues),
+      ccDensity: meanStd(ccValues),
+      reactionLatency: meanStd(latencyValues),
+    },
+    blockWeights,
+    dims: {
+      talent: talentDim,
+      rotation: rotationDim,
+      behavior: BEHAVIOR_DIMS,
+      total: talentDim + rotationDim + BEHAVIOR_DIMS,
+    },
+  };
+}
+
+/**
+ * Vectorize a single raw match record into the corpus embedding space using a persisted model.
+ * This is the live path: fresh user match + reference model → an embedding comparable to the index.
+ */
+export function vectorizeMatch(raw: RawMatchRecord, model: IReferenceModel): number[] {
+  return generateMatchVector(parseMatchEmbeddingData(raw), model);
 }
