@@ -51,11 +51,14 @@ the full input and output.
 2. **`packages/web/pages/api/analyze.ts`** (edit)
    - After `responseBody` is built and _before_ `res.status(200).json(...)`, if production
      and not a `debug` run, `await captureAnalysisRun(...)` (Approach A, see §4).
-   - Read `matchId` and `logObjectUrl` from the request body (new optional fields).
+   - Read `matchId` from the request body (new optional field). `logObjectUrl` is not part of
+     the request body — it is resolved server-side from the `match-stubs-prod` stub by
+     `matchId`.
 
 3. **Caller `packages/shared/src/components/CombatReport/CombatAIAnalysis/index.tsx`** (edit, ~line 788)
-   - Include `matchId` and `logObjectUrl` in the POST body. The component has the match in
-     context; `logObjectUrl` comes from the match stub.
+   - Include **`matchId` (= `combat.id`)** in the POST body. The server resolves `logObjectUrl`
+     from the Firestore match stub (`match-stubs-prod`) during capture, so the client does
+     **not** send `logObjectUrl`.
    - The local AI test page (`packages/web/app/(main)/local/ai/page.tsx`) is **not** modified
      — it is dev-only and excluded by gating; it has no `matchId`/`logObjectUrl` anyway
      (parses a dropped file that was never uploaded).
@@ -213,7 +216,9 @@ a few-KB string — negligible cost.
 ## 11. Open Items for Planning
 
 - Confirm the exact GCS bucket + prefix for snapshots (reuse log bucket vs a dedicated one).
-- Confirm `logObjectUrl` is available in the `CombatAIAnalysis` component's match context to
-  forward to the endpoint.
-- Decide the bounded-timeout value for the capture write.
 - Optional: a GCS lifecycle rule on the `ai-analysis-logs/` prefix to cap long-term storage.
+- **Resolved:** `logObjectUrl` is not threaded through React — the server resolves it from the
+  `match-stubs-prod` stub by `matchId` at capture time (within the 7-day TTL window). Closes
+  the earlier open item.
+- **Decided:** capture timeout = **4000 ms** (overall bound on the Firestore write + raw-log
+  snapshot work).
