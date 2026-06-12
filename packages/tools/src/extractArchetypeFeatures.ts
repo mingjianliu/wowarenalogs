@@ -16,7 +16,7 @@
  * Env vars:
  *   MATCH_COUNT=200            new matches to download per run (default 200)
  *   BRACKET=3v3                bracket filter (default '3v3')
- *   MIN_RATING=2100            minimum rating (default 2100)
+ *   MIN_RATING=2000            minimum rating (default 2000)
  *   CONCURRENCY=5              parallel downloads (default 5)
  *   REQUIRE_ADVANCED_LOGGING   filter to advanced logs only (default false)
  *   API_BASE                   (default https://wowarenalogs.com)
