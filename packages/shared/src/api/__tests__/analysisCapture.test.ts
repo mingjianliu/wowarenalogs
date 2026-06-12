@@ -115,4 +115,31 @@ describe('captureAnalysisRun (guarded IO)', () => {
     expect(written.matchId).toBeNull();
     expect(written.rawLogSnapshotUrl).toBeNull();
   });
+
+  it('still writes the Firestore doc when the raw-log snapshot fails', async () => {
+    const set = jest.fn().mockResolvedValue(undefined);
+    const stubGet = jest.fn().mockResolvedValue({
+      empty: false,
+      docs: [{ data: () => ({ logObjectUrl: 'https://gcs.example/log.txt' }) }],
+    });
+    const fakeFirestore = {
+      collection: (name: string) =>
+        name === 'match-stubs-prod' ? { where: () => ({ limit: () => ({ get: stubGet }) }) } : { doc: () => ({ set }) },
+    } as unknown as import('@google-cloud/firestore').Firestore;
+    const fetchImpl = jest.fn().mockRejectedValue(new Error('network down')); // snapshot fetch fails
+    await captureAnalysisRun(
+      { ...baseInput(), matchId: 'm-1' },
+      {
+        firestore: fakeFirestore,
+        storage: {} as never,
+        fetchImpl: fetchImpl as never,
+      },
+    );
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+    expect(set).toHaveBeenCalledTimes(1);
+    const written = set.mock.calls[0][0];
+    expect(written.matchId).toBe('m-1');
+    expect(written.logObjectUrl).toBe('https://gcs.example/log.txt');
+    expect(written.rawLogSnapshotUrl).toBeNull();
+  });
 });
