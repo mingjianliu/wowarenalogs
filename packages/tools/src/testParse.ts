@@ -1,10 +1,14 @@
+import type { IArenaMatch, ICombatUnit } from '@wowarenalogs/parser';
 import fs from 'fs-extra';
 import path from 'path';
+
+import { reconstructDispelSummary } from '../../shared/src/utils/dispelAnalysis';
+import { DISPEL_FEATURE_FLAGS } from '../../shared/src/utils/dispelFeatureFlags';
 
 function parseTimestampToMs(line: string): number {
   const match = line.match(/^(\d+)\/(\d+)\/(?:\d+\s+)?(\d+):(\d+):(\d+)\.(\d+)/);
   if (!match) return 0;
-  const [_, month, day, hour, min, sec, msStr] = match;
+  const [, , , hour, min, sec, msStr] = match;
   const ms = parseInt(msStr.padEnd(4, '0').slice(0, 4), 10);
   return (parseInt(hour, 10) * 3600 + parseInt(min, 10) * 60 + parseInt(sec, 10)) * 10000 + ms;
 }
@@ -29,12 +33,12 @@ async function main() {
   const templateContent = await fs.readFile(templatePath, 'utf8');
   const baseLines = templateContent.split('\n').filter((l) => l.trim().length > 0);
 
-  const { WoWCombatLogParser } = await import('@wowarenalogs/parser');
+  const { WoWCombatLogParser, CombatUnitType, CombatUnitReaction } = await import('@wowarenalogs/parser');
   const parser = new WoWCombatLogParser('retail');
 
-  let combatParsed: any = null;
-  parser.on('arena_match_ended', (c) => {
-    combatParsed = c;
+  const combats: IArenaMatch[] = [];
+  parser.on('arena_match_ended', (c: IArenaMatch) => {
+    combats.push(c);
   });
 
   let testLines = [...baseLines];
@@ -52,27 +56,25 @@ async function main() {
   }
   parser.flush();
 
+  const combatParsed = combats[0];
   if (combatParsed) {
-    const { CombatUnitType, CombatUnitReaction } = require('@wowarenalogs/parser');
-    const friends = (Object.values(combatParsed.units) as any[]).filter(
+    const friends = Object.values(combatParsed.units).filter(
       (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
     );
-    const enemies = (Object.values(combatParsed.units) as any[]).filter(
+    const enemies = Object.values(combatParsed.units).filter(
       (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Hostile,
     );
-    const friendlyPets: any[] = [];
+    const friendlyPets: ICombatUnit[] = [];
 
     // Enable features in state
-    const { DISPEL_FEATURE_FLAGS } = require('../../shared/src/utils/dispelFeatureFlags');
     DISPEL_FEATURE_FLAGS.F18_FATAL_DISPEL = true;
 
-    const { reconstructDispelSummary } = require('../../shared/src/utils/dispelAnalysis');
     const dispelSummary = reconstructDispelSummary(friends, enemies, combatParsed, friendlyPets);
 
     console.log('friends count:', friends.length);
-    friends.forEach((f: any) => console.log(`  Friend: ${f.name} (id: ${f.id})`));
+    friends.forEach((f) => console.log(`  Friend: ${f.name} (id: ${f.id})`));
     console.log('enemies count:', enemies.length);
-    enemies.forEach((e: any) => console.log(`  Enemy: ${e.name} (id: ${e.id})`));
+    enemies.forEach((e) => console.log(`  Enemy: ${e.name} (id: ${e.id})`));
     console.log('allyCleanse length:', dispelSummary.allyCleanse.length);
     console.log('ourPurges length:', dispelSummary.ourPurges.length);
     console.log('allyCleanse raw:', dispelSummary.allyCleanse);

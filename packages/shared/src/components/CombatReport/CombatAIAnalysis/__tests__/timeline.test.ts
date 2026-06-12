@@ -5181,4 +5181,3 @@ describe('buildMatchTimeline — PvP Trinket status at teammate death (F146)', (
     expect(result).not.toContain('PvP Trinket available');
   });
 });
-

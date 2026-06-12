@@ -76,6 +76,7 @@ import {
   analyzeHealerExposureAtBurst,
   formatHealerExposureForContext,
 } from '../../shared/src/utils/healerExposureAnalysis';
+import { computeHealerMetrics } from '../../shared/src/utils/healerMetrics';
 import { detectHealingGaps, formatHealingGapsForContext } from '../../shared/src/utils/healingGaps';
 import {
   analyzeKillWindowTargetSelection,
@@ -85,7 +86,6 @@ import {
 import { computeMatchArchetype, formatMatchArchetypeForContext } from '../../shared/src/utils/matchArchetype';
 import { computeOffensiveWindows, formatOffensiveWindowsForContext } from '../../shared/src/utils/offensiveWindows';
 import { benchmarks, formatDTPSBaselines, formatSpecBaselines } from '../../shared/src/utils/specBaselines';
-import { computeHealerMetrics } from '../../shared/src/utils/healerMetrics';
 import { logCache } from './utils/logCache';
 
 const API_BASE = 'https://wowarenalogs.com';

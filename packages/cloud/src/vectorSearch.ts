@@ -2,10 +2,33 @@ import { cosineSimilarity } from '@wowarenalogs/shared/src/utils/vectorMath';
 import fs from 'fs-extra';
 import path from 'path';
 
+/**
+ * Shape of a single record in `reference_vectors.json`, as written by
+ * `packages/tools/src/processAndUploadVectors.ts`.
+ */
+export interface ReferenceVectorRecord {
+  matchId: string;
+  spec: string;
+  bracket: string;
+  rating: number | null;
+  playerName: string;
+  pythonClusterRank?: number;
+  crisisEvents: string[];
+  metrics: {
+    offensiveIndex: number;
+    ccDensity: number;
+    reactionLatency: number;
+    defensiveOverlapRatio: number;
+    effectiveCastRatio: number;
+    ccAvoidanceRate: number;
+  } | null;
+  embedding: number[];
+}
+
 export interface NearestMatchResult {
   id: string;
   distance: number;
-  data: any;
+  data: ReferenceVectorRecord;
 }
 
 // Local index file path
@@ -36,7 +59,7 @@ export async function findNearestProMatchesLocal(
     return [];
   }
 
-  const allMatches: any[] = await fs.readJson(REFERENCE_VECTORS_PATH);
+  const allMatches: ReferenceVectorRecord[] = await fs.readJson(REFERENCE_VECTORS_PATH);
 
   const targetBracket = normalizeBracket(bracket);
   const results = allMatches

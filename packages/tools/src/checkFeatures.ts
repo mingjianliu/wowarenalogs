@@ -75,19 +75,19 @@ function getQualifyingFeatures(combat: ParsedCombat): Record<keyof FeatureMatchL
   const dispelSummary = reconstructDispelSummary(friends, enemies, combat, friendlyPets);
 
   // F18: wasFatal
-  result.F18 = dispelSummary.allyCleanse.some((c: any) => c.wasFatal);
+  result.F18 = dispelSummary.allyCleanse.some((c) => c.wasFatal);
 
   // F124: backlashCcSpellId is set
-  result.F124 = dispelSummary.allyCleanse.some((c: any) => c.backlashCcSpellId !== undefined);
+  result.F124 = dispelSummary.allyCleanse.some((c) => c.backlashCcSpellId !== undefined);
 
   // F131_F132: cleanseWasOnCD is true
-  result.F131_F132 = dispelSummary.missedCleanseWindows.some((w: any) => w.cleanseWasOnCD);
+  result.F131_F132 = dispelSummary.missedCleanseWindows.some((w) => w.cleanseWasOnCD);
 
   // F142: ourPurges.length > 0
   result.F142 = dispelSummary.ourPurges.length > 0;
 
   // F152: missedPurgeWindows has high value buff
-  result.F152 = dispelSummary.missedPurgeWindows.some((w: any) => HIGH_VALUE_PURGEABLE_BUFFS.has(w.spellId));
+  result.F152 = dispelSummary.missedPurgeWindows.some((w) => HIGH_VALUE_PURGEABLE_BUFFS.has(w.spellId));
 
   return result;
 }
@@ -95,7 +95,7 @@ function getQualifyingFeatures(combat: ParsedCombat): Record<keyof FeatureMatchL
 function parseTimestampToMs(line: string): number {
   const match = line.match(/^(\d+)\/(\d+)\/(?:\d+\s+)?(\d+):(\d+):(\d+)\.(\d+)/);
   if (!match) return 0;
-  const [_, month, day, hour, min, sec, msStr] = match;
+  const [, , , hour, min, sec, msStr] = match;
   const ms = parseInt(msStr.padEnd(4, '0').slice(0, 4), 10);
   return (parseInt(hour, 10) * 3600 + parseInt(min, 10) * 60 + parseInt(sec, 10)) * 10000 + ms;
 }

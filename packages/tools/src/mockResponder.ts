@@ -83,7 +83,7 @@ function generateJudgeResponse(userPrompt: string): string {
 
 async function main() {
   console.log('Mock responder watching:', COMPARE_DIR);
-  while (true) {
+  for (;;) {
     if (await fs.pathExists(COMPARE_DIR)) {
       const files = await fs.readdir(COMPARE_DIR);
       for (const file of files) {

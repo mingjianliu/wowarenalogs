@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-explicit-any -- reads dynamically-shaped corpus JSON */
 /**
  * processAndUploadVectors.ts
  *
