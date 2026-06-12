@@ -12,6 +12,7 @@
     "start:buildHealerPromptCorpusFromRawLogs": "ts-node --files ./src/buildHealerPromptCorpus.ts",
     "start:collectBenchmarks": "ts-node --files ./src/collectBenchmarks.ts",
     "start:evalArchetypeInjection": "ts-node --files ./src/evalArchetypeInjection.ts",
+    "start:exportAnalysisCaptures": "ts-node --files ./src/exportAnalysisCaptures.ts",
     "start:evalPromptCompare": "ts-node --files ./src/evalPromptCompare.ts",
     "start:extractArchetypeFeatures": "ts-node --files ./src/extractArchetypeFeatures.ts",
     "start:generateAllData": "npm run start:generateSpellsData && npm run start:generateSpellIdLists && npm run start:generateTrinketItemIds && npm run start:generateTalentModifiers && npm run start:generateSpellClassMap",

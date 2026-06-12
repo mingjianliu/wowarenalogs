@@ -8,3 +8,4 @@ archetypes/logs/
 archetypes/archetype_prompts_draft.json
 benchmarks/logs/
 benchmarks/log_manifest.json
+analysis-captures/
