@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
+import { captureAnalysisRun, PromptId, shouldCapture } from '../../../shared/src/api/analysisCapture';
 import {
   parseFindingsResponse,
   renderFindingsAsProse,
@@ -23,6 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     debug,
     useTimelinePrompt,
     findingsJson,
+    matchId,
   } = req.body as {
     matchContext?: string;
     apiKey?: string;
@@ -30,6 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     debug?: boolean;
     useTimelinePrompt?: boolean;
     findingsJson?: boolean;
+    matchId?: string;
   };
   const apiKey = bodyApiKey || process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
@@ -108,6 +111,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         parseError,
         rawText: findingsJson ? content.text : undefined,
       };
+    }
+
+    // Capture production runs (input + output) for prompt optimization.
+    // Guarded + time-bounded inside captureAnalysisRun; never breaks the response.
+    if (shouldCapture({ nodeEnv: process.env.NODE_ENV, debug })) {
+      const promptId: PromptId =
+        activeSystemPrompt === FINDINGS_JSON_SYSTEM_PROMPT
+          ? 'FINDINGS_JSON'
+          : activeSystemPrompt === NEW_SYSTEM_PROMPT
+            ? 'NEW'
+            : activeSystemPrompt === SYSTEM_PROMPT
+              ? 'SYSTEM'
+              : 'custom';
+      await captureAnalysisRun({
+        matchId,
+        model,
+        promptId,
+        activeSystemPrompt,
+        flags: { findingsJson: Boolean(findingsJson), useTimelinePrompt: Boolean(useTimelinePrompt) },
+        matchContext,
+        analysisProse: typeof responseBody.analysis === 'string' ? responseBody.analysis : '',
+        findings: (responseBody.findings as unknown) ?? null,
+        parseOk,
+        parseError,
+        rawText: content.text,
+        inputTokens: message.usage.input_tokens,
+        outputTokens: message.usage.output_tokens,
+        durationMs,
+      });
     }
     return res.status(200).json(responseBody);
   } catch (err) {
