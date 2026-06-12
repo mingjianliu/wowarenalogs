@@ -49,6 +49,26 @@ import { computeOffensiveWindows } from '../../shared/src/utils/offensiveWindows
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
+const MATCH_COUNT = parseInt(process.env.MATCH_COUNT ?? '200', 10);
+// BRACKET is the API query value: '3v3' for rated 3v3, 'Rated Solo Shuffle' for solo shuffle.
+// These map to distinct combat types (IArenaMatch vs IShuffleRound) — never mixed in one run.
+const BRACKET = process.env.BRACKET ?? '3v3';
+// Rating floor = max(top-200 leaderboard cutoff per spec, 2000).
+// Query the wow-advisor DB each season to get actual cutoffs:
+//   sqlite3 data/wow_advisor.db "SELECT spec, MIN(rating) FROM players WHERE bracket='3v3' GROUP BY spec"
+// As of 2026-05-18, all healer specs have top-200 cutoffs below 2000 (1851–1957),
+// so the effective floor is 2000 for all specs.
+const MIN_RATING = parseInt(process.env.MIN_RATING ?? '2000', 10);
+const CONCURRENCY = parseInt(process.env.CONCURRENCY ?? '5', 10);
+const REQUIRE_ADVANCED_LOGGING = process.env.REQUIRE_ADVANCED_LOGGING === 'true';
+const API_BASE = process.env.API_BASE ?? 'https://wowarenalogs.com';
+const PAGE_SIZE = 50;
+
+const OUTPUT_DIR = path.join(__dirname, '../archetypes');
+const BRACKET_SLUG = BRACKET.toLowerCase().includes('solo') ? 'solo_shuffle' : '3v3';
+const FEATURES_FILE = path.join(OUTPUT_DIR, `features_${BRACKET_SLUG}.jsonl`);
+const LOGS_DIR = path.join(OUTPUT_DIR, 'logs');
+
 export interface ITimingDistribution {
   Optimal: number;
   Early: number;
