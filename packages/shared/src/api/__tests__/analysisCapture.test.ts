@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import { AnalysisCaptureInput, buildCaptureRecord, shouldCapture } from '../analysisCapture';
+import { AnalysisCaptureInput, buildCaptureRecord, captureAnalysisRun, shouldCapture } from '../analysisCapture';
 
 function sampleInput(overrides: Partial<AnalysisCaptureInput> = {}): AnalysisCaptureInput {
   return {
@@ -62,5 +62,57 @@ describe('shouldCapture', () => {
     expect(shouldCapture({ nodeEnv: 'production', debug: true })).toBe(false);
     expect(shouldCapture({ nodeEnv: 'development', debug: false })).toBe(false);
     expect(shouldCapture({ nodeEnv: undefined, debug: false })).toBe(false);
+  });
+});
+
+describe('captureAnalysisRun (guarded IO)', () => {
+  const baseInput = (): AnalysisCaptureInput => ({
+    model: 'claude-sonnet-4-6',
+    promptId: 'FINDINGS_JSON',
+    activeSystemPrompt: 'P',
+    flags: { findingsJson: true },
+    matchContext: 'ctx',
+    analysisProse: 'prose',
+    findings: null,
+    rawText: 'raw',
+    inputTokens: 1,
+    outputTokens: 1,
+    durationMs: 1,
+  });
+
+  it('never rejects even when Firestore throws', async () => {
+    const throwingFirestore = {
+      collection: () => {
+        throw new Error('firestore boom');
+      },
+    } as unknown as import('@google-cloud/firestore').Firestore;
+    await expect(
+      captureAnalysisRun(baseInput(), {
+        firestore: throwingFirestore,
+        storage: {} as never,
+        fetchImpl: (async () => ({ ok: false })) as never,
+      }),
+    ).resolves.toBeUndefined();
+  });
+
+  it('writes the Firestore doc and skips the snapshot when there is no matchId', async () => {
+    const set = jest.fn().mockResolvedValue(undefined);
+    const fakeFirestore = {
+      collection: () => ({ doc: () => ({ set }) }),
+    } as unknown as import('@google-cloud/firestore').Firestore;
+    const fetchImpl = jest.fn();
+    await captureAnalysisRun(
+      { ...baseInput(), matchId: undefined },
+      {
+        firestore: fakeFirestore,
+        storage: {} as never,
+        fetchImpl: fetchImpl as never,
+      },
+    );
+    expect(set).toHaveBeenCalledTimes(1);
+    expect(fetchImpl).not.toHaveBeenCalled(); // no matchId → no log resolution/snapshot
+    const written = set.mock.calls[0][0];
+    expect(written.matchId).toBeNull();
+    expect(written.rawLogSnapshotUrl).toBeNull();
   });
 });
