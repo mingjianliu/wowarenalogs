@@ -788,7 +788,7 @@ export function CombatAIAnalysis() {
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ matchContext, apiKey, findingsJson: true }),
+        body: JSON.stringify({ matchContext, apiKey, findingsJson: true, matchId: combatId }),
       });
       const body = (await res.json()) as {
         analysis?: string;
