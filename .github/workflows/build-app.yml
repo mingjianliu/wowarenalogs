@@ -49,7 +49,7 @@ jobs:
       - name: clean npm cache
         run: npm cache clean -f
       - name: install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: build for windows
         run: npm run build:app:windows
   build_on_mac:
@@ -82,7 +82,7 @@ jobs:
       - name: clean npm cache
         run: npm cache clean -f
       - name: install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: install dmg-license
         run: npm i dmg-license
       - name: build for mac
@@ -130,6 +130,6 @@ jobs:
       - name: clean npm cache
         run: npm cache clean -f
       - name: install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: build for linux
         run: npm run build:app:linux

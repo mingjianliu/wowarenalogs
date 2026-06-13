@@ -34,7 +34,7 @@ jobs:
       - name: clean npm cache
         run: npm cache clean -f
       - name: install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: build parser
         run: npm run build:parser --workspace @wowarenalogs/parser
       - name: perf bench
