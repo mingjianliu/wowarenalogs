@@ -1,22 +1,10 @@
-import { AtomicArenaCombat, CombatUnitSpec, CombatUnitType, ICombatUnit } from '@wowarenalogs/parser';
+import { AtomicArenaCombat, CombatUnitType, ICombatUnit } from '@wowarenalogs/parser';
 
 import { PASSIVE_SPELL_BLOCKLIST } from './cooldowns';
 import { computeHealerMetrics } from './healerMetrics';
 import { RawMatchRecord } from './vectorEmbedding';
 
-const HEALER_SPECS = new Set<CombatUnitSpec>([
-  CombatUnitSpec.Priest_Discipline,
-  CombatUnitSpec.Priest_Holy,
-  CombatUnitSpec.Paladin_Holy,
-  CombatUnitSpec.Shaman_Restoration,
-  CombatUnitSpec.Druid_Restoration,
-  CombatUnitSpec.Monk_Mistweaver,
-  CombatUnitSpec.Evoker_Preservation,
-]);
-
-export function isHealerSpec(spec: string): boolean {
-  return HEALER_SPECS.has(spec as CombatUnitSpec);
-}
+export { isHealerSpec } from './cooldowns';
 
 export interface IExtractedRotations {
   opener: string[];
@@ -98,7 +86,7 @@ export interface BuiltEmbeddingRecord extends RawMatchRecord {
  * reference model's talentVocab), shaped as pythonResult.nodes_info to match the corpus encoding.
  */
 export function buildMatchEmbeddingRecord(combat: AtomicArenaCombat, playerName: string): BuiltEmbeddingRecord {
-  const owner = Object.values(combat.units).find((u) => u.name === playerName);
+  const owner = Object.values(combat.units).find((u) => u.name === playerName && u.type === CombatUnitType.Player);
   if (!owner) {
     throw new Error(`Player ${playerName} not found in combat.`);
   }
