@@ -8,10 +8,11 @@ on:
         type: string
 jobs:
   build_and_release:
-    # Pin off windows-latest: it now redirects to the VS2026 image (windows-2025-vs2026),
-    # where the `noobs` native optionalDependency fails to install (silently skipped), breaking
-    # copyNoobs in build:app. windows-2025 is the VS2022-toolset image that last built successfully.
-    runs-on: windows-2025
+    # Pin to windows-2022 (Server 2022 / VS2022 toolset). Both windows-latest AND windows-2025
+    # now redirect to the VS2026 image (windows-2025-vs2026), where the `noobs` native
+    # optionalDependency fails to install (silently skipped by npm ci), breaking copyNoobs in
+    # build:app. windows-2022 is a distinct label not subject to that redirect.
+    runs-on: windows-2022
     permissions:
       contents: write
     env:
