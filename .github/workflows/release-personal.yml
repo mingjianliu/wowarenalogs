@@ -8,11 +8,7 @@ on:
         type: string
 jobs:
   build_and_release:
-    # Pin to windows-2022 (Server 2022 / VS2022 toolset). Both windows-latest AND windows-2025
-    # now redirect to the VS2026 image (windows-2025-vs2026), where the `noobs` native
-    # optionalDependency fails to install (silently skipped by npm ci), breaking copyNoobs in
-    # build:app. windows-2022 is a distinct label not subject to that redirect.
-    runs-on: windows-2022
+    runs-on: windows-latest
     permissions:
       contents: write
     env:
@@ -35,8 +31,14 @@ jobs:
         run: python -m pip install --upgrade setuptools
       - name: clean npm cache
         run: npm cache clean -f
-      - name: install node-gyp
-        run: npm i -g node-gyp@latest
+      # windows-latest now uses the VS2026 (Visual Studio 18.x) image. node-gyp only detects
+      # that toolset from v12.1.0, which ships bundled in npm >= 11.6.3 (node 22's default npm
+      # is ~10.9 and can't see VS2026, so the `noobs` native optionalDependency silently fails
+      # to build and gets dropped, breaking copyNoobs in build:app). Upgrading npm here makes
+      # `npm ci` use its bundled node-gyp 12.1.0. A bare `npm i -g node-gyp` does NOT work:
+      # npm ci uses its own bundled node-gyp, not the global one.
+      - name: upgrade npm (bundles node-gyp 12.1.0 for VS2026 toolset)
+        run: npm install -g npm@latest
       - name: install dependencies
         run: npm ci --legacy-peer-deps
       - name: set version from tag
