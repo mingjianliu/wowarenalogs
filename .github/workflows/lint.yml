@@ -20,6 +20,6 @@ jobs:
       - name: clean npm cache
         run: npm cache clean -f
       - name: install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: run lint
         run: npm run lint

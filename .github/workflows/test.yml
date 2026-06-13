@@ -31,7 +31,7 @@ jobs:
       - name: install system dependencies
         run: sudo apt-get update && sudo apt-get install -y build-essential libcairo2-dev libjpeg-dev libpango1.0-dev libgif-dev librsvg2-dev libpixman-1-dev
       - name: install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: preload sha check 1
         run: echo "PRELOAD_SHASUM_ORIGIN=$(shasum packages/app/src/preloadApi.ts)" >> $GITHUB_ENV
       - name: typecheck

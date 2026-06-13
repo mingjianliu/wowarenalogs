@@ -25,7 +25,10 @@ jobs:
     if: >-
       github.event_name != 'workflow_dispatch'
       || inputs.build_on_win
-    runs-on: windows-latest
+    # Pinned off windows-latest: it now maps to the VS2026 image where node-gyp
+    # can't build the `noobs` native optionalDependency (npm silently drops it,
+    # breaking copyNoobs). windows-2022 (VS2022 toolset) builds it. See release-personal.
+    runs-on: windows-2022
     env:
       CI: false
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -49,7 +52,7 @@ jobs:
       - name: clean npm cache
         run: npm cache clean -f
       - name: install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: build for windows
         run: npm run build:app:windows
   build_on_mac:
@@ -82,7 +85,7 @@ jobs:
       - name: clean npm cache
         run: npm cache clean -f
       - name: install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: install dmg-license
         run: npm i dmg-license
       - name: build for mac
@@ -130,6 +133,6 @@ jobs:
       - name: clean npm cache
         run: npm cache clean -f
       - name: install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: build for linux
         run: npm run build:app:linux
