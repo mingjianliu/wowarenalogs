@@ -8,7 +8,10 @@ on:
         type: string
 jobs:
   build_and_release:
-    runs-on: windows-latest
+    # Pin off windows-latest: it now redirects to the VS2026 image (windows-2025-vs2026),
+    # where the `noobs` native optionalDependency fails to install (silently skipped), breaking
+    # copyNoobs in build:app. windows-2025 is the VS2022-toolset image that last built successfully.
+    runs-on: windows-2025
     permissions:
       contents: write
     env:
