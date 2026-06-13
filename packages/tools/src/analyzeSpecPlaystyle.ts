@@ -8,7 +8,8 @@ import path from 'path';
 
 import dotenv from 'dotenv';
 import { getEnglishSpellName } from '../../shared/src/data/spellEffectData';
-import { PASSIVE_SPELL_BLOCKLIST, specToString } from '../../shared/src/utils/cooldowns';
+import { specToString } from '../../shared/src/utils/cooldowns';
+import { extractRotations } from '../../shared/src/utils/matchEmbeddingRecord';
 import { CD_TALENT_MODIFIERS } from '../../shared/src/utils/talentModifiers';
 import { getPlayerTalentedSpellInfo } from '../../shared/src/utils/talents';
 
@@ -66,69 +67,6 @@ export function runPythonBridge(specStr: string, talents: Record<number, number>
     console.error('Python bridge execution failed:', e);
     return null;
   }
-}
-
-export function extractRotations(player: any, match: any) {
-  const casts = player.spellCastEvents
-    .filter(
-      (e: any) => e.spellName && e.logLine?.event === 'SPELL_CAST_SUCCESS' && !PASSIVE_SPELL_BLOCKLIST.has(e.spellName),
-    )
-    .map((e: any) => ({
-      spellId: e.spellId,
-      name: e.spellName,
-      time: (e.logLine.timestamp - match.startTime) / 1000,
-    }))
-    .sort((a: any, b: any) => a.time - b.time);
-
-  // 1. Opener Sequence (first 30s)
-  const opener = casts.filter((c: any) => c.time <= 30).map((c: any) => c.name);
-
-  // 2. Core Sequences (consecutive 3-spell chains)
-  const seqCounts: Record<string, number> = {};
-  for (let i = 0; i < casts.length - 2; i++) {
-    const chain = `${casts[i].name} -> ${casts[i + 1].name} -> ${casts[i + 2].name}`;
-    seqCounts[chain] = (seqCounts[chain] || 0) + 1;
-  }
-  const coreSequences = Object.entries(seqCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
-    .map(([seq, count]) => `${seq} (used ${count}x)`);
-
-  // 3. Crisis Response Sequences (within 6s of HP falling < 40%)
-  // Find all players on player's team (including themselves)
-  const teamUnits = Object.values(match.units).filter(
-    (u: any) => u.type === CombatUnitType.Player && u.reaction === player.reaction,
-  );
-
-  const allTeamHpRecords = teamUnits
-    .flatMap((u: any) => {
-      return (u.advancedActions || [])
-        .filter((a: any) => a.advanced && a.advancedActorId === u.id && a.advancedActorMaxHp > 0)
-        .map((a: any) => ({
-          targetName: u.name,
-          time: (a.logLine.timestamp - match.startTime) / 1000,
-          pct: (a.advancedActorCurrentHp / a.advancedActorMaxHp) * 100,
-        }));
-    })
-    .sort((a, b) => a.time - b.time);
-
-  const crisisEvents: string[] = [];
-  let lastCrisisTime = -999;
-  for (const record of allTeamHpRecords) {
-    if (record.pct < 40 && record.time - lastCrisisTime > 15) {
-      lastCrisisTime = record.time;
-      const responseCasts = casts
-        .filter((c: any) => c.time >= record.time && c.time <= record.time + 6)
-        .map((c: any) => c.name);
-      if (responseCasts.length > 0) {
-        crisisEvents.push(
-          `At ${record.time.toFixed(1)}s (Teammate ${record.targetName} HP: ${record.pct.toFixed(0)}%): ${responseCasts.join(' -> ')}`,
-        );
-      }
-    }
-  }
-
-  return { opener, coreSequences, crisisEvents };
 }
 
 export function inferCDModifiers(specId: number, talentsArray: any[]) {

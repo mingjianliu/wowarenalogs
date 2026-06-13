@@ -28,7 +28,8 @@ import fetch from 'node-fetch';
 import path from 'path';
 
 import { isHealerSpec, specToString } from '../../shared/src/utils/cooldowns';
-import { extractRotations, getPythonSpecName, inferCDModifiers, runPythonBridge } from './analyzeSpecPlaystyle';
+import { extractRotations } from '../../shared/src/utils/matchEmbeddingRecord';
+import { getPythonSpecName, inferCDModifiers, runPythonBridge } from './analyzeSpecPlaystyle';
 import { fetchStubs, MatchStub, parseLogText } from './printMatchPrompts';
 
 const BRACKET = 'Rated Solo Shuffle';
