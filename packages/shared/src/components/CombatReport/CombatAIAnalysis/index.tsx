@@ -39,9 +39,11 @@ import { computeOffensiveWindows, formatOffensiveWindowsForContext } from '../..
 import { benchmarks, formatDTPSBaselines, formatSpecBaselines } from '../../../utils/specBaselines';
 import { useCombatReportContext } from '../CombatReportContext';
 import { AIFinding } from './aiFindings';
+import { ComparativeAnalysisData } from './comparativePrompt';
 import { FindingsList } from './components/FindingsList';
 import { RefreshIcon, SparkleIcon } from './components/icons';
 import { MatchHero } from './components/MatchHero';
+import { ProComparison } from './components/ProComparison';
 import { SupportingRail } from './components/SupportingRail';
 import { TimelineStrip } from './components/TimelineStrip';
 import { computeMatchAnalysisData } from './matchAnalysisData';
@@ -714,6 +716,9 @@ export function CombatAIAnalysis() {
   const [error, setError] = useState<string | null>(null);
   const [expandedRanks, setExpandedRanks] = useState<Set<number>>(() => new Set());
   const [focused, setFocused] = useState(0);
+  const [comparison, setComparison] = useState<ComparativeAnalysisData | undefined>(undefined);
+  const [comparisonReport, setComparisonReport] = useState<string | undefined>(undefined);
+  const [comparisonLoading, setComparisonLoading] = useState(false);
 
   const data = useMemo(
     () => (combat ? computeMatchAnalysisData(combat, friends, enemies) : null),
@@ -725,6 +730,9 @@ export function CombatAIAnalysis() {
     if (!combat) return;
     setExpandedRanks(new Set());
     setFocused(0);
+    setComparison(undefined);
+    setComparisonReport(undefined);
+    setComparisonLoading(false);
 
     const cached = analysisCache.get(combat.id);
     if (cached) {
@@ -781,6 +789,29 @@ export function CombatAIAnalysis() {
     setLoading(true);
     setError(null);
     setResult(null);
+
+    // Part II · Pro comparison — independent, guarded, never blocks Part I.
+    setComparison(undefined);
+    setComparisonReport(undefined);
+    setComparisonLoading(true);
+    (async () => {
+      try {
+        const apiKey = (await window.wowarenalogs?.settings?.getAnthropicApiKey?.()) ?? undefined;
+        const r = await fetch('/api/compare', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ matchId: combatId, apiKey }),
+        });
+        const body = (await r.json()) as { comparison?: ComparativeAnalysisData; comparisonReport?: string };
+        if (combat.id !== combatId) return; // stale guard, mirrors the findings path
+        setComparison(body.comparison);
+        setComparisonReport(body.comparisonReport);
+      } catch {
+        if (combat.id === combatId) setComparison(undefined);
+      } finally {
+        if (combat.id === combatId) setComparisonLoading(false);
+      }
+    })();
 
     const fetchPromise: Promise<AnalysisResult> = (async () => {
       const matchContext = buildMatchContext(combat, friends, enemies);
@@ -992,6 +1023,40 @@ export function CombatAIAnalysis() {
             <SupportingRail data={data} />
           </aside>
         </div>
+
+        {(comparisonLoading || comparison) && (
+          <div className="px-5 mt-8">
+            <div className="flex items-center gap-3.5 mb-4">
+              <div
+                className="shrink-0 w-[34px] h-[34px] rounded-lg flex items-center justify-center"
+                style={{
+                  color: '#7ee0a0',
+                  background: 'rgba(126,224,160,0.08)',
+                  border: '1px solid rgba(126,224,160,0.23)',
+                }}
+              >
+                <SparkleIcon size={17} />
+              </div>
+              <div>
+                <span className="text-[10px] font-bold tracking-[0.16em] uppercase text-zinc-600">Part II</span>
+                <h2
+                  className="text-[18px] font-bold text-zinc-50 leading-tight"
+                  style={{ fontFamily: 'var(--ai-font-display)' }}
+                >
+                  Pro comparison
+                </h2>
+                <p className="text-[12.5px] text-zinc-500 mt-0.5">
+                  Your pacing &amp; crisis decisions vs the nearest gold-standard games on your build.
+                </p>
+              </div>
+            </div>
+            {comparison ? (
+              <ProComparison data={comparison} report={comparisonReport} />
+            ) : (
+              <div className="text-[12.5px] text-zinc-600 py-6">Finding your nearest pro games…</div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
