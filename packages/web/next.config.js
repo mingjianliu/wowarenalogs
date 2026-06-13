@@ -4,6 +4,9 @@ const path = require('path');
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  outputFileTracingIncludes: {
+    '/api/compare': ['../tools/src/data/reference_vectors.json', '../tools/src/data/reference_model.json'],
+  },
   transpilePackages: ['@wowarenalogs/shared'],
   typescript: {
     // @pixi/react JSX types currently don't cover our custom pixi* tags
