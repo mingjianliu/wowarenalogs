@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 
+import { IReferenceModel } from './vectorEmbedding';
 import { cosineSimilarity } from './vectorMath';
 
 /**
@@ -43,6 +44,27 @@ const REFERENCE_VECTORS_CANDIDATES = [
 ];
 function resolveReferenceVectorsPath(): string | null {
   for (const p of REFERENCE_VECTORS_CANDIDATES) if (fs.existsSync(p)) return p;
+  return null;
+}
+
+// reference_model.json sits alongside reference_vectors.json; resolve it the same way so the live
+// embedding path (vectorizeMatch) can run inside the Next.js API route.
+const REFERENCE_MODEL_CANDIDATES = [
+  path.join(__dirname, '../../../tools/src/data/reference_model.json'),
+  path.join(process.cwd(), 'packages/tools/src/data/reference_model.json'),
+  path.join(process.cwd(), '../tools/src/data/reference_model.json'),
+  path.join(process.cwd(), 'tools/src/data/reference_model.json'),
+  path.join(process.cwd(), '.next/server/reference_model.json'),
+];
+let cachedModel: IReferenceModel | null = null;
+export async function loadReferenceModel(): Promise<IReferenceModel | null> {
+  if (cachedModel) return cachedModel;
+  for (const p of REFERENCE_MODEL_CANDIDATES) {
+    if (fs.existsSync(p)) {
+      cachedModel = (await fs.readJson(p)) as IReferenceModel;
+      return cachedModel;
+    }
+  }
   return null;
 }
 
