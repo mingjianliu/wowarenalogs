@@ -730,6 +730,9 @@ export function CombatAIAnalysis() {
     if (!combat) return;
     setExpandedRanks(new Set());
     setFocused(0);
+    setComparison(undefined);
+    setComparisonReport(undefined);
+    setComparisonLoading(false);
 
     const cached = analysisCache.get(combat.id);
     if (cached) {
