@@ -1,7 +1,9 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { Firestore } from '@google-cloud/firestore';
 import { AtomicArenaCombat, CombatUnitReaction, CombatUnitType, WoWCombatLogParser } from '@wowarenalogs/parser';
+import fs from 'fs';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import path from 'path';
 
 import {
   buildComparativePrompt,
@@ -18,7 +20,12 @@ const COMPARE_TIMEOUT_MS = 20_000;
 let cachedFirestore: Firestore | null = null;
 function getFirestore(): Firestore {
   if (!cachedFirestore) {
-    cachedFirestore = new Firestore({ projectId: isDev ? 'wowarenalogs-public-dev' : 'wowarenalogs' });
+    cachedFirestore = new Firestore({
+      projectId: isDev ? 'wowarenalogs-public-dev' : 'wowarenalogs',
+      credentials: isDev
+        ? JSON.parse(fs.readFileSync(path.join(process.cwd(), '../cloud/wowarenalogs-public-dev.json'), 'utf8'))
+        : undefined,
+    });
   }
   return cachedFirestore;
 }
@@ -68,7 +75,7 @@ async function buildComparison(matchId: string): Promise<ComparativeAnalysisData
   const bracket = deriveBracket(combat);
 
   const neighbors = (await findNearestProMatchesLocal(specDisplay, embedding, bracket, 6))
-    .filter((n) => n.id !== matchId)
+    .filter((n) => n.id !== matchId && n.data.metrics != null)
     .slice(0, 5);
   if (neighbors.length < 1) return null;
 
@@ -86,14 +93,8 @@ async function buildComparison(matchId: string): Promise<ComparativeAnalysisData
     userCrisisEvents: raw.rotations.crisisEvents,
     nearestNeighbors: neighbors.map((n) => ({
       distance: n.distance,
-      metrics: n.data.metrics ?? {
-        offensiveIndex: 0,
-        ccDensity: 0,
-        reactionLatency: 0,
-        defensiveOverlapRatio: 0,
-        effectiveCastRatio: 0,
-        ccAvoidanceRate: 0,
-      },
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      metrics: n.data.metrics!,
       crisisEvents: n.data.crisisEvents ?? [],
     })),
   };
