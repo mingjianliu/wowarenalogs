@@ -39,6 +39,7 @@ export interface NearestMatchResult {
 const REFERENCE_VECTORS_CANDIDATES = [
   path.join(__dirname, '../../../tools/src/data/reference_vectors.json'), // shared/src/utils -> tools/src/data
   path.join(process.cwd(), 'packages/tools/src/data/reference_vectors.json'),
+  path.join(process.cwd(), '../tools/src/data/reference_vectors.json'),
   path.join(process.cwd(), 'tools/src/data/reference_vectors.json'),
   path.join(process.cwd(), '.next/server/reference_vectors.json'),
 ];
