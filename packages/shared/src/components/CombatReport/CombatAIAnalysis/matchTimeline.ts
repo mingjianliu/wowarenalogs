@@ -771,6 +771,9 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       .filter((s) => s.playerName === owner.name)
       .flatMap((s) => s.ccInstances.map((cc) => Math.round(matchStartMs + cc.atSeconds * 1000)));
 
+    // F159: Track owner's successful offensive purges
+    const ownerPurges = dispelSummary.ourPurges.filter((p) => p.sourceName === owner.name);
+
     const seenCasts = new Set<string>();
 
     let activeFold: {
@@ -854,12 +857,20 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
             : ' [totem/pet]';
       }
 
+      // F159: Annotate offensive-purge casts with removed buff
+      let purgeNote = '';
+      const matchingPurges = ownerPurges.filter((p) => Math.abs(p.timeSeconds - timeSeconds) <= 0.5);
+      if (matchingPurges.length > 0) {
+        const removedNames = matchingPurges.map((p) => p.removedSpellName).join(', ');
+        purgeNote = ` (Removed: ${removedNames})`;
+      }
+
       // F95: Offensive CC casts should carry a CC annotation or use an [YOU] [CC] prefix.
       if (ccSpellIds.has(e.spellId)) {
         flushFold();
         addEntry(
           timeSeconds,
-          `${fmtTime(timeSeconds)}  [YOU] [CC]   ${displayName}${targetPart}${totemNote}${orderNote}`,
+          `${fmtTime(timeSeconds)}  [YOU] [CC]   ${displayName}${targetPart}${totemNote}${orderNote}${purgeNote}`,
           resourceSnapshot(timeSeconds),
         );
         continue;
@@ -874,7 +885,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         flushFold();
         addEntry(
           timeSeconds,
-          `${fmtTime(timeSeconds)}  [YOU] [CD]   ${displayName}${targetPart}${totemNote}${stasisAnnotation}`,
+          `${fmtTime(timeSeconds)}  [YOU] [CD]   ${displayName}${targetPart}${totemNote}${stasisAnnotation}${purgeNote}`,
           resourceSnapshot(timeSeconds, true),
         );
         continue;
@@ -886,6 +897,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         totemNote === '' &&
         orderNote === '' &&
         stasisAnnotation === '' &&
+        purgeNote === '' &&
         !criticalWindowSet.has(Math.floor(timeSeconds));
 
       if (isFoldable) {
@@ -904,7 +916,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         flushFold();
         addEntry(
           timeSeconds,
-          `${fmtTime(timeSeconds)}  [YOU] [CAST]   ${displayName}${targetPart}${totemNote}${orderNote}${stasisAnnotation}`,
+          `${fmtTime(timeSeconds)}  [YOU] [CAST]   ${displayName}${targetPart}${totemNote}${orderNote}${stasisAnnotation}${purgeNote}`,
         );
       }
     }
