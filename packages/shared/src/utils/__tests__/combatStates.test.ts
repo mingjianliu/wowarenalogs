@@ -84,6 +84,11 @@ describe('combatStates', () => {
         spellName: 'Dream Breath',
       } as any,
       {
+        logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 5000 },
+        spellId: '370537',
+        spellName: 'Stasis',
+      } as any,
+      {
         logLine: { event: LogEvent.SPELL_AURA_REMOVED, timestamp: 5000 },
         spellId: '370537',
         spellName: 'Stasis',
@@ -192,6 +197,11 @@ describe('combatStates', () => {
           spellName: 'Hover',
         } as any,
         {
+          logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 5000 },
+          spellId: '370537',
+          spellName: 'Stasis',
+        } as any,
+        {
           logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 5000 }, // same ms as stasis removal
           spellId: '355936',
           spellName: 'Dream Breath',
@@ -246,5 +256,32 @@ describe('combatStates', () => {
     expect(stasisEvents).toHaveLength(1);
     expect(stasisEvents[0].spells).toEqual([]); // name not resolvable from the heal list
     expect(stasisEvents[0].storedCount).toBe(3); // 2 dose removals + final removal
+  });
+
+  it('extractStasisEvents ignores Stasis removal if it is not a manual or automatic release (e.g. expiration or death)', () => {
+    const evokerUnit: ICombatUnit = {
+      ...mockUnit,
+      auraEvents: [
+        {
+          logLine: { event: LogEvent.SPELL_AURA_APPLIED, timestamp: 2000 },
+          spellId: '370537',
+          spellName: 'Stasis',
+        } as any,
+        {
+          logLine: { event: LogEvent.SPELL_AURA_REMOVED, timestamp: 32000 }, // 30s later, expired
+          spellId: '370537',
+          spellName: 'Stasis',
+        } as any,
+      ],
+      spellCastEvents: [
+        {
+          logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 2500 },
+          spellId: '366155',
+          spellName: 'Reversion',
+        } as any,
+      ],
+    };
+    const stasisEvents = extractStasisEvents(evokerUnit, mockCombat);
+    expect(stasisEvents).toHaveLength(0);
   });
 });

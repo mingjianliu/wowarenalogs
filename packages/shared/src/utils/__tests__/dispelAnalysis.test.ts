@@ -334,7 +334,7 @@ describe('dispelAnalysis — formatting', () => {
 });
 
 describe('wasRemovedByAllyDispel', () => {
-  it('correctly matches removal time within 0.5s tolerance', () => {
+  it('correctly matches removal time with exact millisecond timestamp matching (B11)', () => {
     const allyCleanse = [
       {
         timeSeconds: 10.2,
@@ -342,9 +342,9 @@ describe('wasRemovedByAllyDispel', () => {
         targetName: 'Player1',
       } as any,
     ];
-    expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.0)).toBe(true);
-    expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.6)).toBe(true);
+    expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.2)).toBe(true);
+    expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.201)).toBe(false);
     expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.7)).toBe(false);
-    expect(wasRemovedByAllyDispel(allyCleanse, '999', 'Player1', 10.0)).toBe(false);
+    expect(wasRemovedByAllyDispel(allyCleanse, '999', 'Player1', 10.2)).toBe(false);
   });
 });
