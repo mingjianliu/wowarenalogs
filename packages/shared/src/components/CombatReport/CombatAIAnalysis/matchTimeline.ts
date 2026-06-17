@@ -1474,9 +1474,8 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   // 8.5 Add Mana Context for long matches (F144)
   if (matchDurationS > 300) {
-    const friendlyHealers = [owner, ...friends].filter((u) => isHealerSpec(u.spec));
+    const friendlyHealers = [owner, ...friends.filter((f) => f.id !== owner.id)].filter((u) => isHealerSpec(u.spec));
     const enemyHealers = (enemies ?? []).filter((u) => isHealerSpec(u.spec));
-
     if (friendlyHealers.length > 0 || enemyHealers.length > 0) {
       for (let t = 0; t <= Math.floor(matchDurationS); t += 30) {
         const tsMs = matchStartMs + t * 1000;

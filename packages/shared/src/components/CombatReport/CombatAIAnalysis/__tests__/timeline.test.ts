@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CombatUnitReaction, CombatUnitSpec, CombatUnitType, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
+import {
+  CombatUnitPowerType,
+  CombatUnitReaction,
+  CombatUnitSpec,
+  CombatUnitType,
+  ICombatUnit,
+  LogEvent,
+} from '@wowarenalogs/parser';
 
 import {
   makeAdvancedAction,
@@ -5332,5 +5339,105 @@ describe('buildMatchTimeline — B15: Duplicate [CAST] lines', () => {
     const castLines = result.split('\n').filter((l) => l.includes('[YOU] [CAST]'));
     // Folding is disabled in critical windows, so if dedup isn't working, we'd see 2 lines.
     expect(castLines.length).toBe(1);
+  });
+});
+
+describe('buildMatchTimeline — F144: Long-Match Healer Mana Context', () => {
+  it('does not emit [MANA] lines for games <= 5 minutes (300s)', () => {
+    const owner = makeUnit('u1', {
+      name: 'Feramonk',
+      spec: CombatUnitSpec.Priest_Holy,
+      advancedActions: [
+        {
+          logLine: { timestamp: 0 },
+          advancedActorId: 'u1',
+          advancedActorPowers: [{ type: CombatUnitPowerType.Mana, current: 50000, max: 100000 }],
+        } as any,
+      ],
+    });
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        matchStartMs: 0,
+        matchEndMs: 290_000, // 290s (<= 300s)
+        isHealer: true,
+      }),
+    );
+    expect(result).not.toContain('[MANA]');
+  });
+
+  it('emits [MANA] lines at 30s intervals for games > 5 minutes (300s) for active healers', () => {
+    const owner = makeUnit('u1', {
+      name: 'Feramonk',
+      spec: CombatUnitSpec.Priest_Holy,
+      advancedActions: [
+        {
+          logLine: { timestamp: 0 },
+          advancedActorId: 'u1',
+          advancedActorPowers: [{ type: CombatUnitPowerType.Mana, current: 100000, max: 100000 }],
+        } as any,
+        {
+          logLine: { timestamp: 30000 },
+          advancedActorId: 'u1',
+          advancedActorPowers: [{ type: CombatUnitPowerType.Mana, current: 80000, max: 100000 }],
+        } as any,
+        {
+          logLine: { timestamp: 60000 },
+          advancedActorId: 'u1',
+          advancedActorPowers: [{ type: CombatUnitPowerType.Mana, current: 60000, max: 100000 }],
+        } as any,
+      ],
+    });
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        matchStartMs: 0,
+        matchEndMs: 310_000, // 310s (> 300s)
+        isHealer: true,
+      }),
+    );
+    expect(result).toContain('[MANA]');
+    expect(result).toContain('0:00  [MANA]   friends Feramonk:100%');
+    expect(result).not.toContain('Feramonk:100% Feramonk:100%');
+    expect(result).toContain('0:30  [MANA]   friends Feramonk:80%');
+    expect(result).toContain('1:00  [MANA]   friends Feramonk:60%');
+  });
+
+  it('omits dead healers from [MANA] lines', () => {
+    const owner = makeUnit('u1', {
+      name: 'Feramonk',
+      spec: CombatUnitSpec.Priest_Holy,
+      advancedActions: [
+        {
+          logLine: { timestamp: 0 },
+          advancedActorId: 'u1',
+          advancedActorPowers: [{ type: CombatUnitPowerType.Mana, current: 100000, max: 100000 }],
+        } as any,
+        {
+          logLine: { timestamp: 30000 },
+          advancedActorId: 'u1',
+          advancedActorPowers: [{ type: CombatUnitPowerType.Mana, current: 80000, max: 100000 }],
+        } as any,
+      ],
+    });
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        matchStartMs: 0,
+        matchEndMs: 310_000, // 310s (> 300s)
+        isHealer: true,
+        friendlyDeaths: [{ spec: 'Holy Priest', name: 'Feramonk', atSeconds: 20 }], // dead before 30s
+      }),
+    );
+    expect(result).toContain('[MANA]');
+    expect(result).toContain('0:00  [MANA]   friends Feramonk:100%');
+    expect(result).not.toContain('Feramonk:100% Feramonk:100%');
+    expect(result).not.toContain('0:30  [MANA]');
   });
 });
