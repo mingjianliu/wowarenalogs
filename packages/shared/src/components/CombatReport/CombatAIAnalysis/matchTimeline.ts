@@ -404,7 +404,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   let lastFullSnapshotTime = -100;
   const FULL_SNAPSHOT_REFRESH_SECONDS = 60;
 
-  function resourceSnapshot(timeSeconds: number): string {
+  function resourceSnapshot(timeSeconds: number, forceFull = false): string {
     if (timeSeconds - lastSnapshotTime < 2.0) {
       return '';
     }
@@ -419,7 +419,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     }));
     const currentReadyNames = computeReadyNames(timeSeconds, ownerCDs, teammateCDsWithLabel);
     const currentOnCDNames = computeOnCDDisplayNames(timeSeconds, ownerCDs, teammateCDsWithLabel);
-    const forceFullRefresh = timeSeconds - lastFullSnapshotTime >= FULL_SNAPSHOT_REFRESH_SECONDS;
+    const forceFullRefresh = forceFull || timeSeconds - lastFullSnapshotTime >= FULL_SNAPSHOT_REFRESH_SECONDS;
     const prevReadyNames = forceFullRefresh ? undefined : (prevReadyNamesState ?? undefined);
     const prevOnCDNames = forceFullRefresh ? undefined : (prevOnCDNamesState ?? undefined);
     if (forceFullRefresh) lastFullSnapshotTime = timeSeconds;
@@ -686,7 +686,8 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
           ? ` → ${pid(cast.targetName)}${cast.targetHpPct !== undefined ? ` (${cast.targetHpPct}% HP)` : ''}`
           : '';
 
-      const extraLines: string[] = [resourceSnapshot(cast.timeSeconds)];
+      const isCC = ccSpellIds.has(cd.spellId);
+      const extraLines: string[] = [resourceSnapshot(cast.timeSeconds, !isCC)];
 
       if (HEALING_AMPLIFIER_SPELL_IDS.has(cd.spellId) && healingEmissionTimes.get(cd.spellId)?.has(cast.timeSeconds)) {
         const duration = spellEffectData[cd.spellId]?.durationSeconds;
@@ -852,7 +853,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         addEntry(
           timeSeconds,
           `${fmtTime(timeSeconds)}  [YOU] [CD]   ${displayName}${targetPart}${totemNote}${stasisAnnotation}`,
-          resourceSnapshot(timeSeconds),
+          resourceSnapshot(timeSeconds, true),
         );
         continue;
       }
