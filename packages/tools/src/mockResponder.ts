@@ -31,6 +31,8 @@ function generateClaudeResponse(userPrompt: string): string {
   const hasMissedPurge = userPrompt.includes('[MISSED PURGE OPPORTUNITY]');
   const hasCleanseOnCD = userPrompt.includes('Cleanse was on cooldown');
   const hasRotPressure = userPrompt.includes('[ROT PRESSURE]');
+  const hasAbsorbed = userPrompt.includes('absorbed)');
+  const hasFocus = userPrompt.includes('focus:');
 
   if (hasFatalDispel) {
     findings += `## Finding 4: Fatal Dispel Detected\n**What happened:** A cleanse was fatal due to backlash damage ([FATAL DISPEL:]).\n**Alternative:** Avoid cleansing when at low health under high penalty debuffs.\n**Impact:** Prevents self-inflicted deaths.\n**Confidence:** High\n\n`;
@@ -50,6 +52,12 @@ function generateClaudeResponse(userPrompt: string): string {
   if (hasRotPressure) {
     findings += `## Finding 4: Rot Pressure Detected\n**What happened:** Target was under heavy rot pressure with 3+ active DoTs while at sub-40% HP ([ROT PRESSURE]).\n**Alternative:** Keep active dispels or trade defensive healing CD to stabilize.\n**Impact:** Prevents rot pressure death.\n**Confidence:** High\n\n`;
   }
+  if (hasAbsorbed) {
+    findings += `## Finding 4: Absorbed Damage Tracking\n**What happened:** Match timeline correctly tracks absorbed damage on spikes.\n**Alternative:** Coordinate defensive shields.\n**Impact:** Smooth damage intake.\n**Confidence:** High\n\n`;
+  }
+  if (hasFocus) {
+    findings += `## Finding 4: Focus Target Detected\n**What happened:** Identified enemy focus target correctly.\n**Alternative:** Respond proactively to focus target pressure.\n**Impact:** Better survival rates.\n**Confidence:** High\n\n`;
+  }
 
   return `<core_response>\n${findings}</core_response>\n\n<meta_eval_reflection>\n1. **Feature Usefulness**: Extremely high.\n2. **Response Bias**: Unbiased.\n3. **Noise & Confusion**: None.\n4. **Self-Reflection**: Followed all constraints.\n</meta_eval_reflection>`;
 }
@@ -62,6 +70,8 @@ function generateJudgeResponse(userPrompt: string): string {
   const hasMissedPurge = userPrompt.includes('[MISSED PURGE OPPORTUNITY]');
   const hasCleanseOnCD = userPrompt.includes('Cleanse was on cooldown');
   const hasRotPressure = userPrompt.includes('[ROT PRESSURE]');
+  const hasAbsorbed = userPrompt.includes('absorbed)');
+  const hasFocus = userPrompt.includes('focus:');
 
   const newFeatures: string[] = [];
   if (hasFatalDispel) newFeatures.push('Fatal Dispel tags');
@@ -71,6 +81,8 @@ function generateJudgeResponse(userPrompt: string): string {
   if (hasMissedPurge) newFeatures.push('Missed Purge Opportunities in timeline');
   if (hasCleanseOnCD) newFeatures.push('Cleanse on cooldown info');
   if (hasRotPressure) newFeatures.push('Rot Pressure alerts');
+  if (hasAbsorbed) newFeatures.push('Absorbed damage tracking on spikes');
+  if (hasFocus) newFeatures.push('Focus target tracking with absorbs');
 
   if (newFeatures.length > 0) {
     const verdict = 'Version B Winner';
