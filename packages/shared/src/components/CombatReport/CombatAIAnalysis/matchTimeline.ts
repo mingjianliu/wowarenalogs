@@ -764,9 +764,20 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       const prefix = ccSpellIds.has(cd.spellId) ? '[YOU] [CC]' : '[YOU] [CD]';
       const groundingNote = groundingAbsorbNote(cd.spellId, cd.spellName, owner.id, cast.timeSeconds);
 
+      let dampeningNote = '';
+      if (!isCC) {
+        dampeningNote = ` | dampening: ${getDampeningPercentage(params.bracket ?? '3v3', _allUnits, matchStartMs + cast.timeSeconds * 1000)}%`;
+        const nextSpike = pressureWindows.find(
+          (pw) => pw.fromSeconds >= cast.timeSeconds && pw.totalDamage >= DMG_SPIKE_THRESHOLD,
+        );
+        if (nextSpike) {
+          dampeningNote += `, next spike in ${Math.round(nextSpike.fromSeconds - cast.timeSeconds)}s`;
+        }
+      }
+
       addEntry(
         cast.timeSeconds,
-        `${fmtTime(cast.timeSeconds)}  ${prefix}   ${cd.spellName}${targetPart}${groundingNote}`,
+        `${fmtTime(cast.timeSeconds)}  ${prefix}   ${cd.spellName}${targetPart}${dampeningNote}${groundingNote}`,
         ...extraLines,
       );
     }
@@ -1079,7 +1090,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
           ? ` (base ${baseDuration}s)`
           : '';
       const drStr =
-        DISPEL_FEATURE_FLAGS.F124_ENHANCED_CC_ANNOTATIONS && cc.drInfo
+        DISPEL_FEATURE_FLAGS.F124_ENHANCED_CC_ANNOTATIONS && cc.drInfo && cc.drInfo.category !== 'Unknown'
           ? ` [DR: ${cc.drInfo.category} ${cc.drInfo.level}]`
           : '';
       const isBacklash = cc.spellId === '34914' || cc.spellId === '196363';

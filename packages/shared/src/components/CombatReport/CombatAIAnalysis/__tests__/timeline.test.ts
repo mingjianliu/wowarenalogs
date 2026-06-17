@@ -4810,7 +4810,8 @@ describe('buildMatchTimeline — Grounding Totem NPC ID detection', () => {
         ],
       }),
     );
-    expect(result).toContain('[YOU] [CD]   Grounding Totem [ABSORBED: Polymorph]');
+    expect(result).toContain('[YOU] [CD]   Grounding Totem');
+    expect(result).toContain('[ABSORBED: Polymorph]');
   });
 });
 
