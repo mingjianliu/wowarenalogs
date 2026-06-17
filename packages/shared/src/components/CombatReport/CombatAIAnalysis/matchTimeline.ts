@@ -548,7 +548,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   // ── [DEATH] events ────────────────────────────────────────────────────────
 
-  const unitsByName = new Map(friends.map((u) => [u.name, u]));
+  const unitsByName = new Map([...friends, ...(enemies ?? [])].map((u) => [u.name, u]));
 
   for (const death of friendlyDeaths) {
     const dyingUnit = unitsByName.get(death.name);
@@ -586,7 +586,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     ];
     if (dyingUnit) {
       // HP trajectory
-      const checkpoints = [15, 10, 5, 3];
+      const checkpoints = [15, 10, 5, 3, 2, 1];
       const trajectory: string[] = [];
       for (const secondsBefore of checkpoints) {
         const pct = getHpPercentAtTime(dyingUnit, death.atSeconds - secondsBefore, matchStartMs);
@@ -608,11 +608,33 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   }
 
   for (const death of enemyDeaths) {
-    addEntry(
-      death.atSeconds,
+    const dyingUnit = unitsByName.get(death.name);
+    const deathLines: string[] = [
       `${fmtTime(death.atSeconds)}  [DEATH]  ${enemyPid(death.name)} (${death.spec} — enemy)`,
       `${fmtTime(death.atSeconds)}  [ROSTER]  enemy ${enemyPid(death.name)} removed (dead)`,
-    );
+    ];
+
+    if (dyingUnit) {
+      // HP trajectory
+      const checkpoints = [15, 10, 5, 3, 2, 1];
+      const trajectory: string[] = [];
+      for (const secondsBefore of checkpoints) {
+        const pct = getHpPercentAtTime(dyingUnit, death.atSeconds - secondsBefore, matchStartMs);
+        if (pct !== null) trajectory.push(`${Math.round(pct)}% at T-${secondsBefore}s`);
+      }
+      if (trajectory.length > 0) {
+        deathLines.push(`               HP: ${trajectory.join(' → ')} → dead`);
+      }
+
+      // Top damage sources in final 10s
+      const deathMs = matchStartMs + death.atSeconds * 1000;
+      const topSources = getTopDamageSourcesInWindow(dyingUnit, deathMs, 10_000);
+      if (topSources.length > 0) {
+        deathLines.push(`               Top damage in final 10s: ${topSources.join(', ')}`);
+      }
+    }
+
+    addEntry(death.atSeconds, ...deathLines);
   }
 
   // ── [UNIT DESTROYED] Non-Player Deaths ────────────────────────────────────
