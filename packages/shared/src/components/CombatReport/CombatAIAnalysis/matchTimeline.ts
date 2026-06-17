@@ -437,6 +437,8 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       playerIdMap,
       prevReadyNames,
       prevOnCDNames,
+      matchStartMs,
+      ownerUnit: owner,
     });
   }
 

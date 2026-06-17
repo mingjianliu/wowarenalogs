@@ -169,7 +169,6 @@ export function computeOnCDDisplayNames(
   }
   return onCDNames;
 }
-
 export interface ResourceSnapshotParams {
   timeSeconds: number;
   ownerCDs: IMajorCooldownInfo[];
@@ -191,6 +190,8 @@ export interface ResourceSnapshotParams {
    * for CDs that are NEWLY on cooldown (not present in prevOnCDNames). B35: reduces token bloat.
    */
   prevOnCDNames?: string[];
+  matchStartMs?: number;
+  ownerUnit?: ICombatUnit;
 }
 
 export function buildResourceSnapshot({
@@ -204,6 +205,8 @@ export function buildResourceSnapshot({
   playerIdMap,
   prevReadyNames,
   prevOnCDNames,
+  matchStartMs,
+  ownerUnit,
 }: ResourceSnapshotParams): string {
   function pid(name: string): string {
     if (!playerIdMap) return name;
@@ -263,6 +266,29 @@ export function buildResourceSnapshot({
   }
 
   let line = `      [RES] ${rdyPart}  cd:${onCDParts.length > 0 ? onCDParts.join(',') : '—'}`;
+
+  // ── F169: Active Atonement count for Disc Priests ────────────────────────────
+  if (_ownerSpec === 'Discipline Priest' && matchStartMs !== undefined && ownerUnit) {
+    let atonementCount = 0;
+    const allFriends = [ownerUnit, ...teammateCDs.map((t) => t.player)].filter(Boolean);
+    const atMs = matchStartMs + timeSeconds * 1000;
+    for (const f of allFriends) {
+      if (!f) continue;
+      let active = false;
+      for (const a of f.auraEvents) {
+        if (a.timestamp > atMs) break;
+        if (a.spellId === '194384') {
+          if (a.logLine.event === 'SPELL_AURA_APPLIED' || a.logLine.event === 'SPELL_AURA_REFRESH') {
+            active = true;
+          } else if (a.logLine.event === 'SPELL_AURA_REMOVED') {
+            active = false;
+          }
+        }
+      }
+      if (active) atonementCount++;
+    }
+    line += ` | Atonements: ${atonementCount}`;
+  }
 
   // ── enemy: (omit when empty) ───────────────────────────────────────────────
   const enemyActiveParts: string[] = [];
