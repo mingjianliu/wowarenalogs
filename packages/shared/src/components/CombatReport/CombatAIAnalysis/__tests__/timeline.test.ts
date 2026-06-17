@@ -5181,3 +5181,133 @@ describe('buildMatchTimeline — PvP Trinket status at teammate death (F146)', (
     expect(result).not.toContain('PvP Trinket available');
   });
 });
+
+describe('buildMatchTimeline — B15: Duplicate [CAST] lines', () => {
+  const matchStartMs = 1000000;
+  const matchEndMs = 1030000;
+
+  it('deduplicates casts with different spell IDs but same name, target, and second', () => {
+    const owner = makeUnit('u1', {
+      name: 'Feramonk',
+      spec: CombatUnitSpec.Priest_Holy,
+      spellCastEvents: [
+        // Flame Shock (mapped)
+        makeSpellCastEvent('188389', matchStartMs + 10000, 'enemy-1', 'Enemy', 'u1', 'Feramonk', 0, 'Flame Shock'),
+        // Flame Shock (unmapped/duplicate ID, 1ms later)
+        makeSpellCastEvent('470411', matchStartMs + 10001, 'enemy-1', 'Enemy', 'u1', 'Feramonk', 0, 'Flame Shock'),
+      ],
+    });
+
+    const result = buildMatchTimeline({
+      owner,
+      ownerSpec: 'Holy Priest',
+      ownerCDs: [],
+      teammateCDs: [],
+      enemyCDTimeline: { players: [], alignedBurstWindows: [] },
+      ccTrinketSummaries: [],
+      dispelSummary: {
+        allyCleanse: [],
+        ourPurges: [],
+        hostilePurges: [],
+        missedCleanseWindows: [],
+        ccEfficiency: [],
+        missedPurgeWindows: [],
+      } as any,
+      friendlyDeaths: [],
+      enemyDeaths: [],
+      pressureWindows: [],
+      healingGaps: [],
+      friends: [owner],
+      matchStartMs,
+      matchEndMs,
+      isHealer: true,
+      enemyIdMap: new Map([['Enemy', 2]]),
+    } as any);
+
+    const castLines = result.split('\n').filter((l) => l.includes('[YOU] [CAST]'));
+    // Should only have ONE cast line
+    expect(castLines.length).toBe(1);
+    expect(castLines[0]).toContain('0:10  [YOU] [CAST]   Flame Shock → 2');
+  });
+
+  it('does NOT deduplicate different spells in the same second', () => {
+    const owner = makeUnit('u1', {
+      name: 'Feramonk',
+      spec: CombatUnitSpec.Priest_Holy,
+      spellCastEvents: [
+        makeSpellCastEvent('585', matchStartMs + 10000, 'enemy-1', 'Enemy', 'u1', 'Feramonk', 0, 'Smite'),
+        makeSpellCastEvent('2061', matchStartMs + 10500, 'enemy-1', 'Enemy', 'u1', 'Feramonk', 0, 'Flash Heal'),
+      ],
+    });
+
+    const result = buildMatchTimeline({
+      owner,
+      ownerSpec: 'Holy Priest',
+      ownerCDs: [],
+      teammateCDs: [],
+      enemyCDTimeline: { players: [], alignedBurstWindows: [] },
+      ccTrinketSummaries: [],
+      dispelSummary: {
+        allyCleanse: [],
+        ourPurges: [],
+        hostilePurges: [],
+        missedCleanseWindows: [],
+        ccEfficiency: [],
+        missedPurgeWindows: [],
+      } as any,
+      friendlyDeaths: [],
+      enemyDeaths: [],
+      pressureWindows: [],
+      healingGaps: [],
+      friends: [owner],
+      matchStartMs,
+      matchEndMs,
+      isHealer: true,
+      enemyIdMap: new Map([['Enemy', 2]]),
+    } as any);
+
+    const castLines = result.split('\n').filter((l) => l.includes('[YOU] [CAST]'));
+    expect(castLines.length).toBe(2);
+  });
+
+  it('deduplicates even in critical windows where folding is disabled', () => {
+    const owner = makeUnit('u1', {
+      name: 'Feramonk',
+      spec: CombatUnitSpec.Priest_Holy,
+      spellCastEvents: [
+        makeSpellCastEvent('585', matchStartMs + 10000, 'enemy-1', 'Enemy', 'u1', 'Feramonk', 0, 'Smite'),
+        makeSpellCastEvent('585', matchStartMs + 10001, 'enemy-1', 'Enemy', 'u1', 'Feramonk', 0, 'Smite'),
+      ],
+    });
+
+    const result = buildMatchTimeline({
+      owner,
+      ownerSpec: 'Holy Priest',
+      ownerCDs: [],
+      teammateCDs: [],
+      enemyCDTimeline: { players: [], alignedBurstWindows: [] },
+      ccTrinketSummaries: [],
+      dispelSummary: {
+        allyCleanse: [],
+        ourPurges: [],
+        hostilePurges: [],
+        missedCleanseWindows: [],
+        ccEfficiency: [],
+        missedPurgeWindows: [],
+      } as any,
+      friendlyDeaths: [{ spec: 'Holy Priest', name: 'Feramonk', atSeconds: 12 }], // Critical window around 10s
+      enemyDeaths: [],
+      pressureWindows: [],
+      healingGaps: [],
+      friends: [owner],
+      matchStartMs,
+      matchEndMs,
+      isHealer: true,
+      enemyIdMap: new Map([['Enemy', 2]]),
+    } as any);
+
+    const castLines = result.split('\n').filter((l) => l.includes('[YOU] [CAST]'));
+    // Folding is disabled in critical windows, so if dedup isn't working, we'd see 2 lines.
+    expect(castLines.length).toBe(1);
+  });
+});
