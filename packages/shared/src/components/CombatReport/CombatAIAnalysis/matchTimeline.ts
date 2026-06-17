@@ -1131,9 +1131,14 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
     const absorbStr = totalAbsorbed > 100_000 ? ` (${(totalAbsorbed / 1_000_000).toFixed(2)}M absorbed)` : '';
 
+    const topSources = targetUnit
+      ? getTopDamageSourcesInWindow(targetUnit, toMs, pw.toSeconds * 1000 - pw.fromSeconds * 1000)
+      : [];
+    const sourceStr = topSources.length > 0 ? `\n                 Top sources: ${topSources.join(', ')}` : '';
+
     addEntry(
       pw.fromSeconds,
-      `${fmtTime(pw.fromSeconds)}  [DMG SPIKE]   ${pid(pw.targetName)} (${pw.targetSpec}): ${dmgM}M in ${windowSec}s${hpStr}${absorbStr}`,
+      `${fmtTime(pw.fromSeconds)}  [DMG SPIKE]   ${pid(pw.targetName)} (${pw.targetSpec}): ${dmgM}M in ${windowSec}s${hpStr}${absorbStr}${sourceStr}`,
     );
   }
 

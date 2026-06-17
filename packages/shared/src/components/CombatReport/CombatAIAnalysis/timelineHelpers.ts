@@ -12,6 +12,7 @@ import {
 import { getDampeningPercentage } from '../../../utils/dampening';
 import { IEnemyCDTimeline } from '../../../utils/enemyCDs';
 import { getHpPercentAtTime } from '../../../utils/killWindowTargetSelection';
+import { getSpellSchoolName } from '../../../utils/spellSchools';
 
 export { PASSIVE_SPELL_BLOCKLIST };
 
@@ -392,7 +393,11 @@ export function getTopDamageSourcesInWindow(unit: ICombatUnit, endMs: number, wi
     const srcType = getUnitType(d.srcUnitFlags);
     const isPet = srcType === CombatUnitType.Pet || srcType === CombatUnitType.Guardian;
     const srcName = isPet ? '[pet]' : d.srcUnitName || 'Unknown';
-    const spellLabel = d.spellId ? getEnglishSpellName(d.spellId, d.spellName) : (d.spellName ?? 'melee');
+    const baseSpellLabel = d.spellId ? getEnglishSpellName(d.spellId, d.spellName) : (d.spellName ?? 'melee');
+
+    const schoolName = getSpellSchoolName(d.spellSchoolId);
+    const spellLabel = schoolName ? `${baseSpellLabel} [${schoolName}]` : baseSpellLabel;
+
     const key = `${srcName} — ${spellLabel}`;
     buckets.set(key, (buckets.get(key) ?? 0) + dmg);
   }
