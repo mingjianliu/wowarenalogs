@@ -5260,44 +5260,62 @@ describe('buildMatchTimeline — B15: Duplicate [CAST] lines', () => {
     expect(castLines[0]).toContain('0:10  [YOU] [CAST]   Flame Shock → 2');
   });
 
-  it('does NOT deduplicate different spells in the same second', () => {
+  it('B21: deduplicates identical casts within 0.5s (sliding window)', () => {
     const owner = makeUnit('u1', {
       name: 'Feramonk',
       spec: CombatUnitSpec.Priest_Holy,
       spellCastEvents: [
-        makeSpellCastEvent('585', matchStartMs + 10000, 'enemy-1', 'Enemy', 'u1', 'Feramonk', 0, 'Smite'),
-        makeSpellCastEvent('2061', matchStartMs + 10500, 'enemy-1', 'Enemy', 'u1', 'Feramonk', 0, 'Flash Heal'),
+        makeSpellCastEvent('188389', matchStartMs + 10990, 'enemy-1', 'Enemy', 'u1', 'Feramonk', 0, 'Flame Shock'),
+        // 10ms later
+        makeSpellCastEvent('470411', matchStartMs + 11000, 'enemy-1', 'Enemy', 'u1', 'Feramonk', 0, 'Flame Shock'),
       ],
     });
 
-    const result = buildMatchTimeline({
-      owner,
-      ownerSpec: 'Holy Priest',
-      ownerCDs: [],
-      teammateCDs: [],
-      enemyCDTimeline: { players: [], alignedBurstWindows: [] },
-      ccTrinketSummaries: [],
-      dispelSummary: {
-        allyCleanse: [],
-        ourPurges: [],
-        hostilePurges: [],
-        missedCleanseWindows: [],
-        ccEfficiency: [],
-        missedPurgeWindows: [],
-      } as any,
-      friendlyDeaths: [],
-      enemyDeaths: [],
-      pressureWindows: [],
-      healingGaps: [],
-      friends: [owner],
-      matchStartMs,
-      matchEndMs,
-      isHealer: true,
-      enemyIdMap: new Map([['Enemy', 2]]),
-    } as any);
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        matchStartMs,
+        matchEndMs,
+      }),
+    );
+    // B21: Old behavior (Math.floor) would see 10.990 and 11.000 as different seconds and NOT dedup.
+    // New behavior should see them as 10ms apart and dedup them.
+    const castMatches = result.match(/Flame Shock/g) ?? [];
+    expect(castMatches).toHaveLength(1);
+  });
 
-    const castLines = result.split('\n').filter((l) => l.includes('[YOU] [CAST]'));
-    expect(castLines.length).toBe(2);
+  it('B21: does NOT deduplicate identical casts > 0.5s apart', () => {
+    const owner = makeUnit('u1', {
+      name: 'Feramonk',
+      spec: CombatUnitSpec.Priest_Holy,
+      spellCastEvents: [
+        makeSpellCastEvent('188389', matchStartMs + 10000, 'enemy-1', 'Enemy', 'u1', 'Feramonk', 0, 'Flame Shock'),
+        // 600ms later
+        makeSpellCastEvent('188389', matchStartMs + 10600, 'enemy-1', 'Enemy', 'u1', 'Feramonk', 0, 'Flame Shock'),
+      ],
+    });
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        matchStartMs,
+        matchEndMs,
+        // Add pressure window to disable F151 folding
+        pressureWindows: [
+          {
+            fromSeconds: 9,
+            toSeconds: 12,
+            targetName: 'Enemy',
+            targetSpec: 'Frost Mage',
+            totalDamage: 1_000_000,
+          },
+        ],
+      }),
+    );
+    const castMatches = result.match(/Flame Shock/g) ?? [];
+    expect(castMatches).toHaveLength(2);
   });
 
   it('deduplicates even in critical windows where folding is disabled', () => {
