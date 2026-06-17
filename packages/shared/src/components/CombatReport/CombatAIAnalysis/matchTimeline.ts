@@ -1067,6 +1067,25 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     }
   }
 
+  // ── F170: [ENEMY HARD CAST] — hard-cast kill spells (Chaos Bolt, Pyroblast) ─
+  {
+    const HARD_CAST_KILL_SPELLS = new Set(['116858', '11366', '1254294']); // Chaos Bolt, Pyroblast
+    for (const enemy of enemies ?? []) {
+      for (const event of enemy.spellCastEvents) {
+        if (event.logLine.event !== LogEvent.SPELL_CAST_START) continue;
+        if (!event.spellId || !HARD_CAST_KILL_SPELLS.has(event.spellId)) continue;
+        const timeSeconds = (event.timestamp - matchStartMs) / 1000;
+        if (timeSeconds < 0 || timeSeconds > matchEndSeconds) continue;
+        const spellName = getEnglishSpellName(event.spellId, event.spellName);
+        const target = event.destUnitName ? ` → ${pid(event.destUnitName)}` : '';
+        addEntry(
+          timeSeconds,
+          `${fmtTime(timeSeconds)}  [ENEMY HARD CAST]   ${enemyPid(enemy.name)}: ${spellName}${target}`,
+        );
+      }
+    }
+  }
+
   // ── [TRINKET] and [CC ON TEAM] events ──────────────────────────────────────
 
   const isDangerousTime = (t: number) => {
