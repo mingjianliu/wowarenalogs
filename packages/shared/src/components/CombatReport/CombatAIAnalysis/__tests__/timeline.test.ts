@@ -403,7 +403,7 @@ describe('buildMatchTimeline — [DEATH] events', () => {
     expect(result).toContain('(Unused: Lay on Hands)');
   });
 
-  it('includes HP trajectory when advanced data is present', () => {
+  it('includes HP trajectory with fine sampling when advanced data is present', () => {
     const matchStartMs = 1_000_000;
     const deathAtSeconds = 118;
     const deathMs = matchStartMs + deathAtSeconds * 1000;
@@ -413,6 +413,7 @@ describe('buildMatchTimeline — [DEATH] events', () => {
       advancedActions: [
         makeAdvancedAction(deathMs - 15_000, 0, 0, 500_000, 400_000), // 80% at T-15s
         makeAdvancedAction(deathMs - 5_000, 0, 0, 500_000, 200_000), // 40% at T-5s
+        makeAdvancedAction(deathMs - 1_000, 0, 0, 500_000, 50_000), // 10% at T-1s
       ],
     });
 
@@ -423,10 +424,31 @@ describe('buildMatchTimeline — [DEATH] events', () => {
         matchStartMs,
       }),
     );
-    expect(result).toContain('HP:');
-    expect(result).toContain('80%');
-    expect(result).toContain('40%');
-    expect(result).toContain('→ dead');
+    expect(result).toContain(
+      'HP: 80% at T-15s → 80% at T-10s → 40% at T-5s → 40% at T-3s → 40% at T-2s → 10% at T-1s → dead',
+    );
+  });
+
+  it('includes HP trajectory for enemy deaths when advanced data is present', () => {
+    const matchStartMs = 1_000_000;
+    const deathAtSeconds = 118;
+    const deathMs = matchStartMs + deathAtSeconds * 1000;
+
+    const unit = makeUnit('enemy-1', {
+      name: 'Enemysauce',
+      advancedActions: [
+        makeAdvancedAction(deathMs - 5_000, 0, 0, 500_000, 200_000), // 40% at T-5s
+      ],
+    });
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        enemies: [unit],
+        enemyDeaths: [{ spec: 'Frost Mage', name: 'Enemysauce', atSeconds: deathAtSeconds }],
+        matchStartMs,
+      }),
+    );
+    expect(result).toContain('HP: 40% at T-5s → 40% at T-3s → 40% at T-2s → 40% at T-1s → dead');
   });
 
   it('includes top damage sources in final 10s for friendly deaths', () => {
