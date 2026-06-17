@@ -1283,6 +1283,46 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     expect(result).toContain('[YOU] [CAST]   Greater Purge → Enemy [removed: Power Infusion]');
   });
 
+  it('F163: filters out low/medium priority cleanses and purges', () => {
+    const matchStartMs = 0;
+    const owner = makeUnit('u1', {
+      name: 'Denoiser',
+      spellCastEvents: [
+        makeSpellCastEvent('527', matchStartMs + 10000, 'teammate-1', 'Friend', 'u1', 'Denoiser', 0, 'Purify'),
+        makeSpellCastEvent('378773', matchStartMs + 20000, 'enemy-1', 'Enemy', 'u1', 'Denoiser', 0, 'Greater Purge'),
+      ],
+    });
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        dispelSummary: {
+          ...makeBaseParams().dispelSummary,
+          allyCleanse: [
+            {
+              timeSeconds: 10,
+              removedSpellName: 'Random Dot',
+              priority: 'Low', // Should be filtered
+              sourceName: 'Denoiser',
+              targetName: 'Friend',
+            } as any,
+          ],
+          ourPurges: [
+            {
+              timeSeconds: 20,
+              removedSpellName: 'Minor Buff',
+              priority: 'Medium', // Should be filtered
+              sourceName: 'Denoiser',
+              targetName: 'Enemy',
+            } as any,
+          ],
+        },
+      }),
+    );
+    expect(result).not.toContain('[CLEANSE]');
+    expect(result).not.toContain('[removed: Minor Buff]');
+  });
+
   it('emits [DMG SPIKE] only for windows ≥300k', () => {
     const windows: IDamageBucket[] = [
       {
