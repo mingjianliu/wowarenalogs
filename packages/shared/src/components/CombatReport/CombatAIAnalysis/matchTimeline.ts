@@ -924,7 +924,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       const matchingPurges = ownerPurges.filter((p) => Math.abs(p.timeSeconds - timeSeconds) <= 0.5);
       if (matchingPurges.length > 0) {
         const removedNames = matchingPurges.map((p) => p.removedSpellName).join(', ');
-        purgeNote = ` (Removed: ${removedNames})`;
+        purgeNote = ` [removed: ${removedNames}]`;
       }
 
       // F95: Offensive CC casts should carry a CC annotation or use an [YOU] [CC] prefix.

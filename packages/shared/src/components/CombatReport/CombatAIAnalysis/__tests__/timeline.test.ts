@@ -1253,6 +1253,36 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     expect(result).toContain('[CLEANSED]');
   });
 
+  it('F159: annotates offensive-purge casts with the removed buff name', () => {
+    const matchStartMs = 0;
+    const owner = makeUnit('u1', {
+      name: 'Purgelord',
+      spellCastEvents: [
+        makeSpellCastEvent('378773', matchStartMs + 10000, 'enemy-1', 'Enemy', 'u1', 'Purgelord', 0, 'Greater Purge'),
+      ],
+    });
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        dispelSummary: {
+          ...makeBaseParams().dispelSummary,
+          ourPurges: [
+            {
+              timeSeconds: 10,
+              removedSpellName: 'Power Infusion',
+              removedSpellId: '10060',
+              sourceName: 'Purgelord',
+              targetName: 'Enemy',
+              priority: 'High',
+            } as any,
+          ],
+        },
+      }),
+    );
+    expect(result).toContain('[YOU] [CAST]   Greater Purge → Enemy [removed: Power Infusion]');
+  });
+
   it('emits [DMG SPIKE] only for windows ≥300k', () => {
     const windows: IDamageBucket[] = [
       {
