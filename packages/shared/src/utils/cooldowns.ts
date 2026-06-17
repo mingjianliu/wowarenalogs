@@ -147,7 +147,7 @@ const SPEC_EXCLUSIVE_SPELLS: Record<string, CombatUnitSpec[]> = {
   '108194': [CombatUnitSpec.DeathKnight_Unholy], // Asphyxiate (Unholy)
   // Evoker
   '375087': [CombatUnitSpec.Evoker_Devastation], // Dragonrage
-  '363916': [CombatUnitSpec.Evoker_Devastation], // Obsidian Scales
+  '363916': [CombatUnitSpec.Evoker_Devastation, CombatUnitSpec.Evoker_Preservation, CombatUnitSpec.Evoker_Augmentation], // Obsidian Scales
   '359816': [CombatUnitSpec.Evoker_Preservation], // Dream Flight
   '363534': [CombatUnitSpec.Evoker_Preservation], // Rewind
   '370960': [CombatUnitSpec.Evoker_Preservation], // Emerald Communion
