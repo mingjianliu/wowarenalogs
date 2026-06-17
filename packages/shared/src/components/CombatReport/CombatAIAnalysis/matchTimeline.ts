@@ -494,11 +494,32 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       if (hp !== null && hp < 40 && dotCount >= 3) {
         consecutiveRotSeconds++;
         if (consecutiveRotSeconds >= 4 && !emittedForThisBlock) {
-          addEntry(
-            t,
-            `${fmtTime(t)}  [ROT PRESSURE]   ${pid(player.name)} (${specToString(player.spec)}) at ${Math.round(hp)}% HP with ${dotCount} active DoTs`,
-          );
-          emittedForThisBlock = true;
+          const windowStartMs = tsMs - 4000;
+          const windowEndMs = tsMs;
+
+          let periodicDmg = 0;
+          let totalDmg = 0;
+
+          for (const dmg of player.damageIn) {
+            if (dmg.timestamp >= windowStartMs && dmg.timestamp <= windowEndMs) {
+              const amount = Math.abs(dmg.effectiveAmount || dmg.amount);
+              totalDmg += amount;
+              if (
+                dmg.logLine.event === 'SPELL_PERIODIC_DAMAGE' ||
+                dmg.logLine.event === 'SPELL_PERIODIC_DAMAGE_SUPPORT'
+              ) {
+                periodicDmg += amount;
+              }
+            }
+          }
+
+          if (totalDmg === 0 || periodicDmg / totalDmg >= 0.5) {
+            addEntry(
+              t,
+              `${fmtTime(t)}  [ROT PRESSURE]   ${pid(player.name)} (${specToString(player.spec)}) at ${Math.round(hp)}% HP with ${dotCount} active DoTs`,
+            );
+            emittedForThisBlock = true;
+          }
         }
       } else {
         consecutiveRotSeconds = 0;
