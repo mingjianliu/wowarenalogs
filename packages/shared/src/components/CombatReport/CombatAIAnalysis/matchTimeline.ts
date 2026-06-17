@@ -818,7 +818,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       .flatMap((s) => s.ccInstances.map((cc) => Math.round(matchStartMs + cc.atSeconds * 1000)));
 
     // F159: Track owner's successful offensive purges
-    const ownerPurges = dispelSummary.ourPurges.filter((p) => p.sourceName === owner.name);
+    // F163: Filter out low/medium priority purges to de-noise the timeline
+    const ownerPurges = dispelSummary.ourPurges.filter(
+      (p) => p.sourceName === owner.name && (p.priority === 'Critical' || p.priority === 'High'),
+    );
 
     const seenCasts = new Set<string>();
 
@@ -1144,9 +1147,11 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   }
 
   // B14: Consolidate same-second same-source cleanses (e.g. Mass Dispel) into one line.
+  // F163: Filter out low/medium priority cleanses to de-noise the timeline.
   {
     const cleanseGroups = new Map<string, IDispelEvent[]>();
     for (const cleanse of dispelSummary.allyCleanse) {
+      if (cleanse.priority !== 'Critical' && cleanse.priority !== 'High') continue;
       const key = `${Math.round(cleanse.timeSeconds)}|${cleanse.sourceName}`;
       const group = cleanseGroups.get(key) ?? [];
       group.push(cleanse);
