@@ -14,8 +14,10 @@ import { IFormInterval, ISpiritOfRedemptionInterval, IStasisEvent } from '../../
 import {
   fmtTime,
   getUnitHpAtTimestamp,
+  getUnitManaAtTimestamp,
   IDamageBucket,
   IMajorCooldownInfo,
+  isHealerSpec,
   specToBenchmarkKey,
   specToString,
   USABLE_WHILE_CC_SPELL_IDS,
@@ -1468,6 +1470,56 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     }
 
     addEntry(t, `${fmtTime(t)}  [STATE]   ${stateParts}`);
+  }
+
+  // 8.5 Add Mana Context for long matches (F144)
+  if (matchDurationS > 300) {
+    const friendlyHealers = [owner, ...friends].filter((u) => isHealerSpec(u.spec));
+    const enemyHealers = (enemies ?? []).filter((u) => isHealerSpec(u.spec));
+
+    if (friendlyHealers.length > 0 || enemyHealers.length > 0) {
+      for (let t = 0; t <= Math.floor(matchDurationS); t += 30) {
+        const tsMs = matchStartMs + t * 1000;
+
+        const friendlyParts: string[] = [];
+        for (const u of friendlyHealers) {
+          const deathAt = friendlyDeathAtByName.get(u.name);
+          const isDead = deathAt !== undefined && t >= Math.floor(deathAt);
+          if (isDead) continue;
+
+          const mana = getUnitManaAtTimestamp(u, tsMs);
+          if (mana) {
+            const pct = mana.max > 0 ? Math.round((mana.current / mana.max) * 100) : 0;
+            friendlyParts.push(`${pid(u.name)}:${pct}%`);
+          }
+        }
+
+        const enemyParts: string[] = [];
+        for (const u of enemyHealers) {
+          const deathAt = enemyDeathAtByName.get(u.name);
+          const isDead = deathAt !== undefined && t >= Math.floor(deathAt);
+          if (isDead) continue;
+
+          const mana = getUnitManaAtTimestamp(u, tsMs);
+          if (mana) {
+            const pct = mana.max > 0 ? Math.round((mana.current / mana.max) * 100) : 0;
+            enemyParts.push(`${enemyPid(u.name)}:${pct}%`);
+          }
+        }
+
+        if (friendlyParts.length > 0 || enemyParts.length > 0) {
+          let manaParts: string;
+          if (friendlyParts.length > 0 && enemyParts.length > 0) {
+            manaParts = `friends ${friendlyParts.join(' ')} / enemies ${enemyParts.join(' ')}`;
+          } else if (friendlyParts.length > 0) {
+            manaParts = `friends ${friendlyParts.join(' ')}`;
+          } else {
+            manaParts = `enemies ${enemyParts.join(' ')}`;
+          }
+          addEntry(t, `${fmtTime(t)}  [MANA]   ${manaParts}`);
+        }
+      }
+    }
   }
 
   // 9. Add Form shifts (Verbose mode only)
