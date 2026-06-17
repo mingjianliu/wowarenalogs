@@ -305,6 +305,29 @@ export function buildResourceSnapshot({
       }
     }
   }
+
+  // ── F164: Enemy Focus Target ─────────────────────────────────────────────
+  if (matchStartMs !== undefined && ownerUnit) {
+    let maxDmg = 0;
+    let focusFriendName = '';
+    const focusLookbackMs = 3000;
+    const allFriends = [ownerUnit, ...teammateCDs.map((t) => t.player)].filter(Boolean);
+    const atMs = matchStartMs + timeSeconds * 1000;
+    for (const f of allFriends) {
+      const dmg = (f.damageIn || [])
+        .filter((d) => d.logLine.timestamp >= atMs - focusLookbackMs && d.logLine.timestamp <= atMs)
+        .reduce((sum, d) => sum + Math.abs(d.effectiveAmount), 0);
+      if (dmg > maxDmg) {
+        maxDmg = dmg;
+        focusFriendName = f.name;
+      }
+    }
+    // Only flag a focus target if damage was meaningful (> 50k in 3 seconds)
+    if (maxDmg > 50000) {
+      enemyActiveParts.push(`focus:${pid(focusFriendName)}`);
+    }
+  }
+
   if (enemyActiveParts.length > 0) {
     line += `  enemy:${enemyActiveParts.join(',')}`;
   }
