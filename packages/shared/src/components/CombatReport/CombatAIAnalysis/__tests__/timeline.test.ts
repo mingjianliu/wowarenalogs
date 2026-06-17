@@ -3943,6 +3943,33 @@ describe('buildResourceSnapshot — F72 compact [RES] format', () => {
     });
     expect(result).toBe('');
   });
+
+  it('F164: includes focus target in [RES] lines when damage is concentrated', () => {
+    const matchStartMs = 1000000;
+    const friend = makeUnit('teammate-1', {
+      name: 'TargetDummy',
+      damageIn: [
+        {
+          timestamp: matchStartMs + 10000,
+          effectiveAmount: -100_000,
+          logLine: { event: LogEvent.SPELL_DAMAGE } as any,
+        } as any,
+      ],
+    });
+    const result = buildResourceSnapshot({
+      timeSeconds: 12,
+      ownerCDs: [],
+      ownerName: 'Owner',
+      ownerSpec: 'Holy Paladin',
+      teammateCDs: [{ player: friend, spec: 'Arms Warrior', cds: [] }],
+      ccTrinketSummaries: [],
+      enemyCDTimeline: { players: [], alignedBurstWindows: [] },
+      playerIdMap: new Map([['TargetDummy', 2]]),
+      matchStartMs,
+      ownerUnit: makeUnit('u1', { name: 'Owner' }),
+    });
+    expect(result).toContain('focus:2');
+  });
 });
 
 describe('buildResourceSnapshot — delta form (F83)', () => {
