@@ -584,6 +584,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     const deathLines: string[] = [
       `${fmtTime(death.atSeconds)}  [DEATH]  ${pid(death.name)} (${death.spec} — friendly)${unusedDefensives}${trinketPart}${notePart}`,
     ];
+    const deathResSnapshot = resourceSnapshot(death.atSeconds - 3, true);
+    if (deathResSnapshot) {
+      deathLines.push(deathResSnapshot);
+    }
     if (dyingUnit) {
       // HP trajectory
       const checkpoints = [15, 10, 5, 3, 2, 1];
@@ -613,6 +617,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       `${fmtTime(death.atSeconds)}  [DEATH]  ${enemyPid(death.name)} (${death.spec} — enemy)`,
       `${fmtTime(death.atSeconds)}  [ROSTER]  enemy ${enemyPid(death.name)} removed (dead)`,
     ];
+    const deathResSnapshot = resourceSnapshot(death.atSeconds - 3, true);
+    if (deathResSnapshot) {
+      deathLines.push(deathResSnapshot);
+    }
 
     if (dyingUnit) {
       // HP trajectory
@@ -701,12 +709,37 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     healingEmissionTimes.set(cd.spellId, emit);
   }
 
+  const _allUnits = allUnits ?? [...friends, ...(enemies ?? [])];
+
   for (const cd of ownerCDs) {
     for (const cast of cd.casts) {
-      const targetPart =
-        cast.targetName !== undefined
-          ? ` → ${pid(cast.targetName)}${cast.targetHpPct !== undefined ? ` (${cast.targetHpPct}% HP)` : ''}`
-          : '';
+      const targetUnit = cast.targetName ? _allUnits.find((u) => u.name === cast.targetName) : owner;
+      let velocityStr = '';
+      if (targetUnit && !ccSpellIds.has(cd.spellId)) {
+        const hpNow = getHpPercentAtTime(targetUnit, cast.timeSeconds, matchStartMs);
+        const hpBefore = getHpPercentAtTime(targetUnit, cast.timeSeconds - 2, matchStartMs);
+        if (hpNow !== null && hpBefore !== null) {
+          const perSec = (hpNow - hpBefore) / 2;
+          const sign = perSec > 0 ? '+' : '';
+          velocityStr = `, ${sign}${perSec.toFixed(1)}%/s`;
+        }
+      }
+
+      let targetPart = '';
+      if (cast.targetName !== undefined) {
+        targetPart = ` → ${pid(cast.targetName)}`;
+        const hpPct =
+          cast.targetHpPct ??
+          (targetUnit ? getHpPercentAtTime(targetUnit, cast.timeSeconds, matchStartMs)?.toFixed(0) : undefined);
+        if (hpPct !== undefined || velocityStr !== '') {
+          targetPart += ` (${hpPct ?? '?'}% HP${velocityStr})`;
+        }
+      } else if (velocityStr !== '') {
+        const hpNow = getHpPercentAtTime(owner, cast.timeSeconds, matchStartMs);
+        if (hpNow !== null) {
+          targetPart = ` (self: ${hpNow.toFixed(0)}% HP${velocityStr})`;
+        }
+      }
 
       const isCC = ccSpellIds.has(cd.spellId);
       const extraLines: string[] = [resourceSnapshot(cast.timeSeconds, !isCC)];
@@ -1137,6 +1170,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     if (pw.totalDamage < DMG_SPIKE_THRESHOLD) continue;
     const dmgM = (pw.totalDamage / 1_000_000).toFixed(2);
     const windowSec = Math.round(pw.toSeconds - pw.fromSeconds);
+    const dpsK = Math.round(pw.totalDamage / windowSec / 1000);
 
     const targetUnit = friends.find((f) => f.name === pw.targetName);
     const hpFrom = targetUnit ? getUnitHpAtTimestamp(targetUnit, matchStartMs + pw.fromSeconds * 1000, 2000) : null;
@@ -1173,7 +1207,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
     addEntry(
       pw.fromSeconds,
-      `${fmtTime(pw.fromSeconds)}  [DMG SPIKE]   ${pid(pw.targetName)} (${pw.targetSpec}): ${dmgM}M in ${windowSec}s${hpStr}${absorbStr}${sourceStr}`,
+      `${fmtTime(pw.fromSeconds)}  [DMG SPIKE]   ${pid(pw.targetName)} (${pw.targetSpec}): ${dmgM}M in ${windowSec}s (${dpsK}k DPS)${hpStr}${absorbStr}${sourceStr}`,
     );
   }
 
