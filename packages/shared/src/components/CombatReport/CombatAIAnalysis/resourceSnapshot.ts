@@ -319,9 +319,13 @@ export function buildResourceSnapshot({
     const allFriends = [ownerUnit, ...teammateCDs.map((t) => t.player)].filter(Boolean);
     const atMs = matchStartMs + timeSeconds * 1000;
     for (const f of allFriends) {
-      const dmg = (f.damageIn || [])
-        .filter((d) => d.logLine.timestamp >= atMs - focusLookbackMs && d.logLine.timestamp <= atMs)
+      const dmgIn = (f.damageIn || [])
+        .filter((d) => d.timestamp >= atMs - focusLookbackMs && d.timestamp <= atMs)
         .reduce((sum, d) => sum + Math.abs(d.effectiveAmount), 0);
+      const absIn = (f.absorbsIn || [])
+        .filter((a) => a.timestamp >= atMs - focusLookbackMs && a.timestamp <= atMs)
+        .reduce((sum, a) => sum + a.absorbedAmount, 0);
+      const dmg = dmgIn + absIn;
       if (dmg > maxDmg) {
         maxDmg = dmg;
         focusFriendName = f.name;
