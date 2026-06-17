@@ -143,6 +143,7 @@ export function extractStasisEvents(unit: ICombatUnit, combat: AtomicArenaCombat
   let startSeconds = 0;
   let bufferedSpells: string[] = [];
   let doseRemovals = 0;
+  let lastStasisCastTimestamp = 0;
 
   // We scan aura events (for boundaries and stored-spell doses) and cast events
   // (for the buffered spell names).
@@ -171,6 +172,10 @@ export function extractStasisEvents(unit: ICombatUnit, combat: AtomicArenaCombat
     });
 
   for (const e of mergedEvents) {
+    if (e.spellId === STASIS_SPELL_ID && e.logLine.event === LogEvent.SPELL_CAST_SUCCESS) {
+      lastStasisCastTimestamp = e.logLine.timestamp;
+    }
+
     if (e.spellId === STASIS_SPELL_ID && e.logLine.event === LogEvent.SPELL_AURA_APPLIED) {
       isBuffering = true;
       startSeconds = (e.logLine.timestamp - combat.startTime) / 1000;
@@ -179,12 +184,18 @@ export function extractStasisEvents(unit: ICombatUnit, combat: AtomicArenaCombat
     } else if (e.spellId === STASIS_SPELL_ID && e.logLine.event === LogEvent.SPELL_AURA_REMOVED && isBuffering) {
       // The final removal is itself one stored-spell consumption when doses preceded it.
       const dosedCount = doseRemovals > 0 ? doseRemovals + 1 : doseRemovals;
-      events.push({
-        startSeconds,
-        releaseSeconds: (e.logLine.timestamp - combat.startTime) / 1000,
-        spells: [...bufferedSpells],
-        storedCount: Math.max(bufferedSpells.length, dosedCount),
-      });
+      const storedCount = Math.max(bufferedSpells.length, dosedCount);
+      const isManualRelease = lastStasisCastTimestamp === e.logLine.timestamp;
+      const isAutomaticRelease = storedCount === 3;
+
+      if (isManualRelease || isAutomaticRelease) {
+        events.push({
+          startSeconds,
+          releaseSeconds: (e.logLine.timestamp - combat.startTime) / 1000,
+          spells: [...bufferedSpells],
+          storedCount,
+        });
+      }
       isBuffering = false;
     } else if (isBuffering && e.spellId === STASIS_SPELL_ID && e.logLine.event === LogEvent.SPELL_AURA_REMOVED_DOSE) {
       doseRemovals += 1;
