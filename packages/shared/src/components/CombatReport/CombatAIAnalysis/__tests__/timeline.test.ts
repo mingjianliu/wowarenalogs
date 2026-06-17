@@ -5459,3 +5459,63 @@ describe('buildMatchTimeline — F144: Long-Match Healer Mana Context', () => {
     expect(result).not.toContain('0:30  [MANA]');
   });
 });
+
+describe('buildResourceSnapshot — focus-target absorbs (B22)', () => {
+  it('counts absorbed damage towards the focus-target threshold', () => {
+    const owner = makeUnit('u1', {
+      name: 'Feramonk',
+      spec: CombatUnitSpec.Priest_Holy,
+      damageIn: [],
+      absorbsIn: [
+        {
+          timestamp: 29000,
+          absorbedAmount: 60000,
+          logLine: { timestamp: 29000 } as any,
+        } as any,
+      ],
+    });
+
+    const result = buildResourceSnapshot({
+      timeSeconds: 30,
+      ownerCDs: [],
+      ownerName: 'Feramonk',
+      ownerSpec: 'Holy Priest',
+      teammateCDs: [],
+      ccTrinketSummaries: [],
+      enemyCDTimeline: { players: [], alignedBurstWindows: [] },
+      matchStartMs: 0,
+      ownerUnit: owner,
+    });
+
+    expect(result).toContain('focus:Feramonk');
+  });
+
+  it('ignores absorbed damage outside the 3-second focus lookback window', () => {
+    const owner = makeUnit('u1', {
+      name: 'Feramonk',
+      spec: CombatUnitSpec.Priest_Holy,
+      damageIn: [],
+      absorbsIn: [
+        {
+          timestamp: 25000, // 5 seconds ago
+          absorbedAmount: 60000,
+          logLine: { timestamp: 25000 } as any,
+        } as any,
+      ],
+    });
+
+    const result = buildResourceSnapshot({
+      timeSeconds: 30,
+      ownerCDs: [],
+      ownerName: 'Feramonk',
+      ownerSpec: 'Holy Priest',
+      teammateCDs: [],
+      ccTrinketSummaries: [],
+      enemyCDTimeline: { players: [], alignedBurstWindows: [] },
+      matchStartMs: 0,
+      ownerUnit: owner,
+    });
+
+    expect(result).not.toContain('focus:Feramonk');
+  });
+});

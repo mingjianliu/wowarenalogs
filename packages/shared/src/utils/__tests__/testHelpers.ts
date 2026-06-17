@@ -157,6 +157,7 @@ export function makeUnit(
     actionOut?: AnyObj[];
     damageIn?: AnyObj[];
     healOut?: AnyObj[];
+    absorbsIn?: AnyObj[];
     advancedActions?: AnyObj[];
     info?: AnyObj | undefined;
     ownerId?: string;
@@ -177,7 +178,7 @@ export function makeUnit(
     damageOut: [],
     healIn: [],
     healOut: (overrides.healOut ?? []) as ICombatUnit['healOut'],
-    absorbsIn: [],
+    absorbsIn: (overrides.absorbsIn ?? []) as ICombatUnit['absorbsIn'],
     absorbsOut: [],
     absorbsDamaged: [],
     supportDamageIn: [],

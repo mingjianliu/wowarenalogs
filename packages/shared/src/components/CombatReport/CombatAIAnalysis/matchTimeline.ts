@@ -1,11 +1,4 @@
-import {
-  CombatAbsorbAction,
-  CombatUnitReaction,
-  CombatUnitType,
-  getUnitType,
-  ICombatUnit,
-  LogEvent,
-} from '@wowarenalogs/parser';
+import { CombatUnitReaction, CombatUnitType, getUnitType, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
 import { getEnglishSpellName, spellEffectData } from '../../../data/spellEffectData';
 import { ccSpellIds } from '../../../data/spellTags';
@@ -491,7 +484,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
           for (const dmg of player.damageIn) {
             if (dmg.timestamp >= windowStartMs && dmg.timestamp <= windowEndMs) {
-              const amount = Math.abs(dmg.effectiveAmount || dmg.amount);
+              const amount = Math.abs(dmg.effectiveAmount);
               totalDmg += amount;
               if (
                 dmg.logLine.event === 'SPELL_PERIODIC_DAMAGE' ||
@@ -1233,14 +1226,8 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
     const fromMs = matchStartMs + pw.fromSeconds * 1000;
     const toMs = matchStartMs + pw.toSeconds * 1000;
-    const windowEvents =
-      targetUnit?.damageIn.filter((d) => d.logLine.timestamp >= fromMs && d.logLine.timestamp <= toMs) ?? [];
-    const totalAbsorbed = windowEvents.reduce((sum, d) => {
-      if (d.logLine.event === LogEvent.SPELL_ABSORBED) {
-        return sum + ((d as unknown as CombatAbsorbAction).absorbedAmount ?? 0);
-      }
-      return sum;
-    }, 0);
+    const windowAbsorbs = targetUnit?.absorbsIn.filter((a) => a.timestamp >= fromMs && a.timestamp <= toMs) ?? [];
+    const totalAbsorbed = windowAbsorbs.reduce((sum, a) => sum + (a.absorbedAmount ?? 0), 0);
 
     const absorbStr = totalAbsorbed > 100_000 ? ` (${(totalAbsorbed / 1_000_000).toFixed(2)}M absorbed)` : '';
 
