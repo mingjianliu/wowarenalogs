@@ -138,7 +138,10 @@ Your goal is **resource optimization, not survival confirmation**. Do not explai
 
 You are given a PLAYER LOADOUT (all major CDs available this match) and a MATCH TIMELINE (raw chronological events). Your actions are marked with the **[YOU]** tag. Each **[YOU] [CD]** and **[TEAM] [CD]** event is followed by a [RES] line showing ground-truth state at that exact moment. Fields: rdy = friendly CDs ready now; cd = friendly CDs on cooldown with seconds remaining; enemy = enemy offensive CDs cast in the last 30s with seconds since cast (field absent = none active); cc = friendly players currently CC'd with seconds remaining (field absent = all players free). A [stun] tag means the player is cast-locked; [trinketed] means they used their PvP trinket at this exact moment.
 
-[DMG SPIKE] and [UNCLEANSED DEBUFF] events include damage values. Units are: M = Million (1,000,000), k = Thousand (1,000). e.g., "0.84M" = 840,000 damage.
+[DMG SPIKE] and [UNCLEANSED DEBUFF] events include damage values. Units are: M = Million (1,000,000), k = Thousand (1,000). e.g., "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage.
+Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).
+Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).
+In [STATE], any unit not listed is at 100% HP. Dead units appear with ":dead" (or ":ghost" for Spirit of Redemption).
 
 Identify the most important decision points yourself. Read the full timeline, build your own causal narrative about what happened and why, then evaluate the decisions that most affected match outcome.
 

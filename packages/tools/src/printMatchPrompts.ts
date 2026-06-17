@@ -857,12 +857,6 @@ export function buildMatchPromptNew(
   lines.push('</metadata>');
   lines.push('');
 
-  lines.push('<dictionary>');
-  lines.push('  Damage units: M = Million (1,000,000), k = Thousand (1,000)');
-  lines.push('  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage');
-  lines.push('</dictionary>');
-  lines.push('');
-
   lines.push('<purge_responsibility>');
   lines.push(`  Log owner (${ownerSpec}): ${ownerCanPurge ? 'CAN offensive purge' : 'CANNOT offensive purge'}`);
   lines.push(`  Team purgers: ${teamPurgers.length > 0 ? teamPurgers.join(', ') : 'none'}`);

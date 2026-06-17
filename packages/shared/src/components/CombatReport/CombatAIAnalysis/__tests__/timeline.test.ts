@@ -833,7 +833,7 @@ describe('buildMatchTimeline — CD events', () => {
 });
 
 describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () => {
-  it('emits [CC ON TEAM] with trinket: available when trinket was available (B108 fix)', () => {
+  it('emits [CC ON TEAM] without trinket: available annotation when trinket was available (F171 token optimization)', () => {
     const cc: ICCInstance = {
       atSeconds: 37,
       durationSeconds: 4,
@@ -854,11 +854,11 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     );
     expect(result).toContain('[CC ON TEAM]');
     expect(result).toContain('Feramonk ← Hammer of Justice (Dzinked)');
-    expect(result).toContain('trinket: available');
+    expect(result).not.toContain('trinket: available');
     expect(result).toContain('0:37');
   });
 
-  it('F124: emits [CC ON TEAM] with base duration, DR category/level, and dispel backlash annotations', () => {
+  it('F124: emits [CC ON TEAM] with DR category/level and dispel backlash annotations (F171 dropped base duration)', () => {
     const cc: ICCInstance = {
       atSeconds: 37,
       durationSeconds: 4,
@@ -897,7 +897,7 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
       }),
     );
 
-    expect(result).toContain('Feramonk ← Polymorph (Dzinked) | 4s (base 60s) [DR: Disorient 50%]');
+    expect(result).toContain('Feramonk ← Polymorph (Dzinked) | 4s [DR: Disorient 50%]');
     expect(result).toContain('Feramonk ← Silence (Dzinked) | 3s [DISPEL BACKLASH CC]');
   });
 
@@ -1467,7 +1467,7 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     const enemyA = makeUnit('enemy-A', {
       name: 'EnemyA',
       reaction: CombatUnitReaction.Hostile,
-      advancedActions: [{ ...makeAdvancedAction(6_000, 0, 0, 500_000, 500_000), advancedActorId: 'enemy-A' }], // 100%
+      advancedActions: [{ ...makeAdvancedAction(6_000, 0, 0, 500_000, 450_000), advancedActorId: 'enemy-A' }], // 90%
     }) as ICombatUnit;
     const enemyB = makeUnit('enemy-B', {
       name: 'EnemyB',
@@ -4499,14 +4499,14 @@ describe('buildMatchTimeline — B106/F84: [STATE] ordering', () => {
     const matchEndMs = 60_000;
     const owner = makeUnit('unit-owner', {
       name: 'Feramonk',
-      advancedActions: [makeAdvancedAction(0, 0, 0, 500_000, 500_000)],
+      advancedActions: [makeAdvancedAction(0, 0, 0, 500_000, 450_000)],
     });
     // Align ID to make getUnitHpAtTimestamp work
     (owner.advancedActions[0] as any).advancedActorId = 'unit-owner';
 
     const friend = makeUnit('unit-friend', {
       name: 'Simplesauce',
-      advancedActions: [makeAdvancedAction(0, 0, 0, 500_000, 500_000)],
+      advancedActions: [makeAdvancedAction(0, 0, 0, 500_000, 450_000)],
     });
     (friend.advancedActions[0] as any).advancedActorId = 'unit-friend';
 
@@ -4522,17 +4522,17 @@ describe('buildMatchTimeline — B106/F84: [STATE] ordering', () => {
     );
 
     const stateLine = result.split('\n').find((l) => l.includes('[STATE]'));
-    expect(stateLine).toContain('friends Feramonk:100 Simplesauce:100');
+    expect(stateLine).toContain('friends Feramonk:90 Simplesauce:90');
   });
 
   it('sorts [STATE] by playerIdMap when provided', () => {
     const matchStartMs = 0;
     const matchEndMs = 60_000;
-    const p1 = makeUnit('p1', { name: 'Player1', advancedActions: [makeAdvancedAction(0, 0, 0)] });
+    const p1 = makeUnit('p1', { name: 'Player1', advancedActions: [makeAdvancedAction(0, 0, 0, 500_000, 450_000)] });
     (p1.advancedActions[0] as any).advancedActorId = 'p1';
-    const p2 = makeUnit('p2', { name: 'Player2', advancedActions: [makeAdvancedAction(0, 0, 0)] });
+    const p2 = makeUnit('p2', { name: 'Player2', advancedActions: [makeAdvancedAction(0, 0, 0, 500_000, 450_000)] });
     (p2.advancedActions[0] as any).advancedActorId = 'p2';
-    const p3 = makeUnit('p3', { name: 'Player3', advancedActions: [makeAdvancedAction(0, 0, 0)] });
+    const p3 = makeUnit('p3', { name: 'Player3', advancedActions: [makeAdvancedAction(0, 0, 0, 500_000, 450_000)] });
     (p3.advancedActions[0] as any).advancedActorId = 'p3';
 
     const result = buildMatchTimeline(
@@ -4552,7 +4552,7 @@ describe('buildMatchTimeline — B106/F84: [STATE] ordering', () => {
     );
 
     const stateLine = result.split('\n').find((l) => l.includes('[STATE]'));
-    expect(stateLine).toContain('friends 1:100 2:100 3:100');
+    expect(stateLine).toContain('friends 1:90 2:90 3:90');
   });
 });
 
@@ -4661,9 +4661,9 @@ describe('buildMatchTimeline — F113/F114: Event-Gating and [STATE] pruning', (
     const owner = makeUnit('u1', {
       name: 'Player1',
       advancedActions: [
-        makeAdvancedAction(0, 0, 0),
-        makeAdvancedAction(30_000, 0, 0), // at spike
-        makeAdvancedAction(60_000, 0, 0),
+        makeAdvancedAction(0, 0, 0, 500_000, 450_000),
+        makeAdvancedAction(30_000, 0, 0, 500_000, 450_000), // at spike
+        makeAdvancedAction(60_000, 0, 0, 500_000, 450_000),
       ],
     });
     owner.advancedActions.forEach((a) => ((a as any).advancedActorId = 'u1'));

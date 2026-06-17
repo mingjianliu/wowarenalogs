@@ -1,4 +1,11 @@
-import { CombatUnitType, getUnitReaction, getUnitType, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
+import {
+  CombatUnitReaction,
+  CombatUnitType,
+  getUnitReaction,
+  getUnitType,
+  ICombatUnit,
+  LogEvent,
+} from '@wowarenalogs/parser';
 
 import { getEnglishSpellName, spellEffectData } from '../../../data/spellEffectData';
 import { IPlayerCCTrinketSummary } from '../../../utils/ccTrinketAnalysis';
@@ -379,7 +386,14 @@ export function computeHealingInWindow(
  * Extracts the top-N damage sources that hit `unit` within the `windowMs` window
  * ending at `deathMs`. Returns an array of formatted "source — spell (Xk)" strings.
  */
-export function getTopDamageSourcesInWindow(unit: ICombatUnit, endMs: number, windowMs: number, topN = 3): string[] {
+export function getTopDamageSourcesInWindow(
+  unit: ICombatUnit,
+  endMs: number,
+  windowMs: number,
+  topN = 3,
+  playerIdMap?: Map<string, number>,
+  enemyIdMap?: Map<string, number>,
+): string[] {
   const startMs = endMs - windowMs;
   const buckets = new Map<string, number>();
   for (const d of unit.damageIn) {
@@ -392,7 +406,24 @@ export function getTopDamageSourcesInWindow(unit: ICombatUnit, endMs: number, wi
     // replace with "[pet]" to keep attribution readable without localization noise.
     const srcType = getUnitType(d.srcUnitFlags);
     const isPet = srcType === CombatUnitType.Pet || srcType === CombatUnitType.Guardian;
-    const srcName = isPet ? '[pet]' : d.srcUnitName || 'Unknown';
+
+    let srcName = 'Unknown';
+    if (!isPet && d.srcUnitName) {
+      const cleanSrcName = d.srcUnitName.split('-')[0];
+      const isSrcFriendly = getUnitReaction(d.srcUnitFlags) === CombatUnitReaction.Friendly;
+      if (isSrcFriendly && playerIdMap) {
+        const id = playerIdMap.get(d.srcUnitName) ?? playerIdMap.get(cleanSrcName);
+        srcName = id !== undefined ? String(id) : cleanSrcName;
+      } else if (!isSrcFriendly && enemyIdMap) {
+        const id = enemyIdMap.get(d.srcUnitName) ?? enemyIdMap.get(cleanSrcName);
+        srcName = id !== undefined ? String(id) : cleanSrcName;
+      } else {
+        srcName = cleanSrcName;
+      }
+    } else if (isPet) {
+      srcName = '[pet]';
+    }
+
     const baseSpellLabel = d.spellId ? getEnglishSpellName(d.spellId, d.spellName) : (d.spellName ?? 'melee');
 
     const schoolName = getSpellSchoolName(d.spellSchoolId);

@@ -42,6 +42,7 @@ export function buildPlayerLoadout(
 
   const ownerId = nextId++;
   friendlyIdMap.set(owner.name, ownerId);
+  friendlyIdMap.set(owner.name.split('-')[0], ownerId);
   const ownerCDStr = ownerCDs.length > 0 ? ownerCDs.map(fmtCDLabel).join(', ') : 'none tracked';
 
   lines.push(`  <unit id="${ownerId}" name="${owner.name}" spec="${ownerSpec}" role="log owner">`);
@@ -52,6 +53,7 @@ export function buildPlayerLoadout(
     const cdStr = cds.length > 0 ? cds.map(fmtCDLabel).join(', ') : 'none tracked';
     const pid = nextId++;
     friendlyIdMap.set(player.name, pid);
+    friendlyIdMap.set(player.name.split('-')[0], pid);
     lines.push(`  <unit id="${pid}" name="${player.name}" spec="${spec}" role="teammate">`);
     lines.push(`    <cooldowns>${cdStr}</cooldowns>`);
     lines.push('  </unit>');
@@ -60,6 +62,7 @@ export function buildPlayerLoadout(
   for (const player of enemyCDTimeline.players) {
     const pid = nextId++;
     enemyIdMap.set(player.playerName, pid);
+    enemyIdMap.set(player.playerName.split('-')[0], pid);
     const seen = new Set<string>();
     const uniqueCDs: string[] = [];
     for (const cd of player.offensiveCDs) {
@@ -78,9 +81,11 @@ export function buildPlayerLoadout(
   // Assign IDs to any enemy units not already covered by enemyCDTimeline.players
   // (enemies who never cast a tracked offensive CD are absent from the timeline).
   for (const enemy of enemies ?? []) {
-    if (enemyIdMap.has(enemy.name)) continue;
+    const cleanEnemyName = enemy.name.split('-')[0];
+    if (enemyIdMap.has(enemy.name) || enemyIdMap.has(cleanEnemyName)) continue;
     const pid = nextId++;
     enemyIdMap.set(enemy.name, pid);
+    enemyIdMap.set(cleanEnemyName, pid);
     lines.push(`  <unit id="${pid}" name="${enemy.name}" spec="${specToString(enemy.spec)}" role="enemy">`);
     lines.push(`    <cooldowns>none tracked</cooldowns>`);
     lines.push('  </unit>');

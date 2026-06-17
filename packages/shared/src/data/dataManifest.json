@@ -1,29 +1,29 @@
 {
-  "generatedAt": "2026-05-24T17:13:56.930Z",
-  "gitCommit": "2ccaae7bbef52e11ee3cb6c15e607a75b6e2ed33",
+  "generatedAt": "2026-06-17T06:18:37.947Z",
+  "gitCommit": "3fa4d94e482a5d84b7062636afecd39f9a8c8505",
   "files": {
     "spellEffects.json": {
       "description": "Per-spell cooldown, duration, dispelType from Wago.tools DB2",
       "generatedBy": "npm run start:refreshSpellMetadata (packages/tools)",
       "wowDataDependent": true,
-      "entryCount": 776,
-      "sha256": "ce026a1b811a252944898b8b8b23bbcf5c2ffd730a603d08835a0638b8a69951",
+      "entryCount": 1122,
+      "sha256": "e1c67ae2aad67f2843e7126c70bd2a2785753cfbe5bbd6c1ba9824251ecfbe41",
       "lastCommit": {
-        "hash": "053ea6835d28b8a62ab6c40eecddeb30434afb1e",
-        "date": "2026-05-12T23:32:05-07:00",
-        "subject": "feat(F100): add Lay on Hands, Power Word: Barrier, Weapons of Order to spellEffects"
+        "hash": "21ee6dcdad1a94808f9f7c2e691ce8cf477a6db4",
+        "date": "2026-05-30T22:43:12-04:00",
+        "subject": "feat(F143): annotate Grounding Totem casts with absorbed spells in match timeline"
       }
     },
     "spells.json": {
       "description": "Spell type/priority classifications from BigDebuffs addon",
       "generatedBy": "npm run start:generateSpellsData (packages/tools)",
       "wowDataDependent": true,
-      "entryCount": 544,
-      "sha256": "5a77aee5cf516175ccd3b5545945a348f696d231704e525d670af6c39ea7faa4",
+      "entryCount": 545,
+      "sha256": "7fedb84a3ba203299d222449ab2dd85b3d62b98c47c2abbbf71be930d4da50c6",
       "lastCommit": {
-        "hash": "6d104028373a87df424a30bc523ec364e76ca0ef",
-        "date": "2026-04-30T20:56:29-07:00",
-        "subject": "fix(enemyCDs): track Havoc Meta (191427) and Feral Spirit (51533) as offensive CDs (F44)"
+        "hash": "114ab2820306e43b7f9d03c39189aed363d16fa9",
+        "date": "2026-06-02T12:31:48-04:00",
+        "subject": "test(purge): complete full 10-game A/B tests for all purge and dispel coaching features"
       }
     },
     "spellIdLists.json": {
@@ -31,11 +31,11 @@
       "generatedBy": "npm run start:generateSpellIdLists (packages/tools)",
       "wowDataDependent": true,
       "entryCount": 8,
-      "sha256": "7eba81e13bd801f780fa144025eae3ec10d5c0ae9ad903638a7081ea29cf86a3",
+      "sha256": "7ebd84c2e3af73e26cb3e874426be6722c572c8fec30cc7f2eccfc1d77807db9",
       "lastCommit": {
-        "hash": "6f1890cc6f8491db948b579c583cf5f14a2f9bee",
-        "date": "2026-04-16T02:28:05-04:00",
-        "subject": "merge: pull upstream/main (65 commits, spell library + mistakes tab + pvp talents)"
+        "hash": "0ac6dc21cbd5334cc5a7d55ca761ef1ccd9dac7d",
+        "date": "2026-06-17T01:44:09-04:00",
+        "subject": "fix(B12): skip unused-defensive blame when teammate was CC'd at death; export wasInHardCC; add USABLE_WHILE_CC_SPELL_IDS"
       }
     },
     "trinketItemIds.json": {
@@ -43,11 +43,11 @@
       "generatedBy": "npm run start:generateTrinketItemIds (packages/tools)",
       "wowDataDependent": true,
       "entryCount": 6,
-      "sha256": "0051eec2413854c29c6e7d36510166bd13362a8766182a089daa724e34d03c28",
+      "sha256": "4fe16e77fbe3a43edd06a05ea7959f9120d3c0a106625b7e596587fb100ed4bc",
       "lastCommit": {
-        "hash": "66b9b465ff6a680ca12c40b8920fb0e8d399ffbc",
-        "date": "2026-04-29T22:31:34-07:00",
-        "subject": "chore(data): generate trinketItemIds.json from wago.tools DB2"
+        "hash": "8c152b7ec534f5d064e2676a51d5fb33b2df41da",
+        "date": "2026-05-28T00:31:02-04:00",
+        "subject": "feat(parser): implement automated talent modifier extraction (F113)"
       }
     },
     "talentIdMap.json": {

@@ -58,6 +58,18 @@ import {
   PASSIVE_SPELL_BLOCKLIST,
 } from './timelineHelpers';
 
+interface DeferredSnapshot {
+  type: 'resource_snapshot';
+  timeSeconds: number;
+  forceFull: boolean;
+  bypassDebounce?: boolean;
+  id: number;
+}
+
+function isDeferredSnapshot(line: unknown): line is DeferredSnapshot {
+  return !!(line && typeof line === 'object' && 'type' in line && line.type === 'resource_snapshot');
+}
+
 // ── buildMatchTimeline ─────────────────────────────────────────────────────
 
 export interface BuildMatchTimelineParams {
@@ -363,16 +375,16 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
    * ID collision when a friendly and enemy share a display name.
    */
   function pid(name: string): string {
-    if (!playerIdMap) return name;
-    const id = playerIdMap.get(name);
-    return id !== undefined ? String(id) : name;
+    if (!playerIdMap) return name.split('-')[0];
+    const id = playerIdMap.get(name) ?? playerIdMap.get(name.split('-')[0]);
+    return id !== undefined ? String(id) : name.split('-')[0];
   }
 
   /** Returns the short numeric ID for an *enemy* player name, falling back to name. */
   function enemyPid(name: string): string {
-    if (!enemyIdMap) return name;
-    const id = enemyIdMap.get(name);
-    return id !== undefined ? String(id) : name;
+    if (!enemyIdMap) return name.split('-')[0];
+    const id = enemyIdMap.get(name) ?? enemyIdMap.get(name.split('-')[0]);
+    return id !== undefined ? String(id) : name.split('-')[0];
   }
 
   /**
@@ -382,71 +394,42 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
    */
   function resolveTarget(destUnitName: string | null | undefined): string {
     if (!destUnitName || destUnitName === 'nil') return '';
-    if (destUnitName === owner.name) return 'self';
+    const cleanDest = destUnitName.split('-')[0];
+    const cleanOwner = owner.name.split('-')[0];
+    if (destUnitName === owner.name || cleanDest === cleanOwner) return 'self';
     if (playerIdMap) {
-      const id = playerIdMap.get(destUnitName);
+      const id = playerIdMap.get(destUnitName) ?? playerIdMap.get(cleanDest);
       if (id !== undefined) return String(id);
     }
     if (enemyIdMap) {
-      const id = enemyIdMap.get(destUnitName);
+      const id = enemyIdMap.get(destUnitName) ?? enemyIdMap.get(cleanDest);
       if (id !== undefined) return String(id);
     }
-    return destUnitName;
+    return cleanDest;
   }
 
   const snapshotFn = resourceSnapshotFn ?? buildResourceSnapshot;
 
   const matchEndSeconds = (matchEndMs - matchStartMs) / 1000;
 
-  let prevReadyNamesState: string[] | null = null;
-  let prevOnCDNamesState: string[] | null = null;
-  let lastSnapshotTime = -100;
-  // F138: force a full (non-delta) [RES] at least every 60s so the model does not
-  // lose track of available CDs across long, late-dampening matches.
-  let lastFullSnapshotTime = -100;
-  const FULL_SNAPSHOT_REFRESH_SECONDS = 60;
-
-  function resourceSnapshot(timeSeconds: number, forceFull = false): string {
-    if (timeSeconds - lastSnapshotTime < 2.0) {
-      return '';
-    }
-    lastSnapshotTime = timeSeconds;
-
-    // B34: compute attributed names (pid:SpellName for teammates)
-    const teammateCDsWithLabel = teammateCDs.map(({ player, cds, spec }) => ({
-      cds,
-      spec,
-      player,
-      playerLabel: playerIdMap ? String(playerIdMap.get(player.name) ?? player.name) : player.name,
-    }));
-    const currentReadyNames = computeReadyNames(timeSeconds, ownerCDs, teammateCDsWithLabel);
-    const currentOnCDNames = computeOnCDDisplayNames(timeSeconds, ownerCDs, teammateCDsWithLabel);
-    const forceFullRefresh = forceFull || timeSeconds - lastFullSnapshotTime >= FULL_SNAPSHOT_REFRESH_SECONDS;
-    const prevReadyNames = forceFullRefresh ? undefined : (prevReadyNamesState ?? undefined);
-    const prevOnCDNames = forceFullRefresh ? undefined : (prevOnCDNamesState ?? undefined);
-    if (forceFullRefresh) lastFullSnapshotTime = timeSeconds;
-    prevReadyNamesState = currentReadyNames;
-    prevOnCDNamesState = currentOnCDNames;
-    return snapshotFn({
+  let nextPlaceholderId = 0;
+  function requestSnapshotPlaceholder(
+    timeSeconds: number,
+    forceFull = false,
+    bypassDebounce = false,
+  ): DeferredSnapshot {
+    return {
+      type: 'resource_snapshot',
       timeSeconds,
-      ownerCDs,
-      ownerName: owner.name,
-      ownerSpec,
-      isOwnerHealer: isHealer,
-      teammateCDs,
-      ccTrinketSummaries,
-      enemyCDTimeline,
-      playerIdMap,
-      prevReadyNames,
-      prevOnCDNames,
-      matchStartMs,
-      ownerUnit: owner,
-    });
+      forceFull,
+      bypassDebounce,
+      id: nextPlaceholderId++,
+    };
   }
 
-  const entries: Array<{ timeSeconds: number; lines: string[] }> = [];
+  const entries: Array<{ timeSeconds: number; lines: (string | DeferredSnapshot)[] }> = [];
 
-  function addEntry(timeSeconds: number, ...lines: string[]) {
+  function addEntry(timeSeconds: number, ...lines: (string | DeferredSnapshot)[]) {
     // B103: skip events that fall past match end — they're irrelevant post-game
     // and would appear with timestamps after [MATCH END] confusing the timeline.
     if (timeSeconds > matchEndSeconds) return;
@@ -590,13 +573,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
     const trinketPart = trinketAvailable ? ' (PvP Trinket available)' : '';
     const notePart = death.note ? ` [${death.note}]` : '';
-    const deathLines: string[] = [
+    const deathLines: (string | DeferredSnapshot)[] = [
       `${fmtTime(death.atSeconds)}  [DEATH]  ${pid(death.name)} (${death.spec} — friendly)${unusedDefensives}${trinketPart}${notePart}`,
+      requestSnapshotPlaceholder(death.atSeconds - 3, true, true),
     ];
-    const deathResSnapshot = resourceSnapshot(death.atSeconds - 3, true);
-    if (deathResSnapshot) {
-      deathLines.push(deathResSnapshot);
-    }
     if (dyingUnit) {
       // HP trajectory
       const checkpoints = [15, 10, 5, 3, 2, 1];
@@ -611,7 +591,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
       // Top damage sources in final 10s — uses shared helper to avoid duplication
       const deathMs = matchStartMs + death.atSeconds * 1000;
-      const topSources = getTopDamageSourcesInWindow(dyingUnit, deathMs, 10_000);
+      const topSources = getTopDamageSourcesInWindow(dyingUnit, deathMs, 10_000, 3, playerIdMap, enemyIdMap);
       if (topSources.length > 0) {
         deathLines.push(`               Top damage in final 10s: ${topSources.join(', ')}`);
       }
@@ -622,14 +602,11 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   for (const death of enemyDeaths) {
     const dyingUnit = unitsByName.get(death.name);
-    const deathLines: string[] = [
+    const deathLines: (string | DeferredSnapshot)[] = [
       `${fmtTime(death.atSeconds)}  [DEATH]  ${enemyPid(death.name)} (${death.spec} — enemy)`,
       `${fmtTime(death.atSeconds)}  [ROSTER]  enemy ${enemyPid(death.name)} removed (dead)`,
+      requestSnapshotPlaceholder(death.atSeconds - 3, true, true),
     ];
-    const deathResSnapshot = resourceSnapshot(death.atSeconds - 3, true);
-    if (deathResSnapshot) {
-      deathLines.push(deathResSnapshot);
-    }
 
     if (dyingUnit) {
       // HP trajectory
@@ -645,7 +622,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
       // Top damage sources in final 10s
       const deathMs = matchStartMs + death.atSeconds * 1000;
-      const topSources = getTopDamageSourcesInWindow(dyingUnit, deathMs, 10_000);
+      const topSources = getTopDamageSourcesInWindow(dyingUnit, deathMs, 10_000, 3, playerIdMap, enemyIdMap);
       if (topSources.length > 0) {
         deathLines.push(`               Top damage in final 10s: ${topSources.join(', ')}`);
       }
@@ -672,7 +649,14 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
           const deathLines: string[] = [`${fmtTime(atSeconds)}  [UNIT DESTROYED]   ${unit.name} (${reactionStr})`];
 
-          const topSources = getTopDamageSourcesInWindow(unit, deathRecord.timestamp, 10_000, 2);
+          const topSources = getTopDamageSourcesInWindow(
+            unit,
+            deathRecord.timestamp,
+            10_000,
+            2,
+            playerIdMap,
+            enemyIdMap,
+          );
           if (topSources.length > 0) {
             deathLines[0] += ` killed by: ${topSources.join(', ')}`;
           }
@@ -751,7 +735,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       }
 
       const isCC = ccSpellIds.has(cd.spellId);
-      const extraLines: string[] = [resourceSnapshot(cast.timeSeconds, !isCC)];
+      const extraLines: (string | DeferredSnapshot)[] = [requestSnapshotPlaceholder(cast.timeSeconds, !isCC)];
 
       if (HEALING_AMPLIFIER_SPELL_IDS.has(cd.spellId) && healingEmissionTimes.get(cd.spellId)?.has(cast.timeSeconds)) {
         const duration = spellEffectData[cd.spellId]?.durationSeconds;
@@ -944,7 +928,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         addEntry(
           timeSeconds,
           `${fmtTime(timeSeconds)}  [YOU] [CC]   ${displayName}${targetPart}${totemNote}${orderNote}${purgeNote}`,
-          resourceSnapshot(timeSeconds),
+          requestSnapshotPlaceholder(timeSeconds),
         );
         continue;
       }
@@ -959,7 +943,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         addEntry(
           timeSeconds,
           `${fmtTime(timeSeconds)}  [YOU] [CD]   ${displayName}${targetPart}${totemNote}${stasisAnnotation}${purgeNote}`,
-          resourceSnapshot(timeSeconds, true),
+          requestSnapshotPlaceholder(timeSeconds, true),
         );
         continue;
       }
@@ -1009,7 +993,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         addEntry(
           cast.timeSeconds,
           `${fmtTime(cast.timeSeconds)}  ${prefix}   ${pid(player.name)} (${spec}): ${cd.spellName}${groundingNote}`,
-          resourceSnapshot(cast.timeSeconds),
+          requestSnapshotPlaceholder(cast.timeSeconds),
         );
       }
     }
@@ -1119,8 +1103,6 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       } else if (cc.trinketState === 'on_cooldown') {
         const cdLeft = cc.trinketCDSecondsLeft !== undefined ? `${cc.trinketCDSecondsLeft}s left` : 'on CD';
         trinketNote = ` | trinket: ON CD (${cdLeft})`;
-      } else if (cc.trinketState === 'available_unused') {
-        trinketNote = ' | trinket: available';
       }
 
       // F148: Cleanse Success Verification — check if this CC was removed by a friendly dispel
@@ -1132,11 +1114,6 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       );
       const cleansedNote = isCleansed ? ' [CLEANSED]' : '';
 
-      const baseDuration = spellEffectData[cc.spellId]?.durationSeconds;
-      const baseDurationStr =
-        DISPEL_FEATURE_FLAGS.F124_ENHANCED_CC_ANNOTATIONS && baseDuration !== undefined
-          ? ` (base ${baseDuration}s)`
-          : '';
       const drStr =
         DISPEL_FEATURE_FLAGS.F124_ENHANCED_CC_ANNOTATIONS && cc.drInfo && cc.drInfo.category !== 'Unknown'
           ? ` [DR: ${cc.drInfo.category} ${cc.drInfo.level}]`
@@ -1148,7 +1125,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       // passive_trinket → player has no active trinket, no annotation
       addEntry(
         cc.atSeconds,
-        `${fmtTime(cc.atSeconds)}  [CC ON TEAM]   ${pid(summary.playerName)} ← ${cc.spellName} (${pid(cc.sourceName)}) | ${cc.durationSeconds.toFixed(0)}s${baseDurationStr}${drStr}${backlashStr}${trinketNote}${cleansedNote}`,
+        `${fmtTime(cc.atSeconds)}  [CC ON TEAM]   ${pid(summary.playerName)} ← ${cc.spellName} (${enemyPid(cc.sourceName)}) | ${cc.durationSeconds.toFixed(0)}s${drStr}${backlashStr}${trinketNote}${cleansedNote}`,
       );
     }
 
@@ -1262,7 +1239,14 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     const absorbStr = totalAbsorbed > 100_000 ? ` (${(totalAbsorbed / 1_000_000).toFixed(2)}M absorbed)` : '';
 
     const topSources = targetUnit
-      ? getTopDamageSourcesInWindow(targetUnit, toMs, pw.toSeconds * 1000 - pw.fromSeconds * 1000)
+      ? getTopDamageSourcesInWindow(
+          targetUnit,
+          toMs,
+          pw.toSeconds * 1000 - pw.fromSeconds * 1000,
+          3,
+          playerIdMap,
+          enemyIdMap,
+        )
       : [];
     const sourceStr = topSources.length > 0 ? `\n                 Top sources: ${topSources.join(', ')}` : '';
 
@@ -1390,7 +1374,9 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       } else if (isDead) {
         friendlyParts.push(`${label(unit.name)}:dead`);
       } else if (clamped !== null) {
-        friendlyParts.push(`${label(unit.name)}:${clamped}`);
+        if (clamped < 100) {
+          friendlyParts.push(`${label(unit.name)}:${clamped}`);
+        }
       }
       return { name: unit.name, isDead, hp: clamped };
     });
@@ -1416,7 +1402,9 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
             } else if (isDead) {
               enemyParts.push(`${label(unit.name)}:dead`);
             } else if (clamped !== null) {
-              enemyParts.push(`${label(unit.name)}:${clamped}`);
+              if (clamped < 100) {
+                enemyParts.push(`${label(unit.name)}:${clamped}`);
+              }
             }
             return { name: unit.name, isDead, hp: clamped };
           })
@@ -1532,6 +1520,90 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     }
   }
 
+  // Precompute snapshots chronologically
+  const placeholders: DeferredSnapshot[] = [];
+  for (const entry of entries) {
+    for (const line of entry.lines) {
+      if (isDeferredSnapshot(line)) {
+        placeholders.push(line);
+      }
+    }
+  }
+
+  placeholders.sort((a, b) => {
+    if (a.timeSeconds !== b.timeSeconds) {
+      return a.timeSeconds - b.timeSeconds;
+    }
+    if (a.forceFull !== b.forceFull) {
+      return (b.forceFull ? 1 : 0) - (a.forceFull ? 1 : 0);
+    }
+    return a.id - b.id;
+  });
+
+  const snapshotResults = new Map<number, string>();
+  let prevReadyNamesState: string[] | null = null;
+  let prevOnCDNamesState: string[] | null = null;
+  let lastSnapshotTime = -100;
+  let lastFullSnapshotTime = -100;
+  const FULL_SNAPSHOT_REFRESH_SECONDS = 60;
+
+  for (const req of placeholders) {
+    const timeSeconds = req.timeSeconds;
+    const forceFull = req.forceFull;
+
+    const isSameTime = Math.abs(timeSeconds - lastSnapshotTime) < 0.001;
+    const shouldDebounce = !req.bypassDebounce && timeSeconds - lastSnapshotTime < 2.0;
+    if (isSameTime || shouldDebounce) {
+      snapshotResults.set(req.id, '');
+      continue;
+    }
+    lastSnapshotTime = timeSeconds;
+
+    const teammateCDsWithLabel = teammateCDs.map(({ player, cds, spec }) => ({
+      cds,
+      spec,
+      player,
+      playerLabel: playerIdMap ? String(playerIdMap.get(player.name) ?? player.name) : player.name,
+    }));
+    const currentReadyNames = computeReadyNames(timeSeconds, ownerCDs, teammateCDsWithLabel);
+    const currentOnCDNames = computeOnCDDisplayNames(timeSeconds, ownerCDs, teammateCDsWithLabel);
+    const forceFullRefresh = forceFull || timeSeconds - lastFullSnapshotTime >= FULL_SNAPSHOT_REFRESH_SECONDS;
+    const prevReadyNames = forceFullRefresh ? undefined : (prevReadyNamesState ?? undefined);
+    const prevOnCDNames = forceFullRefresh ? undefined : (prevOnCDNamesState ?? undefined);
+    if (forceFullRefresh) lastFullSnapshotTime = timeSeconds;
+    prevReadyNamesState = currentReadyNames;
+    prevOnCDNamesState = currentOnCDNames;
+
+    const snapshotStr = snapshotFn({
+      timeSeconds,
+      ownerCDs,
+      ownerName: owner.name,
+      ownerSpec,
+      isOwnerHealer: isHealer,
+      teammateCDs,
+      ccTrinketSummaries,
+      enemyCDTimeline,
+      playerIdMap,
+      prevReadyNames,
+      prevOnCDNames,
+      matchStartMs,
+      ownerUnit: owner,
+    });
+    snapshotResults.set(req.id, snapshotStr);
+  }
+
+  // Mutate entries in-place to resolve deferred snapshots
+  for (const entry of entries) {
+    entry.lines = entry.lines
+      .map((line) => {
+        if (isDeferredSnapshot(line)) {
+          return snapshotResults.get(line.id) ?? '';
+        }
+        return line;
+      })
+      .filter(Boolean);
+  }
+
   // ── Sort and format ───────────────────────────────────────────────────────
 
   entries.sort((a, b) => a.timeSeconds - b.timeSeconds);
@@ -1568,7 +1640,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     '',
   ];
   for (const entry of entries) {
-    outputLines.push(...entry.lines);
+    outputLines.push(...(entry.lines as string[]));
   }
 
   outputLines.push(

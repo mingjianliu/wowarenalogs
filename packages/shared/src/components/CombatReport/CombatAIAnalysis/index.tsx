@@ -239,17 +239,6 @@ export function buildMatchContext(
     tLines.push(`  Enemy team: ${enemyTeam}`);
     tLines.push('');
 
-    tLines.push('DATA DICTIONARY / UNITS');
-    tLines.push('  Damage units: M = Million (1,000,000), k = Thousand (1,000)');
-    tLines.push('  Example: "0.84M" in [DMG SPIKE] = 840,000 damage; "42k" in [UNCLEANSED DEBUFF] = 42,000 damage');
-    tLines.push(
-      '  Danger Labels: [P95 Danger] = Top 5% damage event for this spec; [P90 High] = Top 10%; [P75 Elevated] = Top 25%; [P50 Normal] = Median (scaled by dampening).',
-    );
-    tLines.push(
-      '  Source Labels: [BURST] = ≤4 unique damage sources (focused fire); [ROT] = ≥5 sources (spread pressure or pet cleave).',
-    );
-    tLines.push('');
-
     tLines.push('PURGE RESPONSIBILITY');
     tLines.push(`  Log owner (${ownerSpec}): ${ownerCanPurge ? 'CAN offensive purge' : 'CANNOT offensive purge'}`);
     tLines.push(`  Team purgers: ${teamPurgers.length > 0 ? teamPurgers.join(', ') : 'none'}`);

@@ -556,9 +556,12 @@ export function wasRemovedByAllyDispel(
   targetName: string,
   removalSeconds: number,
 ): boolean {
+  // B11: Proximity matching (< 0.5s) is fragile.
+  // SPELL_DISPEL and SPELL_AURA_REMOVED are emitted in the exact same millisecond
+  // when a dispel removes an aura. Match exact timestamps to prevent misattribution.
   return allyCleanse.some(
     (d) =>
-      d.removedSpellId === spellId && d.targetName === targetName && Math.abs(d.timeSeconds - removalSeconds) < 0.5,
+      d.removedSpellId === spellId && d.targetName === targetName && Math.abs(d.timeSeconds - removalSeconds) < 0.001, // Float equality for the exact same millisecond
   );
 }
 
