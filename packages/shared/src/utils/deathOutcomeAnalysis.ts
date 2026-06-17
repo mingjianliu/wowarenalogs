@@ -183,7 +183,7 @@ function isLockedOutAt(intervals: LockoutIntervals, atSeconds: number): boolean 
   return false;
 }
 
-function wasInHardCC(
+export function wasInHardCC(
   ccSummary: Pick<IPlayerCCTrinketSummary, 'playerName' | 'ccInstances'>,
   atSeconds: number,
 ): boolean {

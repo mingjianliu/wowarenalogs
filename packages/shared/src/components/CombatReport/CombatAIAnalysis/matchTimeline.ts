@@ -18,8 +18,10 @@ import {
   IMajorCooldownInfo,
   specToBenchmarkKey,
   specToString,
+  USABLE_WHILE_CC_SPELL_IDS,
 } from '../../../utils/cooldowns';
 import { buildDampeningEvents, getDampeningPercentage } from '../../../utils/dampening';
+import { wasInHardCC } from '../../../utils/deathOutcomeAnalysis';
 import {
   canDefensiveCleanse,
   IDispelEvent,
@@ -569,11 +571,16 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         ...ownerCDs.filter(() => owner.name === death.name),
         ...teammateCDs.filter((tc) => tc.player.name === death.name).flatMap((tc) => tc.cds),
       ];
+
+      const isTeammateInCC = summary ? wasInHardCC(summary, death.atSeconds) : false;
+
       const readyAtDeath = allPlayerCDs
         .filter((cd) => cd.tag === 'Defensive' || cd.tag === 'External')
         .filter((cd) =>
           cd.availableWindows.some((w) => death.atSeconds >= w.fromSeconds && death.atSeconds <= w.toSeconds),
         )
+        // B12: only flag if it was actually usable (not in CC, or is a CC-breaking defensive)
+        .filter((cd) => !isTeammateInCC || USABLE_WHILE_CC_SPELL_IDS.has(cd.spellId))
         .map((cd) => cd.spellName);
 
       if (readyAtDeath.length > 0) {

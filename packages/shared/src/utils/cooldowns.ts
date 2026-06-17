@@ -18,6 +18,19 @@ export const MAJOR_DEFENSIVE_IDS = new Set<string>(
   (spellIdListsData as unknown as { externalOrBigDefensiveSpellIds?: string[] }).externalOrBigDefensiveSpellIds ?? [],
 );
 
+/**
+ * Spell IDs that can be cast while the player is stunned or otherwise CC'd.
+ * Used to avoid blaming players for "unused" defensives when they were locked out.
+ */
+export const USABLE_WHILE_CC_SPELL_IDS = new Set<string>([
+  '33206', // Pain Suppression
+  '22812', // Barkskin
+  '47585', // Dispersion
+  '642', // Divine Shield
+  '55233', // Vampiric Blood
+  '48792', // Icebound Fortitude
+]);
+
 // All spells tagged 'Offensive' in classMetadata — used to detect active enemy burst windows
 const OFFENSIVE_SPELL_IDS = new Set<string>(
   classMetadata.flatMap((cls) =>
