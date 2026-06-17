@@ -831,7 +831,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       (p) => p.sourceName === owner.name && (p.priority === 'Critical' || p.priority === 'High'),
     );
 
-    const seenCasts = new Set<string>();
+    const seenCasts: Array<{ name: string; target: string; timeSeconds: number }> = [];
 
     let activeFold: {
       displayName: string;
@@ -897,11 +897,14 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
       const targetLabel = resolveTarget(e.destUnitName);
 
-      // B15: Dedup same-second, same-target, same-name casts (duplicate spell IDs)
-      const second = Math.floor(timeSeconds);
-      const dedupKey = `${displayName}|${targetLabel}|${second}`;
-      if (seenCasts.has(dedupKey)) continue;
-      seenCasts.add(dedupKey);
+      // B21: Dedup same-target, same-name casts within a 0.5s sliding window
+      // Prevents arbitrary second-flooring boundaries (Math.floor) from over-collapsing or under-collapsing.
+      const isDuplicate = seenCasts.some(
+        (c) => c.name === displayName && c.target === targetLabel && Math.abs(c.timeSeconds - timeSeconds) <= 0.5,
+      );
+      if (isDuplicate) continue;
+
+      seenCasts.push({ name: displayName, target: targetLabel, timeSeconds });
 
       const targetPart = targetLabel ? ` → ${targetLabel}` : '';
       const destType = getUnitType(e.destUnitFlags ?? 0);
