@@ -596,4 +596,153 @@ describe('analyzePlayerCCAndTrinket — CC Avoidance', () => {
     expect(result.ccAvoidedInstances[0].spellId).toBe('118');
     expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Precognition');
   });
+
+  it('tracks Shaman Grounding Totem redirect via Creature NPC ID on non-English logs', () => {
+    // Enemy casts hex (51514) on the grounding totem NPC (5925)
+    const enemyCast = {
+      logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: MATCH_START + 10_000 },
+      spellId: '51514',
+      spellName: 'Hex',
+      destUnitId: 'Creature-0-1234-1234-1234-5925-00004C5085',
+      destUnitName: '根基图腾', // Localized Chinese name
+      srcUnitId: 'enemy-1',
+      srcUnitName: 'EnemyA',
+    };
+
+    const player = makeUnit('player-1', {
+      class: CombatUnitClass.Shaman,
+      spec: CombatUnitSpec.Shaman_Restoration,
+    });
+    const enemy = makeEnemy('enemy-1', 'EnemyA');
+    enemy.spellCastEvents = [enemyCast as any];
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+    expect(result.ccAvoidedInstances).toHaveLength(1);
+    expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Grounding Totem');
+  });
+
+  it('tracks Druid shapeshift form Polymorph immunity (applied during match)', () => {
+    // Druid in Bear Form (5487) avoids Polymorph (118)
+    const bearFormBuff = makeAuraEvent(
+      LogEvent.SPELL_AURA_APPLIED,
+      '5487',
+      MATCH_START + 2_000,
+      'player-1',
+      'player-1',
+      'BUFF',
+    );
+    const enemyCast = makeSpellCastEvent('118', MATCH_START + 10_000, 'player-1', 'Player', 'enemy-1', 'EnemyA');
+
+    const player = makeUnit('player-1', {
+      class: CombatUnitClass.Druid,
+      spec: CombatUnitSpec.Druid_Restoration,
+      auraEvents: [bearFormBuff],
+    });
+    const enemy = makeEnemy('enemy-1', 'EnemyA');
+    enemy.spellCastEvents = [enemyCast as any];
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+    expect(result.ccAvoidedInstances).toHaveLength(1);
+    expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Bear Form');
+  });
+
+  it('tracks Druid shapeshift form Polymorph immunity when active at start (via interestingAurasJSON)', () => {
+    const enemyCast = makeSpellCastEvent('118', MATCH_START + 10_000, 'player-1', 'Player', 'enemy-1', 'EnemyA');
+
+    const player = makeUnit('player-1', {
+      class: CombatUnitClass.Druid,
+      spec: CombatUnitSpec.Druid_Restoration,
+      info: {
+        interestingAurasJSON: JSON.stringify([5487]), // Bear Form active at start
+      } as any,
+    });
+    const enemy = makeEnemy('enemy-1', 'EnemyA');
+    enemy.spellCastEvents = [enemyCast as any];
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+    expect(result.ccAvoidedInstances).toHaveLength(1);
+    expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Bear Form');
+  });
+
+  it('does NOT track Druid shapeshift form when targeted by non-Polymorph CCs (like Hammer of Justice)', () => {
+    const bearFormBuff = makeAuraEvent(
+      LogEvent.SPELL_AURA_APPLIED,
+      '5487',
+      MATCH_START + 2_000,
+      'player-1',
+      'player-1',
+      'BUFF',
+    );
+    const enemyCast = makeSpellCastEvent('853', MATCH_START + 10_000, 'player-1', 'Player', 'enemy-1', 'EnemyA'); // HoJ
+
+    const player = makeUnit('player-1', {
+      class: CombatUnitClass.Druid,
+      spec: CombatUnitSpec.Druid_Restoration,
+      auraEvents: [bearFormBuff],
+    });
+    const enemy = makeEnemy('enemy-1', 'EnemyA');
+    enemy.spellCastEvents = [enemyCast as any];
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+    expect(result.ccAvoidedInstances).toHaveLength(0);
+  });
+
+  it('tracks Monk Transcendence: Transfer CC avoidance', () => {
+    // Monk teleports (119996) at T+10s, enemy CC cast at T+10s.
+    const enemyCast = makeSpellCastEvent('118', MATCH_START + 10_000, 'player-1', 'Player', 'enemy-1', 'EnemyA');
+    const transCast = {
+      logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: MATCH_START + 10_100 },
+      spellId: '119996',
+      spellName: 'Transcendence: Transfer',
+    };
+
+    const player = makeUnit('player-1', {
+      class: CombatUnitClass.Monk,
+      spec: CombatUnitSpec.Monk_Mistweaver,
+      spellCastEvents: [transCast as any],
+    });
+    const enemy = makeEnemy('enemy-1', 'EnemyA');
+    enemy.spellCastEvents = [enemyCast as any];
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+    expect(result.ccAvoidedInstances).toHaveLength(1);
+    expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Transcendence: Transfer');
+  });
+
+  it('tracks Paladin Blessing of Sacrifice CC break', () => {
+    // Paladin casts Sacrifice (6940) at T+5s, gets feared (5782) at T+10s, fear breaks at T+11s (duration=1s <= 1.5s)
+    const sacrificeCast = {
+      logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: MATCH_START + 5_000 },
+      spellId: '6940',
+      spellName: 'Blessing of Sacrifice',
+    };
+    const fearApply = makeAuraEvent(
+      LogEvent.SPELL_AURA_APPLIED,
+      '5782',
+      MATCH_START + 10_000,
+      'enemy-1',
+      'player-1',
+      'DEBUFF',
+    );
+    const fearRemove = makeAuraEvent(
+      LogEvent.SPELL_AURA_REMOVED,
+      '5782',
+      MATCH_START + 11_000,
+      'enemy-1',
+      'player-1',
+      'DEBUFF',
+    );
+
+    const player = makeUnit('player-1', {
+      class: CombatUnitClass.Paladin,
+      spec: CombatUnitSpec.Paladin_Holy,
+      spellCastEvents: [sacrificeCast as any],
+      auraEvents: [fearApply, fearRemove],
+    });
+    const enemy = makeEnemy('enemy-1', 'EnemyA');
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+    expect(result.ccAvoidedInstances).toHaveLength(1);
+    expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Blessing of Sacrifice');
+  });
 });

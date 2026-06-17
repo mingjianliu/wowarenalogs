@@ -33,7 +33,11 @@ const PRIORITY_MAP = {
   debuffs_other: 11,
 };
 
-export const spells = rawSpellsData as Record<string, ISpellMetadata>;
+export const spells = {
+  ...rawSpellsData,
+  '5782': { type: 'cc' },
+  '19386': { type: 'cc' },
+} as Record<string, ISpellMetadata>;
 
 export const ccSpellIds = new Set<string>(Object.keys(spells).filter((spellId) => spells[spellId].type === 'cc'));
 
