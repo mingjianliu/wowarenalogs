@@ -50,6 +50,30 @@ const CC_AVOIDANCE_BUFF_SPELLS = new Map<string, string>([
   ['354610', 'Glimpse'],
   ['227847', 'Bladestorm'],
   ['389774', 'Bladestorm'],
+  ['642', 'Divine Shield'],
+  ['1022', 'Blessing of Protection'],
+  ['204018', 'Blessing of Spellwarding'],
+  ['45438', 'Ice Block'],
+  ['186265', 'Aspect of the Turtle'],
+  ['48707', 'Anti-Magic Shell'],
+]);
+
+const DRUID_FORM_BUFFS = new Map<string, string>([
+  ['5487', 'Bear Form'],
+  ['768', 'Cat Form'],
+  ['783', 'Travel Form'],
+  ['24858', 'Moonkin Form'],
+  ['114223', 'Tree of Life'],
+]);
+
+const BREAKABLE_CC_SPELL_IDS = new Set([
+  '118', // Polymorph
+  '51514', // Hex
+  '3355', // Freezing Trap
+  '5782', // Fear
+  '8122', // Psychic Scream
+  '19386', // Wyvern Sting
+  '20066', // Repentance
 ]);
 
 /** Shaman Grounding Totem — redirects the first targeted hostile spell. */
@@ -57,12 +81,6 @@ const GROUNDING_TOTEM_SPELL_ID = '8177';
 
 /** Priest Shadow Word: Death — can break a freshly-applied breakable CC on the caster. */
 const SHADOW_WORD_DEATH_SPELL_ID = '32379';
-
-/**
- * CCs that a Priest can break by self-damaging via Shadow Word: Death (instant breaks).
- * Polymorph, Hex, Freezing Trap, Fear, Psychic Scream, Wyvern Sting.
- */
-const SWD_BREAKABLE_CC_SPELL_IDS = new Set(['118', '51514', '3355', '5782', '8122', '19386']);
 
 // ---------------------------------------------------------------------------
 // Interfaces
@@ -477,9 +495,33 @@ export function analyzePlayerCCAndTrinket(
   const activeBuffs: Array<{ spellId: string; name: string; applyMs: number; removeMs: number }> = [];
   const pendingBuffs = new Map<string, { applyMs: number; name: string }>();
 
+  if (player.info?.interestingAurasJSON) {
+    try {
+      const initialAuras = JSON.parse(player.info.interestingAurasJSON);
+      if (Array.isArray(initialAuras)) {
+        for (const auraId of initialAuras) {
+          const spellIdStr = String(auraId);
+          if (CC_AVOIDANCE_BUFF_SPELLS.has(spellIdStr)) {
+            pendingBuffs.set(spellIdStr, {
+              applyMs: combat.startTime,
+              name: CC_AVOIDANCE_BUFF_SPELLS.get(spellIdStr) ?? '',
+            });
+          } else if (DRUID_FORM_BUFFS.has(spellIdStr)) {
+            pendingBuffs.set(spellIdStr, {
+              applyMs: combat.startTime,
+              name: DRUID_FORM_BUFFS.get(spellIdStr) ?? '',
+            });
+          }
+        }
+      }
+    } catch (e) {
+      // Ignore parse errors
+    }
+  }
+
   for (const aura of player.auraEvents) {
     const spellId = aura.spellId;
-    if (!spellId || !CC_AVOIDANCE_BUFF_SPELLS.has(spellId)) continue;
+    if (!spellId || (!CC_AVOIDANCE_BUFF_SPELLS.has(spellId) && !DRUID_FORM_BUFFS.has(spellId))) continue;
 
     const event = aura.logLine.event;
     if (event === LogEvent.SPELL_AURA_APPLIED || event === LogEvent.SPELL_AURA_REFRESH) {
@@ -494,7 +536,7 @@ export function analyzePlayerCCAndTrinket(
       }
       pendingBuffs.set(spellId, {
         applyMs: aura.timestamp,
-        name: CC_AVOIDANCE_BUFF_SPELLS.get(spellId) ?? '',
+        name: CC_AVOIDANCE_BUFF_SPELLS.get(spellId) ?? DRUID_FORM_BUFFS.get(spellId) ?? '',
       });
     } else if (event === LogEvent.SPELL_AURA_REMOVED) {
       const pending = pendingBuffs.get(spellId);
@@ -534,15 +576,21 @@ export function analyzePlayerCCAndTrinket(
         if (!gotCCd) {
           const activeBuff = activeBuffs.find((b) => castTimeMs >= b.applyMs && castTimeMs <= b.removeMs);
           if (activeBuff) {
-            ccAvoidedInstances.push({
-              atSeconds: (castTimeMs - matchStartMs) / 1000,
-              spellId: cast.spellId,
-              spellName: getEnglishSpellName(cast.spellId, cast.spellName),
-              avoidanceSpellName: activeBuff.name,
-              avoidanceSpellId: activeBuff.spellId,
-              sourceName: enemy.name,
-              sourceSpec: enemySpecMap.get(enemy.id) ?? 'Unknown',
-            });
+            const ccSpellName = getEnglishSpellName(cast.spellId, cast.spellName);
+            const isDruidForm = DRUID_FORM_BUFFS.has(activeBuff.spellId);
+            const isPolymorph = ccSpellName.toLowerCase().includes('polymorph');
+
+            if (!isDruidForm || isPolymorph) {
+              ccAvoidedInstances.push({
+                atSeconds: (castTimeMs - matchStartMs) / 1000,
+                spellId: cast.spellId,
+                spellName: ccSpellName,
+                avoidanceSpellName: activeBuff.name,
+                avoidanceSpellId: activeBuff.spellId,
+                sourceName: enemy.name,
+                sourceSpec: enemySpecMap.get(enemy.id) ?? 'Unknown',
+              });
+            }
           }
         }
       }
@@ -556,7 +604,10 @@ export function analyzePlayerCCAndTrinket(
         if (cast.logLine.event !== LogEvent.SPELL_CAST_SUCCESS) continue;
         if (!cast.spellId || !ccSpellIds.has(cast.spellId)) continue;
 
-        if (cast.destUnitName?.toLowerCase().includes('grounding totem')) {
+        const isGroundingTotem =
+          cast.destUnitName?.toLowerCase().includes('grounding totem') ||
+          (cast.destUnitId?.startsWith('Creature-') && cast.destUnitId.split('-')[5] === '5925');
+        if (isGroundingTotem) {
           const castTimeMs = cast.logLine.timestamp;
           ccAvoidedInstances.push({
             atSeconds: (castTimeMs - matchStartMs) / 1000,
@@ -572,11 +623,75 @@ export function analyzePlayerCCAndTrinket(
     }
   }
 
-  // 3. Shadow Word: Death Breaks (only Priest players)
+  // 3. Monk Transcendence: Transfer
+  if (player.class === CombatUnitClass.Monk) {
+    for (const enemy of enemies) {
+      for (const cast of enemy.spellCastEvents) {
+        if (cast.logLine.event !== LogEvent.SPELL_CAST_SUCCESS) continue;
+        if (!cast.spellId || !ccSpellIds.has(cast.spellId)) continue;
+
+        if (cast.destUnitId === player.id || cast.destUnitName === player.name) {
+          const castTimeMs = cast.logLine.timestamp;
+          const gotCCd = ccInstances.some(
+            (cc) => Math.abs(cc.atSeconds * 1000 - (castTimeMs - matchStartMs)) <= 1500 && cc.spellId === cast.spellId,
+          );
+
+          if (!gotCCd) {
+            const transcendenceCast = player.spellCastEvents.find(
+              (e) =>
+                e.spellId === '119996' &&
+                e.logLine.event === LogEvent.SPELL_CAST_SUCCESS &&
+                Math.abs(e.logLine.timestamp - castTimeMs) <= 1200,
+            );
+            if (transcendenceCast) {
+              ccAvoidedInstances.push({
+                atSeconds: (castTimeMs - matchStartMs) / 1000,
+                spellId: cast.spellId,
+                spellName: getEnglishSpellName(cast.spellId, cast.spellName),
+                avoidanceSpellName: 'Transcendence: Transfer',
+                avoidanceSpellId: '119996',
+                sourceName: enemy.name,
+                sourceSpec: enemySpecMap.get(enemy.id) ?? 'Unknown',
+              });
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // 4. Paladin Blessing of Sacrifice Breaks
+  if (player.class === CombatUnitClass.Paladin) {
+    for (const cc of ccInstances) {
+      const ccAppliedTimeMs = cc.atSeconds * 1000 + matchStartMs;
+      if (BREAKABLE_CC_SPELL_IDS.has(cc.spellId) && cc.durationSeconds <= 1.5) {
+        const sacrificeCast = player.spellCastEvents.find(
+          (e) =>
+            (e.spellId === '6940' || e.spellId === '199448') &&
+            e.logLine.event === LogEvent.SPELL_CAST_SUCCESS &&
+            ccAppliedTimeMs >= e.logLine.timestamp &&
+            ccAppliedTimeMs - e.logLine.timestamp <= 12000,
+        );
+        if (sacrificeCast) {
+          ccAvoidedInstances.push({
+            atSeconds: cc.atSeconds,
+            spellId: cc.spellId,
+            spellName: cc.spellName,
+            avoidanceSpellName: 'Blessing of Sacrifice',
+            avoidanceSpellId: sacrificeCast.spellId || '6940',
+            sourceName: cc.sourceName,
+            sourceSpec: cc.sourceSpec,
+          });
+        }
+      }
+    }
+  }
+
+  // 5. Shadow Word: Death Breaks (only Priest players)
   if (player.class === CombatUnitClass.Priest) {
     for (const cc of ccInstances) {
       const ccAppliedTimeMs = cc.atSeconds * 1000 + matchStartMs;
-      if (SWD_BREAKABLE_CC_SPELL_IDS.has(cc.spellId) && cc.durationSeconds <= 1.0) {
+      if (BREAKABLE_CC_SPELL_IDS.has(cc.spellId) && cc.durationSeconds <= 1.0) {
         const swdCast = player.spellCastEvents.find(
           (e) =>
             e.spellId === SHADOW_WORD_DEATH_SPELL_ID &&

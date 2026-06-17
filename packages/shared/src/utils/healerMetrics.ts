@@ -1,4 +1,4 @@
-import { CombatUnitType, IArenaMatch, IShuffleRound } from '@wowarenalogs/parser';
+import { CombatUnitType, IArenaMatch, IShuffleRound, LogEvent } from '@wowarenalogs/parser';
 
 import { ccSpellIds } from '../data/spellTags';
 import { analyzePlayerCCAndTrinket } from './ccTrinketAnalysis';
@@ -106,7 +106,9 @@ export function computeHealerMetrics(combat: IArenaMatch | IShuffleRound, player
   const myOverlapCount = overlaps.filter(
     (o) => o.firstCasterName === playerName || o.secondCasterName === playerName,
   ).length;
-  const myTotalDefensives = healerUnit.spellCastEvents.filter((e) => MAJOR_DEFENSIVE_IDS.has(String(e.spellId))).length;
+  const myTotalDefensives = healerUnit.spellCastEvents.filter(
+    (e) => e.logLine.event === LogEvent.SPELL_CAST_SUCCESS && MAJOR_DEFENSIVE_IDS.has(String(e.spellId)),
+  ).length;
   const defensiveOverlapRatio = myOverlapCount / (myTotalDefensives + 1);
 
   // 5. effectiveCastRatio
