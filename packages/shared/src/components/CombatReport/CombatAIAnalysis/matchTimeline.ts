@@ -1208,7 +1208,8 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     if (pw.totalDamage < DMG_SPIKE_THRESHOLD) continue;
     const dmgM = (pw.totalDamage / 1_000_000).toFixed(2);
     const windowSec = Math.round(pw.toSeconds - pw.fromSeconds);
-    const dpsK = Math.round(pw.totalDamage / windowSec / 1000);
+    // B20: Prevent Infinityk DPS on sub-second windows
+    const dpsK = Math.round(pw.totalDamage / Math.max(1, windowSec) / 1000);
 
     const targetUnit = friends.find((f) => f.name === pw.targetName);
     const hpFrom = targetUnit ? getUnitHpAtTimestamp(targetUnit, matchStartMs + pw.fromSeconds * 1000, 2000) : null;
