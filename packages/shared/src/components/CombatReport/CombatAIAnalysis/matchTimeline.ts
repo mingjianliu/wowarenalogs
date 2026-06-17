@@ -727,6 +727,8 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       .filter((s) => s.playerName === owner.name)
       .flatMap((s) => s.ccInstances.map((cc) => Math.round(matchStartMs + cc.atSeconds * 1000)));
 
+    const seenCasts = new Set<string>();
+
     let activeFold: {
       displayName: string;
       targetLabel: string;
@@ -790,6 +792,13 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       }
 
       const targetLabel = resolveTarget(e.destUnitName);
+
+      // B15: Dedup same-second, same-target, same-name casts (duplicate spell IDs)
+      const second = Math.floor(timeSeconds);
+      const dedupKey = `${displayName}|${targetLabel}|${second}`;
+      if (seenCasts.has(dedupKey)) continue;
+      seenCasts.add(dedupKey);
+
       const targetPart = targetLabel ? ` → ${targetLabel}` : '';
       const destType = getUnitType(e.destUnitFlags ?? 0);
       let totemNote = '';
