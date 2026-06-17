@@ -629,6 +629,24 @@ describe('detectOverlappedDefensives', () => {
     expect(result).toHaveLength(1);
     expect(result[0].simultaneousSeconds).toBeCloseTo(5); // 12 - 7 = 5
   });
+
+  it('detects overlap for 12s duration spell with a 9s gap (exceeding old 8s static gap limit)', () => {
+    const targetId = 'target-1';
+    // Blessing of Sacrifice: 12s duration. Gap = 9s -> overlap = 3s (>= MIN=2).
+    const cast1 = makeSpellCastEvent(BLESSING_OF_SACRIFICE, START + 10_000, targetId, 'Target', 'caster-1');
+    const cast2 = makeSpellCastEvent(BLESSING_OF_SACRIFICE, START + 19_000, targetId, 'Target', 'caster-2');
+
+    const result = detectOverlappedDefensives(
+      [
+        makeUnit('caster-1', { spellCastEvents: [cast1 as any] }),
+        makeUnit('caster-2', { spellCastEvents: [cast2 as any] }),
+        makeUnit(targetId),
+      ],
+      combat,
+    );
+    expect(result).toHaveLength(1);
+    expect(result[0].simultaneousSeconds).toBeCloseTo(3); // 12 - 9 = 3
+  });
 });
 
 // ─── detectPanicDefensives ────────────────────────────────────────────────────

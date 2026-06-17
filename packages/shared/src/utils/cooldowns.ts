@@ -904,8 +904,6 @@ const MIN_SIMULTANEOUS_SECONDS = 2;
  * Most majors last 8–12s; 8s is conservative enough to avoid false positives.
  */
 const OVERLAP_ASSUME_DURATION_S = 8;
-/** Max cast gap to bother checking overlap — no major defensive lasts longer than this */
-const MAX_CAST_GAP_FOR_OVERLAP_CHECK_S = OVERLAP_ASSUME_DURATION_S;
 
 export interface IOverlappedDefensive {
   /** Timestamp of the first cast */
@@ -985,17 +983,13 @@ export function detectOverlappedDefensives(
     for (let j = i + 1; j < casts.length; j++) {
       const second = casts[j];
       const gapSeconds = second.timeSeconds - first.timeSeconds;
-      if (gapSeconds > MAX_CAST_GAP_FOR_OVERLAP_CHECK_S) break;
+      const firstDuration = spellEffectData[first.spellId]?.durationSeconds || OVERLAP_ASSUME_DURATION_S;
+      const maxGap = firstDuration - MIN_SIMULTANEOUS_SECONDS;
+      if (gapSeconds > maxGap) break;
       if (first.targetUnitId !== second.targetUnitId) continue;
       if (first.casterUnitId === second.casterUnitId) continue;
 
-      // Approximate overlap: attempt to use the actual spell effect duration.
-      // If none is found, fallback to OVERLAP_ASSUME_DURATION_S avoids false negatives.
-      // Aura event IDs often differ from cast spell IDs in WoW logs, making reliable aura
-      // duration lookup impossible, so we use the database-driven duration.
-      const firstDuration = spellEffectData[first.spellId]?.durationSeconds || OVERLAP_ASSUME_DURATION_S;
       const simultaneousSeconds = firstDuration - gapSeconds;
-      if (simultaneousSeconds < MIN_SIMULTANEOUS_SECONDS) continue;
 
       overlaps.push({
         timeSeconds: first.timeSeconds,
