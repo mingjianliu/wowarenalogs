@@ -197,14 +197,14 @@ describe('combatStates', () => {
           spellName: 'Hover',
         } as any,
         {
-          logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 5000 },
-          spellId: '370537',
-          spellName: 'Stasis',
-        } as any,
-        {
           logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 5000 }, // same ms as stasis removal
           spellId: '355936',
           spellName: 'Dream Breath',
+        } as any,
+        {
+          logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 5000 },
+          spellId: '370537',
+          spellName: 'Stasis',
         } as any,
       ],
     };
@@ -250,6 +250,11 @@ describe('combatStates', () => {
           spellId: '357208', // Fire Breath — not in the heal allow-list
           spellName: 'Fire Breath',
         } as any,
+        {
+          logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 5000 },
+          spellId: '370537', // Auto-release cast
+          spellName: 'Stasis',
+        } as any,
       ],
     };
     const stasisEvents = extractStasisEvents(evokerUnit, mockCombat);
@@ -282,6 +287,34 @@ describe('combatStates', () => {
       ],
     };
     const stasisEvents = extractStasisEvents(evokerUnit, mockCombat);
+    expect(stasisEvents).toHaveLength(0);
+  });
+
+  it('extractStasisEvents ignores SPELL_AURA_REMOVED if no Stasis SPELL_CAST_SUCCESS occurred (B10)', () => {
+    const evokerUnit: ICombatUnit = {
+      ...mockUnit,
+      auraEvents: [
+        {
+          logLine: { event: LogEvent.SPELL_AURA_APPLIED, timestamp: 2000 },
+          spellId: '370537',
+          spellName: 'Stasis',
+        } as any,
+        {
+          logLine: { event: LogEvent.SPELL_AURA_REMOVED, timestamp: 92000 }, // naturally expired 90s later
+          spellId: '370537',
+          spellName: 'Stasis',
+        } as any,
+      ],
+      spellCastEvents: [
+        {
+          logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 2500 },
+          spellId: '366155',
+          spellName: 'Reversion',
+        } as any,
+      ],
+    };
+    const stasisEvents = extractStasisEvents(evokerUnit, mockCombat);
+    // B10: Since there was no spell cast event for Stasis (370537) closing the window, it's a fake release.
     expect(stasisEvents).toHaveLength(0);
   });
 });
