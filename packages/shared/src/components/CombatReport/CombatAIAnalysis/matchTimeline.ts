@@ -784,9 +784,26 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         }
       }
 
+      // F166: "cheaper-tool-available" tag — if a shorter-CD defensive was available, flag it
+      let cheaperNote = '';
+      if (!isCC && cd.tag === 'Defensive') {
+        const cheaperAvailable = ownerCDs
+          .filter(
+            (other) =>
+              other.spellId !== cd.spellId &&
+              (other.tag === 'Defensive' || other.tag === 'External') &&
+              other.cooldownSeconds < cd.cooldownSeconds &&
+              other.availableWindows.some((w) => cast.timeSeconds >= w.fromSeconds && cast.timeSeconds <= w.toSeconds),
+          )
+          .map((other) => other.spellName);
+        if (cheaperAvailable.length > 0) {
+          cheaperNote = ` | cheaper available: ${cheaperAvailable.join(', ')}`;
+        }
+      }
+
       addEntry(
         cast.timeSeconds,
-        `${fmtTime(cast.timeSeconds)}  ${prefix}   ${cd.spellName}${targetPart}${dampeningNote}${groundingNote}`,
+        `${fmtTime(cast.timeSeconds)}  ${prefix}   ${cd.spellName}${targetPart}${dampeningNote}${cheaperNote}${groundingNote}`,
         ...extraLines,
       );
     }
