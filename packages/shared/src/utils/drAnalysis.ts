@@ -84,6 +84,22 @@ export const DR_CATEGORY_MAP: Record<string, string> = (() => {
 
   // Supplement: DR categories absent from DB2 DiminishType system
   map['64044'] = 'Horror'; // Psychic Horror (Shadow Priest)
+  map['323467'] = 'Horror'; // Sin and Punishment (Shadow Priest)
+  map['376077'] = 'Stun'; // Champion's Spear (Warrior/Evoker-adjacent)
+  map['102793'] = 'Root'; // Ursol's Vortex (Druid)
+  map['217832'] = 'Incapacitate'; // Imprison (Demon Hunter)
+  map['118381'] = 'Incapacitate'; // Polymorph: Turtle
+  map['161353'] = 'Incapacitate'; // Polymorph: Polar Bear
+  map['161354'] = 'Incapacitate'; // Polymorph: Monkey
+  map['161355'] = 'Incapacitate'; // Polymorph: Penguin
+  map['61305'] = 'Incapacitate'; // Polymorph: Black Cat
+  map['61721'] = 'Incapacitate'; // Polymorph: Rabbit
+  map['61780'] = 'Incapacitate'; // Polymorph: Turkey
+  map['12826'] = 'Incapacitate'; // Polymorph: Polymorph
+  map['28272'] = 'Incapacitate'; // Polymorph: Pig
+  map['28271'] = 'Incapacitate'; // Polymorph: Turtle (Old)
+  map['115268'] = 'Incapacitate'; // Mesmerize (Shivan pet)
+  map['22570'] = 'Stun'; // Maim (should be Stun per DB2, but often missing)
 
   // DB2 override: Cyclone has its own DR category in WoW, not shared with Disorient
   map['33786'] = 'Cyclone';

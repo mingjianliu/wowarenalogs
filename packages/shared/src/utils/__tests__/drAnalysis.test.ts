@@ -68,6 +68,33 @@ describe('getDRCategory', () => {
     expect(getDRCategory('9999999')).toBe('spell:9999999');
     expect(getDRCategory('custom-spell')).toBe('spell:custom-spell');
   });
+
+  describe('B16 — Common CC DR categories', () => {
+    it("identifies Champion's Spear as a Stun", () => {
+      expect(getDRCategory('376077')).toBe('Stun');
+    });
+
+    it("identifies Ursol's Vortex as a Root", () => {
+      expect(getDRCategory('102793')).toBe('Root');
+    });
+
+    it('identifies Maim as a Stun', () => {
+      expect(getDRCategory('22570')).toBe('Stun');
+    });
+
+    it('identifies Imprison as an Incapacitate', () => {
+      expect(getDRCategory('217832')).toBe('Incapacitate');
+    });
+
+    it('identifies Sin and Punishment as a Horror', () => {
+      expect(getDRCategory('323467')).toBe('Horror');
+    });
+
+    it('identifies Polymorph variants as Incapacitate', () => {
+      expect(getDRCategory('118381')).toBe('Incapacitate');
+      expect(getDRCategory('161353')).toBe('Incapacitate');
+    });
+  });
 });
 
 // ─── getDRLevel ────────────────────────────────────────────────────────────────
