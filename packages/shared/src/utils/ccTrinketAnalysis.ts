@@ -115,6 +115,17 @@ const REPOSITIONING_SPELL_IDS = new Map<string, string>([
   ['24858', 'Moonkin Form'],
 ]);
 
+const TARGETED_CC_DODGE_SPELLS = new Set<string>([
+  '119996', // Transcendence: Transfer
+  '58984', // Shadowmeld
+]);
+
+const TREMOR_BREAKABLE_CC_IDS = new Set<string>([
+  '5782', // Fear
+  '8122', // Psychic Scream
+  '5484', // Howl of Terror
+]);
+
 // ---------------------------------------------------------------------------
 // Interfaces
 // ---------------------------------------------------------------------------
@@ -641,15 +652,18 @@ export function analyzePlayerCCAndTrinket(
               Math.abs(e.logLine.timestamp - castTimeMs) <= 1500,
           );
           if (mobilityCast && mobilityCast.spellId) {
-            ccAvoidedInstances.push({
-              atSeconds: (castTimeMs - matchStartMs) / 1000,
-              spellId: cast.spellId,
-              spellName: getEnglishSpellName(cast.spellId, cast.spellName),
-              avoidanceSpellName: REPOSITIONING_SPELL_IDS.get(mobilityCast.spellId) ?? '',
-              avoidanceSpellId: mobilityCast.spellId,
-              sourceName: enemy.name,
-              sourceSpec: enemySpecMap.get(enemy.id) ?? 'Unknown',
-            });
+            const canDodge = isGroundCC || TARGETED_CC_DODGE_SPELLS.has(mobilityCast.spellId);
+            if (canDodge) {
+              ccAvoidedInstances.push({
+                atSeconds: (castTimeMs - matchStartMs) / 1000,
+                spellId: cast.spellId,
+                spellName: getEnglishSpellName(cast.spellId, cast.spellName),
+                avoidanceSpellName: REPOSITIONING_SPELL_IDS.get(mobilityCast.spellId) ?? '',
+                avoidanceSpellId: mobilityCast.spellId,
+                sourceName: enemy.name,
+                sourceSpec: enemySpecMap.get(enemy.id) ?? 'Unknown',
+              });
+            }
           }
         }
       }
@@ -738,11 +752,6 @@ export function analyzePlayerCCAndTrinket(
 
   // 6. Tremor Totem Breaks (only Shaman players)
   if (player.class === CombatUnitClass.Shaman) {
-    const TREMOR_BREAKABLE_CC_IDS = new Set<string>([
-      '5782', // Fear
-      '8122', // Psychic Scream
-      '5484', // Howl of Terror
-    ]);
     for (const cc of ccInstances) {
       const ccAppliedTimeMs = cc.atSeconds * 1000 + matchStartMs;
       if (TREMOR_BREAKABLE_CC_IDS.has(cc.spellId) && cc.durationSeconds <= 2.0) {
