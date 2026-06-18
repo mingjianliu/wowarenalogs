@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-17T06:18:37.947Z",
-  "gitCommit": "3fa4d94e482a5d84b7062636afecd39f9a8c8505",
+  "generatedAt": "2026-06-18T17:08:08.027Z",
+  "gitCommit": "00795f393e4d8a7c0fdf6b84f18b240ef51865d5",
   "files": {
     "spellEffects.json": {
       "description": "Per-spell cooldown, duration, dispelType from Wago.tools DB2",
@@ -21,9 +21,9 @@
       "entryCount": 545,
       "sha256": "7fedb84a3ba203299d222449ab2dd85b3d62b98c47c2abbbf71be930d4da50c6",
       "lastCommit": {
-        "hash": "114ab2820306e43b7f9d03c39189aed363d16fa9",
-        "date": "2026-06-02T12:31:48-04:00",
-        "subject": "test(purge): complete full 10-game A/B tests for all purge and dispel coaching features"
+        "hash": "3ac980d2b58a484ca8bbc624d85bd4548d3524d6",
+        "date": "2026-06-17T02:21:36-04:00",
+        "subject": "feat(prompt): implement F171 token optimizations and F160 chronological RES snapshots (B19 fix)"
       }
     },
     "spellIdLists.json": {
@@ -31,12 +31,20 @@
       "generatedBy": "npm run start:generateSpellIdLists (packages/tools)",
       "wowDataDependent": true,
       "entryCount": 8,
-      "sha256": "7ebd84c2e3af73e26cb3e874426be6722c572c8fec30cc7f2eccfc1d77807db9",
+      "sha256": "84fd66b0f28ba16e1c9c918af96dc081a30e34ba9affe54845c98743028cf7d1",
       "lastCommit": {
         "hash": "0ac6dc21cbd5334cc5a7d55ca761ef1ccd9dac7d",
         "date": "2026-06-17T01:44:09-04:00",
         "subject": "fix(B12): skip unused-defensive blame when teammate was CC'd at death; export wasInHardCC; add USABLE_WHILE_CC_SPELL_IDS"
       }
+    },
+    "spellNames.json": {
+      "description": "English spell names mapping for all spell IDs from Wago.tools SpellName DB2",
+      "generatedBy": "npm run start:generateSpellIdLists (packages/tools)",
+      "wowDataDependent": true,
+      "entryCount": 400298,
+      "sha256": "2d7981eba1d1d03830a5c0c34794807baf67c7b6c1ed2d7eadaa8a5e948acedd",
+      "lastCommit": null
     },
     "trinketItemIds.json": {
       "description": "Adaptation and Relentless PvP trinket item IDs from Wago.tools ItemSparse DB2",

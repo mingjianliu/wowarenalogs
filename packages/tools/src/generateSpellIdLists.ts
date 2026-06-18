@@ -241,6 +241,16 @@ async function main() {
   const reviewDirPath = path.resolve(__dirname, '../../shared/src/data/spellIdListsReview');
   await fs.ensureDir(reviewDirPath);
   await fs.writeFile(outputPath, `${JSON.stringify(output, null, 2)}\n`);
+
+  // Write complete spell names mapping to spellNames.json
+  const spellNamesMap: Record<string, string> = {};
+  spellNameRows.forEach((row) => {
+    if (row.ID && row.Name_lang) {
+      spellNamesMap[row.ID] = row.Name_lang;
+    }
+  });
+  const spellNamesPath = path.resolve(__dirname, '../../shared/src/data/spellNames.json');
+  await fs.writeFile(spellNamesPath, `${JSON.stringify(spellNamesMap, null, 2)}\n`);
   await fs.writeFile(
     path.resolve(reviewDirPath, 'metadata.json'),
     `${JSON.stringify(

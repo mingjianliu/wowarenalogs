@@ -34,6 +34,12 @@ const TRACKED_FILES: Array<{
     wowDataDependent: true,
   },
   {
+    file: 'spellNames.json',
+    description: 'English spell names mapping for all spell IDs from Wago.tools SpellName DB2',
+    generatedBy: 'npm run start:generateSpellIdLists (packages/tools)',
+    wowDataDependent: true,
+  },
+  {
     file: 'trinketItemIds.json',
     description: 'Adaptation and Relentless PvP trinket item IDs from Wago.tools ItemSparse DB2',
     generatedBy: 'npm run start:generateTrinketItemIds (packages/tools)',
