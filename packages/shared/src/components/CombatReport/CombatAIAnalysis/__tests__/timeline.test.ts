@@ -5634,3 +5634,31 @@ describe('buildMatchTimeline — F168 & F169: Dampening and Atonement count', ()
     expect(result).toContain('| Atonements: 1');
   });
 });
+
+describe('buildMatchTimeline — F170 Enemy hard-cast kill-spell tagging', () => {
+  it('F170: emits [ENEMY HARD CAST] for Chaos Bolt and Pyroblast', () => {
+    const matchStartMs = 1000000;
+    const enemy = makeUnit('e1', {
+      name: 'Destro',
+      spec: CombatUnitSpec.Warlock_Destruction,
+      spellCastEvents: [
+        {
+          timestamp: matchStartMs + 10000,
+          logLine: { event: LogEvent.SPELL_CAST_START, timestamp: matchStartMs + 10000 },
+          spellId: '116858',
+          spellName: 'Chaos Bolt',
+          destUnitName: 'Friend',
+        } as any,
+      ],
+    });
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        enemies: [enemy],
+        playerIdMap: new Map([['Friend', 2]]),
+        enemyIdMap: new Map([['Destro', 4]]),
+        matchStartMs,
+      }),
+    );
+    expect(result).toContain('0:10  [ENEMY HARD CAST]   4: Chaos Bolt → 2');
+  });
+});
