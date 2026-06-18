@@ -1,6 +1,7 @@
 import {
   AtomicArenaCombat,
   classMetadata,
+  CombatUnitClass,
   CombatUnitPowerType,
   CombatUnitSpec,
   ICombatUnit,
@@ -303,6 +304,17 @@ export function extractMajorCooldowns(unit: ICombatUnit, combat: AtomicArenaComb
 
   const classData = classMetadata.find((c) => c.unitClass === unit.class);
   if (!classData) return [];
+
+  if (unit.class === CombatUnitClass.Priest) {
+    const hasUP1 = classData.abilities.some((a) => a.spellId === '421116');
+    if (!hasUP1) {
+      classData.abilities.push({ spellId: '421116', name: 'Ultimate Penitence', tags: [SpellTag.Defensive] });
+    }
+    const hasUP2 = classData.abilities.some((a) => a.spellId === '421453');
+    if (!hasUP2) {
+      classData.abilities.push({ spellId: '421453', name: 'Ultimate Penitence', tags: [SpellTag.Defensive] });
+    }
+  }
 
   const specIdNum = parseInt(unit.spec, 10);
   const specTalentTreeSpellInfo = getSpecTalentTreeSpellInfo(specIdNum);
