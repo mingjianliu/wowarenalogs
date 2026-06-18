@@ -5662,3 +5662,91 @@ describe('buildMatchTimeline — F170 Enemy hard-cast kill-spell tagging', () =>
     expect(result).toContain('0:10  [ENEMY HARD CAST]   4: Chaos Bolt → 2');
   });
 });
+
+describe('buildMatchTimeline — B17: Channeled healer CD annotation', () => {
+  const MATCH_START_MS = 1_000_000;
+
+  function makeCDWithCast(
+    spellId: string,
+    spellName: string,
+    castAtSeconds: number,
+    cooldownSeconds = 180,
+  ): IMajorCooldownInfo {
+    return {
+      spellId,
+      spellName,
+      tag: 'Defensive',
+      cooldownSeconds,
+      maxChargesDetected: 1,
+      casts: [{ timeSeconds: castAtSeconds }],
+      availableWindows: [],
+      neverUsed: false,
+    };
+  }
+
+  it('annotates completed Tranquility channel', () => {
+    const ownerId = 'owner-1';
+    const owner = makeUnit(ownerId, {
+      name: 'Healer',
+      auraEvents: [
+        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '740', MATCH_START_MS + 10_000, ownerId, ownerId),
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '740', MATCH_START_MS + 16_000, ownerId, ownerId),
+      ],
+    });
+
+    const cd = makeCDWithCast('740', 'Tranquility', 10);
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        ownerCDs: [cd],
+        matchStartMs: MATCH_START_MS,
+      }),
+    );
+    expect(result).toContain('0:10  [YOU] [CD]   Tranquility (completed, 6.0s)');
+  });
+
+  it('annotates interrupted Tranquility channel', () => {
+    const ownerId = 'owner-1';
+    const owner = makeUnit(ownerId, {
+      name: 'Healer',
+      auraEvents: [
+        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '740', MATCH_START_MS + 10_000, ownerId, ownerId),
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '740', MATCH_START_MS + 12_400, ownerId, ownerId),
+      ],
+    });
+
+    const cd = makeCDWithCast('740', 'Tranquility', 10);
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        ownerCDs: [cd],
+        matchStartMs: MATCH_START_MS,
+      }),
+    );
+    expect(result).toContain('0:10  [YOU] [CD]   Tranquility (interrupted at 2.4s / 6.0s)');
+  });
+
+  it('annotates completed Ultimate Penitence with mapped aura spell ID', () => {
+    const ownerId = 'owner-1';
+    const owner = makeUnit(ownerId, {
+      name: 'Healer',
+      auraEvents: [
+        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '421453', MATCH_START_MS + 10_000, ownerId, ownerId),
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '421453', MATCH_START_MS + 16_500, ownerId, ownerId),
+      ],
+    });
+
+    const cd = makeCDWithCast('421116', 'Ultimate Penitence', 10);
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        ownerCDs: [cd],
+        matchStartMs: MATCH_START_MS,
+      }),
+    );
+    expect(result).toContain('0:10  [YOU] [CD]   Ultimate Penitence (completed, 6.5s)');
+  });
+});

@@ -45,6 +45,7 @@ import {
 import {
   buildKillSequenceBlock,
   buildMatchEndBlock,
+  CHANNELED_CD_SPELL_IDS,
   computeHealingInWindow,
   DMG_SPIKE_THRESHOLD,
   extractEnemyMajorBuffIntervals,
@@ -58,6 +59,7 @@ import {
   HEALING_WINDOW_MIN_HPS,
   isCriticalNonPlayerUnit,
   PASSIVE_SPELL_BLOCKLIST,
+  SPELL_DURATION_OVERRIDES,
 } from './timelineHelpers';
 
 interface DeferredSnapshot {
@@ -706,6 +708,8 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   const _allUnits = allUnits ?? [...friends, ...(enemies ?? [])];
 
+  const cdExpiryEvents = extractOwnerCDBuffExpiry(ownerCDs, owner.id, friends, matchStartMs);
+
   for (const cd of ownerCDs) {
     for (const cast of cd.casts) {
       const targetUnit = cast.targetName ? _allUnits.find((u) => u.name === cast.targetName) : owner;
@@ -787,17 +791,35 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         }
       }
 
+      let channelSuffix = '';
+      if (CHANNELED_CD_SPELL_IDS.has(cd.spellId)) {
+        const expiry = cdExpiryEvents.find(
+          (e) => e.spellId === cd.spellId && Math.abs(e.castAtSeconds - cast.timeSeconds) < 0.01,
+        );
+        if (expiry) {
+          const expectedDuration =
+            SPELL_DURATION_OVERRIDES[cd.spellId] || spellEffectData[cd.spellId]?.durationSeconds || 0;
+          const actualDuration = expiry.expiresAtSeconds - cast.timeSeconds;
+          if (expiry.isEstimated) {
+            channelSuffix = ` (estimated duration: ${expectedDuration.toFixed(1)}s)`;
+          } else if (actualDuration < expectedDuration - 0.2) {
+            channelSuffix = ` (interrupted at ${actualDuration.toFixed(1)}s / ${expectedDuration.toFixed(1)}s)`;
+          } else {
+            channelSuffix = ` (completed, ${actualDuration.toFixed(1)}s)`;
+          }
+        }
+      }
+      const displayNameWithChannel = `${cd.spellName}${channelSuffix}`;
+
       addEntry(
         cast.timeSeconds,
-        `${fmtTime(cast.timeSeconds)}  ${prefix}   ${cd.spellName}${targetPart}${dampeningNote}${cheaperNote}${groundingNote}`,
+        `${fmtTime(cast.timeSeconds)}  ${prefix}   ${displayNameWithChannel}${targetPart}${dampeningNote}${cheaperNote}${groundingNote}`,
         ...extraLines,
       );
     }
   }
 
   // ── [BUFF FADED] events (F70, B31: renamed from [CD EXPIRED]) ──────────────
-
-  const cdExpiryEvents = extractOwnerCDBuffExpiry(ownerCDs, owner.id, friends, matchStartMs);
   for (const expiry of cdExpiryEvents) {
     const estimatedNote = expiry.isEstimated ? ' (estimated)' : '';
     addEntry(

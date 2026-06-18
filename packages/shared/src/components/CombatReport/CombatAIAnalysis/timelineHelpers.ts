@@ -240,6 +240,20 @@ export interface ICDExpiryEvent {
   isEstimated: boolean;
 }
 
+export const CHANNELED_CD_SPELL_IDS = new Set<string>([
+  '740', // Tranquility (Druid)
+  '64843', // Divine Hymn (Priest)
+  '370960', // Emerald Communion (Evoker)
+  '421116', // Ultimate Penitence (Priest cast)
+  '421453', // Ultimate Penitence (Priest aura)
+  '115176', // Zen Meditation (Monk)
+]);
+
+export const SPELL_DURATION_OVERRIDES: Record<string, number> = {
+  '421116': 6.5, // Ultimate Penitence
+  '421453': 6.5, // Ultimate Penitence
+};
+
 /**
  * For each owner CD cast, finds when the buff actually expired by matching to the
  * chronologically-next SPELL_AURA_REMOVED event (cast by `ownerId`) across all
@@ -258,7 +272,7 @@ export function extractOwnerCDBuffExpiry(
     // CC spells apply their aura to the enemy, not a friendly — SPELL_AURA_REMOVED never
     // appears in friends' events. DR also makes the estimated duration wrong. Skip entirely.
     if (cd.tag === 'Control') continue;
-    const duration = spellEffectData[cd.spellId]?.durationSeconds;
+    const duration = SPELL_DURATION_OVERRIDES[cd.spellId] || spellEffectData[cd.spellId]?.durationSeconds;
     if (!duration || duration <= 0) continue;
 
     // Collect all SPELL_AURA_REMOVED timestamps for this spell cast by the owner,
@@ -266,8 +280,9 @@ export function extractOwnerCDBuffExpiry(
     const removalTimestampsMs: number[] = [];
     for (const friend of friends) {
       for (const event of friend.auraEvents) {
+        const isMatch = event.spellId === cd.spellId || (cd.spellId === '421116' && event.spellId === '421453');
         if (
-          event.spellId === cd.spellId &&
+          isMatch &&
           event.srcUnitId === ownerId &&
           (event.logLine.event as LogEvent) === LogEvent.SPELL_AURA_REMOVED
         ) {
