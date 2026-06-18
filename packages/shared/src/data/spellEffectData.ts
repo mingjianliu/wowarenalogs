@@ -21,8 +21,12 @@ export interface IMinedSpell {
 
 export const spellEffectData = rawMinedData as unknown as Record<string, IMinedSpell>;
 
+import rawSpellNames from './spellNames.json';
+
+const spellNamesMap = rawSpellNames as unknown as Record<string, string>;
+
 export function getEnglishSpellName(spellId: string, fallback?: string | null): string {
-  return spellEffectData[spellId]?.name ?? fallback ?? spellId;
+  return spellNamesMap[spellId] ?? spellEffectData[spellId]?.name ?? fallback ?? spellId;
 }
 
 // DEV - Validate mined data

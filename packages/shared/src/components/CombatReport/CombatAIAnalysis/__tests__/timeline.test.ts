@@ -1695,10 +1695,10 @@ describe('buildMatchTimeline — [YOU] [CAST] (F61 healer gap-filler)', () => {
   });
 
   it('emits [YOU] [CAST] for any spell the owner casts, not just the healer whitelist', () => {
-    // Spell ID '9999' is not in HEALER_CAST_SPELL_ID_TO_NAME — after F65 it must still appear.
+    // Spell ID '9999999' is not in HEALER_CAST_SPELL_ID_TO_NAME — after F65 it must still appear.
     const owner = makeUnit('unit-1', {
       name: 'Feramonk',
-      spellCastEvents: [makeSpellCastEvent('9999', 30_000, 'player-2', 'Simplesauce')],
+      spellCastEvents: [makeSpellCastEvent('9999999', 30_000, 'player-2', 'Simplesauce')],
     });
     const result = buildMatchTimeline(
       makeBaseParams({
@@ -1711,7 +1711,7 @@ describe('buildMatchTimeline — [YOU] [CAST] (F61 healer gap-filler)', () => {
     );
     expect(result).toContain('[YOU] [CAST]');
     // spellName echoes spellId in the mock (makeSpellCastEvent sets spellName = spellId)
-    expect(result).toContain('9999');
+    expect(result).toContain('9999999');
   });
 
   it('B104: uses the log spellName when the spell ID is absent from curated metadata', () => {
