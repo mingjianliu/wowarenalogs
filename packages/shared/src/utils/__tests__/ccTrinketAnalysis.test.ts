@@ -745,4 +745,102 @@ describe('analyzePlayerCCAndTrinket — CC Avoidance', () => {
     expect(result.ccAvoidedInstances).toHaveLength(1);
     expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Blessing of Sacrifice');
   });
+
+  it('tracks Monk Roll avoiding Hunter Freezing Trap ground CC', () => {
+    // Enemy Hunter casts Freezing Trap (3355) on the ground (no target ID)
+    const enemyCast = {
+      logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: MATCH_START + 10_000 },
+      spellId: '3355',
+      spellName: 'Freezing Trap',
+      destUnitId: '0000000000000000',
+      destUnitName: 'nil',
+      srcUnitId: 'enemy-1',
+      srcUnitName: 'HunterA',
+    };
+
+    // Monk rolls (109132) at T+9.5s
+    const monkRoll = {
+      logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: MATCH_START + 9_500 },
+      spellId: '109132',
+      spellName: 'Roll',
+      destUnitId: 'player-1',
+      destUnitName: 'MonkPlayer',
+      srcUnitId: 'player-1',
+      srcUnitName: 'MonkPlayer',
+    };
+
+    const player = makeUnit('player-1', {
+      class: CombatUnitClass.Monk,
+      spec: CombatUnitSpec.Monk_Mistweaver,
+      spellCastEvents: [monkRoll as any],
+    });
+    const enemy = makeEnemy('enemy-1', 'HunterA');
+    enemy.spellCastEvents = [enemyCast as any];
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+    expect(result.ccAvoidedInstances).toHaveLength(1);
+    expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Roll');
+  });
+
+  it('tracks Druid shapeshift form Hex immunity', () => {
+    // Enemy Shamans casts Hex (51514) on Druid
+    const enemyCast = {
+      logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: MATCH_START + 10_000 },
+      spellId: '51514',
+      spellName: 'Hex',
+      destUnitId: 'player-1',
+      destUnitName: 'DruidPlayer',
+      srcUnitId: 'enemy-1',
+      srcUnitName: 'ShamanEnemy',
+    };
+
+    const bearFormBuff = makeAuraEvent(
+      LogEvent.SPELL_AURA_APPLIED,
+      '5487',
+      MATCH_START + 8_000,
+      'player-1',
+      'DruidPlayer',
+    );
+
+    const player = makeUnit('player-1', {
+      class: CombatUnitClass.Druid,
+      spec: CombatUnitSpec.Druid_Restoration,
+      auraEvents: [bearFormBuff as any],
+    });
+    const enemy = makeEnemy('enemy-1', 'ShamanEnemy');
+    enemy.spellCastEvents = [enemyCast as any];
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+    expect(result.ccAvoidedInstances).toHaveLength(1);
+    expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Bear Form');
+  });
+
+  it('tracks Shaman Tremor Totem breaking Fear early', () => {
+    // Shaman gets feared at T+10s, breaks at T+11s (duration 1.0s)
+    const fearApplied = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '5782', MATCH_START + 10_000, 'enemy-1', 'EnemyA');
+    const fearRemoved = makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '5782', MATCH_START + 11_000, 'enemy-1', 'EnemyA');
+
+    // Tremor Totem cast at T+8s
+    const tremorCast = {
+      logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: MATCH_START + 8_000 },
+      spellId: '8143',
+      spellName: 'Tremor Totem',
+      destUnitId: '0000000000000000',
+      destUnitName: 'nil',
+      srcUnitId: 'player-1',
+      srcUnitName: 'ShamanPlayer',
+    };
+
+    const player = makeUnit('player-1', {
+      class: CombatUnitClass.Shaman,
+      spec: CombatUnitSpec.Shaman_Restoration,
+      auraEvents: [fearApplied as any, fearRemoved as any],
+      spellCastEvents: [tremorCast as any],
+    });
+    const enemy = makeEnemy('enemy-1', 'EnemyA');
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+    expect(result.ccAvoidedInstances).toHaveLength(1);
+    expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Tremor Totem');
+  });
 });

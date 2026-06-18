@@ -647,6 +647,29 @@ describe('detectOverlappedDefensives', () => {
     expect(result).toHaveLength(1);
     expect(result[0].simultaneousSeconds).toBeCloseTo(3); // 12 - 9 = 3
   });
+
+  it('detects overlaps for additional defensives and falls back to caster on empty destUnitId', () => {
+    const targetId = 'caster-1';
+    // Caster-1 casts Dark Pact (self-cast, destUnitId is empty/nil)
+    const cast1 = makeSpellCastEvent('108416', START + 10_000, '0000000000000000', 'Target', 'caster-1');
+    // Caster-2 (healer) casts Pain Suppression on Caster-1 at t=12s
+    const cast2 = makeSpellCastEvent(PAIN_SUPPRESSION, START + 12_000, targetId, 'Target', 'caster-2');
+
+    const caster1 = makeUnit('caster-1', {
+      spec: CombatUnitSpec.Warlock_Destruction,
+      spellCastEvents: [cast1 as any],
+    });
+    const caster2 = makeUnit('caster-2', {
+      spec: CombatUnitSpec.Priest_Holy,
+      spellCastEvents: [cast2 as any],
+    });
+
+    const result = detectOverlappedDefensives([caster1, caster2], combat);
+    expect(result).toHaveLength(1);
+    expect(result[0].firstSpellName).toBe('Dark Pact');
+    expect(result[0].secondSpellName).toBe('Pain Suppression');
+    expect(result[0].targetUnitId).toBe('caster-1');
+  });
 });
 
 // ─── detectPanicDefensives ────────────────────────────────────────────────────

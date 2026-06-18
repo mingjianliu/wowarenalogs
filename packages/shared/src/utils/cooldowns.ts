@@ -18,6 +18,23 @@ export const MAJOR_DEFENSIVE_IDS = new Set<string>(
   (spellIdListsData as unknown as { externalOrBigDefensiveSpellIds?: string[] }).externalOrBigDefensiveSpellIds ?? [],
 );
 
+const ADDITIONAL_OVERLAP_DEFENSIVE_IDS = new Set<string>([
+  '108416', // Dark Pact (Warlock)
+  '5277', // Evasion (Rogue)
+  '122783', // Diffuse Magic (Monk)
+  '122278', // Dampen Harm (Monk)
+  '184662', // Shield of Vengeance (Paladin)
+  '145629', // Anti-Magic Zone (DK)
+  '62618', // Power Word: Barrier (Priest)
+  '374348', // Renewing Blaze (Evoker)
+  '201633', // Earthen Wall Totem (Shaman)
+  '98008', // Spirit Link Totem (Shaman)
+  '196555', // Netherwalk (DH)
+  '47536', // Rapture (Priest)
+]);
+
+const ALL_MAJOR_DEFENSIVE_IDS = new Set<string>([...MAJOR_DEFENSIVE_IDS, ...ADDITIONAL_OVERLAP_DEFENSIVE_IDS]);
+
 /**
  * Spell IDs that can be cast while the player is stunned or otherwise CC'd.
  * Used to avoid blaming players for "unused" defensives when they were locked out.
@@ -954,8 +971,16 @@ export function detectOverlappedDefensives(
     for (const action of unit.spellCastEvents) {
       if (action.logLine.event !== LogEvent.SPELL_CAST_SUCCESS) continue;
       const spellId = action.spellId;
-      if (!spellId || !MAJOR_DEFENSIVE_IDS.has(spellId)) continue;
-      if (!friendlyIds.has(action.destUnitId)) continue;
+      if (!spellId || !ALL_MAJOR_DEFENSIVE_IDS.has(spellId)) continue;
+
+      let targetId = action.destUnitId;
+      let targetName = action.destUnitName;
+      if (!targetId || targetId === '0000000000000000') {
+        targetId = unit.id;
+        targetName = unit.name;
+      }
+
+      if (!friendlyIds.has(targetId)) continue;
 
       casts.push({
         timeSeconds: (action.timestamp - combat.startTime) / 1000,
@@ -965,8 +990,8 @@ export function detectOverlappedDefensives(
         casterSpec: specToString(unit.spec),
         spellId,
         spellName: getEnglishSpellName(spellId, action.spellName),
-        targetUnitId: action.destUnitId,
-        targetName: action.destUnitName,
+        targetUnitId: targetId,
+        targetName: targetName,
       });
     }
   }
