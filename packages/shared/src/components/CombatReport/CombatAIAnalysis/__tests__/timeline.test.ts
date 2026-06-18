@@ -5556,3 +5556,81 @@ describe('buildMatchTimeline — F144: Long-Match Healer Mana Context', () => {
     expect(result).not.toContain('0:30  [MANA]');
   });
 });
+
+describe('buildMatchTimeline — F168 & F169: Dampening and Atonement count', () => {
+  it('F168: annotates major defensives with dampening and next spike info', () => {
+    const matchStartMs = 1000000;
+    const owner = makeUnit('u1', {
+      name: 'Hearthstone',
+      spec: CombatUnitSpec.Paladin_Holy,
+      spellCastEvents: [
+        makeSpellCastEvent('642', matchStartMs + 30000, 'u1', 'Hearthstone', 'u1', 'Hearthstone', 0, 'Divine Shield'),
+      ],
+    });
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        bracket: '3v3',
+        matchStartMs,
+        isHealer: true, // Required for B38 promotion/CD annotation
+        ownerCDs: [
+          {
+            spellId: '642',
+            spellName: 'Divine Shield',
+            tag: 'Defensive',
+            cooldownSeconds: 300,
+            maxChargesDetected: 1,
+            casts: [{ timeSeconds: 30 }],
+            availableWindows: [],
+          } as any,
+        ],
+        pressureWindows: [
+          {
+            fromSeconds: 40,
+            toSeconds: 45,
+            totalDamage: 1_000_000,
+            targetName: 'Hearthstone',
+            targetSpec: 'Holy Paladin',
+          } as any,
+        ],
+      }),
+    );
+    expect(result).toContain('| dampening: 10%, next spike in 10s');
+  });
+
+  it('F169: includes Atonement count for Discipline Priests in [RES] lines', () => {
+    const matchStartMs = 1000000;
+    const friend = makeUnit('teammate-1', {
+      name: 'Atoned',
+      auraEvents: [
+        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '194384', matchStartMs + 5000, 'u1', 'teammate-1', 'BUFF'),
+      ],
+    });
+    const result = buildResourceSnapshot({
+      timeSeconds: 10,
+      ownerCDs: [],
+      ownerName: 'Owner',
+      ownerSpec: 'Discipline Priest',
+      ownerUnit: makeUnit('u1', { name: 'Owner', auraEvents: [] }),
+      matchStartMs,
+      teammateCDs: [
+        {
+          player: friend,
+          spec: 'Arms Warrior',
+          cds: [
+            {
+              spellName: 'ReadyCD',
+              casts: [],
+              cooldownSeconds: 60,
+              maxChargesDetected: 1,
+            } as any,
+          ],
+        },
+      ],
+      ccTrinketSummaries: [],
+      enemyCDTimeline: { players: [], alignedBurstWindows: [] },
+    });
+    expect(result).toContain('| Atonements: 1');
+  });
+});
