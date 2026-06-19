@@ -263,6 +263,54 @@ describe('combatStates', () => {
     expect(stasisEvents[0].storedCount).toBe(3); // 2 dose removals + final removal
   });
 
+  it('emits a partial (2-spell) release proven by a single dose removal (review H7)', () => {
+    // Real logs: the Stasis SPELL_CAST_SUCCESS fires at APPLY time (same ms as
+    // SPELL_AURA_APPLIED), never at release, so isManualRelease never matches.
+    // A 2-stack release fires exactly ONE SPELL_AURA_REMOVED_DOSE before the final
+    // SPELL_AURA_REMOVED. The old storedCount===3 gate silently dropped these.
+    const evokerUnit: ICombatUnit = {
+      ...mockUnit,
+      auraEvents: [
+        {
+          logLine: { event: LogEvent.SPELL_AURA_APPLIED, timestamp: 2000 },
+          spellId: '370537',
+          spellName: 'Stasis',
+        } as any,
+        {
+          logLine: { event: LogEvent.SPELL_AURA_REMOVED_DOSE, timestamp: 4000 },
+          spellId: '370537',
+          spellName: 'Stasis',
+        } as any,
+        {
+          logLine: { event: LogEvent.SPELL_AURA_REMOVED, timestamp: 6000 },
+          spellId: '370537',
+          spellName: 'Stasis',
+        } as any,
+      ],
+      spellCastEvents: [
+        // store-begin cast at apply ms (per real logs) — NOT at the 6000 removal ms
+        {
+          logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 2000 },
+          spellId: '370537',
+          spellName: 'Stasis',
+        } as any,
+        {
+          logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 2500 },
+          spellId: '366155',
+          spellName: 'Reversion',
+        } as any,
+        {
+          logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: 3000 },
+          spellId: '355936',
+          spellName: 'Dream Breath',
+        } as any,
+      ],
+    };
+    const stasisEvents = extractStasisEvents(evokerUnit, mockCombat);
+    expect(stasisEvents).toHaveLength(1);
+    expect(stasisEvents[0].storedCount).toBe(2); // 1 dose removal + final removal
+  });
+
   it('extractStasisEvents ignores Stasis removal if it is not a manual or automatic release (e.g. expiration or death)', () => {
     const evokerUnit: ICombatUnit = {
       ...mockUnit,

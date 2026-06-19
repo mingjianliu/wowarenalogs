@@ -185,10 +185,16 @@ export function extractStasisEvents(unit: ICombatUnit, combat: AtomicArenaCombat
       // The final removal is itself one stored-spell consumption when doses preceded it.
       const dosedCount = doseRemovals > 0 ? doseRemovals + 1 : doseRemovals;
       const storedCount = Math.max(bufferedSpells.length, dosedCount);
+      // A real release consumes stored stacks, which in the log fire as
+      // SPELL_AURA_REMOVED_DOSE before the final removal. Any dose removal therefore
+      // proves a genuine release — this captures partial 2-stack releases (1 dose),
+      // not just full 3-stack auto-releases, while still excluding expiration/death
+      // (no doses). isManualRelease is kept as a defensive fallback for the synthetic
+      // case where the release recast shares the removal timestamp.
       const isManualRelease = lastStasisCastTimestamp === e.logLine.timestamp;
-      const isAutomaticRelease = storedCount === 3;
+      const hasConsumption = doseRemovals > 0;
 
-      if (isManualRelease || isAutomaticRelease) {
+      if (isManualRelease || hasConsumption) {
         events.push({
           startSeconds,
           releaseSeconds: (e.logLine.timestamp - combat.startTime) / 1000,
