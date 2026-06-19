@@ -717,10 +717,24 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       if (targetUnit && !ccSpellIds.has(cd.spellId)) {
         const hpNow = getHpPercentAtTime(targetUnit, cast.timeSeconds, matchStartMs);
         const hpBefore = getHpPercentAtTime(targetUnit, cast.timeSeconds - 2, matchStartMs);
+
+        // Preceding 2-second lookback window for incoming DPS
+        const fromMs = matchStartMs + (cast.timeSeconds - 2) * 1000;
+        const toMs = matchStartMs + cast.timeSeconds * 1000;
+        const recentDmg = (targetUnit.damageIn || [])
+          .filter((d) => d.timestamp >= fromMs && d.timestamp <= toMs)
+          .reduce((sum, d) => sum + d.amount, 0);
+        const recentAbs = (targetUnit.absorbsIn || [])
+          .filter((a) => a.timestamp >= fromMs && a.timestamp <= toMs)
+          .reduce((sum, a) => sum + a.absorbedAmount, 0);
+        const incomingDpsK = Math.round((recentDmg + recentAbs) / 2 / 1000);
+
         if (hpNow !== null && hpBefore !== null) {
           const perSec = (hpNow - hpBefore) / 2;
           const sign = perSec > 0 ? '+' : '';
-          velocityStr = `, ${sign}${perSec.toFixed(1)}%/s`;
+          velocityStr = `, ${sign}${perSec.toFixed(0)}%/s, ${incomingDpsK}k DPS`;
+        } else {
+          velocityStr = `, ${incomingDpsK}k DPS`;
         }
       }
 
