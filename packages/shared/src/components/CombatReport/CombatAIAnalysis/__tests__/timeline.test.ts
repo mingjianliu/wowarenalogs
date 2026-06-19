@@ -645,6 +645,34 @@ describe('buildMatchTimeline — CD events', () => {
     expect(result).toContain('→ Gardianmini (27% HP, 0k DPS)');
   });
 
+  it('does NOT add defensive velocity/DPS when an owner CD targets an enemy (review H9)', () => {
+    const enemy = makeUnit('enemy-1', {
+      name: 'EnemyMage',
+      reaction: CombatUnitReaction.Hostile,
+    }) as ICombatUnit;
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        enemies: [enemy],
+        ownerCDs: [
+          {
+            spellId: '22570', // Maim — offensive control, not in ccSpellIds
+            spellName: 'Maim',
+            tag: 'Control',
+            cooldownSeconds: 30,
+            maxChargesDetected: 1,
+            casts: [{ timeSeconds: 27, targetName: 'EnemyMage' }],
+            availableWindows: [],
+            neverUsed: false,
+          },
+        ],
+      }),
+    );
+    expect(result).toContain('→ EnemyMage');
+    // The (HP%, %/s, DPS) trajectory is defensive context — it must not describe an enemy target.
+    expect(result).not.toContain('DPS');
+    expect(result).not.toContain('%/s');
+  });
+
   it('emits [TEAM] [CD] for each teammate cast', () => {
     const result = buildMatchTimeline(
       makeBaseParams({

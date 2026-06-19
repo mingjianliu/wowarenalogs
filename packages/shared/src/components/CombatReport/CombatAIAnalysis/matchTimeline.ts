@@ -426,8 +426,13 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       targetName.split('-')[0] === owner.name.split('-')[0];
     const targetUnit = isSelf ? owner : (_allUnits.find((u) => u.name === targetName) ?? owner);
 
+    // H9: the HP-velocity / incoming-DPS trajectory is defensive context (was this ally
+    // dying?). It is meaningless — and misleading — for an offensive CD cast on an enemy
+    // (e.g. Maim, which is not in ccSpellIds), so skip it when the target is hostile.
+    const targetIsEnemy = !isSelf && targetUnit.reaction === CombatUnitReaction.Hostile;
+
     let velocityStr = '';
-    if (targetUnit && !ccSpellIds.has(spellId)) {
+    if (targetUnit && !targetIsEnemy && !ccSpellIds.has(spellId)) {
       const hpNow = getHpPercentAtTime(targetUnit, timeSeconds, matchStartMs);
       const hpBefore = getHpPercentAtTime(targetUnit, timeSeconds - 2, matchStartMs);
 
