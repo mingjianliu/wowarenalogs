@@ -556,12 +556,18 @@ export function wasRemovedByAllyDispel(
   targetName: string,
   removalSeconds: number,
 ): boolean {
-  // B11: Proximity matching (< 0.5s) is fragile.
-  // SPELL_DISPEL and SPELL_AURA_REMOVED are emitted in the exact same millisecond
-  // when a dispel removes an aura. Match exact timestamps to prevent misattribution.
+  // B11: the original < 0.5s proximity window was too loose (mismatched distinct events).
+  // SPELL_DISPEL and SPELL_AURA_REMOVED usually share the same millisecond, but ~5% of real
+  // pairs have a 1ms skew, so a strict equality (< 0.001) false-flags those as missed cleanses.
+  // A 50ms window tolerates log skew while still being far tighter than a distinct re-cast.
+  // Match is further constrained by removedSpellId + targetName, so cross-debuff collisions
+  // within 50ms are not a concern.
+  const MATCH_TOLERANCE_SECONDS = 0.05;
   return allyCleanse.some(
     (d) =>
-      d.removedSpellId === spellId && d.targetName === targetName && Math.abs(d.timeSeconds - removalSeconds) < 0.001, // Float equality for the exact same millisecond
+      d.removedSpellId === spellId &&
+      d.targetName === targetName &&
+      Math.abs(d.timeSeconds - removalSeconds) <= MATCH_TOLERANCE_SECONDS,
   );
 }
 

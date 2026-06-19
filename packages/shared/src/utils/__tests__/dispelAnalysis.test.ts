@@ -334,7 +334,7 @@ describe('dispelAnalysis — formatting', () => {
 });
 
 describe('wasRemovedByAllyDispel', () => {
-  it('correctly matches removal time with exact millisecond timestamp matching (B11)', () => {
+  it('matches the dispel/removal pair within a 50ms tolerance, tolerating 1ms log skew (B11)', () => {
     const allyCleanse = [
       {
         timeSeconds: 10.2,
@@ -342,9 +342,11 @@ describe('wasRemovedByAllyDispel', () => {
         targetName: 'Player1',
       } as any,
     ];
-    expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.2)).toBe(true);
-    expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.201)).toBe(false);
-    expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.7)).toBe(false);
-    expect(wasRemovedByAllyDispel(allyCleanse, '999', 'Player1', 10.2)).toBe(false);
+    expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.2)).toBe(true); // exact
+    expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.201)).toBe(true); // 1ms log skew — real ~5% of pairs
+    expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.24)).toBe(true); // 40ms — within tolerance
+    expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.27)).toBe(false); // 70ms — distinct event
+    expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.7)).toBe(false); // 500ms — distinct event
+    expect(wasRemovedByAllyDispel(allyCleanse, '999', 'Player1', 10.2)).toBe(false); // wrong spell
   });
 });
