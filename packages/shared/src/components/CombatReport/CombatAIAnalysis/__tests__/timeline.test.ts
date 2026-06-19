@@ -642,7 +642,7 @@ describe('buildMatchTimeline — CD events', () => {
         ],
       }),
     );
-    expect(result).toContain('→ Gardianmini (27% HP)');
+    expect(result).toContain('→ Gardianmini (27% HP, 0k DPS)');
   });
 
   it('emits [TEAM] [CD] for each teammate cast', () => {
@@ -5748,5 +5748,92 @@ describe('buildMatchTimeline — B17: Channeled healer CD annotation', () => {
       }),
     );
     expect(result).toContain('0:10  [YOU] [CD]   Ultimate Penitence (completed, 6.5s)');
+  });
+});
+
+describe('buildMatchTimeline — F162: HP-Velocity and Incoming DPS', () => {
+  it('emits HP-velocity and incoming DPS annotations on [YOU] [CD] defensive casts', () => {
+    // 33206 is Pain Suppression (Defensive CD)
+    const owner = makeUnit('u1', {
+      name: 'Feramonk',
+      advancedActions: [
+        {
+          logLine: { timestamp: 8000 },
+          advancedActorId: 'u1',
+          advancedActorCurrentHp: 100000,
+          advancedActorMaxHp: 100000,
+          advancedActorPowers: [],
+        } as any,
+        {
+          logLine: { timestamp: 10000 },
+          advancedActorId: 'u1',
+          advancedActorCurrentHp: 80000,
+          advancedActorMaxHp: 100000,
+          advancedActorPowers: [],
+        } as any,
+      ],
+      damageIn: [{ timestamp: 9000, logLine: { timestamp: 9000, event: 'SPELL_DAMAGE' }, amount: 20000 } as any],
+    });
+
+    const cdCast = makeSpellCastEvent('33206', 10_000, 'u1', 'Feramonk');
+    owner.spellCastEvents = [cdCast as any];
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        matchStartMs: 0,
+        matchEndMs: 20_000,
+      }),
+    );
+    // Expected HP drop: 100% -> 80% over 2s (-10%/s)
+    // Damage: 20k over 2s (10k DPS)
+    expect(result).toContain('[YOU] [CD]   Pain Suppression (self: 80% HP, -10%/s, 10k DPS)');
+  });
+
+  it('emits HP slope annotation on [DMG SPIKE] lines', () => {
+    const owner = makeUnit('u1', {
+      name: 'Feramonk',
+      advancedActions: [
+        {
+          logLine: { timestamp: 10000 },
+          advancedActorId: 'u1',
+          advancedActorCurrentHp: 90000,
+          advancedActorMaxHp: 100000,
+          advancedActorPowers: [],
+        } as any,
+        {
+          logLine: { timestamp: 15000 },
+          advancedActorId: 'u1',
+          advancedActorCurrentHp: 40000,
+          advancedActorMaxHp: 100000,
+          advancedActorPowers: [],
+        } as any,
+      ],
+    });
+
+    const windows: IDamageBucket[] = [
+      {
+        fromSeconds: 10,
+        toSeconds: 15,
+        totalDamage: 500_000,
+        targetName: 'Feramonk',
+        targetSpec: 'Mistweaver Monk',
+      },
+    ];
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        matchStartMs: 0,
+        matchEndMs: 20_000,
+        pressureWindows: windows,
+      }),
+    );
+    // Expected HP drop: 90% -> 40% over 5s (-10%/s)
+    expect(result).toContain(
+      '[DMG SPIKE]   Feramonk (Mistweaver Monk): 0.50M in 5s (100k DPS) (90% -> 40% HP, -10%/s)',
+    );
   });
 });

@@ -412,6 +412,62 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     return cleanDest;
   }
 
+  function getCDTargetAndVelocityPart(
+    spellId: string,
+    timeSeconds: number,
+    targetName: string | undefined,
+    overrideHpPct?: number,
+  ): string {
+    const isSelf =
+      !targetName ||
+      targetName === 'nil' ||
+      targetName === owner.name ||
+      targetName.split('-')[0] === owner.name.split('-')[0];
+    const targetUnit = isSelf ? owner : (_allUnits.find((u) => u.name === targetName) ?? owner);
+
+    let velocityStr = '';
+    if (targetUnit && !ccSpellIds.has(spellId)) {
+      const hpNow = getHpPercentAtTime(targetUnit, timeSeconds, matchStartMs);
+      const hpBefore = getHpPercentAtTime(targetUnit, timeSeconds - 2, matchStartMs);
+
+      // Preceding 2-second lookback window for incoming DPS
+      const fromMs = matchStartMs + (timeSeconds - 2) * 1000;
+      const toMs = matchStartMs + timeSeconds * 1000;
+      const recentDmg = (targetUnit.damageIn || [])
+        .filter((d) => d.timestamp >= fromMs && d.timestamp <= toMs)
+        .reduce((sum, d) => sum + Math.abs(d.effectiveAmount || d.amount), 0);
+      const recentAbs = (targetUnit.absorbsIn || [])
+        .filter((a) => a.timestamp >= fromMs && a.timestamp <= toMs)
+        .reduce((sum, a) => sum + a.absorbedAmount, 0);
+      const incomingDpsK = Math.round((recentDmg + recentAbs) / 2 / 1000);
+
+      if (hpNow !== null && hpBefore !== null) {
+        const perSec = (hpNow - hpBefore) / 2;
+        const sign = perSec > 0 ? '+' : '';
+        velocityStr = `, ${sign}${perSec.toFixed(0)}%/s, ${incomingDpsK}k DPS`;
+      } else {
+        velocityStr = `, ${incomingDpsK}k DPS`;
+      }
+    }
+
+    let targetPart = '';
+    if (!isSelf && targetName !== undefined) {
+      targetPart = ` → ${pid(targetName)}`;
+      const hpPct =
+        overrideHpPct ??
+        (targetUnit ? getHpPercentAtTime(targetUnit, timeSeconds, matchStartMs)?.toFixed(0) : undefined);
+      if (hpPct !== undefined || velocityStr !== '') {
+        targetPart += ` (${hpPct ?? '?'}% HP${velocityStr})`;
+      }
+    } else if (velocityStr !== '') {
+      const hpNow = getHpPercentAtTime(owner, timeSeconds, matchStartMs);
+      if (hpNow !== null) {
+        targetPart = ` (self: ${hpNow.toFixed(0)}% HP${velocityStr})`;
+      }
+    }
+    return targetPart;
+  }
+
   const snapshotFn = resourceSnapshotFn ?? buildResourceSnapshot;
 
   const matchEndSeconds = (matchEndMs - matchStartMs) / 1000;
@@ -712,33 +768,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   for (const cd of ownerCDs) {
     for (const cast of cd.casts) {
-      const targetUnit = cast.targetName ? _allUnits.find((u) => u.name === cast.targetName) : owner;
-      let velocityStr = '';
-      if (targetUnit && !ccSpellIds.has(cd.spellId)) {
-        const hpNow = getHpPercentAtTime(targetUnit, cast.timeSeconds, matchStartMs);
-        const hpBefore = getHpPercentAtTime(targetUnit, cast.timeSeconds - 2, matchStartMs);
-        if (hpNow !== null && hpBefore !== null) {
-          const perSec = (hpNow - hpBefore) / 2;
-          const sign = perSec > 0 ? '+' : '';
-          velocityStr = `, ${sign}${perSec.toFixed(1)}%/s`;
-        }
-      }
-
-      let targetPart = '';
-      if (cast.targetName !== undefined) {
-        targetPart = ` → ${pid(cast.targetName)}`;
-        const hpPct =
-          cast.targetHpPct ??
-          (targetUnit ? getHpPercentAtTime(targetUnit, cast.timeSeconds, matchStartMs)?.toFixed(0) : undefined);
-        if (hpPct !== undefined || velocityStr !== '') {
-          targetPart += ` (${hpPct ?? '?'}% HP${velocityStr})`;
-        }
-      } else if (velocityStr !== '') {
-        const hpNow = getHpPercentAtTime(owner, cast.timeSeconds, matchStartMs);
-        if (hpNow !== null) {
-          targetPart = ` (self: ${hpNow.toFixed(0)}% HP${velocityStr})`;
-        }
-      }
+      const targetPart = getCDTargetAndVelocityPart(cd.spellId, cast.timeSeconds, cast.targetName, cast.targetHpPct);
 
       const isCC = ccSpellIds.has(cd.spellId);
       const extraLines: (string | DeferredSnapshot)[] = [requestSnapshotPlaceholder(cast.timeSeconds, !isCC)];
@@ -967,9 +997,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       const cdSeconds = effectData?.cooldownSeconds ?? effectData?.charges?.chargeCooldownSeconds ?? 0;
       if (cdSeconds >= 30) {
         flushFold();
+        const promotedTargetPart = getCDTargetAndVelocityPart(e.spellId, timeSeconds, e.destUnitName);
         addEntry(
           timeSeconds,
-          `${fmtTime(timeSeconds)}  [YOU] [CD]   ${displayName}${targetPart}${totemNote}${stasisAnnotation}${purgeNote}`,
+          `${fmtTime(timeSeconds)}  [YOU] [CD]   ${displayName}${promotedTargetPart}${totemNote}${stasisAnnotation}${purgeNote}`,
           requestSnapshotPlaceholder(timeSeconds, true),
         );
         continue;
@@ -1241,7 +1272,13 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     const targetUnit = friends.find((f) => f.name === pw.targetName);
     const hpFrom = targetUnit ? getUnitHpAtTimestamp(targetUnit, matchStartMs + pw.fromSeconds * 1000, 2000) : null;
     const hpTo = targetUnit ? getUnitHpAtTimestamp(targetUnit, matchStartMs + pw.toSeconds * 1000, 2000) : null;
-    const hpStr = hpFrom !== null && hpTo !== null ? ` (${hpFrom}% -> ${hpTo}% HP)` : '';
+    let hpStr = '';
+    if (hpFrom !== null && hpTo !== null) {
+      const hpDelta = hpTo - hpFrom;
+      const hpVelocity = hpDelta / Math.max(1, windowSec);
+      const sign = hpVelocity > 0 ? '+' : '';
+      hpStr = ` (${hpFrom}% -> ${hpTo}% HP, ${sign}${hpVelocity.toFixed(0)}%/s)`;
+    }
 
     const benchmarkKey = targetUnit ? specToBenchmarkKey(targetUnit.spec) : '';
     let b = benchmarks.bySpec[benchmarkKey];
