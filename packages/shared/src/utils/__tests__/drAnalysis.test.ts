@@ -547,6 +547,70 @@ describe('formatOutgoingCCChainsForContext', () => {
     expect(result).toEqual(['## CC Chains', '  Retribution Paladin (Enemy1): 1 CC — 1× Cyclone | 0 reduced, 0 immune']);
   });
 
+  it('excludes Unknown-DR applications from the breakdown and counts (review H3)', () => {
+    const chains: IOutgoingCCChain[] = [
+      {
+        targetName: 'Enemy1',
+        targetSpec: 'Frost Mage',
+        hasWastedApplications: false,
+        applications: [
+          {
+            atSeconds: 5,
+            durationSeconds: 4,
+            spellId: '1',
+            spellName: 'A',
+            casterName: 'P',
+            casterSpec: 'X',
+            drInfo: { category: 'Stun', level: 'Full', sequenceIndex: 0 },
+          },
+          {
+            atSeconds: 8,
+            durationSeconds: 4,
+            spellId: '2',
+            spellName: 'B',
+            casterName: 'P',
+            casterSpec: 'X',
+            drInfo: { category: 'Disorient', level: 'Full', sequenceIndex: 0 },
+          },
+          {
+            atSeconds: 12,
+            durationSeconds: 4,
+            spellId: '3',
+            spellName: 'C',
+            casterName: 'P',
+            casterSpec: 'X',
+            drInfo: { category: 'Unknown', level: 'Full', sequenceIndex: 0 },
+          },
+        ],
+      },
+    ];
+    const line = formatOutgoingCCChainsForContext(chains).join('\n');
+    expect(line).not.toContain('Unknown');
+    expect(line).toContain('Frost Mage (Enemy1): 2 CC — 1× Stun, 1× Disorient | 0 reduced, 0 immune');
+  });
+
+  it('skips a chain whose applications are all Unknown-DR (no header)', () => {
+    const chains: IOutgoingCCChain[] = [
+      {
+        targetName: 'E',
+        targetSpec: 'X',
+        hasWastedApplications: false,
+        applications: [
+          {
+            atSeconds: 5,
+            durationSeconds: 4,
+            spellId: '3',
+            spellName: 'C',
+            casterName: 'P',
+            casterSpec: 'X',
+            drInfo: { category: 'Unknown', level: 'Full', sequenceIndex: 0 },
+          },
+        ],
+      },
+    ];
+    expect(formatOutgoingCCChainsForContext(chains)).toEqual([]);
+  });
+
   it('formats notable DR applications with reduced or immune levels', () => {
     const chains: IOutgoingCCChain[] = [
       {

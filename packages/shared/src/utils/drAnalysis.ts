@@ -405,34 +405,37 @@ export const DR_LEVEL_LABEL: Record<DRLevel, string> = {
 };
 
 export function formatOutgoingCCChainsForContext(chains: IOutgoingCCChain[]): string[] {
-  const lines: string[] = [];
-
-  if (chains.length === 0) return lines;
-
-  lines.push('## CC Chains');
+  const bodyLines: string[] = [];
 
   for (const chain of chains) {
-    const total = chain.applications.length;
-    const immuneCount = chain.applications.filter((a) => a.drInfo.level === 'Immune').length;
-    const reducedCount = chain.applications.filter(
-      (a) => a.drInfo.level !== 'Full' && a.drInfo.level !== 'Immune',
-    ).length;
+    // H3: only count applications whose DR category is identifiable. An 'Unknown'
+    // category carries no diminishing-returns signal, and previously rendered as a
+    // noisy "× Unknown" that corrupted the DR-chain breakdown the model treats as
+    // ground truth. Drop them from the breakdown and the counts so the line stays
+    // internally consistent; skip a chain entirely if nothing identifiable remains.
+    const apps = chain.applications.filter((a) => a.drInfo.category !== 'Unknown');
+    if (apps.length === 0) continue;
+
+    const total = apps.length;
+    const immuneCount = apps.filter((a) => a.drInfo.level === 'Immune').length;
+    const reducedCount = apps.filter((a) => a.drInfo.level !== 'Full' && a.drInfo.level !== 'Immune').length;
 
     // Group by DR category for the summary
     const categoryMap = new Map<string, number>();
-    for (const app of chain.applications) {
+    for (const app of apps) {
       categoryMap.set(app.drInfo.category, (categoryMap.get(app.drInfo.category) ?? 0) + 1);
     }
     const categoryStr = [...categoryMap.entries()].map(([cat, count]) => `${count}× ${cat}`).join(', ');
 
     const wastedNote = chain.hasWastedApplications ? ` ⚠ ${immuneAppsNote(immuneCount)}` : '';
 
-    lines.push(
+    bodyLines.push(
       `  ${chain.targetSpec} (${chain.targetName}): ${total} CC — ${categoryStr} | ${reducedCount} reduced, ${immuneCount} immune${wastedNote}`,
     );
   }
 
-  return lines;
+  if (bodyLines.length === 0) return [];
+  return ['## CC Chains', ...bodyLines];
 }
 
 function immuneAppsNote(count: number): string {
