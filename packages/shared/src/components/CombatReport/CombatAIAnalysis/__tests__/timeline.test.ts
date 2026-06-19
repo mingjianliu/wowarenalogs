@@ -4030,21 +4030,21 @@ describe('buildResourceSnapshot — delta form (F83)', () => {
     expect(result).not.toContain('rdy:Avenging Wrath');
   });
 
-  it('emits rdy:Δ-SpellName when a CD was just used (no longer ready)', () => {
+  it('emits rdy:Δ -SpellName when a CD was just used (no longer ready)', () => {
     // avWr cast at t=10; at t=30, priorCasts=[{t=10}] (10 < 29.5), 10+120=130 > 30.5 → on CD
     const avWr = { ...makeCD('Avenging Wrath', 120), casts: [{ timeSeconds: 10 }] };
     const result = buildResourceSnapshot(makeParams(30, [avWr], ['Avenging Wrath']));
-    expect(result).toContain('rdy:Δ-Avenging Wrath');
+    expect(result).toContain('rdy:Δ -Avenging Wrath');
   });
 
-  it('emits rdy:Δ+SpellName when a CD just came off cooldown', () => {
+  it('emits rdy:Δ +SpellName when a CD just came off cooldown', () => {
     // avWr cast at t=10, CD=30s; at t=45, 10+30=40 ≤ 45.5 → ready; prev=[]
     const avWr = { ...makeCD('Avenging Wrath', 30), casts: [{ timeSeconds: 10 }] };
     const result = buildResourceSnapshot(makeParams(45, [avWr], []));
-    expect(result).toContain('rdy:Δ+Avenging Wrath');
+    expect(result).toContain('rdy:Δ +Avenging Wrath');
   });
 
-  it('emits rdy:Δ+Added-Removed when one CD became ready and another went on CD', () => {
+  it('emits rdy:Δ +Added -Removed when one CD became ready and another went on CD', () => {
     // ps cast at t=10, CD=120s: at t=50, 10+120=130 > 50.5 → on CD (was in prev)
     const ps = { ...makeCD('Pain Suppression', 120), casts: [{ timeSeconds: 10 }] };
     // avWr cast at t=10, CD=30s: at t=50, 10+30=40 ≤ 50.5 → ready (was NOT in prev)
@@ -4053,6 +4053,19 @@ describe('buildResourceSnapshot — delta form (F83)', () => {
     expect(result).toContain('+Avenging Wrath');
     expect(result).toContain('-Pain Suppression');
     expect(result).toContain('Δ');
+  });
+
+  it('keeps hyphenated spell names unambiguous in the delta (review H1)', () => {
+    // A removed CD whose name contains a hyphen must not run into an adjacent added item.
+    // amz cast at t=10, CD=120s: at t=50 on CD (was in prev) → removed
+    const amz = { ...makeCD('Anti-Magic Zone', 120), casts: [{ timeSeconds: 10 }] };
+    // avWr cast at t=10, CD=30s: at t=50 ready (not in prev) → added
+    const avWr = { ...makeCD('Avenging Wrath', 30), casts: [{ timeSeconds: 10 }] };
+    const result = buildResourceSnapshot(makeParams(50, [amz, avWr], ['Anti-Magic Zone']));
+    expect(result).toContain('+Avenging Wrath');
+    expect(result).toContain('-Anti-Magic Zone');
+    // The old format concatenated added+removed with a bare '-', colliding with the hyphen.
+    expect(result).not.toContain('Avenging Wrath-Anti-Magic Zone');
   });
 
   describe('computeReadyNames', () => {

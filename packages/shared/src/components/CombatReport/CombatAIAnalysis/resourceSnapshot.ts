@@ -262,10 +262,11 @@ export function buildResourceSnapshot({
     const currentSet = new Set(readyNames);
     const added = readyNames.filter((n) => !prevSet.has(n));
     const removed = prevReadyNames.filter((n) => !currentSet.has(n));
-    const parts: string[] = [];
-    if (added.length > 0) parts.push(`+${added.join(',')}`);
-    if (removed.length > 0) parts.push(`-${removed.join(',')}`);
-    rdyPart = parts.length > 0 ? `rdy:Δ${parts.join('')}` : 'rdy:Δ';
+    // H1: prefix each item with its own +/- sign and space-separate them. The previous
+    // `+a,b-c,d` form used a bare '-' as the added/removed boundary, which collided with
+    // the hyphens inside spell names (e.g. "Anti-Magic Zone"), making the delta unparseable.
+    const parts = [...added.map((n) => `+${n}`), ...removed.map((n) => `-${n}`)];
+    rdyPart = parts.length > 0 ? `rdy:Δ ${parts.join(' ')}` : 'rdy:Δ';
   } else {
     rdyPart = `rdy:${readyNames.length > 0 ? readyNames.join(',') : '—'}`;
   }
