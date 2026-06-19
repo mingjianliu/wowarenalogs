@@ -291,6 +291,11 @@ export interface IMajorCooldownInfo {
   /** Periods when the CD was available but the player did not use it */
   availableWindows: IAvailableWindow[];
   neverUsed: boolean;
+  /** True when the spell is also tagged Offensive (a throughput/burst CD such as Power
+   * Infusion), i.e. not a pure survival defensive. Used to keep throughput CDs out of
+   * "cheaper defensive available" suggestions. Optional for back-compat with hand-built
+   * fixtures; production always sets it. */
+  isThroughput?: boolean;
 }
 
 /**
@@ -503,9 +508,35 @@ export function extractMajorCooldowns(unit: ICombatUnit, combat: AtomicArenaComb
         casts,
         availableWindows,
         neverUsed: casts.length === 0,
+        isThroughput: spell.tags.includes(SpellTag.Offensive),
       },
     ];
   });
+}
+
+/**
+ * F166 / review C2: given a defensive cast `cd`, return the names of strictly-cheaper
+ * (shorter-cooldown) defensive tools that were available at `atSeconds`.
+ *
+ * Throughput cooldowns (Offensive-tagged, e.g. Power Infusion) are excluded — a healer
+ * burning a survival CD did not have a "cheaper" alternative in a burst/throughput CD,
+ * and suggesting one is misleading. The cast itself and tools on cooldown are excluded.
+ */
+export function findCheaperDefensiveAlternatives(
+  cd: IMajorCooldownInfo,
+  ownerCDs: IMajorCooldownInfo[],
+  atSeconds: number,
+): string[] {
+  return ownerCDs
+    .filter(
+      (other) =>
+        other.spellId !== cd.spellId &&
+        (other.tag === 'Defensive' || other.tag === 'External') &&
+        !other.isThroughput &&
+        other.cooldownSeconds < cd.cooldownSeconds &&
+        other.availableWindows.some((w) => atSeconds >= w.fromSeconds && atSeconds <= w.toSeconds),
+    )
+    .map((other) => other.spellName);
 }
 
 // Minimal shape of IEnemyCDTimeline needed for timing classification.

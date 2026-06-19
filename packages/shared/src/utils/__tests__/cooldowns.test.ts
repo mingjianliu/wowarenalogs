@@ -7,6 +7,7 @@ import {
   detectOverlappedDefensives,
   detectPanicDefensives,
   extractMajorCooldowns,
+  findCheaperDefensiveAlternatives,
   fmtTime,
   getPressureThreshold,
   IEnemyCDTimelineForTiming,
@@ -1031,5 +1032,49 @@ describe('extractMajorCooldowns', () => {
     const erw = cds.find((c) => c.spellId === '47568');
     expect(erw).toBeDefined();
     expect(erw?.casts).toHaveLength(0); // Filtered out by name
+  });
+});
+
+describe('findCheaperDefensiveAlternatives (review C2)', () => {
+  function makeCD(over: Partial<IMajorCooldownInfo>): IMajorCooldownInfo {
+    return {
+      spellId: '0',
+      spellName: 'X',
+      tag: 'Defensive',
+      cooldownSeconds: 100,
+      maxChargesDetected: 1,
+      casts: [],
+      availableWindows: [{ fromSeconds: 0, toSeconds: 600, durationSeconds: 600 }],
+      neverUsed: false,
+      isThroughput: false,
+      ...over,
+    };
+  }
+
+  const painSupp = makeCD({ spellId: '33206', spellName: 'Pain Suppression', cooldownSeconds: 180 });
+  // Power Infusion is tagged [Defensive, Offensive] — a throughput CD, not a survival tool.
+  const powerInfusion = makeCD({
+    spellId: '10060',
+    spellName: 'Power Infusion',
+    cooldownSeconds: 120,
+    isThroughput: true,
+  });
+  const desperatePrayer = makeCD({ spellId: '19236', spellName: 'Desperate Prayer', cooldownSeconds: 90 });
+
+  it('excludes throughput cooldowns (Power Infusion) from the cheaper list', () => {
+    const result = findCheaperDefensiveAlternatives(painSupp, [painSupp, powerInfusion, desperatePrayer], 60);
+    expect(result).toContain('Desperate Prayer');
+    expect(result).not.toContain('Power Infusion');
+  });
+
+  it('excludes the cast itself and anything not cheaper (longer/equal CD)', () => {
+    const result = findCheaperDefensiveAlternatives(painSupp, [painSupp, desperatePrayer], 60);
+    expect(result).toEqual(['Desperate Prayer']);
+  });
+
+  it('only includes tools available at the cast time', () => {
+    const onCd = makeCD({ spellId: '47788', spellName: 'Guardian Spirit', cooldownSeconds: 60, availableWindows: [] });
+    const result = findCheaperDefensiveAlternatives(painSupp, [painSupp, onCd, desperatePrayer], 60);
+    expect(result).toEqual(['Desperate Prayer']);
   });
 });

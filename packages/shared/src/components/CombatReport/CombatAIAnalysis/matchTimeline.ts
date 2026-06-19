@@ -12,6 +12,7 @@ import { ccSpellIds } from '../../../data/spellTags';
 import { IPlayerCCTrinketSummary } from '../../../utils/ccTrinketAnalysis';
 import { IFormInterval, ISpiritOfRedemptionInterval, IStasisEvent } from '../../../utils/combatStates';
 import {
+  findCheaperDefensiveAlternatives,
   fmtTime,
   getUnitHpAtTimestamp,
   getUnitManaAtTimestamp,
@@ -804,18 +805,11 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         }
       }
 
-      // F166: "cheaper-tool-available" tag — if a shorter-CD defensive was available, flag it
+      // F166: "cheaper-tool-available" tag — if a shorter-CD defensive was available, flag it.
+      // Throughput CDs (e.g. Power Infusion) are excluded by findCheaperDefensiveAlternatives.
       let cheaperNote = '';
       if (!isCC && cd.tag === 'Defensive') {
-        const cheaperAvailable = ownerCDs
-          .filter(
-            (other) =>
-              other.spellId !== cd.spellId &&
-              (other.tag === 'Defensive' || other.tag === 'External') &&
-              other.cooldownSeconds < cd.cooldownSeconds &&
-              other.availableWindows.some((w) => cast.timeSeconds >= w.fromSeconds && cast.timeSeconds <= w.toSeconds),
-          )
-          .map((other) => other.spellName);
+        const cheaperAvailable = findCheaperDefensiveAlternatives(cd, ownerCDs, cast.timeSeconds);
         if (cheaperAvailable.length > 0) {
           cheaperNote = ` | cheaper available: ${cheaperAvailable.join(', ')}`;
         }
