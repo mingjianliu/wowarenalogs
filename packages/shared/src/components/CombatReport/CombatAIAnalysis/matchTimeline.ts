@@ -1255,7 +1255,13 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     const targetUnit = friends.find((f) => f.name === pw.targetName);
     const hpFrom = targetUnit ? getUnitHpAtTimestamp(targetUnit, matchStartMs + pw.fromSeconds * 1000, 2000) : null;
     const hpTo = targetUnit ? getUnitHpAtTimestamp(targetUnit, matchStartMs + pw.toSeconds * 1000, 2000) : null;
-    const hpStr = hpFrom !== null && hpTo !== null ? ` (${hpFrom}% -> ${hpTo}% HP)` : '';
+    let hpStr = '';
+    if (hpFrom !== null && hpTo !== null) {
+      const hpDelta = hpTo - hpFrom;
+      const hpVelocity = hpDelta / Math.max(1, windowSec);
+      const sign = hpVelocity > 0 ? '+' : '';
+      hpStr = ` (${hpFrom}% -> ${hpTo}% HP, ${sign}${hpVelocity.toFixed(0)}%/s)`;
+    }
 
     const benchmarkKey = targetUnit ? specToBenchmarkKey(targetUnit.spec) : '';
     let b = benchmarks.bySpec[benchmarkKey];
