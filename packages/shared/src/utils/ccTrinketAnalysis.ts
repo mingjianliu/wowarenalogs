@@ -42,7 +42,8 @@ const SIGNIFICANT_CC_DAMAGE = 30_000;
  * Seasonal maintenance: update IDs here when these abilities change.
  */
 const CC_AVOIDANCE_BUFF_SPELLS = new Map<string, string>([
-  ['586', 'Fade'],
+  // NOTE: Fade (586) intentionally excluded — it only drops threat and grants no CC
+  // immunity, so a CC that whiffs while Fade is up is coincidence, not avoidance.
   ['1246965', 'Psychic Shroud'],
   ['377362', 'Precognition'],
   ['378464', 'Nullifying Shroud'],

@@ -511,6 +511,41 @@ describe('analyzePlayerCCAndTrinket — CC Avoidance', () => {
     expect(result.ccAvoidedInstances[0].avoidanceSpellId).toBe('377362');
   });
 
+  it('does NOT credit Fade as CC avoidance (Fade only drops threat, grants no CC immunity)', () => {
+    // Player has Fade ('586') active T+5s..T+15s
+    const fadeApply = makeAuraEvent(
+      LogEvent.SPELL_AURA_APPLIED,
+      '586',
+      MATCH_START + 5_000,
+      'player-1',
+      'player-1',
+      'BUFF',
+    );
+    const fadeRemove = makeAuraEvent(
+      LogEvent.SPELL_AURA_REMOVED,
+      '586',
+      MATCH_START + 15_000,
+      'player-1',
+      'player-1',
+      'BUFF',
+    );
+
+    // Enemy casts Polymorph ('118') at the player at T+10s; it whiffs (no resulting CC aura).
+    const enemyCast = makeSpellCastEvent('118', MATCH_START + 10_000, 'player-1', 'Player', 'enemy-1', 'EnemyA');
+
+    const player = makeUnit('player-1', {
+      class: CombatUnitClass.Priest,
+      spec: CombatUnitSpec.Priest_Discipline,
+      auraEvents: [fadeApply, fadeRemove],
+    });
+    const enemy = makeEnemy('enemy-1', 'EnemyA');
+    enemy.spellCastEvents = [enemyCast as any];
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+
+    expect(result.ccAvoidedInstances).toHaveLength(0);
+  });
+
   it('tracks grounding totem redirects for Shamans', () => {
     // Enemy casts Polymorph ('118') targeting "Grounding Totem" at T+12s
     const enemyCast = makeSpellCastEvent(
