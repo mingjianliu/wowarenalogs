@@ -1197,7 +1197,9 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         }
         addEntry(
           avoided.atSeconds,
-          `${fmtTime(avoided.atSeconds)}  [CC AVOIDED?]   ${pid(summary.playerName)} likely mitigated ${avoided.spellName} via ${avoided.avoidanceSpellName} (by ${enemyPid(avoided.sourceName)})`,
+          // M-g: state the observed facts (CC cast did not land; avoidance ability present),
+          // not a causal verdict. Let the model infer whether the ability caused the avoidance.
+          `${fmtTime(avoided.atSeconds)}  [CC AVOIDED?]   ${pid(summary.playerName)}: ${avoided.spellName} (${enemyPid(avoided.sourceName)}) did not land; ${avoided.avoidanceSpellName} active`,
         );
       }
     }

@@ -850,6 +850,54 @@ describe('analyzePlayerCCAndTrinket — CC Avoidance', () => {
     expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Bear Form');
   });
 
+  it('does NOT credit Druid Cat Form as avoiding a GROUND CC (shapeshift does not dodge ground stuns)', () => {
+    // H14: A Druid merely in Cat Form ('768') when an enemy drops a ground CC
+    // (Capacitor Totem '192058') must NOT be credited with avoiding it — shapeshifting
+    // does not move the player out of a ground AoE stun.
+    const catFormBuff = makeAuraEvent(
+      LogEvent.SPELL_AURA_APPLIED,
+      '768',
+      MATCH_START + 2_000,
+      'player-1',
+      'player-1',
+      'BUFF',
+    );
+    // Player also entered Cat Form via a cast near the ground CC (realistic: in Cat Form).
+    const catFormCast = {
+      logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: MATCH_START + 9_800 },
+      spellId: '768',
+      spellName: 'Cat Form',
+      destUnitId: 'player-1',
+      destUnitName: 'DruidPlayer',
+      srcUnitId: 'player-1',
+      srcUnitName: 'DruidPlayer',
+    };
+    // Enemy Shaman drops Capacitor Totem (ground CC) at T+10s; it does NOT land on the player.
+    const enemyCast = {
+      logLine: { event: LogEvent.SPELL_CAST_SUCCESS, timestamp: MATCH_START + 10_000 },
+      spellId: '192058',
+      spellName: 'Capacitor Totem',
+      destUnitId: '0000000000000000',
+      destUnitName: 'nil',
+      srcUnitId: 'enemy-1',
+      srcUnitName: 'ShamanEnemy',
+    };
+
+    const player = makeUnit('player-1', {
+      class: CombatUnitClass.Druid,
+      spec: CombatUnitSpec.Druid_Restoration,
+      auraEvents: [catFormBuff as any],
+      spellCastEvents: [catFormCast as any],
+    });
+    const enemy = makeEnemy('enemy-1', 'ShamanEnemy');
+    enemy.spellCastEvents = [enemyCast as any];
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+
+    expect(result.ccAvoidedInstances.some((i) => i.avoidanceSpellName === 'Cat Form')).toBe(false);
+    expect(result.ccAvoidedInstances).toHaveLength(0);
+  });
+
   it('tracks Shaman Tremor Totem breaking Fear early', () => {
     // Shaman gets feared at T+10s, breaks at T+11s (duration 1.0s)
     const fearApplied = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '5782', MATCH_START + 10_000, 'enemy-1', 'EnemyA');

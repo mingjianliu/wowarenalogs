@@ -1003,6 +1003,35 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     expect(result).toContain('trinket: ON CD (on CD)');
   });
 
+  it('emits [CC AVOIDED?] as a neutral fact, not a causal verdict (M-g)', () => {
+    const avoided = {
+      atSeconds: 42,
+      spellId: '118',
+      spellName: 'Polymorph',
+      avoidanceSpellName: 'Precognition',
+      avoidanceSpellId: '377362',
+      sourceName: 'Dzinked',
+      sourceSpec: 'Frost Mage',
+    };
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        ccTrinketSummaries: [{ ...makeEmptyCCTrinketSummary('Feramonk'), ccAvoidedInstances: [avoided] }],
+      }),
+    );
+    const line = result.split('\n').find((l) => l.includes('[CC AVOIDED?]'));
+    expect(line).toBeDefined();
+    // Must not assert causation ("likely mitigated ... via ...").
+    expect(line).not.toContain('likely mitigated');
+    expect(line).not.toContain(' via ');
+    // Must still surface the underlying facts: the CC cast, that it did not land, and
+    // which avoidance ability was present, plus the caster.
+    expect(line).toContain('Feramonk');
+    expect(line).toContain('Polymorph');
+    expect(line).toContain('did not land');
+    expect(line).toContain('Precognition');
+    expect(line).toContain('Dzinked');
+  });
+
   it('emits [CC ON TEAM] with no trinket annotation for passive_trinket (Relentless)', () => {
     const cc: ICCInstance = {
       atSeconds: 30,

@@ -653,7 +653,12 @@ export function analyzePlayerCCAndTrinket(
               Math.abs(e.logLine.timestamp - castTimeMs) <= 1500,
           );
           if (mobilityCast && mobilityCast.spellId) {
-            const canDodge = isGroundCC || TARGETED_CC_DODGE_SPELLS.has(mobilityCast.spellId);
+            // H14: Shapeshifting (DRUID_FORM_BUFFS) does NOT reposition the player out of a
+            // ground AoE stun, so a Druid form cast must never be credited with dodging a
+            // ground CC. Apply the same gate the buff branch uses: forms only break
+            // Polymorph/Hex, never ground CCs.
+            const isDruidForm = DRUID_FORM_BUFFS.has(mobilityCast.spellId);
+            const canDodge = !isDruidForm && (isGroundCC || TARGETED_CC_DODGE_SPELLS.has(mobilityCast.spellId));
             if (canDodge) {
               ccAvoidedInstances.push({
                 atSeconds: (castTimeMs - matchStartMs) / 1000,
