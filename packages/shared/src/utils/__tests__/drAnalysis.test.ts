@@ -74,8 +74,11 @@ describe('getDRCategory', () => {
       expect(getDRCategory('376077')).toBe('Stun');
     });
 
-    it("identifies Ursol's Vortex as a Root", () => {
-      expect(getDRCategory('102793')).toBe('Root');
+    it("falls Ursol's Vortex back to self-DR (knockback/displacement, no tracked DR family)", () => {
+      // Ursol's Vortex is a knockback/displacement, not a stun/root-family CC. 'Root' is not a
+      // tracked DR category (absent from SCM_CATEGORY_LABELS), so it must not inject a phantom
+      // DR family. With no shared DR family it falls back to its own self-DR bucket.
+      expect(getDRCategory('102793')).toBe('spell:102793');
     });
 
     it('identifies Maim as a Stun', () => {
