@@ -832,7 +832,11 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
           if (expiry.isEstimated) {
             channelSuffix = ` (estimated duration: ${expectedDuration.toFixed(1)}s)`;
           } else if (actualDuration < expectedDuration - 0.2) {
-            channelSuffix = ` (interrupted at ${actualDuration.toFixed(1)}s / ${expectedDuration.toFixed(1)}s)`;
+            // C1: a short channel may be a kick, a self-cancel, or movement — the aura
+            // lifetime alone can't tell us which. State the fact ("channeled X of Y")
+            // and let the model infer the cause from nearby CC/interrupt events, rather
+            // than falsely asserting "interrupted" on every early-ended channel.
+            channelSuffix = ` (channeled ${actualDuration.toFixed(1)}s of ${expectedDuration.toFixed(1)}s)`;
           } else {
             channelSuffix = ` (completed, ${actualDuration.toFixed(1)}s)`;
           }
