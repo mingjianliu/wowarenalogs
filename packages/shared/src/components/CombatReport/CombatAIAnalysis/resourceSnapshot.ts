@@ -312,7 +312,15 @@ export function buildResourceSnapshot({
     }
   }
 
+  if (enemyActiveParts.length > 0) {
+    line += `  enemy:${enemyActiveParts.join(',')}`;
+  }
+
   // ── F164: Enemy Focus Target ─────────────────────────────────────────────
+  // H10: focus is the FRIENDLY unit the enemy team is concentrating damage on.
+  // It is a distinct top-level field — NOT glued onto the enemy: field (which lists
+  // enemy offensive CDs). Render it with the same `  ` separator as rdy/cd/enemy/cc.
+  let focusPart = '';
   if (matchStartMs !== undefined && ownerUnit) {
     let maxDmg = 0;
     let focusFriendName = '';
@@ -334,12 +342,9 @@ export function buildResourceSnapshot({
     }
     // Only flag a focus target if damage was meaningful (> 50k in 3 seconds)
     if (maxDmg > 50000) {
-      enemyActiveParts.push(`focus:${pid(focusFriendName)}`);
+      focusPart = `focus:${pid(focusFriendName)}`;
+      line += `  ${focusPart}`;
     }
-  }
-
-  if (enemyActiveParts.length > 0) {
-    line += `  enemy:${enemyActiveParts.join(',')}`;
   }
 
   // ── cc: (omit when empty) ──────────────────────────────────────────────────
@@ -399,9 +404,17 @@ export function buildResourceSnapshot({
     line += `  cc:${ccParts.join(',')}`;
   }
 
-  // Suppress empty lines that contribute no information
+  // Suppress empty lines that contribute no information. focusPart is now a separate
+  // field (H10), so it must be considered here too — a line carrying only a focus
+  // target still conveys information and must not be suppressed.
   const isRdyEmpty = rdyPart === 'rdy:Δ' || readyNames.length === 0;
-  if (isRdyEmpty && onCDParts.length === 0 && enemyActiveParts.length === 0 && ccParts.length === 0) {
+  if (
+    isRdyEmpty &&
+    onCDParts.length === 0 &&
+    enemyActiveParts.length === 0 &&
+    focusPart === '' &&
+    ccParts.length === 0
+  ) {
     return '';
   }
 

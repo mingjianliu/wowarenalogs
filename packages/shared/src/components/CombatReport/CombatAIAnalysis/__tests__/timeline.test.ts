@@ -4027,6 +4027,53 @@ describe('buildResourceSnapshot — F72 compact [RES] format', () => {
     });
     expect(result).toContain('focus:2');
   });
+
+  it('H10: focus is its own field, not glued onto the enemy CD field', () => {
+    const matchStartMs = 1000000;
+    const friend = makeUnit('teammate-1', {
+      name: 'TargetDummy',
+      damageIn: [
+        {
+          timestamp: matchStartMs + 10000,
+          effectiveAmount: -100_000,
+          logLine: { event: LogEvent.SPELL_DAMAGE } as any,
+        } as any,
+      ],
+    });
+    const result = buildResourceSnapshot({
+      timeSeconds: 12,
+      ownerCDs: [],
+      ownerName: 'Owner',
+      ownerSpec: 'Holy Paladin',
+      teammateCDs: [{ player: friend, spec: 'Arms Warrior', cds: [] }],
+      ccTrinketSummaries: [],
+      enemyCDTimeline: makeEnemyTimeline([
+        {
+          playerName: 'Rogue1',
+          specName: 'Outlaw Rogue',
+          offensiveCDs: [
+            {
+              spellId: '0',
+              spellName: 'Adrenaline Rush',
+              castTimeSeconds: 12,
+              cooldownSeconds: 180,
+              availableAgainAtSeconds: 192,
+              buffEndSeconds: 22,
+            },
+          ],
+        },
+      ]),
+      playerIdMap: new Map([['TargetDummy', 2]]),
+      matchStartMs,
+      ownerUnit: makeUnit('u1', { name: 'Owner' }),
+    });
+    // enemy: field carries only the enemy offensive CD, NOT focus.
+    expect(result).toContain('enemy:Adrenaline Rush/Outlaw Rogue(0s)');
+    // focus: must NOT be glued onto the enemy CD value.
+    expect(result).not.toContain(',focus:');
+    // focus: is its own top-level field, separated by the same '  ' separator as rdy/cd/enemy/cc.
+    expect(result).toContain('  focus:2');
+  });
 });
 
 describe('buildResourceSnapshot — delta form (F83)', () => {
