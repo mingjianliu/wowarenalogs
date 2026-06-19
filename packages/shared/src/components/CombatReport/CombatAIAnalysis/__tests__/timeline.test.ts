@@ -22,7 +22,7 @@ import { DISPEL_FEATURE_FLAGS } from '../../../../utils/dispelFeatureFlags';
 import { IOutgoingCCChain } from '../../../../utils/drAnalysis';
 import { IAlignedBurstWindow, IEnemyCDTimeline } from '../../../../utils/enemyCDs';
 import { IHealingGap } from '../../../../utils/healingGaps';
-import { isCriticalNonPlayerUnit } from '../timelineHelpers';
+import { getTopDamageSourcesInWindow, isCriticalNonPlayerUnit } from '../timelineHelpers';
 import {
   buildJsonSituationSnapshot,
   buildMatchTimeline,
@@ -5791,6 +5791,38 @@ describe('buildMatchTimeline — B17: Channeled healer CD annotation', () => {
       }),
     );
     expect(result).toContain('0:10  [YOU] [CD]   Ultimate Penitence (completed, 6.5s)');
+  });
+});
+
+describe('getTopDamageSourcesInWindow — spell-school tagging (review H4)', () => {
+  // Characterization test: when a damage event carries spellSchoolId, the [School] tag
+  // must appear. This confirms the timeline wiring is correct — so the zero school tags
+  // seen in the eval corpus come from upstream data/build (parser dist), not this path.
+  it('appends the [School] tag when the damage event has spellSchoolId', () => {
+    const target = makeUnit('target-1', {
+      name: 'Target',
+      reaction: CombatUnitReaction.Friendly,
+    }) as ICombatUnit;
+    target.damageIn = [
+      {
+        logLine: { event: LogEvent.SPELL_DAMAGE, timestamp: 5_000, parameters: [] },
+        timestamp: 5_000,
+        effectiveAmount: 100_000,
+        amount: 100_000,
+        srcUnitId: 'enemy-1',
+        srcUnitName: 'EnemyMage',
+        srcUnitFlags: 0x40, // hostile
+        destUnitId: 'target-1',
+        destUnitName: 'Target',
+        spellId: '116',
+        spellName: 'Frostbolt',
+        spellSchoolId: '16', // Frost
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any,
+    ];
+
+    const result = getTopDamageSourcesInWindow(target, 10_000, 10_000);
+    expect(result.join('\n')).toContain('Frostbolt [Frost]');
   });
 });
 
