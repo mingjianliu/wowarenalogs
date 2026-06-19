@@ -974,9 +974,20 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
             : ' [totem/pet]';
       }
 
-      // F159: Annotate offensive-purge casts with removed buff
+      // F159 / M-i: Annotate offensive-purge casts with the removed buff.
+      // The old ±0.5s proximity window was too loose: two distinct purges landing within
+      // half a second of each other could cross-attach (a cast annotated with the OTHER
+      // purge's removed buff, or both buffs joined onto both casts). Mirror the B11 fix in
+      // dispelAnalysis.wasRemovedByAllyDispel — tighten to a 50ms window AND key the match
+      // on the cast target (raw destUnitName) so only the buff removed at essentially the
+      // same instant on the same target is attached. join(', ') then only fires when one
+      // cast genuinely removed multiple buffs at once.
+      const PURGE_MATCH_TOLERANCE_SECONDS = 0.05;
       let purgeNote = '';
-      const matchingPurges = ownerPurges.filter((p) => Math.abs(p.timeSeconds - timeSeconds) <= 0.5);
+      const matchingPurges = ownerPurges.filter(
+        (p) =>
+          p.targetName === e.destUnitName && Math.abs(p.timeSeconds - timeSeconds) <= PURGE_MATCH_TOLERANCE_SECONDS,
+      );
       if (matchingPurges.length > 0) {
         const removedNames = matchingPurges.map((p) => p.removedSpellName).join(', ');
         purgeNote = ` [removed: ${removedNames}]`;

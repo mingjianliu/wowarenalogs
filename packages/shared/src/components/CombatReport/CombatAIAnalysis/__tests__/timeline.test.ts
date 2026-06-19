@@ -1380,6 +1380,56 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     expect(result).not.toContain('[removed: Minor Buff]');
   });
 
+  it('M-i: does not cross-attach removed buffs when two purges land ~0.3s apart on different targets', () => {
+    const matchStartMs = 0;
+    // Two distinct offensive purges ~0.3s apart, each removing a DIFFERENT buff from a
+    // DIFFERENT target. With the old ±0.5s window (and no target key) each cast would
+    // pick up BOTH purge events and cross-attach the other purge's buff.
+    const owner = makeUnit('u1', {
+      name: 'Purgelord',
+      spellCastEvents: [
+        makeSpellCastEvent('378773', matchStartMs + 10000, 'enemy-1', 'EnemyA', 'u1', 'Purgelord', 0, 'Greater Purge'),
+        makeSpellCastEvent('378773', matchStartMs + 10300, 'enemy-2', 'EnemyB', 'u1', 'Purgelord', 0, 'Greater Purge'),
+      ],
+    });
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        dispelSummary: {
+          ...makeBaseParams().dispelSummary,
+          ourPurges: [
+            {
+              timeSeconds: 10,
+              removedSpellName: 'Power Infusion',
+              removedSpellId: '10060',
+              sourceName: 'Purgelord',
+              targetName: 'EnemyA',
+              priority: 'High',
+            } as any,
+            {
+              timeSeconds: 10.3,
+              removedSpellName: 'Blessing of Freedom',
+              removedSpellId: '1044',
+              sourceName: 'Purgelord',
+              targetName: 'EnemyB',
+              priority: 'High',
+            } as any,
+          ],
+        },
+      }),
+    );
+    // Each purge is annotated with ITS OWN removed buff only — no cross-attach.
+    expect(result).toContain('[YOU] [CAST]   Greater Purge → EnemyA [removed: Power Infusion]');
+    expect(result).toContain('[YOU] [CAST]   Greater Purge → EnemyB [removed: Blessing of Freedom]');
+    // The EnemyA line must NOT carry EnemyB's buff and vice-versa.
+    const lines = result.split('\n');
+    const aLine = lines.find((l) => l.includes('→ EnemyA') && l.includes('[removed:')) ?? '';
+    const bLine = lines.find((l) => l.includes('→ EnemyB') && l.includes('[removed:')) ?? '';
+    expect(aLine).not.toContain('Blessing of Freedom');
+    expect(bLine).not.toContain('Power Infusion');
+  });
+
   it('emits [DMG SPIKE] only for windows ≥300k', () => {
     const windows: IDamageBucket[] = [
       {
