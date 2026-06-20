@@ -5997,7 +5997,58 @@ describe('buildMatchTimeline — F168 & F169: Dampening and Atonement count', ()
         ],
       }),
     );
-    expect(result).toContain('| dampening: 10%, next spike in 10s');
+    expect(result).toContain('| dampening: 10%, next spike in 10s on Hearthstone');
+  });
+
+  it('next-spike picks the chronologically NEAREST qualifying spike, not the biggest, and labels its target', () => {
+    const matchStartMs = 1000000;
+    const owner = makeUnit('u1', {
+      name: 'Hearthstone',
+      spec: CombatUnitSpec.Paladin_Holy,
+      spellCastEvents: [
+        makeSpellCastEvent('642', matchStartMs + 30000, 'u1', 'Hearthstone', 'u1', 'Hearthstone', 0, 'Divine Shield'),
+      ],
+    });
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        bracket: '3v3',
+        matchStartMs,
+        isHealer: true,
+        ownerCDs: [
+          {
+            spellId: '642',
+            spellName: 'Divine Shield',
+            tag: 'Defensive',
+            cooldownSeconds: 300,
+            maxChargesDetected: 1,
+            casts: [{ timeSeconds: 30 }],
+            availableWindows: [],
+          } as any,
+        ],
+        // Mimics computePressureWindows' production order: sorted by totalDamage
+        // descending, NOT chronologically. The farther/bigger spike is listed first.
+        pressureWindows: [
+          {
+            fromSeconds: 80,
+            toSeconds: 85,
+            totalDamage: 2_000_000,
+            targetName: 'Simplesauce',
+            targetSpec: 'Unholy Death Knight',
+          } as any,
+          {
+            fromSeconds: 40,
+            toSeconds: 45,
+            totalDamage: 500_000,
+            targetName: 'Simplesauce',
+            targetSpec: 'Unholy Death Knight',
+          } as any,
+        ],
+      }),
+    );
+    expect(result).toContain('next spike in 10s on Simplesauce');
+    expect(result).not.toContain('next spike in 50s');
   });
 
   it('F169: includes Atonement count for Discipline Priests in [RES] lines', () => {

@@ -556,11 +556,18 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       let dampeningNote = '';
       if (!isCC) {
         dampeningNote = ` | dampening: ${getDampeningPercentage(params.bracket ?? '3v3', _allUnits, matchStartMs + cast.timeSeconds * 1000)}%`;
-        const nextSpike = pressureWindows.find(
+        // pressureWindows is sorted by totalDamage descending (see computePressureWindows),
+        // so Array.find() would return the biggest future spike rather than the nearest one.
+        // Select by minimum fromSeconds among qualifying spikes instead of relying on order.
+        const qualifyingSpikes = pressureWindows.filter(
           (pw) => pw.fromSeconds >= cast.timeSeconds && pw.totalDamage >= DMG_SPIKE_THRESHOLD,
         );
+        const nextSpike = qualifyingSpikes.reduce<IDamageBucket | undefined>(
+          (nearest, pw) => (nearest === undefined || pw.fromSeconds < nearest.fromSeconds ? pw : nearest),
+          undefined,
+        );
         if (nextSpike) {
-          dampeningNote += `, next spike in ${Math.round(nextSpike.fromSeconds - cast.timeSeconds)}s`;
+          dampeningNote += `, next spike in ${Math.round(nextSpike.fromSeconds - cast.timeSeconds)}s on ${pid(nextSpike.targetName)}`;
         }
       }
 
