@@ -183,6 +183,46 @@ function isLockedOutAt(intervals: LockoutIntervals, atSeconds: number): boolean 
   return false;
 }
 
+/** Lethal-window length used to judge whether a player could have pressed a defensive before dying. */
+export const LETHAL_WINDOW_SECONDS = 5;
+/** Minimum contiguous CC-free gap (seconds) that counts as "they had a moment to press something". */
+export const MIN_FREE_GAP_SECONDS = 1;
+
+/**
+ * True only if the player had NO contiguous CC-free gap >= MIN_FREE_GAP_SECONDS in the
+ * [death - windowSeconds, death] window — i.e. they were effectively locked out for the
+ * whole lethal window. CC the player trinketed out of (`trinketState === 'used'`) does not
+ * count as lockout. Uniform CC model: every CC type is treated the same.
+ */
+export function wasLockedOutThroughWindow(
+  ccSummary: Pick<IPlayerCCTrinketSummary, 'playerName' | 'ccInstances'>,
+  deathSeconds: number,
+  windowSeconds = LETHAL_WINDOW_SECONDS,
+): boolean {
+  const windowStart = Math.max(0, deathSeconds - windowSeconds);
+  const windowEnd = deathSeconds;
+  if (windowEnd <= windowStart) return false;
+
+  const intervals = ccSummary.ccInstances
+    .filter((cc) => cc.trinketState !== 'used')
+    .map((cc): [number, number] => [
+      Math.max(windowStart, cc.atSeconds),
+      Math.min(windowEnd, cc.atSeconds + cc.durationSeconds),
+    ])
+    .filter(([start, end]) => end > start)
+    .sort((a, b) => a[0] - b[0]);
+
+  let cursor = windowStart;
+  let maxFreeGap = 0;
+  for (const [start, end] of intervals) {
+    if (start > cursor) maxFreeGap = Math.max(maxFreeGap, start - cursor);
+    cursor = Math.max(cursor, end);
+  }
+  if (windowEnd > cursor) maxFreeGap = Math.max(maxFreeGap, windowEnd - cursor);
+
+  return maxFreeGap < MIN_FREE_GAP_SECONDS;
+}
+
 export function wasInHardCC(
   ccSummary: Pick<IPlayerCCTrinketSummary, 'playerName' | 'ccInstances'>,
   atSeconds: number,

@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CombatUnitSpec, LogEvent } from '@wowarenalogs/parser';
 
-import { buildDeathOutcomeSummary, formatDeathOutcomeForContext } from '../deathOutcomeAnalysis';
+import {
+  buildDeathOutcomeSummary,
+  formatDeathOutcomeForContext,
+  wasLockedOutThroughWindow,
+} from '../deathOutcomeAnalysis';
 import { makeAdvancedAction, makeAuraEvent, makeSpellCastEvent, makeUnit } from './testHelpers';
 
 const MATCH_START = 1_000_000;
@@ -153,5 +157,45 @@ describe('formatDeathOutcomeForContext', () => {
 
   it('returns empty for no events', () => {
     expect(formatDeathOutcomeForContext({ events: [] })).toBe('');
+  });
+});
+
+describe('wasLockedOutThroughWindow', () => {
+  const cc = (atSeconds: number, durationSeconds: number, trinketState = 'available_unused'): any => ({
+    atSeconds,
+    durationSeconds,
+    trinketState,
+  });
+
+  it('locks out when CC covers the window but the player is free at the death tick', () => {
+    // death at 10; window [5,10]; CC [5,9.9] leaves only a 0.1s free tail
+    const summary = { playerName: 'p', ccInstances: [cc(5, 4.9)] };
+    expect(wasLockedOutThroughWindow(summary, 10)).toBe(true);
+  });
+
+  it('does NOT lock out when there is a >= 1s free gap mid-window', () => {
+    // death at 10; window [5,10]; stuns [5,6] and [9,9.5] leave a 3s gap
+    const summary = { playerName: 'p', ccInstances: [cc(5, 1), cc(9, 0.5)] };
+    expect(wasLockedOutThroughWindow(summary, 10)).toBe(false);
+  });
+
+  it('locks out when CC fully spans the window', () => {
+    const summary = { playerName: 'p', ccInstances: [cc(4, 7)] }; // [4,11] covers [5,10]
+    expect(wasLockedOutThroughWindow(summary, 10)).toBe(true);
+  });
+
+  it('does NOT lock out when there is no CC', () => {
+    expect(wasLockedOutThroughWindow({ playerName: 'p', ccInstances: [] }, 10)).toBe(false);
+  });
+
+  it('ignores CC the player trinketed out of', () => {
+    const summary = { playerName: 'p', ccInstances: [cc(5, 4.9, 'used')] };
+    expect(wasLockedOutThroughWindow(summary, 10)).toBe(false);
+  });
+
+  it('clamps the window to match start for an early death', () => {
+    // death at 3; window clamps to [0,3]; CC [0,3] fully covers it
+    const summary = { playerName: 'p', ccInstances: [cc(0, 3)] };
+    expect(wasLockedOutThroughWindow(summary, 3)).toBe(true);
   });
 });
