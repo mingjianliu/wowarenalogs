@@ -7,25 +7,101 @@ import { ILogLine, LogEvent } from '../../types';
 
 let nextId = 0;
 
-const COMBAT_LOG_TIMESTAMP = /^(\d{1,2})\/(\d{1,2})\/(\d{4}) (\d{1,2}):(\d{2}):(\d{2})\.(\d{3})([+-]?\d{1,2})?$/;
+function isDigitString(str: string): boolean {
+  const len = str.length;
+  if (len === 0) return false;
+  for (let i = 0; i < len; i++) {
+    const charCode = str.charCodeAt(i);
+    if (charCode < 48 || charCode > 57) return false;
+  }
+  return true;
+}
+
+function isValidOffsetString(str: string): boolean {
+  const len = str.length;
+  if (len === 0 || len > 3) return false;
+  let start = 0;
+  if (str[0] === '+' || str[0] === '-') {
+    start = 1;
+  }
+  if (len <= start) return false;
+  for (let i = start; i < len; i++) {
+    const charCode = str.charCodeAt(i);
+    if (charCode < 48 || charCode > 57) return false;
+  }
+  return true;
+}
 
 function parseCombatLogTimestamp(timestamp: string, timezone: string): number | null {
-  const matches = timestamp.match(COMBAT_LOG_TIMESTAMP);
-  if (!matches) {
+  const firstSlash = timestamp.indexOf('/');
+  if (firstSlash === -1) return null;
+
+  const secondSlash = timestamp.indexOf('/', firstSlash + 1);
+  if (secondSlash === -1) return null;
+
+  const space = timestamp.indexOf(' ', secondSlash + 1);
+  if (space === -1) return null;
+
+  const firstColon = timestamp.indexOf(':', space + 1);
+  if (firstColon === -1) return null;
+
+  const secondColon = timestamp.indexOf(':', firstColon + 1);
+  if (secondColon === -1) return null;
+
+  const dot = timestamp.indexOf('.', secondColon + 1);
+  if (dot === -1) return null;
+
+  const monthStr = timestamp.slice(0, firstSlash);
+  const dayStr = timestamp.slice(firstSlash + 1, secondSlash);
+  const yearStr = timestamp.slice(secondSlash + 1, space);
+  const hourStr = timestamp.slice(space + 1, firstColon);
+  const minuteStr = timestamp.slice(firstColon + 1, secondColon);
+  const secondStr = timestamp.slice(secondColon + 1, dot);
+
+  if (timestamp.length < dot + 4) return null;
+  const millisStr = timestamp.slice(dot + 1, dot + 4);
+
+  if (
+    monthStr.length < 1 ||
+    monthStr.length > 2 ||
+    dayStr.length < 1 ||
+    dayStr.length > 2 ||
+    yearStr.length !== 4 ||
+    hourStr.length < 1 ||
+    hourStr.length > 2 ||
+    minuteStr.length !== 2 ||
+    secondStr.length !== 2 ||
+    millisStr.length !== 3
+  ) {
     return null;
   }
 
-  const [, monthString, dayString, yearString, hourString, minuteString, secondString, millisString, offsetString] =
-    matches;
-  const month = parseInt(monthString, 10);
-  const day = parseInt(dayString, 10);
-  const year = parseInt(yearString, 10);
-  const hour = parseInt(hourString, 10);
-  const minute = parseInt(minuteString, 10);
-  const second = parseInt(secondString, 10);
-  const millisecond = parseInt(millisString, 10);
+  if (
+    !isDigitString(monthStr) ||
+    !isDigitString(dayStr) ||
+    !isDigitString(yearStr) ||
+    !isDigitString(hourStr) ||
+    !isDigitString(minuteStr) ||
+    !isDigitString(secondStr) ||
+    !isDigitString(millisStr)
+  ) {
+    return null;
+  }
 
-  if (offsetString !== undefined) {
+  const month = parseInt(monthStr, 10);
+  const day = parseInt(dayStr, 10);
+  const year = parseInt(yearStr, 10);
+  const hour = parseInt(hourStr, 10);
+  const minute = parseInt(minuteStr, 10);
+  const second = parseInt(secondStr, 10);
+  const millisecond = parseInt(millisStr, 10);
+
+  const offsetString = timestamp.slice(dot + 4);
+
+  if (offsetString.length > 0) {
+    if (!isValidOffsetString(offsetString)) {
+      return null;
+    }
     const offsetHours = parseInt(offsetString, 10);
     return Date.UTC(year, month - 1, day, hour, minute, second, millisecond) - offsetHours * 60 * 60 * 1000;
   }

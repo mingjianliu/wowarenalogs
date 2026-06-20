@@ -104,43 +104,46 @@ export class WoWCombatLogParser extends EventEmitter<LogParserSpec> {
   }
 
   public parseLine(line: string): void {
-    const wowVersionLineMatches = line.match(WOW_VERSION_LINE_PARSER);
-    if (wowVersionLineMatches && wowVersionLineMatches.length > 0) {
-      const wowBuild = wowVersionLineMatches[2];
-      const wowVersion: WowVersion = wowBuild.startsWith('3.') ? 'classic' : 'retail';
-      this.setWowVersion(wowVersion);
-    } else {
-      if (!this.context.wowVersion) {
-        this.context = {
-          wowVersion: 'retail',
-          pipeline: createRetailParserPipeline(
-            (activityStarted) => {
-              this.emit('activity_started', activityStarted);
-            },
-            (combat) => {
-              this.emit('arena_match_ended', combat);
-            },
-            (malformedCombat) => {
-              this.emit('malformed_arena_match_detected', malformedCombat);
-            },
-            (combat) => {
-              this.emit('solo_shuffle_round_ended', combat);
-            },
-            (combat) => {
-              this.emit('solo_shuffle_ended', combat);
-            },
-            (combat) => {
-              this.emit('battleground_ended', combat);
-            },
-            (error) => {
-              this.emit('parser_error', error);
-            },
-            this._timezone,
-          ),
-        };
+    if (line.includes('COMBAT_LOG_VERSION')) {
+      const wowVersionLineMatches = line.match(WOW_VERSION_LINE_PARSER);
+      if (wowVersionLineMatches && wowVersionLineMatches.length > 0) {
+        const wowBuild = wowVersionLineMatches[2];
+        const wowVersion: WowVersion = wowBuild.startsWith('3.') ? 'classic' : 'retail';
+        this.setWowVersion(wowVersion);
+        return;
       }
-      this.context.pipeline(line);
     }
+
+    if (!this.context.wowVersion) {
+      this.context = {
+        wowVersion: 'retail',
+        pipeline: createRetailParserPipeline(
+          (activityStarted) => {
+            this.emit('activity_started', activityStarted);
+          },
+          (combat) => {
+            this.emit('arena_match_ended', combat);
+          },
+          (malformedCombat) => {
+            this.emit('malformed_arena_match_detected', malformedCombat);
+          },
+          (combat) => {
+            this.emit('solo_shuffle_round_ended', combat);
+          },
+          (combat) => {
+            this.emit('solo_shuffle_ended', combat);
+          },
+          (combat) => {
+            this.emit('battleground_ended', combat);
+          },
+          (error) => {
+            this.emit('parser_error', error);
+          },
+          this._timezone,
+        ),
+      };
+    }
+    this.context.pipeline(line);
   }
 
   private setWowVersion(wowVersion: WowVersion) {
