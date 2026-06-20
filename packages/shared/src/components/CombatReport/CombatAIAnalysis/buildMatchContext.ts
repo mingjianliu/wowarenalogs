@@ -50,13 +50,13 @@ export function buildMatchContext(
   combat: AtomicArenaCombat,
   friends: ICombatUnit[],
   enemies: ICombatUnit[],
-  options: { useTimelinePrompt?: boolean } = {},
+  options: { useTimelinePrompt?: boolean; owner?: ICombatUnit } = {},
 ): string {
   const { useTimelinePrompt = false } = options;
   const durationSeconds = (combat.endTime - combat.startTime) / 1000;
 
-  // Find the log owner (the player who recorded the log)
-  const owner = friends.find((p) => p.id === combat.playerId) ?? friends[0];
+  // Find the log owner (the player who recorded the log), unless overridden
+  const owner = options.owner ?? friends.find((p) => p.id === combat.playerId) ?? friends[0];
   if (!owner) return '';
 
   const ownerSpec = specToString(owner.spec);
