@@ -40,6 +40,7 @@ import {
   buildKillSequenceBlock,
   buildMatchEndBlock,
   CHANNELED_CD_SPELL_IDS,
+  channelWasInterrupted,
   computeHealingInWindow,
   DMG_SPIKE_THRESHOLD,
   extractEnemyMajorBuffIntervals,
@@ -521,6 +522,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   const cdExpiryEvents = extractOwnerCDBuffExpiry(ownerCDs, owner.id, friends, matchStartMs);
 
+  // H13: computed once — used to confirm early-ended channels were a real kick/CC, not a
+  // self-cancel/movement, without recomputing the find() per cast.
+  const ownerCCSummary = ccTrinketSummaries.find((s) => s.playerName === owner.name);
+
   for (const cd of ownerCDs) {
     for (const cast of cd.casts) {
       const targetPart = getCDTargetAndVelocityPart(cd.spellId, cast.timeSeconds, cast.targetName, cast.targetHpPct);
@@ -582,10 +587,18 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
             channelSuffix = ` (estimated duration: ${expectedDuration.toFixed(1)}s)`;
           } else if (actualDuration < expectedDuration - 0.2) {
             // C1: a short channel may be a kick, a self-cancel, or movement — the aura
-            // lifetime alone can't tell us which. State the fact ("channeled X of Y")
-            // and let the model infer the cause from nearby CC/interrupt events, rather
-            // than falsely asserting "interrupted" on every early-ended channel.
-            channelSuffix = ` (channeled ${actualDuration.toFixed(1)}s of ${expectedDuration.toFixed(1)}s)`;
+            // lifetime alone can't tell us which.
+            // H13: when a real kick (interruptInstance) or control-CC (ccInstance) landed
+            // on the caster during the channel window, we can confirm it was an interrupt
+            // and say so positively. Otherwise keep the neutral "channeled X of Y" wording.
+            const interrupted = channelWasInterrupted(
+              ownerCCSummary,
+              cast.timeSeconds,
+              cast.timeSeconds + actualDuration,
+            );
+            channelSuffix = interrupted
+              ? ` (interrupted at ${actualDuration.toFixed(1)}s / ${expectedDuration.toFixed(1)}s)`
+              : ` (channeled ${actualDuration.toFixed(1)}s of ${expectedDuration.toFixed(1)}s)`;
           } else {
             channelSuffix = ` (completed, ${actualDuration.toFixed(1)}s)`;
           }

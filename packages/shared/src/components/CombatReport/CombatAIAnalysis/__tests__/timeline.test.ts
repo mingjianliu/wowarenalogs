@@ -22,7 +22,7 @@ import { DISPEL_FEATURE_FLAGS } from '../../../../utils/dispelFeatureFlags';
 import { IOutgoingCCChain } from '../../../../utils/drAnalysis';
 import { IAlignedBurstWindow, IEnemyCDTimeline } from '../../../../utils/enemyCDs';
 import { IHealingGap } from '../../../../utils/healingGaps';
-import { getTopDamageSourcesInWindow, isCriticalNonPlayerUnit } from '../timelineHelpers';
+import { channelWasInterrupted, getTopDamageSourcesInWindow, isCriticalNonPlayerUnit } from '../timelineHelpers';
 import {
   buildJsonSituationSnapshot,
   buildMatchTimeline,
@@ -3352,6 +3352,57 @@ describe('extractOwnerCDBuffExpiry', () => {
   });
 });
 
+// ── channelWasInterrupted (H13) ───────────────────────────────────────────────
+
+describe('channelWasInterrupted', () => {
+  function makeSummary(overrides: Partial<IPlayerCCTrinketSummary> = {}): IPlayerCCTrinketSummary {
+    return {
+      playerName: 'Healer',
+      playerSpec: 'Restoration Druid',
+      trinketType: 'Gladiator',
+      trinketCooldownSeconds: 90,
+      ccInstances: [],
+      trinketUseTimes: [],
+      missedTrinketWindows: [],
+      rootInstances: [],
+      disarmInstances: [],
+      interruptInstances: [],
+      ccAvoidedInstances: [],
+      ...overrides,
+    };
+  }
+
+  it('returns true when a kick (interruptInstance) lands inside the window', () => {
+    const summary = makeSummary({ interruptInstances: [{ atSeconds: 11 } as any] });
+    expect(channelWasInterrupted(summary, 10, 12.4)).toBe(true);
+  });
+
+  it('returns true when a control-CC (ccInstance) lands inside the window', () => {
+    const summary = makeSummary({ ccInstances: [{ atSeconds: 11.5 } as any] });
+    expect(channelWasInterrupted(summary, 10, 12.4)).toBe(true);
+  });
+
+  it('returns false when events only occur outside the window', () => {
+    const summary = makeSummary({
+      ccInstances: [{ atSeconds: 5 } as any],
+      interruptInstances: [{ atSeconds: 20 } as any],
+    });
+    expect(channelWasInterrupted(summary, 10, 12.4)).toBe(false);
+  });
+
+  it('returns false when the owner summary is undefined', () => {
+    expect(channelWasInterrupted(undefined, 10, 12.4)).toBe(false);
+  });
+
+  it('treats the window boundary with a ±0.5s tolerance', () => {
+    const justInside = makeSummary({ interruptInstances: [{ atSeconds: 12.8 } as any] });
+    expect(channelWasInterrupted(justInside, 10, 12.4)).toBe(true);
+
+    const justOutside = makeSummary({ interruptInstances: [{ atSeconds: 13.0 } as any] });
+    expect(channelWasInterrupted(justOutside, 10, 12.4)).toBe(false);
+  });
+});
+
 // ── buildMatchTimeline [BUFF FADED] events ────────────────────────────────────
 
 describe('buildMatchTimeline [BUFF FADED] events', () => {
@@ -5940,6 +5991,44 @@ describe('buildMatchTimeline — B17: Channeled healer CD annotation', () => {
     // A short channel may be a kick, a self-cancel, or movement — state the fact, not a cause.
     expect(result).toContain('0:10  [YOU] [CD]   Tranquility (channeled 2.4s of 6.0s)');
     expect(result).not.toContain('interrupted');
+  });
+
+  it('labels an early-ended Tranquility channel as interrupted when a kick lands within the window (H13)', () => {
+    const ownerId = 'owner-1';
+    const owner = makeUnit(ownerId, {
+      name: 'Healer',
+      auraEvents: [
+        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '740', MATCH_START_MS + 10_000, ownerId, ownerId),
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '740', MATCH_START_MS + 12_400, ownerId, ownerId),
+      ],
+    });
+
+    const cd = makeCDWithCast('740', 'Tranquility', 10);
+    const ownerCCSummary: IPlayerCCTrinketSummary = {
+      ...makeEmptyCCTrinketSummary('Healer'),
+      interruptInstances: [
+        {
+          atSeconds: 12.3,
+          lockoutDurationSeconds: 3,
+          kickSpellId: '1766',
+          kickSpellName: 'Kick',
+          interruptedSpellId: '740',
+          interruptedSpellName: 'Tranquility',
+          sourceName: 'Rogue',
+          sourceSpec: 'Outlaw Rogue',
+        },
+      ],
+    };
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        ownerCDs: [cd],
+        ccTrinketSummaries: [ownerCCSummary],
+        matchStartMs: MATCH_START_MS,
+      }),
+    );
+    expect(result).toContain('0:10  [YOU] [CD]   Tranquility (interrupted at 2.4s / 6.0s)');
   });
 
   it('annotates completed Ultimate Penitence with mapped aura spell ID', () => {

@@ -327,6 +327,23 @@ export function extractOwnerCDBuffExpiry(
   return result;
 }
 
+/** H13: true if a real kick (interruptInstance) or control-CC (ccInstance) landed on the
+ * caster within the channel window [startSeconds, endSeconds] (±0.5s tolerance so an
+ * interrupt that lands right as the channel stops still counts). Used to confirm an early-
+ * ended channel was actually interrupted, vs. a self-cancel/movement. */
+export function channelWasInterrupted(
+  ownerSummary: Pick<IPlayerCCTrinketSummary, 'ccInstances' | 'interruptInstances'> | undefined,
+  startSeconds: number,
+  endSeconds: number,
+): boolean {
+  if (!ownerSummary) return false;
+  const inWindow = (atSeconds: number) => atSeconds >= startSeconds - 0.5 && atSeconds <= endSeconds + 0.5;
+  return (
+    ownerSummary.ccInstances.some((cc) => inWindow(cc.atSeconds)) ||
+    ownerSummary.interruptInstances.some((i) => inWindow(i.atSeconds))
+  );
+}
+
 // ── Module-level constants shared across builders ──────────────────────────
 
 /** Minimum total damage for a pressure window to be treated as a [DMG SPIKE] event. */
