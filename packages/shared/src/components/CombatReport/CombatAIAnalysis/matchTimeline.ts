@@ -566,9 +566,15 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
       // F166: "cheaper-tool-available" tag — if a shorter-CD defensive was available, flag it.
       // Throughput CDs (e.g. Power Infusion) are excluded by findCheaperDefensiveAlternatives.
+      // H11: when this cast was an external thrown on a teammate, only suggest alternatives
+      // that can themselves target a teammate — a self-only tool (e.g. Barkskin) can't help.
       let cheaperNote = '';
       if (!isCC && cd.tag === 'Defensive') {
-        const cheaperAvailable = findCheaperDefensiveAlternatives(cd, ownerCDs, cast.timeSeconds);
+        const castTargetIsTeammate =
+          !!cast.targetName && cast.targetName !== 'nil' && cast.targetName.split('-')[0] !== owner.name.split('-')[0];
+        const cheaperAvailable = findCheaperDefensiveAlternatives(cd, ownerCDs, cast.timeSeconds, {
+          castTargetIsTeammate,
+        });
         if (cheaperAvailable.length > 0) {
           cheaperNote = ` | cheaper available: ${cheaperAvailable.join(', ')}`;
         }

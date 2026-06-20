@@ -20,6 +20,11 @@ export const MAJOR_DEFENSIVE_IDS = new Set<string>(
   (spellIdListsData as unknown as { externalOrBigDefensiveSpellIds?: string[] }).externalOrBigDefensiveSpellIds ?? [],
 );
 
+// H11: defensives that can be cast on a teammate (not just self). Used to avoid suggesting
+// self-only tools (e.g. Barkskin) as "cheaper" alternatives when the annotated cast was an
+// external thrown on an ally — a self-only tool can't help that ally.
+const EXTERNAL_DEFENSIVE_IDS = new Set<string>(spellIdListsData.externalDefensiveSpellIds as string[]);
+
 const ADDITIONAL_OVERLAP_DEFENSIVE_IDS = new Set<string>([
   '108416', // Dark Pact (Warlock)
   '5277', // Evasion (Rogue)
@@ -544,6 +549,7 @@ export function findCheaperDefensiveAlternatives(
   cd: IMajorCooldownInfo,
   ownerCDs: IMajorCooldownInfo[],
   atSeconds: number,
+  opts: { castTargetIsTeammate?: boolean } = {},
 ): string[] {
   return ownerCDs
     .filter(
@@ -552,7 +558,10 @@ export function findCheaperDefensiveAlternatives(
         (other.tag === 'Defensive' || other.tag === 'External') &&
         !other.isThroughput &&
         other.cooldownSeconds < cd.cooldownSeconds &&
-        other.availableWindows.some((w) => atSeconds >= w.fromSeconds && atSeconds <= w.toSeconds),
+        other.availableWindows.some((w) => atSeconds >= w.fromSeconds && atSeconds <= w.toSeconds) &&
+        // H11: a self-only tool can't help a teammate — only suggest it when the cast that's
+        // being annotated targeted the owner themself.
+        (!opts.castTargetIsTeammate || EXTERNAL_DEFENSIVE_IDS.has(other.spellId)),
     )
     .map((other) => other.spellName);
 }

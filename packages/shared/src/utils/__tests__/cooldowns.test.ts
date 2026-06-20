@@ -1209,4 +1209,37 @@ describe('findCheaperDefensiveAlternatives (review C2)', () => {
     const result = findCheaperDefensiveAlternatives(painSupp, [painSupp, onCd, desperatePrayer], 60);
     expect(result).toEqual(['Desperate Prayer']);
   });
+
+  // H11: when the annotated cast was an external thrown on a teammate (e.g. Ironbark on an
+  // ally), only suggest cheaper alternatives that can themselves target a teammate. Self-only
+  // tools (e.g. Barkskin) cannot help the teammate and must not be suggested.
+  describe('castTargetIsTeammate option (H11)', () => {
+    // Ironbark — present in spellIdLists.json externalDefensiveSpellIds (can target a teammate).
+    const ironbark = makeCD({ spellId: '102342', spellName: 'Ironbark', cooldownSeconds: 60 });
+    // Barkskin — self-only, NOT in externalDefensiveSpellIds.
+    const barkskin = makeCD({ spellId: '22812', spellName: 'Barkskin', cooldownSeconds: 60 });
+    const longCast = makeCD({ spellId: '710', spellName: 'Tranquility', cooldownSeconds: 180 });
+
+    it('only returns externals when castTargetIsTeammate is true', () => {
+      const result = findCheaperDefensiveAlternatives(longCast, [longCast, ironbark, barkskin], 60, {
+        castTargetIsTeammate: true,
+      });
+      expect(result).toEqual(['Ironbark']);
+      expect(result).not.toContain('Barkskin');
+    });
+
+    it('returns both externals and self-only tools when castTargetIsTeammate is omitted', () => {
+      const result = findCheaperDefensiveAlternatives(longCast, [longCast, ironbark, barkskin], 60);
+      expect(result).toEqual(expect.arrayContaining(['Ironbark', 'Barkskin']));
+      expect(result).toHaveLength(2);
+    });
+
+    it('returns both externals and self-only tools when castTargetIsTeammate is false', () => {
+      const result = findCheaperDefensiveAlternatives(longCast, [longCast, ironbark, barkskin], 60, {
+        castTargetIsTeammate: false,
+      });
+      expect(result).toEqual(expect.arrayContaining(['Ironbark', 'Barkskin']));
+      expect(result).toHaveLength(2);
+    });
+  });
 });
