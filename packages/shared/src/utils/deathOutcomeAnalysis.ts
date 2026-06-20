@@ -223,15 +223,6 @@ export function wasLockedOutThroughWindow(
   return maxFreeGap < MIN_FREE_GAP_SECONDS;
 }
 
-export function wasInHardCC(
-  ccSummary: Pick<IPlayerCCTrinketSummary, 'playerName' | 'ccInstances'>,
-  atSeconds: number,
-): boolean {
-  return ccSummary.ccInstances.some(
-    (cc) => cc.atSeconds <= atSeconds && cc.atSeconds + cc.durationSeconds > atSeconds && cc.trinketState !== 'used', // 'used' = they did trinket out; any other state = they were CC'd
-  );
-}
-
 // Max range for external defensive spells (all are 40-yard targeted spells in WoW).
 const EXTERNAL_SPELL_RANGE_YARDS = 40;
 
@@ -265,7 +256,7 @@ export function buildDeathOutcomeSummary(
         availableImmunities.push({
           spellId,
           spellName: spell.name,
-          wasInCC: ccSummary ? wasInHardCC(ccSummary, atSeconds) : false,
+          wasInCC: ccSummary ? wasLockedOutThroughWindow(ccSummary, atSeconds) : false,
         });
       }
 
@@ -298,7 +289,7 @@ export function buildDeathOutcomeSummary(
             casterSpec: specToString(teammate.spec),
             spellId,
             spellName: spell.name,
-            casterWasInCC: teammateCCSummary ? wasInHardCC(teammateCCSummary, atSeconds) : false,
+            casterWasInCC: teammateCCSummary ? wasLockedOutThroughWindow(teammateCCSummary, atSeconds) : false,
           });
         }
       }

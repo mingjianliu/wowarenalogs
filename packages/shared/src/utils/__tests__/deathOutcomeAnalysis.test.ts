@@ -84,6 +84,16 @@ describe('buildDeathOutcomeSummary — immunity checks', () => {
     expect(result.events).toHaveLength(1);
     expect(result.events[0].atSeconds).toBe(30);
   });
+
+  it('C3: annotates "was in CC" when CC-locked through the window even if free at the death tick', () => {
+    // Ret Paladin dies at 10s with Divine Shield available; CC covers [5,9.9] (window [5,10]),
+    // but has ended by the exact death tick (10) — the old death-instant check said "not CC'd".
+    const dead = makeDeadUnit('p1', MATCH_START + 10_000, { spec: CombatUnitSpec.Paladin_Retribution });
+    const ccSummary = makeCCSummary('p1', [{ atSeconds: 5, durationSeconds: 4.9, trinketState: 'available_unused' }]);
+    const result = buildDeathOutcomeSummary(makeCombat() as any, [dead], [ccSummary]);
+    const out = formatDeathOutcomeForContext(result);
+    expect(out).toContain('Divine Shield available, was in CC');
+  });
 });
 
 describe('buildDeathOutcomeSummary — external defensive checks', () => {
