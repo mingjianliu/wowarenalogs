@@ -254,6 +254,11 @@ export const SPELL_DURATION_OVERRIDES: Record<string, number> = {
   '421453': 6.5, // Ultimate Penitence
 };
 
+// M-b: a real aura removal arrives at ~nominal duration plus minor server-tick/latency slack;
+// a removal more than a couple seconds past nominal duration almost certainly belongs to a
+// different (later) cast, not this one.
+const BUFF_EXPIRY_PAIRING_TOLERANCE_S = 2;
+
 /**
  * For each owner CD cast, finds when the buff actually expired by matching to the
  * chronologically-next SPELL_AURA_REMOVED event (cast by `ownerId`) across all
@@ -305,7 +310,15 @@ export function extractOwnerCDBuffExpiry(
       let expiresAtSeconds: number;
       let isEstimated: boolean;
 
-      if (removalIndex < removalTimestampsMs.length) {
+      // M-b: only accept the chronologically-next removal as this cast's real expiry when it
+      // falls within duration + tolerance of the cast. Otherwise it likely belongs to a later
+      // cast (this cast's own removal is missing from the log) — fall back to estimated and
+      // leave removalIndex where it is so the removal remains available for that later cast.
+      const withinWindow =
+        removalIndex < removalTimestampsMs.length &&
+        removalTimestampsMs[removalIndex] <= castMs + (duration + BUFF_EXPIRY_PAIRING_TOLERANCE_S) * 1000;
+
+      if (withinWindow) {
         expiresAtSeconds = (removalTimestampsMs[removalIndex] - matchStartMs) / 1000;
         isEstimated = false;
         removalIndex++;

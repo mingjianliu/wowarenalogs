@@ -3417,6 +3417,77 @@ describe('extractOwnerCDBuffExpiry', () => {
     expect(result[1].expiresAtSeconds).toBeCloseTo(47, 1);
     expect(result[1].isEstimated).toBe(false);
   });
+
+  // ── M-b: bound pairing window so a distant removal doesn't mis-pair ─────────
+
+  it('M-b: falls back to estimated when the only removal is far beyond duration+tolerance (mis-pairing bug)', () => {
+    const ownerId = 'owner-1';
+    const owner = makeUnit(ownerId, { name: 'Healer' });
+    const target = makeUnit('target-1', {
+      name: 'Teammate',
+      auraEvents: [
+        // 85s after the t=10 cast — far beyond 10 + 8 (duration) + 2 (tolerance) = 20
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '33206', MATCH_START_MS + 95_000, ownerId, 'target-1'),
+      ],
+    });
+
+    const cd = makeCDWithCast('33206', 'Pain Suppression', 10);
+    const result = extractOwnerCDBuffExpiry([cd], ownerId, [owner, target], MATCH_START_MS);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].expiresAtSeconds).toBeCloseTo(18, 1); // 10 + 8 estimated, NOT 95
+    expect(result[0].isEstimated).toBe(true);
+  });
+
+  it('M-b: still accepts a removal that lands just inside the tolerance window', () => {
+    const ownerId = 'owner-1';
+    const owner = makeUnit(ownerId, { name: 'Healer' });
+    const target = makeUnit('target-1', {
+      name: 'Teammate',
+      auraEvents: [
+        // 9s after the t=10 cast — within 10 + 8 (duration) + 2 (tolerance) = 20
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '33206', MATCH_START_MS + 19_000, ownerId, 'target-1'),
+      ],
+    });
+
+    const cd = makeCDWithCast('33206', 'Pain Suppression', 10);
+    const result = extractOwnerCDBuffExpiry([cd], ownerId, [owner, target], MATCH_START_MS);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].expiresAtSeconds).toBeCloseTo(19, 1);
+    expect(result[0].isEstimated).toBe(false);
+  });
+
+  it('M-b: out-of-window removal for cast 1 is NOT consumed and correctly pairs to cast 2', () => {
+    const ownerId = 'owner-1';
+    const owner = makeUnit(ownerId, { name: 'Healer' });
+    const target = makeUnit('target-1', {
+      name: 'Teammate',
+      auraEvents: [
+        // 35s after cast 1 (t=10) — out of window (10+8+2=20). 5s after cast 2 (t=40) — in window (40+8+2=50).
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '33206', MATCH_START_MS + 45_000, ownerId, 'target-1'),
+      ],
+    });
+
+    const cd: IMajorCooldownInfo = {
+      spellId: '33206',
+      spellName: 'Pain Suppression',
+      tag: 'Defensive',
+      cooldownSeconds: 180,
+      maxChargesDetected: 2,
+      casts: [{ timeSeconds: 10 }, { timeSeconds: 40 }],
+      availableWindows: [],
+      neverUsed: false,
+    };
+
+    const result = extractOwnerCDBuffExpiry([cd], ownerId, [owner, target], MATCH_START_MS);
+
+    expect(result).toHaveLength(2);
+    expect(result[0].isEstimated).toBe(true);
+    expect(result[0].expiresAtSeconds).toBeCloseTo(18, 1); // 10 + 8, not consuming the distant removal
+    expect(result[1].isEstimated).toBe(false);
+    expect(result[1].expiresAtSeconds).toBeCloseTo(45, 1); // correctly paired to cast 2
+  });
 });
 
 // ── channelWasInterrupted (H13) ───────────────────────────────────────────────
