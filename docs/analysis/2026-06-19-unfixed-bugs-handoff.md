@@ -12,27 +12,31 @@ C4 (Fade≠CC-avoid), H6 (cleanse ≤50ms), H7 (Stasis partial release), C2 (che
 
 ---
 
-## Status table — what's left
+## Status table
 
-| ID                 | Sev      | Area                                   | File(s)                                                       | Why unfixed                                                               | TDD-able?                 |
-| ------------------ | -------- | -------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------- |
-| **C3 / H12 / M-e** | 🔴/🟠    | B12 hard-CC suppression                | `deathOutcomeAnalysis.ts`, `cooldowns.ts`, `matchTimeline.ts` | **Needs a WoW-mechanics decision**                                        | Yes, once decided         |
-| **H11 / M-f**      | 🟠       | "cheaper available" target/form gating | `cooldowns.ts`, `matchTimeline.ts`                            | **Needs a curated self/external + survival set** (maintenance-prone list) | Yes, once approved        |
-| **H13**            | 🟠       | Positive "interrupted" label           | `matchTimeline.ts`, `timelineHelpers.ts`                      | Enhancement on top of C1; needs caster-interrupt detection                | Yes                       |
-| **M-a**            | 🟡       | HP-velocity stale `0%/s`               | `matchTimeline.ts`, `killWindowTargetSelection.ts`            | Likely low real impact (HP snapshots ride with damage)                    | Yes                       |
-| **M-b**            | 🟡       | Channel "completed" mis-pairing        | `timelineHelpers.ts`                                          | Lower priority after C1                                                   | Yes                       |
-| **H8 / M-k**       | 🟠       | `spellNames.json` 13 MB bundle         | `spellEffectData.ts`, `generateSpellIdLists.ts`               | **Not behavior** — build/bundle; needs 13 MB regen                        | No (CI size guard only)   |
-| **M1**             | 🟠(meta) | Eval harness ≠ production prompt       | `printMatchPrompts.ts` vs `CombatAIAnalysis/index.tsx`        | **Structural/process** fix                                                | Partial (divergence test) |
-| **H2**             | 🟠       | Overlap Ratio num/denom mismatch       | `healerMetrics.ts`                                            | Eval-harness-only (subsumed by M1)                                        | Yes (low value pre-M1)    |
-| **H5**             | 🟠       | Dispel-summary header unfiltered       | `printMatchPrompts.ts`                                        | Eval-harness-only (prod uses `formatDispelContextForAI`)                  | Yes (tool-side)           |
-| **M-d**            | 🟡       | Overlap double-count                   | `cooldowns.ts`                                                | Feeds eval-only overlap ratio                                             | Yes                       |
-| Lows (≈12)         | ⚪       | misc                                   | various                                                       | Cosmetic / low value                                                      | Mostly yes                |
+> **Update 2026-06-20:** every higher-value item is now fixed and on `origin/main` (latest `a919afa4`). Only low-value / build-concern items remain open.
+
+| ID                 | Sev      | Area                              | Status                                                                                                   |
+| ------------------ | -------- | --------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **C3 / H12 / M-e** | 🔴/🟠    | B12 hard-CC suppression           | ✅ **DONE** — windowed lockout (`wasLockedOutThroughWindow`, 5s/1s); spec+plan+SDD. `fad69b61..452262a7` |
+| **H11 / M-f**      | 🟠       | "cheaper available" target gating | ✅ **DONE** — gated on codegen `externalDefensiveSpellIds` (no new list). `a919afa4`                     |
+| **H13**            | 🟠       | Positive "interrupted" label      | ✅ **DONE** — labels `(interrupted at X/Y)` only when a real kick/CC hit the caster. `5f90de5c`          |
+| **M1**             | 🟠(meta) | Eval harness ≠ production prompt  | ✅ **DONE** — `buildMatchContext` extracted React-free; tool now calls it. `78002967`, `1eee4efc`        |
+| **H2**             | 🟠       | Overlap Ratio num/denom mismatch  | ✅ **DONE via M1** — the divergent eval-only `computeHealerMetrics` block is gone from the tool.         |
+| **H5**             | 🟠       | Dispel-summary header unfiltered  | ✅ **DONE via M1** — the tool no longer assembles its own header.                                        |
+| **M-d**            | 🟡       | Overlap double-count              | ✅ **DONE via M1** — overlap ratio no longer ships in the prompt.                                        |
+| **M-a**            | 🟡       | HP-velocity stale `0%/s`          | ⬜ OPEN — `matchTimeline.ts`. Low impact (HP snapshots ride with damage).                                |
+| **M-b**            | 🟡       | Channel "completed" mis-pairing   | ⬜ OPEN — `timelineHelpers.ts`. Low priority after C1.                                                   |
+| **H8 / M-k**       | 🟠       | `spellNames.json` 13 MB bundle    | ⬜ OPEN — `spellEffectData.ts`, `generateSpellIdLists.ts`. Build/bundle, not a prompt fix.               |
+| Lows (≈12)         | ⚪       | misc                              | ⬜ OPEN — cosmetic / low value; none ship false data.                                                    |
 
 ---
 
 ## 1. Needs a decision before fixing
 
-### C3 / H12 / M-e — B12 "unused defensive at death" is over-suppressed
+### ✅ DONE — C3 / H12 / M-e — B12 "unused defensive at death" is over-suppressed
+
+> **Resolved 2026-06-20** (`fad69b61..452262a7`): chose a windowed lockout (`wasLockedOutThroughWindow`, 5s window / 1s free-gap, uniform CC model). Whitelist kept unchanged (Pain Supp confirmed usable-while-stunned). Both death paths unified; `wasInHardCC` removed. Spec + plan + subagent-driven TDD. The "decision needed" below is what was answered.
 
 **Where:** `deathOutcomeAnalysis.ts:186-192` (`wasInHardCC`), `cooldowns.ts:36-43` (`USABLE_WHILE_CC_SPELL_IDS`), suppression at `matchTimeline.ts:618-625`.
 
@@ -52,7 +56,9 @@ C4 (Fade≠CC-avoid), H6 (cleanse ≤50ms), H7 (Stasis partial release), C2 (che
 
 **Then (TDD):** failing test where a teammate was only Disoriented (or freed before death) → the "unused defensive" finding is NOT suppressed; a teammate truly stun-locked through the lethal window → IS suppressed. Add `wasInHardCC` unit tests (currently none).
 
-### H11 / M-f — "cheaper available" still suggests unreachable tools
+### ✅ DONE — H11 / M-f — "cheaper available" still suggests unreachable tools
+
+> **Resolved 2026-06-20** (`a919afa4`): no new list needed — gated on the codegen `externalDefensiveSpellIds` set. When the annotated cast targeted a teammate, only externals are suggested as "cheaper". (Tree-of-Life throughput sub-case left as a Low.)
 
 **Where:** `cooldowns.ts` `findCheaperDefensiveAlternatives` (added in C2), wired at `matchTimeline.ts:~810`.
 
@@ -69,7 +75,9 @@ C4 (Fade≠CC-avoid), H6 (cleanse ≤50ms), H7 (Stasis partial release), C2 (che
 
 ## 2. Deferred — enhancements / low real-world impact
 
-### H13 — positively label _confirmed_ interrupts
+### ✅ DONE — H13 — positively label _confirmed_ interrupts
+
+> **Resolved 2026-06-20** (`5f90de5c`): added `channelWasInterrupted` (kick/CC on the caster within the channel window); early-ended channels now read `(interrupted at X/Y)` only when confirmed, else keep `(channeled X/Y)`. Legend updated.
 
 **Where:** `matchTimeline.ts:~824-840` (channel classification), `timelineHelpers.ts` (`extractOwnerCDBuffExpiry`).
 C1 already removed the harm (false "interrupted" → neutral `(channeled X of Y)`). H13 is the _positive_ follow-up: when a real `SPELL_INTERRUPT` or a CC application lands on the **caster** during `[castStart, channelEnd]`, label it `(interrupted at X / Y)`; otherwise keep `(channeled X of Y)`.
@@ -96,22 +104,24 @@ C1 already removed the harm (false "interrupted" → neutral `(channeled X of Y)
 The full 13 MB JSON (pretty-printed, ~2× size) is statically imported by a module that client components pull, so it lands in the web bundle untree-shaken. **Not a unit test** — it's a bundle-size/build concern.
 **Fix direction:** (a) emit minified (`JSON.stringify(map)` — one-line generator change, needs a 13 MB regen via `start:generateSpellIdLists`, which hits wago.tools); (b) filter the map to spell IDs actually referenced; or (c) lazy / server-side load. **Guard to add:** a CI bundle-size check, not a jest test.
 
-### M1 — the evaluation harness is NOT the production prompt
+### ✅ DONE — M1 — the evaluation harness is NOT the production prompt
+
+> **Resolved 2026-06-20** (`78002967`, `1eee4efc`): extracted `buildMatchContext` into a React-free module (production byte-identical) and pointed `printMatchPrompts` at it; added an optional `owner` override to preserve `--healer`. The tool's divergent reimplementation is gone — smoke-tested, zero divergent lines. **This cleared H2, H5, and M-d** (below) since they only existed in that reimplementation.
 
 **Where:** `printMatchPrompts.ts:831-857` (`buildMatchPromptNew`) vs `CombatAIAnalysis/index.tsx` (`buildMatchContext`).
 The tool injects a `<metadata>` block (`Healer Performance`, `Technical Stats: Overlap Ratio | Effective Cast | CC Avoidance` via `computeHealerMetrics`) that production **never** emits. So the eval corpus diverges from the shipped prompt — this is the root cause of why several "findings" (H2, H5, the spellSchools-0-tags scare in H4) were eval-only artifacts.
 **Fix direction (structural):** make `printMatchPrompts` call the real `buildMatchContext` (or delete the divergent metadata block). **Guard:** a test asserting harness output == production assembly for the shared timeline sections. This single fix subsumes H2, H5, M-d.
 **Also memorialized in:** memory `project_prompt_eval_harness_divergence`.
 
-### H2 — Overlap Ratio not bounded ≤ 1 (eval-only)
+### ✅ DONE (via M1) — H2 — Overlap Ratio not bounded ≤ 1 (eval-only)
 
 `healerMetrics.ts:106-112`: numerator counts overlaps over `ALL_MAJOR_DEFENSIVE_IDS`, denominator over the narrower `MAJOR_DEFENSIVE_IDS`. Ratio can exceed 1; `Overlap Ratio: 0.00` is ambiguous. **Only reaches the eval tool**, not production. Fix: use one ID set for both (or `Math.min(1, …)`). TDD-able but low value until M1.
 
-### H5 — dispel-summary header unfiltered (eval-only)
+### ✅ DONE (via M1) — H5 — dispel-summary header unfiltered (eval-only)
 
 `printMatchPrompts.ts:866-872`: the tool's `<purge_responsibility>` header counts **all-priority** purges (e.g. `31 total purges/spellsteals (8x Moonkin Aura, …)`), contradicting the F163-filtered timeline. **Production uses `formatDispelContextForAI`, not this header.** Subsumed by M1.
 
-### M-d — overlap double-count (eval-only)
+### ✅ DONE (via M1) — M-d — overlap double-count (eval-only)
 
 `cooldowns.ts:1015-1046`: one healer cast overlapping N teammates contributes N to the overlap count. Feeds the eval-only overlap ratio. Dedup overlaps per (caster, cast).
 
@@ -135,4 +145,4 @@ Full list in `...-review-detailed.md` (the "Low" section). Examples: `±0%/s` si
   Claude-Session: https://claude.ai/code/session_01C1AuTEjpzDkjww3VF8fEDG
   ```
 
-**Highest-payoff next step:** decide C3 (the hard-CC definition), then M1 (harness alignment, which clears H2/H5/M-d in one move).
+**Status 2026-06-20:** all higher-value items are done and on `origin/main` (latest `a919afa4`) — C3, H11, H13, M1 (+ H2/H5/M-d via M1). Remaining: **M-a**, **M-b** (low impact), **H8/M-k** (13 MB bundle — build concern), and the **~12 Lows** (cosmetic). None ship false data.
