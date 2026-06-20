@@ -218,22 +218,17 @@ export function getDRLevelAtTime(
 ): DRLevel {
   const DR_RESET_S = DR_RESET_MS / 1000;
 
-  const relevant = ccInstances
-    .filter((cc) => cc.drInfo?.category === category && cc.atSeconds < atSeconds)
-    .slice()
-    .sort((a, b) => a.atSeconds - b.atSeconds);
-
-  if (relevant.length === 0) return 'Full';
-
   let chainLength = 0;
   let lastExpiredAt = -Infinity;
 
-  for (const cc of relevant) {
-    if (cc.atSeconds - lastExpiredAt > DR_RESET_S) {
-      chainLength = 0;
+  for (const cc of ccInstances) {
+    if (cc.drInfo?.category === category && cc.atSeconds < atSeconds) {
+      if (cc.atSeconds - lastExpiredAt > DR_RESET_S) {
+        chainLength = 0;
+      }
+      chainLength++;
+      lastExpiredAt = cc.atSeconds + cc.durationSeconds;
     }
-    chainLength++;
-    lastExpiredAt = cc.atSeconds + cc.durationSeconds;
   }
 
   if (atSeconds - lastExpiredAt > DR_RESET_S) return 'Full';

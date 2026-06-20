@@ -11,6 +11,7 @@ import {
 
 import { getEnglishSpellName, spellEffectData } from '../data/spellEffectData';
 import spellIdListsData from '../data/spellIdLists.json';
+import { binarySearchClosest } from './binarySearch';
 import { DISCOVERY_TAG_RULES } from './discoveryRules';
 import { CD_TALENT_MODIFIERS } from './talentModifiers';
 import { getPlayerTalentedSpellInfo, getSpecTalentTreeSpellInfo } from './talents';
@@ -211,17 +212,26 @@ export interface ICooldownCast {
  * advancedAction where advancedActorId === unit.id. Returns null when no data exists.
  */
 export function getUnitHpAtTimestamp(unit: ICombatUnit, timestampMs: number, maxDtMs = 10_000): number | null {
-  let best: { dt: number; pct: number } | null = null;
-  for (const a of unit.advancedActions) {
-    if (a.advancedActorId !== unit.id) continue;
-    if (a.advancedActorMaxHp <= 0) continue;
-    const dt = Math.abs(a.logLine.timestamp - timestampMs);
-    if (dt > maxDtMs) continue;
-    if (best === null || dt < best.dt) {
-      best = { dt, pct: Math.round((a.advancedActorCurrentHp / a.advancedActorMaxHp) * 100) };
-    }
+  const closestAction = binarySearchClosest(unit.advancedActions, timestampMs, (a) => a.logLine.timestamp);
+
+  if (!closestAction) {
+    return null;
   }
-  return best?.pct ?? null;
+
+  if (closestAction.advancedActorId !== unit.id) {
+    return null;
+  }
+
+  if (closestAction.advancedActorMaxHp <= 0) {
+    return null;
+  }
+
+  const dt = Math.abs(closestAction.logLine.timestamp - timestampMs);
+  if (dt > maxDtMs) {
+    return null;
+  }
+
+  return Math.round((closestAction.advancedActorCurrentHp / closestAction.advancedActorMaxHp) * 100);
 }
 
 /**
@@ -234,19 +244,27 @@ export function getUnitManaAtTimestamp(
   timestampMs: number,
   maxDtMs = 10_000,
 ): { current: number; max: number } | null {
-  let best: { dt: number; current: number; max: number } | null = null;
-  for (const a of unit.advancedActions) {
-    if (a.advancedActorId !== unit.id) continue;
-    const manaPower = a.advancedActorPowers.find((p) => p.type === CombatUnitPowerType.Mana);
-    if (!manaPower) continue;
+  const closestAction = binarySearchClosest(unit.advancedActions, timestampMs, (a) => a.logLine.timestamp);
 
-    const dt = Math.abs(a.logLine.timestamp - timestampMs);
-    if (dt > maxDtMs) continue;
-    if (best === null || dt < best.dt) {
-      best = { dt, current: manaPower.current, max: manaPower.max };
-    }
+  if (!closestAction) {
+    return null;
   }
-  return best ? { current: best.current, max: best.max } : null;
+
+  if (closestAction.advancedActorId !== unit.id) {
+    return null;
+  }
+
+  const manaPower = closestAction.advancedActorPowers.find((p) => p.type === CombatUnitPowerType.Mana);
+  if (!manaPower) {
+    return null;
+  }
+
+  const dt = Math.abs(closestAction.logLine.timestamp - timestampMs);
+  if (dt > maxDtMs) {
+    return null;
+  }
+
+  return { current: manaPower.current, max: manaPower.max };
 }
 
 /**

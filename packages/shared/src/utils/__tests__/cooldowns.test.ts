@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-non-null-assertion */
-import { CombatUnitClass, CombatUnitReaction, CombatUnitSpec, LogEvent } from '@wowarenalogs/parser';
+import {
+  CombatUnitClass,
+  CombatUnitPowerType,
+  CombatUnitReaction,
+  CombatUnitSpec,
+  LogEvent,
+} from '@wowarenalogs/parser';
 
 import {
   annotateDefensiveTimings,
@@ -10,6 +16,8 @@ import {
   findCheaperDefensiveAlternatives,
   fmtTime,
   getPressureThreshold,
+  getUnitHpAtTimestamp,
+  getUnitManaAtTimestamp,
   IEnemyCDTimelineForTiming,
   IMajorCooldownInfo,
   isHealerSpec,
@@ -1032,6 +1040,130 @@ describe('extractMajorCooldowns', () => {
     const erw = cds.find((c) => c.spellId === '47568');
     expect(erw).toBeDefined();
     expect(erw?.casts).toHaveLength(0); // Filtered out by name
+  });
+
+  describe('getUnitHpAtTimestamp (optimized with binary search)', () => {
+    const advancedActions = (
+      [
+        { ...makeAdvancedAction(1000, 0, 0, 1000, 100), advancedActorId: 'player-1' }, // HP 10%
+        { ...makeAdvancedAction(2000, 0, 0, 1000, 500), advancedActorId: 'player-1' }, // HP 50%
+        { ...makeAdvancedAction(3000, 0, 0, 1000, 200), advancedActorId: 'player-1' }, // HP 20%
+        { ...makeAdvancedAction(4000, 0, 0, 1000, 800), advancedActorId: 'player-1' }, // HP 80%
+      ] as any[]
+    ).sort((a, b) => a.logLine.timestamp - b.logLine.timestamp); // Ensure sorted for binary search
+
+    const unit = makeUnit('player-1', { advancedActions });
+
+    it('should find the exact HP at a given timestamp', () => {
+      expect(getUnitHpAtTimestamp(unit, 2000)).toBe(50);
+    });
+
+    it('should find the closest HP before the timestamp', () => {
+      // Target 2100, closest is 2000
+      expect(getUnitHpAtTimestamp(unit, 2100)).toBe(50);
+    });
+
+    it('should find the closest HP after the timestamp', () => {
+      // Target 2900, closest is 3000
+      expect(getUnitHpAtTimestamp(unit, 2900)).toBe(20);
+    });
+
+    it('should handle timestamp before the first action', () => {
+      expect(getUnitHpAtTimestamp(unit, 500)).toBe(10);
+    });
+
+    it('should handle timestamp after the last action', () => {
+      expect(getUnitHpAtTimestamp(unit, 4500)).toBe(80);
+    });
+
+    it('should return null if no advancedActions are present', () => {
+      const emptyUnit = makeUnit('player-empty', { advancedActions: [] });
+      expect(getUnitHpAtTimestamp(emptyUnit, 2000)).toBeNull();
+    });
+
+    it('should respect maxDtMs and return null if no close action', () => {
+      // Target 1500, closest is 1000. Diff = 500. maxDtMs = 200
+      expect(getUnitHpAtTimestamp(unit, 1500, 200)).toBeNull();
+    });
+
+    it('should find closest within maxDtMs', () => {
+      // Target 1500, closest is 1000. Diff = 500. maxDtMs = 600
+      expect(getUnitHpAtTimestamp(unit, 1500, 600)).toBe(10);
+    });
+  });
+
+  describe('getUnitManaAtTimestamp (optimized with binary search)', () => {
+    const advancedActions = (
+      [
+        {
+          ...makeAdvancedAction(1000, 0, 0, 1000, 1000),
+          advancedActorId: 'player-1',
+          advancedActorPowers: [{ type: CombatUnitPowerType.Mana, current: 100, max: 1000 }],
+        },
+        {
+          ...makeAdvancedAction(2000, 0, 0, 1000, 1000),
+          advancedActorId: 'player-1',
+          advancedActorPowers: [{ type: CombatUnitPowerType.Mana, current: 500, max: 1000 }],
+        },
+        {
+          ...makeAdvancedAction(3000, 0, 0, 1000, 1000),
+          advancedActorId: 'player-1',
+          advancedActorPowers: [{ type: CombatUnitPowerType.Mana, current: 200, max: 1000 }],
+        },
+        {
+          ...makeAdvancedAction(4000, 0, 0, 1000, 1000),
+          advancedActorId: 'player-1',
+          advancedActorPowers: [{ type: CombatUnitPowerType.Mana, current: 800, max: 1000 }],
+        },
+      ] as any[]
+    ).sort((a, b) => a.logLine.timestamp - b.logLine.timestamp);
+
+    const unit = makeUnit('player-1', { advancedActions });
+
+    it('should find the exact mana at a given timestamp', () => {
+      expect(getUnitManaAtTimestamp(unit, 2000)).toEqual({ current: 500, max: 1000 });
+    });
+
+    it('should find the closest mana before the timestamp', () => {
+      expect(getUnitManaAtTimestamp(unit, 2100)).toEqual({ current: 500, max: 1000 });
+    });
+
+    it('should find the closest mana after the timestamp', () => {
+      expect(getUnitManaAtTimestamp(unit, 2900)).toEqual({ current: 200, max: 1000 });
+    });
+
+    it('should handle timestamp before the first action', () => {
+      expect(getUnitManaAtTimestamp(unit, 500)).toEqual({ current: 100, max: 1000 });
+    });
+
+    it('should handle timestamp after the last action', () => {
+      expect(getUnitManaAtTimestamp(unit, 4500)).toEqual({ current: 800, max: 1000 });
+    });
+
+    it('should return null if no advancedActions are present', () => {
+      const emptyUnit = makeUnit('player-empty', { advancedActions: [] });
+      expect(getUnitManaAtTimestamp(emptyUnit, 2000)).toBeNull();
+    });
+
+    it('should return null if no mana power type is found in advancedActions', () => {
+      const hpOnlyActions = [
+        {
+          ...makeAdvancedAction(1000, 0, 0, 1000, 1000),
+          advancedActorId: 'player-hp-only',
+          advancedActorPowers: [{ type: CombatUnitPowerType.HealthCost, current: 100, max: 1000 }],
+        },
+      ] as any[];
+      const unitHpOnly = makeUnit('player-hp-only', { advancedActions: hpOnlyActions });
+      expect(getUnitManaAtTimestamp(unitHpOnly, 1000)).toBeNull();
+    });
+
+    it('should respect maxDtMs and return null if no close action', () => {
+      expect(getUnitManaAtTimestamp(unit, 1500, 200)).toBeNull();
+    });
+
+    it('should find closest within maxDtMs', () => {
+      expect(getUnitManaAtTimestamp(unit, 1500, 600)).toEqual({ current: 100, max: 1000 });
+    });
   });
 });
 

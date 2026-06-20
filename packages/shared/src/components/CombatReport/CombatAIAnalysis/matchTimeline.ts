@@ -224,7 +224,7 @@ function extractPlayerDotIntervals(player: ICombatUnit, matchStartMs: number, ma
   const intervals: IDotInterval[] = [];
   const openDots = new Map<string, number>();
 
-  const sortedEvents = [...(player.auraEvents ?? [])].sort((a, b) => a.logLine.timestamp - b.logLine.timestamp);
+  const sortedEvents = player.auraEvents ?? [];
 
   for (const event of sortedEvents) {
     const ts = event.logLine.timestamp;
@@ -534,13 +534,22 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   // ── Rot Pressure Detection (F147) ──────────────────────────────────────────
   for (const player of allPlayers) {
     const dotIntervals = extractPlayerDotIntervals(player, matchStartMs, matchEndMs);
+    const durationSeconds = Math.floor(matchDurationS);
+    const dotCounts = new Array(durationSeconds + 1).fill(0);
+    for (const interval of dotIntervals) {
+      const startSec = Math.max(0, Math.ceil((interval.startMs - matchStartMs) / 1000));
+      const endSec = Math.min(durationSeconds, Math.floor((interval.endMs - matchStartMs) / 1000));
+      for (let t = startSec; t <= endSec; t++) {
+        dotCounts[t]++;
+      }
+    }
+
     let consecutiveRotSeconds = 0;
     let emittedForThisBlock = false;
 
-    for (let t = 0; t <= Math.floor(matchDurationS); t++) {
+    for (let t = 0; t <= durationSeconds; t++) {
       const tsMs = matchStartMs + t * 1000;
-      const activeDots = dotIntervals.filter((i) => tsMs >= i.startMs && tsMs <= i.endMs);
-      const dotCount = activeDots.length;
+      const dotCount = dotCounts[t];
 
       const hp = getUnitHpAtTimestamp(player, tsMs, 5000);
 
@@ -611,7 +620,14 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       const summary = ccTrinketSummaries.find((s) => s.playerName === death.name);
       if (summary && (summary.trinketType === 'Gladiator' || summary.trinketType === 'Adaptation')) {
         const cooldownSec = summary.trinketCooldownSeconds;
-        const lastUse = summary.trinketUseTimes.filter((t) => t <= death.atSeconds).sort((a, b) => b - a)[0];
+        let lastUse: number | undefined;
+        for (let i = summary.trinketUseTimes.length - 1; i >= 0; i--) {
+          const t = summary.trinketUseTimes[i];
+          if (t <= death.atSeconds) {
+            lastUse = t;
+            break;
+          }
+        }
         trinketAvailable = lastUse === undefined || death.atSeconds - lastUse >= cooldownSec;
       }
 
@@ -938,9 +954,15 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       // so Claude knows the cast completed before or after incoming CC.
       // B32: only match CCs targeting the log owner, not teammates.
       const CC_PROXIMITY_MS = 1000;
-      const nearestCC = ownerCCMsTimestamps
-        .filter((ccMs) => Math.abs(ccMs - tsMs) <= CC_PROXIMITY_MS)
-        .sort((a, b) => Math.abs(a - tsMs) - Math.abs(b - tsMs))[0];
+      let nearestCC: number | undefined;
+      let minDiff = Infinity;
+      for (const ccMs of ownerCCMsTimestamps) {
+        const diff = Math.abs(ccMs - tsMs);
+        if (diff <= CC_PROXIMITY_MS && diff < minDiff) {
+          minDiff = diff;
+          nearestCC = ccMs;
+        }
+      }
       let orderNote = '';
       if (nearestCC !== undefined) {
         if (tsMs < nearestCC) {
