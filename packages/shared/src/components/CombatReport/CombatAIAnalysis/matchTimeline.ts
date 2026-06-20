@@ -298,8 +298,8 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
     let velocityStr = '';
     if (targetUnit && !targetIsEnemy && !ccSpellIds.has(spellId)) {
-      const hpNow = getHpPercentAtTime(targetUnit, timeSeconds, matchStartMs);
-      const hpBefore = getHpPercentAtTime(targetUnit, timeSeconds - 2, matchStartMs);
+      const hpNow = getUnitHpAtTimestamp(targetUnit, matchStartMs + timeSeconds * 1000, 2_000);
+      const hpBefore = getUnitHpAtTimestamp(targetUnit, matchStartMs + (timeSeconds - 2) * 1000, 2_000);
 
       // Preceding 2-second lookback window for incoming DPS
       const fromMs = matchStartMs + (timeSeconds - 2) * 1000;

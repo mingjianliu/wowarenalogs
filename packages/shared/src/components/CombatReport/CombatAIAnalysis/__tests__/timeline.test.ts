@@ -910,6 +910,73 @@ describe('buildMatchTimeline — CD events', () => {
     const lcPos = result.indexOf('Life Cocoon');
     expect(acPos).toBeLessThan(lcPos); // 0:33 before 0:55
   });
+
+  // M-a: getUnitHpAtTimestamp is staleness-bounded (2s), unlike getHpPercentAtTime which has
+  // no bound and can resolve both samples to the same stale point, producing a false 0%/s.
+  it('M-a: omits %/s (but keeps DPS) when the target has no HP sample within the 2s pre-cast window', () => {
+    const target = makeUnit('target-1', {
+      name: 'Gardianmini',
+      reaction: CombatUnitReaction.Friendly,
+      // Only sample is ~20s before the cast — well outside the 2s lookback window on both sides.
+      advancedActions: [
+        { ...makeAdvancedAction(7_000, 0, 0, 100_000, 80_000), advancedActorId: 'target-1' }, // 80% at t=7s
+      ],
+      damageIn: [{ timestamp: 26_000, logLine: { timestamp: 26_000, event: 'SPELL_DAMAGE' }, amount: 20_000 } as any],
+    }) as ICombatUnit;
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        friends: [target],
+        ownerCDs: [
+          {
+            spellId: '1',
+            spellName: 'Life Cocoon',
+            tag: 'Defensive',
+            cooldownSeconds: 120,
+            maxChargesDetected: 1,
+            casts: [{ timeSeconds: 27, targetName: 'Gardianmini' }],
+            availableWindows: [],
+            neverUsed: false,
+          },
+        ],
+      }),
+    );
+    expect(result).toContain('→ Gardianmini');
+    expect(result).toContain('DPS');
+    expect(result).not.toContain('%/s');
+  });
+
+  it('M-a control: keeps %/s when the target has HP samples bounding the 2s pre-cast window', () => {
+    const target = makeUnit('target-1', {
+      name: 'Gardianmini',
+      reaction: CombatUnitReaction.Friendly,
+      advancedActions: [
+        { ...makeAdvancedAction(25_000, 0, 0, 100_000, 90_000), advancedActorId: 'target-1' }, // 90% at t=25s
+        { ...makeAdvancedAction(27_000, 0, 0, 100_000, 40_000), advancedActorId: 'target-1' }, // 40% at t=27s
+      ],
+      damageIn: [{ timestamp: 26_000, logLine: { timestamp: 26_000, event: 'SPELL_DAMAGE' }, amount: 50_000 } as any],
+    }) as ICombatUnit;
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        friends: [target],
+        ownerCDs: [
+          {
+            spellId: '1',
+            spellName: 'Life Cocoon',
+            tag: 'Defensive',
+            cooldownSeconds: 120,
+            maxChargesDetected: 1,
+            casts: [{ timeSeconds: 27, targetName: 'Gardianmini' }],
+            availableWindows: [],
+            neverUsed: false,
+          },
+        ],
+      }),
+    );
+    // Expected HP drop: 90% -> 40% over 2s (-25%/s)
+    expect(result).toContain('→ Gardianmini (40% HP, -25%/s, 25k DPS)');
+  });
 });
 
 describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () => {
