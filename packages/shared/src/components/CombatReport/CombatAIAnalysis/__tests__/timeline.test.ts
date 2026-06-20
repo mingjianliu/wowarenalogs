@@ -410,6 +410,51 @@ describe('buildMatchTimeline — [DEATH] events', () => {
     expect(result).toContain('(Unused: Lay on Hands)');
   });
 
+  it('F145/C3: drops a non-whitelist defensive when the player was CC-locked through the lethal window', () => {
+    const teammate = { ...makeOwner('Simplesauce'), damageIn: [], auraEvents: [] } as any;
+    const loh: IMajorCooldownInfo = {
+      spellId: '633',
+      spellName: 'Lay on Hands',
+      tag: 'Defensive',
+      cooldownSeconds: 600,
+      maxChargesDetected: 1,
+      casts: [],
+      availableWindows: [{ fromSeconds: 0, toSeconds: 600, durationSeconds: 600 }],
+      neverUsed: true,
+    };
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        friends: [makeOwner('Feramonk'), teammate],
+        friendlyDeaths: [{ spec: 'Unholy Death Knight', name: 'Simplesauce', atSeconds: 118 }],
+        teammateCDs: [{ player: teammate, spec: 'Unholy Death Knight', cds: [loh] }],
+        // CC covers [113, 117.9] of the [113,118] window — free only 0.1s, and the CC has
+        // ended by the exact death tick (118), which the OLD death-instant check missed.
+        ccTrinketSummaries: [
+          {
+            ...makeEmptyCCTrinketSummary('Simplesauce'),
+            ccInstances: [
+              {
+                atSeconds: 113,
+                durationSeconds: 4.9,
+                spellId: '107570',
+                spellName: 'Storm Bolt',
+                sourceName: 'EnemyPlayer',
+                sourceSpec: 'Arms Warrior',
+                damageTakenDuring: 50_000,
+                trinketState: 'available_unused',
+                drInfo: null,
+                distanceYards: null,
+                losBlocked: null,
+              },
+            ],
+          } as any,
+        ],
+      }),
+    );
+    expect(result).toContain('Simplesauce');
+    expect(result).not.toContain('(Unused: Lay on Hands)');
+  });
+
   it('includes HP trajectory with fine sampling when advanced data is present', () => {
     const matchStartMs = 1_000_000;
     const deathAtSeconds = 118;

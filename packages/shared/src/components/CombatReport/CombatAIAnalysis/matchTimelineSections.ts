@@ -13,7 +13,7 @@ import {
   specToString,
   USABLE_WHILE_CC_SPELL_IDS,
 } from '../../../utils/cooldowns';
-import { wasInHardCC } from '../../../utils/deathOutcomeAnalysis';
+import { wasLockedOutThroughWindow } from '../../../utils/deathOutcomeAnalysis';
 import { getHpPercentAtTime } from '../../../utils/killWindowTargetSelection';
 import { benchmarks } from '../../../utils/specBaselines';
 import { DMG_SPIKE_THRESHOLD, getTopDamageSourcesInWindow } from './timelineHelpers';
@@ -440,15 +440,15 @@ export function emitFriendlyDeathEntries<S>(params: {
         ...teammateCDs.filter((tc) => tc.player.name === death.name).flatMap((tc) => tc.cds),
       ];
 
-      const isTeammateInCC = summary ? wasInHardCC(summary, death.atSeconds) : false;
+      const isLockedOut = summary ? wasLockedOutThroughWindow(summary, death.atSeconds) : false;
 
       const readyAtDeath = allPlayerCDs
         .filter((cd) => cd.tag === 'Defensive' || cd.tag === 'External')
         .filter((cd) =>
           cd.availableWindows.some((w) => death.atSeconds >= w.fromSeconds && death.atSeconds <= w.toSeconds),
         )
-        // B12: only flag if it was actually usable (not in CC, or is a CC-breaking defensive)
-        .filter((cd) => !isTeammateInCC || USABLE_WHILE_CC_SPELL_IDS.has(cd.spellId))
+        // B12/C3: only flag if it was actually usable (not locked out through the lethal window, or is a CC-breaking defensive)
+        .filter((cd) => !isLockedOut || USABLE_WHILE_CC_SPELL_IDS.has(cd.spellId))
         .map((cd) => cd.spellName);
 
       if (readyAtDeath.length > 0) {
