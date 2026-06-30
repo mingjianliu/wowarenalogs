@@ -128,6 +128,7 @@ git commit -m "feat(vector): metric registry — single source of labels+valence
 **Files:**
 - Modify: `packages/shared/src/utils/healerMetrics.ts:24-49` (`computeCDResponseLatency`), `:51-58` (`IHealerMetrics`), `:101-102` (sentinel substitution)
 - Modify: `packages/shared/src/utils/vectorEmbedding.ts:42,67-75` (drop sentinel handling; treat `null` latency as neutral 0)
+- Modify (null-guard consumers, keep typecheck green): `packages/shared/src/utils/matchEmbeddingRecord.ts:76`, `packages/shared/src/components/CombatReport/CombatAIAnalysis/comparativePrompt.ts:9,20`, `packages/shared/src/components/CombatReport/CombatAIAnalysis/proComparisonData.ts`
 - Test: `packages/shared/src/utils/__tests__/healerMetrics.latency.test.ts`
 
 **Interfaces:**
@@ -212,7 +213,7 @@ Then update `computeHealerMetrics` (healerMetrics.ts:101-102) to:
 
 Update `IHealerMetrics` (healerMetrics.ts:51-58): change `reactionLatency: number;` to `reactionLatency: number | null;` and add `burstResponseCoverage: { answered: number; windows: number };`. Add both to the returned object (healerMetrics.ts:125-133).
 
-- [ ] **Step 4: Keep `vectorEmbedding` compiling (null-safe, drop sentinel)**
+- [ ] **Step 4: Keep all latency consumers compiling (null-safe, drop sentinel)**
 
 In `vectorEmbedding.ts`: delete `const REACTION_LATENCY_SENTINEL = 1.5;` (line 42). In `generateMatchVector` (lines 67-75) change the latency z-score branch to treat `null` as neutral:
 
@@ -223,6 +224,12 @@ In `vectorEmbedding.ts`: delete `const REACTION_LATENCY_SENTINEL = 1.5;` (line 4
 ```
 
 In `buildReferenceModel` (line ~180) replace `if (data.reactionLatency !== REACTION_LATENCY_SENTINEL)` with `if (data.reactionLatency !== null)`. In `parseMatchEmbeddingData` (line 142) change the latency default from `1.5` to `null` and widen the `MatchEmbeddingData.reactionLatency` type to `number | null`.
+
+Also keep the remaining latency consumers compiling against `number | null` (each is fully rewritten later — this is the minimal green-build guard so every task leaves the branch compiling):
+
+- `matchEmbeddingRecord.ts`: widen `BuiltEmbeddingRecord.reactionLatency` (:76) to `number | null` (the `metrics.reactionLatency` assignment at :107 then type-checks).
+- `comparativePrompt.ts`: widen `ComparativeAnalysisData.userMetrics.reactionLatency` (:9) and the neighbor `metrics.reactionLatency` (:20) to `number | null`; in `buildComparativePrompt` render the latency line as `data.userMetrics.reactionLatency === null ? 'n/a' : data.userMetrics.reactionLatency.toFixed(2) + 's'`, and compute `avgProLatency` over non-null neighbor latencies only (filter before sum/count).
+- `proComparisonData.ts`: in `computeProAverages`, `buildMetricRows`, and `deriveArchetype`, coerce a null `reactionLatency` read with `?? NaN` and skip `NaN` from averages/rows so the file compiles and renders nothing fake.
 
 - [ ] **Step 5: Run tests + typecheck**
 
@@ -258,11 +265,12 @@ git commit -m "fix(vector): rebuild reactionLatency as coverage+honest-latency, 
 **Files:**
 - Modify: `packages/shared/src/data/spells.json` (add missing CC spell ids)
 - Modify: `packages/tools/src/buildHealerPlaystyleCorpus.ts` (canonicalize crisis-event spell names; re-download from GCS), `packages/tools/src/processAndUploadVectors.ts:72-91` (emit provenance string instead of bare rating)
-- Test: `packages/shared/src/utils/__tests__/ccCoverage.test.ts`, `packages/shared/src/utils/__tests__/canonicalizeSpellName.test.ts`
-- Create: `packages/shared/src/utils/canonicalizeSpellName.ts`
+- Test: `packages/shared/src/utils/__tests__/ccCoverage.test.ts`, `packages/shared/src/utils/__tests__/englishSpellName.test.ts`
+- Create: `packages/shared/src/utils/englishSpellName.ts`
+- Modify: `packages/shared/src/utils/matchEmbeddingRecord.ts` (`extractRotations` — emit English names by spellId)
 
 **Interfaces:**
-- Produces: `function canonicalizeSpellName(raw: string): string` — maps a localized spell name to its English form via `data/spellNames.json`; returns `raw` unchanged if unknown.
+- Produces: `function englishSpellName(spellId: string | number, fallback?: string): string` — maps a spellId to its English name via `data/spellNames.json`; returns `fallback` when the id is unknown. Canonicalization happens by **spellId at extraction time** (`extractRotations`), not by localized-string lookup (no localized→English source exists).
 - Consumes: `ccSpellIds` (Set<string>) from `data/spellTags`.
 
 - [ ] **Step 1: Write the failing CC-coverage test**
@@ -285,36 +293,33 @@ Run: `npx tsdx test ccCoverage` → Expected: FAIL (id absent).
 
 Add to `spells.json`: `"192058": { "type": "cc" }` (and any other ids confirmed absent in Step 1 from the meta-eval list, e.g. Capacitor Totem). Re-run `npx tsdx test ccCoverage` → PASS.
 
-- [ ] **Step 4: Write the failing canonicalization test**
+- [ ] **Step 4: Write the failing spellId→English test**
+
+First confirm a known id (data lookup): `node -e 'console.log(require("./packages/shared/src/data/spellNames.json")["2061"])'` — expect `Flash Heal`. Then:
 
 ```ts
-// canonicalizeSpellName.test.ts
-import { canonicalizeSpellName } from '../canonicalizeSpellName';
-test('maps localized names to English', () => {
-  expect(canonicalizeSpellName('Réversion')).toBe('Rewind');
-  expect(canonicalizeSpellName('祈福')).toBe('Benediction');
+// englishSpellName.test.ts
+import { englishSpellName } from '../englishSpellName';
+test('maps a spellId to its English name', () => {
+  expect(englishSpellName('2061')).toBe('Flash Heal'); // id confirmed in Step 4
 });
-test('passes through unknown names unchanged', () => {
-  expect(canonicalizeSpellName('Power Word: Shield')).toBe('Power Word: Shield');
+test('falls back to the provided name when the id is unknown', () => {
+  expect(englishSpellName('999999999', 'Réversion')).toBe('Réversion');
 });
 ```
 
-- [ ] **Step 5: Implement `canonicalizeSpellName`**
+- [ ] **Step 5: Implement `englishSpellName` and canonicalize at extraction**
 
 ```ts
-// canonicalizeSpellName.ts
+// englishSpellName.ts
 import spellNames from '../data/spellNames.json';
-// Build a reverse map: localized/English label -> canonical English name, once.
-const byId: Record<string, string> = spellNames as Record<string, string>; // { spellId: "English Name" }
-const localizedToEnglish = new Map<string, string>();
-// NOTE step: confirm spellNames.json shape first (`node -e 'console.log(Object.entries(require("./packages/shared/src/data/spellNames.json"))[0])'`).
-// If a localized->id map is unavailable, canonicalize at extraction time by spellId instead of by string.
-export function canonicalizeSpellName(raw: string): string {
-  return localizedToEnglish.get(raw) ?? raw;
+const names = spellNames as Record<string, string>;
+export function englishSpellName(spellId: string | number, fallback = ''): string {
+  return names[String(spellId)] ?? fallback;
 }
 ```
 
-If `spellNames.json` is id→English only (likely), the correct fix is upstream: in `buildHealerPlaystyleCorpus`/`extractRotations` keep the **spellId** alongside each cast and emit `spellNames[id]` as the name. Adjust the task accordingly — the test above still asserts the end result (English names out).
+Then fix B121 at the source in `matchEmbeddingRecord.ts` `extractRotations`: the `casts` objects already carry `spellId` and `name`. Replace each use of the localized `c.name` in the `coreSequences` chain string and in the `crisisEvents` response list with `englishSpellName(c.spellId, c.name)`, so the stored crisis strings are English regardless of the pro's client locale. Re-run `npx tsdx test englishSpellName` → PASS, then `npm run typecheck`.
 
 - [ ] **Step 6: Provenance string in the index**
 
@@ -332,9 +337,10 @@ console.log("records with non-English crisis names:",bad.length,"(target 0)");'
 - [ ] **Step 8: Commit**
 
 ```bash
-git add packages/shared/src/data/spells.json packages/shared/src/utils/canonicalizeSpellName.ts \
+git add packages/shared/src/data/spells.json packages/shared/src/utils/englishSpellName.ts \
         packages/shared/src/utils/__tests__/ccCoverage.test.ts \
-        packages/shared/src/utils/__tests__/canonicalizeSpellName.test.ts \
+        packages/shared/src/utils/__tests__/englishSpellName.test.ts \
+        packages/shared/src/utils/matchEmbeddingRecord.ts \
         packages/tools/src/buildHealerPlaystyleCorpus.ts packages/tools/src/processAndUploadVectors.ts
 git commit -m "fix(vector): ccDensity CC coverage + locale canonicalization + provenance (B121/B122/F157)"
 ```
@@ -507,6 +513,15 @@ test('passes a draft that only cites allowed numbers and spells', () => {
   const r = checkClaims('9 of 14 comparable pros opened with Penance.', allow);
   expect(r.ok).toBe(true);
 });
+test('flags a known spell the server did not provide', () => {
+  // Apotheosis is a real spell in spellNames.json but not in the allowlist
+  const r = checkClaims('In a similar spot pros used Apotheosis.', allow);
+  expect(r.ok).toBe(false);
+  expect(r.violations.join(' ')).toContain('Apotheosis');
+});
+test('allows an allowlisted spell', () => {
+  expect(checkClaims('They cast Penance.', allow).ok).toBe(true);
+});
 ```
 
 - [ ] **Step 2: Run to verify it fails**
@@ -517,23 +532,43 @@ Run: `npx tsdx test claimChecker` → Expected: FAIL — module not found.
 
 ```ts
 // claimChecker.ts
-export function checkClaims(draft: string, allow: { spells: string[]; numbers: number[] }): { ok: boolean; violations: string[] } {
+import spellNames from '../../../data/spellNames.json';
+
+// Known English spell names — used so we only flag tokens we KNOW are spells (no false
+// positives on ordinary prose). Case-sensitive whole-word match: spell names are Capitalized,
+// coaching prose is lowercase, so "fade the totem" never matches the spell "Fade".
+const KNOWN_SPELLS: string[] = Array.from(new Set(Object.values(spellNames as Record<string, string>))).filter(Boolean);
+
+export function checkClaims(
+  draft: string,
+  allow: { spells: string[]; numbers: number[] },
+): { ok: boolean; violations: string[] } {
   const violations: string[] = [];
+
+  // 1. Numbers: every number/percentage in the draft must be one the server computed.
   const allowedNums = new Set(allow.numbers.map((n) => Math.round(n * 100) / 100));
-  const nums = draft.match(/\d+(?:\.\d+)?%?/g) ?? [];
-  for (const tok of nums) {
+  for (const tok of draft.match(/\d+(?:\.\d+)?%?/g) ?? []) {
     const n = parseFloat(tok.replace('%', ''));
     if (!allowedNums.has(Math.round(n * 100) / 100)) violations.push(`uncited number: ${tok}`);
   }
+
+  // 2. Spells: a KNOWN spell named in the draft that the server did not provide is a fabrication.
+  const allowed = new Set(allow.spells);
+  for (const spell of KNOWN_SPELLS) {
+    if (allowed.has(spell)) continue;
+    const re = new RegExp(`\\b${spell.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`);
+    if (re.test(draft)) violations.push(`uncited spell: ${spell}`);
+  }
+
   return { ok: violations.length === 0, violations };
 }
 ```
 
-(Spell-allowlist enforcement is added the same way against `allow.spells` once the renderer of Task 6 fixes its claim vocabulary; keep the number check as the gating MVP.)
+If a common-word spell name produces a false positive in practice (e.g. "Echo" at a sentence start), add it to a small stopword exclusion — do not weaken the case-sensitive whole-word match.
 
 - [ ] **Step 4: Run to verify it passes**
 
-Run: `npx tsdx test claimChecker` → Expected: PASS (2 tests).
+Run: `npx tsdx test claimChecker` → Expected: PASS (4 tests).
 
 - [ ] **Step 5: Real-result verification + Step 6 Commit**
 
