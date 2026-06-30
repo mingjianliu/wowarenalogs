@@ -73,9 +73,11 @@ export const PRO_METRIC_MODEL: ProMetricSpec[] = [
 
 export type ProMetrics = ComparativeAnalysisData['userMetrics'];
 
-/** Average each metric across the nearest-neighbour cohort. */
+/** Average each metric across the nearest-neighbour cohort. `reactionLatency` may be null per
+ * neighbor (no answered burst window); those entries are coerced to NaN and skipped so they don't
+ * drag a fake zero into the average. */
 export function computeProAverages(neighbors: ComparativeAnalysisData['nearestNeighbors']): ProMetrics {
-  const empty: ProMetrics = {
+  const empty: Record<MetricKey, number> = {
     offensiveIndex: 0,
     ccDensity: 0,
     reactionLatency: 0,
@@ -84,15 +86,19 @@ export function computeProAverages(neighbors: ComparativeAnalysisData['nearestNe
     ccAvoidanceRate: 0,
   };
   const n = neighbors.length;
-  if (n === 0) return empty;
-  const sums = neighbors.reduce(
-    (acc, nb) => {
-      (Object.keys(acc) as MetricKey[]).forEach((k) => (acc[k] += nb.metrics[k]));
-      return acc;
-    },
-    { ...empty },
-  );
-  (Object.keys(sums) as MetricKey[]).forEach((k) => (sums[k] /= n));
+  if (n === 0) return { ...empty };
+  const sums = { ...empty };
+  const counts: Record<MetricKey, number> = { ...empty };
+  neighbors.forEach((nb) => {
+    (Object.keys(sums) as MetricKey[]).forEach((k) => {
+      const v = k === 'reactionLatency' ? (nb.metrics.reactionLatency ?? NaN) : nb.metrics[k];
+      if (!Number.isNaN(v)) {
+        sums[k] += v as number;
+        counts[k] += 1;
+      }
+    });
+  });
+  (Object.keys(sums) as MetricKey[]).forEach((k) => (sums[k] = counts[k] > 0 ? sums[k] / counts[k] : 0));
   return sums;
 }
 
@@ -117,8 +123,10 @@ export function buildMetricRows(data: ComparativeAnalysisData, opts: BuildMetric
   const { dropEmpty = true } = opts;
   const pro = computeProAverages(data.nearestNeighbors);
   return PRO_METRIC_MODEL.map((spec) => {
-    const you = data.userMetrics[spec.key];
-    const proVal = pro[spec.key];
+    // reactionLatency may be null (no answered burst window) — coerce to NaN so the row gets
+    // dropped below instead of rendering a fake 0.
+    const you = data.userMetrics[spec.key] ?? NaN;
+    const proVal = pro[spec.key] ?? NaN;
     const behind = spec.dir === 'higher' ? you < proVal : you > proVal;
     return {
       spec,
@@ -128,7 +136,10 @@ export function buildMetricRows(data: ComparativeAnalysisData, opts: BuildMetric
       delta: you - proVal,
       gap: Math.min(1, Math.abs(you - proVal) / spec.max),
     };
-  }).filter((row) => (dropEmpty ? !(row.you === 0 && row.pro === 0) : true));
+  }).filter((row) => {
+    if (Number.isNaN(row.you) || Number.isNaN(row.pro)) return false;
+    return dropEmpty ? !(row.you === 0 && row.pro === 0) : true;
+  });
 }
 
 export function formatMetric(spec: ProMetricSpec, value: number): string {
@@ -181,7 +192,10 @@ export function deriveArchetype(data: ComparativeAnalysisData): ProArchetype {
   const pro = computeProAverages(data.nearestNeighbors);
   const u = data.userMetrics;
   const passive = u.offensiveIndex < pro.offensiveIndex && u.ccDensity < pro.ccDensity;
-  const reactive = u.reactionLatency > pro.reactionLatency || u.defensiveOverlapRatio > pro.defensiveOverlapRatio;
+  // reactionLatency may be null (no answered burst window) — coerce to NaN so the comparison is a
+  // safe `false` rather than a fake verdict built on an unmeasured latency.
+  const reactive =
+    (u.reactionLatency ?? NaN) > (pro.reactionLatency ?? NaN) || u.defensiveOverlapRatio > pro.defensiveOverlapRatio;
   const clean = u.effectiveCastRatio >= pro.effectiveCastRatio;
 
   let label: string;

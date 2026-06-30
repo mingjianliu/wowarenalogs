@@ -51,7 +51,8 @@ describe('computeHealerMetrics', () => {
 
     expect(metrics.offensiveIndex).toBeCloseTo(0.5); // 50000 / 100000
     expect(metrics.ccDensity).toBeCloseTo(1.0); // 1 cast / 1 min
-    expect(metrics.reactionLatency).toBe(1.5); // Fallback since no reactive defensive timings can be analyzed without full logs
+    expect(metrics.reactionLatency).toBeNull(); // No enemy burst windows in this minimal fixture -> honest null, never a 1.5 sentinel
+    expect(metrics.burstResponseCoverage).toEqual({ answered: 0, windows: 0 });
     expect(metrics.defensiveOverlapRatio).toBeDefined();
     expect(metrics.effectiveCastRatio).toBeDefined();
     expect(metrics.ccAvoidanceRate).toBeDefined();

@@ -6,7 +6,7 @@ export interface MatchEmbeddingData {
   totalSequences: number;
   offensiveIndex: number;
   ccDensity: number;
-  reactionLatency: number;
+  reactionLatency: number | null;
   defensiveOverlapRatio: number;
   effectiveCastRatio: number;
   ccAvoidanceRate: number;
@@ -39,7 +39,6 @@ export interface IReferenceModel {
   dims: { talent: number; rotation: number; behavior: number; total: number };
 }
 
-const REACTION_LATENCY_SENTINEL = 1.5;
 const BEHAVIOR_DIMS = 3;
 const DEFAULT_BLOCK_WEIGHTS: IBlockWeights = { talent: 1 / 3, rotation: 1 / 3, behavior: 1 / 3 };
 
@@ -62,13 +61,13 @@ export function generateMatchVector(data: MatchEmbeddingData, model: IReferenceM
     rotationBlock[idx] = computeTfIdf(freq, data.totalSequences, model.totalDocs, model.sequenceDocFrequency[seq] || 0);
   }
 
-  // Behavior block — 3 z-scored scalars. Absent metrics → neutral zeros; latency sentinel → 0.
+  // Behavior block — 3 z-scored scalars. Absent metrics → neutral zeros; unanswered (null) latency → 0.
   const np = model.behaviorNormParams;
   const behaviorBlock = data.metricsAvailable
     ? [
         zScore(data.offensiveIndex, np.offensiveIndex.mean, np.offensiveIndex.std),
         zScore(data.ccDensity, np.ccDensity.mean, np.ccDensity.std),
-        data.reactionLatency === REACTION_LATENCY_SENTINEL
+        data.reactionLatency === null
           ? 0
           : zScore(data.reactionLatency, np.reactionLatency.mean, np.reactionLatency.std),
       ]
@@ -139,7 +138,7 @@ export function parseMatchEmbeddingData(raw: RawMatchRecord): MatchEmbeddingData
     totalSequences,
     offensiveIndex: num(raw?.offensiveIndex, 0.5),
     ccDensity: num(raw?.ccDensity, 1.0),
-    reactionLatency: num(raw?.reactionLatency, 1.5),
+    reactionLatency: typeof raw?.reactionLatency === 'number' ? raw.reactionLatency : null,
     defensiveOverlapRatio: num(raw?.defensiveOverlapRatio, 0),
     effectiveCastRatio: num(raw?.effectiveCastRatio, 1.0),
     ccAvoidanceRate: num(raw?.ccAvoidanceRate, 0),
@@ -177,7 +176,7 @@ export function buildReferenceModel(
     if (data.metricsAvailable) {
       offensiveValues.push(data.offensiveIndex);
       ccValues.push(data.ccDensity);
-      if (data.reactionLatency !== REACTION_LATENCY_SENTINEL) latencyValues.push(data.reactionLatency);
+      if (data.reactionLatency !== null) latencyValues.push(data.reactionLatency);
     }
   }
 

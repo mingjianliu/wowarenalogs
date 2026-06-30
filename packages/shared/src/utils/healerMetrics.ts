@@ -21,37 +21,40 @@ function median(values: number[]): number {
   return (sorted[half - 1] + sorted[half]) / 2.0;
 }
 
-function computeCDResponseLatency(
+export function computeCDResponseLatency(
   annotatedCooldowns: IMajorCooldownInfo[],
   burstWindows: Array<{ fromSeconds: number; toSeconds: number }>,
   matchStartMs: number,
-): number | null {
-  const latenciesMs: number[] = [];
-
-  for (const cd of annotatedCooldowns) {
-    for (const cast of cd.casts) {
-      if (cast.timingLabel !== 'Optimal' && cast.timingLabel !== 'Reactive') continue;
-      const castMs = cast.timeSeconds * 1000 + matchStartMs;
-      for (const w of burstWindows) {
-        const windowStartMs = w.fromSeconds * 1000 + matchStartMs;
-        const windowEndMs = w.toSeconds * 1000 + matchStartMs;
+): { latencyMsMedian: number | null; answered: number; windows: number } {
+  const answeredLatencies: Array<number | null> = burstWindows.map((w) => {
+    const windowStartMs = w.fromSeconds * 1000 + matchStartMs;
+    const windowEndMs = w.toSeconds * 1000 + matchStartMs;
+    let best: number | null = null;
+    for (const cd of annotatedCooldowns) {
+      for (const cast of cd.casts) {
+        if (cast.timingLabel !== 'Optimal' && cast.timingLabel !== 'Reactive') continue;
+        const castMs = cast.timeSeconds * 1000 + matchStartMs;
         if (castMs >= windowStartMs && castMs <= windowEndMs + 8000) {
           const latency = castMs - windowStartMs;
-          if (latency >= 0) latenciesMs.push(latency);
-          break;
+          if (latency >= 0 && (best === null || latency < best)) best = latency;
         }
       }
     }
-  }
-
-  if (latenciesMs.length === 0) return null;
-  return median(latenciesMs);
+    return best;
+  });
+  const hit = answeredLatencies.filter((x): x is number => x !== null);
+  return {
+    latencyMsMedian: hit.length ? median(hit) : null,
+    answered: hit.length,
+    windows: burstWindows.length,
+  };
 }
 
 export interface IHealerMetrics {
   offensiveIndex: number;
   ccDensity: number;
-  reactionLatency: number;
+  reactionLatency: number | null;
+  burstResponseCoverage: { answered: number; windows: number };
   defensiveOverlapRatio: number;
   effectiveCastRatio: number;
   ccAvoidanceRate: number;
@@ -98,8 +101,9 @@ export function computeHealerMetrics(combat: IArenaMatch | IShuffleRound, player
   const cooldowns = extractMajorCooldowns(healerUnit, combat);
   const annotated = annotateDefensiveTimings(cooldowns, healerUnit, combat, enemyCDTimeline);
 
-  const latencyMs = computeCDResponseLatency(annotated, enemyCDTimeline.alignedBurstWindows, combat.startTime);
-  const reactionLatency = latencyMs !== null ? latencyMs / 1000 : 1.5;
+  const lat = computeCDResponseLatency(annotated, enemyCDTimeline.alignedBurstWindows, combat.startTime);
+  const reactionLatency = lat.latencyMsMedian !== null ? lat.latencyMsMedian / 1000 : null;
+  const burstResponseCoverage = { answered: lat.answered, windows: lat.windows };
 
   // 4. defensiveOverlapRatio
   const overlaps = detectOverlappedDefensives(friends, combat);
@@ -126,6 +130,7 @@ export function computeHealerMetrics(combat: IArenaMatch | IShuffleRound, player
     offensiveIndex,
     ccDensity,
     reactionLatency,
+    burstResponseCoverage,
     defensiveOverlapRatio,
     effectiveCastRatio,
     ccAvoidanceRate,

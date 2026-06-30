@@ -74,7 +74,7 @@ export interface BuiltEmbeddingRecord extends RawMatchRecord {
   pythonResult: { nodes_info: Record<string, unknown> };
   offensiveIndex: number;
   ccDensity: number;
-  reactionLatency: number;
+  reactionLatency: number | null;
   defensiveOverlapRatio: number;
   effectiveCastRatio: number;
   ccAvoidanceRate: number;

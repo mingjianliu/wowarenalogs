@@ -6,7 +6,7 @@ export interface ComparativeAnalysisData {
   userMetrics: {
     offensiveIndex: number;
     ccDensity: number;
-    reactionLatency: number;
+    reactionLatency: number | null;
     defensiveOverlapRatio: number;
     effectiveCastRatio: number;
     ccAvoidanceRate: number;
@@ -17,7 +17,7 @@ export interface ComparativeAnalysisData {
     metrics: {
       offensiveIndex: number;
       ccDensity: number;
-      reactionLatency: number;
+      reactionLatency: number | null;
       defensiveOverlapRatio: number;
       effectiveCastRatio: number;
       ccAvoidanceRate: number;
@@ -32,17 +32,19 @@ export function buildComparativePrompt(data: ComparativeAnalysisData): string {
     (acc, n) => ({
       off: acc.off + n.metrics.offensiveIndex,
       cc: acc.cc + n.metrics.ccDensity,
-      lat: acc.lat + n.metrics.reactionLatency,
       defOverlap: acc.defOverlap + n.metrics.defensiveOverlapRatio,
       effCast: acc.effCast + n.metrics.effectiveCastRatio,
       ccAvoid: acc.ccAvoid + n.metrics.ccAvoidanceRate,
     }),
-    { off: 0, cc: 0, lat: 0, defOverlap: 0, effCast: 0, ccAvoid: 0 },
+    { off: 0, cc: 0, defOverlap: 0, effCast: 0, ccAvoid: 0 },
   );
 
   const avgProOffensive = count > 0 ? sums.off / count : 0;
   const avgProCc = count > 0 ? sums.cc / count : 0;
-  const avgProLatency = count > 0 ? sums.lat / count : 0;
+  const proLatencies = data.nearestNeighbors
+    .map((n) => n.metrics.reactionLatency)
+    .filter((x): x is number => x !== null);
+  const avgProLatency = proLatencies.length > 0 ? proLatencies.reduce((a, b) => a + b, 0) / proLatencies.length : 0;
   const avgProDefOverlap = count > 0 ? sums.defOverlap / count : 0;
   const avgProEffCast = count > 0 ? sums.effCast / count : 0;
   const avgProCcAvoid = count > 0 ? sums.ccAvoid / count : 0;
@@ -55,7 +57,7 @@ Instead of general advice, provide a Differential Analysis by comparing the user
 ### Global Metric Gaps:
 - Offensive Index (Damage:Heal ratio): User [${data.userMetrics.offensiveIndex.toFixed(2)}] vs Pro Average [${avgProOffensive.toFixed(2)}]
 - CC Density (CCs per min): User [${data.userMetrics.ccDensity.toFixed(2)}] vs Pro Average [${avgProCc.toFixed(2)}]
-- Crisis Reaction Latency: User [${data.userMetrics.reactionLatency.toFixed(2)}s] vs Pro Average [${avgProLatency.toFixed(2)}s]
+- Crisis Reaction Latency: User [${data.userMetrics.reactionLatency === null ? 'n/a' : data.userMetrics.reactionLatency.toFixed(2) + 's'}] vs Pro Average [${avgProLatency.toFixed(2)}s]
 - Defensive Overlap Ratio (High = panic trading defensives with teammates): User [${data.userMetrics.defensiveOverlapRatio.toFixed(2)}] vs Pro Average [${avgProDefOverlap.toFixed(2)}]
 - Effective Cast Ratio (Low = getting interrupted or poor positioning): User [${data.userMetrics.effectiveCastRatio.toFixed(2)}] vs Pro Average [${avgProEffCast.toFixed(2)}]
 - CC Avoidance Rate (High = proactive use of Fade/Grounding/LoS): User [${data.userMetrics.ccAvoidanceRate.toFixed(2)}] vs Pro Average [${avgProCcAvoid.toFixed(2)}]

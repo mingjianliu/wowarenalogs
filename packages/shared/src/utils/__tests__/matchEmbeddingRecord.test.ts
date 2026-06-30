@@ -53,6 +53,7 @@ describe('buildMatchEmbeddingRecord', () => {
     expect(Object.keys(rec.pythonResult.nodes_info)).toEqual(['111', '222']); // id1 values
     expect(typeof rec.offensiveIndex).toBe('number');
     expect(typeof rec.ccDensity).toBe('number');
-    expect(typeof rec.reactionLatency).toBe('number');
+    // No enemies in this single-unit fixture -> no burst windows -> honest null (never the old 1.5 sentinel).
+    expect(rec.reactionLatency).toBeNull();
   });
 });
