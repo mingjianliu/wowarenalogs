@@ -19,7 +19,7 @@ export interface ReferenceVectorRecord {
   metrics: {
     offensiveIndex: number;
     ccDensity: number;
-    reactionLatency: number;
+    reactionLatency: number | null;
     defensiveOverlapRatio: number;
     effectiveCastRatio: number;
     ccAvoidanceRate: number;

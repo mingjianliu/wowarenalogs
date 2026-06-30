@@ -21,7 +21,7 @@ const recordB = {
   pythonResult: { nodes_info: { '100': {}, '300': {} } },
   offensiveIndex: 0.6,
   ccDensity: 0.8,
-  reactionLatency: 1.5, // sentinel — must be excluded from latency norm stats
+  reactionLatency: 1.5, // a genuine measured latency — no sentinel handling anymore
   defensiveOverlapRatio: 0,
   effectiveCastRatio: 1.0,
   ccAvoidanceRate: 0,
@@ -58,9 +58,9 @@ describe('buildReferenceModel', () => {
     expect(model.dims.total).toBe(8);
   });
 
-  it('excludes the reactionLatency sentinel (1.5) from norm stats', () => {
-    expect(model.behaviorNormParams.reactionLatency.mean).toBeCloseTo(2.0);
-    expect(model.behaviorNormParams.reactionLatency.std).toBeCloseTo(0);
+  it('includes every real (non-null) reactionLatency value in norm stats — no sentinel exclusion', () => {
+    expect(model.behaviorNormParams.reactionLatency.mean).toBeCloseTo(1.75);
+    expect(model.behaviorNormParams.reactionLatency.std).toBeCloseTo(0.25);
   });
 
   it('defaults to equal block weights', () => {
@@ -91,8 +91,9 @@ describe('generateMatchVector', () => {
     expect(behavior).toEqual([0, 0, 0]);
   });
 
-  it('zeroes the latency behavior dim when reactionLatency is the sentinel', () => {
-    const vec = generateMatchVector(parseMatchEmbeddingData(recordB), model);
+  it('zeroes only the latency behavior dim when reactionLatency is null (honest "no data", not a sentinel)', () => {
+    const data = { ...parseMatchEmbeddingData(recordA), reactionLatency: null };
+    const vec = generateMatchVector(data, model);
     const latencyDim = vec[model.dims.talent + model.dims.rotation + 2];
     expect(latencyDim).toBe(0);
   });
