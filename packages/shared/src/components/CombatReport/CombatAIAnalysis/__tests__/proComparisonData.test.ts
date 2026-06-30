@@ -57,6 +57,45 @@ describe('computeProAverages', () => {
   });
 });
 
+describe('computeProAverages — whole-cohort null latency (no fabricated 0)', () => {
+  // Every neighbour answered no burst window at all (reactionLatency: null), but the cohort is
+  // non-empty (n > 0) and every other metric is a normal number.
+  const neighborsAllNullLatency: ComparativeAnalysisData['nearestNeighbors'] = [
+    { distance: 0.1, metrics: { ...M, reactionLatency: null }, crisisEvents: [] },
+    { distance: 0.2, metrics: { ...M, reactionLatency: null }, crisisEvents: [] },
+  ];
+
+  it('returns null (not a fabricated 0) for reactionLatency when every neighbour is null', () => {
+    const avg = computeProAverages(neighborsAllNullLatency);
+    expect(avg.reactionLatency).toBeNull();
+    // other metrics still average normally — only the latency axis is unavailable
+    expect(avg.offensiveIndex).toBeCloseTo(M.offensiveIndex);
+  });
+
+  it('does not render a fabricated reactionLatency row when the cohort latency is unavailable', () => {
+    const rows = buildMetricRows(
+      data({
+        userMetrics: { ...M, reactionLatency: 2 },
+        nearestNeighbors: neighborsAllNullLatency,
+      }),
+    );
+    const latencyRow = rows.find((r) => r.spec.key === 'reactionLatency');
+    expect(latencyRow).toBeUndefined();
+  });
+
+  it('does not flag "reactive" solely because the cohort latency axis is unavailable', () => {
+    const a = deriveArchetype(
+      data({
+        // A real, positive latency on the user's side — with the fabricated-0 bug this would
+        // unconditionally compare `2 > 0` and force `reactive: true`.
+        userMetrics: { ...M, reactionLatency: 2 },
+        nearestNeighbors: neighborsAllNullLatency,
+      }),
+    );
+    expect(a.label.toLowerCase()).not.toContain('reactive');
+  });
+});
+
 describe('buildMetricRows', () => {
   it('flags behind correctly for a higher-is-better metric', () => {
     const rows = buildMetricRows(

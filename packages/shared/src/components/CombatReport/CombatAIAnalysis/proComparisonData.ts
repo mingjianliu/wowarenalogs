@@ -75,7 +75,9 @@ export type ProMetrics = ComparativeAnalysisData['userMetrics'];
 
 /** Average each metric across the nearest-neighbour cohort. `reactionLatency` may be null per
  * neighbor (no answered burst window); those entries are coerced to NaN and skipped so they don't
- * drag a fake zero into the average. */
+ * drag a fake zero into the average. If the *entire* cohort is null for a metric (count stays 0,
+ * even though n > 0), that metric's average is `null` — never a fabricated `0` — so downstream
+ * consumers can tell "measured as zero" apart from "never measured". */
 export function computeProAverages(neighbors: ComparativeAnalysisData['nearestNeighbors']): ProMetrics {
   const empty: Record<MetricKey, number> = {
     offensiveIndex: 0,
@@ -98,8 +100,18 @@ export function computeProAverages(neighbors: ComparativeAnalysisData['nearestNe
       }
     });
   });
-  (Object.keys(sums) as MetricKey[]).forEach((k) => (sums[k] = counts[k] > 0 ? sums[k] / counts[k] : 0));
-  return sums;
+  const result: Record<MetricKey, number | null> = { ...sums };
+  (Object.keys(sums) as MetricKey[]).forEach((k) => {
+    if (counts[k] > 0) {
+      result[k] = sums[k] / counts[k];
+    } else if (k === 'reactionLatency') {
+      // Whole cohort answered no burst window — honestly unavailable, not a fabricated 0.
+      result[k] = null;
+    } else {
+      result[k] = 0;
+    }
+  });
+  return result as ProMetrics;
 }
 
 export interface MetricRow {
