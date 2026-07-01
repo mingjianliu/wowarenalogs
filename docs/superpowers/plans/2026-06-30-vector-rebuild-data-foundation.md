@@ -4,7 +4,7 @@
 
 **Goal:** Make `/api/compare` trustworthy by rebuilding the metric layer and the comparison core so every comparative claim is server-computed over honest, full-cohort data — the low-risk 80% of the vector rebuild (spec §10 PRs 1–5).
 
-**Architecture:** A single `metricRegistry` defines labels/valence once (consumed by prompt + UI). `healerMetrics` stops substituting the `1.5` latency sentinel and instead emits a burst-response *coverage* signal plus an honest latency over answered windows, each metric independently nullable. A new pure `verifiedComparison` core aggregates statistics over the *full* spec+bracket cohort (not 5 neighbors), with per-player diversification and disclosed sample sizes. A deterministic `claimChecker` rejects any model-emitted spell or number not in the verified data. A stats-led renderer narrates that object.
+**Architecture:** A single `metricRegistry` defines labels/valence once (consumed by prompt + UI). `healerMetrics` stops substituting the `1.5` latency sentinel and instead emits a burst-response _coverage_ signal plus an honest latency over answered windows, each metric independently nullable. A new pure `verifiedComparison` core aggregates statistics over the _full_ spec+bracket cohort (not 5 neighbors), with per-player diversification and disclosed sample sizes. A deterministic `claimChecker` rejects any model-emitted spell or number not in the verified data. A stats-led renderer narrates that object.
 
 **Tech Stack:** TypeScript, Jest via `npx tsdx test` (run from `packages/shared`), Next.js API route (`packages/web`), existing parser types from `@wowarenalogs/parser`.
 
@@ -23,10 +23,12 @@
 ### Task 1: Metric registry (single source of valence)
 
 **Files:**
+
 - Create: `packages/shared/src/components/CombatReport/CombatAIAnalysis/metricRegistry.ts`
 - Test: `packages/shared/src/components/CombatReport/CombatAIAnalysis/__tests__/metricRegistry.test.ts`
 
 **Interfaces:**
+
 - Produces:
   - `type MetricKey = 'offensiveIndex' | 'ccDensity' | 'responseLatencySec' | 'burstResponseCoverage' | 'defensiveOverlapRatio' | 'effectiveCastRatio' | 'ccAvoidanceRate'`
   - `interface MetricDef { key: MetricKey; label: string; definition: string; valence: 'higher' | 'lower' | 'context'; unit: string }`
@@ -39,8 +41,13 @@
 import { METRIC_REGISTRY, MetricKey } from '../metricRegistry';
 
 const KEYS: MetricKey[] = [
-  'offensiveIndex', 'ccDensity', 'responseLatencySec', 'burstResponseCoverage',
-  'defensiveOverlapRatio', 'effectiveCastRatio', 'ccAvoidanceRate',
+  'offensiveIndex',
+  'ccDensity',
+  'responseLatencySec',
+  'burstResponseCoverage',
+  'defensiveOverlapRatio',
+  'effectiveCastRatio',
+  'ccAvoidanceRate',
 ];
 
 test('every metric has a non-empty label, definition, and valence', () => {
@@ -57,8 +64,8 @@ test('latency is relabeled, lower=better, and decoupled from teammate-HP framing
   const d = METRIC_REGISTRY.responseLatencySec;
   expect(d.label).toBe('Defensive Response Latency');
   expect(d.valence).toBe('lower');
-  expect(d.definition.toLowerCase()).toContain('enemy');         // measures enemy-burst response
-  expect(d.definition.toLowerCase()).not.toContain('<40%');      // not the teammate-HP crisis block
+  expect(d.definition.toLowerCase()).toContain('enemy'); // measures enemy-burst response
+  expect(d.definition.toLowerCase()).not.toContain('<40%'); // not the teammate-HP crisis block
 });
 
 test('defensiveOverlap carries no baked-in panic verdict', () => {
@@ -76,8 +83,13 @@ Expected: FAIL — `Cannot find module '../metricRegistry'`.
 ```ts
 // metricRegistry.ts
 export type MetricKey =
-  | 'offensiveIndex' | 'ccDensity' | 'responseLatencySec' | 'burstResponseCoverage'
-  | 'defensiveOverlapRatio' | 'effectiveCastRatio' | 'ccAvoidanceRate';
+  | 'offensiveIndex'
+  | 'ccDensity'
+  | 'responseLatencySec'
+  | 'burstResponseCoverage'
+  | 'defensiveOverlapRatio'
+  | 'effectiveCastRatio'
+  | 'ccAvoidanceRate';
 
 export interface MetricDef {
   key: MetricKey;
@@ -88,23 +100,56 @@ export interface MetricDef {
 }
 
 export const METRIC_REGISTRY: Record<MetricKey, MetricDef> = {
-  offensiveIndex: { key: 'offensiveIndex', label: 'Offensive Index',
-    definition: 'Damage output divided by healing+absorb output.', valence: 'higher', unit: '' },
-  ccDensity: { key: 'ccDensity', label: 'CC Density',
-    definition: 'Successful crowd-control casts per minute.', valence: 'higher', unit: '/m' },
-  responseLatencySec: { key: 'responseLatencySec', label: 'Defensive Response Latency',
-    definition: 'Seconds from an enemy burst window to your defensive-CD response (over windows you answered). Lower is faster.',
-    valence: 'lower', unit: 's' },
-  burstResponseCoverage: { key: 'burstResponseCoverage', label: 'Burst Response Coverage',
+  offensiveIndex: {
+    key: 'offensiveIndex',
+    label: 'Offensive Index',
+    definition: 'Damage output divided by healing+absorb output.',
+    valence: 'higher',
+    unit: '',
+  },
+  ccDensity: {
+    key: 'ccDensity',
+    label: 'CC Density',
+    definition: 'Successful crowd-control casts per minute.',
+    valence: 'higher',
+    unit: '/m',
+  },
+  responseLatencySec: {
+    key: 'responseLatencySec',
+    label: 'Defensive Response Latency',
+    definition:
+      'Seconds from an enemy burst window to your defensive-CD response (over windows you answered). Lower is faster.',
+    valence: 'lower',
+    unit: 's',
+  },
+  burstResponseCoverage: {
+    key: 'burstResponseCoverage',
+    label: 'Burst Response Coverage',
     definition: 'Fraction of enemy burst windows you answered with a defensive CD at all.',
-    valence: 'higher', unit: '%' },
-  defensiveOverlapRatio: { key: 'defensiveOverlapRatio', label: 'Defensive Overlap',
+    valence: 'higher',
+    unit: '%',
+  },
+  defensiveOverlapRatio: {
+    key: 'defensiveOverlapRatio',
+    label: 'Defensive Overlap',
     definition: 'Fraction of your major defensives cast while a teammate defensive was already active.',
-    valence: 'context', unit: '' },
-  effectiveCastRatio: { key: 'effectiveCastRatio', label: 'Effective Cast Ratio',
-    definition: 'Successful casts divided by successful casts plus interrupts taken.', valence: 'higher', unit: '' },
-  ccAvoidanceRate: { key: 'ccAvoidanceRate', label: 'CC Avoidance Rate',
-    definition: 'Fraction of incoming CC you avoided (Fade/LoS/Grounding/immunity).', valence: 'higher', unit: '' },
+    valence: 'context',
+    unit: '',
+  },
+  effectiveCastRatio: {
+    key: 'effectiveCastRatio',
+    label: 'Effective Cast Ratio',
+    definition: 'Successful casts divided by successful casts plus interrupts taken.',
+    valence: 'higher',
+    unit: '',
+  },
+  ccAvoidanceRate: {
+    key: 'ccAvoidanceRate',
+    label: 'CC Avoidance Rate',
+    definition: 'Fraction of incoming CC you avoided (Fade/LoS/Grounding/immunity).',
+    valence: 'higher',
+    unit: '',
+  },
 };
 ```
 
@@ -126,12 +171,14 @@ git commit -m "feat(vector): metric registry — single source of labels+valence
 ### Task 2: Rebuild reactionLatency into coverage + honest latency; per-metric null
 
 **Files:**
+
 - Modify: `packages/shared/src/utils/healerMetrics.ts:24-49` (`computeCDResponseLatency`), `:51-58` (`IHealerMetrics`), `:101-102` (sentinel substitution)
 - Modify: `packages/shared/src/utils/vectorEmbedding.ts:42,67-75` (drop sentinel handling; treat `null` latency as neutral 0)
 - Modify (null-guard consumers, keep typecheck green): `packages/shared/src/utils/matchEmbeddingRecord.ts:76`, `packages/shared/src/components/CombatReport/CombatAIAnalysis/comparativePrompt.ts:9,20`, `packages/shared/src/components/CombatReport/CombatAIAnalysis/proComparisonData.ts`
 - Test: `packages/shared/src/utils/__tests__/healerMetrics.latency.test.ts`
 
 **Interfaces:**
+
 - Consumes: nothing new.
 - Produces:
   - `function computeCDResponseLatency(annotatedCooldowns, burstWindows, matchStartMs): { latencyMsMedian: number | null; answered: number; windows: number }`
@@ -144,8 +191,7 @@ git commit -m "feat(vector): metric registry — single source of labels+valence
 import { computeCDResponseLatency } from '../healerMetrics';
 
 const win = (fromSeconds: number, toSeconds: number) => ({ fromSeconds, toSeconds });
-const cd = (timeSeconds: number, timingLabel: string) =>
-  ({ casts: [{ timeSeconds, timingLabel }] } as any);
+const cd = (timeSeconds: number, timingLabel: string) => ({ casts: [{ timeSeconds, timingLabel }] }) as any;
 
 test('returns null latency + coverage 0/N when no defensive answers any window', () => {
   const r = computeCDResponseLatency([], [win(10, 12), win(40, 42)], 0);
@@ -206,9 +252,9 @@ function computeCDResponseLatency(
 Then update `computeHealerMetrics` (healerMetrics.ts:101-102) to:
 
 ```ts
-  const lat = computeCDResponseLatency(annotated, enemyCDTimeline.alignedBurstWindows, combat.startTime);
-  const reactionLatency = lat.latencyMsMedian !== null ? lat.latencyMsMedian / 1000 : null;
-  const burstResponseCoverage = { answered: lat.answered, windows: lat.windows };
+const lat = computeCDResponseLatency(annotated, enemyCDTimeline.alignedBurstWindows, combat.startTime);
+const reactionLatency = lat.latencyMsMedian !== null ? lat.latencyMsMedian / 1000 : null;
+const burstResponseCoverage = { answered: lat.answered, windows: lat.windows };
 ```
 
 Update `IHealerMetrics` (healerMetrics.ts:51-58): change `reactionLatency: number;` to `reactionLatency: number | null;` and add `burstResponseCoverage: { answered: number; windows: number };`. Add both to the returned object (healerMetrics.ts:125-133).
@@ -260,16 +306,18 @@ git commit -m "fix(vector): rebuild reactionLatency as coverage+honest-latency, 
 
 ---
 
-### Task 3: ccDensity coverage + locale canonicalization + provenance at index build
+### Task 3: ccDensity coverage + locale canonicalization + provenance + per-field metrics storage
 
 **Files:**
+
 - Modify: `packages/shared/src/data/spells.json` (add missing CC spell ids)
-- Modify: `packages/tools/src/buildHealerPlaystyleCorpus.ts` (canonicalize crisis-event spell names; re-download from GCS), `packages/tools/src/processAndUploadVectors.ts:72-91` (emit provenance string instead of bare rating)
+- Modify: `packages/tools/src/buildHealerPlaystyleCorpus.ts` (re-download from GCS; fix the `typeof reactionLatency === 'number'` skip-guard — review Minor #4), `packages/tools/src/processAndUploadVectors.ts:72-91` (provenance string + **per-field** metrics storage so a null latency does not null the whole record's metrics — the `metricsAvailable` write-side fix, review Important #2)
 - Test: `packages/shared/src/utils/__tests__/ccCoverage.test.ts`, `packages/shared/src/utils/__tests__/englishSpellName.test.ts`
 - Create: `packages/shared/src/utils/englishSpellName.ts`
 - Modify: `packages/shared/src/utils/matchEmbeddingRecord.ts` (`extractRotations` — emit English names by spellId)
 
 **Interfaces:**
+
 - Produces: `function englishSpellName(spellId: string | number, fallback?: string): string` — maps a spellId to its English name via `data/spellNames.json`; returns `fallback` when the id is unknown. Canonicalization happens by **spellId at extraction time** (`extractRotations`), not by localized-string lookup (no localized→English source exists).
 - Consumes: `ccSpellIds` (Set<string>) from `data/spellTags`.
 
@@ -321,9 +369,30 @@ export function englishSpellName(spellId: string | number, fallback = ''): strin
 
 Then fix B121 at the source in `matchEmbeddingRecord.ts` `extractRotations`: the `casts` objects already carry `spellId` and `name`. Replace each use of the localized `c.name` in the `coreSequences` chain string and in the `crisisEvents` response list with `englishSpellName(c.spellId, c.name)`, so the stored crisis strings are English regardless of the pro's client locale. Re-run `npx tsdx test englishSpellName` → PASS, then `npm run typecheck`.
 
-- [ ] **Step 6: Provenance string in the index**
+- [ ] **Step 6: Provenance string + per-field metrics storage (`metricsAvailable` write-side fix)**
 
-In `processAndUploadVectors.ts:72-91`, replace `rating: matchData.rating ?? null` with `leaderboardSelection: '2300+ leaderboard selection'` (a provenance string; do **not** imply a per-record MMR). Keep `playerName`.
+In `processAndUploadVectors.ts:72-91`:
+
+1. Replace `rating: matchData.rating ?? null` with `leaderboardSelection: '2300+ leaderboard selection'` (a provenance string; do **not** imply a per-record MMR). Keep `playerName`.
+
+2. **Stop nulling the whole metrics block when one metric is null.** Today `metrics: embeddingInput.metricsAvailable ? { ...all six... } : null` discards every valid metric for a record whenever any single metric (now `reactionLatency`, null for ~53% of games after Task 2) is absent — which would drop the majority of records out of Task 4's cohort stats. Replace it with a **per-field** metrics object read from the raw `matchData`, keeping real numbers and storing `null` only where genuinely absent:
+
+```ts
+const numOrNull = (v: unknown): number | null => (typeof v === 'number' ? v : null);
+// ... in the pushed record:
+metrics: {
+  offensiveIndex: numOrNull(matchData.offensiveIndex),
+  ccDensity: numOrNull(matchData.ccDensity),
+  reactionLatency: numOrNull(matchData.reactionLatency),
+  defensiveOverlapRatio: numOrNull(matchData.defensiveOverlapRatio),
+  effectiveCastRatio: numOrNull(matchData.effectiveCastRatio),
+  ccAvoidanceRate: numOrNull(matchData.ccAvoidanceRate),
+},
+```
+
+Leave the `embedding` generation (`parseMatchEmbeddingData`/`generateMatchVector`) unchanged — the embedding is demoted and its neutral-zero handling of null latency is fine. Do not change the `metricsAvailable` flag or the `missingMetricsCount` warning; only the stored `metrics` object.
+
+3. **Fix the corpus re-process churn** (review Minor #4): `buildHealerPlaystyleCorpus.ts`'s skip-if-already-processed guard tests `typeof data.reactionLatency === 'number'`, now always false for a legitimately-null latency → every such record reprocesses forever. Change the guard to test a non-nullable-by-design metric (e.g. `typeof data.offensiveIndex === 'number'`) or an explicit processed marker.
 
 - [ ] **Step 7: Real-result verification (spec §10 PR2 gate)**
 
@@ -332,6 +401,11 @@ In `processAndUploadVectors.ts:72-91`, replace `rating: matchData.rating ?? null
 node -e 'const a=require("./packages/tools/src/data/reference_vectors.json");
 const bad=a.filter(r=>(r.crisisEvents||[]).some(s=>/[^\x00-\x7F]/.test(s)));
 console.log("records with non-English crisis names:",bad.length,"(target 0)");'
+# per-field storage: a null latency must NOT wipe the other metrics
+node -e 'const a=require("./packages/tools/src/data/reference_vectors.json");
+const nullLat=a.filter(r=>r.metrics&&r.metrics.reactionLatency===null);
+const lost=nullLat.filter(r=>r.metrics.offensiveIndex===null&&r.metrics.ccDensity===null);
+console.log("null-latency records:",nullLat.length,"| of those that also lost offensiveIndex+ccDensity (want ~0):",lost.length);'
 ```
 
 - [ ] **Step 8: Commit**
@@ -350,10 +424,12 @@ git commit -m "fix(vector): ccDensity CC coverage + locale canonicalization + pr
 ### Task 4: VerifiedComparison core (full-cohort stats + diversification)
 
 **Files:**
+
 - Create: `packages/shared/src/components/CombatReport/CombatAIAnalysis/verifiedComparison.ts`
 - Test: `packages/shared/src/components/CombatReport/CombatAIAnalysis/__tests__/verifiedComparison.test.ts`
 
 **Interfaces:**
+
 - Consumes: `MetricKey` (Task 1); `ReferenceVectorRecord` (from `utils/vectorSearch`).
 - Produces:
   - `interface CohortStat { mean: number; median: number; p25: number; p75: number; userPercentile: number | null; nReal: number }`
@@ -368,37 +444,54 @@ git commit -m "fix(vector): ccDensity CC coverage + locale canonicalization + pr
 import { buildVerifiedComparison, diversifyByPlayer } from '../verifiedComparison';
 
 const rec = (playerName: string, offensiveIndex: number | null, reactionLatency: number | null) =>
-  ({ playerName, metrics: { offensiveIndex, ccDensity: 1, reactionLatency,
-     defensiveOverlapRatio: 0, effectiveCastRatio: 1, ccAvoidanceRate: 0 } } as any);
+  ({
+    playerName,
+    metrics: {
+      offensiveIndex,
+      ccDensity: 1,
+      reactionLatency,
+      defensiveOverlapRatio: 0,
+      effectiveCastRatio: 1,
+      ccAvoidanceRate: 0,
+    },
+  }) as any;
 
 test('cohort stats exclude nulls and disclose nReal', () => {
   const cell = [rec('A', 0.1, null), rec('B', 0.2, 5), rec('C', 0.3, 7)];
-  const vc = buildVerifiedComparison(cell, { offensiveIndex: 0.25, responseLatencySec: 6 },
-    { player: 'Me', spec: 'Discipline Priest', bracket: '3v3' });
+  const vc = buildVerifiedComparison(
+    cell,
+    { offensiveIndex: 0.25, responseLatencySec: 6 },
+    { player: 'Me', spec: 'Discipline Priest', bracket: '3v3' },
+  );
   expect(vc.cohort.perMetric.offensiveIndex!.nReal).toBe(3);
-  expect(vc.cohort.perMetric.responseLatencySec!.nReal).toBe(2);      // A's null excluded
+  expect(vc.cohort.perMetric.responseLatencySec!.nReal).toBe(2); // A's null excluded
   expect(vc.cohort.n).toBe(3);
   expect(vc.cohort.uniquePlayers).toBe(3);
 });
 
 test('a null in one metric never nulls the others (the metricsAvailable trap)', () => {
   const cell = [rec('A', 0.1, null), rec('B', 0.2, null)];
-  const vc = buildVerifiedComparison(cell, { offensiveIndex: 0.15 },
-    { player: 'Me', spec: 'Discipline Priest', bracket: '3v3' });
-  expect(vc.cohort.perMetric.offensiveIndex!.nReal).toBe(2);          // survives
-  expect(vc.cohort.perMetric.responseLatencySec).toBeUndefined();     // all null -> omitted
+  const vc = buildVerifiedComparison(
+    cell,
+    { offensiveIndex: 0.15 },
+    { player: 'Me', spec: 'Discipline Priest', bracket: '3v3' },
+  );
+  expect(vc.cohort.perMetric.offensiveIndex!.nReal).toBe(2); // survives
+  expect(vc.cohort.perMetric.responseLatencySec).toBeUndefined(); // all null -> omitted
 });
 
 test('thin cohort emits a note and no percentile', () => {
   const cell = [rec('A', 0.1, 5)];
-  const vc = buildVerifiedComparison(cell, { offensiveIndex: 0.2 },
-    { player: 'Me', spec: 'Holy Priest', bracket: 'solo_shuffle' });
+  const vc = buildVerifiedComparison(
+    cell,
+    { offensiveIndex: 0.2 },
+    { player: 'Me', spec: 'Holy Priest', bracket: 'solo_shuffle' },
+  );
   expect(vc.notes.some((n) => n.toLowerCase().includes('thin'))).toBe(true);
 });
 
 test('diversifyByPlayer caps rounds-per-player', () => {
-  const r = diversifyByPlayer(
-    [{ playerName: 'A' }, { playerName: 'A' }, { playerName: 'A' }, { playerName: 'B' }], 1);
+  const r = diversifyByPlayer([{ playerName: 'A' }, { playerName: 'A' }, { playerName: 'A' }, { playerName: 'B' }], 1);
   expect(r.filter((x) => x.playerName === 'A').length).toBe(1);
   expect(r.length).toBe(2);
 });
@@ -415,10 +508,24 @@ Run: `npx tsdx test verifiedComparison` → Expected: FAIL — module not found.
 import { MetricKey } from './metricRegistry';
 import { ReferenceVectorRecord } from '../../../utils/vectorSearch';
 
-export interface CohortStat { mean: number; median: number; p25: number; p75: number; userPercentile: number | null; nReal: number; }
+export interface CohortStat {
+  mean: number;
+  median: number;
+  p25: number;
+  p75: number;
+  userPercentile: number | null;
+  nReal: number;
+}
 export interface VerifiedComparison {
-  player: string; spec: string; bracket: string;
-  cohort: { n: number; uniquePlayers: number; leaderboardSelection: string; perMetric: Partial<Record<MetricKey, CohortStat>>; };
+  player: string;
+  spec: string;
+  bracket: string;
+  cohort: {
+    n: number;
+    uniquePlayers: number;
+    leaderboardSelection: string;
+    perMetric: Partial<Record<MetricKey, CohortStat>>;
+  };
   notes: string[];
 }
 const THIN = 8;
@@ -426,14 +533,19 @@ const THIN = 8;
 const RECORD_KEYS: Array<[MetricKey, (m: any) => number | null]> = [
   ['offensiveIndex', (m) => m?.offensiveIndex ?? null],
   ['ccDensity', (m) => m?.ccDensity ?? null],
-  ['responseLatencySec', (m) => (m?.reactionLatency ?? null)],
+  ['responseLatencySec', (m) => m?.reactionLatency ?? null],
   ['defensiveOverlapRatio', (m) => m?.defensiveOverlapRatio ?? null],
   ['effectiveCastRatio', (m) => m?.effectiveCastRatio ?? null],
   ['ccAvoidanceRate', (m) => m?.ccAvoidanceRate ?? null],
 ];
-const pct = (sorted: number[], p: number) => sorted.length ? sorted[Math.min(sorted.length - 1, Math.floor(p * sorted.length))] : NaN;
+const pct = (sorted: number[], p: number) =>
+  sorted.length ? sorted[Math.min(sorted.length - 1, Math.floor(p * sorted.length))] : NaN;
 const mean = (a: number[]) => a.reduce((x, y) => x + y, 0) / a.length;
-const median = (a: number[]) => { const s = [...a].sort((x, y) => x - y); const h = s.length >> 1; return s.length % 2 ? s[h] : (s[h - 1] + s[h]) / 2; };
+const median = (a: number[]) => {
+  const s = [...a].sort((x, y) => x - y);
+  const h = s.length >> 1;
+  return s.length % 2 ? s[h] : (s[h - 1] + s[h]) / 2;
+};
 
 export function diversifyByPlayer<T extends { playerName: string }>(records: T[], capPerPlayer: number): T[] {
   const seen = new Map<string, number>();
@@ -456,16 +568,27 @@ export function buildVerifiedComparison(
   const notes: string[] = [];
   for (const [key, read] of RECORD_KEYS) {
     const vals = withMetrics.map((r) => read(r.metrics)).filter((v): v is number => typeof v === 'number');
-    if (vals.length === 0) continue;                                    // all null -> omit (no fake)
+    if (vals.length === 0) continue; // all null -> omit (no fake)
     const sorted = [...vals].sort((a, b) => a - b);
     const uv = userMetrics[key];
-    const userPercentile = typeof uv === 'number'
-      ? sorted.filter((v) => v <= uv).length / sorted.length : null;
-    perMetric[key] = { mean: mean(vals), median: median(vals), p25: pct(sorted, 0.25), p75: pct(sorted, 0.75), userPercentile, nReal: vals.length };
+    const userPercentile = typeof uv === 'number' ? sorted.filter((v) => v <= uv).length / sorted.length : null;
+    perMetric[key] = {
+      mean: mean(vals),
+      median: median(vals),
+      p25: pct(sorted, 0.25),
+      p75: pct(sorted, 0.75),
+      userPercentile,
+      nReal: vals.length,
+    };
   }
   if (withMetrics.length < THIN) notes.push(`thin cohort (n=${withMetrics.length}) — percentiles are low-confidence`);
-  return { player: ctx.player, spec: ctx.spec, bracket: ctx.bracket,
-    cohort: { n: withMetrics.length, uniquePlayers, leaderboardSelection: '2300+ leaderboard selection', perMetric }, notes };
+  return {
+    player: ctx.player,
+    spec: ctx.spec,
+    bracket: ctx.bracket,
+    cohort: { n: withMetrics.length, uniquePlayers, leaderboardSelection: '2300+ leaderboard selection', perMetric },
+    notes,
+  };
 }
 ```
 
@@ -490,10 +613,12 @@ git commit -m "feat(vector): VerifiedComparison core — full-cohort stats, per-
 ### Task 5: Deterministic claim-checker
 
 **Files:**
+
 - Create: `packages/shared/src/components/CombatReport/CombatAIAnalysis/claimChecker.ts`
 - Test: `packages/shared/src/components/CombatReport/CombatAIAnalysis/__tests__/claimChecker.test.ts`
 
 **Interfaces:**
+
 - Consumes: `VerifiedComparison` (Task 4).
 - Produces: `function checkClaims(draft: string, allow: { spells: string[]; numbers: number[] }): { ok: boolean; violations: string[] }` — flags any percentage/number not in `allow.numbers` and any capitalized spell-like token not in `allow.spells`.
 
@@ -585,12 +710,14 @@ git commit -m "feat(vector): deterministic claim-checker — rejects uncited num
 ### Task 6: Stats-led renderer + wire `comparativePrompt` shim
 
 **Files:**
+
 - Create: `packages/shared/src/components/CombatReport/CombatAIAnalysis/comparativePrompt.stats.ts`
 - Modify: `packages/shared/src/components/CombatReport/CombatAIAnalysis/comparativePrompt.ts` (thin shim over registry + VerifiedComparison)
 - Modify: `packages/web/pages/api/compare.ts:57-101` (build `VerifiedComparison`, call stats renderer, run claim-checker)
 - Test: `packages/shared/src/components/CombatReport/CombatAIAnalysis/__tests__/comparativePrompt.stats.test.ts`
 
 **Interfaces:**
+
 - Consumes: `VerifiedComparison` (Task 4), `METRIC_REGISTRY` (Task 1).
 - Produces: `function buildStatsLedPrompt(vc: VerifiedComparison): string` — emits only server-computed numbers, labels/valence from the registry, and the sample-size disclosure; instructs the model to narrate without inventing numbers.
 
@@ -599,16 +726,24 @@ git commit -m "feat(vector): deterministic claim-checker — rejects uncited num
 ```ts
 // comparativePrompt.stats.test.ts
 import { buildStatsLedPrompt } from '../comparativePrompt.stats';
-const vc: any = { player: 'Me', spec: 'Discipline Priest', bracket: '3v3',
-  cohort: { n: 24, uniquePlayers: 20, leaderboardSelection: '2300+ leaderboard selection',
-    perMetric: { responseLatencySec: { mean: 9.2, median: 7.8, p25: 5, p75: 12, userPercentile: 0.6, nReal: 14 } } },
-  notes: ['thin cohort (n=5) — percentiles are low-confidence'] };
+const vc: any = {
+  player: 'Me',
+  spec: 'Discipline Priest',
+  bracket: '3v3',
+  cohort: {
+    n: 24,
+    uniquePlayers: 20,
+    leaderboardSelection: '2300+ leaderboard selection',
+    perMetric: { responseLatencySec: { mean: 9.2, median: 7.8, p25: 5, p75: 12, userPercentile: 0.6, nReal: 14 } },
+  },
+  notes: ['thin cohort (n=5) — percentiles are low-confidence'],
+};
 
 test('prompt uses the registry label, discloses sample size, and never says panic', () => {
   const p = buildStatsLedPrompt(vc);
-  expect(p).toContain('Defensive Response Latency');     // registry label, not "Crisis Reaction Latency"
-  expect(p).toContain('n=14');                            // nReal disclosed
-  expect(p.toLowerCase()).toContain('do not invent');    // narrate-only contract
+  expect(p).toContain('Defensive Response Latency'); // registry label, not "Crisis Reaction Latency"
+  expect(p).toContain('n=14'); // nReal disclosed
+  expect(p.toLowerCase()).toContain('do not invent'); // narrate-only contract
   expect(p.toLowerCase()).not.toContain('panic');
 });
 ```
@@ -629,7 +764,9 @@ export function buildStatsLedPrompt(vc: VerifiedComparison): string {
   for (const key of Object.keys(vc.cohort.perMetric) as MetricKey[]) {
     const def = METRIC_REGISTRY[key];
     const s = vc.cohort.perMetric[key]!;
-    lines.push(`- ${def.label} (${def.definition} ${def.valence === 'lower' ? 'lower=better' : def.valence === 'higher' ? 'higher=better' : 'context-dependent'}): cohort median ${s.median.toFixed(2)}${def.unit} (n=${s.nReal}); your percentile ${s.userPercentile === null ? 'n/a' : Math.round(s.userPercentile * 100) + 'th'}`);
+    lines.push(
+      `- ${def.label} (${def.definition} ${def.valence === 'lower' ? 'lower=better' : def.valence === 'higher' ? 'higher=better' : 'context-dependent'}): cohort median ${s.median.toFixed(2)}${def.unit} (n=${s.nReal}); your percentile ${s.userPercentile === null ? 'n/a' : Math.round(s.userPercentile * 100) + 'th'}`,
+    );
   }
   return `You are a WoW arena coach comparing ${vc.player} (${vc.spec}, ${vc.bracket}) to a cohort of ${vc.cohort.uniquePlayers} ${vc.cohort.leaderboardSelection} players.
 
