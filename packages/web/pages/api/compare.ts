@@ -155,11 +155,17 @@ async function buildStatsComparison(matchId: string): Promise<VerifiedComparison
   const cellRecords = (await loadCellRecords(specDisplay, bracket)).filter((r) => r.matchId !== matchId);
   if (cellRecords.length < 1) return null;
 
-  return buildVerifiedComparison(cellRecords, toUserMetrics(raw), {
+  const verifiedComparison = buildVerifiedComparison(cellRecords, toUserMetrics(raw), {
     player: owner.name,
     spec: specDisplay,
     bracket,
   });
+
+  // Guard: if buildVerifiedComparison drops all records (null metrics), cohort.n will be 0.
+  // Don't call the LLM on a degenerate cohort.
+  if (verifiedComparison.cohort.n < 1) return null;
+
+  return verifiedComparison;
 }
 
 function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
@@ -207,6 +213,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // New stats-led path: full-cohort VerifiedComparison + deterministic claim-checker gate.
   // Opt-in only (`variant === 'stats'`) — the default path below is unchanged so the current
   // ProComparison UI (which consumes the legacy ComparativeAnalysisData shape) keeps working.
+  // NOTE: Do NOT make this the default until the pro corpus index (reference_vectors.json)
+  // is regenerated sentinel-free. The shipped index still carries the legacy `1.5`
+  // reactionLatency sentinel inside metrics.reactionLatency, so defaulting stats before
+  // a reindex would reintroduce bug B118 for cohort latency.
   if (variant === 'stats') {
     try {
       const verifiedComparison = await withTimeout(buildStatsComparison(matchId), COMPARE_TIMEOUT_MS);
