@@ -12,18 +12,18 @@ export interface ReferenceVectorRecord {
   matchId: string;
   spec: string;
   bracket: string;
-  rating: number | null;
+  leaderboardSelection: string;
   playerName: string;
   pythonClusterRank?: number;
   crisisEvents: string[];
   metrics: {
-    offensiveIndex: number;
-    ccDensity: number;
+    offensiveIndex: number | null;
+    ccDensity: number | null;
     reactionLatency: number | null;
-    defensiveOverlapRatio: number;
-    effectiveCastRatio: number;
-    ccAvoidanceRate: number;
-  } | null;
+    defensiveOverlapRatio: number | null;
+    effectiveCastRatio: number | null;
+    ccAvoidanceRate: number | null;
+  };
   embedding: number[];
 }
 
