@@ -28,10 +28,8 @@ const COMMON_WORD_STOPWORDS = new Set(
     'Bash',
     'Wind',
     'Chains',
-    'Growl',
     'Cleanse',
     'Purify',
-    'Hex',
     'Fury',
     'Pain',
     'Life',
@@ -52,19 +50,18 @@ const COMMON_WORD_STOPWORDS = new Set(
     'Flame',
     'Nova',
     'Sear',
-    'Rend',
     'Hunt',
     'Mark',
     'Trap',
     'Snare',
     'Bane',
     'Curse',
-    'Doom',
-    'Wrath',
     'Might',
     'Grace',
     'Hope',
-    'Judgment',
+    // NOTE: distinctive single-word abilities (Hex, Judgment, Wrath, Doom, Growl, Rend) were
+    // intentionally REMOVED — they are real fabrication targets in exemplar-led coaching, so the
+    // spell gate must catch them; they are Capitalized proper nouns unlikely in ordinary prose.
   ].map((s) => s.toLowerCase()),
 );
 
