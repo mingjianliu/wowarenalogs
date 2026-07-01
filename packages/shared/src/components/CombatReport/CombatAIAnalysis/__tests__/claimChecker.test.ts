@@ -23,3 +23,15 @@ test('flags a known spell the server did not provide', () => {
 test('allows an allowlisted spell', () => {
   expect(checkClaims('They cast Penance.', allow).ok).toBe(true);
 });
+
+test('does not flag ordinary coaching prose that happens to contain common-word spell names', () => {
+  const sentence =
+    'Shield yourself before the stun. Focus the healer, Fear their pet, and Silence the caster while you Charge in. Heal up when safe.';
+  expect(checkClaims(sentence, { spells: [], numbers: [] }).ok).toBe(true);
+});
+
+test('flags a multi-word non-allowlisted spell even though it contains common words', () => {
+  const r = checkClaims('Pros opened with Divine Toll here.', allow);
+  expect(r.ok).toBe(false);
+  expect(r.violations.join(' ')).toContain('Divine Toll');
+});
