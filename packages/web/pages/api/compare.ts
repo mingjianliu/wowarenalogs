@@ -7,10 +7,8 @@ import path from 'path';
 
 import { checkClaims } from '../../../shared/src/components/CombatReport/CombatAIAnalysis/claimChecker';
 import {
-  buildComparativePrompt,
   buildStatsLedPrompt,
   collectServerNumbers,
-  ComparativeAnalysisData,
 } from '../../../shared/src/components/CombatReport/CombatAIAnalysis/comparativePrompt';
 import { buildExemplarLedPrompt } from '../../../shared/src/components/CombatReport/CombatAIAnalysis/comparativePrompt.exemplar';
 import { MetricKey } from '../../../shared/src/components/CombatReport/CombatAIAnalysis/metricRegistry';
@@ -25,11 +23,7 @@ import {
   isHealerSpec,
 } from '../../../shared/src/utils/matchEmbeddingRecord';
 import { vectorizeMatch } from '../../../shared/src/utils/vectorEmbedding';
-import {
-  findNearestProMatchesLocal,
-  loadCellRecords,
-  loadReferenceModel,
-} from '../../../shared/src/utils/vectorSearch';
+import { loadCellRecords, loadReferenceModel } from '../../../shared/src/utils/vectorSearch';
 
 const isDev = process.env.NODE_ENV === 'development';
 const COMPARE_TIMEOUT_MS = 20_000;
@@ -155,35 +149,8 @@ function toUserMetrics(raw: BuiltEmbeddingRecord): Partial<Record<MetricKey, num
   };
 }
 
-async function buildComparison(matchId: string): Promise<ComparativeAnalysisData | null> {
-  const ctx = await resolveMatchContext(matchId);
-  if (!ctx) return null;
-  const { owner, raw, embedding, specDisplay, bracket } = ctx;
-
-  const neighbors = (await findNearestProMatchesLocal(specDisplay, embedding, bracket, 6))
-    .filter((n) => n.id !== matchId && n.data.metrics != null)
-    .slice(0, 5);
-  if (neighbors.length < 1) return null;
-
-  return {
-    playerName: owner.name,
-    spec: specDisplay,
-    userMetrics: {
-      offensiveIndex: raw.offensiveIndex,
-      ccDensity: raw.ccDensity,
-      reactionLatency: raw.reactionLatency,
-      defensiveOverlapRatio: raw.defensiveOverlapRatio,
-      effectiveCastRatio: raw.effectiveCastRatio,
-      ccAvoidanceRate: raw.ccAvoidanceRate,
-    },
-    userCrisisEvents: raw.rotations.crisisEvents,
-    nearestNeighbors: neighbors.map((n) => ({
-      distance: n.distance,
-      metrics: n.data.metrics,
-      crisisEvents: n.data.crisisEvents ?? [],
-    })),
-  };
-}
+// Legacy nearest-neighbor path (buildComparativePrompt) removed — arena reindex complete,
+// exemplar-led is now the default. See docs/superpowers/compare-endpoint-handoff.md §4.
 
 /** Stats-led path (flag-gated behind `variant === 'stats'`): loads the FULL spec+bracket cohort
  * cell (not the nearest 5) and builds a VerifiedComparison — full-cohort mean/median/p25/p75 and
@@ -281,13 +248,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!matchId) return res.status(200).json({});
   const apiKey = bodyApiKey || process.env.ANTHROPIC_API_KEY;
 
-  // New stats-led path: full-cohort VerifiedComparison + deterministic claim-checker gate.
-  // Opt-in only (`variant === 'stats'`) — the default path below is unchanged so the current
-  // ProComparison UI (which consumes the legacy ComparativeAnalysisData shape) keeps working.
-  // NOTE: Do NOT make this the default until the pro corpus index (reference_vectors.json)
-  // is regenerated sentinel-free. The shipped index still carries the legacy `1.5`
-  // reactionLatency sentinel inside metrics.reactionLatency, so defaulting stats before
-  // a reindex would reintroduce bug B118 for cohort latency.
+  // Stats-led path: opt-in fallback (more accurate percentiles, 0% hallucination, but less
+  // actionable than exemplar for games with a clear crisis). Useful for the ~10% of games with
+  // no <40%-HP event (where exemplar has no personal sequence to show).
   if (variant === 'stats') {
     try {
       const verifiedComparison = await withTimeout(buildStatsComparison(matchId), COMPARE_TIMEOUT_MS);
@@ -305,7 +268,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // uncited *number* — one the server did not compute — drops the report.
             const numbers = collectServerNumbers(verifiedComparison);
             const { violations } = checkClaims(draft, { spells: [], numbers });
-            const numberViolations = violations.filter((v) => v.startsWith('uncited number'));
+            const numberViolations = violations.filter((v) => v.kind === 'number');
             if (numberViolations.length === 0) statsReport = draft;
           }
         } catch {
@@ -318,9 +281,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   }
 
-  // Exemplar-led path (the winning A/B approach): full-cohort standing + real diversified pro
-  // crisis sequences. Same reindex caveat as `stats` (see above) — opt-in for now.
-  if (variant === 'exemplar') {
+  // Exemplar-led path: DEFAULT. Full-cohort standing + real diversified pro crisis sequences.
+  // Won A/B 86% (actionability 4.70 vs 2.78). Arena reindex complete as of 2026-07-01.
+  // No `variant` check needed — hits here when variant is 'exemplar' OR unset.
+  if (!variant || variant === 'exemplar') {
     try {
       const built = await withTimeout(buildExemplarComparison(matchId), COMPARE_TIMEOUT_MS);
       if (!built) return res.status(200).json({});
@@ -358,20 +322,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   }
 
-  try {
-    const comparison = await withTimeout(buildComparison(matchId), COMPARE_TIMEOUT_MS);
-    if (!comparison) return res.status(200).json({});
-
-    let comparisonReport: string | undefined;
-    if (apiKey) {
-      try {
-        comparisonReport = await generateReport(apiKey, buildComparativePrompt(comparison));
-      } catch {
-        // report is optional; comparison still renders without it
-      }
-    }
-    return res.status(200).json({ comparison, comparisonReport });
-  } catch {
-    return res.status(200).json({});
-  }
+  // Fallthrough: unknown variant — return empty rather than serving the retired legacy path.
+  return res.status(200).json({});
 }

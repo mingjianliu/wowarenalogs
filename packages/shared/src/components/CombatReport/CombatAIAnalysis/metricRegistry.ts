@@ -2,7 +2,9 @@ export type MetricKey =
   | 'offensiveIndex'
   | 'ccDensity'
   | 'responseLatencySec'
-  | 'burstResponseCoverage'
+  // burstResponseCoverage: computed in healerMetrics but not stored in the vector index
+  // (requires a future reindex to plumb answered/windows counts through storage). Dropped
+  // from the registry for now so it doesn't show as misleading 'n/a' in the UI.
   | 'defensiveOverlapRatio'
   | 'effectiveCastRatio'
   | 'ccAvoidanceRate';
@@ -38,13 +40,7 @@ export const METRIC_REGISTRY: Record<MetricKey, MetricDef> = {
     valence: 'lower',
     unit: 's',
   },
-  burstResponseCoverage: {
-    key: 'burstResponseCoverage',
-    label: 'Burst Response Coverage',
-    definition: 'Fraction of enemy burst windows you answered with a defensive CD at all.',
-    valence: 'higher',
-    unit: '%',
-  },
+
   defensiveOverlapRatio: {
     key: 'defensiveOverlapRatio',
     label: 'Defensive Overlap',

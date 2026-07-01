@@ -37,9 +37,11 @@ async function main() {
   }
   console.log('Reference model loaded successfully.');
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const compareEntries: any[] = [];
 
   let lastLogPath = '';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let cachedCombats: any[] = [];
 
   for (const entry of index) {
@@ -117,6 +119,7 @@ async function main() {
       userCrisisEvents: raw.rotations.crisisEvents,
       nearestNeighbors: proNeighbors.map((n) => ({
         distance: n.distance,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         metrics: n.data.metrics!,
         crisisEvents: n.data.crisisEvents ?? [],
       })),

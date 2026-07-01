@@ -32,8 +32,16 @@ const RECORD_KEYS: Array<[MetricKey, (m: RecordMetrics) => number | null]> = [
   ['effectiveCastRatio', (m) => m?.effectiveCastRatio ?? null],
   ['ccAvoidanceRate', (m) => m?.ccAvoidanceRate ?? null],
 ];
-const pct = (sorted: number[], p: number) =>
-  sorted.length ? sorted[Math.min(sorted.length - 1, Math.floor(p * sorted.length))] : NaN;
+// Linear-interpolation percentile (equivalent to NumPy default / R type 7).
+// Materially more accurate than nearest-rank at thin cohorts (n < ~20).
+const pct = (sorted: number[], p: number): number => {
+  if (sorted.length === 0) return NaN;
+  if (sorted.length === 1) return sorted[0];
+  const idx = p * (sorted.length - 1);
+  const lo = Math.floor(idx);
+  const hi = Math.ceil(idx);
+  return lo === hi ? sorted[lo] : sorted[lo] + (sorted[hi] - sorted[lo]) * (idx - lo);
+};
 const mean = (a: number[]) => a.reduce((x, y) => x + y, 0) / a.length;
 const median = (a: number[]) => {
   const s = [...a].sort((x, y) => x - y);

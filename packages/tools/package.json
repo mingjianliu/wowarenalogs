@@ -33,7 +33,11 @@
     "start:analyzeSpecPlaystyle": "dotenv -- ts-node --files ./src/analyzeSpecPlaystyle.ts",
     "start:buildHealerPlaystyles": "dotenv -- ts-node --files ./src/buildHealerPlaystyleCorpus.ts",
     "start:buildSoloShuffleCorpus": "dotenv -- ts-node --files ./src/buildSoloShuffleCorpus.ts",
+    "start:buildArenaCorpus": "dotenv -- ts-node --files ./src/buildArenaCorpus.ts",
     "start:processAndUploadVectors": "dotenv -- ts-node --files ./src/processAndUploadVectors.ts",
+    "start:mergeArenaVectors": "dotenv -- ts-node --files ./src/mergeArenaVectors.ts",
+    "start:buildUserExemplarCorpus": "ts-node --files ./src/buildUserExemplarCorpus.ts",
+    "start:buildUserStatsCorpus": "ts-node --files ./src/buildUserStatsCorpus.ts",
     "test:integration": "ts-node --files ./src/__tests__/realDataIntegration.ts"
   },
   "devDependencies": {

@@ -76,7 +76,7 @@ const COMMON_WORD_STOPWORDS = new Set(
 //   - Single-word names are looked up in O(1) via a Set against the draft's tokens, and any
 //     single-word name that collides with an ordinary English word is skipped entirely.
 const ALL_KNOWN_SPELLS: string[] = Array.from(new Set(Object.values(spellNames as Record<string, string>))).filter(
-  (s) => Boolean(s) && !/^\d+$/.test(s),
+  (s) => Boolean(s) && s.length > 1 && !/^\d+$/.test(s) && !/^[^a-zA-Z0-9]+$/.test(s),
 );
 
 const MULTI_WORD_SPELLS: string[] = ALL_KNOWN_SPELLS.filter((s) => /[\s.,:;'!?-]/.test(s));
@@ -90,17 +90,19 @@ const MULTI_WORD_SPELL_RE =
     ? new RegExp(`\\b(?:${MULTI_WORD_SPELLS.map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`, 'g')
     : null;
 
+export type ClaimViolation = { kind: 'number' | 'spell'; text: string };
+
 export function checkClaims(
   draft: string,
   allow: { spells: string[]; numbers: number[] },
-): { ok: boolean; violations: string[] } {
-  const violations: string[] = [];
+): { ok: boolean; violations: ClaimViolation[] } {
+  const violations: ClaimViolation[] = [];
 
   // 1. Numbers: every number/percentage in the draft must be one the server computed.
   const allowedNums = new Set(allow.numbers.map((n) => Math.round(n * 100) / 100));
   for (const tok of draft.match(/\d+(?:\.\d+)?%?/g) ?? []) {
     const n = parseFloat(tok.replace('%', ''));
-    if (!allowedNums.has(Math.round(n * 100) / 100)) violations.push(`uncited number: ${tok}`);
+    if (!allowedNums.has(Math.round(n * 100) / 100)) violations.push({ kind: 'number', text: tok });
   }
 
   // 2. Spells: a KNOWN spell named in the draft that the server did not provide is a fabrication.
@@ -113,7 +115,7 @@ export function checkClaims(
   const tokens = Array.from(new Set(draft.split(/\s+/).map((t) => t.replace(/^[^\w]+|[^\w]+$/g, ''))));
   for (const tok of tokens) {
     if (tok && SINGLE_WORD_SPELLS.has(tok) && !allowed.has(tok)) {
-      violations.push(`uncited spell: ${tok}`);
+      violations.push({ kind: 'spell', text: tok });
     }
   }
 
@@ -126,7 +128,7 @@ export function checkClaims(
       const spell = match[0];
       if (!allowed.has(spell) && !seen.has(spell)) {
         seen.add(spell);
-        violations.push(`uncited spell: ${spell}`);
+        violations.push({ kind: 'spell', text: spell });
       }
     }
   }

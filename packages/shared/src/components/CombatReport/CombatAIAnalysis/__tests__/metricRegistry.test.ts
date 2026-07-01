@@ -4,7 +4,6 @@ const KEYS: MetricKey[] = [
   'offensiveIndex',
   'ccDensity',
   'responseLatencySec',
-  'burstResponseCoverage',
   'defensiveOverlapRatio',
   'effectiveCastRatio',
   'ccAvoidanceRate',

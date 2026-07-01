@@ -15,6 +15,7 @@ const stat = (median: number, userPercentile: number | null, nReal = 40) => ({
   nReal,
 });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const vc: any = {
   player: 'Me',
   spec: 'Discipline Priest',

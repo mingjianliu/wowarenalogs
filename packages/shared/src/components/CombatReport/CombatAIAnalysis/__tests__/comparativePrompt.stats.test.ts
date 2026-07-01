@@ -70,8 +70,9 @@ describe('collectServerNumbers', () => {
   // prompt cites NO pro spell names, so do not hard-gate on spells here"). A registry label like
   // "Defensive Response Latency" can itself collide with a known single-word spell ("Response"),
   // so passing an empty spell allow-list is expected to still produce spell violations here —
-  // the caller (api/compare.ts) must filter to `uncited number:` violations before gating.
-  const numberViolations = (violations: string[]) => violations.filter((v) => v.startsWith('uncited number'));
+  // the caller (api/compare.ts) must filter to kind === 'number' violations before gating.
+  const numberViolations = (violations: ReturnType<typeof checkClaims>['violations']) =>
+    violations.filter((v) => v.kind === 'number');
 
   test('a report that only cites collected numbers has no number violations', () => {
     const numbers = collectServerNumbers(vc);
