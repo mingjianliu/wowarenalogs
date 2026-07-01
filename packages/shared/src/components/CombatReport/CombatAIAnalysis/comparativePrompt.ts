@@ -1,4 +1,14 @@
 // packages/shared/src/components/CombatReport/CombatAIAnalysis/comparativePrompt.ts
+//
+// This module holds the LEGACY nearest-neighbor-average prompt (buildComparativePrompt /
+// ComparativeAnalysisData), which the current ProComparison UI still consumes — do not remove
+// it here. The new stats-led renderer over the full-cohort VerifiedComparison lives in
+// ./comparativePrompt.stats and is re-exported below as a thin shim so callers can pick either
+// variant from one import path. `/api/compare` currently flag-gates between the two; once the
+// UI is rewired onto VerifiedComparison (a later plan), this file's legacy exports can be
+// deleted and the shim collapsed.
+
+export { buildStatsLedPrompt, collectServerNumbers } from './comparativePrompt.stats';
 
 export interface ComparativeAnalysisData {
   playerName: string;

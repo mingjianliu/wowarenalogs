@@ -5,14 +5,30 @@ import fs from 'fs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import path from 'path';
 
+import { checkClaims } from '../../../shared/src/components/CombatReport/CombatAIAnalysis/claimChecker';
 import {
   buildComparativePrompt,
+  buildStatsLedPrompt,
+  collectServerNumbers,
   ComparativeAnalysisData,
 } from '../../../shared/src/components/CombatReport/CombatAIAnalysis/comparativePrompt';
+import { MetricKey } from '../../../shared/src/components/CombatReport/CombatAIAnalysis/metricRegistry';
+import {
+  buildVerifiedComparison,
+  VerifiedComparison,
+} from '../../../shared/src/components/CombatReport/CombatAIAnalysis/verifiedComparison';
 import { specToString } from '../../../shared/src/utils/cooldowns';
-import { buildMatchEmbeddingRecord, isHealerSpec } from '../../../shared/src/utils/matchEmbeddingRecord';
+import {
+  buildMatchEmbeddingRecord,
+  BuiltEmbeddingRecord,
+  isHealerSpec,
+} from '../../../shared/src/utils/matchEmbeddingRecord';
 import { vectorizeMatch } from '../../../shared/src/utils/vectorEmbedding';
-import { findNearestProMatchesLocal, loadReferenceModel } from '../../../shared/src/utils/vectorSearch';
+import {
+  findNearestProMatchesLocal,
+  loadCellRecords,
+  loadReferenceModel,
+} from '../../../shared/src/utils/vectorSearch';
 
 const isDev = process.env.NODE_ENV === 'development';
 const COMPARE_TIMEOUT_MS = 20_000;
@@ -54,7 +70,16 @@ function deriveBracket(combat: AtomicArenaCombat): string {
   return friendly >= 3 ? '3v3' : '2v2';
 }
 
-async function buildComparison(matchId: string): Promise<ComparativeAnalysisData | null> {
+/** Shared preamble: resolve the log, parse it, find the owner, and vectorize the match. Used by
+ * both the legacy nearest-neighbor path and the new stats-led path. */
+interface MatchContext {
+  owner: { name: string };
+  raw: BuiltEmbeddingRecord;
+  embedding: number[];
+  specDisplay: string;
+  bracket: string;
+}
+async function resolveMatchContext(matchId: string): Promise<MatchContext | null> {
   const logObjectUrl = await resolveLogObjectUrl(matchId);
   if (!logObjectUrl) return null;
   const res = await fetch(logObjectUrl);
@@ -73,6 +98,26 @@ async function buildComparison(matchId: string): Promise<ComparativeAnalysisData
   const embedding = vectorizeMatch(raw, model);
   const specDisplay = specToString(owner.spec);
   const bracket = deriveBracket(combat);
+
+  return { owner, raw, embedding, specDisplay, bracket };
+}
+
+/** Maps the user's computed metrics onto MetricKey (note: the record stores legacy `reactionLatency`). */
+function toUserMetrics(raw: BuiltEmbeddingRecord): Partial<Record<MetricKey, number | null>> {
+  return {
+    offensiveIndex: raw.offensiveIndex,
+    ccDensity: raw.ccDensity,
+    responseLatencySec: raw.reactionLatency,
+    defensiveOverlapRatio: raw.defensiveOverlapRatio,
+    effectiveCastRatio: raw.effectiveCastRatio,
+    ccAvoidanceRate: raw.ccAvoidanceRate,
+  };
+}
+
+async function buildComparison(matchId: string): Promise<ComparativeAnalysisData | null> {
+  const ctx = await resolveMatchContext(matchId);
+  if (!ctx) return null;
+  const { owner, raw, embedding, specDisplay, bracket } = ctx;
 
   const neighbors = (await findNearestProMatchesLocal(specDisplay, embedding, bracket, 6))
     .filter((n) => n.id !== matchId && n.data.metrics != null)
@@ -99,6 +144,24 @@ async function buildComparison(matchId: string): Promise<ComparativeAnalysisData
   };
 }
 
+/** Stats-led path (flag-gated behind `variant === 'stats'`): loads the FULL spec+bracket cohort
+ * cell (not the nearest 5) and builds a VerifiedComparison — full-cohort mean/median/p25/p75 and
+ * a disclosed nReal per metric, never a fabricated average. */
+async function buildStatsComparison(matchId: string): Promise<VerifiedComparison | null> {
+  const ctx = await resolveMatchContext(matchId);
+  if (!ctx) return null;
+  const { owner, raw, specDisplay, bracket } = ctx;
+
+  const cellRecords = (await loadCellRecords(specDisplay, bracket)).filter((r) => r.matchId !== matchId);
+  if (cellRecords.length < 1) return null;
+
+  return buildVerifiedComparison(cellRecords, toUserMetrics(raw), {
+    player: owner.name,
+    spec: specDisplay,
+    bracket,
+  });
+}
+
 function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
   return new Promise((resolve, reject) => {
     const t = setTimeout(() => reject(new Error('compare timed out')), ms);
@@ -115,28 +178,73 @@ function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
   });
 }
 
+async function generateReport(apiKey: string, prompt: string): Promise<string | undefined> {
+  const client = new Anthropic({ apiKey });
+  const msg = await client.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 2048,
+    temperature: 0.3,
+    messages: [{ role: 'user', content: prompt }],
+  });
+  const part = msg.content[0];
+  return part.type === 'text' ? part.text : undefined;
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).json({});
-  const { matchId, apiKey: bodyApiKey } = (req.body ?? {}) as { matchId?: string; apiKey?: string };
+  const {
+    matchId,
+    apiKey: bodyApiKey,
+    variant,
+  } = (req.body ?? {}) as {
+    matchId?: string;
+    apiKey?: string;
+    variant?: string;
+  };
   if (!matchId) return res.status(200).json({});
+  const apiKey = bodyApiKey || process.env.ANTHROPIC_API_KEY;
+
+  // New stats-led path: full-cohort VerifiedComparison + deterministic claim-checker gate.
+  // Opt-in only (`variant === 'stats'`) — the default path below is unchanged so the current
+  // ProComparison UI (which consumes the legacy ComparativeAnalysisData shape) keeps working.
+  if (variant === 'stats') {
+    try {
+      const verifiedComparison = await withTimeout(buildStatsComparison(matchId), COMPARE_TIMEOUT_MS);
+      if (!verifiedComparison) return res.status(200).json({});
+
+      let statsReport: string | undefined;
+      if (apiKey) {
+        try {
+          const draft = await generateReport(apiKey, buildStatsLedPrompt(verifiedComparison));
+          if (draft) {
+            // Gate on NUMBERS only: the stats-led prompt cites no pro spell names, so a
+            // "spells" allow-list here is deliberately permissive (empty) and any spell
+            // violation it produces (e.g. a registry label word that collides with a known
+            // spell, like "Response" in "Defensive Response Latency") is ignored. Only an
+            // uncited *number* — one the server did not compute — drops the report.
+            const numbers = collectServerNumbers(verifiedComparison);
+            const { violations } = checkClaims(draft, { spells: [], numbers });
+            const numberViolations = violations.filter((v) => v.startsWith('uncited number'));
+            if (numberViolations.length === 0) statsReport = draft;
+          }
+        } catch {
+          // report is optional; verifiedComparison still renders without it
+        }
+      }
+      return res.status(200).json({ verifiedComparison, statsReport });
+    } catch {
+      return res.status(200).json({});
+    }
+  }
 
   try {
     const comparison = await withTimeout(buildComparison(matchId), COMPARE_TIMEOUT_MS);
     if (!comparison) return res.status(200).json({});
 
     let comparisonReport: string | undefined;
-    const apiKey = bodyApiKey || process.env.ANTHROPIC_API_KEY;
     if (apiKey) {
       try {
-        const client = new Anthropic({ apiKey });
-        const msg = await client.messages.create({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 2048,
-          temperature: 0.3,
-          messages: [{ role: 'user', content: buildComparativePrompt(comparison) }],
-        });
-        const part = msg.content[0];
-        if (part.type === 'text') comparisonReport = part.text;
+        comparisonReport = await generateReport(apiKey, buildComparativePrompt(comparison));
       } catch {
         // report is optional; comparison still renders without it
       }

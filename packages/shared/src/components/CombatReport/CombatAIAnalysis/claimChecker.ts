@@ -110,7 +110,10 @@ export function checkClaims(
   const allowed = new Set(allow.spells);
 
   // 2a. Single-word spells: O(1) Set lookup against tokens split out of the draft once.
-  const tokens = new Set(draft.split(/\s+/).map((t) => t.replace(/^[^\w]+|[^\w]+$/g, '')));
+  // Dedup via Set, but iterate as an Array — `for...of` over a bare Set needs
+  // --downlevelIteration under the workspace's es5 target, which packages/web's tsconfig
+  // doesn't set (surfaces as a new tsc error the first time this file is reachable from web).
+  const tokens = Array.from(new Set(draft.split(/\s+/).map((t) => t.replace(/^[^\w]+|[^\w]+$/g, ''))));
   for (const tok of tokens) {
     if (tok && SINGLE_WORD_SPELLS.has(tok) && !allowed.has(tok)) {
       violations.push(`uncited spell: ${tok}`);

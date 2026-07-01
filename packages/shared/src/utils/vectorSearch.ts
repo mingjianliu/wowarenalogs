@@ -84,6 +84,21 @@ export function normalizeBracket(raw: string | undefined | null): string {
   return lower.trim();
 }
 
+/**
+ * Load every record in the user's spec+bracket cell (no distance sort, no slice/limit).
+ * Used by the stats-led path: `buildVerifiedComparison` needs the full cohort to compute
+ * honest mean/median/percentiles, not just the nearest 5 (which `findNearestProMatchesLocal`
+ * returns for the legacy nearest-neighbor-average prompt).
+ */
+export async function loadCellRecords(spec: string, bracket: string): Promise<ReferenceVectorRecord[]> {
+  const refPath = resolveReferenceVectorsPath();
+  if (!refPath) return [];
+
+  const allMatches: ReferenceVectorRecord[] = await fs.readJson(refPath);
+  const targetBracket = normalizeBracket(bracket);
+  return allMatches.filter((m) => m.spec === spec && normalizeBracket(m.bracket) === targetBracket);
+}
+
 export async function findNearestProMatchesLocal(
   spec: string,
   userVector: number[],
