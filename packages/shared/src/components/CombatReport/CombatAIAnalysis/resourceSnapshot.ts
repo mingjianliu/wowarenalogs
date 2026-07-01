@@ -115,6 +115,22 @@ export function buildPlayerLoadout(
  * The `playerLabel` field on each teammateCDs entry supplies the display prefix (numeric pid).
  * B34: attributed names disambiguate same-spec teammates who share spell names.
  */
+/**
+ * B114: how many charges of a (possibly multi-charge) CD are ready at timeSeconds. A charge is
+ * consumed on cast and returns cooldownSeconds later; charges recharge one at a time. Used to show
+ * per-charge readiness ([k/N]) so the model does not treat a 2-charge CD as fully spent after one use
+ * (Guardian Spirit / Pain Suppression / Grounding Totem / Holy Bulwark) or fully available when a
+ * charge is still recharging.
+ */
+export function chargesReadyCount(cd: IMajorCooldownInfo, timeSeconds: number): number {
+  const maxCharges = cd.maxChargesDetected > 1 ? cd.maxChargesDetected : 1;
+  const priorCasts = cd.casts.filter((c) => c.timeSeconds < timeSeconds - 0.5);
+  if (priorCasts.length === 0) return maxCharges;
+  const recent = priorCasts.slice(-maxCharges);
+  const stillRecharging = recent.filter((c) => c.timeSeconds + cd.cooldownSeconds > timeSeconds + 0.5).length;
+  return Math.max(0, maxCharges - stillRecharging);
+}
+
 export function computeReadyNames(
   timeSeconds: number,
   ownerCDs: IMajorCooldownInfo[],
@@ -238,6 +254,16 @@ export function buildResourceSnapshot({
     ),
   ];
 
+  // B114: per-charge readiness suffix "[k/N]" for multi-charge CDs, so the model can tell a partly
+  // available CD (1/2) from a fully spent one (0/2) or a fully available one (2/2). Only applied to
+  // full-form lines below (delta comparison keeps the bare displayName to stay stable).
+  const chargeSuffix = new Map<string, string>();
+  for (const { displayName, cd } of allFriendlyCDs) {
+    if (cd.maxChargesDetected > 1) {
+      chargeSuffix.set(displayName, `[${chargesReadyCount(cd, timeSeconds)}/${cd.maxChargesDetected}]`);
+    }
+  }
+
   const currentOnCDNames: string[] = [];
   for (const { displayName, cd } of allFriendlyCDs) {
     const priorCasts = cd.casts.filter((c) => c.timeSeconds < timeSeconds - 0.5);
@@ -250,7 +276,8 @@ export function buildResourceSnapshot({
       currentOnCDNames.push(displayName);
       // B35: in delta mode only show CDs that newly went on cooldown (not in previous snapshot).
       if (prevOnCDSet === null || !prevOnCDSet.has(displayName)) {
-        onCDParts.push(`${displayName}(${remaining}s)`);
+        // B114: a multi-charge CD in cd: has 0 charges ready; the "(Ns)" is time to the next charge.
+        onCDParts.push(`${displayName}(${remaining}s)${chargeSuffix.get(displayName) ?? ''}`);
       }
     }
   }
@@ -268,7 +295,9 @@ export function buildResourceSnapshot({
     const parts = [...added.map((n) => `+${n}`), ...removed.map((n) => `-${n}`)];
     rdyPart = parts.length > 0 ? `rdy:Δ ${parts.join(' ')}` : 'rdy:Δ';
   } else {
-    rdyPart = `rdy:${readyNames.length > 0 ? readyNames.join(',') : '—'}`;
+    // B114: annotate multi-charge CDs with their ready-charge count in the full ready list.
+    const readyDisplay = readyNames.map((n) => `${n}${chargeSuffix.get(n) ?? ''}`);
+    rdyPart = `rdy:${readyDisplay.length > 0 ? readyDisplay.join(',') : '—'}`;
   }
 
   let line = `      [RES] ${rdyPart}  cd:${onCDParts.length > 0 ? onCDParts.join(',') : '—'}`;
@@ -296,7 +325,12 @@ export function buildResourceSnapshot({
     line += ` | Atonements: ${atonementCount}`;
   }
 
-  // ── enemy: (omit when empty) ───────────────────────────────────────────────
+  // ── enemy: active offensive CDs (omit when empty) ──────────────────────────
+  // B116: render each active enemy offensive CD with its REMAINING active duration,
+  // counting DOWN as "Ns left". The prior code emitted elapsed-since-cast, which counted
+  // UP and was misread near expiry as a freshly-cast / long-active CD (e.g. Avatar shown
+  // as (4s)->(15s) growing instead of shrinking). "left" also disambiguates from the
+  // friendly cd: field, where (Ns) means "N seconds until the CD is READY again".
   const enemyActiveParts: string[] = [];
   for (const player of enemyCDTimeline.players) {
     for (const cd of player.offensiveCDs) {
@@ -307,7 +341,8 @@ export function buildResourceSnapshot({
 
       const agoSeconds = timeSeconds - cd.castTimeSeconds;
       if (agoSeconds >= 0 && agoSeconds <= displayWindowSeconds) {
-        enemyActiveParts.push(`${cd.spellName}/${player.specName}(${Math.round(agoSeconds)}s)`);
+        const remainingSeconds = Math.max(1, Math.round(displayWindowSeconds - agoSeconds));
+        enemyActiveParts.push(`${cd.spellName}/${player.specName}(${remainingSeconds}s left)`);
       }
     }
   }

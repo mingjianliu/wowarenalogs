@@ -36,4 +36,12 @@ describe('getSpellSchoolName', () => {
   it('handles string input', () => {
     expect(getSpellSchoolName('2')).toBe('Holy');
   });
+
+  it('B115: handles hex-string masks from the combat log (0x20 = Shadow)', () => {
+    // The combat log emits school masks as hex strings; parseInt(_, 10) mis-parsed these to 0,
+    // silently dropping every [School] tag on kill/spike lines.
+    expect(getSpellSchoolName('0x20')).toBe('Shadow');
+    expect(getSpellSchoolName('0x1')).toBe('Physical');
+    expect(getSpellSchoolName('0x7c')).toBe('Chaos'); // 124
+  });
 });

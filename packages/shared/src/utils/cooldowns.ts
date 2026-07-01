@@ -25,6 +25,43 @@ export const MAJOR_DEFENSIVE_IDS = new Set<string>(
 // external thrown on an ally — a self-only tool can't help that ally.
 const EXTERNAL_DEFENSIVE_IDS = new Set<string>(spellIdListsData.externalDefensiveSpellIds as string[]);
 
+/**
+ * B112/B127: true when a big personal defensive is SELF-ONLY (cannot be cast on an ally) — e.g.
+ * Divine Shield, Ice Block, Obsidian Scales, Barkskin. Such a cast logs whatever unit the caster was
+ * targeting at the time (often an enemy, or an ally being healed) as its "target", so the timeline
+ * must render it as (self) with the caster's own HP — never "→ <enemy>"/"→ <ally>" with that unit's
+ * HP. Defined as a major/big defensive that is NOT in the ally-castable external set; this is
+ * deliberately conservative (only known big defensives) so an external missing from the list is never
+ * mis-rendered as self.
+ */
+export function isSelfOnlyDefensive(spellId: string): boolean {
+  return MAJOR_DEFENSIVE_IDS.has(spellId) && !EXTERNAL_DEFENSIVE_IDS.has(spellId);
+}
+
+/**
+ * B113/B130: role tags for throughput / mana / mobility / modifier cooldowns that reach the timeline
+ * (often via the B38 [YOU] [CD] promotion) without a survival/defensive context. Absent a role, the
+ * model invents mechanics — e.g. calling Restoral (a mana+heal CD) a "stun break", or equating a cheap
+ * modifier (Tip the Scales) with a 90–240s emergency CD. Each tag is a short, factual role descriptor
+ * appended to the CD's timeline line so the model reasons about what the CD actually does. Keep these
+ * conservative and correct — a wrong role is worse than none.
+ */
+export const CD_ROLE_TAGS: Record<string, string> = {
+  // Mistweaver Monk (B113)
+  '388615': 'mana+heal CD', // Restoral — restores team mana and heals; NOT a defensive/CC
+  '325197': 'healing CD', // Invoke Chi-Ji, the Red Crane — healing throughput
+  '116680': 'heal amplifier', // Thunder Focus Tea — empowers the next heal; not a defensive
+  // Preservation Evoker (B130)
+  '357170': 'ally heal-over-time', // Time Dilation — delayed healing on an ally; throughput
+  '370553': 'cast-time modifier', // Tip the Scales — makes next Empower instant; cheap modifier
+  '358267': 'mobility', // Hover — cast while moving; not a defensive
+};
+
+/** Returns a role descriptor for a throughput/modifier CD, or undefined if none is tagged. */
+export function cdRoleTag(spellId: string): string | undefined {
+  return CD_ROLE_TAGS[spellId];
+}
+
 const ADDITIONAL_OVERLAP_DEFENSIVE_IDS = new Set<string>([
   '108416', // Dark Pact (Warlock)
   '5277', // Evasion (Rogue)

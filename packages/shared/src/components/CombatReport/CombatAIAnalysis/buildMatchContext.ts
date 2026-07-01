@@ -2,6 +2,7 @@ import { AtomicArenaCombat, ICombatUnit } from '@wowarenalogs/parser';
 
 import { buildArchetypeInjectionHeader } from '../../../utils/archetypeInjection';
 import { analyzePlayerCCAndTrinket, formatCCTrinketForContext } from '../../../utils/ccTrinketAnalysis';
+import { extractStasisEvents } from '../../../utils/combatStates';
 import {
   annotateDefensiveTimings,
   computePressureWindows,
@@ -96,6 +97,10 @@ export function buildMatchContext(
 
   // Compute all feature data upfront
   const cooldowns = extractMajorCooldowns(owner, combat);
+  // B126: Evoker Stasis load/release/expiry + stored-spell contents. The timeline already renders
+  // [STASIS STORED] / [YOU] [STASIS RELEASE] → contents, but the events were never computed here, so
+  // "incomplete Stasis" / "ended holding stored heals" findings were previously unverifiable.
+  const stasisEvents = extractStasisEvents(owner, combat);
   const teammateCooldowns = friends
     .filter((p) => p.id !== owner.id)
     .map((p) => ({ player: p, cds: extractMajorCooldowns(p, combat) }));
@@ -281,6 +286,7 @@ export function buildMatchContext(
         enemyIdMap,
         outgoingCCChains,
         bracket: combat.startInfo.bracket,
+        stasisEvents,
       } as BuildMatchTimelineParams),
     );
 

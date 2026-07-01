@@ -238,6 +238,13 @@ export interface ICDExpiryEvent {
   expiresAtSeconds: number;
   /** true when no SPELL_AURA_REMOVED was found — expiry estimated from cast + known duration */
   isEstimated: boolean;
+  /**
+   * B129: why the buff faded. 'expired' = ran its full duration (or estimated to have). 'ended_early'
+   * = removed before its natural duration (absorb consumed, dispelled, or cancelled). Distinguishing
+   * these stops the model from inventing a dispel for a naturally-expired buff and lets it tell a
+   * consumed absorb (e.g. Life Cocoon) from an expired one.
+   */
+  cause: 'expired' | 'ended_early';
 }
 
 export const CHANNELED_CD_SPELL_IDS = new Set<string>([
@@ -258,6 +265,10 @@ export const SPELL_DURATION_OVERRIDES: Record<string, number> = {
 // a removal more than a couple seconds past nominal duration almost certainly belongs to a
 // different (later) cast, not this one.
 const BUFF_EXPIRY_PAIRING_TOLERANCE_S = 2;
+
+// B129: a removal within this slack of the natural end still counts as a normal expiry (server-tick
+// latency); earlier than this means the buff was ended early (consumed/dispelled/cancelled).
+const BUFF_FADE_EARLY_TOLERANCE_S = 1.5;
 
 /**
  * For each owner CD cast, finds when the buff actually expired by matching to the
@@ -327,12 +338,20 @@ export function extractOwnerCDBuffExpiry(
         isEstimated = true;
       }
 
+      // B129: classify the fade cause. An estimated expiry (no removal event) is assumed to have run
+      // its full duration. A confirmed removal more than a tick before the natural end means the buff
+      // was ended early (absorb consumed, dispelled, or cancelled) rather than expiring.
+      const naturalEndSeconds = cast.timeSeconds + duration;
+      const cause: ICDExpiryEvent['cause'] =
+        !isEstimated && expiresAtSeconds < naturalEndSeconds - BUFF_FADE_EARLY_TOLERANCE_S ? 'ended_early' : 'expired';
+
       result.push({
         spellId: cd.spellId,
         spellName: cd.spellName,
         castAtSeconds: cast.timeSeconds,
         expiresAtSeconds,
         isEstimated,
+        cause,
       });
     }
   }

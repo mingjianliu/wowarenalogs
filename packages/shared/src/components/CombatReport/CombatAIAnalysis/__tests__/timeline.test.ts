@@ -1000,7 +1000,7 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
       }),
     );
     expect(result).toContain('[CC ON TEAM]');
-    expect(result).toContain('Feramonk ← Hammer of Justice (Dzinked)');
+    expect(result).toContain('Feramonk ← Hammer of Justice (by Dzinked)');
     expect(result).not.toContain('trinket: available');
     expect(result).toContain('0:37');
   });
@@ -1044,11 +1044,11 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
       }),
     );
 
-    expect(result).toContain('Feramonk ← Polymorph (Dzinked) | 4s [DR: Disorient 50%]');
-    expect(result).toContain('Feramonk ← Silence (Dzinked) | 3s [DISPEL BACKLASH CC]');
+    expect(result).toContain('Feramonk ← Polymorph (by Dzinked) | 4s [DR: Disorient 50%]');
+    expect(result).toContain('Feramonk ← Silence (by Dzinked) | 3s [DISPEL BACKLASH CC]');
   });
 
-  it('emits [CC ON TEAM] with trinket: used when trinket was consumed', () => {
+  it('emits [CC ON TEAM] with trinket-break annotation when trinket was consumed (B111)', () => {
     const cc: ICCInstance = {
       atSeconds: 15,
       durationSeconds: 6,
@@ -1067,7 +1067,54 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
         ccTrinketSummaries: [{ ...makeEmptyCCTrinketSummary('Feramonk'), ccInstances: [cc] }],
       }),
     );
-    expect(result).toContain('trinket: used');
+    // B111: bare "| 6s" duration is suppressed for a trinket-broken CC and the note states endured
+    // time + that the CC had not expired, so the coach cannot read it as a trivial short CC.
+    expect(result).toContain('trinket broke this CC after 6s (cut short — it had not expired)');
+    expect(result).not.toContain('Hammer of Justice (by Dzinked) | 6s');
+  });
+
+  it('B124: surfaces caster→target range (and LoS) on [CC ON TEAM] when positions are known', () => {
+    const cc: ICCInstance = {
+      atSeconds: 20,
+      durationSeconds: 4,
+      spellId: '853',
+      spellName: 'Hammer of Justice',
+      sourceName: 'Dzinked',
+      sourceSpec: 'Holy Paladin',
+      damageTakenDuring: 0,
+      trinketState: 'available_unused',
+      drInfo: null,
+      distanceYards: 4.9,
+      losBlocked: null,
+    };
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        ccTrinketSummaries: [{ ...makeEmptyCCTrinketSummary('Feramonk'), ccInstances: [cc] }],
+      }),
+    );
+    expect(result).toContain('4.9yd from caster');
+  });
+
+  it('B124: omits range on [CC ON TEAM] when positions are unavailable (distanceYards null)', () => {
+    const cc: ICCInstance = {
+      atSeconds: 20,
+      durationSeconds: 4,
+      spellId: '853',
+      spellName: 'Hammer of Justice',
+      sourceName: 'Dzinked',
+      sourceSpec: 'Holy Paladin',
+      damageTakenDuring: 0,
+      trinketState: 'available_unused',
+      drInfo: null,
+      distanceYards: null,
+      losBlocked: null,
+    };
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        ccTrinketSummaries: [{ ...makeEmptyCCTrinketSummary('Feramonk'), ccInstances: [cc] }],
+      }),
+    );
+    expect(result).not.toContain('yd from caster');
   });
 
   it('emits [CC ON TEAM] with trinket: ON CD (Xs left) when trinket is on cooldown', () => {
@@ -2307,6 +2354,8 @@ describe('buildMatchTimeline — F95 [YOU] [CC]', () => {
     );
     expect(result).toContain('[TEAM] [CC]');
     expect(result).toContain('Hammer of Justice');
+    // B112(a): active voice ("cast") so the teammate is unmistakably the CASTER, not the victim.
+    expect(result).toContain('(Holy Paladin) cast Hammer of Justice');
   });
 });
 
@@ -2774,10 +2823,12 @@ describe('buildMatchTimeline — F67 [ENEMY BUFFS]', () => {
     expect(result).not.toContain('[ENEMY BUFFS]');
   });
 
-  it('marks Power Infusion as purgeable in [ENEMY BUFF] event', () => {
+  it('marks Power Infusion as purgeable in [ENEMY BUFF] event (owner can purge)', () => {
     const enemy = makeEnemyWithAura('enemy-1', 'Natjkis', '10060', 20_000, 40_000);
     const result = buildMatchTimeline(
       makeBaseParams({
+        // B117: the (purgeable) tag is gated to owners who can offensive-purge.
+        owner: makeOwner('Feramonk', CombatUnitSpec.Priest_Shadow),
         enemies: [enemy],
         matchStartMs: 0,
         matchEndMs: 60_000,
@@ -3324,6 +3375,8 @@ describe('extractOwnerCDBuffExpiry', () => {
     expect(result[0].castAtSeconds).toBe(10);
     expect(result[0].expiresAtSeconds).toBeCloseTo(17.5, 1);
     expect(result[0].isEstimated).toBe(false);
+    // B129: removed at 17.5s vs 18s natural end → within tolerance → expired.
+    expect(result[0].cause).toBe('expired');
   });
 
   it('falls back to cast + durationSeconds when no SPELL_AURA_REMOVED event exists', () => {
@@ -3336,6 +3389,26 @@ describe('extractOwnerCDBuffExpiry', () => {
     // spellEffectData['33206'].durationSeconds === 8
     expect(result[0].expiresAtSeconds).toBeCloseTo(18, 1); // 10 + 8
     expect(result[0].isEstimated).toBe(true);
+    expect(result[0].cause).toBe('expired'); // B129: estimated expiry assumed to have run full duration
+  });
+
+  it('B129: classifies an early removal (before natural duration) as ended_early', () => {
+    const ownerId = 'owner-1';
+    const owner = makeUnit(ownerId, { name: 'Healer' });
+    const target = makeUnit('target-1', {
+      name: 'Teammate',
+      auraEvents: [
+        makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '33206', MATCH_START_MS + 10_000, ownerId, 'target-1'),
+        // 8s buff cast at 10s (natural end 18s) removed at 13s — 5s early → ended_early.
+        makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '33206', MATCH_START_MS + 13_000, ownerId, 'target-1'),
+      ],
+    });
+    const cd = makeCDWithCast('33206', 'Pain Suppression', 10);
+    const result = extractOwnerCDBuffExpiry([cd], ownerId, [owner, target], MATCH_START_MS);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].isEstimated).toBe(false);
+    expect(result[0].cause).toBe('ended_early');
   });
 
   it('skips CDs with no durationSeconds in spellEffectData', () => {
@@ -3628,7 +3701,8 @@ describe('buildMatchTimeline [BUFF FADED] events', () => {
     expect(timeline).toContain('[BUFF FADED]');
     const expiryLine = timeline.split('\n').find((l) => l.includes('[BUFF FADED]'));
     expect(expiryLine).toBeDefined();
-    expect(expiryLine).toContain('(estimated)');
+    // B129: an estimated expiry (no removal event) is assumed to have run its full duration.
+    expect(expiryLine).toContain('(expired, estimated)');
     // Fallback: 10 + 8 = 18s → displays as 0:18
     expect(expiryLine).toContain('0:18');
   });
@@ -4092,7 +4166,7 @@ describe('buildResourceSnapshot — F72 compact [RES] format', () => {
     expect(result).not.toContain('cc:');
   });
 
-  it('enemy burst: includes enemy field with seconds-since-cast', () => {
+  it('enemy burst: includes enemy field with remaining active seconds (B116)', () => {
     const result = buildResourceSnapshot({
       timeSeconds: 20,
       ownerCDs: [],
@@ -4117,7 +4191,8 @@ describe('buildResourceSnapshot — F72 compact [RES] format', () => {
         },
       ]),
     });
-    expect(result).toContain('enemy:Adrenaline Rush/Outlaw Rogue(8s)');
+    // B116: 10s buff (cast 12 → end 22), sampled at t=20 → 2s of active duration left.
+    expect(result).toContain('enemy:Adrenaline Rush/Outlaw Rogue(2s left)');
     expect(result).not.toContain('cc:');
   });
 
@@ -4352,7 +4427,8 @@ describe('buildResourceSnapshot — F72 compact [RES] format', () => {
       ownerUnit: makeUnit('u1', { name: 'Owner' }),
     });
     // enemy: field carries only the enemy offensive CD, NOT focus.
-    expect(result).toContain('enemy:Adrenaline Rush/Outlaw Rogue(0s)');
+    // B116: sampled at cast instant (t=12=cast) → full 10s active duration left.
+    expect(result).toContain('enemy:Adrenaline Rush/Outlaw Rogue(10s left)');
     // focus: must NOT be glued onto the enemy CD value.
     expect(result).not.toContain(',focus:');
     // focus: is its own top-level field, separated by the same '  ' separator as rdy/cd/enemy/cc.
@@ -5273,6 +5349,33 @@ describe('buildMatchTimeline — F152 Missed Purges', () => {
     expect(result).toContain('[MISSED PURGE OPPORTUNITY]');
     expect(result).toContain('Power Infusion active on Dzinked');
     expect(result).toContain('15s');
+  });
+
+  it('B117: suppresses [MISSED PURGE OPPORTUNITY] when the owner cannot offensive-purge', () => {
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        // Mistweaver Monk has no offensive purge — a missed-purge tag is noise and must be suppressed.
+        owner: makeOwner('Nevertrinket', CombatUnitSpec.Monk_Mistweaver),
+        dispelSummary: {
+          ...makeEmptyDispelSummary(),
+          missedPurgeWindows: [
+            {
+              timeSeconds: 10,
+              durationSeconds: 15,
+              expectedBuffDurationSeconds: 20,
+              enemyName: 'Dzinked',
+              enemySpec: 'Holy Paladin',
+              spellName: 'Power Infusion',
+              spellId: '10060',
+              priority: 'High',
+              purgeWasOnCD: false,
+              teamUnderPressure: false,
+            },
+          ],
+        },
+      }),
+    );
+    expect(result).not.toContain('[MISSED PURGE OPPORTUNITY]');
   });
 });
 

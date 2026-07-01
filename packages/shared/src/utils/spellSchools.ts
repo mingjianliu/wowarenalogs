@@ -10,7 +10,10 @@ export const SpellSchoolNames: Record<number, string> = {
 
 export function getSpellSchoolName(schoolMask: number | string | null | undefined): string | null {
   if (schoolMask === null || schoolMask === undefined) return null;
-  const mask = typeof schoolMask === 'string' ? parseInt(schoolMask, 10) : schoolMask;
+  // B115: combat-log school masks arrive as HEX strings (e.g. "0x20" = Shadow). parseInt(_, 10) stopped
+  // at the "x" and returned 0, so every school tag was silently dropped (kill/spike lines never showed
+  // [Magic]/[Physical]). Number() parses both "0x20"→32 and "32"→32 and numeric 32.
+  const mask = typeof schoolMask === 'string' ? Number(schoolMask) : schoolMask;
   if (isNaN(mask) || mask <= 0) return null;
 
   const activeSchools: string[] = [];

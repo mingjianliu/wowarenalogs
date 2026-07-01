@@ -5,15 +5,18 @@ import { ccSpellIds } from '../../../data/spellTags';
 import { IPlayerCCTrinketSummary } from '../../../utils/ccTrinketAnalysis';
 import { IFormInterval, ISpiritOfRedemptionInterval, IStasisEvent } from '../../../utils/combatStates';
 import {
+  cdRoleTag,
   findCheaperDefensiveAlternatives,
   fmtTime,
   getUnitHpAtTimestamp,
   IDamageBucket,
   IMajorCooldownInfo,
+  isSelfOnlyDefensive,
 } from '../../../utils/cooldowns';
 import { buildDampeningEvents, getDampeningPercentage } from '../../../utils/dampening';
 import {
   canDefensiveCleanse,
+  canOffensivePurge,
   IDispelEvent,
   IDispelSummary,
   wasRemovedByAllyDispel,
@@ -21,6 +24,7 @@ import {
 import { DISPEL_FEATURE_FLAGS } from '../../../utils/dispelFeatureFlags';
 import { extractAoeCCEvents, IOutgoingCCChain } from '../../../utils/drAnalysis';
 import { IEnemyCDTimeline } from '../../../utils/enemyCDs';
+import { computeEnemyInterruptAvailability } from '../../../utils/enemyInterrupts';
 import { IHealingGap } from '../../../utils/healingGaps';
 import { getHpPercentAtTime } from '../../../utils/killWindowTargetSelection';
 import {
@@ -283,8 +287,13 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     timeSeconds: number,
     targetName: string | undefined,
     overrideHpPct?: number,
+    forceSelf = false,
   ): string {
+    // B112/B127: self-only defensives (Obsidian Scales, Divine Shield, Ice Block, …) log whatever
+    // unit the caster was targeting — often an enemy — as their "target". forceSelf overrides that so
+    // the line renders (self) with the caster's own HP, never "→ <enemy>" with that enemy's HP.
     const isSelf =
+      forceSelf ||
       !targetName ||
       targetName === 'nil' ||
       targetName === owner.name ||
@@ -527,8 +536,18 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   const ownerCCSummary = ccTrinketSummaries.find((s) => s.playerName === owner.name);
 
   for (const cd of ownerCDs) {
+    // B112/B127: a big personal defensive that cannot be cast on an ally is self-only — force (self)
+    // rendering so a self-buff (e.g. Obsidian Scales) logged against the caster's current enemy/ally
+    // target is not shown as "→ <unit>" with that unit's HP.
+    const forceSelf = isSelfOnlyDefensive(cd.spellId);
     for (const cast of cd.casts) {
-      const targetPart = getCDTargetAndVelocityPart(cd.spellId, cast.timeSeconds, cast.targetName, cast.targetHpPct);
+      const targetPart = getCDTargetAndVelocityPart(
+        cd.spellId,
+        cast.timeSeconds,
+        cast.targetName,
+        cast.targetHpPct,
+        forceSelf,
+      );
 
       const isCC = ccSpellIds.has(cd.spellId);
       const extraLines: (string | DeferredSnapshot)[] = [requestSnapshotPlaceholder(cast.timeSeconds, !isCC)];
@@ -617,11 +636,30 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
           }
         }
       }
-      const displayNameWithChannel = `${cd.spellName}${channelSuffix}`;
+      // B113/B130: append a role tag for throughput/mana/modifier CDs so the model does not invent
+      // a mechanic (e.g. "Restoral breaks stuns") for a CD it otherwise sees only as a [YOU] [CD] cast.
+      const ownerRole = cdRoleTag(cd.spellId);
+      const roleSuffix = ownerRole ? ` [${ownerRole}]` : '';
+      const displayNameWithChannel = `${cd.spellName}${roleSuffix}${channelSuffix}`;
+
+      // B128: for the owner's CHANNELED CDs, state whether any enemy had an interrupt available at the
+      // cast — so the model can decide "was this a lockout reaction" and "would this have been kicked"
+      // instead of guessing. A completed channel with kicks up is skill; an interrupted one with all
+      // kicks down was not a kick.
+      let interruptNote = '';
+      if (CHANNELED_CD_SPELL_IDS.has(cd.spellId) && enemies && enemies.length > 0) {
+        const states = computeEnemyInterruptAvailability(enemies, matchStartMs + cast.timeSeconds * 1000);
+        const upKicks = states.filter((s) => s.cdRemainingSeconds === 0);
+        if (upKicks.length > 0) {
+          interruptNote = ` | enemy interrupts UP: ${upKicks.map((s) => `${s.spellName}/${s.spec}`).join(', ')}`;
+        } else if (states.length > 0) {
+          interruptNote = ' | no enemy interrupt available (all on CD)';
+        }
+      }
 
       addEntry(
         cast.timeSeconds,
-        `${fmtTime(cast.timeSeconds)}  ${prefix}   ${displayNameWithChannel}${targetPart}${dampeningNote}${cheaperNote}${groundingNote}`,
+        `${fmtTime(cast.timeSeconds)}  ${prefix}   ${displayNameWithChannel}${targetPart}${dampeningNote}${cheaperNote}${groundingNote}${interruptNote}`,
         ...extraLines,
       );
     }
@@ -629,10 +667,18 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   // ── [BUFF FADED] events (F70, B31: renamed from [CD EXPIRED]) ──────────────
   for (const expiry of cdExpiryEvents) {
-    const estimatedNote = expiry.isEstimated ? ' (estimated)' : '';
+    // B129: tag the fade cause so the model does not invent a dispel for a buff that simply expired,
+    // and can tell a consumed absorb (ended early) from an expired one. "(estimated)" is retained for
+    // expiries inferred from duration (no removal event logged).
+    const causeNote =
+      expiry.cause === 'ended_early'
+        ? ' (ended early — absorbed, dispelled, or cancelled)'
+        : expiry.isEstimated
+          ? ' (expired, estimated)'
+          : ' (expired)';
     addEntry(
       expiry.expiresAtSeconds,
-      `${fmtTime(expiry.expiresAtSeconds)}  [BUFF FADED]   ${expiry.spellName}${estimatedNote}`,
+      `${fmtTime(expiry.expiresAtSeconds)}  [BUFF FADED]   ${expiry.spellName}${causeNote}`,
     );
   }
 
@@ -792,10 +838,20 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       const cdSeconds = effectData?.cooldownSeconds ?? effectData?.charges?.chargeCooldownSeconds ?? 0;
       if (cdSeconds >= 30) {
         flushFold();
-        const promotedTargetPart = getCDTargetAndVelocityPart(e.spellId, timeSeconds, e.destUnitName);
+        // B112/B127: apply the same self-only override here (this promotion path is where MW/Evoker
+        // throughput CDs render). B113/B130: append the role tag so the model does not invent mechanics.
+        const promotedTargetPart = getCDTargetAndVelocityPart(
+          e.spellId,
+          timeSeconds,
+          e.destUnitName,
+          undefined,
+          isSelfOnlyDefensive(e.spellId),
+        );
+        const promotedRole = cdRoleTag(e.spellId);
+        const promotedDisplayName = promotedRole ? `${displayName} [${promotedRole}]` : displayName;
         addEntry(
           timeSeconds,
-          `${fmtTime(timeSeconds)}  [YOU] [CD]   ${displayName}${promotedTargetPart}${totemNote}${stasisAnnotation}${purgeNote}`,
+          `${fmtTime(timeSeconds)}  [YOU] [CD]   ${promotedDisplayName}${promotedTargetPart}${totemNote}${stasisAnnotation}${purgeNote}`,
           requestSnapshotPlaceholder(timeSeconds, true),
         );
         continue;
@@ -839,15 +895,22 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   for (const { player, spec, cds } of teammateCDs) {
     for (const cd of cds) {
+      const isCC = ccSpellIds.has(cd.spellId);
       for (const cast of cd.casts) {
-        const prefix = ccSpellIds.has(cd.spellId) ? '[TEAM] [CC]' : '[TEAM] [CD]';
         const groundingNote = groundingAbsorbNote(cd.spellId, cd.spellName, player.id, cast.timeSeconds);
 
-        addEntry(
-          cast.timeSeconds,
-          `${fmtTime(cast.timeSeconds)}  ${prefix}   ${pid(player.name)} (${spec}): ${cd.spellName}${groundingNote}`,
-          requestSnapshotPlaceholder(cast.timeSeconds),
-        );
+        // B112(a): "[TEAM] [CC] N (Spec): X" was misread as teammate N BEING CC'd. It is actually N
+        // CASTING an offensive CC on an enemy — render it in active voice ("cast") with the enemy
+        // target so the caster is never confused with the victim. [TEAM] [CD] (buffs/defensives on
+        // self) keeps the ": X" form.
+        let line: string;
+        if (isCC) {
+          const tgt = cast.targetName && cast.targetName !== 'nil' ? ` → ${enemyPid(cast.targetName)}` : '';
+          line = `${fmtTime(cast.timeSeconds)}  [TEAM] [CC]   ${pid(player.name)} (${spec}) cast ${cd.spellName}${tgt}${groundingNote}`;
+        } else {
+          line = `${fmtTime(cast.timeSeconds)}  [TEAM] [CD]   ${pid(player.name)} (${spec}): ${cd.spellName}${groundingNote}`;
+        }
+        addEntry(cast.timeSeconds, line, requestSnapshotPlaceholder(cast.timeSeconds));
       }
     }
   }
@@ -870,7 +933,10 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
   for (const [enemyName, intervals] of enemyBuffIntervals) {
     for (const interval of intervals) {
-      const purgeNote = interval.purgeable ? ' (purgeable)' : '';
+      // B117: keep the [ENEMY BUFF] itself (it is useful enemy-burst context) but only tag it
+      // "(purgeable)" when the log owner can actually purge — otherwise it invites a non-actionable
+      // "you should have purged" finding on a spec with no purge tool.
+      const purgeNote = interval.purgeable && canOffensivePurge(owner) ? ' (purgeable)' : '';
       addEntry(
         interval.startSeconds,
         `${fmtTime(interval.startSeconds)}  [ENEMY BUFF]   ${enemyPid(enemyName)}: ${interval.spellName}${purgeNote}`,
@@ -952,7 +1018,13 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       if (cc.durationSeconds === 0) continue;
       let trinketNote = '';
       if (cc.trinketState === 'used') {
-        trinketNote = ' | trinket: used';
+        // B111: with the active-at-cast attribution fix, 'used' means the trinket was pressed while this
+        // CC was still active — it BROKE the CC. The logged length is the truncated endured time (aura
+        // was cut short at the break), NOT the CC's natural duration, so the standalone "| Ns" is
+        // suppressed below and this note states how long the player endured and that the CC had NOT
+        // expired on its own — otherwise the coach misreads a trinket-shortened "1s" as a trivial CC
+        // that was not worth trinketing (see 294 Finding "trinketed a 1-second Hammer").
+        trinketNote = ` | trinket broke this CC after ${cc.durationSeconds.toFixed(0)}s (cut short — it had not expired)`;
       } else if (cc.trinketState === 'on_cooldown') {
         const cdLeft = cc.trinketCDSecondsLeft !== undefined ? `${cc.trinketCDSecondsLeft}s left` : 'on CD';
         trinketNote = ` | trinket: ON CD (${cdLeft})`;
@@ -975,10 +1047,25 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       const backlashStr =
         DISPEL_FEATURE_FLAGS.F124_ENHANCED_CC_ANNOTATIONS && isBacklash ? ' [DISPEL BACKLASH CC]' : '';
 
+      // B111: for a trinket-broken CC the logged duration is the truncated endured time, not the CC's
+      // natural length; suppress the standalone "| Ns" (the trinket note carries the endured time) so it
+      // is not misread as the CC's trivial full duration.
+      const durStr = cc.trinketState === 'used' ? '' : ` | ${cc.durationSeconds.toFixed(0)}s`;
+
+      // B124: surface the caster→target range (and LoS) already computed at CC application, so claims
+      // like "walked into the CC" / "should have LoS'd it" become checkable instead of inferred. Only
+      // shown when advanced logging supplied positions.
+      let posStr = '';
+      if (cc.distanceYards !== null) {
+        const losTag = cc.losBlocked === true ? ', LoS blocked' : '';
+        posStr = ` | ${cc.distanceYards}yd from caster${losTag}`;
+      }
+
       // passive_trinket → player has no active trinket, no annotation
       addEntry(
         cc.atSeconds,
-        `${fmtTime(cc.atSeconds)}  [CC ON TEAM]   ${pid(summary.playerName)} ← ${cc.spellName} (${enemyPid(cc.sourceName)}) | ${cc.durationSeconds.toFixed(0)}s${drStr}${backlashStr}${trinketNote}${cleansedNote}`,
+        // B112: "(by N)" not "(N)" — the bare "(6)" caster-id was misread as a "6s" duration.
+        `${fmtTime(cc.atSeconds)}  [CC ON TEAM]   ${pid(summary.playerName)} ← ${cc.spellName} (by ${enemyPid(cc.sourceName)})${durStr}${drStr}${backlashStr}${posStr}${trinketNote}${cleansedNote}`,
       );
     }
 
@@ -991,7 +1078,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
           avoided.atSeconds,
           // M-g: state the observed facts (CC cast did not land; avoidance ability present),
           // not a causal verdict. Let the model infer whether the ability caused the avoidance.
-          `${fmtTime(avoided.atSeconds)}  [CC AVOIDED?]   ${pid(summary.playerName)}: ${avoided.spellName} (${enemyPid(avoided.sourceName)}) did not land; ${avoided.avoidanceSpellName} active`,
+          `${fmtTime(avoided.atSeconds)}  [CC AVOIDED?]   ${pid(summary.playerName)}: ${avoided.spellName} (by ${enemyPid(avoided.sourceName)}) did not land; ${avoided.avoidanceSpellName} active`,
         );
       }
     }
@@ -1010,7 +1097,11 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     );
   }
 
-  if (DISPEL_FEATURE_FLAGS.F152_MISSED_PURGES_TIMELINE) {
+  // B117: only the log owner's decisions are actionable, so a "missed purge" is noise unless the
+  // owner can actually offensive-purge. Mistweaver/Evoker/Holy Priest/Paladin etc. spammed this tag
+  // for enemy buffs (e.g. Power Infusion) they had no tool to remove — the weakest, lowest-confidence
+  // findings in the corpus. Gate the whole block to owners who can purge.
+  if (DISPEL_FEATURE_FLAGS.F152_MISSED_PURGES_TIMELINE && canOffensivePurge(owner)) {
     for (const miss of dispelSummary.missedPurgeWindows) {
       if (HIGH_VALUE_PURGEABLE_BUFFS.has(miss.spellId)) {
         addEntry(
