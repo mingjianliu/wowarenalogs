@@ -4,14 +4,14 @@ import { CSSProperties, useCallback, useEffect, useMemo, useState } from 'react'
 import { useCombatReportContext } from '../CombatReportContext';
 import { AIFinding } from './aiFindings';
 import { buildMatchContext } from './buildMatchContext';
-import { ComparativeAnalysisData } from './comparativePrompt';
 import { FindingsList } from './components/FindingsList';
 import { RefreshIcon, SparkleIcon } from './components/icons';
 import { MatchHero } from './components/MatchHero';
-import { ProComparison } from './components/ProComparison';
+import { ProComparisonVerified } from './components/ProComparisonVerified';
 import { SupportingRail } from './components/SupportingRail';
 import { TimelineStrip } from './components/TimelineStrip';
 import { computeMatchAnalysisData } from './matchAnalysisData';
+import { VerifiedComparison } from './verifiedComparison';
 
 // re-export pure helpers so existing imports from this file continue to work
 export type { CriticalMoment, MomentRole } from './utils';
@@ -100,8 +100,9 @@ export function CombatAIAnalysis() {
   const [error, setError] = useState<string | null>(null);
   const [expandedRanks, setExpandedRanks] = useState<Set<number>>(() => new Set());
   const [focused, setFocused] = useState(0);
-  const [comparison, setComparison] = useState<ComparativeAnalysisData | undefined>(undefined);
-  const [comparisonReport, setComparisonReport] = useState<string | undefined>(undefined);
+  const [verified, setVerified] = useState<
+    { vc: VerifiedComparison; userCrises: string[]; proCrises: string[]; report?: string } | undefined
+  >(undefined);
   const [comparisonLoading, setComparisonLoading] = useState(false);
 
   const data = useMemo(
@@ -114,8 +115,7 @@ export function CombatAIAnalysis() {
     if (!combat) return;
     setExpandedRanks(new Set());
     setFocused(0);
-    setComparison(undefined);
-    setComparisonReport(undefined);
+    setVerified(undefined);
     setComparisonLoading(false);
 
     const cached = analysisCache.get(combat.id);
@@ -175,8 +175,7 @@ export function CombatAIAnalysis() {
     setResult(null);
 
     // Part II · Pro comparison — independent, guarded, never blocks Part I.
-    setComparison(undefined);
-    setComparisonReport(undefined);
+    setVerified(undefined);
     setComparisonLoading(true);
     (async () => {
       try {
@@ -184,14 +183,25 @@ export function CombatAIAnalysis() {
         const r = await fetch('/api/compare', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ matchId: combatId, apiKey }),
+          body: JSON.stringify({ matchId: combatId, apiKey, variant: 'exemplar' }),
         });
-        const body = (await r.json()) as { comparison?: ComparativeAnalysisData; comparisonReport?: string };
+        const body = (await r.json()) as {
+          verifiedComparison?: VerifiedComparison;
+          userCrises?: string[];
+          proCrises?: string[];
+          report?: string;
+        };
         if (combat.id !== combatId) return; // stale guard, mirrors the findings path
-        setComparison(body.comparison);
-        setComparisonReport(body.comparisonReport);
+        if (body.verifiedComparison) {
+          setVerified({
+            vc: body.verifiedComparison,
+            userCrises: body.userCrises ?? [],
+            proCrises: body.proCrises ?? [],
+            report: body.report,
+          });
+        }
       } catch {
-        if (combat.id === combatId) setComparison(undefined);
+        if (combat.id === combatId) setVerified(undefined);
       } finally {
         if (combat.id === combatId) setComparisonLoading(false);
       }
@@ -408,7 +418,7 @@ export function CombatAIAnalysis() {
           </aside>
         </div>
 
-        {(comparisonLoading || comparison) && (
+        {(comparisonLoading || verified) && (
           <div className="px-5 mt-8">
             <div className="flex items-center gap-3.5 mb-4">
               <div
@@ -430,14 +440,19 @@ export function CombatAIAnalysis() {
                   Pro comparison
                 </h2>
                 <p className="text-[12.5px] text-zinc-500 mt-0.5">
-                  Your pacing &amp; crisis decisions vs the nearest gold-standard games on your build.
+                  Your pacing &amp; crisis decisions vs your full 2300+ cohort on this spec &amp; bracket.
                 </p>
               </div>
             </div>
-            {comparison ? (
-              <ProComparison data={comparison} report={comparisonReport} />
+            {verified ? (
+              <ProComparisonVerified
+                vc={verified.vc}
+                userCrises={verified.userCrises}
+                proCrises={verified.proCrises}
+                report={verified.report}
+              />
             ) : (
-              <div className="text-[12.5px] text-zinc-600 py-6">Finding your nearest pro games…</div>
+              <div className="text-[12.5px] text-zinc-600 py-6">Comparing you to your pro cohort…</div>
             )}
           </div>
         )}

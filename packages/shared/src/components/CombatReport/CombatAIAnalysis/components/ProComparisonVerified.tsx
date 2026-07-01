@@ -6,8 +6,6 @@
 // "pro average" model in ProComparison.tsx. Pure presentation — transforms live in
 // ../verifiedComparisonView. Visual language matches the existing Decision-review UI.
 
-import { ReactNode } from 'react';
-
 import { CoachingReport, parseCoachingReport, ParsedCrisis } from '../proComparisonData';
 import { VerifiedComparison } from '../verifiedComparison';
 import {
@@ -27,14 +25,7 @@ const RED = '#ff5a4a';
 const STANDING_COLOR: Record<Standing, string> = { ahead: GREEN, behind: RED, even: '#a1a1aa', na: '#52525b' };
 const STANDING_LABEL: Record<Standing, string> = { ahead: 'ahead', behind: 'behind', even: 'on-cohort', na: 'n/a' };
 
-function SectionLabel({ children, right }: { children: ReactNode; right?: ReactNode }) {
-  return (
-    <div className="flex items-center justify-between mb-3">
-      <h3 className="text-[12px] uppercase tracking-[0.14em] text-zinc-500 font-semibold">{children}</h3>
-      {right}
-    </div>
-  );
-}
+const SECTION_H3 = 'text-[12px] uppercase tracking-[0.14em] text-zinc-500 font-semibold';
 
 // ── Percentile standing bar — user's position in the cohort (not a fabricated average) ──────────
 function PercentileBar({ row }: { row: VerifiedMetricRow }) {
@@ -206,15 +197,12 @@ export function ProComparisonVerified({ vc, userCrises, proCrises, report }: Pro
 
       {/* percentile standing bars */}
       <div>
-        <SectionLabel
-          right={
-            <span className="text-[10.5px] text-zinc-500">
-              percentile vs {sample.uniquePlayers} 2300+ players · median at ▏50th
-            </span>
-          }
-        >
-          Your standing vs the cohort
-        </SectionLabel>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className={SECTION_H3}>Your standing vs the cohort</h3>
+          <span className="text-[10.5px] text-zinc-500">
+            percentile vs {sample.uniquePlayers} 2300+ players · median at ▏50th
+          </span>
+        </div>
         <div className="rounded-lg border border-zinc-900 bg-[#0c0c0e] px-[18px] pt-1.5 pb-2.5">
           {rows.length === 0 && <div className="py-3 text-[11.5px] text-zinc-600">No cohort metrics available.</div>}
           {rows.map((row, i) => (
@@ -227,7 +215,9 @@ export function ProComparisonVerified({ vc, userCrises, proCrises, report }: Pro
 
       {/* crisis management — you vs real pro exemplars */}
       <div>
-        <SectionLabel>Crisis management · your responses vs real pros</SectionLabel>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className={SECTION_H3}>Crisis management · your responses vs real pros</h3>
+        </div>
         <div className="grid gap-3.5" style={{ gridTemplateColumns: '1fr 1fr' }}>
           <div className="rounded-lg border border-zinc-900 bg-[#0c0c0e] overflow-hidden">
             <div className="flex items-center gap-2 px-3.5 py-2.5 border-b border-zinc-900">

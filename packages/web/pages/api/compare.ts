@@ -12,6 +12,7 @@ import {
   collectServerNumbers,
   ComparativeAnalysisData,
 } from '../../../shared/src/components/CombatReport/CombatAIAnalysis/comparativePrompt';
+import { buildExemplarLedPrompt } from '../../../shared/src/components/CombatReport/CombatAIAnalysis/comparativePrompt.exemplar';
 import { MetricKey } from '../../../shared/src/components/CombatReport/CombatAIAnalysis/metricRegistry';
 import {
   buildVerifiedComparison,
@@ -102,6 +103,46 @@ async function resolveMatchContext(matchId: string): Promise<MatchContext | null
   return { owner, raw, embedding, specDisplay, bracket };
 }
 
+const MAX_PRO_CRISES = 6;
+const NUM_RE = /\d+(?:\.\d+)?%?/g;
+
+/** Numbers a draft is allowed to cite = those present in the prompt text. */
+function numbersIn(text: string): number[] {
+  return Array.from(
+    new Set((text.match(NUM_RE) ?? []).map((t) => Math.round(parseFloat(t.replace('%', '')) * 100) / 100)),
+  );
+}
+
+/** The spell names shown in a set of crisis sequences (the exemplar allow-list). */
+function spellsFromCrises(crises: string[]): string[] {
+  const spells = new Set<string>();
+  for (const c of crises) {
+    const colon = c.indexOf('): ');
+    const resp = colon >= 0 ? c.slice(colon + 3) : c;
+    for (const s of resp
+      .split('->')
+      .map((x) => x.trim())
+      .filter(Boolean))
+      spells.add(s);
+  }
+  return Array.from(spells);
+}
+
+/** One crisis sequence per distinct pro player, up to MAX_PRO_CRISES — real diversification. */
+function diversifiedProCrises(cell: { playerName: string; crisisEvents?: string[] }[]): string[] {
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const r of cell) {
+    if (out.length >= MAX_PRO_CRISES) break;
+    if (seen.has(r.playerName)) continue;
+    const c = (r.crisisEvents ?? []).find((s) => s && s.trim().length > 0);
+    if (!c) continue;
+    seen.add(r.playerName);
+    out.push(c);
+  }
+  return out;
+}
+
 /** Maps the user's computed metrics onto MetricKey (note: the record stores legacy `reactionLatency`). */
 function toUserMetrics(raw: BuiltEmbeddingRecord): Partial<Record<MetricKey, number | null>> {
   return {
@@ -166,6 +207,36 @@ async function buildStatsComparison(matchId: string): Promise<VerifiedComparison
   if (verifiedComparison.cohort.n < 1) return null;
 
   return verifiedComparison;
+}
+
+interface ExemplarComparison {
+  verifiedComparison: VerifiedComparison;
+  userCrises: string[];
+  proCrises: string[];
+}
+
+/** Exemplar-led path (`variant === 'exemplar'`): full-cohort VerifiedComparison for the standing +
+ * diversified real pro crisis sequences for concrete contrast. This is the winning A/B approach. */
+async function buildExemplarComparison(matchId: string): Promise<ExemplarComparison | null> {
+  const ctx = await resolveMatchContext(matchId);
+  if (!ctx) return null;
+  const { owner, raw, specDisplay, bracket } = ctx;
+
+  const cellRecords = (await loadCellRecords(specDisplay, bracket)).filter((r) => r.matchId !== matchId);
+  if (cellRecords.length < 1) return null;
+
+  const verifiedComparison = buildVerifiedComparison(cellRecords, toUserMetrics(raw), {
+    player: owner.name,
+    spec: specDisplay,
+    bracket,
+  });
+  if (verifiedComparison.cohort.n < 1) return null;
+
+  return {
+    verifiedComparison,
+    userCrises: raw.rotations.crisisEvents ?? [],
+    proCrises: diversifiedProCrises(cellRecords),
+  };
 }
 
 function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
@@ -242,6 +313,46 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       }
       return res.status(200).json({ verifiedComparison, statsReport });
+    } catch {
+      return res.status(200).json({});
+    }
+  }
+
+  // Exemplar-led path (the winning A/B approach): full-cohort standing + real diversified pro
+  // crisis sequences. Same reindex caveat as `stats` (see above) — opt-in for now.
+  if (variant === 'exemplar') {
+    try {
+      const built = await withTimeout(buildExemplarComparison(matchId), COMPARE_TIMEOUT_MS);
+      if (!built) return res.status(200).json({});
+      const { verifiedComparison, userCrises, proCrises } = built;
+
+      let report: string | undefined;
+      if (apiKey) {
+        try {
+          const prompt = buildExemplarLedPrompt({
+            player: verifiedComparison.player,
+            spec: verifiedComparison.spec,
+            bracket: verifiedComparison.bracket,
+            userCrises,
+            proCrises,
+            vc: verifiedComparison,
+          });
+          const draft = await generateReport(apiKey, prompt);
+          if (draft) {
+            // Allow: numbers in the prompt PLUS honest counts 0..#proCrises (the over-generalization
+            // guardrail makes the model say "in N of the 6 shown"); spells: only those in the shown
+            // sequences. Any other cited number or KNOWN spell drops the report.
+            const numbers = numbersIn(prompt);
+            for (let i = 0; i <= proCrises.length; i++) numbers.push(i);
+            const spells = spellsFromCrises([...userCrises, ...proCrises]);
+            const { violations } = checkClaims(draft, { spells, numbers });
+            if (violations.length === 0) report = draft;
+          }
+        } catch {
+          // report is optional; the comparison still renders without it
+        }
+      }
+      return res.status(200).json({ verifiedComparison, userCrises, proCrises, report });
     } catch {
       return res.status(200).json({});
     }
