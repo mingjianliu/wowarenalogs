@@ -96,4 +96,53 @@ describe('buildComparativePrompt', () => {
     expect(prompt).toContain('- No major crisis events recorded.');
     expect(prompt).toContain('- No pro data available.');
   });
+
+  it('renders n/a (never NaN or a fabricated 0) when every neighbour is null for a metric', () => {
+    const data: ComparativeAnalysisData = {
+      playerName: 'Player1',
+      spec: 'Restoration Shaman',
+      userMetrics: {
+        offensiveIndex: null,
+        ccDensity: 1.2,
+        reactionLatency: null,
+        defensiveOverlapRatio: 0.4,
+        effectiveCastRatio: 0.6,
+        ccAvoidanceRate: 0.3,
+      },
+      userCrisisEvents: [],
+      nearestNeighbors: [
+        {
+          distance: 0.1,
+          metrics: {
+            offensiveIndex: null,
+            ccDensity: 2.0,
+            reactionLatency: null,
+            defensiveOverlapRatio: 0.1,
+            effectiveCastRatio: 0.9,
+            ccAvoidanceRate: 0.7,
+          },
+          crisisEvents: [],
+        },
+        {
+          distance: 0.2,
+          metrics: {
+            offensiveIndex: null,
+            ccDensity: 1.8,
+            reactionLatency: null,
+            defensiveOverlapRatio: 0.2,
+            effectiveCastRatio: 0.8,
+            ccAvoidanceRate: 0.6,
+          },
+          crisisEvents: [],
+        },
+      ],
+    };
+
+    const prompt = buildComparativePrompt(data);
+    expect(prompt).not.toContain('NaN');
+    expect(prompt).toContain('Offensive Index (Damage:Heal ratio): User [n/a] vs Pro Average [n/a]');
+    expect(prompt).toContain('Crisis Reaction Latency: User [n/a] vs Pro Average [n/a]');
+    // an unaffected metric still averages normally
+    expect(prompt).toContain('CC Density (CCs per min): User [1.20] vs Pro Average [1.90]');
+  });
 });

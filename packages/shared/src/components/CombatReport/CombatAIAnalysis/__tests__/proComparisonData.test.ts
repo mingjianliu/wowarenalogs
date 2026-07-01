@@ -45,8 +45,8 @@ describe('parseCrisisEvent', () => {
 });
 
 describe('computeProAverages', () => {
-  it('returns zeros for an empty cohort', () => {
-    expect(computeProAverages([]).offensiveIndex).toBe(0);
+  it('returns null (not a fabricated 0) for an empty cohort', () => {
+    expect(computeProAverages([]).offensiveIndex).toBeNull();
   });
   it('averages across neighbours', () => {
     const avg = computeProAverages([

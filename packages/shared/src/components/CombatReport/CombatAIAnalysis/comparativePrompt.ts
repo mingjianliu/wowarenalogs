@@ -4,50 +4,46 @@ export interface ComparativeAnalysisData {
   playerName: string;
   spec: string;
   userMetrics: {
-    offensiveIndex: number;
-    ccDensity: number;
+    offensiveIndex: number | null;
+    ccDensity: number | null;
     reactionLatency: number | null;
-    defensiveOverlapRatio: number;
-    effectiveCastRatio: number;
-    ccAvoidanceRate: number;
+    defensiveOverlapRatio: number | null;
+    effectiveCastRatio: number | null;
+    ccAvoidanceRate: number | null;
   };
   userCrisisEvents: string[];
   nearestNeighbors: Array<{
     distance: number;
     metrics: {
-      offensiveIndex: number;
-      ccDensity: number;
+      offensiveIndex: number | null;
+      ccDensity: number | null;
       reactionLatency: number | null;
-      defensiveOverlapRatio: number;
-      effectiveCastRatio: number;
-      ccAvoidanceRate: number;
+      defensiveOverlapRatio: number | null;
+      effectiveCastRatio: number | null;
+      ccAvoidanceRate: number | null;
     };
     crisisEvents: string[];
   }>;
 }
 
-export function buildComparativePrompt(data: ComparativeAnalysisData): string {
-  const count = data.nearestNeighbors.length;
-  const sums = data.nearestNeighbors.reduce(
-    (acc, n) => ({
-      off: acc.off + n.metrics.offensiveIndex,
-      cc: acc.cc + n.metrics.ccDensity,
-      defOverlap: acc.defOverlap + n.metrics.defensiveOverlapRatio,
-      effCast: acc.effCast + n.metrics.effectiveCastRatio,
-      ccAvoid: acc.ccAvoid + n.metrics.ccAvoidanceRate,
-    }),
-    { off: 0, cc: 0, defOverlap: 0, effCast: 0, ccAvoid: 0 },
-  );
+/** Average only the non-null values; returns null (never NaN/0) when there are none to average. */
+function avgNonNull(values: Array<number | null>): number | null {
+  const nonNull = values.filter((v): v is number => v !== null);
+  return nonNull.length > 0 ? nonNull.reduce((a, b) => a + b, 0) / nonNull.length : null;
+}
 
-  const avgProOffensive = count > 0 ? sums.off / count : 0;
-  const avgProCc = count > 0 ? sums.cc / count : 0;
-  const proLatencies = data.nearestNeighbors
-    .map((n) => n.metrics.reactionLatency)
-    .filter((x): x is number => x !== null);
-  const avgProLatency = proLatencies.length > 0 ? proLatencies.reduce((a, b) => a + b, 0) / proLatencies.length : 0;
-  const avgProDefOverlap = count > 0 ? sums.defOverlap / count : 0;
-  const avgProEffCast = count > 0 ? sums.effCast / count : 0;
-  const avgProCcAvoid = count > 0 ? sums.ccAvoid / count : 0;
+/** Render a metric value for the prompt: 'n/a' for null, never a fabricated 0/NaN. */
+function fmt(value: number | null, suffix = ''): string {
+  return value === null ? 'n/a' : `${value.toFixed(2)}${suffix}`;
+}
+
+export function buildComparativePrompt(data: ComparativeAnalysisData): string {
+  const avgProOffensive = avgNonNull(data.nearestNeighbors.map((n) => n.metrics.offensiveIndex));
+  const avgProCc = avgNonNull(data.nearestNeighbors.map((n) => n.metrics.ccDensity));
+  const avgProLatency = avgNonNull(data.nearestNeighbors.map((n) => n.metrics.reactionLatency));
+  const avgProDefOverlap = avgNonNull(data.nearestNeighbors.map((n) => n.metrics.defensiveOverlapRatio));
+  const avgProEffCast = avgNonNull(data.nearestNeighbors.map((n) => n.metrics.effectiveCastRatio));
+  const avgProCcAvoid = avgNonNull(data.nearestNeighbors.map((n) => n.metrics.ccAvoidanceRate));
 
   const proCrisisResponses = data.nearestNeighbors.flatMap((n) => n.crisisEvents).slice(0, 10); // Limit to top 10 examples
 
@@ -55,12 +51,12 @@ export function buildComparativePrompt(data: ComparativeAnalysisData): string {
 Instead of general advice, provide a Differential Analysis by comparing the user (${data.playerName}) to the top 5 high-rated players who played the exact same talent build and rotational style.
 
 ### Global Metric Gaps:
-- Offensive Index (Damage:Heal ratio): User [${data.userMetrics.offensiveIndex.toFixed(2)}] vs Pro Average [${avgProOffensive.toFixed(2)}]
-- CC Density (CCs per min): User [${data.userMetrics.ccDensity.toFixed(2)}] vs Pro Average [${avgProCc.toFixed(2)}]
-- Crisis Reaction Latency: User [${data.userMetrics.reactionLatency === null ? 'n/a' : data.userMetrics.reactionLatency.toFixed(2) + 's'}] vs Pro Average [${avgProLatency.toFixed(2)}s]
-- Defensive Overlap Ratio (High = panic trading defensives with teammates): User [${data.userMetrics.defensiveOverlapRatio.toFixed(2)}] vs Pro Average [${avgProDefOverlap.toFixed(2)}]
-- Effective Cast Ratio (Low = getting interrupted or poor positioning): User [${data.userMetrics.effectiveCastRatio.toFixed(2)}] vs Pro Average [${avgProEffCast.toFixed(2)}]
-- CC Avoidance Rate (High = proactive use of Fade/Grounding/LoS): User [${data.userMetrics.ccAvoidanceRate.toFixed(2)}] vs Pro Average [${avgProCcAvoid.toFixed(2)}]
+- Offensive Index (Damage:Heal ratio): User [${fmt(data.userMetrics.offensiveIndex)}] vs Pro Average [${fmt(avgProOffensive)}]
+- CC Density (CCs per min): User [${fmt(data.userMetrics.ccDensity)}] vs Pro Average [${fmt(avgProCc)}]
+- Crisis Reaction Latency: User [${fmt(data.userMetrics.reactionLatency, 's')}] vs Pro Average [${fmt(avgProLatency, 's')}]
+- Defensive Overlap Ratio (High = panic trading defensives with teammates): User [${fmt(data.userMetrics.defensiveOverlapRatio)}] vs Pro Average [${fmt(avgProDefOverlap)}]
+- Effective Cast Ratio (Low = getting interrupted or poor positioning): User [${fmt(data.userMetrics.effectiveCastRatio)}] vs Pro Average [${fmt(avgProEffCast)}]
+- CC Avoidance Rate (High = proactive use of Fade/Grounding/LoS): User [${fmt(data.userMetrics.ccAvoidanceRate)}] vs Pro Average [${fmt(avgProCcAvoid)}]
 
 ### User's Crisis Responses (<40% HP events):
 ${data.userCrisisEvents.length > 0 ? data.userCrisisEvents.map((e) => `- ${e}`).join('\n') : '- No major crisis events recorded.'}

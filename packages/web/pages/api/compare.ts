@@ -93,8 +93,7 @@ async function buildComparison(matchId: string): Promise<ComparativeAnalysisData
     userCrisisEvents: raw.rotations.crisisEvents,
     nearestNeighbors: neighbors.map((n) => ({
       distance: n.distance,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      metrics: n.data.metrics!,
+      metrics: n.data.metrics,
       crisisEvents: n.data.crisisEvents ?? [],
     })),
   };
