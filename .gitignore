@@ -162,3 +162,7 @@ scratch/healer-eval/
 .worktrees/
 .agent/
 .antigravitycli/
+
+# scratch + local tooling (kept local, not committed)
+scratch/
+packages/.gemini/
