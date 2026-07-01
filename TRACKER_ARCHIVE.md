@@ -269,22 +269,53 @@ reindex `3ba8126c`. Detail: `docs/superpowers/vector-rebuild-followups.md`,
 
 ### Bugs (Fixed)
 
-| #    | Description | File(s) |
-| ---- | ----------- | ------- |
-| B118 | ✅ reactionLatency triple bug — rebuilt as burst-response coverage + honest latency (no 1.5 sentinel), relabeled "Defensive Response Latency", decoupled from the crisis block, null when unmeasured. | `healerMetrics.ts`, `metricRegistry.ts` |
-| B119 | ✅ Degenerate neighbor pools / fabricated "% of pros" — replaced 5-NN averages with full spec+bracket cohort stats (percentiles) + per-player diversification for exemplars. 200-game check: degenerate pools 39%→0%. | `verifiedComparison.ts`, `vectorSearch.ts` |
-| B120 | ✅ Neighbor crisis-event truncation — full-cohort stats computed server-side; nothing truncated. | `verifiedComparison.ts` |
-| B121 | ✅ Cross-locale spell names — canonicalized to English by spellId at extraction (`englishSpellName`); SS corpus reindexed English (arena-data reindex still pending — see followups). | `englishSpellName.ts`, `matchEmbeddingRecord.ts` |
-| B122 | ✅ ccDensity CC-spell coverage — added missing CC ids (Capacitor Totem, etc.) to spells.json. | `data/spells.json`, `healerMetrics.ts` |
-| B123 | ✅ Unlabeled metric valence + name-encoding leak — metric registry carries label+valence per metric (single source); stats/exemplar prompts don't leak garbled names. | `metricRegistry.ts` |
-| B132 | ✅ defensiveOverlapRatio mislabeled "panic-trading" — registry gives it a neutral definition, no baked-in verdict. | `metricRegistry.ts` |
-| B133 | ✅ Thin/duplicate sample not disclosed — every cohort stat discloses nReal + uniquePlayers; thin-cohort notes. Sample disclosure 0%→100%. | `verifiedComparison.ts` |
-| B134 | ✅ effectiveCastRatio/ccAvoidanceRate undefined — registry gives each a one-line definition + valence; claim-checker forbids invented causal links. | `metricRegistry.ts` |
+| #    | Description                                                                                                                                                                                                           | File(s)                                          |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| B118 | ✅ reactionLatency triple bug — rebuilt as burst-response coverage + honest latency (no 1.5 sentinel), relabeled "Defensive Response Latency", decoupled from the crisis block, null when unmeasured.                 | `healerMetrics.ts`, `metricRegistry.ts`          |
+| B119 | ✅ Degenerate neighbor pools / fabricated "% of pros" — replaced 5-NN averages with full spec+bracket cohort stats (percentiles) + per-player diversification for exemplars. 200-game check: degenerate pools 39%→0%. | `verifiedComparison.ts`, `vectorSearch.ts`       |
+| B120 | ✅ Neighbor crisis-event truncation — full-cohort stats computed server-side; nothing truncated.                                                                                                                      | `verifiedComparison.ts`                          |
+| B121 | ✅ Cross-locale spell names — canonicalized to English by spellId at extraction (`englishSpellName`); SS corpus reindexed English (arena-data reindex still pending — see followups).                                 | `englishSpellName.ts`, `matchEmbeddingRecord.ts` |
+| B122 | ✅ ccDensity CC-spell coverage — added missing CC ids (Capacitor Totem, etc.) to spells.json.                                                                                                                         | `data/spells.json`, `healerMetrics.ts`           |
+| B123 | ✅ Unlabeled metric valence + name-encoding leak — metric registry carries label+valence per metric (single source); stats/exemplar prompts don't leak garbled names.                                                 | `metricRegistry.ts`                              |
+| B132 | ✅ defensiveOverlapRatio mislabeled "panic-trading" — registry gives it a neutral definition, no baked-in verdict.                                                                                                    | `metricRegistry.ts`                              |
+| B133 | ✅ Thin/duplicate sample not disclosed — every cohort stat discloses nReal + uniquePlayers; thin-cohort notes. Sample disclosure 0%→100%.                                                                             | `verifiedComparison.ts`                          |
+| B134 | ✅ effectiveCastRatio/ccAvoidanceRate undefined — registry gives each a one-line definition + valence; claim-checker forbids invented causal links.                                                                   | `metricRegistry.ts`                              |
 
 ### Features (Done)
 
-| #    | Status  | Description | File(s) |
-| ---- | ------- | ----------- | ------- |
-| F156 | ✅ Done | Comparative Coaching Production Integration — `/api/compare` (stats + exemplar variants) + UI (`ProComparisonVerified`) wired to the VerifiedComparison pipeline; exemplar-led won the 100-game A/B 86%. | `pages/api/compare.ts`, `index.tsx` |
-| F157 | ✅ Done | Vector Index Raw Metrics Preservation — per-field metrics storage (no all-or-nothing null); `leaderboardSelection` provenance string (no per-record MMR exists to preserve). | `processAndUploadVectors.ts` |
-| F158 | ✅ Done | Vector-based analysis in the UI — `<ProComparisonVerified>` percentile standing + exemplar crisis view. | `components/ProComparisonVerified.tsx` |
+| #    | Status  | Description                                                                                                                                                                                              | File(s)                                |
+| ---- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| F156 | ✅ Done | Comparative Coaching Production Integration — `/api/compare` (stats + exemplar variants) + UI (`ProComparisonVerified`) wired to the VerifiedComparison pipeline; exemplar-led won the 100-game A/B 86%. | `pages/api/compare.ts`, `index.tsx`    |
+| F157 | ✅ Done | Vector Index Raw Metrics Preservation — per-field metrics storage (no all-or-nothing null); `leaderboardSelection` provenance string (no per-record MMR exists to preserve).                             | `processAndUploadVectors.ts`           |
+| F158 | ✅ Done | Vector-based analysis in the UI — `<ProComparisonVerified>` percentile standing + exemplar crisis view.                                                                                                  | `components/ProComparisonVerified.tsx` |
+
+---
+
+## Cooldown prompt-builder bug sweep — completed (2026-07-01)
+
+Worked B111–B117 + B124–B131 one-by-one (root-cause → fix → unit test → rebuild+diff on the cited
+real prompts → blind coach A/B eval on the high-impact ones). All `packages/shared` CombatAIAnalysis
+
+- utils suites green (816 pass). Commit `978d5860`. Full narrative in TRACKER.md Notes (2026-07-01
+  sweep). New util `enemyInterrupts.ts`; also touched `spellSchools.ts`, `timelineHelpers.ts`,
+  `resourceSnapshot.ts`, `analyzeSystemPrompts.ts`.
+
+### Bugs (Fixed)
+
+| #    | Description                                                                                                                                                                                                                            | File(s)                                    |
+| ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| B111 | ✅ Trinket co-tagged onto multiple CCs — now bound to the single active-at-cast CC + "cut short, not expired" so a trinket-shortened stun is no longer read as trivial (coach re-eval flipped "1-second Hammer" → "5s stun").          | `matchTimeline.ts`, `ccTrinketAnalysis.ts` |
+| B112 | ✅ Caster→target ambiguity / unit conflation — explicit `(by N)` caster-id + `[TEAM] [CC] N cast X → enemy` active voice; self-only defensives forced `(self)` (340 coach dropped its self/ally-ambiguity complaint). Pairs with B127. | `matchTimeline.ts`                         |
+| B113 | ✅ Mistweaver throughput CDs missing from `<cooldowns>` — added with role tags (Restoral `[mana+heal CD]`, TFT `[heal amplifier]`, etc.). Pairs with B130.                                                                             | `cooldowns.ts`                             |
+| B114 | ✅ Charge / remaining-timer CD-math gaps — per-charge `[k/N]` readiness now shown in `[RES]`.                                                                                                                                          | `cooldowns.ts`, `matchTimeline.ts`         |
+| B115 | ✅ Damage school / kill source not tagged — school tags were 100% broken (`parseInt("0x20",10)=0`); switched to `Number()`, so kill/spike lines carry `[Physical]`/`[Holy]`…                                                           | `matchTimeline.ts`                         |
+| B116 | ✅ Enemy-CD timer counted UP not down (code bug) — now counts DOWN as `Ns left` + system-prompt legend updated (coach stopped mis-reading active bursts).                                                                              | `enemyCDs.ts`, `matchTimeline.ts`          |
+| B117 | ✅ Timeline noise — `[MISSED PURGE]`/`(purgeable)` gated to owners who can actually purge/cleanse that school.                                                                                                                         | `matchTimeline.ts`                         |
+| B124 | ✅ Positioning / range absent on CC lines — caster→target `yd from caster` range now emitted on `[CC ON TEAM]`.                                                                                                                        | `matchTimeline.ts`                         |
+| B125 | ✅ Verified already-resolved (no repro) — owner HP-velocity already on every defensive `[YOU] [CD]` line via F162.                                                                                                                     | `matchTimeline.ts`                         |
+| B126 | ✅ Evoker Stasis load/release/expiry events — were never wired into `buildMatchContext`; now emitted with stored-spell contents.                                                                                                       | `cooldowns.ts`, `matchTimeline.ts`         |
+| B127 | ✅ Immunity ownership not annotated — `(self)` / `→ ally` ownership now on personal/immunity CDs. Sub-case of B112 (fixed together).                                                                                                   | `matchTimeline.ts`, `cooldowns.ts`         |
+| B128 | ✅ Enemy interrupt/kick availability not tracked — new `enemyInterrupts.ts`: `enemy interrupts UP: …` / `no enemy interrupt available` against the owner's channels.                                                                   | `enemyCDs.ts`, `matchTimeline.ts`          |
+| B129 | ✅ `[BUFF FADED]` cause not tagged — now labels `expired` vs `ended early`.                                                                                                                                                            | `matchTimeline.ts`                         |
+| B130 | ✅ Evoker throughput/modifier CDs missing — Time Dilation / Tip the Scales / Hover added with role tags. Same class as B113 (fixed together).                                                                                          | `cooldowns.ts`                             |
+| B131 | ✅ Verified already-resolved (no repro) — `[DEATH] (Unused: …)` annotation already emitted for all healer specs incl. Holy Paladin + DPS teammates via F145.                                                                           | `matchTimeline.ts`, `cooldowns.ts`         |
