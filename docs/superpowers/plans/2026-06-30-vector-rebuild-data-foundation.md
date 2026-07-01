@@ -427,10 +427,11 @@ git commit -m "fix(vector): ccDensity CC coverage + locale canonicalization + pr
 
 - Create: `packages/shared/src/components/CombatReport/CombatAIAnalysis/verifiedComparison.ts`
 - Test: `packages/shared/src/components/CombatReport/CombatAIAnalysis/__tests__/verifiedComparison.test.ts`
+- Modify: `packages/shared/src/utils/vectorSearch.ts` (reconcile `ReferenceVectorRecord` to the new writer output — see Prerequisite)
 
 **Interfaces:**
 
-- Consumes: `MetricKey` (Task 1); `ReferenceVectorRecord` (from `utils/vectorSearch`).
+- Consumes: `MetricKey` (Task 1); `ReferenceVectorRecord` (from `utils/vectorSearch`). **Prerequisite:** first reconcile `ReferenceVectorRecord` in `vectorSearch.ts` to what Task 3's writer now emits — replace `rating: number | null` with `leaderboardSelection: string`, and type `metrics` as **always present** with each field `number | null` (was `{ …all number } | null`). Grep for `.rating` first to confirm no reader gates on it (there is none); fix any that surface.
 - Produces:
   - `interface CohortStat { mean: number; median: number; p25: number; p75: number; userPercentile: number | null; nReal: number }`
   - `interface VerifiedComparison { player; spec; bracket; cohort: { n; uniquePlayers; leaderboardSelection; perMetric: Partial<Record<MetricKey, CohortStat>> }; notes: string[] }`
