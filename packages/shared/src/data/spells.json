@@ -828,6 +828,9 @@
   "191634": {
     "type": "buffs_offensive"
   },
+  "192058": {
+    "type": "cc"
+  },
   "192082": {
     "type": "buffs_speed_boost"
   },

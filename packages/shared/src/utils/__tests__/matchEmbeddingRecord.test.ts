@@ -25,9 +25,12 @@ describe('buildMatchEmbeddingRecord', () => {
         ],
       },
       spellCastEvents: [
-        { spellId: 1, spellName: 'Penance', logLine: { event: 'SPELL_CAST_SUCCESS', timestamp: 1000 } },
-        { spellId: 2, spellName: 'Power Word: Shield', logLine: { event: 'SPELL_CAST_SUCCESS', timestamp: 2000 } },
-        { spellId: 3, spellName: 'Smite', logLine: { event: 'SPELL_CAST_SUCCESS', timestamp: 3000 } },
+        // Real spellIds (Penance/Power Word: Shield/Smite) so extractRotations' spellId->English
+        // canonicalization (B121) round-trips to the same names instead of colliding with an
+        // unrelated spellNames.json entry.
+        { spellId: '47540', spellName: 'Penance', logLine: { event: 'SPELL_CAST_SUCCESS', timestamp: 1000 } },
+        { spellId: '17', spellName: 'Power Word: Shield', logLine: { event: 'SPELL_CAST_SUCCESS', timestamp: 2000 } },
+        { spellId: '585', spellName: 'Smite', logLine: { event: 'SPELL_CAST_SUCCESS', timestamp: 3000 } },
       ],
       advancedActions: [],
       // computeHealerMetrics dependencies (not in the original spec illustration, added so the real

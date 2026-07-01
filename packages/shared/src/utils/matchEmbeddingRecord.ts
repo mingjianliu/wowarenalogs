@@ -1,6 +1,7 @@
 import { AtomicArenaCombat, CombatUnitType, ICombatUnit } from '@wowarenalogs/parser';
 
 import { PASSIVE_SPELL_BLOCKLIST } from './cooldowns';
+import { englishSpellName } from './englishSpellName';
 import { computeHealerMetrics } from './healerMetrics';
 import { RawMatchRecord } from './vectorEmbedding';
 
@@ -30,7 +31,9 @@ export function extractRotations(player: ICombatUnit, match: AtomicArenaCombat):
 
   const seqCounts: Record<string, number> = {};
   for (let i = 0; i < casts.length - 2; i++) {
-    const chain = `${casts[i].name} -> ${casts[i + 1].name} -> ${casts[i + 2].name}`;
+    // Canonicalize by spellId so the stored chain is English regardless of the pro's client locale
+    // (there is no localized->English source, so this must happen at extraction time; see B121).
+    const chain = `${englishSpellName(casts[i].spellId ?? '', casts[i].name)} -> ${englishSpellName(casts[i + 1].spellId ?? '', casts[i + 1].name)} -> ${englishSpellName(casts[i + 2].spellId ?? '', casts[i + 2].name)}`;
     seqCounts[chain] = (seqCounts[chain] || 0) + 1;
   }
   const coreSequences = Object.entries(seqCounts)
@@ -58,7 +61,9 @@ export function extractRotations(player: ICombatUnit, match: AtomicArenaCombat):
   for (const record of allTeamHpRecords) {
     if (record.pct < 40 && record.time - lastCrisisTime > 15) {
       lastCrisisTime = record.time;
-      const responseCasts = casts.filter((c) => c.time >= record.time && c.time <= record.time + 6).map((c) => c.name);
+      const responseCasts = casts
+        .filter((c) => c.time >= record.time && c.time <= record.time + 6)
+        .map((c) => englishSpellName(c.spellId ?? '', c.name));
       if (responseCasts.length > 0) {
         crisisEvents.push(
           `At ${record.time.toFixed(1)}s (Teammate ${record.targetName} HP: ${record.pct.toFixed(0)}%): ${responseCasts.join(' -> ')}`,

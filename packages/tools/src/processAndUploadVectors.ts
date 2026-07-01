@@ -52,6 +52,8 @@ async function main() {
     parsedMatches.push(await fs.readJson(file));
   }
 
+  const numOrNull = (v: unknown): number | null => (typeof v === 'number' ? v : null);
+
   // Pass 1: derive vocab, document frequencies, and behavior norm params.
   console.log('Building reference model (vocab + IDF + behavior norm params)...');
   const model: IReferenceModel = buildReferenceModel(parsedMatches);
@@ -73,20 +75,21 @@ async function main() {
       matchId: matchData.matchId,
       spec: matchData.spec,
       bracket: matchData.bracket,
-      rating: matchData.rating ?? null,
+      leaderboardSelection: '2300+ leaderboard selection', // provenance string, not a per-record MMR (F157)
       playerName: matchData.playerName,
       pythonClusterRank: matchData.pythonResult?.matched_cluster_rank,
       crisisEvents: matchData.rotations?.crisisEvents || [],
-      metrics: embeddingInput.metricsAvailable
-        ? {
-            offensiveIndex: embeddingInput.offensiveIndex,
-            ccDensity: embeddingInput.ccDensity,
-            reactionLatency: embeddingInput.reactionLatency,
-            defensiveOverlapRatio: embeddingInput.defensiveOverlapRatio,
-            effectiveCastRatio: embeddingInput.effectiveCastRatio,
-            ccAvoidanceRate: embeddingInput.ccAvoidanceRate,
-          }
-        : null,
+      // Per-field: a null in one metric (e.g. reactionLatency) must never null the other five
+      // (metricsAvailable trap — see Important #2). Read straight from matchData so a genuinely
+      // absent metric stores null while every other computed metric survives.
+      metrics: {
+        offensiveIndex: numOrNull(matchData.offensiveIndex),
+        ccDensity: numOrNull(matchData.ccDensity),
+        reactionLatency: numOrNull(matchData.reactionLatency),
+        defensiveOverlapRatio: numOrNull(matchData.defensiveOverlapRatio),
+        effectiveCastRatio: numOrNull(matchData.effectiveCastRatio),
+        ccAvoidanceRate: numOrNull(matchData.ccAvoidanceRate),
+      },
       embedding: vector,
     });
   }

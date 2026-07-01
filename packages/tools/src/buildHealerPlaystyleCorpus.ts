@@ -78,10 +78,14 @@ async function main() {
   await runWithConcurrencyLimit(15, jsonFiles, async (file, i) => {
     const data = await fs.readJson(file);
 
+    // reactionLatency is legitimately null for a large share of games (honest non-response
+    // signal, see healerMetrics) so it's excluded from this guard — a `typeof === 'number'` check
+    // on it would never be satisfied for those records and they'd reprocess on every run. The
+    // other five metrics are non-nullable by design, so their presence alone means this record
+    // has already been enriched.
     if (
       typeof data.offensiveIndex === 'number' &&
       typeof data.ccDensity === 'number' &&
-      typeof data.reactionLatency === 'number' &&
       typeof data.defensiveOverlapRatio === 'number' &&
       typeof data.effectiveCastRatio === 'number' &&
       typeof data.ccAvoidanceRate === 'number'
