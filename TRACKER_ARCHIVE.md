@@ -259,3 +259,32 @@ _AI prompt data quality fixes (B11–B47, 2026):_
 | T07 | No Jest coverage collection configured — no coverage reports in CI, so coverage gaps are invisible and regressions go undetected                                                                                                                                          | `packages/parser/jest.config.js` (only package with Jest)                                                   |
 | T10 | Server Consolidation (Desktop + Web Merge) — Electron app and web currently run two separate Next.js servers in production. Merge desktop pages under `/desktop` prefix in the web app to deprecate `packages/desktop`.                                                   | `packages/web`, `packages/desktop`                                                                          |
 | T13 | Missing unit tests for recently-shipped timeline annotators: F159 (purge removed-buff), F163 (cleanse/purge priority filtering), F164 (enemy focus target), F168 (dampening note), F169 (atonement count), and the new pure `spellSchools.ts` bitmask/multi-school logic. | `spellSchools.ts`, `matchTimeline.ts`, `resourceSnapshot.ts`                                                |
+
+## Vector rebuild — completed (2026-07-01)
+
+The `/api/compare` data-foundation rebuild (Plan A) + exemplar-led variant + Solo-Shuffle reindex
+fixed these. Commits: Plan A `8b41a210..e0eed45e`; exemplar `4419f33b`; UI wiring `a19a8fbc`; SS
+reindex `3ba8126c`. Detail: `docs/superpowers/vector-rebuild-followups.md`,
+`docs/superpowers/compare-endpoint-handoff.md`.
+
+### Bugs (Fixed)
+
+| #    | Description | File(s) |
+| ---- | ----------- | ------- |
+| B118 | ✅ reactionLatency triple bug — rebuilt as burst-response coverage + honest latency (no 1.5 sentinel), relabeled "Defensive Response Latency", decoupled from the crisis block, null when unmeasured. | `healerMetrics.ts`, `metricRegistry.ts` |
+| B119 | ✅ Degenerate neighbor pools / fabricated "% of pros" — replaced 5-NN averages with full spec+bracket cohort stats (percentiles) + per-player diversification for exemplars. 200-game check: degenerate pools 39%→0%. | `verifiedComparison.ts`, `vectorSearch.ts` |
+| B120 | ✅ Neighbor crisis-event truncation — full-cohort stats computed server-side; nothing truncated. | `verifiedComparison.ts` |
+| B121 | ✅ Cross-locale spell names — canonicalized to English by spellId at extraction (`englishSpellName`); SS corpus reindexed English (arena-data reindex still pending — see followups). | `englishSpellName.ts`, `matchEmbeddingRecord.ts` |
+| B122 | ✅ ccDensity CC-spell coverage — added missing CC ids (Capacitor Totem, etc.) to spells.json. | `data/spells.json`, `healerMetrics.ts` |
+| B123 | ✅ Unlabeled metric valence + name-encoding leak — metric registry carries label+valence per metric (single source); stats/exemplar prompts don't leak garbled names. | `metricRegistry.ts` |
+| B132 | ✅ defensiveOverlapRatio mislabeled "panic-trading" — registry gives it a neutral definition, no baked-in verdict. | `metricRegistry.ts` |
+| B133 | ✅ Thin/duplicate sample not disclosed — every cohort stat discloses nReal + uniquePlayers; thin-cohort notes. Sample disclosure 0%→100%. | `verifiedComparison.ts` |
+| B134 | ✅ effectiveCastRatio/ccAvoidanceRate undefined — registry gives each a one-line definition + valence; claim-checker forbids invented causal links. | `metricRegistry.ts` |
+
+### Features (Done)
+
+| #    | Status  | Description | File(s) |
+| ---- | ------- | ----------- | ------- |
+| F156 | ✅ Done | Comparative Coaching Production Integration — `/api/compare` (stats + exemplar variants) + UI (`ProComparisonVerified`) wired to the VerifiedComparison pipeline; exemplar-led won the 100-game A/B 86%. | `pages/api/compare.ts`, `index.tsx` |
+| F157 | ✅ Done | Vector Index Raw Metrics Preservation — per-field metrics storage (no all-or-nothing null); `leaderboardSelection` provenance string (no per-record MMR exists to preserve). | `processAndUploadVectors.ts` |
+| F158 | ✅ Done | Vector-based analysis in the UI — `<ProComparisonVerified>` percentile standing + exemplar crisis view. | `components/ProComparisonVerified.tsx` |
