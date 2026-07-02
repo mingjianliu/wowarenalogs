@@ -13,6 +13,7 @@ import {
   IMajorCooldownInfo,
   isSelfOnlyDefensive,
   isTeamHealCD,
+  THROUGHPUT_EMPOWER_DEFENSIVE_IDS,
 } from '../../../utils/cooldowns';
 import { buildDampeningEvents, getDampeningPercentage } from '../../../utils/dampening';
 import {
@@ -662,7 +663,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       // H11: when this cast was an external thrown on a teammate, only suggest alternatives
       // that can themselves target a teammate — a self-only tool (e.g. Barkskin) can't help.
       let cheaperNote = '';
-      if (!isCC && cd.tag === 'Defensive') {
+      if (!isCC && cd.tag === 'Defensive' && !THROUGHPUT_EMPOWER_DEFENSIVE_IDS.has(cd.spellId)) {
         // B142: a team/raid heal (Divine Hymn, Tranquility, …) covers an injured ALLY, so a
         // self-only tool (Desperate Prayer, Frenzied Regeneration) can't substitute for it — treat it
         // like an external cast so only team-capable alternatives are offered (extends the H11 guard).

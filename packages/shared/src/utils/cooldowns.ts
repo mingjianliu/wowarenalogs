@@ -614,6 +614,16 @@ const NON_SUBSTITUTE_DEFENSIVE_IDS = new Set<string>([
 ]);
 
 /**
+ * Self throughput-EMPOWER CDs that are tagged 'Defensive' in classMetadata but are NOT survival responses —
+ * they empower the caster's own throughput (e.g. Apotheosis empowers Holy Words to pump team healing). There
+ * is no "cheaper" substitute for the empower and a self-heal cannot replace it, so they must never receive a
+ * `cheaper available:` note. Follow-up to B138/B142 (surfaced by the 2026-07-02 meta-eval).
+ */
+export const THROUGHPUT_EMPOWER_DEFENSIVE_IDS = new Set<string>([
+  '200183', // Apotheosis (Holy Priest) — empowers Holy Words; not a survival cooldown
+]);
+
+/**
  * F166 / review C2: given a defensive cast `cd`, return the names of strictly-cheaper
  * (shorter-cooldown) defensive tools that were available at `atSeconds`.
  *
