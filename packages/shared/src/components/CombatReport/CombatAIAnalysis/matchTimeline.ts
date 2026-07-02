@@ -650,11 +650,17 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
               cast.timeSeconds,
               cast.timeSeconds + actualDuration,
             );
+            // B141: this entry is stamped at the channel START (the decision point). State the END
+            // time inline so the model judges "premature vs reactive" without inferring it from the
+            // separate [BUFF FADED] line or misreading the start-stamp as the completion.
+            const channelEnd = fmtTime(cast.timeSeconds + actualDuration);
             channelSuffix = interrupted
-              ? ` (interrupted at ${actualDuration.toFixed(1)}s / ${expectedDuration.toFixed(1)}s)`
-              : ` (channeled ${actualDuration.toFixed(1)}s of ${expectedDuration.toFixed(1)}s)`;
+              ? ` (interrupted at ${actualDuration.toFixed(1)}s / ${expectedDuration.toFixed(1)}s, ended ${channelEnd})`
+              : ` (channeled ${actualDuration.toFixed(1)}s of ${expectedDuration.toFixed(1)}s, ended ${channelEnd})`;
           } else {
-            channelSuffix = ` (completed, ${actualDuration.toFixed(1)}s)`;
+            channelSuffix = ` (channeled ${actualDuration.toFixed(1)}s to completion, ended ${fmtTime(
+              cast.timeSeconds + actualDuration,
+            )})`;
           }
         }
       }
