@@ -595,12 +595,33 @@ export function extractMajorCooldowns(unit: ICombatUnit, combat: AtomicArenaComb
 }
 
 /**
+ * B138: spells that carry a Defensive tag but are NOT damage-mitigation/heal substitutes — mobility,
+ * dispels, single-spell reflects, and utility. Suggesting one as a "cheaper alternative" to a major
+ * survival CD is misleading (e.g. "you could have used Spirit Walk / Cauterizing Flame instead of
+ * Emerald Communion"): they neither reduce damage taken nor heal, so they can't cover the same need.
+ */
+const NON_SUBSTITUTE_DEFENSIVE_IDS = new Set<string>([
+  '374251', // Cauterizing Flame (Evoker) — dispel
+  '370665', // Rescue (Evoker) — mobility / reposition
+  '58875', // Spirit Walk (Shaman) — mobility / snare break
+  '106898', // Stampeding Roar (Druid) — group mobility
+  '77761', // Stampeding Roar (Bear form variant)
+  '77764', // Stampeding Roar (Cat form variant)
+  '370537', // Stasis (Evoker) — spell storage utility
+  '204336', // Grounding Totem (Shaman) — single-spell reflect
+  '8178', // Grounding Totem (older id)
+  '79206', // Spiritwalker's Grace (Shaman) — cast-while-moving utility
+]);
+
+/**
  * F166 / review C2: given a defensive cast `cd`, return the names of strictly-cheaper
  * (shorter-cooldown) defensive tools that were available at `atSeconds`.
  *
  * Throughput cooldowns (Offensive-tagged, e.g. Power Infusion) are excluded — a healer
  * burning a survival CD did not have a "cheaper" alternative in a burst/throughput CD,
  * and suggesting one is misleading. The cast itself and tools on cooldown are excluded.
+ * B138: mobility/dispel/utility "defensives" (NON_SUBSTITUTE_DEFENSIVE_IDS) are also excluded —
+ * they can't substitute for a damage-mitigation/heal cooldown.
  */
 export function findCheaperDefensiveAlternatives(
   cd: IMajorCooldownInfo,
@@ -614,6 +635,7 @@ export function findCheaperDefensiveAlternatives(
         other.spellId !== cd.spellId &&
         (other.tag === 'Defensive' || other.tag === 'External') &&
         !other.isThroughput &&
+        !NON_SUBSTITUTE_DEFENSIVE_IDS.has(other.spellId) &&
         other.cooldownSeconds < cd.cooldownSeconds &&
         other.availableWindows.some((w) => atSeconds >= w.fromSeconds && atSeconds <= w.toSeconds) &&
         // H11: a self-only tool can't help a teammate — only suggest it when the cast that's

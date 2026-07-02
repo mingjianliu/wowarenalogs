@@ -1211,6 +1211,24 @@ describe('findCheaperDefensiveAlternatives (review C2)', () => {
     expect(result).toEqual(['Desperate Prayer']);
   });
 
+  it('excludes mobility/dispel/utility "defensives" that cannot substitute for a survival CD (B138)', () => {
+    // These carry a Defensive tag and a shorter CD, but none mitigate damage or heal.
+    const spiritWalk = makeCD({ spellId: '58875', spellName: 'Spirit Walk', cooldownSeconds: 60 });
+    const cauterizing = makeCD({ spellId: '374251', spellName: 'Cauterizing Flame', cooldownSeconds: 60 });
+    const rescue = makeCD({ spellId: '370665', spellName: 'Rescue', cooldownSeconds: 60 });
+    const grounding = makeCD({ spellId: '204336', spellName: 'Grounding Totem', cooldownSeconds: 30 });
+    const result = findCheaperDefensiveAlternatives(
+      painSupp,
+      [painSupp, spiritWalk, cauterizing, rescue, grounding, desperatePrayer],
+      60,
+    );
+    expect(result).toEqual(['Desperate Prayer']); // only the real self-heal survives
+    expect(result).not.toContain('Spirit Walk');
+    expect(result).not.toContain('Cauterizing Flame');
+    expect(result).not.toContain('Rescue');
+    expect(result).not.toContain('Grounding Totem');
+  });
+
   // H11: when the annotated cast was an external thrown on a teammate (e.g. Ironbark on an
   // ally), only suggest cheaper alternatives that can themselves target a teammate. Self-only
   // tools (e.g. Barkskin) cannot help the teammate and must not be suggested.
