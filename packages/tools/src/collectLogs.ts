@@ -23,10 +23,17 @@ export interface CollectStats {
   gaps: string[];
 }
 
-/** Multiple generations of the same file name get distinct outputs (rare). */
-function outputNameFor(ref: SegmentRef, genOrder: string[]): string {
-  if (genOrder.length <= 1 || ref.gen8 === genOrder[0]) return ref.logFileName;
-  return ref.logFileName.replace(/\.txt$/, `.${ref.gen8}.txt`);
+/**
+ * Deterministic, stable output name per (hostname, logFileName, gen8): every
+ * generation gets its own file from the start. gen8 is a content hash (not
+ * monotonic), so any "first generation gets the plain name" scheme can flip
+ * owners between runs and silently strand data — never infer naming from
+ * live key order. Names keep the WoWCombatLog*.txt shape localBatchAnalysis
+ * selects on.
+ */
+function outputNameFor(ref: SegmentRef): string {
+  const base = ref.logFileName.endsWith('.txt') ? ref.logFileName.slice(0, -4) : ref.logFileName;
+  return `${base}.${ref.hostname}.${ref.gen8}.txt`;
 }
 
 export async function runCollection(config: CollectorConfig): Promise<CollectStats> {
@@ -47,16 +54,8 @@ export async function runCollection(config: CollectorConfig): Promise<CollectSta
     groups.set(groupKey, group);
   }
 
-  // Stable generation order per file name = first-seen order in sorted keys
-  const genOrder = new Map<string, string[]>();
-  for (const ref of refs) {
-    const gens = genOrder.get(ref.logFileName) ?? [];
-    if (!gens.includes(ref.gen8)) gens.push(ref.gen8);
-    genOrder.set(ref.logFileName, gens);
-  }
-
   for (const [groupKey, group] of groups) {
-    const outName = outputNameFor(group[0], genOrder.get(group[0].logFileName) ?? []);
+    const outName = outputNameFor(group[0]);
     const outPath = path.join(logsDir, outName);
     const offsets = group.map((r) => r.startOffset);
     const byOffset = new Map(group.map((r) => [r.startOffset, r]));

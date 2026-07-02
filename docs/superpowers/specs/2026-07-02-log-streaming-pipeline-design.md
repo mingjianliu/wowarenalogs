@@ -91,7 +91,7 @@ Runs on a schedule (launchd) or manually. Steps:
 
 1. `list('raw/')`, diff against local fetch-state file (`~/wal-sync/state.json`).
 2. Download new segments, ordered by `(logFileName, startOffset)`, and gunzip each body (offsets in keys always refer to **uncompressed** byte positions in the original log).
-3. Append in offset order into reconstructed files at `~/wal-sync/logs/<logFileName>`. Gap detection: if the next segment's offset doesn't equal the current reconstructed size, stop appending that file and record a warning (agent will have retried; gaps indicate lost objects and must not silently corrupt a log).
+3. Append in offset order into reconstructed files at `~/wal-sync/logs/<logFileName minus .txt>.<hostname>.<gen8>.txt` — one output per (host, file, generation), deterministically named so no run-order can reassign which file a generation lands in (gen8 is a content hash, not monotonic). Gap detection: if the next segment's offset doesn't equal the current reconstructed size, stop appending that file and record a warning (agent will have retried; gaps indicate lost objects and must not silently corrupt a log).
 4. Write-to-temp-then-rename on every append cycle so a crash never leaves a half-written log.
 5. Update `status.json` + append a record to `runs.jsonl` (see Dashboard).
 
