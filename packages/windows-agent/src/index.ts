@@ -12,12 +12,17 @@ import { startLogWatcher } from './watcher';
 
 const AGENT_VERSION = '0.1.0';
 
+// Tracks the last heartbeat-write failure message so repeated failures within
+// the same flush cadence don't spam the console (heartbeat runs every flush,
+// e.g. every 60s) — only log when the failure is new or when it clears.
+let lastHeartbeatError: string | null = null;
+
 function argValue(flag: string): string | undefined {
   const i = process.argv.indexOf(flag);
   return i !== -1 ? process.argv[i + 1] : undefined;
 }
 
-async function flushBatch(opts: {
+export async function flushBatch(opts: {
   fileNames: string[];
   config: AgentConfig;
   adapter: StorageAdapter;
@@ -29,9 +34,13 @@ async function flushBatch(opts: {
   let lastError: string | null = null;
   let activeFile: string | null = null;
   let offset: number | null = null;
+  const failed: string[] = [];
 
   // Sequential per batch — files are flushed one at a time (per-file
   // serialization; the watcher's overlap guard prevents concurrent batches).
+  // Each file's failure is isolated: one bad file (e.g. a vanished ENOENT
+  // file seeded by the initial scan) must not starve the rest of the batch,
+  // since the watcher re-adds the *whole* batch on any thrown error.
   for (const fileName of fileNames) {
     activeFile = fileName;
     try {
@@ -51,9 +60,16 @@ async function flushBatch(opts: {
         console.log(`[wal-agent] ${fileName}: +${outcome.flushedBytes}B${outcome.reset ? ' (reset)' : ''}`);
       }
     } catch (e) {
-      lastError = e instanceof Error ? e.message : String(e);
-      console.error(`[wal-agent] ${fileName}: flush failed — ${lastError}`);
-      throw e; // rethrow so the watcher re-marks the batch dirty
+      if ((e as NodeJS.ErrnoException)?.code === 'ENOENT') {
+        // File is gone (e.g. deleted after being seeded by the initial scan).
+        // Not a failure to retry — a recreate produces new watch events.
+        console.warn(`[wal-agent] ${fileName}: vanished, dropping from queue`);
+      } else {
+        lastError = e instanceof Error ? e.message : String(e);
+        console.error(`[wal-agent] ${fileName}: flush failed — ${lastError}`);
+        failed.push(fileName);
+      }
+      // Continue to the next file — don't let one bad file starve the batch.
     } finally {
       const hb: AgentHeartbeat = {
         hostname: config.hostname,
@@ -63,8 +79,22 @@ async function flushBatch(opts: {
         agentVersion: AGENT_VERSION,
         lastError,
       };
-      await writeHeartbeat(adapter, hb).catch(() => undefined); // heartbeat is best-effort
+      await writeHeartbeat(adapter, hb)
+        .then(() => {
+          lastHeartbeatError = null;
+        })
+        .catch((hbErr: unknown) => {
+          const msg = hbErr instanceof Error ? hbErr.message : String(hbErr);
+          if (msg !== lastHeartbeatError) {
+            lastHeartbeatError = msg;
+            console.warn(`[wal-agent] heartbeat write failed: ${msg}`);
+          }
+        });
     }
+  }
+
+  if (failed.length > 0) {
+    throw new Error(`flush failed for: ${failed.join(', ')} — ${lastError}`);
   }
 }
 
@@ -116,7 +146,11 @@ async function main(): Promise<void> {
   });
 }
 
-main().catch((e) => {
-  console.error(`[wal-agent] fatal: ${e instanceof Error ? e.message : e}`);
-  process.exit(1);
-});
+// Only auto-run when executed directly (node dist/wal-agent.js / the CLI
+// entry) — not when imported, e.g. by tests importing `flushBatch`.
+if (require.main === module) {
+  main().catch((e) => {
+    console.error(`[wal-agent] fatal: ${e instanceof Error ? e.message : e}`);
+    process.exit(1);
+  });
+}

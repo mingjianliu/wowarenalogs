@@ -80,7 +80,7 @@ interface StorageAdapter {
 ```
 
 - `storage.provider` config field selects the implementation; each provider has its own credentials block in config.
-- **v1 ships GCS only** (`GcsStorageAdapter`), using `@google-cloud/storage` with a service-account key. The key on the gaming PC gets `roles/storage.objectCreator` only — write-only, blast radius limited to log bytes.
+- **v1 ships GCS only** (`GcsStorageAdapter`), using `@google-cloud/storage` with a service-account key. The key on the gaming PC gets `roles/storage.objectUser` only, scoped to that one bucket — object-level create/overwrite/get/list, no bucket admin, blast radius limited to log bytes. (`roles/storage.objectCreator` is not sufficient: the heartbeat overwrites a fixed key on every flush and a crash-window retry can re-upload the same segment key, both of which require delete/overwrite permission that `objectCreator` lacks.)
 - The interface is deliberately tiny (3 methods, flat keys, no streaming/multipart) so future adapters — S3, Google Drive, R2, SSH-to-Mac — are drop-in. Segment sizes (a few MB max per flush) don't need multipart.
 - Adapter source lives in `packages/windows-agent/src/storage/` and is also consumed by the collector via the esbuild bundle or a small shared source copy — **decision:** collector imports the adapter source directly from `packages/windows-agent` source files at build time (tools package already does cross-source imports; agent remains dependency-free of tools).
 - Bucket lifecycle rule deletes objects older than 30 days (cost stays at pennies; the Mac is the durable store).
@@ -125,7 +125,7 @@ A small self-contained local web page: single static HTML file + a tiny Node HTT
 
 ## Security
 
-- Windows PC holds only a write-only (`objectCreator`) storage credential.
+- Windows PC holds only an object-scoped (`objectUser`, one bucket) storage credential — no bucket admin, blast radius limited to log bytes. (Not `objectCreator`: heartbeat rewrites and idempotent same-key re-uploads are overwrites, which `objectCreator` cannot do.)
 - Anthropic key exists only on the Mac in `.env`.
 - Dashboard binds to `127.0.0.1` only.
 - Log content is combat telemetry — low sensitivity, but the bucket is private regardless.
@@ -139,7 +139,7 @@ A small self-contained local web page: single static HTML file + a tiny Node HTT
 
 ## Setup prerequisites (ops, not code)
 
-- A user-owned GCP project with one private bucket + service account (`objectCreator` for the agent key; a read credential for the Mac).
+- A user-owned GCP project with one private bucket + service account (`objectUser` for the agent key; a read credential for the Mac).
 - Node LTS installed on the gaming PC; Task Scheduler entry created per README in `packages/windows-agent`.
 
 ## Prior art consulted
