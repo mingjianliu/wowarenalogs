@@ -37,6 +37,8 @@ export interface ITalentBehavior {
    * this MUST be gated on the owner's pvpTalents containing talentSpellId.
    */
   conditionAuraId?: string;
+  /** Display name of the condition CD (e.g. "Obsidian Scales") for the interrupt-immune render reason. */
+  conditionName?: string;
   note?: string;
 }
 
@@ -90,6 +92,7 @@ export const TALENT_BEHAVIORS: ITalentBehavior[] = [
     specs: ['Preservation Evoker'],
     kind: 'interrupt_immunity',
     conditionAuraId: '363916',
+    conditionName: 'Obsidian Scales',
     note: 'immune to interrupt/silence/pushback while Obsidian Scales is active',
   },
   {
@@ -98,6 +101,7 @@ export const TALENT_BEHAVIORS: ITalentBehavior[] = [
     specs: ['Mistweaver Monk'],
     kind: 'interrupt_immunity',
     conditionAuraId: '116680',
+    conditionName: 'Thunder Focus Tea',
     note: 'immune to silence/interrupt while Thunder Focus Tea is active (5s)',
   },
 ];
@@ -118,9 +122,13 @@ export function getTalentAvoidanceBuffs(): Array<[string, string]> {
  */
 export function getInterruptImmunityConditions(
   pvpTalentIds: string[] | undefined,
-): Array<{ conditionAuraId: string; name: string }> {
+): Array<{ conditionAuraId: string; name: string; conditionName: string }> {
   const talents = new Set(pvpTalentIds ?? []);
   return TALENT_BEHAVIORS.filter(
     (b) => b.kind === 'interrupt_immunity' && b.conditionAuraId && talents.has(b.talentSpellId),
-  ).map((b) => ({ conditionAuraId: b.conditionAuraId as string, name: b.name }));
+  ).map((b) => ({
+    conditionAuraId: b.conditionAuraId as string,
+    name: b.name,
+    conditionName: b.conditionName ?? '',
+  }));
 }
