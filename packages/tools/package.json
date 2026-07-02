@@ -14,6 +14,7 @@
     "start:buildUserPromptCorpus": "ts-node --files ./src/buildUserPromptCorpus.ts",
     "start:buildUserCompareCorpus": "ts-node --files ./src/buildUserCompareCorpus.ts",
     "start:collectBenchmarks": "ts-node --files ./src/collectBenchmarks.ts",
+    "start:collectLogs": "dotenv -- ts-node --files ./src/collectLogs.ts",
     "start:evalArchetypeInjection": "ts-node --files ./src/evalArchetypeInjection.ts",
     "start:exportAnalysisCaptures": "ts-node --files ./src/exportAnalysisCaptures.ts",
     "start:evalPromptCompare": "ts-node --files ./src/evalPromptCompare.ts",
