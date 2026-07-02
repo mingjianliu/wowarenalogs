@@ -22,7 +22,12 @@ export function loadAgentConfig(path: string): AgentConfig {
   } catch {
     throw new Error(`Config file not found or unreadable: ${path}`);
   }
-  const json = JSON.parse(raw) as Partial<AgentConfig>;
+  let json: Partial<AgentConfig>;
+  try {
+    json = JSON.parse(raw) as Partial<AgentConfig>;
+  } catch {
+    throw new Error(`Config error: invalid JSON in ${path}`);
+  }
   if (!json.wowDirectory || typeof json.wowDirectory !== 'string') {
     throw new Error(`Config error: "wowDirectory" (string) is required in ${path}`);
   }

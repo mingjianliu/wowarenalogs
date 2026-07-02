@@ -38,6 +38,12 @@ describe('loadAgentConfig', () => {
 
     expect(() => loadAgentConfig(join(dir(), 'missing.json'))).toThrow(/missing.json/);
   });
+
+  it('throws a descriptive error for malformed JSON', () => {
+    const p = join(dir(), 'bad.json');
+    writeFileSync(p, '{not json');
+    expect(() => loadAgentConfig(p)).toThrow(/invalid JSON.*bad\.json/);
+  });
 });
 
 describe('createAdapter', () => {
