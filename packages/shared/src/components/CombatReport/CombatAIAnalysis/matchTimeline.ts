@@ -575,6 +575,31 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     return '';
   }
 
+  // B139-P1: Obsidian Mettle (378444) makes the Preservation Evoker immune to interrupts/silences
+  // WHILE Obsidian Scales (363916) is active. It is a passive with no marker aura, so gate on the
+  // talent + the Obsidian Scales aura window. Used to correct the "enemy interrupts UP" note on the
+  // owner's channels — a kick that cannot land is not a risk.
+  const ownerHasObsidianMettle = new Set(owner.info?.pvpTalents ?? []).has('378444');
+  const obsidianScalesWindows: Array<{ from: number; to: number }> = [];
+  if (ownerHasObsidianMettle) {
+    let openFrom: number | null = null;
+    for (const a of owner.auraEvents ?? []) {
+      if (a.spellId !== '363916') continue;
+      if (a.logLine.event === LogEvent.SPELL_AURA_APPLIED || a.logLine.event === LogEvent.SPELL_AURA_REFRESH) {
+        if (openFrom === null) openFrom = a.timestamp;
+      } else if (a.logLine.event === LogEvent.SPELL_AURA_REMOVED && openFrom !== null) {
+        obsidianScalesWindows.push({ from: openFrom, to: a.timestamp });
+        openFrom = null;
+      }
+    }
+    if (openFrom !== null) obsidianScalesWindows.push({ from: openFrom, to: matchEndMs });
+  }
+  function ownerInterruptImmuneAt(timeSeconds: number): boolean {
+    if (!ownerHasObsidianMettle) return false;
+    const ms = matchStartMs + timeSeconds * 1000;
+    return obsidianScalesWindows.some((w) => ms >= w.from && ms <= w.to);
+  }
+
   for (const cd of ownerCDs) {
     // B112/B127: a big personal defensive that cannot be cast on an ally is self-only — force (self)
     // rendering so a self-buff (e.g. Obsidian Scales) logged against the caster's current enemy/ally
@@ -700,12 +725,17 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       // kicks down was not a kick.
       let interruptNote = '';
       if (CHANNELED_CD_SPELL_IDS.has(cd.spellId) && enemies && enemies.length > 0) {
-        const states = computeEnemyInterruptAvailability(enemies, matchStartMs + cast.timeSeconds * 1000);
-        const upKicks = states.filter((s) => s.cdRemainingSeconds === 0);
-        if (upKicks.length > 0) {
-          interruptNote = ` | enemy interrupts UP: ${upKicks.map((s) => `${s.spellName}/${s.spec}`).join(', ')}`;
-        } else if (states.length > 0) {
-          interruptNote = ' | no enemy interrupt available (all on CD)';
+        if (ownerInterruptImmuneAt(cast.timeSeconds)) {
+          // B139-P1: kicks can't land — Obsidian Mettle grants interrupt/silence immunity here.
+          interruptNote = ' | interrupt-immune (Obsidian Mettle + Obsidian Scales)';
+        } else {
+          const states = computeEnemyInterruptAvailability(enemies, matchStartMs + cast.timeSeconds * 1000);
+          const upKicks = states.filter((s) => s.cdRemainingSeconds === 0);
+          if (upKicks.length > 0) {
+            interruptNote = ` | enemy interrupts UP: ${upKicks.map((s) => `${s.spellName}/${s.spec}`).join(', ')}`;
+          } else if (states.length > 0) {
+            interruptNote = ' | no enemy interrupt available (all on CD)';
+          }
         }
       }
 
