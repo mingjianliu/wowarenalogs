@@ -42,8 +42,11 @@ const SIGNIFICANT_CC_DAMAGE = 30_000;
  * Seasonal maintenance: update IDs here when these abilities change.
  */
 const CC_AVOIDANCE_BUFF_SPELLS = new Map<string, string>([
-  // NOTE: Fade (586) intentionally excluded — it only drops threat and grants no CC
-  // immunity, so a CC that whiffs while Fade is up is coincidence, not avoidance.
+  // NOTE: Fade (586) itself is excluded — it only drops threat, no CC immunity. BUT the Phase Shift
+  // PvP talent (408557) makes Fade phase the priest out (untargetable ~1s), applying aura 408558 —
+  // which IS a real CC-avoidance window. 408558 only exists when the talent is taken, so listing the
+  // aura is self-gating (no pvpTalents check needed). B139-P0.
+  ['408558', 'Phase Shift'],
   ['1246965', 'Psychic Shroud'],
   ['377362', 'Precognition'],
   ['378464', 'Nullifying Shroud'],

@@ -511,6 +511,42 @@ describe('analyzePlayerCCAndTrinket — CC Avoidance', () => {
     expect(result.ccAvoidedInstances[0].avoidanceSpellId).toBe('377362');
   });
 
+  it('credits Phase Shift (408558) as CC avoidance — the talented-Fade phase-out window (B139-P0)', () => {
+    // Priest has the Phase Shift untargetable buff ('408558') active T+5s..T+6s (~1s window).
+    const phaseApply = makeAuraEvent(
+      LogEvent.SPELL_AURA_APPLIED,
+      '408558',
+      MATCH_START + 5_000,
+      'player-1',
+      'player-1',
+      'BUFF',
+    );
+    const phaseRemove = makeAuraEvent(
+      LogEvent.SPELL_AURA_REMOVED,
+      '408558',
+      MATCH_START + 6_000,
+      'player-1',
+      'player-1',
+      'BUFF',
+    );
+    // Enemy casts Polymorph ('118') at the priest at T+5.5s — inside the phase-out window.
+    const enemyCast = makeSpellCastEvent('118', MATCH_START + 5_500, 'player-1', 'Player', 'enemy-1', 'EnemyA');
+
+    const player = makeUnit('player-1', {
+      class: CombatUnitClass.Priest,
+      spec: CombatUnitSpec.Priest_Discipline,
+      auraEvents: [phaseApply, phaseRemove],
+    });
+    const enemy = makeEnemy('enemy-1', 'EnemyA');
+    enemy.spellCastEvents = [enemyCast as any];
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+
+    expect(result.ccAvoidedInstances).toHaveLength(1);
+    expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Phase Shift');
+    expect(result.ccAvoidedInstances[0].avoidanceSpellId).toBe('408558');
+  });
+
   it('does NOT credit Fade as CC avoidance (Fade only drops threat, grants no CC immunity)', () => {
     // Player has Fade ('586') active T+5s..T+15s
     const fadeApply = makeAuraEvent(
