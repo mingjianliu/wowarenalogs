@@ -6,6 +6,7 @@ import trinketItemIdsData from '../data/trinketItemIds.json';
 import { fmtTime, isHealerSpec, specToString } from './cooldowns';
 import { computeIncomingDR, IDRInfo } from './drAnalysis';
 import { distanceBetween, getUnitPositionAtTime, hasLineOfSight } from './losAnalysis';
+import { getTalentAvoidanceBuffs } from './talentBehaviors';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -41,26 +42,28 @@ const SIGNIFICANT_CC_DAMAGE = 30_000;
  * untargetable). Maps the buff's spell ID → display name shown as the avoidance reason.
  * Seasonal maintenance: update IDs here when these abilities change.
  */
+// Baseline (non-PvP-talent) immunity / reflect / untargetable buffs. NOTE: Fade (586) is intentionally NOT
+// here — baseline Fade only drops threat. Talent-granted avoidance buffs (Phase Shift, the Shrouds, Blessing
+// of Spellwarding, Peaceweaver, …) live in the B139 talentBehaviors catalog and are merged in below, so that
+// catalog is the single source for PvP-talent behavior.
 const CC_AVOIDANCE_BUFF_SPELLS = new Map<string, string>([
-  // NOTE: Fade (586) itself is excluded — it only drops threat, no CC immunity. BUT the Phase Shift
-  // PvP talent (408557) makes Fade phase the priest out (untargetable ~1s), applying aura 408558 —
-  // which IS a real CC-avoidance window. 408558 only exists when the talent is taken, so listing the
-  // aura is self-gating (no pvpTalents check needed). B139-P0.
-  ['408558', 'Phase Shift'],
-  ['1246965', 'Psychic Shroud'],
   ['377362', 'Precognition'],
-  ['378464', 'Nullifying Shroud'],
   ['23920', 'Spell Reflection'],
   ['354610', 'Glimpse'],
   ['227847', 'Bladestorm'],
   ['389774', 'Bladestorm'],
   ['642', 'Divine Shield'],
   ['1022', 'Blessing of Protection'],
-  ['204018', 'Blessing of Spellwarding'],
   ['45438', 'Ice Block'],
   ['186265', 'Aspect of the Turtle'],
   ['48707', 'Anti-Magic Shell'],
 ]);
+// B139: merge the talent-granted CC/magic-immunity avoidance buffs from the behavioral catalog. Self-gating
+// (each buff aura only exists when its talent is taken). Adds Peaceweaver (353319) and Phase Shift (408558),
+// Nullifying Shroud (378464), Psychic Shroud (1246965), Blessing of Spellwarding (204018).
+for (const [buffId, name] of getTalentAvoidanceBuffs()) {
+  CC_AVOIDANCE_BUFF_SPELLS.set(buffId, name);
+}
 
 const DRUID_FORM_BUFFS = new Map<string, string>([
   ['5487', 'Bear Form'],

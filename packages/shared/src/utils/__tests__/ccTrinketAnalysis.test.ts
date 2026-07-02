@@ -547,6 +547,42 @@ describe('analyzePlayerCCAndTrinket — CC Avoidance', () => {
     expect(result.ccAvoidedInstances[0].avoidanceSpellId).toBe('408558');
   });
 
+  it('credits Peaceweaver (353319) as CC avoidance — Revival magic-immunity window (B139 catalog)', () => {
+    // Mistweaver has the Peaceweaver magic-immunity buff ('353319') active T+5s..T+7s (~2s window).
+    const pwApply = makeAuraEvent(
+      LogEvent.SPELL_AURA_APPLIED,
+      '353319',
+      MATCH_START + 5_000,
+      'player-1',
+      'player-1',
+      'BUFF',
+    );
+    const pwRemove = makeAuraEvent(
+      LogEvent.SPELL_AURA_REMOVED,
+      '353319',
+      MATCH_START + 7_000,
+      'player-1',
+      'player-1',
+      'BUFF',
+    );
+    // Enemy casts Polymorph ('118') at the monk at T+6s — inside the immunity window.
+    const enemyCast = makeSpellCastEvent('118', MATCH_START + 6_000, 'player-1', 'Player', 'enemy-1', 'EnemyA');
+
+    const player = makeUnit('player-1', {
+      class: CombatUnitClass.Monk,
+      spec: CombatUnitSpec.Monk_Mistweaver,
+      auraEvents: [pwApply, pwRemove],
+    });
+    const enemy = makeEnemy('enemy-1', 'EnemyA');
+    enemy.spellCastEvents = [enemyCast as any];
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+
+    expect(result.ccAvoidedInstances).toHaveLength(1);
+    expect(result.ccAvoidedInstances[0].avoidanceSpellName).toBe('Peaceweaver');
+    expect(result.ccAvoidedInstances[0].avoidanceSpellId).toBe('353319');
+  });
+
   it('does NOT credit Fade as CC avoidance (Fade only drops threat, grants no CC immunity)', () => {
     // Player has Fade ('586') active T+5s..T+15s
     const fadeApply = makeAuraEvent(
