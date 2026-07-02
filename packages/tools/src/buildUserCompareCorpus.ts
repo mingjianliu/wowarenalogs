@@ -3,11 +3,12 @@ import { CombatUnitReaction, CombatUnitType, ICombatUnit } from '@wowarenalogs/p
 import fs from 'fs-extra';
 import path from 'path';
 
-import { buildComparativePrompt } from '../../shared/src/components/CombatReport/CombatAIAnalysis/comparativePrompt';
+import { buildExemplarLedPrompt } from '../../shared/src/components/CombatReport/CombatAIAnalysis/comparativePrompt.exemplar';
+import { MetricKey } from '../../shared/src/components/CombatReport/CombatAIAnalysis/metricRegistry';
+import { buildVerifiedComparison } from '../../shared/src/components/CombatReport/CombatAIAnalysis/verifiedComparison';
 import { isHealerSpec, specToString } from '../../shared/src/utils/cooldowns';
-import { buildMatchEmbeddingRecord } from '../../shared/src/utils/matchEmbeddingRecord';
-import { vectorizeMatch } from '../../shared/src/utils/vectorEmbedding';
-import { findNearestProMatchesLocal, loadReferenceModel } from '../../shared/src/utils/vectorSearch';
+import { buildMatchEmbeddingRecord, BuiltEmbeddingRecord } from '../../shared/src/utils/matchEmbeddingRecord';
+import { loadCellRecords } from '../../shared/src/utils/vectorSearch';
 import { parseLogText } from './printMatchPrompts';
 
 const LOGS_DIR = '/Users/mingjianliu/code/wowarenalogs/scratch/user-logs/wow';
@@ -16,6 +17,36 @@ const INDEX_FILE = path.join(WORK_DIR, 'index.json');
 const COMPARE_PROMPTS_DIR = path.join(WORK_DIR, 'compare-prompts');
 const COMPARE_DATA_DIR = path.join(WORK_DIR, 'compare-data');
 const COMPARE_INDEX_FILE = path.join(WORK_DIR, 'compare_index.json');
+
+// Mirror of the /api/compare exemplar assembly so the corpus matches production exactly.
+const MAX_PRO_CRISES = 6;
+
+/** One crisis sequence per distinct pro player, up to MAX_PRO_CRISES — real diversification. */
+function diversifiedProCrises(cell: { playerName: string; crisisEvents?: string[] }[]): string[] {
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const r of cell) {
+    if (out.length >= MAX_PRO_CRISES) break;
+    if (seen.has(r.playerName)) continue;
+    const c = (r.crisisEvents ?? []).find((s) => s && s.trim().length > 0);
+    if (!c) continue;
+    seen.add(r.playerName);
+    out.push(c);
+  }
+  return out;
+}
+
+/** Maps the user's computed metrics onto MetricKey (the record stores legacy `reactionLatency`). */
+function toUserMetrics(raw: BuiltEmbeddingRecord): Partial<Record<MetricKey, number | null>> {
+  return {
+    offensiveIndex: raw.offensiveIndex,
+    ccDensity: raw.ccDensity,
+    responseLatencySec: raw.reactionLatency,
+    defensiveOverlapRatio: raw.defensiveOverlapRatio,
+    effectiveCastRatio: raw.effectiveCastRatio,
+    ccAvoidanceRate: raw.ccAvoidanceRate,
+  };
+}
 
 async function main() {
   await fs.ensureDir(COMPARE_PROMPTS_DIR);
@@ -28,14 +59,7 @@ async function main() {
   }
 
   const index = await fs.readJson(INDEX_FILE);
-  console.log(`Loaded ${index.length} entries.`);
-
-  const model = await loadReferenceModel();
-  if (!model) {
-    console.error('Failed to load reference model.');
-    process.exit(1);
-  }
-  console.log('Reference model loaded successfully.');
+  console.log(`Loaded ${index.length} entries. Building EXEMPLAR-led prompts (matches /api/compare).`);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const compareEntries: any[] = [];
@@ -95,43 +119,40 @@ async function main() {
 
     const specDisplay = specToString(healer.spec);
     const raw = buildMatchEmbeddingRecord(combat, healer.name);
-    const embedding = vectorizeMatch(raw, model);
 
-    const neighbors = await findNearestProMatchesLocal(specDisplay, embedding, entry.bracket, 6);
-    const proNeighbors = neighbors.filter((n) => n.id !== entry.matchId && n.data.metrics != null).slice(0, 5);
-
-    if (proNeighbors.length < 1) {
-      console.warn(`  No pro neighbors found for ${entry.matchId}, skipping.`);
+    // Exemplar-led: the FULL spec+bracket cohort cell (not the nearest 5), same as /api/compare.
+    const cellRecords = (await loadCellRecords(specDisplay, entry.bracket)).filter((r) => r.matchId !== entry.matchId);
+    if (cellRecords.length < 1) {
+      console.warn(`  No cohort cell records for ${specDisplay}/${entry.bracket}, skipping.`);
       continue;
     }
 
-    const comparison = {
-      playerName: healer.name,
+    const vc = buildVerifiedComparison(cellRecords, toUserMetrics(raw), {
+      player: healer.name,
       spec: specDisplay,
-      userMetrics: {
-        offensiveIndex: raw.offensiveIndex,
-        ccDensity: raw.ccDensity,
-        reactionLatency: raw.reactionLatency,
-        defensiveOverlapRatio: raw.defensiveOverlapRatio,
-        effectiveCastRatio: raw.effectiveCastRatio,
-        ccAvoidanceRate: raw.ccAvoidanceRate,
-      },
-      userCrisisEvents: raw.rotations.crisisEvents,
-      nearestNeighbors: proNeighbors.map((n) => ({
-        distance: n.distance,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        metrics: n.data.metrics!,
-        crisisEvents: n.data.crisisEvents ?? [],
-      })),
+      bracket: entry.bracket,
+    });
+    if (vc.cohort.n < 1) {
+      console.warn(`  Degenerate cohort (n=0) for ${entry.matchId}, skipping.`);
+      continue;
+    }
+
+    const exemplarInput = {
+      player: healer.name,
+      spec: specDisplay,
+      bracket: entry.bracket,
+      userCrises: raw.rotations.crisisEvents ?? [],
+      proCrises: diversifiedProCrises(cellRecords),
+      vc,
     };
 
-    const prompt = buildComparativePrompt(comparison);
+    const prompt = buildExemplarLedPrompt(exemplarInput);
     const promptFilename = path.basename(entry.file);
     const promptPath = path.join(COMPARE_PROMPTS_DIR, promptFilename);
     const dataPath = path.join(COMPARE_DATA_DIR, `${ordinalStr}.json`);
 
     await fs.writeFile(promptPath, prompt, 'utf8');
-    await fs.writeJson(dataPath, comparison, { spaces: 2 });
+    await fs.writeJson(dataPath, exemplarInput, { spaces: 2 });
 
     compareEntries.push({
       ordinal: entry.ordinal,
@@ -143,11 +164,11 @@ async function main() {
       durationSec: entry.durationSec,
     });
 
-    console.log(`  Wrote compare prompt: ${promptFilename}`);
+    console.log(`  Wrote exemplar compare prompt: ${promptFilename}`);
   }
 
   await fs.writeJson(COMPARE_INDEX_FILE, compareEntries, { spaces: 2 });
-  console.log(`\nSuccessfully wrote ${compareEntries.length} compare prompt(s) to ${COMPARE_PROMPTS_DIR}`);
+  console.log(`\nSuccessfully wrote ${compareEntries.length} exemplar compare prompt(s) to ${COMPARE_PROMPTS_DIR}`);
   console.log(`Compare Index: ${COMPARE_INDEX_FILE}`);
 }
 
