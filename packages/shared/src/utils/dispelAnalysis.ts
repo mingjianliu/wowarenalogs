@@ -4,6 +4,7 @@ import { getEnglishSpellName, spellEffectData } from '../data/spellEffectData';
 import spellIdListsData from '../data/spellIdLists.json';
 import spellsData from '../data/spells.json';
 import { fmtTime, getPressureThreshold, specToString } from './cooldowns';
+import { hasOffensivePurgeTalent } from './talentBehaviors';
 import { getPlayerTalentedSpellIds, getSpecTalentTreeSpellIds } from './talents';
 
 export type DispelPriority = 'Critical' | 'High' | 'Medium' | 'Low';
@@ -262,6 +263,9 @@ export function canDefensiveCleanse(unit: ICombatUnit, dispelType: DispelType): 
  * talent gating (DH Consume Magic) and pet requirements (Warlock Felhunter).
  */
 export function canOffensivePurge(unit: ICombatUnit): boolean {
+  // B139: some specs gain an offensive purge only from a PvP talent — Preservation Evoker has no baseline
+  // offensive purge (Naturalize is a defensive ally-dispel), but Scouring Flame gives Fire Breath one.
+  if (hasOffensivePurgeTalent(unit.info?.pvpTalents)) return true;
   if (!OFFENSIVE_PURGERS.has(unit.spec)) return false;
 
   const specIdNum = parseInt(unit.spec, 10);
