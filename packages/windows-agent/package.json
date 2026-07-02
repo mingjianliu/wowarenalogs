@@ -1,0 +1,23 @@
+{
+  "name": "@wowarenalogs/windows-agent",
+  "version": "0.1.0",
+  "description": "Standalone Windows agent that streams WoW combat logs to cloud storage",
+  "main": "./src/index.ts",
+  "author": "WoW Arena Logs",
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "test": "npx tsdx test --passWithNoTests=false",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node22 --outfile=dist/wal-agent.js"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^6.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "esbuild": "^0.25.0",
+    "eslint-config-wowarenalogs": "*",
+    "typescript": "^4.9.5"
+  }
+}
