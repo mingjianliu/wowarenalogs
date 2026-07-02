@@ -3,24 +3,28 @@
 WoW arena combat logging and analysis platform. Desktop Electron app records local logs; web platform hosts match browsing, analytics, and AI-powered cooldown analysis.
 
 <monorepo_structure>
+
 ## Monorepo Structure
 
-NPM workspaces with 9 packages under `packages/`:
+NPM workspaces with 10 packages under `packages/`:
 
-| Package    | Type            | Purpose                                                                               |
-| ---------- | --------------- | ------------------------------------------------------------------------------------- |
-| `parser`   | Library         | WoW combat log parser. Performance critical. (TSDX, 200KB limit).                     |
-| `shared`   | Library         | UI components (React 19), GraphQL client, utilities, and static data.                 |
-| `web`      | Next.js 15 app  | Public website and AI analysis API routes.                                            |
-| `app`      | Electron 38 app | Desktop app. Loads `web` in a BrowserWindow; adds `window.wowarenalogs` IPC bridge.   |
-| `cloud`    | Cloud Functions | GCP serverless functions: log ingestion, parsing, Firestore writes, stat aggregation. |
-| `recorder` | Library         | Video recording via OBS/FFmpeg.                                                       |
-| `sql`      | ORM config      | Prisma schema + migrations for CockroachDB.                                           |
-| `tools`    | Scripts         | Data extraction, benchmarks, and AI prompt engineering tools.                         |
-| `linter`   | Config          | Shared ESLint config (`eslint-config-wowarenalogs`).                                  |
+| Package         | Type            | Purpose                                                                                |
+| --------------- | --------------- | -------------------------------------------------------------------------------------- |
+| `parser`        | Library         | WoW combat log parser. Performance critical. (TSDX, 200KB limit).                      |
+| `shared`        | Library         | UI components (React 19), GraphQL client, utilities, and static data.                  |
+| `web`           | Next.js 15 app  | Public website and AI analysis API routes.                                             |
+| `app`           | Electron 38 app | Desktop app. Loads `web` in a BrowserWindow; adds `window.wowarenalogs` IPC bridge.    |
+| `cloud`         | Cloud Functions | GCP serverless functions: log ingestion, parsing, Firestore writes, stat aggregation.  |
+| `recorder`      | Library         | Video recording via OBS/FFmpeg.                                                        |
+| `windows-agent` | Library         | Standalone Windows agent streaming combat logs to cloud storage. No workspace imports. |
+| `sql`           | ORM config      | Prisma schema + migrations for CockroachDB.                                            |
+| `tools`         | Scripts         | Data extraction, benchmarks, and AI prompt engineering tools.                          |
+| `linter`        | Config          | Shared ESLint config (`eslint-config-wowarenalogs`).                                   |
+
 </monorepo_structure>
 
 <core_commands>
+
 ## Core Commands
 
 ```bash
@@ -45,9 +49,11 @@ npm run -w @wowarenalogs/shared codegen
 # Generate Electron preload API (run after editing nativeBridge modules)
 npm run gen:app:preload
 ```
+
 </core_commands>
 
 <engineering_standards>
+
 ## Engineering Standards
 
 - **Zero Warnings:** `npm run lint` must have 0 warnings.
@@ -57,9 +63,10 @@ npm run gen:app:preload
 - **Isolation:** Never import `@wowarenalogs/app` in `web` or `shared`.
 - **Build on Edit:** If you edit `packages/parser/src`, run `npm run build:parser` to ensure dependents see the changes.
 - **Auto-Formatting:** After editing any file, run `npx prettier --write <file_path>` to ensure consistent formatting.
-</engineering_standards>
+  </engineering_standards>
 
 <tech_stack>
+
 ## Tech Stack
 
 - **Frontend**: React 19, Next.js 15 (Turbopack), TailwindCSS 3 + DaisyUI 2, Apollo Client 3.7, Pixi.js 8, Recharts 3
@@ -67,4 +74,4 @@ npm run gen:app:preload
 - **DB**: CockroachDB via Prisma 4.9
 - **Desktop**: Electron 38, Webpack 5
 - **Node**: 22+, npm 8.6.0+
-</tech_stack>
+  </tech_stack>
