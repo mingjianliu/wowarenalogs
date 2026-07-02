@@ -16,6 +16,7 @@
     "start:collectBenchmarks": "ts-node --files ./src/collectBenchmarks.ts",
     "start:collectLogs": "dotenv -- ts-node --files ./src/collectLogs.ts",
     "start:collectAndAnalyze": "dotenv -- ts-node --files ./src/collectAndAnalyze.ts",
+    "dashboard": "dotenv -- ts-node --files ./src/dashboard/server.ts",
     "start:evalArchetypeInjection": "ts-node --files ./src/evalArchetypeInjection.ts",
     "start:exportAnalysisCaptures": "ts-node --files ./src/exportAnalysisCaptures.ts",
     "start:evalPromptCompare": "ts-node --files ./src/evalPromptCompare.ts",
