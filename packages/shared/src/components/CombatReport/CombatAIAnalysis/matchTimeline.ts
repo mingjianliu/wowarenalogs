@@ -557,6 +557,24 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   // self-cancel/movement, without recomputing the find() per cast.
   const ownerCCSummary = ccTrinketSummaries.find((s) => s.playerName === owner.name);
 
+  // B145: an action taken while the owner is hard-CC'd (stun/incap) is NOT a free choice — the game
+  // allowed it because it was a usable-while-stunned defensive, a PvP trinket, or an immune channel
+  // (verified against raw logs: e.g. Emerald Communion channels through a full Hammer of Justice stun).
+  // Tag [YOU] [CD]/[CAST] lines with the CC so the model reads a forced/immune action as such rather
+  // than judging its timing as elective.
+  const CC_VERB: Record<string, string> = { Stun: 'stunned', Incapacitate: 'incapacitated' };
+  function ownerHardCcTagAt(timeSeconds: number): string {
+    if (!ownerCCSummary) return '';
+    for (const cc of ownerCCSummary.ccInstances) {
+      const verb = cc.drInfo ? CC_VERB[cc.drInfo.category] : undefined;
+      if (!verb) continue;
+      if (timeSeconds > cc.atSeconds && timeSeconds < cc.atSeconds + cc.durationSeconds) {
+        return ` [while ${verb}: ${cc.spellName}]`;
+      }
+    }
+    return '';
+  }
+
   for (const cd of ownerCDs) {
     // B112/B127: a big personal defensive that cannot be cast on an ally is self-only — force (self)
     // rendering so a self-buff (e.g. Obsidian Scales) logged against the caster's current enemy/ally
@@ -693,7 +711,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
 
       addEntry(
         cast.timeSeconds,
-        `${fmtTime(cast.timeSeconds)}  ${prefix}   ${displayNameWithChannel}${targetPart}${dampeningNote}${cheaperNote}${groundingNote}${interruptNote}`,
+        `${fmtTime(cast.timeSeconds)}  ${prefix}   ${displayNameWithChannel}${targetPart}${dampeningNote}${cheaperNote}${groundingNote}${interruptNote}${ownerHardCcTagAt(cast.timeSeconds)}`,
         ...extraLines,
       );
     }
@@ -885,7 +903,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         const promotedDisplayName = promotedRole ? `${displayName} [${promotedRole}]` : displayName;
         addEntry(
           timeSeconds,
-          `${fmtTime(timeSeconds)}  [YOU] [CD]   ${promotedDisplayName}${promotedTargetPart}${totemNote}${stasisAnnotation}${purgeNote}`,
+          `${fmtTime(timeSeconds)}  [YOU] [CD]   ${promotedDisplayName}${promotedTargetPart}${totemNote}${stasisAnnotation}${purgeNote}${ownerHardCcTagAt(timeSeconds)}`,
           requestSnapshotPlaceholder(timeSeconds, true),
         );
         continue;
