@@ -180,13 +180,26 @@ export function detectHealingGaps(
 
   const results: IHealingGap[] = [];
 
+  // B137: a dead healer cannot be "inactive". Bound every gap by the healer's first in-match death:
+  // the tail gap otherwise runs to match end (charging inactivity "while a teammate was under
+  // pressure" during seconds the healer was already dead), and a pre-death HoT ticking post-mortem
+  // can even open a phantom gap that STARTS after the death.
+  const deathTimestamps = healer.deathRecords
+    .map((r) => r.timestamp)
+    .filter((ts) => ts >= matchStartMs && ts <= matchEndMs);
+  const firstDeathMs = deathTimestamps.length ? Math.min(...deathTimestamps) : Infinity;
+
   for (const { fromMs, toMs } of rawGaps) {
     // B19: skip gaps at match start — pre-combat initialization artifact
     if (fromMs - matchStartMs < MATCH_START_GRACE_MS) continue;
 
+    // B137: drop gaps that begin at/after the healer's death; clip gaps that run into it.
+    if (firstDeathMs <= fromMs) continue;
+    const effectiveToMs = firstDeathMs < toMs ? firstDeathMs : toMs;
+
     // CC check: how much of the gap was the healer unable to cast?
-    const ccMs = getCCCoveredMs(healer, fromMs, toMs, enemyIds);
-    const freeCastMs = toMs - fromMs - ccMs;
+    const ccMs = getCCCoveredMs(healer, fromMs, effectiveToMs, enemyIds);
+    const freeCastMs = effectiveToMs - fromMs - ccMs;
     if (freeCastMs < MIN_FREE_CAST_MS) continue;
 
     // Pressure check: did any teammate take significant damage in this window?
@@ -197,7 +210,7 @@ export function detectHealingGaps(
 
     for (const teammate of teammates) {
       const dmg = teammate.damageIn
-        .filter((d) => d.logLine.timestamp >= fromMs && d.logLine.timestamp <= toMs)
+        .filter((d) => d.logLine.timestamp >= fromMs && d.logLine.timestamp <= effectiveToMs)
         .reduce((sum, d) => sum + Math.abs(d.effectiveAmount), 0);
 
       if (dmg >= getGapPressureThreshold(teammate)) anyUnderPressure = true;
@@ -212,8 +225,8 @@ export function detectHealingGaps(
 
     results.push({
       fromSeconds: (fromMs - matchStartMs) / 1000,
-      toSeconds: (toMs - matchStartMs) / 1000,
-      durationSeconds: (toMs - fromMs) / 1000,
+      toSeconds: (effectiveToMs - matchStartMs) / 1000,
+      durationSeconds: (effectiveToMs - fromMs) / 1000,
       freeCastSeconds: freeCastMs / 1000,
       mostDamagedName,
       mostDamagedSpec,

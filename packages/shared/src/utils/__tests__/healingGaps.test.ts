@@ -88,6 +88,51 @@ describe('healingGaps — main detection', () => {
     const res = detectHealingGaps(healer as any, [healer, friend] as any, [makeUnit('e')], makeCombat());
     expect(res).toHaveLength(0);
   });
+
+  it('clips the tail gap at the healer death — no inactivity charged after death (B137)', () => {
+    // Healer's last cast is at 10s; it dies at 20s. The tail gap would otherwise run to match end
+    // (60s) and charge 50s of inactivity + count post-death damage. It must clip at the 20s death.
+    const healer = makeUnit('h', {
+      spec: CombatUnitSpec.Priest_Holy,
+      spellCastEvents: [makeSpellCastEvent('2061', MATCH_START + 10_000, 'f1', 'Friend', 'h', 'Priest')],
+    });
+    (healer as any).deathRecords = [{ timestamp: MATCH_START + 20_000 }];
+
+    const friend = makeUnit('f1', {
+      spec: CombatUnitSpec.Warrior_Arms,
+      damageIn: [
+        { logLine: { timestamp: MATCH_START + 15_000 }, effectiveAmount: -100_000 }, // before death — counts
+        { logLine: { timestamp: MATCH_START + 30_000 }, effectiveAmount: -200_000 }, // after death — excluded
+      ] as any,
+    });
+    const enemy = makeUnit('e1');
+
+    const res = detectHealingGaps(healer as any, [healer, friend] as any, [enemy] as any, makeCombat());
+    expect(res).toHaveLength(1);
+    expect(res[0].toSeconds).toBe(20); // clipped at the death, not match end (60s)
+    expect(res[0].durationSeconds).toBe(10);
+    expect(res[0].mostDamagedAmount).toBe(100_000); // the 200k post-death hit is excluded
+  });
+
+  it('drops a phantom tail gap opened by a post-death HoT tick (B137)', () => {
+    // Healer's last cast is 10s; it dies at 15s; a pre-death HoT ticks at 18s (post-mortem), which
+    // would otherwise start a phantom gap 18s -> match end. That gap begins after death and must be
+    // dropped entirely, even though the teammate is hammered afterward.
+    const healer = makeUnit('h', {
+      spec: CombatUnitSpec.Monk_Mistweaver,
+      spellCastEvents: [makeSpellCastEvent('2061', MATCH_START + 10_000, 'f1', 'Friend', 'h', 'Monk')],
+    });
+    (healer as any).deathRecords = [{ timestamp: MATCH_START + 15_000 }];
+    (healer as any).healOut = [{ logLine: { timestamp: MATCH_START + 18_000 } }]; // Renewing Mist tick post-death
+
+    const friend = makeUnit('f1', {
+      spec: CombatUnitSpec.Warrior_Arms,
+      damageIn: [{ logLine: { timestamp: MATCH_START + 30_000 }, effectiveAmount: -300_000 }] as any, // all post-death
+    });
+
+    const res = detectHealingGaps(healer as any, [healer, friend] as any, [makeUnit('e1')] as any, makeCombat());
+    expect(res).toHaveLength(0); // no inactivity charged — the only pressure is after the healer died
+  });
 });
 
 describe('healingGaps — formatting', () => {
