@@ -11,7 +11,6 @@ import {
   getUnitHpAtTimestamp,
   IDamageBucket,
   IMajorCooldownInfo,
-  isDeathPassiveCD,
   isSelfOnlyDefensive,
   isTeamHealCD,
 } from '../../../utils/cooldowns';
@@ -871,8 +870,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       // as filler casts when they are significant cooldown activations.
       const effectData = spellEffectData[e.spellId];
       const cdSeconds = effectData?.cooldownSeconds ?? effectData?.charges?.chargeCooldownSeconds ?? 0;
-      // B144: never promote a death-triggered passive (Spirit of Redemption) to a [YOU] [CD].
-      if (cdSeconds >= 30 && !isDeathPassiveCD(e.spellId)) {
+      if (cdSeconds >= 30) {
         flushFold();
         // B112/B127: apply the same self-only override here (this promotion path is where MW/Evoker
         // throughput CDs render). B113/B130: append the role tag so the model does not invent mechanics.
