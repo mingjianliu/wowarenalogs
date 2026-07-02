@@ -3,6 +3,9 @@ import { dirname, join, relative, sep } from 'path';
 
 import { StorageAdapter } from './StorageAdapter';
 
+// Per-call unique ID for temp files to prevent race conditions in concurrent puts
+let nextTmpId = 0;
+
 /**
  * Filesystem-backed adapter: keys map to files under rootDir. Used for
  * GCP-free end-to-end testing (agent and collector share a local directory)
@@ -18,7 +21,7 @@ export class LocalDirStorageAdapter implements StorageAdapter {
   async put(key: string, body: Buffer): Promise<void> {
     const filePath = this.pathOf(key);
     await fs.mkdir(dirname(filePath), { recursive: true });
-    const tmp = `${filePath}.tmp-${process.pid}`;
+    const tmp = `${filePath}.tmp-${process.pid}-${nextTmpId++}`;
     await fs.writeFile(tmp, body);
     await fs.rename(tmp, filePath); // atomic publish, mirrors object-store semantics
   }
