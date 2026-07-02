@@ -79,6 +79,7 @@
 </div>
 <script>
   const $ = (id) => document.getElementById(id);
+  const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
   const ago = (iso) => {
     if (!iso) return 'never';
     const s = Math.round((Date.now() - new Date(iso).getTime()) / 1000);
@@ -92,15 +93,15 @@
           .map((h) => {
             const staleMs = Date.now() - new Date(h.lastFlushAt).getTime();
             const cls = staleMs < 10 * 60e3 ? 'ok' : 'warn';
-            return `<p class="${staleMs > 60 * 60e3 ? 'stale' : ''}"><b>${h.hostname}</b>
+            return `<p class="${staleMs > 60 * 60e3 ? 'stale' : ''}"><b>${esc(h.hostname)}</b>
             <span class="${cls}">last streamed ${ago(h.lastFlushAt)}</span>
-            ${h.activeFile ? `— ${h.activeFile} @ ${h.offset}` : ''}
-            ${h.lastError ? `<span class="err"> err: ${h.lastError}</span>` : ''}</p>`;
+            ${h.activeFile ? `— ${esc(h.activeFile)} @ ${esc(h.offset)}` : ''}
+            ${h.lastError ? `<span class="err"> err: ${esc(h.lastError)}</span>` : ''}</p>`;
           })
           .join('')
       : '<p class="warn">no agent heartbeat found</p>';
     $('collector').innerHTML = s.collector
-      ? `<p>phase <b>${s.collector.phase}</b> (${ago(s.collector.updatedAt)}) — ${s.collector.detail}</p>`
+      ? `<p>phase <b>${esc(s.collector.phase)}</b> (${ago(s.collector.updatedAt)}) — ${esc(s.collector.detail)}</p>`
       : '<p class="warn">no collector status yet</p>';
     $('run').disabled = s.running;
     $('runmsg').textContent = s.running ? 'running…' : '';
@@ -116,10 +117,10 @@
           .reverse()
           .map(
             (x) => `<tr>
-          <td>${ago(x.finishedAt)}</td><td>${x.segmentsFetched}</td><td>${x.bytesAppended}</td>
-          <td>${x.filesUpdated.length}</td>
-          <td class="${x.gaps.length ? 'warn' : ''}">${x.gaps.length}</td>
-          <td class="${x.error ? 'err' : 'ok'}">${x.error ?? 'exit ' + x.analysisExitCode}</td></tr>`,
+          <td>${ago(x.finishedAt)}</td><td>${esc(x.segmentsFetched)}</td><td>${esc(x.bytesAppended)}</td>
+          <td>${esc(x.filesUpdated.length)}</td>
+          <td class="${x.gaps.length ? 'warn' : ''}">${esc(x.gaps.length)}</td>
+          <td class="${x.error ? 'err' : 'ok'}">${esc(x.error ?? 'exit ' + x.analysisExitCode)}</td></tr>`,
           )
           .join('') +
         `</table><p>reports: <code id="rd"></code></p>`

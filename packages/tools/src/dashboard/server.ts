@@ -47,7 +47,8 @@ const server = http.createServer((req, res) => {
     if (req.method === 'GET' && req.url === '/') {
       res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' }).end(PAGE);
     } else if (req.method === 'GET' && req.url === '/api/status') {
-      res.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify(await buildStatus()));
+      const body = JSON.stringify(await buildStatus());
+      res.writeHead(200, { 'content-type': 'application/json' }).end(body);
     } else if (req.method === 'POST' && req.url === '/api/run') {
       if (fs.pathExistsSync(path.join(syncDirPath(), 'run.lock'))) {
         res.writeHead(409, { 'content-type': 'application/json' }).end(JSON.stringify({ error: 'already running' }));
@@ -61,7 +62,10 @@ const server = http.createServer((req, res) => {
       res.writeHead(404).end('not found');
     }
   })().catch((e) => {
-    res.writeHead(500, { 'content-type': 'application/json' }).end(JSON.stringify({ error: String(e) }));
+    if (!res.headersSent) {
+      res.writeHead(500, { 'content-type': 'application/json' });
+    }
+    res.end(JSON.stringify({ error: String(e) }));
   });
 });
 
