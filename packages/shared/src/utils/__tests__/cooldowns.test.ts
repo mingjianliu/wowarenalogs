@@ -9,6 +9,8 @@ import {
 
 import {
   annotateDefensiveTimings,
+  CD_ROLE_TAGS,
+  cdRoleTag,
   computePressureWindows,
   detectOverlappedDefensives,
   detectPanicDefensives,
@@ -22,7 +24,9 @@ import {
   IMajorCooldownInfo,
   isHealerSpec,
   isMeleeSpec,
+  isSelfOnlyDefensive,
   isTeamHealCD,
+  MAJOR_DEFENSIVE_IDS,
   specToString,
 } from '../cooldowns';
 import { makeAdvancedAction, makeCombat, makeDamageEvent, makeSpellCastEvent, makeUnit } from './testHelpers';
@@ -1279,5 +1283,79 @@ describe('findCheaperDefensiveAlternatives (review C2)', () => {
       expect(isTeamHealCD('642')).toBe(false); // Divine Shield — self defensive
       expect(isTeamHealCD('')).toBe(false);
     });
+  });
+});
+
+// ─── isSelfOnlyDefensive (B112/B127) ──────────────────────────────────────────
+
+describe('isSelfOnlyDefensive', () => {
+  // Self-only big defensives: present in MAJOR_DEFENSIVE_IDS but NOT ally-castable.
+  const BARKSKIN = '22812';
+  const DIVINE_SHIELD = '642';
+  const ICE_BLOCK = '45438';
+  // External (ally-castable) big defensives: present in BOTH sets → not self-only.
+  const PAIN_SUPPRESSION = '33206';
+  const IRONBARK = '102342';
+  const BLESSING_OF_SACRIFICE = '6940';
+  const LIFE_COCOON = '116849';
+
+  it('returns true for self-only big defensives (major, not ally-castable)', () => {
+    expect(isSelfOnlyDefensive(BARKSKIN)).toBe(true);
+    expect(isSelfOnlyDefensive(DIVINE_SHIELD)).toBe(true);
+    expect(isSelfOnlyDefensive(ICE_BLOCK)).toBe(true);
+  });
+
+  it('returns false for externals that CAN be cast on an ally', () => {
+    expect(isSelfOnlyDefensive(PAIN_SUPPRESSION)).toBe(false);
+    expect(isSelfOnlyDefensive(IRONBARK)).toBe(false);
+    expect(isSelfOnlyDefensive(BLESSING_OF_SACRIFICE)).toBe(false);
+    expect(isSelfOnlyDefensive(LIFE_COCOON)).toBe(false);
+  });
+
+  it('returns false for spells that are not major defensives at all (conservative)', () => {
+    expect(isSelfOnlyDefensive('12472')).toBe(false); // Icy Veins — offensive
+    expect(isSelfOnlyDefensive('0')).toBe(false);
+    expect(isSelfOnlyDefensive('not-a-real-id')).toBe(false);
+  });
+
+  it('only ever returns true for ids that are in MAJOR_DEFENSIVE_IDS', () => {
+    // Definitional guard: an external missing from the ally-castable list must never be
+    // mis-flagged as self-only unless it is genuinely a tracked major defensive.
+    for (const id of [BARKSKIN, DIVINE_SHIELD, ICE_BLOCK]) {
+      expect(MAJOR_DEFENSIVE_IDS.has(id)).toBe(true);
+    }
+    expect(isSelfOnlyDefensive('12345')).toBe(false);
+    expect(MAJOR_DEFENSIVE_IDS.has('12345')).toBe(false);
+  });
+});
+
+// ─── cdRoleTag / CD_ROLE_TAGS (B113/B130) ─────────────────────────────────────
+
+describe('cdRoleTag', () => {
+  it('returns the tagged role descriptor for a known throughput/modifier CD', () => {
+    expect(cdRoleTag('388615')).toBe('mana+heal CD'); // Restoral
+    expect(cdRoleTag('325197')).toBe('healing CD'); // Invoke Chi-Ji
+    expect(cdRoleTag('116680')).toBe('heal amplifier'); // Thunder Focus Tea
+    expect(cdRoleTag('357170')).toBe('ally heal-over-time'); // Time Dilation
+    expect(cdRoleTag('370553')).toBe('cast-time modifier'); // Tip the Scales
+    expect(cdRoleTag('358267')).toBe('mobility'); // Hover
+  });
+
+  it('returns undefined for an untagged spell id', () => {
+    expect(cdRoleTag('22812')).toBeUndefined(); // Barkskin — a defensive, no role tag
+    expect(cdRoleTag('0')).toBeUndefined();
+    expect(cdRoleTag('not-a-real-id')).toBeUndefined();
+  });
+
+  it('reads through CD_ROLE_TAGS (same source of truth)', () => {
+    for (const [id, tag] of Object.entries(CD_ROLE_TAGS)) {
+      expect(cdRoleTag(id)).toBe(tag);
+    }
+  });
+
+  it('has non-empty role descriptors for every tagged CD', () => {
+    for (const tag of Object.values(CD_ROLE_TAGS)) {
+      expect(tag.length).toBeGreaterThan(0);
+    }
   });
 });
