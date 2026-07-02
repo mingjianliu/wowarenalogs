@@ -73,3 +73,17 @@ test('no metric on the worse side → insufficient-data anchor, no crash', () =>
   const p = buildExemplarLedPrompt({ ...base, vc: mkVC({ offensiveIndex: stat(1.0, 0.14) }) });
   expect(p).toContain('insufficient data for a percentile anchor');
 });
+
+test('anchors the pro-crisis denominator (M) so the model cannot invent a larger total', () => {
+  const p = buildExemplarLedPrompt({
+    ...base,
+    proCrises: [
+      'At 42s (Teammate 39%): Riptide -> Healing Wave',
+      'At 61s (Teammate 30%): Natures Swiftness -> Healing Surge',
+      'At 88s (Teammate 35%): Healing Tide Totem',
+    ],
+    vc: mkVC({ offensiveIndex: stat(0.3, 0.14) }),
+  });
+  expect(p).toContain('3 shown — cite pro counts as "N of 3"');
+  expect(p).toContain('there are 3 pro crises shown, so say "N of 3", never a larger total');
+});

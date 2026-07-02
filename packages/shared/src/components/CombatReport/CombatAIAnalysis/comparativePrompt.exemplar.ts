@@ -87,7 +87,8 @@ export function buildExemplarLedPrompt(x: ExemplarInput): string {
   const userBlock = x.userCrises.length
     ? x.userCrises.map((c) => `- ${c}`).join('\n')
     : '- No <40% HP crisis events recorded this game.';
-  const proBlock = x.proCrises.length
+  const proCount = x.proCrises.length;
+  const proBlock = proCount
     ? x.proCrises.map((c) => `- ${c}`).join('\n')
     : '- No comparable pro crisis responses available.';
   const standing = renderStanding(pickAnchor(x.vc));
@@ -100,7 +101,7 @@ export function buildExemplarLedPrompt(x: ExemplarInput): string {
 ### Your crisis responses (teammate <40% HP → what you cast):
 ${userBlock}
 
-### What comparable pros did in similar crises (real, server-provided sequences — do NOT invent others):
+### What comparable pros did in similar crises${proCount ? ` (${proCount} shown — cite pro counts as "N of ${proCount}")` : ''} (real, server-provided sequences — do NOT invent others):
 ${proBlock}
 
 ### ${standing.header}
@@ -109,7 +110,7 @@ ${standing.body}
 ### Task:
 Contrast the player's crisis responses with the pro sequences above and give the single highest-value change. Follow these rules exactly:
 - Cite ONLY spells that appear in the sequences above, and ONLY the number(s) in the verified-standing line — never state a percentile, count, or spell not shown here.
-- Do NOT use absolute quantifiers about the pros ("always", "never", "every", "consistently", "far more often"). Describe only what the shown sequences literally contain — e.g. "in 2 of the 3 pro crises shown".
+- Do NOT use absolute quantifiers about the pros ("always", "never", "every", "consistently", "far more often"). Describe only what the shown sequences literally contain, and use the EXACT number of shown pro crises as the denominator${proCount ? ` — there are ${proCount} pro crises shown, so say "N of ${proCount}", never a larger total` : ''}. E.g. "in 2 of the ${proCount || 'N'} pro crises shown".
 - "Your crisis responses" are the PLAYER's own casts; the pro sequences are a separate group — never attribute the player's casts to a pro or vice versa.${contextRule}
 Output Markdown with a "Crisis Management" header.`;
 }
