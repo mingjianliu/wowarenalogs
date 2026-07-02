@@ -138,6 +138,25 @@ export const PASSIVE_SPELL_BLOCKLIST = new Set([
 ]);
 
 /**
+ * B144: Spirit of Redemption is a DEATH-TRIGGERED ghost form, not a proactively-cast cooldown. Its
+ * spell data carries a 120s "cooldown", so it would otherwise be promoted to a `[YOU] [CD]` (rendered
+ * at ~100% HP because ghosts read as full HP), misleading the model into thinking a defensive was spent
+ * at full health while the priest was actually dead. The death → SoR state is already surfaced via
+ * spiritOfRedemptionIntervals (`:ghost` in [STATE]), so exclude these ids from the major-CD list.
+ */
+const DEATH_PASSIVE_SPELL_IDS = new Set<string>([
+  '215769', // Spirit of Redemption (ability / 120s internal CD)
+  '27827', // Spirit of Redemption (aura/form)
+  '20711', // Spirit of Redemption
+  '27792', // Spirit of Redemption (form buff)
+]);
+
+/** B144: true for death-triggered passives (Spirit of Redemption) that must never render as a `[YOU] [CD]`. */
+export function isDeathPassiveCD(spellId: string): boolean {
+  return DEATH_PASSIVE_SPELL_IDS.has(spellId);
+}
+
+/**
  * Spec-exclusive spells: if a spell ID appears here, it is only valid for the listed specs.
  * Any other spec that shares the same class will have this spell filtered out.
  * Covers all tagged (Offensive/Defensive/Control) spells in classMetadata that are
@@ -421,6 +440,8 @@ export function extractMajorCooldowns(unit: ICombatUnit, combat: AtomicArenaComb
   const seen = new Set<string>();
   const majorSpells = classData.abilities.filter((spell) => {
     if (seen.has(spell.spellId)) return false;
+    if (DEATH_PASSIVE_SPELL_IDS.has(spell.spellId)) return false; // B144: SoR is a death form, not a CD
+
     if (spell.tags.length === 0) return false;
     const effectData = spellEffectData[spell.spellId];
     if (!effectData) return false;
