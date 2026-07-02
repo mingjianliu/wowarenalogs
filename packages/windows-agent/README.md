@@ -25,6 +25,9 @@ only after upload ack. Design: `docs/superpowers/specs/2026-07-02-log-streaming-
    }
    }
 
+   The file name must end in `.config.json` — the agent stores its resume
+   checkpoint next to it as `<same-prefix>.state.json`.
+
 4. GCP setup (once): create a private bucket; create a service account with
    ONLY `roles/storage.objectCreator` on that bucket; download its JSON key to
    `C:\wal-agent\service-account.json`. Add a 30-day lifecycle-delete rule on

@@ -70,6 +70,11 @@ async function flushBatch(opts: {
 
 async function main(): Promise<void> {
   const configPath = argValue('--config') ?? 'wal-agent.config.json';
+  if (!/\.config\.json$/.test(configPath)) {
+    throw new Error(
+      `Config file must be named *.config.json (got "${configPath}") — the agent derives its state file from that suffix`,
+    );
+  }
   const config = loadAgentConfig(configPath);
   const adapter = createAdapter(config.storage);
   const logsDir = join(config.wowDirectory, 'Logs');
@@ -92,10 +97,14 @@ async function main(): Promise<void> {
   });
 
   // First-run / restart seed: recent files may have grown while we were off.
-  const entries = readdirSync(logsDir).map((name) => ({
-    name,
-    mtimeMs: statSync(join(logsDir, name)).mtimeMs,
-  }));
+  const entries: Array<{ name: string; mtimeMs: number }> = [];
+  for (const name of readdirSync(logsDir)) {
+    try {
+      entries.push({ name, mtimeMs: statSync(join(logsDir, name)).mtimeMs });
+    } catch {
+      // File vanished between readdir and stat (AV/cleanup race) — skip it.
+    }
+  }
   for (const f of selectInitialFiles(entries, Date.now(), config.ignoreOlderDays)) {
     watcher.handleEvent('change', f);
   }
