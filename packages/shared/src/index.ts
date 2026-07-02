@@ -14,6 +14,8 @@ export {
   getAnalyticsSessionId,
 } from './utils/analytics';
 export { findHeroTalent } from './utils/talents';
+export { AI_MODEL_OPTIONS, DEFAULT_AI_MODEL, resolveAIModel } from './utils/aiModels';
+export type { AIModelOption } from './utils/aiModels';
 export type { INativeBridge } from './types/nativeBridge';
 export { FirestoreNextAuthAdapter } from './utils/FirestoreNextAuthAdapter';
 export type { ICombatDataStub } from './graphql-server/types/index';

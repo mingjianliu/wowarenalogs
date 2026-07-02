@@ -180,10 +180,11 @@ export function CombatAIAnalysis() {
     (async () => {
       try {
         const apiKey = (await window.wowarenalogs?.settings?.getAnthropicApiKey?.()) ?? undefined;
+        const model = (await window.wowarenalogs?.settings?.getAnthropicModel?.()) ?? undefined;
         const r = await fetch('/api/compare', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ matchId: combatId, apiKey, variant: 'exemplar' }),
+          body: JSON.stringify({ matchId: combatId, apiKey, model, variant: 'exemplar' }),
         });
         const body = (await r.json()) as {
           verifiedComparison?: VerifiedComparison;
@@ -210,10 +211,11 @@ export function CombatAIAnalysis() {
     const fetchPromise: Promise<AnalysisResult> = (async () => {
       const matchContext = buildMatchContext(combat, friends, enemies);
       const apiKey = (await window.wowarenalogs?.settings?.getAnthropicApiKey?.()) ?? undefined;
+      const model = (await window.wowarenalogs?.settings?.getAnthropicModel?.()) ?? undefined;
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ matchContext, apiKey, findingsJson: true, matchId: combatId }),
+        body: JSON.stringify({ matchContext, apiKey, model, findingsJson: true, matchId: combatId }),
       });
       const body = (await res.json()) as {
         analysis?: string;

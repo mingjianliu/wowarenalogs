@@ -1,6 +1,13 @@
 'use client';
 
-import { features, getAnalyticsDeviceId, LoadingScreen, useClientContext } from '@wowarenalogs/shared';
+import {
+  AI_MODEL_OPTIONS,
+  DEFAULT_AI_MODEL,
+  features,
+  getAnalyticsDeviceId,
+  LoadingScreen,
+  useClientContext,
+} from '@wowarenalogs/shared';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FaDiscord, FaPatreon } from 'react-icons/fa';
 
@@ -14,6 +21,7 @@ export default function SettingsPage() {
   const [featureCode, setFeatureCode] = useState('');
   const [sentryId, setSentryId] = useState('');
   const [anthropicKey, setAnthropicKey] = useState('');
+  const [anthropicModel, setAnthropicModel] = useState(DEFAULT_AI_MODEL);
   const [blizzardClientId, setBlizzardClientId] = useState('');
   const [blizzardClientSecret, setBlizzardClientSecret] = useState('');
   const [keySaved, setKeySaved] = useState(false);
@@ -56,6 +64,7 @@ export default function SettingsPage() {
     setSentryId(getAnalyticsDeviceId() || '');
     window.wowarenalogs.settings?.getSettings?.().then((s) => {
       if (s?.anthropicApiKey) setAnthropicKey(s.anthropicApiKey);
+      if (s?.anthropicModel) setAnthropicModel(s.anthropicModel);
       if (s?.blizzardClientId) setBlizzardClientId(s.blizzardClientId);
       if (s?.blizzardClientSecret) setBlizzardClientSecret(s.blizzardClientSecret);
     });
@@ -216,7 +225,12 @@ export default function SettingsPage() {
             disabled={!anthropicKey.trim()}
             onClick={() => {
               window.wowarenalogs.settings
-                ?.saveSettings?.({ anthropicApiKey: anthropicKey.trim(), blizzardClientId, blizzardClientSecret })
+                ?.saveSettings?.({
+                  anthropicApiKey: anthropicKey.trim(),
+                  anthropicModel,
+                  blizzardClientId,
+                  blizzardClientSecret,
+                })
                 .then(() => {
                   setKeySaved(true);
                   setTimeout(() => setKeySaved(false), 2000);
@@ -226,6 +240,26 @@ export default function SettingsPage() {
             {keySaved ? 'Saved!' : 'Save'}
           </button>
         </div>
+        <label className="block text-sm font-semibold mb-1">Model</label>
+        <div className="text-sm opacity-60">
+          Used for match analysis and the healer comparison report. Saved immediately.
+        </div>
+        <select
+          className="select select-sm select-bordered w-full max-w-md"
+          value={anthropicModel}
+          onChange={(e) => {
+            const value = e.target.value;
+            setAnthropicModel(value);
+            window.wowarenalogs.settings?.setAnthropicModel?.(value);
+          }}
+        >
+          {AI_MODEL_OPTIONS.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.label}
+              {m.id === DEFAULT_AI_MODEL ? ' (default)' : ''} — {m.pricingHint}
+            </option>
+          ))}
+        </select>
       </div>
       <div className="divider" />
       <div className="flex flex-col gap-2">
@@ -262,6 +296,7 @@ export default function SettingsPage() {
             window.wowarenalogs.settings
               ?.saveSettings?.({
                 anthropicApiKey: anthropicKey,
+                anthropicModel,
                 blizzardClientId: blizzardClientId.trim(),
                 blizzardClientSecret: blizzardClientSecret.trim(),
               })

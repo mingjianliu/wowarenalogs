@@ -16,6 +16,7 @@ import {
   buildVerifiedComparison,
   VerifiedComparison,
 } from '../../../shared/src/components/CombatReport/CombatAIAnalysis/verifiedComparison';
+import { resolveAIModel } from '../../../shared/src/utils/aiModels';
 import { specToString } from '../../../shared/src/utils/cooldowns';
 import {
   buildMatchEmbeddingRecord,
@@ -222,16 +223,20 @@ function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
   });
 }
 
-async function generateReport(apiKey: string, prompt: string): Promise<string | undefined> {
+async function generateReport(apiKey: string, prompt: string, requestedModel?: string): Promise<string | undefined> {
   const client = new Anthropic({ apiKey });
+  // User-selectable model (Settings → AI Analysis); unknown ids fall back to the default.
+  const modelOption = resolveAIModel(requestedModel);
   const msg = await client.messages.create({
-    model: 'claude-sonnet-4-6',
+    model: modelOption.id,
     max_tokens: 2048,
-    temperature: 0.3,
+    // Sonnet 5 / Opus 4.7+ / Fable 5 reject sampling params with a 400.
+    ...(modelOption.supportsTemperature ? { temperature: 0.3 } : {}),
     messages: [{ role: 'user', content: prompt }],
   });
+  // Fable 5 safety classifiers can decline with an empty content array.
   const part = msg.content[0];
-  return part.type === 'text' ? part.text : undefined;
+  return part?.type === 'text' ? part.text : undefined;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -240,10 +245,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     matchId,
     apiKey: bodyApiKey,
     variant,
+    model,
   } = (req.body ?? {}) as {
     matchId?: string;
     apiKey?: string;
     variant?: string;
+    model?: string;
   };
   if (!matchId) return res.status(200).json({});
   const apiKey = bodyApiKey || process.env.ANTHROPIC_API_KEY;
@@ -259,7 +266,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       let statsReport: string | undefined;
       if (apiKey) {
         try {
-          const draft = await generateReport(apiKey, buildStatsLedPrompt(verifiedComparison));
+          const draft = await generateReport(apiKey, buildStatsLedPrompt(verifiedComparison), model);
           if (draft) {
             // Gate on NUMBERS only: the stats-led prompt cites no pro spell names, so a
             // "spells" allow-list here is deliberately permissive (empty) and any spell
@@ -301,7 +308,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             proCrises,
             vc: verifiedComparison,
           });
-          const draft = await generateReport(apiKey, prompt);
+          const draft = await generateReport(apiKey, prompt, model);
           if (draft) {
             // Allow: numbers in the prompt PLUS honest counts 0..#proCrises (the over-generalization
             // guardrail makes the model say "in N of the 6 shown"); spells: only those in the shown

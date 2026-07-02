@@ -11,6 +11,7 @@ import {
   NEW_SYSTEM_PROMPT,
   SYSTEM_PROMPT,
 } from '../../../shared/src/prompts/analyzeSystemPrompts';
+import { resolveAIModel } from '../../../shared/src/utils/aiModels';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -25,6 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     useTimelinePrompt,
     findingsJson,
     matchId,
+    model: bodyModel,
   } = req.body as {
     matchContext?: string;
     apiKey?: string;
@@ -33,6 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     useTimelinePrompt?: boolean;
     findingsJson?: boolean;
     matchId?: string;
+    model?: string;
   };
   const apiKey = bodyApiKey || process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
@@ -44,8 +47,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const client = new Anthropic({ apiKey });
-    // Using Claude 4.6 as requested
-    const model = 'claude-sonnet-4-6';
+    // User-selectable model (Settings → AI Analysis); unknown ids fall back to the default.
+    const modelOption = resolveAIModel(bodyModel);
+    const model = modelOption.id;
     const startMs = Date.now();
 
     // Prompt selection precedence (highest priority first):
@@ -66,14 +70,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const message = await client.messages.create({
       model,
       max_tokens: 6144,
-      temperature: 0.3,
+      // Sonnet 5 / Opus 4.7+ / Fable 5 reject sampling params with a 400.
+      ...(modelOption.supportsTemperature ? { temperature: 0.3 } : {}),
       system: activeSystemPrompt,
       messages: [{ role: 'user', content: matchContext }],
     });
 
     const durationMs = Date.now() - startMs;
+    // Fable 5 safety classifiers can decline with stop_reason "refusal" and an
+    // empty content array — surface a clear error instead of crashing below.
+    if (message.stop_reason === 'refusal') {
+      return res.status(502).json({ error: 'AI declined to analyze this match. Try again or switch models.' });
+    }
     const content = message.content[0];
-    if (content.type !== 'text') {
+    if (!content || content.type !== 'text') {
       return res.status(500).json({ error: 'Unexpected response type from AI' });
     }
 

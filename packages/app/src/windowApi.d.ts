@@ -105,5 +105,7 @@ export type NativeApi = {
     saveSettings?: OmitFirstArg<SettingsModule['saveSettings']>;
     getAnthropicApiKey?: OmitFirstArg<SettingsModule['getAnthropicApiKey']>;
     setAnthropicApiKey?: OmitFirstArg<SettingsModule['setAnthropicApiKey']>;
+    getAnthropicModel?: OmitFirstArg<SettingsModule['getAnthropicModel']>;
+    setAnthropicModel?: OmitFirstArg<SettingsModule['setAnthropicModel']>;
   };
 };

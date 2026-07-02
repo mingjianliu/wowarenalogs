@@ -6,6 +6,7 @@ import { moduleFunction, NativeBridgeModule, nativeBridgeModule } from '../modul
 
 interface AppSettings {
   anthropicApiKey?: string;
+  anthropicModel?: string;
   blizzardClientId?: string;
   blizzardClientSecret?: string;
 }
@@ -50,6 +51,18 @@ export class SettingsModule extends NativeBridgeModule {
   public async setAnthropicApiKey(_mainWindow: Electron.BrowserWindow, key: string): Promise<void> {
     const settings = this.readSettings();
     settings.anthropicApiKey = key;
+    this.writeSettings(settings);
+  }
+
+  @moduleFunction()
+  public async getAnthropicModel(_mainWindow: Electron.BrowserWindow): Promise<string | null> {
+    return this.readSettings().anthropicModel ?? null;
+  }
+
+  @moduleFunction()
+  public async setAnthropicModel(_mainWindow: Electron.BrowserWindow, model: string): Promise<void> {
+    const settings = this.readSettings();
+    settings.anthropicModel = model;
     this.writeSettings(settings);
   }
 }

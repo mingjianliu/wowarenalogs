@@ -113,5 +113,7 @@ export const modulesApi = {
     saveSettings: (...args: any[]) => ipcRenderer.invoke('wowarenalogs:settings:saveSettings', ...args),
     getAnthropicApiKey: (...args: any[]) => ipcRenderer.invoke('wowarenalogs:settings:getAnthropicApiKey', ...args),
     setAnthropicApiKey: (...args: any[]) => ipcRenderer.invoke('wowarenalogs:settings:setAnthropicApiKey', ...args),
+    getAnthropicModel: (...args: any[]) => ipcRenderer.invoke('wowarenalogs:settings:getAnthropicModel', ...args),
+    setAnthropicModel: (...args: any[]) => ipcRenderer.invoke('wowarenalogs:settings:setAnthropicModel', ...args),
   },
 };

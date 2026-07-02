@@ -223,12 +223,92 @@ describe('POST /api/analyze', () => {
     });
   });
 
+  // ── Model selection ───────────────────────────────────────────────────────
+  describe('model selection', () => {
+    it('uses the default model when none is provided', async () => {
+      mockCreate.mockResolvedValue(makeAnthropicSuccess());
+      const { res } = makeRes();
+      await handler(makeReq('POST', VALID_BODY), res);
+      expect(mockCreate).toHaveBeenCalledWith(expect.objectContaining({ model: 'claude-sonnet-4-6' }));
+    });
+
+    it('uses a valid model from the request body', async () => {
+      mockCreate.mockResolvedValue(makeAnthropicSuccess());
+      const { res } = makeRes();
+      await handler(makeReq('POST', { ...VALID_BODY, model: 'claude-opus-4-8' }), res);
+      expect(mockCreate).toHaveBeenCalledWith(expect.objectContaining({ model: 'claude-opus-4-8' }));
+    });
+
+    it('falls back to the default model for unknown model ids', async () => {
+      mockCreate.mockResolvedValue(makeAnthropicSuccess());
+      const { res } = makeRes();
+      await handler(makeReq('POST', { ...VALID_BODY, model: 'gpt-4o' }), res);
+      expect(mockCreate).toHaveBeenCalledWith(expect.objectContaining({ model: 'claude-sonnet-4-6' }));
+    });
+
+    it('falls back to the default model for non-string model values', async () => {
+      mockCreate.mockResolvedValue(makeAnthropicSuccess());
+      const { res } = makeRes();
+      await handler(makeReq('POST', { ...VALID_BODY, model: { id: 'claude-opus-4-8' } }), res);
+      expect(mockCreate).toHaveBeenCalledWith(expect.objectContaining({ model: 'claude-sonnet-4-6' }));
+    });
+
+    it('sends temperature for models that support sampling params', async () => {
+      mockCreate.mockResolvedValue(makeAnthropicSuccess());
+      const { res } = makeRes();
+      await handler(makeReq('POST', { ...VALID_BODY, model: 'claude-haiku-4-5' }), res);
+      expect(mockCreate).toHaveBeenCalledWith(expect.objectContaining({ model: 'claude-haiku-4-5', temperature: 0.3 }));
+    });
+
+    it.each(['claude-sonnet-5', 'claude-opus-4-7', 'claude-opus-4-8', 'claude-fable-5'])(
+      'omits temperature for %s (sampling params rejected with 400)',
+      async (model) => {
+        mockCreate.mockResolvedValue(makeAnthropicSuccess());
+        const { res } = makeRes();
+        await handler(makeReq('POST', { ...VALID_BODY, model }), res);
+        expect(mockCreate.mock.calls[0][0]).not.toHaveProperty('temperature');
+      },
+    );
+
+    it('reports the selected model in debug metadata', async () => {
+      mockCreate.mockResolvedValue(makeAnthropicSuccess());
+      const { res, json } = makeRes();
+      await handler(makeReq('POST', { ...VALID_BODY, model: 'claude-sonnet-5', debug: true }), res);
+      const body = json.mock.calls[0][0] as any;
+      expect(body.debug.model).toBe('claude-sonnet-5');
+    });
+  });
+
   // ── Error handling ────────────────────────────────────────────────────────
   describe('error handling', () => {
     it('returns 500 when Anthropic returns a non-text content block', async () => {
       mockCreate.mockResolvedValue({
         content: [{ type: 'tool_use', id: 'x', name: 'fn', input: {} }],
         usage: { input_tokens: 10, output_tokens: 5 },
+      });
+      const { res, status, json } = makeRes();
+      await handler(makeReq('POST', VALID_BODY), res);
+      expect(status).toHaveBeenCalledWith(500);
+      expect(json).toHaveBeenCalledWith({ error: 'Unexpected response type from AI' });
+    });
+
+    it('returns 502 when the model declines with stop_reason refusal', async () => {
+      mockCreate.mockResolvedValue({
+        content: [],
+        stop_reason: 'refusal',
+        usage: { input_tokens: 10, output_tokens: 0 },
+      });
+      const { res, status, json } = makeRes();
+      await handler(makeReq('POST', { ...VALID_BODY, model: 'claude-fable-5' }), res);
+      expect(status).toHaveBeenCalledWith(502);
+      expect(json).toHaveBeenCalledWith(expect.objectContaining({ error: expect.stringContaining('declined') }));
+    });
+
+    it('returns 500 when content is empty without a refusal stop reason', async () => {
+      mockCreate.mockResolvedValue({
+        content: [],
+        stop_reason: 'end_turn',
+        usage: { input_tokens: 10, output_tokens: 0 },
       });
       const { res, status, json } = makeRes();
       await handler(makeReq('POST', VALID_BODY), res);
