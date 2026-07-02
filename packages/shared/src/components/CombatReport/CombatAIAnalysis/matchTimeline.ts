@@ -618,8 +618,14 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       // that can themselves target a teammate — a self-only tool (e.g. Barkskin) can't help.
       let cheaperNote = '';
       if (!isCC && cd.tag === 'Defensive') {
+        // B142: a team/raid heal (Divine Hymn, Tranquility, …) covers an injured ALLY, so a
+        // self-only tool (Desperate Prayer, Frenzied Regeneration) can't substitute for it — treat it
+        // like an external cast so only team-capable alternatives are offered (extends the H11 guard).
         const castTargetIsTeammate =
-          !!cast.targetName && cast.targetName !== 'nil' && cast.targetName.split('-')[0] !== owner.name.split('-')[0];
+          isTeamHealCD(cd.spellId) ||
+          (!!cast.targetName &&
+            cast.targetName !== 'nil' &&
+            cast.targetName.split('-')[0] !== owner.name.split('-')[0]);
         const cheaperAvailable = findCheaperDefensiveAlternatives(cd, ownerCDs, cast.timeSeconds, {
           castTargetIsTeammate,
         });
