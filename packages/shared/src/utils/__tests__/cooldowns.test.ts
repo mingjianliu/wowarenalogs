@@ -22,6 +22,7 @@ import {
   IMajorCooldownInfo,
   isHealerSpec,
   isMeleeSpec,
+  isTeamHealCD,
   specToString,
 } from '../cooldowns';
 import { makeAdvancedAction, makeCombat, makeDamageEvent, makeSpellCastEvent, makeUnit } from './testHelpers';
@@ -1240,6 +1241,25 @@ describe('findCheaperDefensiveAlternatives (review C2)', () => {
       });
       expect(result).toEqual(expect.arrayContaining(['Ironbark', 'Barkskin']));
       expect(result).toHaveLength(2);
+    });
+  });
+
+  describe('isTeamHealCD (B136)', () => {
+    it('classifies team-wide healing CDs so the timeline shows lowest-ally HP, not caster self-HP', () => {
+      // one per healer spec that has such a CD
+      expect(isTeamHealCD('64843')).toBe(true); // Divine Hymn — Holy Priest
+      expect(isTeamHealCD('115310')).toBe(true); // Revival — Mistweaver
+      expect(isTeamHealCD('363534')).toBe(true); // Rewind — Preservation Evoker
+      expect(isTeamHealCD('388615')).toBe(true); // Restoral — Mistweaver
+      expect(isTeamHealCD('325197')).toBe(true); // Invoke Chi-Ji — Mistweaver
+      expect(isTeamHealCD('740')).toBe(true); // Tranquility — Restoration Druid
+      expect(isTeamHealCD('108280')).toBe(true); // Healing Tide Totem — Restoration Shaman
+    });
+
+    it('does NOT classify self-oriented or defensive CDs as team heals', () => {
+      expect(isTeamHealCD('370960')).toBe(false); // Emerald Communion — self mana/heal channel
+      expect(isTeamHealCD('642')).toBe(false); // Divine Shield — self defensive
+      expect(isTeamHealCD('')).toBe(false);
     });
   });
 });

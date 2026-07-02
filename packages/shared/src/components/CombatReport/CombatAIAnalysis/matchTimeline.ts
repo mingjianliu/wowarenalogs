@@ -12,6 +12,7 @@ import {
   IDamageBucket,
   IMajorCooldownInfo,
   isSelfOnlyDefensive,
+  isTeamHealCD,
 } from '../../../utils/cooldowns';
 import { buildDampeningEvents, getDampeningPercentage } from '../../../utils/dampening';
 import {
@@ -331,7 +332,28 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
     }
 
     let targetPart = '';
-    if (!isSelf && targetName !== undefined) {
+    if (isTeamHealCD(spellId) && (isSelf || targetIsEnemy)) {
+      // B136: team-wide healing CDs (Divine Hymn, Restoral, Rewind, Tranquility, …) have no single
+      // target, so this line would otherwise render the CASTER's own HP — usually ~100%, which the
+      // model reads as a "premature" cast. Show the lowest-HP ally at cast time instead: that is the
+      // context these CDs are judged on.
+      let lowUnit: ICombatUnit | undefined;
+      let lowHp = Infinity;
+      for (const u of _allUnits) {
+        if (u.type !== CombatUnitType.Player || u.reaction !== CombatUnitReaction.Friendly) continue;
+        const hp = getHpPercentAtTime(u, timeSeconds, matchStartMs);
+        if (hp !== null && hp < lowHp) {
+          lowHp = hp;
+          lowUnit = u;
+        }
+      }
+      if (lowUnit) {
+        targetPart = ` (team; lowest ally ${lowHp.toFixed(0)}% HP on ${pid(lowUnit.name)})`;
+      } else {
+        const hpNow = getHpPercentAtTime(owner, timeSeconds, matchStartMs);
+        if (hpNow !== null) targetPart = ` (self: ${hpNow.toFixed(0)}% HP${velocityStr})`;
+      }
+    } else if (!isSelf && targetName !== undefined) {
       targetPart = ` → ${pid(targetName)}`;
       const hpPct =
         overrideHpPct ??

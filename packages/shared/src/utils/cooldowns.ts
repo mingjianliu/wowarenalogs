@@ -62,6 +62,26 @@ export function cdRoleTag(spellId: string): string | undefined {
   return CD_ROLE_TAGS[spellId];
 }
 
+/**
+ * B136: team-wide healing throughput CDs. These have no single target, so the timeline would
+ * otherwise render the CASTER's own HP (usually ~100%), making the model read the cast as
+ * "premature". For these the relevant context is the lowest-HP ally at cast time, not the healer.
+ */
+export const TEAM_HEAL_CD_IDS = new Set<string>([
+  '64843', // Divine Hymn — Holy Priest
+  '115310', // Revival — Mistweaver Monk
+  '363534', // Rewind — Preservation Evoker
+  '388615', // Restoral — Mistweaver Monk
+  '325197', // Invoke Chi-Ji, the Red Crane — Mistweaver Monk
+  '740', // Tranquility — Restoration Druid
+  '108280', // Healing Tide Totem — Restoration Shaman
+]);
+
+/** True for team-wide healing CDs whose timeline context should be the lowest ally, not the caster. */
+export function isTeamHealCD(spellId: string): boolean {
+  return TEAM_HEAL_CD_IDS.has(spellId);
+}
+
 const ADDITIONAL_OVERLAP_DEFENSIVE_IDS = new Set<string>([
   '108416', // Dark Pact (Warlock)
   '5277', // Evasion (Rogue)
