@@ -29,10 +29,10 @@ Windows gaming PC                    Storage (adapter)          Mac (this machin
 ┌──────────────────────┐            ┌───────────────┐          ┌───────────────────────────┐
 │ wal-agent (Node)     │  put(seg)  │ raw/<host>/   │  list/   │ collectLogs (launchd)     │
 │ fs.watch Logs/*.txt  │ ─────────► │  <file>/      │  get     │  reconstruct logs         │
-│ byte-offset ckpt     │            │  <offset>.seg │ ◄─────── │ localBatchAnalysis        │
-│ heartbeat status     │            │ status/<host> │          │  → results.jsonl          │
-└──────────────────────┘            └───────────────┘          │  → summary.md (+archive)  │
-                                                               │ dashboard (localhost)     │
+│ byte-offset ckpt     │            │  <gen8>/      │ ◄─────── │ localBatchAnalysis        │
+│ heartbeat status     │            │  <offset>.seg │          │  → results.jsonl          │
+└──────────────────────┘            │ status/<host> │          │  → summary.md (+archive)  │
+                                    └───────────────┘          │ dashboard (localhost)     │
                                                                └───────────────────────────┘
 ```
 
@@ -56,7 +56,7 @@ A single-purpose Node script, no Electron, **no imports from other workspace pac
 - On change events (debounced to the flush interval), for each dirty file: open → read `[checkpoint, EOF)` → close (never hold a file handle between flushes — open handles on Windows can block the game or cleanup tools from rotating/deleting the file; Filebeat's documented Windows pitfall), gzip, `put` as a segment object, advance checkpoint.
 - Flushes are **idempotent and serialized per file**: `fs.watch` is known to emit duplicate events for a single write (wow-recorder guards this explicitly), so a flush where `EOF <= checkpoint` is a no-op, and two flushes of the same file never run concurrently.
 - **Quiet-period final flush** (from wow-recorder's inactivity timer): when write events stop, one last flush fires after ~30s of quiet so the tail of the final match uploads promptly instead of waiting for a next event that never comes.
-- Segment key scheme (provider-agnostic): `raw/<hostname>/<logFileName>/<startOffset>.seg`. WoW opens a new timestamped log per session, so rotation is handled naturally (new filename → new key prefix). Offsets are zero-padded to 12 digits so lexicographic order equals numeric order.
+- Segment key scheme (provider-agnostic): `raw/<hostname>/<logFileName>/<gen8>/<startOffset>.seg`, where `gen8` is the first 8 hex chars of the file's first-line checksum — a "generation" id that prevents a recreated same-name file from colliding with its predecessor's offsets. WoW opens a new timestamped log per session, so rotation is handled naturally (new filename → new key prefix). Offsets are zero-padded to 12 digits so lexicographic order equals numeric order.
 - Heartbeat: each flush also `put`s `status/<hostname>.json` — `{ lastFlushAt, activeFile, offset, agentVersion }` — consumed by the dashboard.
 - Filename filter identical to existing watcher: contains `WoWCombatLog`, ends `.txt`.
 
@@ -65,7 +65,7 @@ A single-purpose Node script, no Electron, **no imports from other workspace pac
 - File truncated, shorter than checkpoint, or first-line checksum mismatch (log deleted/recreated with same name): reset checkpoint to 0 and re-stream.
 - Partial last line at EOF is acceptable — the collector concatenates segments byte-for-byte, so line boundaries reassemble exactly. (This is a deliberate advantage of shipping raw bytes: line-oriented tailers like wow-recorder must special-case partial lines; we don't.)
 - Upload failure: checkpoint doesn't advance; next flush retries the same range. Errors logged to a local rotating log file, and surfaced via a `lastError` field in the heartbeat.
-- **Duplicate-safety invariant** (Filebeat's at-least-once lesson): a crash between upload ack and checkpoint write causes a re-upload of the same range — which produces the **same segment key** (`<startOffset>.seg`), an idempotent overwrite of identical bytes. The collector's `offset == reconstructed size` check independently skips already-appended data. Duplicates are structurally harmless end-to-end.
+- **Duplicate-safety invariant** (Filebeat's at-least-once lesson): a crash between upload ack and checkpoint write causes a re-upload of the same range — which produces the **same segment key** (`<gen8>/<startOffset>.seg`), an idempotent overwrite of identical bytes. The collector's `offset == reconstructed size` check independently skips already-appended data. Duplicates are structurally harmless end-to-end.
 
 ### 2. Storage adapter layer
 
