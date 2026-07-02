@@ -8,7 +8,7 @@
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
-    "test": "npx tsdx test --passWithNoTests=false",
+    "test": "jest --passWithNoTests=false",
     "build": "esbuild src/index.ts --bundle --platform=node --target=node22 --outfile=dist/wal-agent.js"
   },
   "dependencies": {
