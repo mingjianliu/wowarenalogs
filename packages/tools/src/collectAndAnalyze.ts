@@ -9,12 +9,33 @@
 import { spawnSync } from 'child_process';
 import path from 'path';
 
-import { loadCollectorConfig } from './collect/collectorConfig';
+import { loadCollectorConfig, syncDirPath } from './collect/collectorConfig';
 import { appendRun, writeStatus } from './collect/statusFile';
 import { CollectStats, runCollection } from './collectLogs';
 
 async function main(): Promise<void> {
-  const config = loadCollectorConfig();
+  let config;
+  try {
+    config = loadCollectorConfig();
+  } catch (e) {
+    // Config failures must still leave a forensic trail for the dashboard.
+    const syncDir = syncDirPath();
+    const msg = e instanceof Error ? e.message : String(e);
+    const now = new Date().toISOString();
+    writeStatus(syncDir, { phase: 'idle', updatedAt: now, detail: msg });
+    appendRun(syncDir, {
+      startedAt: now,
+      finishedAt: now,
+      segmentsFetched: 0,
+      bytesAppended: 0,
+      filesUpdated: [],
+      gaps: [],
+      analysisExitCode: null,
+      error: msg,
+    });
+    console.error(`[collectAndAnalyze] ${msg}`);
+    process.exit(1);
+  }
   const startedAt = new Date().toISOString();
   let stats: CollectStats = { segmentsFetched: 0, bytesAppended: 0, filesUpdated: [], gaps: [] };
   let analysisExitCode: number | null = null;
@@ -41,7 +62,11 @@ async function main(): Promise<void> {
       stdio: 'inherit',
     });
     analysisExitCode = result.status;
-    if (result.status !== 0) error = `localBatchAnalysis exited ${result.status}`;
+    if (result.error) {
+      error = `localBatchAnalysis failed to spawn: ${result.error.message}`;
+    } else if (result.status !== 0) {
+      error = `localBatchAnalysis exited ${result.status}`;
+    }
   } catch (e) {
     error = e instanceof Error ? e.message : String(e);
     console.error(`[collectAndAnalyze] ${error}`);
