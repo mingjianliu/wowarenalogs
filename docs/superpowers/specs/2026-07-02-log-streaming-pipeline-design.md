@@ -51,18 +51,21 @@ A single-purpose Node script, no Electron, **no imports from other workspace pac
 
 **Behavior:**
 
-- Config file `wal-agent.config.json` beside the script: WoW install dir, storage provider + credentials block, hostname tag, flush interval (default 60s).
-- Per-file byte-offset checkpoint persisted in a local state file (`wal-agent.state.json`). Checkpoint advances **only after upload ack** — crash-safe and network-failure-safe; on restart it resumes from the last acked offset.
-- On change events (debounced to the flush interval), for each dirty file: read `[checkpoint, EOF)`, gzip, `put` as a segment object, advance checkpoint.
+- Config file `wal-agent.config.json` beside the script: WoW install dir, storage provider + credentials block, hostname tag, flush interval (default 60s), `ignoreOlderDays` (default 7 — on first run, files not modified within this window are never uploaded; lesson from Vector's `ignore_older`, prevents blasting months of stale logs on install).
+- Per-file checkpoint persisted in a local state file (`wal-agent.state.json`): byte offset **plus a checksum of the file's first line** (content-based file identity, per Vector's fingerprinting — a recreated file with the same name is detected by checksum mismatch, not just by shrinking size, and resets to offset 0). Checkpoint advances **only after upload ack** — crash-safe and network-failure-safe; on restart it resumes from the last acked offset.
+- On change events (debounced to the flush interval), for each dirty file: open → read `[checkpoint, EOF)` → close (never hold a file handle between flushes — open handles on Windows can block the game or cleanup tools from rotating/deleting the file; Filebeat's documented Windows pitfall), gzip, `put` as a segment object, advance checkpoint.
+- Flushes are **idempotent and serialized per file**: `fs.watch` is known to emit duplicate events for a single write (wow-recorder guards this explicitly), so a flush where `EOF <= checkpoint` is a no-op, and two flushes of the same file never run concurrently.
+- **Quiet-period final flush** (from wow-recorder's inactivity timer): when write events stop, one last flush fires after ~30s of quiet so the tail of the final match uploads promptly instead of waiting for a next event that never comes.
 - Segment key scheme (provider-agnostic): `raw/<hostname>/<logFileName>/<startOffset>.seg`. WoW opens a new timestamped log per session, so rotation is handled naturally (new filename → new key prefix). Offsets are zero-padded to 12 digits so lexicographic order equals numeric order.
 - Heartbeat: each flush also `put`s `status/<hostname>.json` — `{ lastFlushAt, activeFile, offset, agentVersion }` — consumed by the dashboard.
 - Filename filter identical to existing watcher: contains `WoWCombatLog`, ends `.txt`.
 
 **Edge cases:**
 
-- File truncated or shorter than checkpoint (log deleted/recreated with same name): reset checkpoint to 0 and re-stream.
-- Partial last line at EOF is acceptable — the collector concatenates segments byte-for-byte, so line boundaries reassemble exactly.
+- File truncated, shorter than checkpoint, or first-line checksum mismatch (log deleted/recreated with same name): reset checkpoint to 0 and re-stream.
+- Partial last line at EOF is acceptable — the collector concatenates segments byte-for-byte, so line boundaries reassemble exactly. (This is a deliberate advantage of shipping raw bytes: line-oriented tailers like wow-recorder must special-case partial lines; we don't.)
 - Upload failure: checkpoint doesn't advance; next flush retries the same range. Errors logged to a local rotating log file, and surfaced via a `lastError` field in the heartbeat.
+- **Duplicate-safety invariant** (Filebeat's at-least-once lesson): a crash between upload ack and checkpoint write causes a re-upload of the same range — which produces the **same segment key** (`<startOffset>.seg`), an idempotent overwrite of identical bytes. The collector's `offset == reconstructed size` check independently skips already-appended data. Duplicates are structurally harmless end-to-end.
 
 ### 2. Storage adapter layer
 
@@ -138,6 +141,13 @@ A small self-contained local web page: single static HTML file + a tiny Node HTT
 
 - A user-owned GCP project with one private bucket + service account (`objectCreator` for the agent key; a read credential for the Mac).
 - Node LTS installed on the gaming PC; Task Scheduler entry created per README in `packages/windows-agent`.
+
+## Prior art consulted
+
+- **Warcraft Logs Uploader "Live Logging"** — same product shape (watch → tail deltas → upload while playing); validates the architecture. It parses client-side; we deliberately don't.
+- **[wow-recorder](https://github.com/aza547/wow-recorder) `CombatLogWatcher.ts`** — production Node code tailing WoW logs on Windows. Source of: duplicate `fs.watch` event guard, quiet-period inactivity flush, serialized per-file processing, offset-delta reads.
+- **[Vector `file` source](https://vector.dev/docs/reference/configuration/sources/file/)** — source of: content-checksum file identity (fingerprinting), `ignore_older` first-run policy. Vector itself was evaluated as a config-only replacement for the agent and rejected: it ships line events with time-partitioned keys (loses offset-exact reconstruction + gap detection) and makes the dashboard heartbeat awkward.
+- **[Filebeat](https://www.elastic.co/docs/reference/beats/filebeat/how-filebeat-works)** — source of: at-least-once/duplicate analysis, never-hold-file-handles-on-Windows, registry (state file) hygiene.
 
 ## Future extensions (explicitly out of scope for v1)
 
