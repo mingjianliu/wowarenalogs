@@ -94,6 +94,7 @@ describe('combatStates', () => {
         spellName: 'Stasis',
       } as any,
     ],
+    petSpellCastEvents: [],
   };
 
   it('extractShapeshiftIntervals extracts form intervals', () => {

@@ -632,7 +632,10 @@ export function analyzePlayerCCAndTrinket(
 
   // 1. Unified Buff & Mobility CC Avoidance (targeted and ground CCs)
   for (const enemy of enemies) {
-    for (const cast of enemy.spellCastEvents) {
+    // F134: include the enemy's pet/guardian casts so a whiffed pet CC (Water Elemental Freeze,
+    // Felhunter Spell Lock, Succubus Seduction, Hunter-pet Intimidation) is credited as an avoidance.
+    // Landed CC is already counted aura-side in ccInstances, so this only affects the avoided numerator.
+    for (const cast of [...enemy.spellCastEvents, ...(enemy.petSpellCastEvents ?? [])]) {
       if (cast.logLine.event !== LogEvent.SPELL_CAST_SUCCESS) continue;
       if (!cast.spellId || (!ccSpellIds.has(cast.spellId) && !GROUND_CC_SPELL_IDS.has(cast.spellId))) continue;
 

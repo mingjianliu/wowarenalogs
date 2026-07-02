@@ -580,6 +580,15 @@ export class CombatData extends CombatGenerator {
         owner.healOut = owner.healOut.concat(unit.healOut).sort((a, b) => a.timestamp - b.timestamp);
 
         owner.actionOut = owner.actionOut.concat(unit.actionOut).sort((a, b) => a.timestamp - b.timestamp);
+
+        // F134: expose pet/guardian SPELL_CAST_SUCCESS on the owner in a SEPARATE field so the CC /
+        // enemy-cooldown analysis can see pet CC casts (Water Elemental Freeze, Felhunter Spell Lock,
+        // Succubus Seduction, Hunter-pet Intimidation, ghoul Gnaw). NOT merged into spellCastEvents —
+        // that field drives the owner's own [YOU]/[TEAM] timeline and must stay the unit's direct casts
+        // (merging totem pulses like Healing Stream Totem would flood friendly timelines with noise).
+        owner.petSpellCastEvents = owner.petSpellCastEvents
+          .concat(unit.spellCastEvents)
+          .sort((a, b) => a.timestamp - b.timestamp);
       }
     });
 

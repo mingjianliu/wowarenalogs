@@ -67,6 +67,10 @@ export interface ICombatUnit {
   actionOut: CombatAction[];
   auraEvents: CombatAction[];
   spellCastEvents: CombatAction[];
+  /** F134: SPELL_CAST_SUCCESS events from this unit's pets/guardians, merged in at finalize. Kept
+   * separate from spellCastEvents so it does not pollute the unit's own-cast timeline; the CC /
+   * enemy-cooldown analysis reads it to attribute pet CC (Freeze, Spell Lock, Seduction, …) to the owner. */
+  petSpellCastEvents: CombatAction[];
   deathRecords: ILogLine[];
   consciousDeathRecords: ILogLine[];
   advancedActions: CombatAdvancedAction[];
@@ -103,6 +107,7 @@ export class CombatUnit implements ICombatUnit {
   public actionOut: CombatAction[] = [];
   public auraEvents: CombatAction[] = [];
   public spellCastEvents: CombatAction[] = [];
+  public petSpellCastEvents: CombatAction[] = [];
   public deathRecords: ILogLine[] = [];
   public consciousDeathRecords: ILogLine[] = [];
   public advancedActions: CombatAdvancedAction[] = [];

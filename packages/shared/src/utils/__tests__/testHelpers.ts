@@ -188,6 +188,7 @@ export function makeUnit(
     actionOut: (overrides.actionOut ?? []) as ICombatUnit['actionOut'],
     auraEvents: (overrides.auraEvents ?? []) as ICombatUnit['auraEvents'],
     spellCastEvents: (overrides.spellCastEvents ?? []) as ICombatUnit['spellCastEvents'],
+    petSpellCastEvents: [] as ICombatUnit['petSpellCastEvents'],
     deathRecords: [],
     consciousDeathRecords: [],
     advancedActions: (overrides.advancedActions ?? []) as ICombatUnit['advancedActions'],
