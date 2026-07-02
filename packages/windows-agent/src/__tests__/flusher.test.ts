@@ -68,6 +68,21 @@ describe('flushFile', () => {
     expect(gens.size).toBe(2); // old and new generation both present, no collision
   });
 
+  it('stands down (no-op, no overwrite) when the file shrinks but the first line is unchanged', async () => {
+    const { filePath, adapter } = setup();
+    writeFileSync(filePath, LINE1 + LINE2);
+    const first = await flushFile({ ...base, filePath, checkpoint: undefined, adapter });
+    const originalKey = adapter.keys()[0];
+    const originalBody = gunzipSync(await adapter.get(originalKey)).toString();
+    writeFileSync(filePath, LINE1); // truncated: same first line, shorter
+    const out = await flushFile({ ...base, filePath, checkpoint: first.checkpoint, adapter });
+    expect(out.flushedBytes).toBe(0);
+    expect(out.reset).toBe(false);
+    expect(out.checkpoint).toEqual(first.checkpoint);
+    expect(adapter.keys()).toEqual([originalKey]); // nothing new written
+    expect(gunzipSync(await adapter.get(originalKey)).toString()).toBe(originalBody); // durable segment intact
+  });
+
   it('defers when the file has no complete first line yet', async () => {
     const { filePath, adapter } = setup();
     writeFileSync(filePath, 'partial-without-newline');

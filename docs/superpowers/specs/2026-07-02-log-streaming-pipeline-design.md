@@ -62,7 +62,7 @@ A single-purpose Node script, no Electron, **no imports from other workspace pac
 
 **Edge cases:**
 
-- File truncated, shorter than checkpoint, or first-line checksum mismatch (log deleted/recreated with same name): reset checkpoint to 0 and re-stream.
+- First-line checksum mismatch (log deleted/recreated with same name): reset checkpoint to 0 and re-stream under a new generation. A file that shrinks while its first line is unchanged (external truncation) is an anomaly: the agent logs it and stands down for that file — re-streaming would overwrite the generation's durable offset-0 segment with different bytes.
 - Partial last line at EOF is acceptable — the collector concatenates segments byte-for-byte, so line boundaries reassemble exactly. (This is a deliberate advantage of shipping raw bytes: line-oriented tailers like wow-recorder must special-case partial lines; we don't.)
 - Upload failure: checkpoint doesn't advance; next flush retries the same range. Errors logged to a local rotating log file, and surfaced via a `lastError` field in the heartbeat.
 - **Duplicate-safety invariant** (Filebeat's at-least-once lesson): a crash between upload ack and checkpoint write causes a re-upload of the same range — which produces the **same segment key** (`<gen8>/<startOffset>.seg`), an idempotent overwrite of identical bytes. The collector's `offset == reconstructed size` check independently skips already-appended data. Duplicates are structurally harmless end-to-end.

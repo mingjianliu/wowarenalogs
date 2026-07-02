@@ -15,6 +15,18 @@ export interface FlushOutcome {
 
 const IDENTITY_HEAD_BYTES = 4096;
 
+/** Read exactly [start, start+length) — loops on partial reads; returns only the bytes actually read. */
+function readRange(fd: number, start: number, length: number): Buffer {
+  const buf = Buffer.alloc(length);
+  let total = 0;
+  while (total < length) {
+    const n = readSync(fd, buf, total, length - total, start + total);
+    if (n === 0) break; // file shrank between fstat and read — return what we have
+    total += n;
+  }
+  return total === length ? buf : buf.subarray(0, total);
+}
+
 /**
  * Read-delta-and-upload for one file. Open → read → close every time; never
  * hold a handle between flushes (Windows: open handles can block the game or
@@ -33,16 +45,11 @@ export async function flushFile(opts: {
   let checkpoint = opts.checkpoint;
 
   const fd = openSync(filePath, 'r'); // read-only, shared; WoW keeps writing happily
-  let head: Buffer;
-  let size: number;
-  let delta: Buffer;
   let reset = false;
   try {
-    size = fstatSync(fd).size;
+    const size = fstatSync(fd).size;
 
-    const headBuf = Buffer.alloc(Math.min(IDENTITY_HEAD_BYTES, size));
-    readSync(fd, headBuf, 0, headBuf.length, 0);
-    head = headBuf;
+    const head = readRange(fd, 0, Math.min(IDENTITY_HEAD_BYTES, size));
 
     const checksum = firstLineChecksum(head);
     if (checksum === null) {
@@ -50,10 +57,19 @@ export async function flushFile(opts: {
       return { checkpoint, flushedBytes: 0, reset: false, segmentKey: null };
     }
 
-    if (checkpoint && (checkpoint.firstLineChecksum !== checksum || size < checkpoint.offset)) {
-      // Recreated or truncated file: new generation, re-stream from 0.
+    if (checkpoint && checkpoint.firstLineChecksum !== checksum) {
+      // Recreated file (first line changed): new generation, re-stream from 0.
       checkpoint = undefined;
       reset = true;
+    } else if (checkpoint && size < checkpoint.offset) {
+      // Same first line but the file shrank: external truncation, not a WoW
+      // recreate. Re-streaming would overwrite this generation's durable
+      // offset-0 segment with different bytes (silent corruption), so log the
+      // anomaly and stand down for this file until its first line changes.
+      console.warn(
+        `[wal-agent] ${logFileName}: shrank ${checkpoint.offset} -> ${size} with unchanged first line; skipping`,
+      );
+      return { checkpoint, flushedBytes: 0, reset: false, segmentKey: null };
     }
 
     const startOffset = checkpoint?.offset ?? 0;
@@ -67,14 +83,21 @@ export async function flushFile(opts: {
       };
     }
 
-    delta = Buffer.alloc(size - startOffset);
-    readSync(fd, delta, 0, delta.length, startOffset);
+    const delta = readRange(fd, startOffset, size - startOffset);
+    if (delta.length === 0) {
+      return {
+        checkpoint: { offset: startOffset, firstLineChecksum: checksum },
+        flushedBytes: 0,
+        reset,
+        segmentKey: null,
+      };
+    }
 
     const gen8 = gen8Of(checksum);
     const segmentKey = buildSegmentKey(hostname, logFileName, gen8, startOffset);
     await adapter.put(segmentKey, gzipSync(delta));
     return {
-      checkpoint: { offset: size, firstLineChecksum: checksum },
+      checkpoint: { offset: startOffset + delta.length, firstLineChecksum: checksum },
       flushedBytes: delta.length,
       reset,
       segmentKey,
