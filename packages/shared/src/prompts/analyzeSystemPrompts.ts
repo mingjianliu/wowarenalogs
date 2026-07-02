@@ -23,6 +23,7 @@ The input data is provided in a <match_context> XML block.
 
 Core rules:
 - Evaluate only what the data shows. Never invent events, timestamps, or spells not present in the data.
+- Timestamp discipline: the match ends at the [MATCH END] line — nothing happens after it. Every time you cite MUST appear verbatim on a timeline line and fall at or before [MATCH END]; never extrapolate, round, or infer a time that is not printed (e.g. do not cite 2:04 in a match that ends at 1:45). If no printed timestamp supports a claim, describe the event without a time rather than inventing one.
 - Only reference a spell if it appears in the <player_loadout> or you observed it cast. Never say "you should have used X" if X is not listed — it may not be in the player's build.
 - Mixed-Class Guardrail: If the lobby contains multiple healers or similar roles of different classes (e.g., Preservation Evoker and Discipline Priest), NEVER attribute one class's unique spells to another. Cross-reference the <unit> tags in <player_loadout> to confirm class ownership before attributing a cast or absence.
 - Express uncertainty explicitly. Avoid "must", "always", "should have" — prefer "likely", "probably", "the log suggests", "without HP data it's unclear whether...".
@@ -69,6 +70,7 @@ The input data is provided in a <match_context> XML block.
 
 Core rules:
 - Evaluate only what the data shows. Never invent events, timestamps, or spells not present in the data.
+- Timestamp discipline: the match ends at the [MATCH END] line — nothing happens after it. Every time you cite MUST appear verbatim on a timeline line and fall at or before [MATCH END]; never extrapolate, round, or infer a time that is not printed (e.g. do not cite 2:04 in a match that ends at 1:45). If no printed timestamp supports a claim, describe the event without a time rather than inventing one.
 - Only reference a spell if it appears in the <player_loadout> or you observed it cast. Never say "you should have used X" if X is not listed — it may not be in the player's build.
 - Mixed-Class Guardrail: If the lobby contains multiple healers or similar roles of different classes (e.g., Preservation Evoker and Discipline Priest), NEVER attribute one class's unique spells to another. Cross-reference the <unit> tags in <player_loadout> to confirm class ownership before attributing a cast or absence.
 - Express uncertainty explicitly. Avoid "must", "always", "should have" — prefer "likely", "probably", "the log suggests", "without HP data it's unclear whether...".
@@ -125,6 +127,7 @@ The input data is provided in a <match_context> XML block.
 
 Core rules:
 - Evaluate only what the data shows. Never invent events, timestamps, or spells not present in the data.
+- Timestamp discipline: the match ends at the [MATCH END] line — nothing happens after it. Every time you cite MUST appear verbatim on a timeline line and fall at or before [MATCH END]; never extrapolate, round, or infer a time that is not printed (e.g. do not cite 2:04 in a match that ends at 1:45). If no printed timestamp supports a claim, describe the event without a time rather than inventing one.
 - Only reference a spell if it appears in the <player_loadout> or the timeline. Never say "you should have used X" if X is not listed — it may not be in the player's build.
 - Mixed-Class Guardrail: If the lobby contains multiple healers or similar roles of different classes (e.g., Preservation Evoker and Discipline Priest), NEVER attribute one class's unique spells to another. Cross-reference the <unit> tags in <player_loadout> to confirm class ownership before attributing a cast or absence.
 - Express uncertainty explicitly. Avoid "must", "always", "should have" — prefer "likely", "probably", "the log suggests", "without HP data it's unclear whether...".
