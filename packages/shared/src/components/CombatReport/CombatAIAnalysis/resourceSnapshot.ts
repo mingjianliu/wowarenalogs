@@ -3,6 +3,7 @@ import { ICombatUnit } from '@wowarenalogs/parser';
 import { IPlayerCCTrinketSummary } from '../../../utils/ccTrinketAnalysis';
 import { IMajorCooldownInfo, isHealerSpec, specToString } from '../../../utils/cooldowns';
 import { IEnemyCDTimeline } from '../../../utils/enemyCDs';
+import { getPvpToolkit } from '../../../utils/talentBehaviors';
 
 // ── Timeline prompt builders ───────────────────────────────────────────────
 
@@ -47,6 +48,17 @@ export function buildPlayerLoadout(
 
   lines.push(`  <unit id="${ownerId}" name="${owner.name}" spec="${ownerSpec}" role="log owner">`);
   lines.push(`    <cooldowns>${ownerCDStr}</cooldowns>`);
+  // B139: surface the owner's talent-granted PvP toolkit (CC / immunity / dispel / mobility tools) so the
+  // coach can judge usage — a castable tool never used in the match is tagged [UNUSED].
+  const ownerCastIds = new Set<string>();
+  for (const e of owner.spellCastEvents ?? []) {
+    if (e.spellId) ownerCastIds.add(e.spellId);
+  }
+  const toolkit = getPvpToolkit(owner.info?.pvpTalents, ownerCastIds);
+  if (toolkit.length > 0) {
+    const toolkitStr = toolkit.map((t) => (t.used === false ? `${t.label} [UNUSED]` : t.label)).join(', ');
+    lines.push(`    <pvp_toolkit>${toolkitStr}</pvp_toolkit>`);
+  }
   lines.push('  </unit>');
 
   for (const { player, spec, cds } of teammateCDs) {

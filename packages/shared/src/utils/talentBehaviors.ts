@@ -18,7 +18,16 @@ export type TalentEffectKind =
   /** while buffSpellId is active, immune to (the next) full CC → credit a CC avoidance */
   | 'cc_immunity'
   /** while conditionAuraId (a normal CD) is active, immune to interrupt/silence → suppress "interrupts UP" */
-  | 'interrupt_immunity';
+  | 'interrupt_immunity'
+  /** an offensive CC / peel tool the talent grants (surfaced in the toolkit for usage coaching) */
+  | 'offensive_cc'
+  /** a dispel/purge-capability the talent grants (surfaced in the toolkit) */
+  | 'dispel'
+  /** a snare/root avoidance the talent grants (surfaced in the toolkit) */
+  | 'snare_immunity';
+
+/** Broad grouping for the PvP-toolkit render. */
+export type TalentToolCategory = 'immunity' | 'cc' | 'dispel' | 'mobility';
 
 export interface ITalentBehavior {
   /** the pvpTalents id as it appears in COMBATANT_INFO param 26 */
@@ -39,6 +48,18 @@ export interface ITalentBehavior {
   conditionAuraId?: string;
   /** Display name of the condition CD (e.g. "Obsidian Scales") for the interrupt-immune render reason. */
   conditionName?: string;
+  /**
+   * Short label shown in the owner's <pvp_toolkit> loadout line, e.g. "Lightning Lasso (5s stun)". Present
+   * for every talent worth surfacing to the coach as an available tool.
+   */
+  toolLabel?: string;
+  /** Toolkit grouping for the loadout render. */
+  toolCategory?: TalentToolCategory;
+  /**
+   * The castable ability this talent grants/modifies, if any. Used to mark a tool UNUSED when the owner
+   * never cast it in the match (peel/usage coaching). Omit for always-on/reactive tools.
+   */
+  abilitySpellId?: string;
   note?: string;
 }
 
@@ -50,6 +71,8 @@ export const TALENT_BEHAVIORS: ITalentBehavior[] = [
     specs: ['Mistweaver Monk'],
     kind: 'magic_immunity',
     buffSpellId: '353319',
+    toolLabel: 'Peaceweaver (Revival/Restoral → 2s team magic immunity)',
+    toolCategory: 'immunity',
     note: 'Revival/Restoral grants healed allies immunity to magic damage & harmful effects ~2s (proc 353319)',
   },
   {
@@ -58,6 +81,8 @@ export const TALENT_BEHAVIORS: ITalentBehavior[] = [
     specs: ['Holy Paladin'],
     kind: 'magic_immunity',
     buffSpellId: '204018',
+    toolLabel: 'Blessing of Spellwarding (ally magic immunity)',
+    toolCategory: 'immunity',
     note: 'ally magic immunity; the buff shares the talent id',
   },
   // B. Full CC immunity / untargetable — self-gating buff aura
@@ -67,6 +92,8 @@ export const TALENT_BEHAVIORS: ITalentBehavior[] = [
     specs: ['Discipline Priest', 'Holy Priest'],
     kind: 'cc_immunity',
     buffSpellId: '408558',
+    toolLabel: 'Phase Shift (Fade → ~1s untargetable / CC dodge)',
+    toolCategory: 'immunity',
     note: 'Fade phases the priest out (untargetable ~1s)',
   },
   {
@@ -75,6 +102,8 @@ export const TALENT_BEHAVIORS: ITalentBehavior[] = [
     specs: ['Preservation Evoker'],
     kind: 'cc_immunity',
     buffSpellId: '378464',
+    toolLabel: 'Nullifying Shroud (Verdant Embrace → next-CC immunity 3s)',
+    toolCategory: 'immunity',
     note: 'Verdant Embrace prevents the next full loss-of-control, 3s',
   },
   {
@@ -83,6 +112,8 @@ export const TALENT_BEHAVIORS: ITalentBehavior[] = [
     specs: ['Holy Priest', 'Discipline Priest'],
     kind: 'cc_immunity',
     buffSpellId: '1246965',
+    toolLabel: 'Psychic Shroud (Psychic Scream → next-CC immunity)',
+    toolCategory: 'immunity',
     note: 'Psychic Scream prevents the next CC on you',
   },
   // C. Interrupt / silence immunity — condition-gated passive (MUST check pvpTalents)
@@ -93,6 +124,8 @@ export const TALENT_BEHAVIORS: ITalentBehavior[] = [
     kind: 'interrupt_immunity',
     conditionAuraId: '363916',
     conditionName: 'Obsidian Scales',
+    toolLabel: 'Obsidian Mettle (interrupt/silence immunity while Obsidian Scales up)',
+    toolCategory: 'immunity',
     note: 'immune to interrupt/silence/pushback while Obsidian Scales is active',
   },
   {
@@ -102,7 +135,94 @@ export const TALENT_BEHAVIORS: ITalentBehavior[] = [
     kind: 'interrupt_immunity',
     conditionAuraId: '116680',
     conditionName: 'Thunder Focus Tea',
+    toolLabel: 'Zen Focus Tea (interrupt/silence immunity while Thunder Focus Tea up)',
+    toolCategory: 'immunity',
     note: 'immune to silence/interrupt while Thunder Focus Tea is active (5s)',
+  },
+
+  // D. Offensive CC / peel tools — surfaced in the toolkit; usage checked via abilitySpellId
+  {
+    talentSpellId: '204336',
+    name: 'Grounding Totem',
+    specs: ['Restoration Shaman'],
+    kind: 'offensive_cc',
+    abilitySpellId: '204336',
+    toolLabel: 'Grounding Totem (redirect a targeted harmful spell/CC)',
+    toolCategory: 'cc',
+    note: 'redirects the first single-target harmful spell to the totem',
+  },
+  {
+    talentSpellId: '305483',
+    name: 'Lightning Lasso',
+    specs: ['Restoration Shaman'],
+    kind: 'offensive_cc',
+    abilitySpellId: '305483',
+    toolLabel: 'Lightning Lasso (channeled 5s stun)',
+    toolCategory: 'cc',
+    note: 'non-dispellable channeled stun',
+  },
+  {
+    talentSpellId: '355580',
+    name: 'Static Field Totem',
+    specs: ['Restoration Shaman'],
+    kind: 'offensive_cc',
+    abilitySpellId: '355580',
+    toolLabel: 'Static Field Totem (impassable electric wall)',
+    toolCategory: 'cc',
+    note: 'summons a wall enemies cannot pass',
+  },
+  {
+    talentSpellId: '410126',
+    name: 'Searing Glare',
+    specs: ['Holy Paladin'],
+    kind: 'offensive_cc',
+    abilitySpellId: '410126',
+    toolLabel: 'Searing Glare (AoE blind, enemies miss 4s)',
+    toolCategory: 'cc',
+    note: 'cone disorient — enemies miss spells and attacks',
+  },
+  {
+    talentSpellId: '1246126',
+    name: "Call of Ohn'ahra",
+    specs: ['Restoration Druid'],
+    kind: 'offensive_cc',
+    abilitySpellId: '33786',
+    toolLabel: "Call of Ohn'ahra (Nature's Swiftness → instant Cyclone)",
+    toolCategory: 'cc',
+    note: "Nature's Swiftness also affects Cyclone (instant CC)",
+  },
+
+  // E. Dispel / purge capability — surfaced in the toolkit
+  {
+    talentSpellId: '378438',
+    name: 'Scouring Flame',
+    specs: ['Preservation Evoker'],
+    kind: 'dispel',
+    abilitySpellId: '357208', // Fire Breath
+    toolLabel: 'Scouring Flame (Fire Breath offensive-purges 2 magic buffs)',
+    toolCategory: 'dispel',
+    note: 'Fire Breath burns away beneficial magic effects — an Evoker offensive purge',
+  },
+  {
+    talentSpellId: '199330',
+    name: 'Cleanse the Weak',
+    specs: ['Holy Paladin'],
+    kind: 'dispel',
+    toolLabel: 'Cleanse the Weak (Cleanse hits 2 allies; FoL/HoL cleanse Disease/Poison)',
+    toolCategory: 'dispel',
+    note: 'extra dispel target + Flash/Holy Light passively cleanse Disease & Poison',
+  },
+
+  // F. Snare / root avoidance — surfaced in the toolkit
+  {
+    talentSpellId: '409293',
+    name: 'Burrow',
+    specs: ['Restoration Shaman'],
+    kind: 'snare_immunity',
+    abilitySpellId: '409293',
+    toolLabel: 'Burrow (unattackable + clears snares, 5s)',
+    toolCategory: 'mobility',
+    note: 'unattackable defensive that removes movement-impairing effects',
   },
 ];
 
@@ -130,5 +250,23 @@ export function getInterruptImmunityConditions(
     conditionAuraId: b.conditionAuraId as string,
     name: b.name,
     conditionName: b.conditionName ?? '',
+  }));
+}
+
+/**
+ * The owner's talent-granted PvP toolkit for the loadout render: every talent with a toolLabel that the
+ * owner has taken. `used` is true/false for tools that grant a castable ability (abilitySpellId) — false
+ * means the owner never cast it in the match (peel/usage coaching) — and undefined for always-on/reactive
+ * tools where "unused" is not meaningful.
+ */
+export function getPvpToolkit(
+  pvpTalentIds: string[] | undefined,
+  ownerCastSpellIds: Set<string>,
+): Array<{ label: string; category: TalentToolCategory; used: boolean | undefined }> {
+  const talents = new Set(pvpTalentIds ?? []);
+  return TALENT_BEHAVIORS.filter((b) => b.toolLabel && talents.has(b.talentSpellId)).map((b) => ({
+    label: b.toolLabel as string,
+    category: b.toolCategory ?? 'immunity',
+    used: b.abilitySpellId ? ownerCastSpellIds.has(b.abilitySpellId) : undefined,
   }));
 }
