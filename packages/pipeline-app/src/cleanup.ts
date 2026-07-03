@@ -65,21 +65,36 @@ export async function cleanupAppliedSegments(opts: {
       result.kept += 1;
       continue;
     }
-    const stat = await fs.stat(filePath);
-    const fh = await fs.open(filePath, 'r');
-    let isize: number;
     try {
-      const tail = Buffer.alloc(4);
-      await fh.read(tail, 0, 4, Math.max(0, stat.size - 4));
-      isize = gzipUncompressedSize(tail);
-    } finally {
-      await fh.close();
-    }
-    const applied = ref.startOffset + isize <= (await sizeOf(outputNameFor(ref)));
-    if (applied && stat.mtimeMs < cutoff) {
-      await fs.unlink(filePath);
-      result.deleted.push(key);
-    } else {
+      const stat = await fs.stat(filePath);
+      // Fail closed: only a plausible, complete gzip file may be considered
+      // "applied". Sync layers (Drive) can leave truncated/corrupt files under
+      // final names; a garbage ISIZE must never authorize a deletion.
+      const MIN_GZIP_SIZE = 18; // 10-byte header + 8-byte trailer
+      let applied = false;
+      if (stat.size >= MIN_GZIP_SIZE) {
+        const fh = await fs.open(filePath, 'r');
+        try {
+          const head = Buffer.alloc(2);
+          const headRead = (await fh.read(head, 0, 2, 0)).bytesRead;
+          const tail = Buffer.alloc(4);
+          const tailRead = (await fh.read(tail, 0, 4, stat.size - 4)).bytesRead;
+          if (headRead === 2 && head[0] === 0x1f && head[1] === 0x8b && tailRead === 4) {
+            const isize = gzipUncompressedSize(tail);
+            applied = ref.startOffset + isize <= (await sizeOf(outputNameFor(ref)));
+          }
+        } finally {
+          await fh.close();
+        }
+      }
+      if (applied && stat.mtimeMs < cutoff) {
+        await fs.unlink(filePath);
+        result.deleted.push(key);
+      } else {
+        result.kept += 1;
+      }
+    } catch {
+      // Vanished/locked/unreadable file: keep it and continue the run.
       result.kept += 1;
     }
   }

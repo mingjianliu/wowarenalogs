@@ -58,4 +58,21 @@ describe('cleanupAppliedSegments', () => {
       (await cleanupAppliedSegments({ syncFolderRoot: root, logsDir: logs, cleanupAfterDays: 0, nowMs: now })).deleted,
     ).toEqual([]);
   });
+
+  it('fails closed: truncated or non-gzip files are never deleted', async () => {
+    const { root, logs } = setup();
+    writeFileSync(join(logs, outName), Buffer.alloc(1_000_000)); // huge output: any garbage ISIZE would pass the size check
+    // 3-byte truncated file under a valid segment key, very old
+    const p1 = join(root, ...key(0).split('/'));
+    mkdirSync(join(p1, '..'), { recursive: true });
+    writeFileSync(p1, Buffer.from([0x1f, 0x8b, 0x00]));
+    utimesSync(p1, new Date(now - 40 * DAY), new Date(now - 40 * DAY));
+    // 30-byte non-gzip file (bad magic) under another key, very old
+    const p2 = join(root, ...key(60).split('/'));
+    writeFileSync(p2, Buffer.alloc(30, 7));
+    utimesSync(p2, new Date(now - 40 * DAY), new Date(now - 40 * DAY));
+    const res = await cleanupAppliedSegments({ syncFolderRoot: root, logsDir: logs, cleanupAfterDays: 14, nowMs: now });
+    expect(res.deleted).toEqual([]);
+    expect(res.kept).toBe(2);
+  });
 });
