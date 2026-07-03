@@ -58,6 +58,9 @@ export interface IHealerMetrics {
   defensiveOverlapRatio: number;
   effectiveCastRatio: number;
   ccAvoidanceRate: number;
+  /** Raw CC-avoidance counts, exposed so aggregators can pool across games (see ccAvoidanceRate note). */
+  ccAvoidedCount: number;
+  ccLandedCount: number;
 }
 
 export function computeHealerMetrics(combat: IArenaMatch | IShuffleRound, playerName: string): IHealerMetrics {
@@ -134,5 +137,7 @@ export function computeHealerMetrics(combat: IArenaMatch | IShuffleRound, player
     defensiveOverlapRatio,
     effectiveCastRatio,
     ccAvoidanceRate,
+    ccAvoidedCount: avoidedCount,
+    ccLandedCount: successfulCCCount,
   };
 }
