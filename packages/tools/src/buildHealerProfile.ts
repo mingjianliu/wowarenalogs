@@ -55,7 +55,20 @@ function mineFailures(prompt: string): Failures {
   const unusedAtDeath: string[] = [];
   const unpurgedBuffs: string[] = [];
   const overCommitBig: string[] = [];
-  for (const line of prompt.split('\n')) {
+  const lines = prompt.split('\n');
+  // B146: a big CD cast moments before the caster is hard-CCed is pre-CC insurance, not an early
+  // spend (audit: 37% of HTT / 33% of Chi-Ji "proactive" casts). Collect owner-CC timestamps so the
+  // proactive counter can exclude casts followed <=5s by CC on the owner (owner is unit 1).
+  const ownerCcSeconds: number[] = [];
+  for (const line of lines) {
+    const tm = line.match(/^(\d+):(\d{2})\s+/);
+    if (!tm) continue;
+    if (/\[YOU\] \[CC\]/.test(line) || /\[CC ON TEAM\]\s+1 ←/.test(line)) {
+      ownerCcSeconds.push(Number(tm[1]) * 60 + Number(tm[2]));
+    }
+  }
+  const ccSoonAfter = (castSec: number) => ownerCcSeconds.some((c) => c >= castSec && c <= castSec + 5);
+  for (const line of lines) {
     if (/\[DEATH\]\s+1\s+\(/.test(line)) {
       ownerDied = true;
       const um = line.match(/\(Unused:\s*([^)]+)\)/);
@@ -73,12 +86,15 @@ function mineFailures(prompt: string): Failures {
       // F40: classify the cast as proactive (high HP / no incoming) vs reactive.
       const selfM = line.match(/\(self: (\d+)% HP, (-?\d+)%\/s/);
       const teamM = line.match(/\(team; lowest ally (\d+)% HP/);
+      const castTm = line.match(/^(\d+):(\d{2})\s+/);
+      const castSec = castTm ? Number(castTm[1]) * 60 + Number(castTm[2]) : null;
+      const preCcInsurance = castSec !== null && ccSoonAfter(castSec);
       if (selfM) {
         cdCasts++;
-        if (Number(selfM[1]) >= 85 && Number(selfM[2]) >= 0) proactiveCdCasts++;
+        if (Number(selfM[1]) >= 85 && Number(selfM[2]) >= 0 && !preCcInsurance) proactiveCdCasts++;
       } else if (teamM) {
         cdCasts++;
-        if (Number(teamM[1]) >= 85) proactiveCdCasts++;
+        if (Number(teamM[1]) >= 85 && !preCcInsurance) proactiveCdCasts++;
       }
     }
   }
@@ -207,7 +223,9 @@ async function main() {
       defensiveOverlapRatio: r.metrics.defensiveOverlapRatio,
       effectiveCastRatio: r.metrics.effectiveCastRatio,
       ccAvoidanceRate: r.metrics.ccAvoidanceRate,
-    });
+      // Fresh-cohort records (2026-07-03 rebuild) carry team damage-taken/sec for B151 pressure banding.
+      teamDtps: (r.metrics as { teamDtps?: number | null }).teamDtps ?? null,
+    } as Record<MetricKey, number | null> & { teamDtps: number | null });
     cohortBySpec.set(r.spec, arr);
   }
 
@@ -266,10 +284,30 @@ async function main() {
         };
         line = `  - **${def.label}** (pooled): ${pct(pooledUserAvoid)} of incoming CC avoided (${totAvoid}/${totIncoming}) — _${def.driver}_`;
       } else {
+        // B151: OI is pressure-confounded (denominator scales with team damage taken). Band the
+        // cohort by its teamDtps median and report the user's percentile in each half so the raw
+        // percentile can't silently blame the pressure environment.
+        let pressureBanded: { lowHalf: number; highHalf: number } | undefined;
+        if (key === 'offensiveIndex') {
+          const withDtps = (cohort as Array<Record<MetricKey, number | null> & { teamDtps?: number | null }>).filter(
+            (g) => typeof g.teamDtps === 'number' && typeof g[key] === 'number',
+          );
+          if (withDtps.length >= 40) {
+            const dtpsSorted = withDtps.map((g) => g.teamDtps as number).sort((a, b) => a - b);
+            const dtpsMed = dtpsSorted[Math.floor(dtpsSorted.length / 2)];
+            const low = withDtps.filter((g) => (g.teamDtps as number) <= dtpsMed).map((g) => g[key]);
+            const high = withDtps.filter((g) => (g.teamDtps as number) > dtpsMed).map((g) => g[key]);
+            pressureBanded = {
+              lowHalf: percentileOf(low, you.median, def.valence),
+              highHalf: percentileOf(high, you.median, def.valence),
+            };
+          }
+        }
         jsonMetrics[key] = {
           you,
           cohort: { median: coh.median, p25: coh.p25, p75: coh.p75 },
           percentile: pctile,
+          ...(pressureBanded ? { pressureBanded } : {}),
           label: def.label,
           unit: def.unit,
           valence: def.valence,
