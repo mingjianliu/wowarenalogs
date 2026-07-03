@@ -13,8 +13,16 @@ import { loadCollectorConfig, syncDirPath } from '../collect/collectorConfig';
 import { readRuns } from '../collect/statusFile';
 import { nextRunAt, readScheduleInterval } from './schedule';
 
-const PORT = 5178;
-const PAGE = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
+export interface DashboardServerOptions {
+  /** Path to the HTML shell served at `/`. Default: index.html beside server.ts. */
+  htmlPath?: string;
+  /** First port to try. Default 5178; on EADDRINUSE tries +1 up to +10 before rejecting. */
+  basePort?: number;
+  /** Extra status merged into `/api/status` under the `local` key. */
+  extraStatus?: () => Promise<Record<string, unknown>>;
+  /** Handler for `POST /api/run`. Default: spawn launchd/collect-and-analyze.sh (current behavior). */
+  onRunNow?: () => Promise<'started' | 'busy'>;
+}
 
 async function buildStatus(): Promise<unknown> {
   const syncDir = syncDirPath();
@@ -42,34 +50,79 @@ async function buildStatus(): Promise<unknown> {
   };
 }
 
-const server = http.createServer((req, res) => {
-  void (async () => {
-    if (req.method === 'GET' && req.url === '/') {
-      res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' }).end(PAGE);
-    } else if (req.method === 'GET' && req.url === '/api/status') {
-      const body = JSON.stringify(await buildStatus());
-      res.writeHead(200, { 'content-type': 'application/json' }).end(body);
-    } else if (req.method === 'POST' && req.url === '/api/run') {
-      if (fs.pathExistsSync(path.join(syncDirPath(), 'run.lock'))) {
-        res.writeHead(409, { 'content-type': 'application/json' }).end(JSON.stringify({ error: 'already running' }));
-        return;
-      }
-      const script = path.resolve(__dirname, '../../launchd/collect-and-analyze.sh');
-      const child = spawn('bash', [script], { detached: true, stdio: 'ignore' });
-      child.unref();
-      res.writeHead(202, { 'content-type': 'application/json' }).end(JSON.stringify({ started: true }));
-    } else {
-      res.writeHead(404).end('not found');
-    }
-  })().catch((e) => {
-    if (!res.headersSent) {
-      res.writeHead(500, { 'content-type': 'application/json' });
-    }
-    res.end(JSON.stringify({ error: String(e) }));
-  });
-});
+async function defaultRunNow(): Promise<'started' | 'busy'> {
+  if (fs.pathExistsSync(path.join(syncDirPath(), 'run.lock'))) {
+    return 'busy';
+  }
+  const script = path.resolve(__dirname, '../../launchd/collect-and-analyze.sh');
+  const child = spawn('bash', [script], { detached: true, stdio: 'ignore' });
+  child.unref();
+  return 'started';
+}
 
-// 127.0.0.1 only — never expose the Run button beyond this machine.
-server.listen(PORT, '127.0.0.1', () => {
-  console.log(`[dashboard] http://127.0.0.1:${PORT}`);
-});
+export function createDashboardServer(opts: DashboardServerOptions = {}): Promise<{ port: number; close(): void }> {
+  const page = fs.readFileSync(opts.htmlPath ?? path.join(__dirname, 'index.html'), 'utf-8');
+  const onRunNow = opts.onRunNow ?? defaultRunNow;
+  const basePort = opts.basePort ?? 5178;
+
+  return new Promise((resolve, reject) => {
+    let port = basePort;
+    let attempt = 0;
+
+    const server = http.createServer((req, res) => {
+      void (async () => {
+        if (req.method === 'GET' && req.url === '/') {
+          res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' }).end(page);
+        } else if (req.method === 'GET' && req.url === '/api/status') {
+          const body = JSON.stringify({
+            ...((await buildStatus()) as Record<string, unknown>),
+            ...(opts.extraStatus ? { local: await opts.extraStatus() } : {}),
+          });
+          res.writeHead(200, { 'content-type': 'application/json' }).end(body);
+        } else if (req.method === 'POST' && req.url === '/api/run') {
+          const origin = req.headers.origin;
+          if (origin && origin !== `http://127.0.0.1:${port}` && origin !== `http://localhost:${port}`) {
+            res
+              .writeHead(403, { 'content-type': 'application/json' })
+              .end(JSON.stringify({ error: 'forbidden origin' }));
+            return;
+          }
+          const result = await onRunNow();
+          if (result === 'busy') {
+            res
+              .writeHead(409, { 'content-type': 'application/json' })
+              .end(JSON.stringify({ error: 'already running' }));
+            return;
+          }
+          res.writeHead(202, { 'content-type': 'application/json' }).end(JSON.stringify({ started: true }));
+        } else {
+          res.writeHead(404).end('not found');
+        }
+      })().catch((e) => {
+        if (!res.headersSent) {
+          res.writeHead(500, { 'content-type': 'application/json' });
+        }
+        res.end(JSON.stringify({ error: String(e) }));
+      });
+    });
+
+    server.on('error', (err: NodeJS.ErrnoException) => {
+      if (err.code === 'EADDRINUSE' && attempt < 10) {
+        attempt += 1;
+        port = basePort + attempt;
+        server.listen(port, '127.0.0.1');
+      } else {
+        reject(err);
+      }
+    });
+
+    // 127.0.0.1 only — never expose the Run button beyond this machine.
+    server.listen(port, '127.0.0.1', () => {
+      resolve({ port, close: () => server.close() });
+    });
+  });
+}
+
+if (require.main === module) {
+  void createDashboardServer().then(({ port }) => console.log(`[dashboard] http://127.0.0.1:${port}`));
+}
