@@ -54,6 +54,7 @@ describe('flushBatch per-file isolation', () => {
       },
       list: adapter.list.bind(adapter),
       get: adapter.get.bind(adapter),
+      delete: adapter.delete.bind(adapter),
     };
     const state: AgentState = { files: {} };
     await expect(

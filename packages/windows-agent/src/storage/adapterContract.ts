@@ -39,5 +39,13 @@ export function describeStorageAdapterContract(name: string, factory: () => Prom
     it('get of a missing key rejects', async () => {
       await expect(adapter.get('missing')).rejects.toBeTruthy();
     });
+
+    it('delete removes a key and is idempotent for missing keys', async () => {
+      await adapter.put('k/gone', Buffer.from('x'));
+      await adapter.delete('k/gone');
+      expect(await adapter.list('k/')).toEqual([]);
+      await expect(adapter.delete('k/gone')).resolves.toBeUndefined(); // second delete: no throw
+      await expect(adapter.delete('never/existed')).resolves.toBeUndefined();
+    });
   });
 }

@@ -1,7 +1,7 @@
 import { GcsClientLike, GcsStorageAdapter } from '../storage/GcsStorageAdapter';
 
 function makeStub() {
-  const calls: Record<string, unknown[]> = { save: [], download: [], getFiles: [] };
+  const calls: Record<string, unknown[]> = { save: [], download: [], getFiles: [], delete: [] };
   const stub: GcsClientLike = {
     bucket: (bucketName: string) => ({
       file: (key: string) => ({
@@ -11,6 +11,9 @@ function makeStub() {
         download: async () => {
           calls.download.push([bucketName, key]);
           return [Buffer.from(`content-of-${key}`)] as [Buffer];
+        },
+        delete: async () => {
+          calls.delete.push([bucketName, key]);
         },
       }),
       getFiles: async (opts: { prefix: string }) => {
@@ -42,5 +45,12 @@ describe('GcsStorageAdapter', () => {
     const { stub } = makeStub();
     const adapter = new GcsStorageAdapter({ bucket: 'my-bucket' }, stub);
     expect((await adapter.get('k/a')).toString()).toBe('content-of-k/a');
+  });
+
+  it('delete maps to file(key).delete', async () => {
+    const { stub, calls } = makeStub();
+    const adapter = new GcsStorageAdapter({ bucket: 'my-bucket' }, stub);
+    await adapter.delete('k/a');
+    expect(calls.delete).toEqual([['my-bucket', 'k/a']]);
   });
 });

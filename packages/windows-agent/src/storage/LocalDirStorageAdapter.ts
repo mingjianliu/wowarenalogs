@@ -48,4 +48,12 @@ export class LocalDirStorageAdapter implements StorageAdapter {
   async get(key: string): Promise<Buffer> {
     return fs.readFile(this.pathOf(key));
   }
+
+  async delete(key: string): Promise<void> {
+    try {
+      await fs.unlink(this.pathOf(key));
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code !== 'ENOENT') throw e;
+    }
+  }
 }
