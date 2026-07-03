@@ -1,4 +1,4 @@
-import { mkdirSync, rmdirSync, statSync } from 'fs';
+import { mkdirSync, rmdirSync } from 'fs';
 import path from 'path';
 
 import { CollectorConfig } from '../../tools/src/collect/collectorConfig';
@@ -50,22 +50,15 @@ export class CollectorService {
     const { syncDir, storage } = collectorConfig;
     const logDir = path.join(syncDir, 'logs');
 
-    const STALE_LOCK_MS = 2 * 3_600_000; // spec §8: locks older than 2h are stale
     try {
       mkdirSync(this.lockPath());
     } catch (e) {
       if ((e as NodeJS.ErrnoException).code === 'EEXIST') {
-        // A crash can orphan the lock; treat >2h-old locks as stale and take over.
-        try {
-          if (Date.now() - statSync(this.lockPath()).mtimeMs > STALE_LOCK_MS) {
-            rmdirSync(this.lockPath());
-            mkdirSync(this.lockPath());
-          } else {
-            return 'busy';
-          }
-        } catch {
-          return 'busy';
-        }
+        // Held by this service, a CLI run, or an orphaned crash. Never take
+        // over automatically — a long backlog run can legitimately exceed any
+        // TTL and mtime says nothing about liveness. Stale locks are surfaced
+        // in the dashboard for an explicit human clear (spec §8).
+        return 'busy';
       } else {
         // syncDir may not exist yet (first run before provisioning): create + retry once.
         try {

@@ -94,12 +94,12 @@ describe('CollectorService.runNow', () => {
     await expect(svc.runNow()).resolves.toBe('failed'); // resolves — never rejects
   });
 
-  it('takes over a stale (>2h) lock instead of reporting busy forever', async () => {
+  it('never auto-clears an old lock — stale locks are a human decision (spec §8)', async () => {
     const { svc, syncDir } = setup();
     mkdirSync(svc.lockPath());
     const old = new Date(Date.now() - 3 * 3_600_000);
     utimesSync(svc.lockPath(), old, old);
-    expect(await svc.runNow()).toBe('completed');
-    expect(readRuns(syncDir, 5)).toHaveLength(1);
+    expect(await svc.runNow()).toBe('busy');
+    expect(readRuns(syncDir, 5)).toHaveLength(0);
   });
 });
