@@ -86,6 +86,14 @@ function aggregate(values: (number | null)[]): Agg {
   return { median: quantile(v, 0.5), p25: quantile(v, 0.25), p75: quantile(v, 0.75), n: v.length };
 }
 
+/** Percentile of the user's median within the cohort distribution, valence-adjusted (0 = worst, 100 = best). */
+function percentileOf(cohortVals: (number | null)[], userMedian: number, valence: string): number {
+  const v = cohortVals.filter((x): x is number => x !== null && !Number.isNaN(x));
+  if (v.length === 0 || Number.isNaN(userMedian)) return NaN;
+  const worse = v.filter((x) => (valence === 'lower' ? x > userMedian : x < userMedian)).length;
+  return Math.round((worse / v.length) * 100);
+}
+
 async function main() {
   await fs.ensureDir(OUT_DIR);
   const index = await fs.readJson(INDEX_FILE);
@@ -185,13 +193,39 @@ async function main() {
       const coh = aggregate(cohort.map((g) => g[key]));
       const valence = def.valence === 'context' ? 'context' : `${def.valence} is better`;
       let line: string;
+      const pctile = percentileOf(
+        cohort.map((g) => g[key]),
+        key === 'ccAvoidanceRate' ? pooledUserAvoid : you.median,
+        def.valence,
+      );
       if (key === 'ccAvoidanceRate') {
-        jsonMetrics[key] = { pooled: pooledUserAvoid, totAvoid, totIncoming, cohortMedian: coh.median };
+        jsonMetrics[key] = {
+          pooled: pooledUserAvoid,
+          totAvoid,
+          totIncoming,
+          cohort: { median: coh.median, p25: coh.p25, p75: coh.p75 },
+          percentile: pctile,
+          label: def.label,
+          unit: def.unit,
+          valence: def.valence,
+          crisisActionable: def.crisisActionable,
+          driver: def.driver,
+        };
         line = `  - **${def.label}** (pooled): ${pct(pooledUserAvoid)} of incoming CC avoided (${totAvoid}/${totIncoming}) — _${def.driver}_`;
       } else {
-        jsonMetrics[key] = { you, cohortMedian: coh.median };
+        jsonMetrics[key] = {
+          you,
+          cohort: { median: coh.median, p25: coh.p25, p75: coh.p75 },
+          percentile: pctile,
+          label: def.label,
+          unit: def.unit,
+          valence: def.valence,
+          crisisActionable: def.crisisActionable,
+          driver: def.driver,
+        };
         const cohStr = Number.isNaN(coh.median) ? '' : ` | cohort ${fmt(coh.median, def.unit)}`;
-        line = `  - **${def.label}**: ${fmt(you.median, def.unit)} [${fmt(you.p25, def.unit)}–${fmt(you.p75, def.unit)}] (${valence})${cohStr} — _${def.driver}_`;
+        const pStr = Number.isNaN(pctile) ? '' : ` [${pctile}th pctile]`;
+        line = `  - **${def.label}**: ${fmt(you.median, def.unit)} [${fmt(you.p25, def.unit)}–${fmt(you.p75, def.unit)}] (${valence})${cohStr}${pStr} — _${def.driver}_`;
       }
       if (def.crisisActionable) presc.push(line);
       else desc.push(line);
