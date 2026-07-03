@@ -1,5 +1,5 @@
 import { app, BrowserWindow, dialog, ipcMain, Menu, nativeImage, Tray } from 'electron';
-import { mkdirSync } from 'fs';
+import { existsSync, mkdirSync } from 'fs';
 import os from 'os';
 import path from 'path';
 
@@ -11,6 +11,7 @@ import {
   configPathFor,
   loadPilotConfig,
   PilotConfig,
+  PilotRole,
   resolveRole,
   savePilotConfig,
   toAgentConfig,
@@ -19,7 +20,13 @@ import {
 } from './pilotConfig';
 import { StreamerService, StreamerState } from './streamerService';
 
+// Tray app: services below have their own recovery (retry/backoff, tray error state). An
+// uncaught throw here must never take down the whole process — log and keep running.
+process.on('uncaughtException', (e) => console.error('[wal-pilot] uncaught:', e));
+process.on('unhandledRejection', (e) => console.error('[wal-pilot] unhandled rejection:', e));
+
 let tray: Tray | null = null;
+let rebuildTrayMenu: (() => void) | null = null;
 let dashboardPort = 0;
 let paused = false;
 let streamer: StreamerService | null = null;
@@ -27,8 +34,19 @@ let collector: CollectorService | null = null;
 let localState: StreamerState = { status: 'idle', lastFlushAt: null, lastError: null };
 let collectorPhase = 'idle';
 let restartDelayMs = 10_000;
+let serviceGeneration = 0;
+
+// Platform-only placeholder — deliberately does NOT call computeRole()/resolveRole() here: this
+// runs synchronously during module evaluation (before main()'s try/catch exists), so a bad
+// WAL_PILOT_ROLE would throw before the tray/wizard can ever be created. Refined safely inside
+// main() instead. Kept live so the tray/wizard/dashboard never read a stale startup value.
+let activeRole: PilotRole = process.platform === 'win32' ? 'streamer' : 'collector';
 
 const isMac = process.platform === 'darwin';
+
+function computeRole(cfg: PilotConfig | null): PilotRole {
+  return resolveRole(cfg ?? withDefaults({ syncFolder: '' }), process.platform, process.env);
+}
 
 function trayGlyph(state: 'active' | 'idle' | 'error'): string {
   return state === 'active' ? '▶' : state === 'error' ? '⚠' : '○';
@@ -40,7 +58,7 @@ function updateTray(state: 'active' | 'idle' | 'error', tooltip: string): void {
   tray.setToolTip(`wal-pilot — ${tooltip}`);
 }
 
-async function makeTray(role: string): Promise<Tray> {
+async function makeTray(getRole: () => PilotRole): Promise<Tray> {
   // macOS: empty image + title glyph in the menu bar. Windows: reuse the exe's own icon.
   let image = nativeImage.createEmpty();
   if (!isMac) {
@@ -52,6 +70,7 @@ async function makeTray(role: string): Promise<Tray> {
   }
   const t = new Tray(image);
   const rebuildMenu = () => {
+    const role = getRole();
     t.setContextMenu(
       Menu.buildFromTemplate([
         { label: `wal-pilot (${role})`, enabled: false },
@@ -61,11 +80,17 @@ async function makeTray(role: string): Promise<Tray> {
           label: paused ? 'Resume' : 'Pause',
           click: () => {
             paused = !paused;
-            if (paused) stopServices();
-            else startServices();
-            rebuildMenu();
+            // finally: keep the Pause/Resume label in sync with `paused` even if starting the
+            // service throws (startServices() rethrows after its own tray/backoff handling).
+            try {
+              if (paused) stopServices();
+              else startServices();
+            } finally {
+              rebuildMenu();
+            }
           },
         },
+        { label: 'Setup…', click: () => openWizard() },
         {
           label: 'Start at Login',
           type: 'checkbox',
@@ -77,6 +102,7 @@ async function makeTray(role: string): Promise<Tray> {
       ]),
     );
   };
+  rebuildTrayMenu = rebuildMenu;
   rebuildMenu();
   return t;
 }
@@ -91,15 +117,21 @@ function currentConfig(): PilotConfig | null {
 }
 
 function startServices(): void {
-  const cfg = currentConfig();
-  if (!cfg || paused) return;
-  const role = resolveRole(cfg, process.platform, process.env);
+  if (paused) return;
+  serviceGeneration += 1;
+  const gen = serviceGeneration;
   try {
+    const cfg = currentConfig();
+    if (!cfg) return;
+    const role = resolveRole(cfg, process.platform, process.env);
+    activeRole = role;
+    rebuildTrayMenu?.();
     if (role === 'streamer') {
       streamer = new StreamerService({
         agentConfig: toAgentConfig(cfg),
         statePath: path.join(app.getPath('userData'), 'wal-pilot.state.json'),
         onState: (s) => {
+          if (gen !== serviceGeneration) return;
           localState = s;
           updateTray(
             s.status === 'error' ? 'error' : s.status === 'streaming' ? 'active' : 'idle',
@@ -108,7 +140,6 @@ function startServices(): void {
         },
       });
       streamer.start();
-      restartDelayMs = 10_000;
     } else {
       const syncDir = syncDirPath();
       mkdirSync(syncDir, { recursive: true });
@@ -117,23 +148,31 @@ function startServices(): void {
         scheduleHours: cfg.scheduleHours,
         cleanupAfterDays: cfg.cleanupAfterDays,
         onPhase: (phase, detail) => {
+          if (gen !== serviceGeneration) return;
           collectorPhase = phase;
           updateTray(phase === 'idle' ? (detail === 'ok' ? 'idle' : 'error') : 'active', `${phase}: ${detail}`);
         },
       });
       collector.start();
     }
+    restartDelayMs = 10_000;
   } catch (e) {
-    // Service constructor/start failure (e.g. missing wowDirectory): surface + retry with backoff.
+    // Config/role/service-start failure (malformed config, bad WAL_PILOT_ROLE, missing
+    // wowDirectory, ...): surface + retry with backoff, then rethrow so a caller that wants
+    // immediate feedback (the wizard's saveConfig handler) can report it; callers that don't
+    // care (timer retry, Resume click, main()'s initial call) rely on the process-level
+    // uncaughtException/unhandledRejection safety net above.
     const msg = e instanceof Error ? e.message : String(e);
     localState = { status: 'error', lastFlushAt: null, lastError: msg };
     updateTray('error', msg);
     setTimeout(startServices, restartDelayMs);
     restartDelayMs = Math.min(restartDelayMs * 2, 300_000);
+    throw e;
   }
 }
 
 function stopServices(): void {
+  serviceGeneration += 1; // invalidate any in-flight onState/onPhase from the outgoing services
   streamer?.stop();
   streamer = null;
   collector?.stop();
@@ -141,7 +180,7 @@ function stopServices(): void {
   updateTray('idle', 'paused');
 }
 
-function openWizard(role: string): void {
+function openWizard(): void {
   const win = new BrowserWindow({
     width: 560,
     height: 480,
@@ -150,12 +189,18 @@ function openWizard(role: string): void {
   });
   void win.loadFile(path.join(__dirname, 'wizard.html'));
 
+  // Reopening (Setup… while a previous wizard window is still open, or a reconfiguration after
+  // a malformed-config startup) would otherwise throw "second handler for X" on ipcMain.handle.
+  ipcMain.removeHandler('walpilot:getDefaults');
+  ipcMain.removeHandler('walpilot:pickFolder');
+  ipcMain.removeHandler('walpilot:saveConfig');
+
   ipcMain.handle('walpilot:getDefaults', () => {
     const probe = realFsProbe();
     const syncCandidates = detectSyncFolderCandidates({ platform: process.platform, home: os.homedir(), probe });
     const wowCandidates = detectWowDirCandidates({ platform: process.platform, probe });
     return {
-      role,
+      role: activeRole,
       syncFolder: syncCandidates[0] ? path.join(syncCandidates[0], 'wal-logs') : '',
       wowDirectory: wowCandidates[0] ?? '',
     };
@@ -168,14 +213,16 @@ function openWizard(role: string): void {
     'walpilot:saveConfig',
     (_evt, input: { syncFolder: string; wowDirectory?: string; openAtLogin: boolean }) => {
       if (!input.syncFolder) return { error: 'Pick a synced folder first.' };
-      if (role === 'streamer' && !input.wowDirectory) return { error: 'Pick the WoW _retail_ folder.' };
+      if (activeRole === 'streamer' && !input.wowDirectory) return { error: 'Pick the WoW _retail_ folder.' };
       try {
         mkdirSync(input.syncFolder, { recursive: true });
         const cfg = withDefaults({ syncFolder: input.syncFolder, wowDirectory: input.wowDirectory });
         savePilotConfig(configPathFor(app.getPath('userData')), cfg);
         app.setLoginItemSettings({ openAtLogin: input.openAtLogin });
-        win.close();
+        // Inside the try so a start failure (still-thrown after startServices' own tray/backoff
+        // handling) surfaces to the wizard instead of silently closing it.
         startServices();
+        win.close();
         return { error: null };
       } catch (e) {
         return { error: e instanceof Error ? e.message : String(e) };
@@ -192,30 +239,44 @@ async function main(): Promise<void> {
   await app.whenReady();
   if (isMac) app.dock?.hide();
 
-  const cfg = currentConfig();
-  const role = cfg
-    ? resolveRole(cfg, process.platform, process.env)
-    : process.platform === 'win32'
-      ? 'streamer'
-      : 'collector';
-  tray = await makeTray(role);
-  updateTray('idle', 'starting');
+  let cfg: PilotConfig | null = null;
+  let configLoadError: string | null = null;
+  try {
+    cfg = currentConfig();
+  } catch (e) {
+    // Malformed config JSON: never crash on startup. Treat as reconfiguration — do NOT delete
+    // the existing file, the wizard only overwrites it on Save.
+    configLoadError = e instanceof Error ? e.message : String(e);
+    console.error('[wal-pilot] config load failed:', configLoadError);
+  }
+  try {
+    activeRole = computeRole(cfg);
+  } catch (e) {
+    // Bad WAL_PILOT_ROLE: keep the safe platform-default role rather than dying before the tray
+    // ever exists; still surface it as a tray error below.
+    configLoadError = configLoadError ?? (e instanceof Error ? e.message : String(e));
+    console.error('[wal-pilot] role resolution failed:', configLoadError);
+  }
+
+  tray = await makeTray(() => activeRole);
+  updateTray(configLoadError ? 'error' : 'idle', configLoadError ?? 'starting');
 
   const { port } = await createDashboardServer({
     htmlPath: path.join(__dirname, 'dashboard.html'),
     extraStatus: async () => ({
-      role,
-      state: role === 'streamer' ? localState : { status: collectorPhase, lastFlushAt: null, lastError: null },
+      role: activeRole,
+      state: activeRole === 'streamer' ? localState : { status: collectorPhase, lastFlushAt: null, lastError: null },
     }),
     onRunNow: async () => {
       if (!collector) return 'busy';
-      const result = await collector.runNow();
-      return result === 'busy' ? 'busy' : 'started';
+      if (existsSync(collector.lockPath())) return 'busy';
+      void collector.runNow();
+      return 'started';
     },
   });
   dashboardPort = port;
 
-  if (!cfg) openWizard(role);
+  if (!cfg) openWizard();
   else startServices();
 }
 
