@@ -11,3 +11,4 @@ benchmarks/log_manifest.json
 analysis-captures/
 benchmarks/bench_2700.json
 benchmarks/bench_2400.json
+src/data/reference_vectors.backup.*.json
