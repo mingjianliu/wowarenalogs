@@ -18,6 +18,26 @@ import { getHpPercentAtTime } from '../../../utils/killWindowTargetSelection';
 import { benchmarks } from '../../../utils/specBaselines';
 import { DMG_SPIKE_THRESHOLD, getTopDamageSourcesInWindow } from './timelineHelpers';
 
+// ── Forbearance castability (B: don't blame a paladin for "unused" tools it could not press) ──
+// Paladin's Divine Shield / Lay on Hands / Blessing of Protection / Blessing of Spellwarding share a
+// 30s Forbearance lockout. A defensive that reads "available" by its own cooldown is actually
+// UNCASTABLE on the paladin if they applied Forbearance to themselves within the last 30s. Forbearance
+// is not reliably logged as an aura, so detect it from the applying CAST (Divine Shield is always
+// self-applied; the others self-apply only when cast on the paladin).
+const FORBEARANCE_SECONDS = 30;
+const FORBEARANCE_GATED_IDS = new Set<string>(['642', '633', '1022', '204018']); // DivineShield, LayOnHands, BoP, Spellwarding
+function selfForbearanceActiveAt(unit: ICombatUnit, atSeconds: number, matchStartMs: number): boolean {
+  for (const cast of unit.spellCastEvents) {
+    if (cast.logLine.event !== LogEvent.SPELL_CAST_SUCCESS) continue;
+    if (!cast.spellId || !FORBEARANCE_GATED_IDS.has(cast.spellId)) continue;
+    const castSec = (cast.timestamp - matchStartMs) / 1000;
+    if (castSec > atSeconds || atSeconds - castSec > FORBEARANCE_SECONDS) continue;
+    // Divine Shield (642) always self-applies Forbearance; the ally-castable ones only when self-targeted.
+    if (cast.spellId === '642' || cast.destUnitId === unit.id) return true;
+  }
+  return false;
+}
+
 // ── Rot Pressure (F147) ─────────────────────────────────────────────────────
 
 const DOT_SPELL_IDS = new Set<string>([
@@ -441,6 +461,7 @@ export function emitFriendlyDeathEntries<S>(params: {
       ];
 
       const isLockedOut = summary ? wasLockedOutThroughWindow(summary, death.atSeconds) : false;
+      const forbearance = selfForbearanceActiveAt(dyingUnit, death.atSeconds, matchStartMs);
 
       const readyAtDeath = allPlayerCDs
         .filter((cd) => cd.tag === 'Defensive' || cd.tag === 'External')
@@ -449,6 +470,9 @@ export function emitFriendlyDeathEntries<S>(params: {
         )
         // B12/C3: only flag if it was actually usable (not locked out through the lethal window, or is a CC-breaking defensive)
         .filter((cd) => !isLockedOut || USABLE_WHILE_CC_SPELL_IDS.has(cd.spellId))
+        // Forbearance: a paladin can't press Spellwarding/BoP/LoH/Divine Shield if it self-applied
+        // Forbearance in the last 30s — don't list those as "unused" (false accusation).
+        .filter((cd) => !(forbearance && FORBEARANCE_GATED_IDS.has(cd.spellId)))
         .map((cd) => cd.spellName);
 
       if (readyAtDeath.length > 0) {
