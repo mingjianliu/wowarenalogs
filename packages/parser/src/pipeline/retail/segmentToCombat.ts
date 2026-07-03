@@ -165,6 +165,12 @@ function decodeShuffleRound(
 }
 
 export const segmentToCombat = () => {
+  // Reset the module-level shuffle buffers for each new pipeline instance. Without this, a log parsed
+  // after another whose final shuffle was incomplete inherits stale rounds/scoreboard from the previous
+  // parse — silently corrupting the new log's round assembly (e.g. dropped death records). This factory
+  // runs once per WoWCombatLogParser, so resetting here scopes the buffers per parse.
+  recentShuffleRoundsBuffer = [];
+  recentScoreboardBuffer = [];
   return pipe(
     map(
       (
