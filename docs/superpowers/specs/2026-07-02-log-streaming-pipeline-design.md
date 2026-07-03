@@ -29,10 +29,10 @@ Windows gaming PC                    Storage (adapter)          Mac (this machin
 ┌──────────────────────┐            ┌───────────────┐          ┌───────────────────────────┐
 │ wal-agent (Node)     │  put(seg)  │ raw/<host>/   │  list/   │ collectLogs (launchd)     │
 │ fs.watch Logs/*.txt  │ ─────────► │  <file>/      │  get     │  reconstruct logs         │
-│ byte-offset ckpt     │            │  <offset>.seg │ ◄─────── │ localBatchAnalysis        │
-│ heartbeat status     │            │ status/<host> │          │  → results.jsonl          │
-└──────────────────────┘            └───────────────┘          │  → summary.md (+archive)  │
-                                                               │ dashboard (localhost)     │
+│ byte-offset ckpt     │            │  <gen8>/      │ ◄─────── │ localBatchAnalysis        │
+│ heartbeat status     │            │  <offset>.seg │          │  → results.jsonl          │
+└──────────────────────┘            │ status/<host> │          │  → summary.md (+archive)  │
+                                    └───────────────┘          │ dashboard (localhost)     │
                                                                └───────────────────────────┘
 ```
 
@@ -56,16 +56,16 @@ A single-purpose Node script, no Electron, **no imports from other workspace pac
 - On change events (debounced to the flush interval), for each dirty file: open → read `[checkpoint, EOF)` → close (never hold a file handle between flushes — open handles on Windows can block the game or cleanup tools from rotating/deleting the file; Filebeat's documented Windows pitfall), gzip, `put` as a segment object, advance checkpoint.
 - Flushes are **idempotent and serialized per file**: `fs.watch` is known to emit duplicate events for a single write (wow-recorder guards this explicitly), so a flush where `EOF <= checkpoint` is a no-op, and two flushes of the same file never run concurrently.
 - **Quiet-period final flush** (from wow-recorder's inactivity timer): when write events stop, one last flush fires after ~30s of quiet so the tail of the final match uploads promptly instead of waiting for a next event that never comes.
-- Segment key scheme (provider-agnostic): `raw/<hostname>/<logFileName>/<startOffset>.seg`. WoW opens a new timestamped log per session, so rotation is handled naturally (new filename → new key prefix). Offsets are zero-padded to 12 digits so lexicographic order equals numeric order.
+- Segment key scheme (provider-agnostic): `raw/<hostname>/<logFileName>/<gen8>/<startOffset>.seg`, where `gen8` is the first 8 hex chars of the file's first-line checksum — a "generation" id that prevents a recreated same-name file from colliding with its predecessor's offsets. WoW opens a new timestamped log per session, so rotation is handled naturally (new filename → new key prefix). Offsets are zero-padded to 12 digits so lexicographic order equals numeric order.
 - Heartbeat: each flush also `put`s `status/<hostname>.json` — `{ lastFlushAt, activeFile, offset, agentVersion }` — consumed by the dashboard.
 - Filename filter identical to existing watcher: contains `WoWCombatLog`, ends `.txt`.
 
 **Edge cases:**
 
-- File truncated, shorter than checkpoint, or first-line checksum mismatch (log deleted/recreated with same name): reset checkpoint to 0 and re-stream.
+- First-line checksum mismatch (log deleted/recreated with same name): reset checkpoint to 0 and re-stream under a new generation. A file that shrinks while its first line is unchanged (external truncation) is an anomaly: the agent logs it and stands down for that file — re-streaming would overwrite the generation's durable offset-0 segment with different bytes.
 - Partial last line at EOF is acceptable — the collector concatenates segments byte-for-byte, so line boundaries reassemble exactly. (This is a deliberate advantage of shipping raw bytes: line-oriented tailers like wow-recorder must special-case partial lines; we don't.)
 - Upload failure: checkpoint doesn't advance; next flush retries the same range. Errors logged to a local rotating log file, and surfaced via a `lastError` field in the heartbeat.
-- **Duplicate-safety invariant** (Filebeat's at-least-once lesson): a crash between upload ack and checkpoint write causes a re-upload of the same range — which produces the **same segment key** (`<startOffset>.seg`), an idempotent overwrite of identical bytes. The collector's `offset == reconstructed size` check independently skips already-appended data. Duplicates are structurally harmless end-to-end.
+- **Duplicate-safety invariant** (Filebeat's at-least-once lesson): a crash between upload ack and checkpoint write causes a re-upload of the same range — which produces the **same segment key** (`<gen8>/<startOffset>.seg`), an idempotent overwrite of identical bytes. The collector's `offset == reconstructed size` check independently skips already-appended data. Duplicates are structurally harmless end-to-end.
 
 ### 2. Storage adapter layer
 
@@ -80,7 +80,7 @@ interface StorageAdapter {
 ```
 
 - `storage.provider` config field selects the implementation; each provider has its own credentials block in config.
-- **v1 ships GCS only** (`GcsStorageAdapter`), using `@google-cloud/storage` with a service-account key. The key on the gaming PC gets `roles/storage.objectCreator` only — write-only, blast radius limited to log bytes.
+- **v1 ships GCS only** (`GcsStorageAdapter`), using `@google-cloud/storage` with a service-account key. The key on the gaming PC gets `roles/storage.objectUser` only, scoped to that one bucket — object-level create/overwrite/get/list, no bucket admin, blast radius limited to log bytes. (`roles/storage.objectCreator` is not sufficient: the heartbeat overwrites a fixed key on every flush and a crash-window retry can re-upload the same segment key, both of which require delete/overwrite permission that `objectCreator` lacks.)
 - The interface is deliberately tiny (3 methods, flat keys, no streaming/multipart) so future adapters — S3, Google Drive, R2, SSH-to-Mac — are drop-in. Segment sizes (a few MB max per flush) don't need multipart.
 - Adapter source lives in `packages/windows-agent/src/storage/` and is also consumed by the collector via the esbuild bundle or a small shared source copy — **decision:** collector imports the adapter source directly from `packages/windows-agent` source files at build time (tools package already does cross-source imports; agent remains dependency-free of tools).
 - Bucket lifecycle rule deletes objects older than 30 days (cost stays at pennies; the Mac is the durable store).
@@ -91,7 +91,7 @@ Runs on a schedule (launchd) or manually. Steps:
 
 1. `list('raw/')`, diff against local fetch-state file (`~/wal-sync/state.json`).
 2. Download new segments, ordered by `(logFileName, startOffset)`, and gunzip each body (offsets in keys always refer to **uncompressed** byte positions in the original log).
-3. Append in offset order into reconstructed files at `~/wal-sync/logs/<logFileName>`. Gap detection: if the next segment's offset doesn't equal the current reconstructed size, stop appending that file and record a warning (agent will have retried; gaps indicate lost objects and must not silently corrupt a log).
+3. Append in offset order into reconstructed files at `~/wal-sync/logs/<logFileName minus .txt>.<hostname>.<gen8>.txt` — one output per (host, file, generation), deterministically named so no run-order can reassign which file a generation lands in (gen8 is a content hash, not monotonic). Gap detection: if the next segment's offset doesn't equal the current reconstructed size, stop appending that file and record a warning (agent will have retried; gaps indicate lost objects and must not silently corrupt a log).
 4. Write-to-temp-then-rename on every append cycle so a crash never leaves a half-written log.
 5. Update `status.json` + append a record to `runs.jsonl` (see Dashboard).
 
@@ -125,7 +125,7 @@ A small self-contained local web page: single static HTML file + a tiny Node HTT
 
 ## Security
 
-- Windows PC holds only a write-only (`objectCreator`) storage credential.
+- Windows PC holds only an object-scoped (`objectUser`, one bucket) storage credential — no bucket admin, blast radius limited to log bytes. (Not `objectCreator`: heartbeat rewrites and idempotent same-key re-uploads are overwrites, which `objectCreator` cannot do.)
 - Anthropic key exists only on the Mac in `.env`.
 - Dashboard binds to `127.0.0.1` only.
 - Log content is combat telemetry — low sensitivity, but the bucket is private regardless.
@@ -139,7 +139,7 @@ A small self-contained local web page: single static HTML file + a tiny Node HTT
 
 ## Setup prerequisites (ops, not code)
 
-- A user-owned GCP project with one private bucket + service account (`objectCreator` for the agent key; a read credential for the Mac).
+- A user-owned GCP project with one private bucket + service account (`objectUser` for the agent key; a read credential for the Mac).
 - Node LTS installed on the gaming PC; Task Scheduler entry created per README in `packages/windows-agent`.
 
 ## Prior art consulted

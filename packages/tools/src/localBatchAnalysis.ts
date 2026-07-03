@@ -349,6 +349,13 @@ async function runPhase2(): Promise<void> {
   await fs.writeFile(SUMMARY_FILE, fullSummary, 'utf-8');
   console.log(summary);
   console.log(`\nSummary → ${SUMMARY_FILE}`);
+
+  // Archive each run's meta-eval so history survives the next overwrite.
+  const reportsDir = path.join(OUTPUT_DIR, 'reports');
+  await fs.ensureDir(reportsDir);
+  const archivePath = path.join(reportsDir, `summary-${reportDate}.md`);
+  await fs.writeFile(archivePath, fullSummary, 'utf-8');
+  console.log(`Archived → ${archivePath}`);
 }
 
 // ── Entry point ───────────────────────────────────────────────────────────────

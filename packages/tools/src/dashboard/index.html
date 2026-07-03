@@ -1,0 +1,137 @@
+<!-- Served by server.ts; self-contained, polls /api/status every 5s. -->
+<meta charset="utf-8" />
+<title>WAL Pipeline</title>
+<style>
+  :root {
+    color-scheme: dark;
+  }
+  body {
+    font:
+      14px/1.5 ui-monospace,
+      monospace;
+    background: #111418;
+    color: #d5dbe1;
+    margin: 2rem auto;
+    max-width: 900px;
+    padding: 0 1rem;
+  }
+  h1 {
+    font-size: 1.2rem;
+  }
+  h2 {
+    font-size: 1rem;
+    margin-top: 1.6rem;
+    color: #8ab4f8;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  td,
+  th {
+    border-bottom: 1px solid #2a2f36;
+    padding: 4px 8px;
+    text-align: left;
+  }
+  .ok {
+    color: #7ee787;
+  }
+  .warn {
+    color: #f0b429;
+  }
+  .err {
+    color: #ff7b72;
+  }
+  button {
+    background: #1f6feb;
+    color: white;
+    border: 0;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font: inherit;
+  }
+  button:disabled {
+    background: #30363d;
+    cursor: default;
+  }
+  .stale {
+    opacity: 0.6;
+  }
+</style>
+<h1>WoW Arena Logs — streaming pipeline</h1>
+<div id="agent">
+  <h2>Gaming PC agent</h2>
+  <div id="heartbeats">loading…</div>
+</div>
+<div>
+  <h2>Collector</h2>
+  <div id="collector">loading…</div>
+  <p><button id="run">Run now</button> <span id="runmsg"></span></p>
+</div>
+<div>
+  <h2>Schedule</h2>
+  <div id="schedule">loading…</div>
+</div>
+<div>
+  <h2>Recent runs</h2>
+  <div id="runs">loading…</div>
+</div>
+<script>
+  const $ = (id) => document.getElementById(id);
+  const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+  const ago = (iso) => {
+    if (!iso) return 'never';
+    const s = Math.round((Date.now() - new Date(iso).getTime()) / 1000);
+    return s < 90 ? s + 's ago' : s < 5400 ? Math.round(s / 60) + 'm ago' : Math.round(s / 3600) + 'h ago';
+  };
+  async function refresh() {
+    const r = await fetch('/api/status');
+    const s = await r.json();
+    $('heartbeats').innerHTML = s.heartbeats.length
+      ? s.heartbeats
+          .map((h) => {
+            const staleMs = Date.now() - new Date(h.lastFlushAt).getTime();
+            const cls = staleMs < 10 * 60e3 ? 'ok' : 'warn';
+            return `<p class="${staleMs > 60 * 60e3 ? 'stale' : ''}"><b>${esc(h.hostname)}</b>
+            <span class="${cls}">last streamed ${ago(h.lastFlushAt)}</span>
+            ${h.activeFile ? `— ${esc(h.activeFile)} @ ${esc(h.offset)}` : ''}
+            ${h.lastError ? `<span class="err"> err: ${esc(h.lastError)}</span>` : ''}</p>`;
+          })
+          .join('')
+      : '<p class="warn">no agent heartbeat found</p>';
+    $('collector').innerHTML = s.collector
+      ? `<p>phase <b>${esc(s.collector.phase)}</b> (${ago(s.collector.updatedAt)}) — ${esc(s.collector.detail)}</p>`
+      : '<p class="warn">no collector status yet</p>';
+    $('run').disabled = s.running;
+    $('runmsg').textContent = s.running ? 'running…' : '';
+    $('schedule').innerHTML = s.schedule.intervalSeconds
+      ? `<p>every ${s.schedule.intervalSeconds / 3600}h — last ${ago(s.schedule.lastRunAt)}, next ~${
+          s.schedule.nextRunAt ? new Date(s.schedule.nextRunAt).toLocaleString() : '?'
+        }</p>`
+      : '<p class="warn">launchd schedule not installed</p>';
+    $('runs').innerHTML = s.runs.length
+      ? `<table><tr><th>finished</th><th>segs</th><th>bytes</th><th>files</th><th>gaps</th><th>analysis</th></tr>` +
+        s.runs
+          .slice()
+          .reverse()
+          .map(
+            (x) => `<tr>
+          <td>${ago(x.finishedAt)}</td><td>${esc(x.segmentsFetched)}</td><td>${esc(x.bytesAppended)}</td>
+          <td>${esc(x.filesUpdated.length)}</td>
+          <td class="${x.gaps.length ? 'warn' : ''}">${esc(x.gaps.length)}</td>
+          <td class="${x.error ? 'err' : 'ok'}">${esc(x.error ?? 'exit ' + x.analysisExitCode)}</td></tr>`,
+          )
+          .join('') +
+        `</table><p>reports: <code id="rd"></code></p>`
+      : '<p>no runs recorded yet</p>';
+    if ($('rd')) $('rd').textContent = s.reportsDir;
+  }
+  $('run').onclick = async () => {
+    $('run').disabled = true;
+    const r = await fetch('/api/run', { method: 'POST' });
+    $('runmsg').textContent = r.status === 202 ? 'started' : 'already running';
+  };
+  refresh();
+  setInterval(refresh, 5000);
+</script>
