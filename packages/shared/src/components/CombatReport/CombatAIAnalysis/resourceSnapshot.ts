@@ -5,6 +5,25 @@ import { IMajorCooldownInfo, isHealerSpec, specToString } from '../../../utils/c
 import { IEnemyCDTimeline } from '../../../utils/enemyCDs';
 import { getPvpToolkit } from '../../../utils/talentBehaviors';
 
+// F169: number of friendly units with an active Atonement (194384) at a given time. Disc Priest
+// healing scales with Atonement count, so this is a core throughput signal for the spec.
+export function countActiveAtonements(friends: (ICombatUnit | undefined)[], atMs: number): number {
+  let count = 0;
+  for (const f of friends) {
+    if (!f) continue;
+    let active = false;
+    for (const a of f.auraEvents) {
+      if (a.timestamp > atMs) break;
+      if (a.spellId === '194384') {
+        if (a.logLine.event === 'SPELL_AURA_APPLIED' || a.logLine.event === 'SPELL_AURA_REFRESH') active = true;
+        else if (a.logLine.event === 'SPELL_AURA_REMOVED') active = false;
+      }
+    }
+    if (active) count++;
+  }
+  return count;
+}
+
 // ── Timeline prompt builders ───────────────────────────────────────────────
 
 /**
@@ -316,25 +335,8 @@ export function buildResourceSnapshot({
 
   // ── F169: Active Atonement count for Disc Priests ────────────────────────────
   if (_ownerSpec === 'Discipline Priest' && matchStartMs !== undefined && ownerUnit) {
-    let atonementCount = 0;
-    const allFriends = [ownerUnit, ...teammateCDs.map((t) => t.player)].filter(Boolean);
-    const atMs = matchStartMs + timeSeconds * 1000;
-    for (const f of allFriends) {
-      if (!f) continue;
-      let active = false;
-      for (const a of f.auraEvents) {
-        if (a.timestamp > atMs) break;
-        if (a.spellId === '194384') {
-          if (a.logLine.event === 'SPELL_AURA_APPLIED' || a.logLine.event === 'SPELL_AURA_REFRESH') {
-            active = true;
-          } else if (a.logLine.event === 'SPELL_AURA_REMOVED') {
-            active = false;
-          }
-        }
-      }
-      if (active) atonementCount++;
-    }
-    line += ` | Atonements: ${atonementCount}`;
+    const allFriends = [ownerUnit, ...teammateCDs.map((t) => t.player)];
+    line += ` | Atonements: ${countActiveAtonements(allFriends, matchStartMs + timeSeconds * 1000)}`;
   }
 
   // ── enemy: active offensive CDs (omit when empty) ──────────────────────────

@@ -1,5 +1,6 @@
-import { AtomicArenaCombat, ICombatUnit } from '@wowarenalogs/parser';
+import { AtomicArenaCombat, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
+import { getEnglishSpellName } from '../../../data/spellEffectData';
 import { buildArchetypeInjectionHeader } from '../../../utils/archetypeInjection';
 import { analyzePlayerCCAndTrinket, formatCCTrinketForContext } from '../../../utils/ccTrinketAnalysis';
 import { extractStasisEvents } from '../../../utils/combatStates';
@@ -38,6 +39,7 @@ import { buildOffensiveWasteSummary, formatOffensiveWasteForContext } from '../.
 import { computeOffensiveWindows, formatOffensiveWindowsForContext } from '../../../utils/offensiveWindows';
 import { benchmarks, formatDTPSBaselines, formatSpecBaselines } from '../../../utils/specBaselines';
 import { getPvpToolkit } from '../../../utils/talentBehaviors';
+import { channelWasInterrupted } from './timelineHelpers';
 import {
   buildMatchArc,
   buildMatchTimeline,
@@ -47,6 +49,16 @@ import {
 } from './utils';
 
 // ──────────────────────────────────────────────────────────────────────────────
+
+// B141 port: major healer channels whose expected duration lets us confirm a mid-cast interrupt.
+// A kick/CC landing anywhere in [cast, cast+duration] means the channel was cut — largely wasted.
+const CHANNELED_HEAL_CD_DURATIONS: Record<string, number> = {
+  '740': 6, // Tranquility
+  '1236574': 5, // Tranquility (rework)
+  '64843': 5, // Divine Hymn
+  '421453': 6.5, // Ultimate Penitence
+  '370960': 5, // Emerald Communion
+};
 
 export function buildMatchContext(
   combat: AtomicArenaCombat,
@@ -326,6 +338,24 @@ export function buildMatchContext(
   if (pvpToolkit.length > 0) {
     lines.push(
       `  Your PvP toolkit: ${pvpToolkit.map((t) => (t.used === false ? `${t.label} [UNUSED]` : t.label)).join(', ')}`,
+    );
+  }
+  // B141 port: flag the owner's major channels kicked/CC'd mid-cast (largely wasted) — the timeline
+  // path shows this per-cast, but the production critical-moments path otherwise only sees the cast.
+  const ownerCCForChannels = ccTrinketSummaries.find((s) => s.playerName === owner.name);
+  const interruptedChannels: string[] = [];
+  for (const cast of owner.spellCastEvents) {
+    if (cast.logLine.event !== LogEvent.SPELL_CAST_SUCCESS || !cast.spellId) continue;
+    const dur = CHANNELED_HEAL_CD_DURATIONS[cast.spellId];
+    if (dur === undefined) continue;
+    const t = (cast.timestamp - combat.startTime) / 1000;
+    if (channelWasInterrupted(ownerCCForChannels, t, t + dur)) {
+      interruptedChannels.push(`${getEnglishSpellName(cast.spellId, cast.spellName)} at ${fmtTime(t)}`);
+    }
+  }
+  if (interruptedChannels.length > 0) {
+    lines.push(
+      `  Channels interrupted (a major channel was kicked/CC'd mid-cast — largely wasted): ${interruptedChannels.join(', ')}`,
     );
   }
   lines.push('');

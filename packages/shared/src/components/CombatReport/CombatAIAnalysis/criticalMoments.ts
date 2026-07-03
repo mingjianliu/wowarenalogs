@@ -8,10 +8,12 @@ import {
   IOverlappedDefensive,
   IPanicDefensive,
   selfForbearanceActiveAt,
+  specToString,
 } from '../../../utils/cooldowns';
 import { IEnemyCDTimeline } from '../../../utils/enemyCDs';
 import { IHealingGap } from '../../../utils/healingGaps';
 import { getHpPercentAtTime, getLowestHpPercentInWindow } from '../../../utils/killWindowTargetSelection';
+import { countActiveAtonements } from './resourceSnapshot';
 import { getTopDamageSourcesInWindow, lastCastBefore } from './timelineHelpers';
 
 const DEATH_LOOKFORWARD_SECONDS = 45;
@@ -475,6 +477,14 @@ export function identifyCriticalMoments(
     if (ownerDeadBefore) {
       rootCauseTrace.unshift(
         'NOTE: the log owner (healer) was already dead at this time — no healer cooldown play was possible; the owner-CD lines below are not actionable for this death.',
+      );
+    }
+    // F169 port: Disc Priest healing scales with active Atonement count — surface how ramped the
+    // healer was at the death (a low count during a kill window means under-ramped Atonement).
+    if (owner && specToString(owner.spec) === 'Discipline Priest') {
+      const atCount = countActiveAtonements(friends, matchStartMs + death.atSeconds * 1000);
+      rootCauseTrace.push(
+        `Active Atonements at death: ${atCount} (Disc healing scales with Atonement count; a low count in a kill window means under-ramped).`,
       );
     }
     const { mechanicalAvailability, interpretation, tieredOptions, finalAssessment } = buildKillMomentFields(
