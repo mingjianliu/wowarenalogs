@@ -31,7 +31,7 @@ export interface CollectStats {
  * live key order. Names keep the WoWCombatLog*.txt shape localBatchAnalysis
  * selects on.
  */
-function outputNameFor(ref: SegmentRef): string {
+export function outputNameFor(ref: SegmentRef): string {
   const base = ref.logFileName.endsWith('.txt') ? ref.logFileName.slice(0, -4) : ref.logFileName;
   return `${base}.${ref.hostname}.${ref.gen8}.txt`;
 }
