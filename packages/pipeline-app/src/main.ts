@@ -35,6 +35,8 @@ let localState: StreamerState = { status: 'idle', lastFlushAt: null, lastError: 
 let collectorPhase = 'idle';
 let restartDelayMs = 10_000;
 let serviceGeneration = 0;
+let retryTimer: ReturnType<typeof setTimeout> | null = null;
+let wizardWin: BrowserWindow | null = null;
 
 // Platform-only placeholder — deliberately does NOT call computeRole()/resolveRole() here: this
 // runs synchronously during module evaluation (before main()'s try/catch exists), so a bad
@@ -116,9 +118,23 @@ function currentConfig(): PilotConfig | null {
   return loadPilotConfig(configPathFor(app.getPath('userData')));
 }
 
+function teardownServices(): void {
+  serviceGeneration += 1; // invalidate any in-flight onState/onPhase from the outgoing services
+  streamer?.stop();
+  streamer = null;
+  collector?.stop();
+  collector = null;
+}
+
 function startServices(): void {
   if (paused) return;
-  serviceGeneration += 1;
+  // Guard against re-entrancy: clear any pending retry timer and stop existing services
+  if (retryTimer) {
+    clearTimeout(retryTimer);
+    retryTimer = null;
+  }
+  teardownServices();
+
   const gen = serviceGeneration;
   try {
     const cfg = currentConfig();
@@ -165,22 +181,27 @@ function startServices(): void {
     const msg = e instanceof Error ? e.message : String(e);
     localState = { status: 'error', lastFlushAt: null, lastError: msg };
     updateTray('error', msg);
-    setTimeout(startServices, restartDelayMs);
+    retryTimer = setTimeout(() => {
+      retryTimer = null;
+      startServices();
+    }, restartDelayMs);
     restartDelayMs = Math.min(restartDelayMs * 2, 300_000);
     throw e;
   }
 }
 
 function stopServices(): void {
-  serviceGeneration += 1; // invalidate any in-flight onState/onPhase from the outgoing services
-  streamer?.stop();
-  streamer = null;
-  collector?.stop();
-  collector = null;
+  teardownServices();
   updateTray('idle', 'paused');
 }
 
 function openWizard(): void {
+  // Singleton: focus existing wizard window if it's still open
+  if (wizardWin && !wizardWin.isDestroyed()) {
+    wizardWin.focus();
+    return;
+  }
+
   const win = new BrowserWindow({
     width: 560,
     height: 480,
@@ -188,6 +209,11 @@ function openWizard(): void {
     webPreferences: { preload: path.join(__dirname, 'preload.js') },
   });
   void win.loadFile(path.join(__dirname, 'wizard.html'));
+
+  wizardWin = win;
+  win.on('closed', () => {
+    if (wizardWin === win) wizardWin = null;
+  });
 
   // Reopening (Setup… while a previous wizard window is still open, or a reconfiguration after
   // a malformed-config startup) would otherwise throw "second handler for X" on ipcMain.handle.
