@@ -25,11 +25,15 @@ const MAX_PRO_CRISES = 6;
 function diversifiedProCrises(cell: { playerName: string; crisisEvents?: string[] }[]): string[] {
   const out: string[] = [];
   const seen = new Set<string>();
+  const spellCount = (s: string) => (s.split('): ')[1] ?? s).split(' -> ').length;
   for (const r of cell) {
     if (out.length >= MAX_PRO_CRISES) break;
     if (seen.has(r.playerName)) continue;
-    const c = (r.crisisEvents ?? []).find((s) => s && s.trim().length > 0);
-    if (!c) continue;
+    const crises = (r.crisisEvents ?? []).filter((s) => s && s.trim().length > 0);
+    if (crises.length === 0) continue;
+    // Pick this pro's MOST instructive crisis (most casts) — avoids surfacing a thin single-spell
+    // "crisis" (e.g. a lone racial like Bag of Tricks) as a comparable pro when a richer one exists.
+    const c = crises.reduce((best, s) => (spellCount(s) > spellCount(best) ? s : best));
     seen.add(r.playerName);
     out.push(c);
   }
