@@ -47,6 +47,12 @@ async function main() {
   .fm { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #21252e; }
   .fm:last-child { border-bottom:none; }
   .fmv { font-weight:600; }
+  .sgbox { margin-bottom:6px; }
+  .sg { display:flex; gap:9px; padding:8px 10px; margin-bottom:6px; background:#16211a; border:1px solid #234030;
+        border-radius:8px; font-size:13px; color:#d6e4dc; }
+  .sg:only-child { background:#1a1d24; border-color:var(--line); }
+  .sgn { flex:0 0 20px; height:20px; border-radius:50%; background:var(--good); color:#0f1115; font-weight:700;
+         font-size:12px; text-align:center; line-height:20px; }
   .note { color:var(--mut); font-size:12px; padding:0 24px 28px; max-width:820px; }
 </style></head><body>
 <header>
@@ -93,8 +99,10 @@ for(const P of PROFILES){
   const oi=P.metrics.offensiveIndex, cc=P.metrics.ccDensity;
   if(oi && oi.percentile<40) hook='⚑ Weave more damage — Offensive Index at the '+oi.percentile+'th percentile ('+fmtN(oi.you.median,'')+' vs cohort '+fmtN(oi.cohort.median,'')+').';
   else hook='✓ You match or beat the cohort on the prescriptive metrics.';
+  const sugg = (P.suggestions||[]).map((s,i)=>'<div class="sg"><span class="sgn">'+(i+1)+'</span><span>'+s+'</span></div>').join('');
   const card = '<div class="card"><div class="chd"><h2>'+P.spec+'</h2><span class="games">'+P.games+' games</span></div>'
     + '<div class="hook">'+hook+'</div>'
+    + '<div class="sect">▶ Do this to improve — from cooldown analysis</div><div class="sgbox">'+sugg+'</div>'
     + '<div class="sect">Prescriptive — coach on these</div>'+presc
     + '<div class="sect desc">Descriptive — context only</div><div class="desc">'+desc+'</div>'
     + '<div class="sect">Recurring failure modes (your games)</div>'

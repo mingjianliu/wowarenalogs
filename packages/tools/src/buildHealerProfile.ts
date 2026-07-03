@@ -36,18 +36,34 @@ interface Failures {
   overCommit: number; // count of "cheaper available:" (a bigger CD used with a cheaper one up)
   idle: boolean; // an [INACTIVITY] gap on the owner
   missedPurge: boolean; // [MISSED PURGE OPPORTUNITY] present (purge-capable owners)
+  // Specifics (for concrete, named suggestions):
+  unusedAtDeath: string[]; // defensives listed unused on the owner's death line
+  unpurgedBuffs: string[]; // enemy buffs left unpurged (one per [MISSED PURGE OPPORTUNITY])
+  overCommitBig: string[]; // the big CD spent when a cheaper one was available
+  trinketShortCC: boolean; // trinket cut a short/DR'd CC (wasted trinket)
 }
 
 function mineFailures(prompt: string): Failures {
   let ownerDied = false;
   let diedHoldingTool = false;
   let idle = false;
+  const unusedAtDeath: string[] = [];
+  const unpurgedBuffs: string[] = [];
+  const overCommitBig: string[] = [];
   for (const line of prompt.split('\n')) {
     if (/\[DEATH\]\s+1\s+\(/.test(line)) {
       ownerDied = true;
-      if (line.includes('(Unused:') || line.includes('PvP Trinket available')) diedHoldingTool = true;
+      const um = line.match(/\(Unused:\s*([^)]+)\)/);
+      if (um || line.includes('PvP Trinket available')) diedHoldingTool = true;
+      if (um) unusedAtDeath.push(...um[1].split(',').map((s) => s.trim()));
     }
     if (line.includes('[INACTIVITY]') && /\s1 inactive/.test(line)) idle = true;
+    const pm = line.match(/\[MISSED PURGE OPPORTUNITY\]\s+([A-Za-z][A-Za-z: ]+?)\s+active/);
+    if (pm) unpurgedBuffs.push(pm[1].trim());
+    if (line.includes('[YOU] [CD]') && line.includes('cheaper available:')) {
+      const bm = line.match(/\[YOU\] \[CD\]\s+([A-Za-z][A-Za-z: ]+?)\s*\(/);
+      if (bm) overCommitBig.push(bm[1].trim());
+    }
   }
   return {
     ownerDied,
@@ -55,7 +71,21 @@ function mineFailures(prompt: string): Failures {
     overCommit: (prompt.match(/cheaper available:/g) ?? []).length,
     idle,
     missedPurge: prompt.includes('[MISSED PURGE OPPORTUNITY]'),
+    unusedAtDeath,
+    unpurgedBuffs,
+    overCommitBig,
+    trinketShortCC: /trinket broke this CC after \ds \(cut short/.test(prompt),
   };
+}
+
+/** Top-N most frequent strings with their counts. */
+function topN(items: string[], n: number): Array<{ name: string; count: number }> {
+  const freq = new Map<string, number>();
+  for (const it of items) freq.set(it, (freq.get(it) ?? 0) + 1);
+  return [...freq.entries()]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, n);
 }
 
 interface GameData {
@@ -275,17 +305,68 @@ async function main() {
         );
     }
 
+    // ── Concrete, named suggestions from the cooldown-analysis specifics ──
+    const nF = Math.max(1, withF.length);
+    const allUnused = withF.flatMap((g) => g.failures?.unusedAtDeath ?? []);
+    const allUnpurged = withF.flatMap((g) => g.failures?.unpurgedBuffs ?? []);
+    const allOverBig = withF.flatMap((g) => g.failures?.overCommitBig ?? []);
+    const trinketShortGames = withF.filter((g) => g.failures?.trinketShortCC).length;
+    const oiPct = (jsonMetrics.offensiveIndex as { percentile?: number } | undefined)?.percentile;
+    const suggestions: string[] = [];
+
+    if (deaths.length >= 4 && diedHolding / deaths.length > 0.4 && allUnused.length > 0) {
+      const t = topN(allUnused, 3);
+      suggestions.push(
+        `Use your kit before you die — in ${pct(diedHolding / deaths.length)} of your deaths you still had major cooldowns up (e.g. ${t.map((x) => x.name).join(', ')}). Set an earlier trigger to spend them.`,
+      );
+    }
+    if (missedPurgeGames / nF > 0.15 && allUnpurged.length > 0) {
+      const t = topN(allUnpurged, 2);
+      suggestions.push(
+        `Purge priority: ${t.map((x) => x.name).join(' and ')} — you leave these up most often (missed a purge in ${pct(missedPurgeGames / nF)} of games). Strip ${t[0].name} on cooldown.`,
+      );
+    }
+    if (overCommitTotal / nF > 0.3 && allOverBig.length > 0) {
+      const t = topN(allOverBig, 2);
+      suggestions.push(
+        `Hold your big cooldowns — you spend ${t.map((x) => x.name).join(' / ')} with a cheaper tool up (${(overCommitTotal / nF).toFixed(1)} flags/game). Save ${t[0].name} for real enemy burst.`,
+      );
+    }
+    if (idleGames / nF > 0.25) {
+      suggestions.push(
+        `Cut idle time — you have an inactive gap under pressure in ${pct(idleGames / nF)} of games. Fill it with a damage or CC cast.`,
+      );
+    }
+    if (oiPct != null && oiPct < 40) {
+      const OFFENSIVE_HINT: Record<string, string> = {
+        'Restoration Shaman': 'keep Flame Shock up + Lava Burst on procs',
+        'Discipline Priest': 'keep Shadow Word: Pain up + weave Smite/Penance',
+        'Holy Priest': 'keep Shadow Word: Pain up + Holy Fire',
+        'Restoration Druid': 'keep Moonfire/Sunfire up + Wrath fillers',
+        'Holy Paladin': 'weave Holy Shock (dmg) + Judgment + Crusader Strike',
+        'Mistweaver Monk': 'weave Rising Sun Kick + Tiger Palm (fistweave)',
+        'Preservation Evoker': 'weave Living Flame + Fire Breath',
+      };
+      suggestions.push(
+        `Weave more damage — Offensive Index at the ${oiPct}th percentile. In the calm windows (low healing demand), ${OFFENSIVE_HINT[spec] ?? 'press your damage casts'}.`,
+      );
+    }
+    if (suggestions.length === 0)
+      suggestions.push(`Clean profile — no dominant, deterministic mistake pattern on this spec.`);
+
     out.push(`\n## ${spec} — ${games.length} games`);
     out.push(`  _Coaching hook:_ ${headline}.`);
-    out.push(`  **Prescriptive (coach on these):**`, ...presc);
+    out.push(`  **Do this to improve (ranked):**`, ...suggestions.map((s, i) => `  ${i + 1}. ${s}`));
+    out.push(`  **Prescriptive metrics:**`, ...presc);
     out.push(`  **Descriptive (context only):**`, ...desc);
-    out.push(`  **Recurring failure modes (deterministic):**`, ...fails);
+    out.push(`  **Failure-mode rates:**`, ...fails);
 
     await fs.writeJson(
       path.join(OUT_DIR, `${spec.replace(/\s+/g, '')}.json`),
       {
         spec,
         games: games.length,
+        suggestions,
         metrics: jsonMetrics,
         failureModes: {
           deaths: deaths.length,
@@ -293,6 +374,10 @@ async function main() {
           idleGames,
           missedPurgeGames,
           overCommitPerGame: withF.length > 0 ? overCommitTotal / withF.length : 0,
+          topUnusedAtDeath: topN(allUnused, 4),
+          topUnpurgedBuffs: topN(allUnpurged, 4),
+          topOverCommitCDs: topN(allOverBig, 4),
+          trinketShortGames,
         },
       },
       { spaces: 2 },
