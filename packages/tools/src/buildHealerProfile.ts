@@ -41,12 +41,17 @@ interface Failures {
   unpurgedBuffs: string[]; // enemy buffs left unpurged (one per [MISSED PURGE OPPORTUNITY])
   overCommitBig: string[]; // the big CD spent when a cheaper one was available
   trinketShortCC: boolean; // trinket cut a short/DR'd CC (wasted trinket)
+  // F40 meta-pattern (deterministic full-corpus proxy): major CD spent at high HP / no incoming.
+  cdCasts: number; // total [YOU] [CD] casts carrying an HP/velocity annotation
+  proactiveCdCasts: number; // cast at self ≥85% HP + non-negative velocity, or team lowest ally ≥85%
 }
 
 function mineFailures(prompt: string): Failures {
   let ownerDied = false;
   let diedHoldingTool = false;
   let idle = false;
+  let cdCasts = 0;
+  let proactiveCdCasts = 0;
   const unusedAtDeath: string[] = [];
   const unpurgedBuffs: string[] = [];
   const overCommitBig: string[] = [];
@@ -60,9 +65,21 @@ function mineFailures(prompt: string): Failures {
     if (line.includes('[INACTIVITY]') && /\s1 inactive/.test(line)) idle = true;
     const pm = line.match(/\[MISSED PURGE OPPORTUNITY\]\s+([A-Za-z][A-Za-z: ]+?)\s+active/);
     if (pm) unpurgedBuffs.push(pm[1].trim());
-    if (line.includes('[YOU] [CD]') && line.includes('cheaper available:')) {
-      const bm = line.match(/\[YOU\] \[CD\]\s+([A-Za-z][A-Za-z: ]+?)\s*\(/);
-      if (bm) overCommitBig.push(bm[1].trim());
+    if (line.includes('[YOU] [CD]')) {
+      if (line.includes('cheaper available:')) {
+        const bm = line.match(/\[YOU\] \[CD\]\s+([A-Za-z][A-Za-z: ]+?)\s*\(/);
+        if (bm) overCommitBig.push(bm[1].trim());
+      }
+      // F40: classify the cast as proactive (high HP / no incoming) vs reactive.
+      const selfM = line.match(/\(self: (\d+)% HP, (-?\d+)%\/s/);
+      const teamM = line.match(/\(team; lowest ally (\d+)% HP/);
+      if (selfM) {
+        cdCasts++;
+        if (Number(selfM[1]) >= 85 && Number(selfM[2]) >= 0) proactiveCdCasts++;
+      } else if (teamM) {
+        cdCasts++;
+        if (Number(teamM[1]) >= 85) proactiveCdCasts++;
+      }
     }
   }
   return {
@@ -75,6 +92,8 @@ function mineFailures(prompt: string): Failures {
     unpurgedBuffs,
     overCommitBig,
     trinketShortCC: /trinket broke this CC after \ds \(cut short/.test(prompt),
+    cdCasts,
+    proactiveCdCasts,
   };
 }
 
@@ -287,12 +306,21 @@ async function main() {
     const idleGames = withF.filter((g) => g.failures?.idle).length;
     const missedPurgeGames = withF.filter((g) => g.failures?.missedPurge).length;
     const overCommitTotal = withF.reduce((s, g) => s + (g.failures?.overCommit ?? 0), 0);
+    // F40 meta-pattern, measured deterministically across all games: share of major-CD casts made at
+    // high HP / no incoming (the "spends ahead of the damage" habit the coach role-play surfaced).
+    const cdCastsTotal = withF.reduce((s, g) => s + (g.failures?.cdCasts ?? 0), 0);
+    const proactiveCdTotal = withF.reduce((s, g) => s + (g.failures?.proactiveCdCasts ?? 0), 0);
+    const proactiveCdRate = cdCastsTotal > 0 ? proactiveCdTotal / cdCastsTotal : 0;
     const fails: string[] = [];
     if (deaths.length > 0)
       fails.push(
         `  - **Died holding a defensive/trinket**: ${diedHolding}/${deaths.length} of your deaths (${pct(diedHolding / deaths.length)}) — a survival tool was still available`,
       );
     if (withF.length > 0) {
+      if (cdCastsTotal > 0)
+        fails.push(
+          `  - **Proactive major-CD casts (F40 meta-pattern)**: ${pct(proactiveCdRate)} of your ${cdCastsTotal} cooldown casts landed at ≥85% HP with no incoming — spent ahead of the damage`,
+        );
       fails.push(
         `  - **Over-commit (cheaper tool was up)**: ${(overCommitTotal / withF.length).toFixed(2)} flags/game — a shorter-CD survival tool was available when you spent a bigger one`,
       );
@@ -378,6 +406,9 @@ async function main() {
           topUnpurgedBuffs: topN(allUnpurged, 4),
           topOverCommitCDs: topN(allOverBig, 4),
           trinketShortGames,
+          proactiveCdRate,
+          proactiveCdCasts: proactiveCdTotal,
+          cdCasts: cdCastsTotal,
         },
       },
       { spaces: 2 },

@@ -6,7 +6,7 @@ const DIR = '/Users/mingjianliu/code/wowarenalogs/scratch/healer-profile/profile
 const OUT = path.join(DIR, 'profiles.html');
 
 async function main() {
-  const files = (await fs.readdir(DIR)).filter((f) => f.endsWith('.json'));
+  const files = (await fs.readdir(DIR)).filter((f) => f.endsWith('.json') && f !== 'f40.json');
   const profiles = [];
   for (const f of files) {
     const p = await fs.readJson(path.join(DIR, f));
@@ -15,6 +15,8 @@ async function main() {
     profiles.push(p);
   }
   profiles.sort((a, b) => b.games - a.games);
+  // F40: LLM-mined recurring-mistake themes (causal layer), keyed by spec name.
+  const f40 = await fs.readJson(path.join(DIR, 'f40.json'));
 
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -53,6 +55,16 @@ async function main() {
   .sg:only-child { background:#1a1d24; border-color:var(--line); }
   .sgn { flex:0 0 20px; height:20px; border-radius:50%; background:var(--good); color:#0f1115; font-weight:700;
          font-size:12px; text-align:center; line-height:20px; }
+  .meta { margin-top:14px; max-width:900px; background:#221a10; border:1px solid #4a3a1f; color:#f0d9b5;
+          border-radius:8px; padding:10px 12px; font-size:13px; }
+  .f40root { color:#c9b48f; font-size:12px; font-style:italic; margin-bottom:8px; }
+  .th { padding:8px 10px; margin-bottom:7px; background:#1e1a24; border:1px solid #3a2f4a; border-radius:8px; }
+  .thh { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+  .tht { font-weight:600; color:#e6ddf2; font-size:13px; }
+  .thf { flex:0 0 auto; font-size:11px; color:#b79ee0; background:#2a2140; border-radius:20px; padding:2px 8px; }
+  .thd { color:#a7a2b3; font-size:12px; margin:4px 0 3px; }
+  .thx { color:#8fd6a8; font-size:12px; } .thx b { color:#8fd6a8; }
+  .pcd { color:var(--mut); font-size:12px; }
   .note { color:var(--mut); font-size:12px; padding:0 24px 28px; max-width:820px; }
 </style></head><body>
 <header>
@@ -61,11 +73,13 @@ async function main() {
   <b>percentile</b> (fill) with the cohort median marked. <b>Prescriptive</b> metrics are what to coach on;
   <b>descriptive</b> are context only. Failure modes are mined from your own games (no pro prompts exist to
   cohort-compare those).</div>
+  <div class="meta">⬢ <b>Cross-spec meta-pattern (coach analysis):</b> ${f40._metaPattern}</div>
 </header>
 <div class="grid" id="grid"></div>
 <div class="note" id="note"></div>
 <script>
 const PROFILES = ${JSON.stringify(profiles)};
+const F40 = ${JSON.stringify(f40)};
 const col = p => p>=66?'var(--good)':p>=33?'var(--mid)':'var(--bad)';
 const fmtN = (x,u)=> (x==null||isNaN(x))?'n/a':(Math.abs(x)>=100?Math.round(x):(+x).toFixed(2))+(u||'');
 function metricRow(m, key){
@@ -100,12 +114,23 @@ for(const P of PROFILES){
   if(oi && oi.percentile<40) hook='⚑ Weave more damage — Offensive Index at the '+oi.percentile+'th percentile ('+fmtN(oi.you.median,'')+' vs cohort '+fmtN(oi.cohort.median,'')+').';
   else hook='✓ You match or beat the cohort on the prescriptive metrics.';
   const sugg = (P.suggestions||[]).map((s,i)=>'<div class="sg"><span class="sgn">'+(i+1)+'</span><span>'+s+'</span></div>').join('');
+  // F40 causal themes (from role-played coach on a loss-weighted sample)
+  const fx = F40[P.spec];
+  let f40html = '';
+  if(fx){
+    const themes = fx.themes.map(t=>'<div class="th"><div class="thh"><span class="tht">'+t.title+'</span><span class="thf">'+t.freq+'</span></div><div class="thd">'+t.detail+'</div><div class="thx">▸ <b>'+t.fix+'</b></div></div>').join('');
+    f40html = '<div class="sect">◆ Recurring mistakes — coach role-play (6-game sample)</div>'
+      + '<div class="f40root">'+fx.root+'</div>'+themes;
+  }
+  const pcdRate = F.proactiveCdRate!=null? Math.round(F.proactiveCdRate*100) : null;
   const card = '<div class="card"><div class="chd"><h2>'+P.spec+'</h2><span class="games">'+P.games+' games</span></div>'
     + '<div class="hook">'+hook+'</div>'
     + '<div class="sect">▶ Do this to improve — from cooldown analysis</div><div class="sgbox">'+sugg+'</div>'
+    + f40html
     + '<div class="sect">Prescriptive — coach on these</div>'+presc
     + '<div class="sect desc">Descriptive — context only</div><div class="desc">'+desc+'</div>'
     + '<div class="sect">Recurring failure modes (your games)</div>'
+    + (pcdRate!=null? fm('Proactive CD casts (spent ahead of damage)', pcdRate+'% of '+F.cdCasts+' casts', sevPct(F.proactiveCdRate)) : '')
     + fm('Died holding a defensive/trinket', deaths>0? Math.round(dhRate*100)+'% ('+F.diedHoldingTool+'/'+deaths+' deaths)':'n/a', sevPct(dhRate))
     + fm('Missed offensive purge', Math.round(mpRate*100)+'% of games', sevPct(mpRate))
     + fm('Idle gaps under pressure', Math.round(idleRate*100)+'% of games', sevPct(idleRate))
