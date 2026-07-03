@@ -50,6 +50,10 @@ import { reconstructEnemyCDTimeline } from '../../shared/src/utils/enemyCDs';
 const MATCH_COUNT = parseInt(process.env.MATCH_COUNT ?? '100', 10);
 const BRACKET = process.env.BRACKET ?? '3v3';
 const MIN_RATING = parseInt(process.env.MIN_RATING ?? '2100', 10);
+/** Local per-PLAYER rating gate applied at aggregation time (the server buckets cap at gte2400, so a
+ *  stricter floor like 2700 must be enforced from COMBATANT_INFO personalRating). 0 = off. Players
+ *  with no rating in the log (personalRating 0/missing) are excluded when a floor is set. */
+const RATING_FLOOR = parseInt(process.env.RATING_FLOOR ?? '0', 10);
 const CONCURRENCY = parseInt(process.env.CONCURRENCY ?? '5', 10);
 const MAX_LOG_AGE_DAYS = parseInt(process.env.MAX_LOG_AGE_DAYS ?? '60', 10);
 const API_BASE = process.env.API_BASE ?? 'https://wowarenalogs.com';
@@ -343,6 +347,7 @@ function extractCombatStats(
   const avgDmgPerSec = durationSeconds > 0 ? totalFriendlyDmg / durationSeconds : 0;
 
   for (const unit of friendlies) {
+    if (RATING_FLOOR > 0 && (unit.info?.personalRating ?? 0) < RATING_FLOOR) continue;
     const label = specLabel(unit.spec);
     const stats = ensureSpec(acc, label);
     stats.sampleCount++;
@@ -505,7 +510,21 @@ async function main() {
   const newStubs: MatchStub[] = [];
   let offset = 0;
   while (newStubs.length < MATCH_COUNT) {
-    const page = await fetchMatchStubs(offset, PAGE_SIZE);
+    // Deep fetches make dozens of page requests — retry transient failures, and on persistent
+    // failure keep what we have instead of losing the whole run (downloads are already per-stub safe).
+    let page: MatchStub[] | null = null;
+    for (let attempt = 1; attempt <= 3 && page === null; attempt++) {
+      try {
+        page = await fetchMatchStubs(offset, PAGE_SIZE);
+      } catch (err) {
+        console.warn(`  WARN: stub page offset=${offset} attempt ${attempt}/3 failed: ${err}`);
+        if (attempt < 3) await new Promise((r) => setTimeout(r, 2000 * attempt));
+      }
+    }
+    if (page === null) {
+      console.warn(`  Stub paging aborted at offset=${offset}; continuing with ${newStubs.length} stub(s).`);
+      break;
+    }
     if (page.length === 0) break;
     for (const stub of page) {
       if (!cachedIds.has(stub.id)) newStubs.push(stub);

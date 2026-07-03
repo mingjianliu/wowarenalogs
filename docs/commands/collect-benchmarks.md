@@ -47,6 +47,7 @@ MIN_RATING=2400 npm run -w @wowarenalogs/tools start:collectBenchmarks
 | `MIN_RATING`       | 2100                     | Rating bucket. Values: 1400, 1800, 2100, 2400 (maps to Firestore `extra.gteXXXX` flags). At 2400 only ~47 recent matches may be available — use 2100 for broader spec coverage. |
 | `BRACKET`          | 3v3                      | Match bracket filter.                                                                                                                                                           |
 | `CONCURRENCY`      | 5                        | Parallel GCS log downloads.                                                                                                                                                     |
+| `RATING_FLOOR`     | 0 (off)                  | Per-PLAYER rating gate applied at aggregation from `COMBATANT_INFO` personalRating. The server buckets cap at gte2400, so stricter floors (e.g. 2700) must be enforced locally. Players with no rating in the log are excluded when set.                              |
 | `MAX_LOG_AGE_DAYS` | 60                       | Purge cached logs older than this many days. Old logs are deleted from disk and removed from manifest automatically.                                                            |
 | `API_BASE`         | https://wowarenalogs.com | GraphQL host.                                                                                                                                                                   |
 
@@ -95,6 +96,14 @@ The script prints three summary tables on completion:
 1. **Pressure P90 by spec** — direct input for threshold calibration
 2. **Defensive timing distribution** — R1 baseline for Optimal/Early/Late/Unknown rates
 3. **Purge rate by spec** — p50/p75/p90 purges per minute
+
+## Field notes (2026-07-03 refresh)
+
+- **Single-day windows skew per-spec coverage badly** — one day of 2400+ gave 3 Discipline / 1 Holy Paladin samples at 2700+; a week gave 204 / 362. Fetch ≥2000 matches per bracket (reaches back ~5-7 days) before judging spec availability.
+- **Transient GraphQL 503s are normal on deep fetches** — stub paging retries ×3 and keeps partial progress instead of aborting the run.
+- **Per-spec floor with fallback**: run the aggregation twice from cache (`RATING_FLOOR=2700 MATCH_COUNT=0`, then `RATING_FLOOR=2400 MATCH_COUNT=0`), keep each spec's 2700-floor stats when its sampleCount ≥25, else the 2400-floor stats; stamp `ratingFloor` per spec (see the 2026-07-03 `benchmark_data.json` meta block for the shape).
+- **Run both brackets into the same cache** (`BRACKET=3v3`, then `BRACKET="Rated Solo Shuffle"`) — aggregation covers the combined corpus.
+- **Threshold recalibration is a separate step**: the 2026-07-03 refresh moved healer pressure P90s up to +121% (Holy Priest 58k→129k, MW +63%, RDruid +53%) vs the 2026-04-08 snapshot — `PANIC_PRESS_*` constants in `cooldowns.ts` should be revalidated against the new data before being changed.
 
 ## Known limitations
 
