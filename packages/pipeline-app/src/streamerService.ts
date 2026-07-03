@@ -20,6 +20,7 @@ export class StreamerService {
   private watcher: ReturnType<typeof startLogWatcher> | null = null;
   private idleTimer: ReturnType<typeof setInterval> | null = null;
   private lastFlushAt: string | null = null;
+  private startedAt = 0;
 
   constructor(
     private opts: {
@@ -27,14 +28,28 @@ export class StreamerService {
       statePath: string;
       onState: (s: StreamerState) => void;
       watchFn?: typeof watch;
+      idleAfterMs?: number;
     },
   ) {}
 
   start(): void {
     const { agentConfig, statePath, onState, watchFn } = this.opts;
+    const logsDir = join(agentConfig.wowDirectory, 'Logs');
+
+    // Validate the Logs dir BEFORE constructing the watcher — fs.watch throws
+    // synchronously on a missing dir, which would bypass any later guard.
+    let names: string[];
+    try {
+      names = readdirSync(logsDir);
+    } catch (e) {
+      const msg = `Logs directory unreadable: ${e instanceof Error ? e.message : String(e)}`;
+      onState({ status: 'error', lastFlushAt: null, lastError: msg });
+      throw new Error(msg);
+    }
+
     const adapter = createAdapter(agentConfig.storage);
     const state = loadState(statePath);
-    const logsDir = join(agentConfig.wowDirectory, 'Logs');
+    this.startedAt = Date.now();
 
     this.watcher = startLogWatcher({
       logsDir,
@@ -59,31 +74,27 @@ export class StreamerService {
 
     // Restart/first-run seed (mirrors windows-agent/src/index.ts).
     const entries: Array<{ name: string; mtimeMs: number }> = [];
-    try {
-      for (const name of readdirSync(logsDir)) {
-        try {
-          entries.push({ name, mtimeMs: statSync(join(logsDir, name)).mtimeMs });
-        } catch {
-          /* vanished between readdir and stat — skip */
-        }
+    for (const name of names) {
+      try {
+        entries.push({ name, mtimeMs: statSync(join(logsDir, name)).mtimeMs });
+      } catch {
+        /* vanished between readdir and stat — skip */
       }
-    } catch (e) {
-      this.opts.onState({
-        status: 'error',
-        lastFlushAt: null,
-        lastError: `Logs directory unreadable: ${e instanceof Error ? e.message : e}`,
-      });
     }
     for (const f of selectInitialFiles(entries, Date.now(), agentConfig.ignoreOlderDays)) {
       this.watcher.handleEvent('change', f);
     }
 
-    this.idleTimer = setInterval(() => {
-      const last = this.lastFlushAt ? new Date(this.lastFlushAt).getTime() : 0;
-      if (Date.now() - last > IDLE_AFTER_MS) {
-        onState({ status: 'idle', lastFlushAt: this.lastFlushAt, lastError: null });
-      }
-    }, 60_000);
+    const idleAfterMs = this.opts.idleAfterMs ?? IDLE_AFTER_MS;
+    this.idleTimer = setInterval(
+      () => {
+        const last = this.lastFlushAt ? new Date(this.lastFlushAt).getTime() : this.startedAt;
+        if (Date.now() - last > idleAfterMs) {
+          onState({ status: 'idle', lastFlushAt: this.lastFlushAt, lastError: null });
+        }
+      },
+      Math.min(idleAfterMs, 60_000),
+    );
   }
 
   simulateEvent(fileName: string): void {
