@@ -28,7 +28,9 @@ const RECORD_KEYS: Array<[MetricKey, (m: RecordMetrics) => number | null]> = [
   ['offensiveIndex', (m) => m?.offensiveIndex ?? null],
   ['ccDensity', (m) => m?.ccDensity ?? null],
   ['responseLatencySec', (m) => m?.reactionLatency ?? null],
-  ['defensiveOverlapRatio', (m) => m?.defensiveOverlapRatio ?? null],
+  // defensiveOverlapRatio omitted: same-target panic-overlap is a genuinely rare event (~0 for the user
+  // AND the cohort), so it renders as a dead "0.00 vs 0.00" gap that can't discriminate. Dropped from the
+  // profile for the same reason; keep the comparison consistent.
   ['effectiveCastRatio', (m) => m?.effectiveCastRatio ?? null],
   ['ccAvoidanceRate', (m) => m?.ccAvoidanceRate ?? null],
 ];
