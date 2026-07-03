@@ -38,6 +38,12 @@ export function isSelfOnlyDefensive(spellId: string): boolean {
   return MAJOR_DEFENSIVE_IDS.has(spellId) && !EXTERNAL_DEFENSIVE_IDS.has(spellId);
 }
 
+/** True if this defensive can be cast on an ALLY (an external). A Defensive-tagged CD that is NOT
+ *  ally-castable cannot save a teammate — used to drop self-only red-herrings from teammate-death traces. */
+export function isAllyCastableDefensive(spellId: string): boolean {
+  return EXTERNAL_DEFENSIVE_IDS.has(spellId);
+}
+
 /**
  * B113/B130: role tags for throughput / mana / mobility / modifier cooldowns that reach the timeline
  * (often via the B38 [YOU] [CD] promotion) without a survival/defensive context. Absent a role, the

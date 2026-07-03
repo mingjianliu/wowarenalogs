@@ -7,6 +7,7 @@ import {
   IMajorCooldownInfo,
   IOverlappedDefensive,
   IPanicDefensive,
+  isAllyCastableDefensive,
   selfForbearanceActiveAt,
   specToString,
 } from '../../../utils/cooldowns';
@@ -119,6 +120,7 @@ export function buildDeathRootCauseTrace(
   dyingPlayerCC: IPlayerCCTrinketSummary | undefined,
   dyingUnit: ICombatUnit | undefined,
   matchStartMs: number,
+  isOwnerDeath = true,
 ): string[] {
   const traces: string[] = [];
 
@@ -152,6 +154,9 @@ export function buildDeathRootCauseTrace(
   const forbearanceActive = dyingUnit ? selfForbearanceActiveAt(dyingUnit, deathTimeSeconds, matchStartMs) : false;
   const forbearanceNote = `unavailable at death — Forbearance-locked (a shared-Forbearance ability was self-applied within 30s)`;
   for (const cd of ownerCooldowns) {
+    // A self-only owner defensive (Barkskin, Frenzied Regen, Divine Protection, …) cannot save a
+    // TEAMMATE — drop it from a teammate's death trace (only ally-castable externals help someone else).
+    if (!isOwnerDeath && cd.tag === 'Defensive' && !isAllyCastableDefensive(cd.spellId)) continue;
     // Don't report a Forbearance-gated tool (Spellwarding/BoP/Lay on Hands/Divine Shield) as available
     // when the paladin self-applied Forbearance within 30s — it was mechanically uncastable.
     const forbearanceLocked = forbearanceActive && FORBEARANCE_GATED_IDS.has(cd.spellId);
@@ -467,7 +472,15 @@ export function identifyCriticalMoments(
       ? `${death.spec} died at ${fmtTime(death.atSeconds)}.${hpContext} A ${nearbyGap.durationSeconds.toFixed(1)}s healing gap (${nearbyGap.freeCastSeconds.toFixed(1)}s free-cast) was active from ${fmtTime(nearbyGap.fromSeconds)} — healer was not CC'd during this time.`
       : `${death.spec} died at ${fmtTime(death.atSeconds)}.${hpContext}`;
     const dyingPlayerCC = ccTrinketSummaries.find((s) => s.playerName === death.name);
-    const rootCauseTrace = buildDeathRootCauseTrace(death.atSeconds, cooldowns, dyingPlayerCC, dyingUnit, matchStartMs);
+    const isOwnerDeath = !owner || owner.name === death.name;
+    const rootCauseTrace = buildDeathRootCauseTrace(
+      death.atSeconds,
+      cooldowns,
+      dyingPlayerCC,
+      dyingUnit,
+      matchStartMs,
+      isOwnerDeath,
+    );
     // The trace lists the LOG OWNER's cooldowns. If the owner already died before this (teammate)
     // death, those cooldowns were not castable — flag it so a later death isn't blamed on a dead healer.
     const ownerDeadBefore =
