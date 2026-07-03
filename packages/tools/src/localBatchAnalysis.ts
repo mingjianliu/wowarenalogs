@@ -402,7 +402,14 @@ export async function runBatchAnalysis(opts: {
   return stats;
 }
 
-async function main(): Promise<void> {
+// Exported (not self-invoked here) so this module has no top-level side effects — it is
+// imported/bundled into pipeline-app's main.ts via collectorService.ts. The standalone CLI
+// runner (`npm run -w @wowarenalogs/tools start:localBatchAnalysis`) lives in
+// ./localBatchAnalysisCli.ts, which calls this and does NOT rely on `require.main === module`:
+// once bundled into another entry point, all module-scope code shares that entry's
+// `require.main`/`module`, so such a guard would silently evaluate true and run this CLI logic
+// (including real Claude API calls) inside the host process too.
+export async function main(): Promise<void> {
   const args = process.argv.slice(2);
   const maxIdx = args.indexOf('--max-matches');
   const maxMatches = maxIdx !== -1 ? parseInt(args[maxIdx + 1], 10) : undefined;
@@ -415,12 +422,5 @@ async function main(): Promise<void> {
     maxMatches,
     phase1Only: args.includes('--phase1-only'),
     phase2Only: args.includes('--phase2-only'),
-  });
-}
-
-if (require.main === module) {
-  main().catch((e) => {
-    console.error(e);
-    process.exit(1);
   });
 }

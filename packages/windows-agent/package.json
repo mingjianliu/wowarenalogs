@@ -9,7 +9,7 @@
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
     "test": "jest --passWithNoTests=false",
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node22 --outfile=dist/wal-agent.js"
+    "build": "esbuild src/cli.ts --bundle --platform=node --target=node22 --outfile=dist/wal-agent.js"
   },
   "dependencies": {
     "@google-cloud/storage": "^6.7.0"

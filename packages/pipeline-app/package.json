@@ -12,13 +12,11 @@
     "test": "jest --passWithNoTests=false",
     "build": "esbuild src/main.ts --bundle --platform=node --external:electron --outfile=dist/main.js && shx cp src/wizard.html src/preload.js dist/ && shx cp ../tools/src/dashboard/index.html dist/dashboard.html",
     "start": "npm run build && electron .",
-    "dist": "npm run build && electron-builder --mac dmg --arm64 && electron-builder --win nsis --x64"
-  },
-  "dependencies": {
-    "electron": "^38"
+    "dist": "npm run build && electron-builder --config.electronVersion=$(node -p \"require('electron/package.json').version\") --mac dmg --arm64 && electron-builder --config.electronVersion=$(node -p \"require('electron/package.json').version\") --win nsis --x64"
   },
   "devDependencies": {
     "@types/node": "^22",
+    "electron": "^38",
     "esbuild": "^0.25.0",
     "eslint-config-wowarenalogs": "*",
     "fs-extra": "^11.1.0",

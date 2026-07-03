@@ -1,7 +1,12 @@
 /* eslint-disable no-console */
 /**
  * dashboard/server.ts — framework-free localhost dashboard for the pipeline.
- * Usage: npm run -w @wowarenalogs/tools dashboard   →  http://127.0.0.1:5178
+ * Pure module: exports createDashboardServer() with no top-level side effects, so it is safe to
+ * import into other entry points (e.g. pipeline-app's main.ts bundles this via esbuild). The
+ * standalone CLI runner (`npm run -w @wowarenalogs/tools dashboard`) lives in ./standalone.ts —
+ * do NOT add a `require.main === module` self-invocation here: once esbuild bundles this file
+ * into another entry point, all module-scope code shares that entry's `require.main`/`module`,
+ * so the guard silently evaluates true and the self-invocation runs inside the host process too.
  */
 import { spawn } from 'child_process';
 import fs from 'fs-extra';
@@ -121,8 +126,4 @@ export function createDashboardServer(opts: DashboardServerOptions = {}): Promis
       resolve({ port, close: () => server.close() });
     });
   });
-}
-
-if (require.main === module) {
-  void createDashboardServer().then(({ port }) => console.log(`[dashboard] http://127.0.0.1:${port}`));
 }
