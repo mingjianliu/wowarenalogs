@@ -17,7 +17,7 @@ import {
   VerifiedComparison,
 } from '../../../shared/src/components/CombatReport/CombatAIAnalysis/verifiedComparison';
 import { resolveAIModel } from '../../../shared/src/utils/aiModels';
-import { specToString } from '../../../shared/src/utils/cooldowns';
+import { PASSIVE_SPELL_BLOCKLIST, specToString } from '../../../shared/src/utils/cooldowns';
 import {
   buildMatchEmbeddingRecord,
   BuiltEmbeddingRecord,
@@ -123,6 +123,21 @@ function spellsFromCrises(crises: string[]): string[] {
   return Array.from(spells);
 }
 
+/**
+ * Strip passive-proc spells (PASSIVE_SPELL_BLOCKLIST) from a "At Ns (...): A -> B -> C" crisis line.
+ * Older reference vectors baked passives (e.g. Reclamation) into crisis sequences before they were
+ * blocklisted at extraction; filtering here guarantees they never reach the prompt as "pro casts".
+ */
+function stripPassiveCasts(line: string): string | null {
+  const i = line.indexOf('): ');
+  if (i < 0) return line;
+  const spells = line
+    .slice(i + 3)
+    .split(' -> ')
+    .filter((s) => !PASSIVE_SPELL_BLOCKLIST.has(s.trim()));
+  return spells.length ? `${line.slice(0, i + 3)}${spells.join(' -> ')}` : null;
+}
+
 /** One crisis sequence per distinct pro player, up to MAX_PRO_CRISES — real diversification. */
 function diversifiedProCrises(cell: { playerName: string; crisisEvents?: string[] }[]): string[] {
   const out: string[] = [];
@@ -131,7 +146,9 @@ function diversifiedProCrises(cell: { playerName: string; crisisEvents?: string[
   for (const r of cell) {
     if (out.length >= MAX_PRO_CRISES) break;
     if (seen.has(r.playerName)) continue;
-    const crises = (r.crisisEvents ?? []).filter((s) => s && s.trim().length > 0);
+    const crises = (r.crisisEvents ?? [])
+      .map((s) => (s && s.trim().length > 0 ? stripPassiveCasts(s) : null))
+      .filter((s): s is string => !!s);
     if (crises.length === 0) continue;
     // Pick this pro's MOST instructive crisis (most casts) — avoids surfacing a thin single-spell
     // "crisis" (e.g. a lone racial like Bag of Tricks) as a comparable pro when a richer one exists.

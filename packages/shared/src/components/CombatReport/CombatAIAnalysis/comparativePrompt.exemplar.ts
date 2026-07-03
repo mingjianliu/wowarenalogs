@@ -111,6 +111,7 @@ ${standing.body}
 Contrast the player's crisis responses with the pro sequences above and give the single highest-value change. Follow these rules exactly:
 - Cite ONLY spells that appear in the sequences above, and ONLY the number(s) in the verified-standing line — never state a percentile, count, or spell not shown here.
 - Do NOT use absolute quantifiers about the pros ("always", "never", "every", "consistently", "far more often"). Describe only what the shown sequences literally contain, and use the EXACT number of shown pro crises as the denominator${proCount ? ` — there are ${proCount} pro crises shown, so say "N of ${proCount}", never a larger total` : ''}. E.g. "in 2 of the ${proCount || 'N'} pro crises shown".
-- "Your crisis responses" are the PLAYER's own casts; the pro sequences are a separate group — never attribute the player's casts to a pro or vice versa.${contextRule}
+- "Your crisis responses" are the PLAYER's own casts; the pro sequences are a separate group — never attribute the player's casts to a pro or vice versa.
+- Survival first: in a <40%-HP crisis the teammate living is the priority. NEVER advise healing less, skipping/delaying the save, or trading it for damage. If the verified standing reflects an offensive tendency (e.g. weaving damage), frame that ONLY as instant casts slotted BETWEEN heals that do not delay the save — never as a reason to heal less mid-crisis.${contextRule}
 Output Markdown with a "Crisis Management" header.`;
 }
