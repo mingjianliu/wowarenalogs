@@ -12,6 +12,8 @@ import { dangerLabel, isOffensiveSpell, spellDangerWeight } from './spellDanger'
 const MIN_CD_SECONDS = 30;
 /** Two enemy offensive CD casts within this window are considered an aligned burst */
 const BURST_CLUSTER_SECONDS = 10;
+/** Assumed buff duration when spellEffectData has none (prevents zero-width buffs truncating windows) */
+const DEFAULT_BUFF_SECONDS = 8;
 
 export interface IEnemyCDCast {
   spellId: string;
@@ -106,7 +108,10 @@ export function reconstructEnemyCDTimeline(
         castTimeSeconds,
         cooldownSeconds,
         availableAgainAtSeconds: castTimeSeconds + cooldownSeconds,
-        buffEndSeconds: buffDuration > 0 ? castTimeSeconds + buffDuration : castTimeSeconds,
+        // Missing duration data → assume a conservative 8s buff instead of a zero-width one, so a
+        // duration-less cast doesn't truncate a window at its own cast instant (69/1867 windows were
+        // ended early this way; it also lets the single-CD timing tier match casts made during the buff).
+        buffEndSeconds: castTimeSeconds + (buffDuration > 0 ? buffDuration : DEFAULT_BUFF_SECONDS),
       });
     }
 
@@ -137,11 +142,12 @@ export function reconstructEnemyCDTimeline(
 
   const allCasts = allCastsRaw;
 
-  // Compute total friendly damage for ratio calculation
+  // Compute the match-average friendly damage RATE for ratio calculation. Rates (not fixed-width
+  // sums) so windows of different spans compare fairly — the old ±10s sample around the window START
+  // mis-measured the damage of 69% of windows by >25% (91% of windows outlast 10s; 2026-07-03 audit).
   const allFriendlyDamage = (friendlies ?? []).flatMap((u) => u.damageIn);
   const totalFriendlyDamage = allFriendlyDamage.reduce((sum, e) => sum + Math.abs(e.effectiveAmount), 0);
-  const avgWindowDamage =
-    matchDurationSeconds > 0 ? totalFriendlyDamage / (matchDurationSeconds / BURST_CLUSTER_SECONDS) : 0;
+  const avgDamageRate = matchDurationSeconds > 0 ? totalFriendlyDamage / matchDurationSeconds : 0;
 
   const alignedBurstWindows: IAlignedBurstWindow[] = [];
   let i = 0;
@@ -157,15 +163,16 @@ export function reconstructEnemyCDTimeline(
       const cdScore = inWindow.reduce((sum, c) => sum + spellDangerWeight(c.spellId, c.cooldownSeconds), 0);
       const alignmentMultiplier = inWindow.length >= 3 ? 1.5 : 1.0;
 
-      // Compute damage in window (±BURST_CLUSTER_SECONDS around burst start)
+      // Damage over the ACTUAL window span [start, end], compared as a rate to the match average.
       const windowDamage = allFriendlyDamage
         .filter((e) => {
           const t = (e.logLine.timestamp - matchStartMs) / 1000;
-          return t >= windowStart - BURST_CLUSTER_SECONDS && t <= windowStart + BURST_CLUSTER_SECONDS;
+          return t >= windowStart && t <= windowEnd;
         })
         .reduce((sum, e) => sum + Math.abs(e.effectiveAmount), 0);
 
-      const damageRatio = avgWindowDamage > 0 ? Math.max(windowDamage / avgWindowDamage, 0.5) : 0.5;
+      const windowSpan = Math.max(windowEnd - windowStart, 1);
+      const damageRatio = avgDamageRate > 0 ? Math.max(windowDamage / windowSpan / avgDamageRate, 0.5) : 0.5;
 
       // Dampening at window start
       const bracket = combat.startInfo?.bracket ?? '3v3';
@@ -330,7 +337,13 @@ export function formatEnemyCDTimelineForContext(timeline: IEnemyCDTimeline, matc
     }
   }
   if (unusedByCDId.size > 0) {
-    lines.push('  CDs not recovered before match ended: ' + [...unusedByCDId].join('; '));
+    // Observational wording only: static CDs are often shortened by talents/procs (2026-07-03 audit:
+    // 2062 earlier-than-static recasts across the corpus), so never claim a CD "was still unavailable" —
+    // only that it was not SEEN again.
+    lines.push(
+      '  Not cast again before the match ended (note: talents/procs often shorten real cooldowns, so availability is not implied): ' +
+        [...unusedByCDId].join('; '),
+    );
   }
 
   return lines;

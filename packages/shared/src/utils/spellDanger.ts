@@ -42,9 +42,21 @@ export const SPELL_EFFECT_OVERRIDES: Record<string, SpellEffectType[]> = {
  * This is the authoritative check — covers all 120 tagged offensive spells.
  */
 export function isOffensiveSpell(spellId: string): boolean {
+  if (OFFENSIVE_MISTAG_IDS.has(spellId)) return false;
   const entry = spells[spellId];
   return entry?.type === 'buffs_offensive' || entry?.type === 'debuffs_offensive';
 }
+
+/**
+ * Healer throughput/utility CDs mis-tagged `buffs_offensive` in the generated spells.json — they are
+ * healing CDs, not burst enablers, and were creating false enemy "burst windows" (2026-07-03 corpus
+ * audit: Tree of Life + Nature's Swiftness ended 49 truncated windows). Excluded until a data regen fixes the tags.
+ */
+const OFFENSIVE_MISTAG_IDS = new Set([
+  '33891', // Incarnation: Tree of Life (Resto Druid healing CD)
+  '132158', // Nature's Swiftness (instant utility/heal enabler)
+  '378081', // Nature's Swiftness (variant id)
+]);
 
 /**
  * Logarithmic CD tier weight.
