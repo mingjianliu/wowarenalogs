@@ -1,0 +1,6 @@
+node_modules
+dist
+release
+.eslintrc.js
+jest.config.js
+src/preload.js

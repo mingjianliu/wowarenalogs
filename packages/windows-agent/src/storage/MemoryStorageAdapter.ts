@@ -17,6 +17,10 @@ export class MemoryStorageAdapter implements StorageAdapter {
     return Buffer.from(body);
   }
 
+  async delete(key: string): Promise<void> {
+    this.objects.delete(key);
+  }
+
   /** Test helper. */
   keys(): string[] {
     return [...this.objects.keys()].sort();

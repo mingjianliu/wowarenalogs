@@ -6,7 +6,7 @@ WoW arena combat logging and analysis platform. Desktop Electron app records loc
 
 ## Monorepo Structure
 
-NPM workspaces with 10 packages under `packages/`:
+NPM workspaces with 11 packages under `packages/`:
 
 | Package         | Type            | Purpose                                                                                |
 | --------------- | --------------- | -------------------------------------------------------------------------------------- |
@@ -20,6 +20,7 @@ NPM workspaces with 10 packages under `packages/`:
 | `sql`           | ORM config      | Prisma schema + migrations for CockroachDB.                                            |
 | `tools`         | Scripts         | Data extraction, benchmarks, and AI prompt engineering tools.                          |
 | `linter`        | Config          | Shared ESLint config (`eslint-config-wowarenalogs`).                                   |
+| `pipeline-app`  | Electron 38 app | wal-pilot tray app: streamer (Windows) / collector+analysis (macOS) roles.             |
 
 </monorepo_structure>
 

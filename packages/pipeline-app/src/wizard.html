@@ -1,0 +1,96 @@
+<meta charset="utf-8" />
+<title>wal-pilot setup</title>
+<style>
+  :root {
+    color-scheme: dark;
+  }
+  body {
+    font:
+      14px/1.6 -apple-system,
+      'Segoe UI',
+      sans-serif;
+    background: #111418;
+    color: #d5dbe1;
+    margin: 2rem;
+  }
+  h1 {
+    font-size: 1.2rem;
+  }
+  label {
+    display: block;
+    margin-top: 1rem;
+    color: #8ab4f8;
+  }
+  input[type='text'] {
+    width: 100%;
+    padding: 6px 8px;
+    background: #1b1f24;
+    color: inherit;
+    border: 1px solid #2a2f36;
+    border-radius: 6px;
+  }
+  .row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  button {
+    background: #1f6feb;
+    color: white;
+    border: 0;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font: inherit;
+  }
+  button.secondary {
+    background: #30363d;
+  }
+  .err {
+    color: #ff7b72;
+    min-height: 1.2em;
+  }
+  .hint {
+    color: #8b949e;
+    font-size: 12px;
+  }
+</style>
+<h1>wal-pilot setup</h1>
+<div id="roleline" class="hint"></div>
+<label>Synced folder (Google Drive)</label>
+<div class="row"><input id="sync" type="text" /><button class="secondary" id="pickSync">Browse…</button></div>
+<div class="hint">Segments are written under this folder; it must sync on both machines.</div>
+<div id="wowblock" style="display: none">
+  <label>WoW folder (_retail_)</label>
+  <div class="row"><input id="wow" type="text" /><button class="secondary" id="pickWow">Browse…</button></div>
+</div>
+<label class="row" style="color: inherit"><input id="login" type="checkbox" checked /> Start wal-pilot at login</label>
+<p class="err" id="err"></p>
+<p><button id="save">Save &amp; start</button></p>
+<script>
+  (async () => {
+    const d = await window.walpilot.getDefaults();
+    document.getElementById('roleline').textContent = `This machine's role: ${d.role}`;
+    document.getElementById('sync').value = d.syncFolder || '';
+    if (d.role === 'streamer') {
+      document.getElementById('wowblock').style.display = '';
+      document.getElementById('wow').value = d.wowDirectory || '';
+    }
+    document.getElementById('pickSync').onclick = async () => {
+      const p = await window.walpilot.pickFolder();
+      if (p) document.getElementById('sync').value = p;
+    };
+    document.getElementById('pickWow').onclick = async () => {
+      const p = await window.walpilot.pickFolder();
+      if (p) document.getElementById('wow').value = p;
+    };
+    document.getElementById('save').onclick = async () => {
+      const res = await window.walpilot.saveConfig({
+        syncFolder: document.getElementById('sync').value,
+        wowDirectory: document.getElementById('wow').value || undefined,
+        openAtLogin: document.getElementById('login').checked,
+      });
+      document.getElementById('err').textContent = res.error || '';
+    };
+  })();
+</script>

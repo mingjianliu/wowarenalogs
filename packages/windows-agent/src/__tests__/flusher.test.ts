@@ -101,6 +101,7 @@ describe('flushFile', () => {
       },
       list: adapter.list.bind(adapter),
       get: adapter.get.bind(adapter),
+      delete: adapter.delete.bind(adapter),
     };
     await expect(flushFile({ ...base, filePath, checkpoint: undefined, adapter: failing })).rejects.toThrow(
       'network down',

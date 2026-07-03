@@ -497,7 +497,14 @@ async function runLocal(logDir: string, aiMode: boolean, options: RunOptions = {
 // Entry point
 // ---------------------------------------------------------------------------
 
-async function main() {
+// Exported (not self-invoked here) so this module has no top-level side effects — it is
+// imported/bundled into pipeline-app's main.ts via localBatchAnalysis.ts/collectorService.ts. The
+// standalone CLI runner (`npm run -w @wowarenalogs/tools start:printMatchPrompts`) lives in
+// ./printMatchPromptsCli.ts, which calls this and does NOT rely on `require.main === module`:
+// once bundled into another entry point, all module-scope code shares that entry's
+// `require.main`/`module`, so such a guard would silently evaluate true and run this CLI logic
+// (including real Claude API calls) inside the host process too.
+export async function main() {
   const args = process.argv.slice(2);
   const localMode = args.includes('--local');
   const aiMode = args.includes('--ai');
@@ -558,11 +565,4 @@ async function main() {
   } else {
     await runCloud(count, bracket, aiMode, runOptions);
   }
-}
-
-if (require.main === module) {
-  main().catch((e) => {
-    console.error(e);
-    process.exit(1);
-  });
 }

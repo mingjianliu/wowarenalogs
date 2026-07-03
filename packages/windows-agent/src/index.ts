@@ -98,7 +98,16 @@ export async function flushBatch(opts: {
   }
 }
 
-async function main(): Promise<void> {
+// Exported (not self-invoked here) so this module has no top-level side effects — it is
+// imported/bundled into pipeline-app's main.ts via streamerService.ts (only `flushBatch` is used
+// there, but static imports still pull this whole module's top-level code into the bundle). The
+// standalone CLI runner (windows-agent's own packaged `dist/wal-agent.js`) lives in ./cli.ts,
+// which is the actual esbuild entry point (see package.json's `build` script) and calls this
+// directly — it does NOT rely on `require.main === module`: once a module is imported by another
+// bundled entry point (like pipeline-app), all module-scope code shares that entry's
+// `require.main`/`module`, so such a guard would silently evaluate true and run this CLI logic
+// (starting a real file watcher / cloud upload loop) inside the host process too.
+export async function main(): Promise<void> {
   const configPath = argValue('--config') ?? 'wal-agent.config.json';
   if (!/\.config\.json$/.test(configPath)) {
     throw new Error(
@@ -143,14 +152,5 @@ async function main(): Promise<void> {
   process.on('SIGINT', () => {
     watcher.close();
     process.exit(0);
-  });
-}
-
-// Only auto-run when executed directly (node dist/wal-agent.js / the CLI
-// entry) — not when imported, e.g. by tests importing `flushBatch`.
-if (require.main === module) {
-  main().catch((e) => {
-    console.error(`[wal-agent] fatal: ${e instanceof Error ? e.message : e}`);
-    process.exit(1);
   });
 }

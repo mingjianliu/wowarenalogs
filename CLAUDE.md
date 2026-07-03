@@ -55,6 +55,7 @@ See [docs/repo-overview.md](docs/repo-overview.md) for monorepo structure, core 
 - AI utils detail + benchmark pipeline: `AI_UTILS.md`
 - Log streaming agent (Windows): `packages/windows-agent/src/` (protocol + storage adapters shared with collector)
 - Log collector + pipeline dashboard: `packages/tools/src/collectLogs.ts`, `packages/tools/src/dashboard/`
+- wal-pilot tray app (both machines): `packages/pipeline-app/src/`
   </source_locations>
 
 <git_workflow>

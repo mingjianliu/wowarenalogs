@@ -3,7 +3,12 @@
  * collectLogs.ts — pull new log segments from storage and reconstruct
  * WoWCombatLog files byte-exactly under <syncDir>/logs/.
  *
- * Usage: npm run -w @wowarenalogs/tools start:collectLogs
+ * Pure module: no top-level side effects, so it is safe to import into other entry points
+ * (pipeline-app's main.ts bundles this via esbuild through collectorService.ts). The standalone
+ * CLI runner (`npm run -w @wowarenalogs/tools start:collectLogs`) lives in ./collectLogsCli.ts —
+ * do NOT add a `require.main === module` self-invocation here: once bundled into another entry
+ * point, all module-scope code shares that entry's `require.main`/`module`, so the guard
+ * silently evaluates true and the self-invocation runs inside the host process too.
  * Config: <syncDir>/collector.config.json  (syncDir = $WAL_SYNC_DIR or ~/wal-sync)
  */
 import fs from 'fs-extra';
@@ -14,7 +19,7 @@ import { nextAction } from '../../windows-agent/src/protocol/reconstruct';
 import { parseSegmentKey, SegmentRef } from '../../windows-agent/src/protocol/segments';
 import { createAdapter } from '../../windows-agent/src/storage/createAdapter';
 import { StorageAdapter } from '../../windows-agent/src/storage/StorageAdapter';
-import { CollectorConfig, loadCollectorConfig } from './collect/collectorConfig';
+import { CollectorConfig } from './collect/collectorConfig';
 
 export interface CollectStats {
   segmentsFetched: number;
@@ -31,7 +36,7 @@ export interface CollectStats {
  * live key order. Names keep the WoWCombatLog*.txt shape localBatchAnalysis
  * selects on.
  */
-function outputNameFor(ref: SegmentRef): string {
+export function outputNameFor(ref: SegmentRef): string {
   const base = ref.logFileName.endsWith('.txt') ? ref.logFileName.slice(0, -4) : ref.logFileName;
   return `${base}.${ref.hostname}.${ref.gen8}.txt`;
 }
@@ -91,11 +96,4 @@ export async function runCollection(config: CollectorConfig): Promise<CollectSta
       (stats.gaps.length ? `, ${stats.gaps.length} gap warning(s)` : ''),
   );
   return stats;
-}
-
-if (require.main === module) {
-  runCollection(loadCollectorConfig()).catch((e) => {
-    console.error(e);
-    process.exit(1);
-  });
 }

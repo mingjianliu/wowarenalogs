@@ -8,6 +8,7 @@ export interface GcsClientLike {
     file(key: string): {
       save(body: Buffer, opts: { resumable: boolean }): Promise<void>;
       download(): Promise<[Buffer]>;
+      delete(): Promise<unknown>;
     };
     getFiles(opts: { prefix: string }): Promise<[{ name: string }[]]>;
   };
@@ -41,5 +42,14 @@ export class GcsStorageAdapter implements StorageAdapter {
   async get(key: string): Promise<Buffer> {
     const [body] = await this.bucketRef.file(key).download();
     return body;
+  }
+
+  async delete(key: string): Promise<void> {
+    try {
+      await this.bucketRef.file(key).delete();
+    } catch (e) {
+      // GCS throws a 404-coded error for missing objects — idempotent contract.
+      if ((e as { code?: number }).code !== 404) throw e;
+    }
   }
 }

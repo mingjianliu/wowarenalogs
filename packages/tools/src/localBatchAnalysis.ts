@@ -35,10 +35,25 @@ import { AnalysisBackend, callClaudeCli, resolveAnalysisBackend } from './utils/
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
-const LOG_DIR = process.env.LOG_DIR ?? path.join(os.homedir(), 'Downloads/wow logs');
-const OUTPUT_DIR = path.join(__dirname, '../local-batch');
-const RESULTS_FILE = path.join(OUTPUT_DIR, 'results.jsonl');
-const SUMMARY_FILE = path.join(OUTPUT_DIR, 'summary.md');
+const DEFAULT_LOG_DIR = process.env.LOG_DIR ?? path.join(os.homedir(), 'Downloads/wow logs');
+// __dirname-relative: fine for the standalone CLI, but a caller that bundles this module (e.g.
+// pipeline-app's esbuild bundle, where __dirname resolves inside app.asar — read-only when
+// packaged) MUST pass an explicit `outputDir` to runBatchAnalysis. See `paths()` below.
+const DEFAULT_OUTPUT_DIR = path.join(__dirname, '../local-batch');
+
+interface BatchPaths {
+  outputDir: string;
+  resultsFile: string;
+  summaryFile: string;
+}
+
+function pathsFor(outputDir: string): BatchPaths {
+  return {
+    outputDir,
+    resultsFile: path.join(outputDir, 'results.jsonl'),
+    summaryFile: path.join(outputDir, 'summary.md'),
+  };
+}
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -110,20 +125,19 @@ function extractFeedbackSection(aiResponse: string): string {
 
 // ── Phase 1 ───────────────────────────────────────────────────────────────────
 
-async function runPhase1(maxMatches: number): Promise<void> {
-  const files = (await fs.readdir(LOG_DIR))
+async function runPhase1(logDir: string, maxMatches: number, paths: BatchPaths): Promise<BatchStats> {
+  const files = (await fs.readdir(logDir))
     .filter((f) => f.endsWith('.txt') && f.startsWith('WoWCombatLog'))
-    .map((f) => path.join(LOG_DIR, f))
+    .map((f) => path.join(logDir, f))
     .sort();
 
   if (files.length === 0) {
-    console.error(`No WoWCombatLog*.txt files found in ${LOG_DIR}`);
-    process.exit(1);
+    throw new Error(`No WoWCombatLog*.txt files found in ${logDir}`);
   }
 
   const existing = new Set<string>();
-  if (await fs.pathExists(RESULTS_FILE)) {
-    const lines = (await fs.readFile(RESULTS_FILE, 'utf-8')).split('\n').filter(Boolean);
+  if (await fs.pathExists(paths.resultsFile)) {
+    const lines = (await fs.readFile(paths.resultsFile, 'utf-8')).split('\n').filter(Boolean);
     for (const line of lines) {
       try {
         const rec = JSON.parse(line) as BatchRecord;
@@ -135,8 +149,8 @@ async function runPhase1(maxMatches: number): Promise<void> {
   }
   console.log(`Found ${files.length} log file(s). ${existing.size} match(es) already processed.\n`);
 
-  await fs.ensureDir(OUTPUT_DIR);
-  const outStream = fs.createWriteStream(RESULTS_FILE, { flags: 'a' });
+  await fs.ensureDir(paths.outputDir);
+  const outStream = fs.createWriteStream(paths.resultsFile, { flags: 'a' });
 
   let total = 0;
   let skipped = 0;
@@ -208,7 +222,8 @@ async function runPhase1(maxMatches: number): Promise<void> {
   console.log(
     `\nPhase 1 complete. Processed: ${total}  Skipped: ${skipped}  Failed: ${failed}  Unparseable: ${unparseable}`,
   );
-  console.log(`Results → ${RESULTS_FILE}`);
+  console.log(`Results → ${paths.resultsFile}`);
+  return { processed: total, skipped, failed, unparseable };
 }
 
 // ── Phase 2 ──────────────────────────────────────────────────────────────────
@@ -314,13 +329,12 @@ Based on the above analysis, list 3 concrete, prioritized action items — one f
 Keep the full report under 600 words. Be specific and blunt — this is internal analysis, not player-facing coaching.`;
 }
 
-async function runPhase2(): Promise<void> {
-  if (!(await fs.pathExists(RESULTS_FILE))) {
-    console.error(`No results file found at ${RESULTS_FILE}. Run Phase 1 first.`);
-    process.exit(1);
+async function runPhase2(paths: BatchPaths): Promise<void> {
+  if (!(await fs.pathExists(paths.resultsFile))) {
+    throw new Error(`No results file found at ${paths.resultsFile}. Run Phase 1 first.`);
   }
 
-  const lines = (await fs.readFile(RESULTS_FILE, 'utf-8')).split('\n').filter(Boolean);
+  const lines = (await fs.readFile(paths.resultsFile, 'utf-8')).split('\n').filter(Boolean);
   const records: BatchRecord[] = [];
   for (const line of lines) {
     try {
@@ -331,8 +345,7 @@ async function runPhase2(): Promise<void> {
   }
 
   if (records.length === 0) {
-    console.error('No valid records found in results.jsonl');
-    process.exit(1);
+    throw new Error('No valid records found in results.jsonl');
   }
 
   console.log(`Phase 2: meta-analysis across ${records.length} matches\n`);
@@ -370,12 +383,12 @@ async function runPhase2(): Promise<void> {
   const reportDate = new Date().toISOString().slice(0, 10);
   const fullSummary = `# Local Match Batch Analysis\n\nGenerated: ${reportDate}  |  Matches: ${records.length}\n\n---\n\n${summary}\n`;
 
-  await fs.writeFile(SUMMARY_FILE, fullSummary, 'utf-8');
+  await fs.writeFile(paths.summaryFile, fullSummary, 'utf-8');
   console.log(summary);
-  console.log(`\nSummary → ${SUMMARY_FILE}`);
+  console.log(`\nSummary → ${paths.summaryFile}`);
 
   // Archive each run's meta-eval so history survives the next overwrite.
-  const reportsDir = path.join(OUTPUT_DIR, 'reports');
+  const reportsDir = path.join(paths.outputDir, 'reports');
   await fs.ensureDir(reportsDir);
   const archivePath = path.join(reportsDir, `summary-${reportDate}.md`);
   await fs.writeFile(archivePath, fullSummary, 'utf-8');
@@ -384,25 +397,53 @@ async function runPhase2(): Promise<void> {
 
 // ── Entry point ───────────────────────────────────────────────────────────────
 
-async function main(): Promise<void> {
+export interface BatchStats {
+  processed: number;
+  skipped: number;
+  failed: number;
+  unparseable: number;
+}
+
+/**
+ * In-process entry for wal-pilot; the CLI path below remains unchanged.
+ *
+ * `outputDir` defaults to the __dirname-relative `local-batch/` used by the standalone CLI. Any
+ * caller running from inside a packaged/bundled entry point (wal-pilot's esbuild bundle, where
+ * __dirname lands inside the read-only app.asar) MUST pass an explicit writable `outputDir`.
+ */
+export async function runBatchAnalysis(opts: {
+  logDir: string;
+  outputDir?: string;
+  maxMatches?: number;
+  phase1Only?: boolean;
+  phase2Only?: boolean;
+}): Promise<BatchStats> {
+  const paths = pathsFor(opts.outputDir ?? DEFAULT_OUTPUT_DIR);
+  let stats: BatchStats = { processed: 0, skipped: 0, failed: 0, unparseable: 0 };
+  if (!opts.phase2Only) stats = await runPhase1(opts.logDir, opts.maxMatches ?? Number.POSITIVE_INFINITY, paths);
+  if (!opts.phase1Only) await runPhase2(paths);
+  return stats;
+}
+
+// Exported (not self-invoked here) so this module has no top-level side effects — it is
+// imported/bundled into pipeline-app's main.ts via collectorService.ts. The standalone CLI
+// runner (`npm run -w @wowarenalogs/tools start:localBatchAnalysis`) lives in
+// ./localBatchAnalysisCli.ts, which calls this and does NOT rely on `require.main === module`:
+// once bundled into another entry point, all module-scope code shares that entry's
+// `require.main`/`module`, so such a guard would silently evaluate true and run this CLI logic
+// (including real Claude API calls) inside the host process too.
+export async function main(): Promise<void> {
   const args = process.argv.slice(2);
-  const phase1Only = args.includes('--phase1-only');
-  const phase2Only = args.includes('--phase2-only');
-  // --max-matches N: stop Phase 1 after N new matches. Chunks big backfills so
-  // a single run can't exhaust a subscription usage window (cli backend);
-  // interrupted/limited runs resume seamlessly via the results.jsonl dedupe.
   const maxIdx = args.indexOf('--max-matches');
-  const maxMatches = maxIdx !== -1 ? parseInt(args[maxIdx + 1], 10) : Number.POSITIVE_INFINITY;
-  if (Number.isNaN(maxMatches) || maxMatches <= 0) {
+  const maxMatches = maxIdx !== -1 ? parseInt(args[maxIdx + 1], 10) : undefined;
+  if (maxIdx !== -1 && (Number.isNaN(maxMatches) || (maxMatches as number) <= 0)) {
     console.error('--max-matches requires a positive integer');
     process.exit(1);
   }
-
-  if (!phase2Only) await runPhase1(maxMatches);
-  if (!phase1Only) await runPhase2();
+  await runBatchAnalysis({
+    logDir: DEFAULT_LOG_DIR,
+    maxMatches,
+    phase1Only: args.includes('--phase1-only'),
+    phase2Only: args.includes('--phase2-only'),
+  });
 }
-
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});

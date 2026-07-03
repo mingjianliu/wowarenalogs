@@ -60,6 +60,10 @@
   }
 </style>
 <h1>WoW Arena Logs — streaming pipeline</h1>
+<div id="localwrap" style="display: none">
+  <h2>This machine</h2>
+  <div id="local"></div>
+</div>
 <div id="agent">
   <h2>Gaming PC agent</h2>
   <div id="heartbeats">loading…</div>
@@ -67,7 +71,11 @@
 <div>
   <h2>Collector</h2>
   <div id="collector">loading…</div>
-  <p><button id="run">Run now</button> <span id="runmsg"></span></p>
+  <p>
+    <button id="run">Run now</button>
+    <button id="clearlock" style="display: none">Clear stuck lock</button>
+    <span id="runmsg"></span>
+  </p>
 </div>
 <div>
   <h2>Schedule</h2>
@@ -88,6 +96,16 @@
   async function refresh() {
     const r = await fetch('/api/status');
     const s = await r.json();
+    if (s.local) {
+      document.getElementById('localwrap').style.display = '';
+      const st = s.local.state || {};
+      $('local').innerHTML = `<p>role <b>${esc(s.local.role)}</b> — <span class="${
+        st.status === 'error' ? 'err' : st.status === 'streaming' ? 'ok' : ''
+      }">${esc(st.status)}</span> ${st.lastFlushAt ? `— last flush ${ago(st.lastFlushAt)}` : ''} ${
+        st.lastError ? `<span class="err">err: ${esc(st.lastError)}</span>` : ''
+      }</p>`;
+      if (s.local.role === 'streamer') $('run').style.display = 'none';
+    }
     $('heartbeats').innerHTML = s.heartbeats.length
       ? s.heartbeats
           .map((h) => {
@@ -105,6 +123,10 @@
       : '<p class="warn">no collector status yet</p>';
     $('run').disabled = s.running;
     $('runmsg').textContent = s.running ? 'running…' : '';
+    // Stale-lock human-clear affordance (spec §8): only surface once a held lock is old enough
+    // that it's very unlikely to be a legitimately long-running backlog analysis.
+    const stuckLock = s.running && typeof s.lockAgeMs === 'number' && s.lockAgeMs > 2 * 3600e3;
+    $('clearlock').style.display = stuckLock ? '' : 'none';
     $('schedule').innerHTML = s.schedule.intervalSeconds
       ? `<p>every ${s.schedule.intervalSeconds / 3600}h — last ${ago(s.schedule.lastRunAt)}, next ~${
           s.schedule.nextRunAt ? new Date(s.schedule.nextRunAt).toLocaleString() : '?'
@@ -131,6 +153,17 @@
     $('run').disabled = true;
     const r = await fetch('/api/run', { method: 'POST' });
     $('runmsg').textContent = r.status === 202 ? 'started' : 'already running';
+  };
+  $('clearlock').onclick = async () => {
+    $('clearlock').disabled = true;
+    try {
+      const r = await fetch('/api/clear-lock', { method: 'POST' });
+      const j = await r.json().catch(() => ({}));
+      $('runmsg').textContent = j.cleared ? 'lock cleared' : 'clear failed';
+    } finally {
+      $('clearlock').disabled = false;
+      refresh();
+    }
   };
   refresh();
   setInterval(refresh, 5000);

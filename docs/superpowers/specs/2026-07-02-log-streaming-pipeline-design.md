@@ -76,12 +76,13 @@ interface StorageAdapter {
   put(key: string, body: Buffer): Promise<void>;
   list(prefix: string): Promise<string[]>; // returns keys, lexicographic order
   get(key: string): Promise<Buffer>;
+  delete(key: string): Promise<void>;
 }
 ```
 
 - `storage.provider` config field selects the implementation; each provider has its own credentials block in config.
 - **v1 ships GCS only** (`GcsStorageAdapter`), using `@google-cloud/storage` with a service-account key. The key on the gaming PC gets `roles/storage.objectUser` only, scoped to that one bucket — object-level create/overwrite/get/list, no bucket admin, blast radius limited to log bytes. (`roles/storage.objectCreator` is not sufficient: the heartbeat overwrites a fixed key on every flush and a crash-window retry can re-upload the same segment key, both of which require delete/overwrite permission that `objectCreator` lacks.)
-- The interface is deliberately tiny (3 methods, flat keys, no streaming/multipart) so future adapters — S3, Google Drive, R2, SSH-to-Mac — are drop-in. Segment sizes (a few MB max per flush) don't need multipart.
+- The interface is deliberately tiny (4 methods, flat keys, no streaming/multipart) so future adapters — S3, Google Drive, R2, SSH-to-Mac — are drop-in. Segment sizes (a few MB max per flush) don't need multipart.
 - Adapter source lives in `packages/windows-agent/src/storage/` and is also consumed by the collector via the esbuild bundle or a small shared source copy — **decision:** collector imports the adapter source directly from `packages/windows-agent` source files at build time (tools package already does cross-source imports; agent remains dependency-free of tools).
 - Bucket lifecycle rule deletes objects older than 30 days (cost stays at pennies; the Mac is the durable store).
 
