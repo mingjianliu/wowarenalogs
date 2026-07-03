@@ -123,6 +123,11 @@ function parseCombatLogTimestamp(timestamp: string, timezone: string): number | 
 }
 
 export const stringToLogLine = (timezone: string) => {
+  // Reset the module-level line-id counter for each new pipeline instance so log-line ids are
+  // deterministic per parse (start at 0), rather than depending on how many lines were parsed by
+  // prior parsers in the same process. Ids are only used for within-match uniqueness, so a per-parse
+  // reset is safe; this closes the same module-level-state class as the shuffle-buffer fix.
+  nextId = 0;
   return map((line: string): ILogLine | string => {
     const separatorIndex = line.indexOf('  ');
     if (separatorIndex === -1) {
