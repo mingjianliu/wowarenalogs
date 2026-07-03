@@ -37,6 +37,7 @@ import { computeMatchArchetype, formatMatchArchetypeForContext } from '../../../
 import { buildOffensiveWasteSummary, formatOffensiveWasteForContext } from '../../../utils/offensiveWasteAnalysis';
 import { computeOffensiveWindows, formatOffensiveWindowsForContext } from '../../../utils/offensiveWindows';
 import { benchmarks, formatDTPSBaselines, formatSpecBaselines } from '../../../utils/specBaselines';
+import { getPvpToolkit } from '../../../utils/talentBehaviors';
 import {
   buildMatchArc,
   buildMatchTimeline,
@@ -314,6 +315,18 @@ export function buildMatchContext(
     ...enemyDeaths.map((d) => `${d.spec} (enemy, ${fmtTime(d.atSeconds)})`),
   ];
   lines.push(`  Deaths: ${deathParts.length > 0 ? deathParts.join(', ') : 'None'}`);
+  // B139: surface the log owner's talent-granted PvP toolkit (magic/CC immunity, dispel, CC-dodge, mobility)
+  // so the coach can reason about talent-based options and not recommend abilities the player didn't spec.
+  // A castable tool never used in the match is tagged [UNUSED]. (Present in the timeline path via the loadout;
+  // this adds it to the production critical-moments path.)
+  const ownerCastIds = new Set<string>();
+  for (const e of owner.spellCastEvents ?? []) if (e.spellId) ownerCastIds.add(e.spellId);
+  const pvpToolkit = getPvpToolkit(owner.info?.pvpTalents, ownerCastIds);
+  if (pvpToolkit.length > 0) {
+    lines.push(
+      `  Your PvP toolkit: ${pvpToolkit.map((t) => (t.used === false ? `${t.label} [UNUSED]` : t.label)).join(', ')}`,
+    );
+  }
   lines.push('');
   formatMatchArchetypeForContext(matchArchetype).forEach((l) => lines.push(l));
 
