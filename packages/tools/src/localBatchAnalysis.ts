@@ -36,9 +36,24 @@ import { AnalysisBackend, callClaudeCli, resolveAnalysisBackend } from './utils/
 // ── Config ────────────────────────────────────────────────────────────────────
 
 const DEFAULT_LOG_DIR = process.env.LOG_DIR ?? path.join(os.homedir(), 'Downloads/wow logs');
-const OUTPUT_DIR = path.join(__dirname, '../local-batch');
-const RESULTS_FILE = path.join(OUTPUT_DIR, 'results.jsonl');
-const SUMMARY_FILE = path.join(OUTPUT_DIR, 'summary.md');
+// __dirname-relative: fine for the standalone CLI, but a caller that bundles this module (e.g.
+// pipeline-app's esbuild bundle, where __dirname resolves inside app.asar — read-only when
+// packaged) MUST pass an explicit `outputDir` to runBatchAnalysis. See `paths()` below.
+const DEFAULT_OUTPUT_DIR = path.join(__dirname, '../local-batch');
+
+interface BatchPaths {
+  outputDir: string;
+  resultsFile: string;
+  summaryFile: string;
+}
+
+function pathsFor(outputDir: string): BatchPaths {
+  return {
+    outputDir,
+    resultsFile: path.join(outputDir, 'results.jsonl'),
+    summaryFile: path.join(outputDir, 'summary.md'),
+  };
+}
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -110,7 +125,7 @@ function extractFeedbackSection(aiResponse: string): string {
 
 // ── Phase 1 ───────────────────────────────────────────────────────────────────
 
-async function runPhase1(logDir: string, maxMatches: number): Promise<BatchStats> {
+async function runPhase1(logDir: string, maxMatches: number, paths: BatchPaths): Promise<BatchStats> {
   const files = (await fs.readdir(logDir))
     .filter((f) => f.endsWith('.txt') && f.startsWith('WoWCombatLog'))
     .map((f) => path.join(logDir, f))
@@ -121,8 +136,8 @@ async function runPhase1(logDir: string, maxMatches: number): Promise<BatchStats
   }
 
   const existing = new Set<string>();
-  if (await fs.pathExists(RESULTS_FILE)) {
-    const lines = (await fs.readFile(RESULTS_FILE, 'utf-8')).split('\n').filter(Boolean);
+  if (await fs.pathExists(paths.resultsFile)) {
+    const lines = (await fs.readFile(paths.resultsFile, 'utf-8')).split('\n').filter(Boolean);
     for (const line of lines) {
       try {
         const rec = JSON.parse(line) as BatchRecord;
@@ -134,8 +149,8 @@ async function runPhase1(logDir: string, maxMatches: number): Promise<BatchStats
   }
   console.log(`Found ${files.length} log file(s). ${existing.size} match(es) already processed.\n`);
 
-  await fs.ensureDir(OUTPUT_DIR);
-  const outStream = fs.createWriteStream(RESULTS_FILE, { flags: 'a' });
+  await fs.ensureDir(paths.outputDir);
+  const outStream = fs.createWriteStream(paths.resultsFile, { flags: 'a' });
 
   let total = 0;
   let skipped = 0;
@@ -207,7 +222,7 @@ async function runPhase1(logDir: string, maxMatches: number): Promise<BatchStats
   console.log(
     `\nPhase 1 complete. Processed: ${total}  Skipped: ${skipped}  Failed: ${failed}  Unparseable: ${unparseable}`,
   );
-  console.log(`Results → ${RESULTS_FILE}`);
+  console.log(`Results → ${paths.resultsFile}`);
   return { processed: total, skipped, failed, unparseable };
 }
 
@@ -314,12 +329,12 @@ Based on the above analysis, list 3 concrete, prioritized action items — one f
 Keep the full report under 600 words. Be specific and blunt — this is internal analysis, not player-facing coaching.`;
 }
 
-async function runPhase2(): Promise<void> {
-  if (!(await fs.pathExists(RESULTS_FILE))) {
-    throw new Error(`No results file found at ${RESULTS_FILE}. Run Phase 1 first.`);
+async function runPhase2(paths: BatchPaths): Promise<void> {
+  if (!(await fs.pathExists(paths.resultsFile))) {
+    throw new Error(`No results file found at ${paths.resultsFile}. Run Phase 1 first.`);
   }
 
-  const lines = (await fs.readFile(RESULTS_FILE, 'utf-8')).split('\n').filter(Boolean);
+  const lines = (await fs.readFile(paths.resultsFile, 'utf-8')).split('\n').filter(Boolean);
   const records: BatchRecord[] = [];
   for (const line of lines) {
     try {
@@ -368,12 +383,12 @@ async function runPhase2(): Promise<void> {
   const reportDate = new Date().toISOString().slice(0, 10);
   const fullSummary = `# Local Match Batch Analysis\n\nGenerated: ${reportDate}  |  Matches: ${records.length}\n\n---\n\n${summary}\n`;
 
-  await fs.writeFile(SUMMARY_FILE, fullSummary, 'utf-8');
+  await fs.writeFile(paths.summaryFile, fullSummary, 'utf-8');
   console.log(summary);
-  console.log(`\nSummary → ${SUMMARY_FILE}`);
+  console.log(`\nSummary → ${paths.summaryFile}`);
 
   // Archive each run's meta-eval so history survives the next overwrite.
-  const reportsDir = path.join(OUTPUT_DIR, 'reports');
+  const reportsDir = path.join(paths.outputDir, 'reports');
   await fs.ensureDir(reportsDir);
   const archivePath = path.join(reportsDir, `summary-${reportDate}.md`);
   await fs.writeFile(archivePath, fullSummary, 'utf-8');
@@ -389,16 +404,24 @@ export interface BatchStats {
   unparseable: number;
 }
 
-/** In-process entry for wal-pilot; the CLI path below remains unchanged. */
+/**
+ * In-process entry for wal-pilot; the CLI path below remains unchanged.
+ *
+ * `outputDir` defaults to the __dirname-relative `local-batch/` used by the standalone CLI. Any
+ * caller running from inside a packaged/bundled entry point (wal-pilot's esbuild bundle, where
+ * __dirname lands inside the read-only app.asar) MUST pass an explicit writable `outputDir`.
+ */
 export async function runBatchAnalysis(opts: {
   logDir: string;
+  outputDir?: string;
   maxMatches?: number;
   phase1Only?: boolean;
   phase2Only?: boolean;
 }): Promise<BatchStats> {
+  const paths = pathsFor(opts.outputDir ?? DEFAULT_OUTPUT_DIR);
   let stats: BatchStats = { processed: 0, skipped: 0, failed: 0, unparseable: 0 };
-  if (!opts.phase2Only) stats = await runPhase1(opts.logDir, opts.maxMatches ?? Number.POSITIVE_INFINITY);
-  if (!opts.phase1Only) await runPhase2();
+  if (!opts.phase2Only) stats = await runPhase1(opts.logDir, opts.maxMatches ?? Number.POSITIVE_INFINITY, paths);
+  if (!opts.phase1Only) await runPhase2(paths);
   return stats;
 }
 

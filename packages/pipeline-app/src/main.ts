@@ -1,5 +1,5 @@
 import { app, BrowserWindow, dialog, ipcMain, Menu, nativeImage, Tray } from 'electron';
-import { existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, rmdirSync, writeFileSync } from 'fs';
 import os from 'os';
 import path from 'path';
 
@@ -24,6 +24,14 @@ import { StreamerService, StreamerState } from './streamerService';
 // uncaught throw here must never take down the whole process — log and keep running.
 process.on('uncaughtException', (e) => console.error('[wal-pilot] uncaught:', e));
 process.on('unhandledRejection', (e) => console.error('[wal-pilot] unhandled rejection:', e));
+
+// A login-item/GUI launch (macOS "Open at Login", Windows Startup) does NOT inherit the login
+// shell's PATH — Homebrew's /opt/homebrew/bin (or /usr/local/bin on Intel) and user-local bin
+// dirs are typically missing. Without this, `claude` (used by the analysis backend) silently
+// resolves to "not found" and the collector reports a deceptively green tray. Prepend the common
+// install locations so a Terminal-launched `claude` install is still found from a GUI launch.
+const EXTRA_PATH = ['/opt/homebrew/bin', '/usr/local/bin', `${os.homedir()}/.local/bin`];
+process.env.PATH = [...EXTRA_PATH, ...(process.env.PATH ?? '').split(':')].filter(Boolean).join(':');
 
 let tray: Tray | null = null;
 let rebuildTrayMenu: (() => void) | null = null;
@@ -163,8 +171,17 @@ function startServices(): void {
     } else {
       const syncDir = syncDirPath();
       mkdirSync(syncDir, { recursive: true });
+      const collectorConfig = toCollectorConfig(cfg, syncDir);
+      // Bridges wizard-only installs (no separate windows-agent config file) to
+      // loadCollectorConfig() — the dashboard's heartbeat read and the standalone CLI tools both
+      // rely on this file existing under syncDir. Overwritten on every start so it always tracks
+      // the current PilotConfig.
+      writeFileSync(
+        path.join(syncDir, 'collector.config.json'),
+        JSON.stringify({ storage: collectorConfig.storage }, null, 2),
+      );
       collector = new CollectorService({
-        collectorConfig: toCollectorConfig(cfg, syncDir),
+        collectorConfig,
         scheduleHours: cfg.scheduleHours,
         cleanupAfterDays: cfg.cleanupAfterDays,
         onPhase: (phase, detail) => {
@@ -246,7 +263,21 @@ function openWizard(): void {
       if (activeRole === 'streamer' && !input.wowDirectory) return { error: 'Pick the WoW _retail_ folder.' };
       try {
         mkdirSync(input.syncFolder, { recursive: true });
-        const cfg = withDefaults({ syncFolder: input.syncFolder, wowDirectory: input.wowDirectory });
+        // Merge onto the existing config (if any) rather than overwrite wholesale — a re-save
+        // through the wizard (e.g. just changing the sync folder) must not silently wipe
+        // hand-edited fields like `storage`, `role`, `scheduleHours`, `cleanupAfterDays`.
+        const existing = (() => {
+          try {
+            return loadPilotConfig(configPathFor(app.getPath('userData')));
+          } catch {
+            return null;
+          }
+        })();
+        const cfg = withDefaults({
+          ...(existing ?? {}),
+          syncFolder: input.syncFolder,
+          wowDirectory: input.wowDirectory ?? existing?.wowDirectory,
+        });
         savePilotConfig(configPathFor(app.getPath('userData')), cfg);
         app.setLoginItemSettings({ openAtLogin: input.openAtLogin });
         // Inside the try so a start failure (still-thrown after startServices' own tray/backoff
@@ -305,6 +336,19 @@ async function main(): Promise<void> {
       void collector.runNow();
       return 'started';
     },
+    onClearLock: async () => {
+      // Let this instance drop its own bookkeeping first (if it happens to own the lock), then
+      // unconditionally rmdir the lock path: a human explicitly clicked "Clear stuck lock" in the
+      // dashboard — that click IS the spec §8 explicit-clear action, regardless of who (or what
+      // orphaned crash) actually created the lock dir.
+      collector?.releaseLockIfOwned();
+      try {
+        rmdirSync(path.join(syncDirPath(), 'run.lock'));
+        return true;
+      } catch {
+        return false;
+      }
+    },
   });
   dashboardPort = port;
 
@@ -314,5 +358,11 @@ async function main(): Promise<void> {
 
 app.on('window-all-closed', () => {
   /* tray app: stay alive */
+});
+// Quitting mid-run must not orphan run.lock — a lock left behind after quit would otherwise
+// block every subsequent run (including a fresh app relaunch) until a human notices and clears
+// it via the dashboard.
+app.on('before-quit', () => {
+  collector?.releaseLockIfOwned();
 });
 void main();

@@ -27,6 +27,9 @@ export interface DashboardServerOptions {
   extraStatus?: () => Promise<Record<string, unknown>>;
   /** Handler for `POST /api/run`. Default: spawn launchd/collect-and-analyze.sh (current behavior). */
   onRunNow?: () => Promise<'started' | 'busy'>;
+  /** Handler for `POST /api/clear-lock` (spec §8 explicit stale-lock clear). No default — routes
+   * 404 when omitted (only wal-pilot, which owns the collector, wires this up). */
+  onClearLock?: () => Promise<boolean>;
 }
 
 async function buildStatus(): Promise<unknown> {
@@ -45,12 +48,20 @@ async function buildStatus(): Promise<unknown> {
   const runs = readRuns(syncDir, 20);
   const intervalSeconds = readScheduleInterval();
   const lastRunAt = runs.length > 0 ? runs[runs.length - 1].finishedAt : null;
+  const lockPath = path.join(syncDir, 'run.lock');
+  let lockAgeMs: number | null = null;
+  try {
+    lockAgeMs = Date.now() - fs.statSync(lockPath).mtimeMs;
+  } catch {
+    lockAgeMs = null; // no lock held
+  }
   return {
     heartbeats,
     collector,
     runs,
     schedule: { intervalSeconds, lastRunAt, nextRunAt: nextRunAt(lastRunAt, intervalSeconds) },
-    running: fs.pathExistsSync(path.join(syncDir, 'run.lock')),
+    running: fs.pathExistsSync(lockPath),
+    lockAgeMs,
     reportsDir: path.resolve(__dirname, '../../local-batch/reports'),
   };
 }
@@ -100,6 +111,20 @@ export function createDashboardServer(opts: DashboardServerOptions = {}): Promis
             return;
           }
           res.writeHead(202, { 'content-type': 'application/json' }).end(JSON.stringify({ started: true }));
+        } else if (req.method === 'POST' && req.url === '/api/clear-lock') {
+          const origin = req.headers.origin;
+          if (origin && origin !== `http://127.0.0.1:${port}` && origin !== `http://localhost:${port}`) {
+            res
+              .writeHead(403, { 'content-type': 'application/json' })
+              .end(JSON.stringify({ error: 'forbidden origin' }));
+            return;
+          }
+          if (!opts.onClearLock) {
+            res.writeHead(404, { 'content-type': 'application/json' }).end(JSON.stringify({ error: 'not found' }));
+            return;
+          }
+          const cleared = await opts.onClearLock();
+          res.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify({ cleared }));
         } else {
           res.writeHead(404).end('not found');
         }
