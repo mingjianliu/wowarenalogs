@@ -13,9 +13,14 @@
  *   npm run -w @wowarenalogs/tools start:localBatchAnalysis
  *   npm run -w @wowarenalogs/tools start:localBatchAnalysis -- --phase1-only
  *   npm run -w @wowarenalogs/tools start:localBatchAnalysis -- --phase2-only
+ *   npm run -w @wowarenalogs/tools start:localBatchAnalysis -- --max-matches 20   (chunk big backfills)
  *
  * Env vars:
- *   ANTHROPIC_API_KEY   required for AI calls
+ *   ANTHROPIC_API_KEY   enables the "api" backend
+ *   ANALYSIS_BACKEND    "api" | "cli" — force a backend; default: api if key
+ *                       set, else the local `claude` CLI if installed (uses
+ *                       the machine's Claude subscription — no API billing)
+ *   ANALYSIS_CLI_MODEL  CLI backend model (default "opus")
  *   LOG_DIR             override log directory (default ~/Downloads/wow logs)
  */
 
@@ -26,6 +31,7 @@ import os from 'os';
 import path from 'path';
 
 import { buildMatchPrompt, callClaude, ParsedCombat, parseLogText } from './printMatchPrompts';
+import { AnalysisBackend, callClaudeCli, resolveAnalysisBackend } from './utils/claudeCli';
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
@@ -53,6 +59,8 @@ interface BatchRecord {
   prompt: string;
   aiResponse: string;
   feedbackSection: string;
+  /** Which backend produced aiResponse ('api' | 'cli'); absent on skipped/legacy records. */
+  backend?: AnalysisBackend;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -102,7 +110,7 @@ function extractFeedbackSection(aiResponse: string): string {
 
 // ── Phase 1 ───────────────────────────────────────────────────────────────────
 
-async function runPhase1(): Promise<void> {
+async function runPhase1(maxMatches: number): Promise<void> {
   const files = (await fs.readdir(LOG_DIR))
     .filter((f) => f.endsWith('.txt') && f.startsWith('WoWCombatLog'))
     .map((f) => path.join(LOG_DIR, f))
@@ -135,7 +143,7 @@ async function runPhase1(): Promise<void> {
   let failed = 0;
   let unparseable = 0;
 
-  for (const logPath of files) {
+  outer: for (const logPath of files) {
     const fileName = path.basename(logPath);
     let combats: ParsedCombat[];
     try {
@@ -147,6 +155,10 @@ async function runPhase1(): Promise<void> {
     }
 
     for (let i = 0; i < combats.length; i++) {
+      if (total >= maxMatches) {
+        console.log(`\nReached --max-matches ${maxMatches}; stopping Phase 1 early (resume by re-running).`);
+        break outer;
+      }
       const key = `${fileName}::${i + 1}`;
       if (existing.has(key)) {
         skipped++;
@@ -166,10 +178,11 @@ async function runPhase1(): Promise<void> {
         `[${total}] ${fileName} match ${i + 1} — ${meta.spec} | ${meta.bracket} | ${meta.result} | ${meta.durationSeconds}s`,
       );
 
-      let aiResponse = '[SKIPPED — no ANTHROPIC_API_KEY]';
-      if (process.env.ANTHROPIC_API_KEY) {
+      const backend = resolveAnalysisBackend();
+      let aiResponse = '[SKIPPED — no ANTHROPIC_API_KEY and no claude CLI]';
+      if (backend !== 'none') {
         try {
-          process.stderr.write(`  Calling Claude...\n`);
+          process.stderr.write(`  Calling Claude (${backend})...\n`);
           aiResponse = await callClaude(prompt, 'test');
         } catch (e) {
           aiResponse = `[AI call failed: ${e}]`;
@@ -182,6 +195,7 @@ async function runPhase1(): Promise<void> {
         prompt,
         aiResponse,
         feedbackSection: extractFeedbackSection(aiResponse),
+        ...(backend !== 'none' ? { backend } : {}),
       };
       outStream.write(JSON.stringify(record) + '\n');
     }
@@ -328,15 +342,25 @@ async function runPhase2(): Promise<void> {
   console.log(metaPrompt);
   console.log('\n--- END PROMPT ---\n');
 
-  let summary = '[SKIPPED — no ANTHROPIC_API_KEY]';
-  if (process.env.ANTHROPIC_API_KEY) {
+  const META_SYSTEM_PROMPT =
+    'You are a concise, data-driven WoW arena analyst. Respond only with the requested structured report.';
+  const backend = resolveAnalysisBackend();
+  let summary = '[SKIPPED — no ANTHROPIC_API_KEY and no claude CLI]';
+  if (backend === 'cli') {
+    process.stderr.write('Calling Claude (cli) for meta-analysis...\n');
+    try {
+      summary = await callClaudeCli({ prompt: metaPrompt, systemPrompt: META_SYSTEM_PROMPT });
+    } catch (e) {
+      summary = `[AI call failed: ${e}]`;
+    }
+  } else if (backend === 'api') {
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    process.stderr.write('Calling Claude for meta-analysis...\n');
+    process.stderr.write('Calling Claude (api) for meta-analysis...\n');
     const message = await client.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 4096,
       temperature: 0.2,
-      system: 'You are a concise, data-driven WoW arena analyst. Respond only with the requested structured report.',
+      system: META_SYSTEM_PROMPT,
       messages: [{ role: 'user', content: metaPrompt }],
     });
     const content = message.content[0];
@@ -357,8 +381,17 @@ async function main(): Promise<void> {
   const args = process.argv.slice(2);
   const phase1Only = args.includes('--phase1-only');
   const phase2Only = args.includes('--phase2-only');
+  // --max-matches N: stop Phase 1 after N new matches. Chunks big backfills so
+  // a single run can't exhaust a subscription usage window (cli backend);
+  // interrupted/limited runs resume seamlessly via the results.jsonl dedupe.
+  const maxIdx = args.indexOf('--max-matches');
+  const maxMatches = maxIdx !== -1 ? parseInt(args[maxIdx + 1], 10) : Number.POSITIVE_INFINITY;
+  if (Number.isNaN(maxMatches) || maxMatches <= 0) {
+    console.error('--max-matches requires a positive integer');
+    process.exit(1);
+  }
 
-  if (!phase2Only) await runPhase1();
+  if (!phase2Only) await runPhase1(maxMatches);
   if (!phase1Only) await runPhase2();
 }
 
