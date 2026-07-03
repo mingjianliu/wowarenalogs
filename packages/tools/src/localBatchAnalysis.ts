@@ -35,7 +35,7 @@ import { AnalysisBackend, callClaudeCli, resolveAnalysisBackend } from './utils/
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
-const LOG_DIR = process.env.LOG_DIR ?? path.join(os.homedir(), 'Downloads/wow logs');
+const DEFAULT_LOG_DIR = process.env.LOG_DIR ?? path.join(os.homedir(), 'Downloads/wow logs');
 const OUTPUT_DIR = path.join(__dirname, '../local-batch');
 const RESULTS_FILE = path.join(OUTPUT_DIR, 'results.jsonl');
 const SUMMARY_FILE = path.join(OUTPUT_DIR, 'summary.md');
@@ -110,15 +110,14 @@ function extractFeedbackSection(aiResponse: string): string {
 
 // ── Phase 1 ───────────────────────────────────────────────────────────────────
 
-async function runPhase1(maxMatches: number): Promise<void> {
-  const files = (await fs.readdir(LOG_DIR))
+async function runPhase1(logDir: string, maxMatches: number): Promise<BatchStats> {
+  const files = (await fs.readdir(logDir))
     .filter((f) => f.endsWith('.txt') && f.startsWith('WoWCombatLog'))
-    .map((f) => path.join(LOG_DIR, f))
+    .map((f) => path.join(logDir, f))
     .sort();
 
   if (files.length === 0) {
-    console.error(`No WoWCombatLog*.txt files found in ${LOG_DIR}`);
-    process.exit(1);
+    throw new Error(`No WoWCombatLog*.txt files found in ${logDir}`);
   }
 
   const existing = new Set<string>();
@@ -209,6 +208,7 @@ async function runPhase1(maxMatches: number): Promise<void> {
     `\nPhase 1 complete. Processed: ${total}  Skipped: ${skipped}  Failed: ${failed}  Unparseable: ${unparseable}`,
   );
   console.log(`Results → ${RESULTS_FILE}`);
+  return { processed: total, skipped, failed, unparseable };
 }
 
 // ── Phase 2 ──────────────────────────────────────────────────────────────────
@@ -316,8 +316,7 @@ Keep the full report under 600 words. Be specific and blunt — this is internal
 
 async function runPhase2(): Promise<void> {
   if (!(await fs.pathExists(RESULTS_FILE))) {
-    console.error(`No results file found at ${RESULTS_FILE}. Run Phase 1 first.`);
-    process.exit(1);
+    throw new Error(`No results file found at ${RESULTS_FILE}. Run Phase 1 first.`);
   }
 
   const lines = (await fs.readFile(RESULTS_FILE, 'utf-8')).split('\n').filter(Boolean);
@@ -331,8 +330,7 @@ async function runPhase2(): Promise<void> {
   }
 
   if (records.length === 0) {
-    console.error('No valid records found in results.jsonl');
-    process.exit(1);
+    throw new Error('No valid records found in results.jsonl');
   }
 
   console.log(`Phase 2: meta-analysis across ${records.length} matches\n`);
@@ -384,25 +382,45 @@ async function runPhase2(): Promise<void> {
 
 // ── Entry point ───────────────────────────────────────────────────────────────
 
+export interface BatchStats {
+  processed: number;
+  skipped: number;
+  failed: number;
+  unparseable: number;
+}
+
+/** In-process entry for wal-pilot; the CLI path below remains unchanged. */
+export async function runBatchAnalysis(opts: {
+  logDir: string;
+  maxMatches?: number;
+  phase1Only?: boolean;
+  phase2Only?: boolean;
+}): Promise<BatchStats> {
+  let stats: BatchStats = { processed: 0, skipped: 0, failed: 0, unparseable: 0 };
+  if (!opts.phase2Only) stats = await runPhase1(opts.logDir, opts.maxMatches ?? Number.POSITIVE_INFINITY);
+  if (!opts.phase1Only) await runPhase2();
+  return stats;
+}
+
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
-  const phase1Only = args.includes('--phase1-only');
-  const phase2Only = args.includes('--phase2-only');
-  // --max-matches N: stop Phase 1 after N new matches. Chunks big backfills so
-  // a single run can't exhaust a subscription usage window (cli backend);
-  // interrupted/limited runs resume seamlessly via the results.jsonl dedupe.
   const maxIdx = args.indexOf('--max-matches');
-  const maxMatches = maxIdx !== -1 ? parseInt(args[maxIdx + 1], 10) : Number.POSITIVE_INFINITY;
-  if (Number.isNaN(maxMatches) || maxMatches <= 0) {
+  const maxMatches = maxIdx !== -1 ? parseInt(args[maxIdx + 1], 10) : undefined;
+  if (maxIdx !== -1 && (Number.isNaN(maxMatches) || (maxMatches as number) <= 0)) {
     console.error('--max-matches requires a positive integer');
     process.exit(1);
   }
-
-  if (!phase2Only) await runPhase1(maxMatches);
-  if (!phase1Only) await runPhase2();
+  await runBatchAnalysis({
+    logDir: DEFAULT_LOG_DIR,
+    maxMatches,
+    phase1Only: args.includes('--phase1-only'),
+    phase2Only: args.includes('--phase2-only'),
+  });
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}
