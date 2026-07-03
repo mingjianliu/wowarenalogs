@@ -112,6 +112,26 @@ export const USABLE_WHILE_CC_SPELL_IDS = new Set<string>([
   '48792', // Icebound Fortitude
 ]);
 
+/**
+ * Forbearance: Paladin's Divine Shield / Lay on Hands / Blessing of Protection / Blessing of Spellwarding
+ * share a 30s lockout. A defensive that reads "available" by its own cooldown is UNCASTABLE on the paladin
+ * if they self-applied Forbearance within the last 30s — so it must not be listed as "unused"/"available"
+ * at a death (false accusation). Forbearance is not reliably logged as an aura, so detect it from the
+ * applying cast: Divine Shield always self-applies; the ally-castable ones self-apply only when cast on self.
+ */
+export const FORBEARANCE_SECONDS = 30;
+export const FORBEARANCE_GATED_IDS = new Set<string>(['642', '633', '1022', '204018']); // DivineShield, LayOnHands, BoP, Spellwarding
+export function selfForbearanceActiveAt(unit: ICombatUnit, atSeconds: number, matchStartMs: number): boolean {
+  for (const cast of unit.spellCastEvents) {
+    if (cast.logLine.event !== LogEvent.SPELL_CAST_SUCCESS) continue;
+    if (!cast.spellId || !FORBEARANCE_GATED_IDS.has(cast.spellId)) continue;
+    const castSec = (cast.timestamp - matchStartMs) / 1000;
+    if (castSec > atSeconds || atSeconds - castSec > FORBEARANCE_SECONDS) continue;
+    if (cast.spellId === '642' || cast.destUnitId === unit.id) return true;
+  }
+  return false;
+}
+
 // All spells tagged 'Offensive' in classMetadata — used to detect active enemy burst windows
 const OFFENSIVE_SPELL_IDS = new Set<string>(
   classMetadata.flatMap((cls) =>

@@ -1,7 +1,14 @@
 import { ICombatUnit } from '@wowarenalogs/parser';
 
 import { IPlayerCCTrinketSummary } from '../../../utils/ccTrinketAnalysis';
-import { fmtTime, IMajorCooldownInfo, IOverlappedDefensive, IPanicDefensive } from '../../../utils/cooldowns';
+import {
+  fmtTime,
+  FORBEARANCE_GATED_IDS,
+  IMajorCooldownInfo,
+  IOverlappedDefensive,
+  IPanicDefensive,
+  selfForbearanceActiveAt,
+} from '../../../utils/cooldowns';
 import { IEnemyCDTimeline } from '../../../utils/enemyCDs';
 import { IHealingGap } from '../../../utils/healingGaps';
 import { getHpPercentAtTime, getLowestHpPercentInWindow } from '../../../utils/killWindowTargetSelection';
@@ -140,15 +147,28 @@ export function buildDeathRootCauseTrace(
   }
 
   // 1. Check each owner major CD: on CD (and why) vs available-but-not-pressed
+  const forbearanceActive = dyingUnit ? selfForbearanceActiveAt(dyingUnit, deathTimeSeconds, matchStartMs) : false;
+  const forbearanceNote = `unavailable at death — Forbearance-locked (a shared-Forbearance ability was self-applied within 30s)`;
   for (const cd of ownerCooldowns) {
+    // Don't report a Forbearance-gated tool (Spellwarding/BoP/Lay on Hands/Divine Shield) as available
+    // when the paladin self-applied Forbearance within 30s — it was mechanically uncastable.
+    const forbearanceLocked = forbearanceActive && FORBEARANCE_GATED_IDS.has(cd.spellId);
     if (cd.neverUsed) {
-      traces.push(`${cd.spellName} [${cd.tag}]: NEVER USED — was available throughout the match`);
+      traces.push(
+        forbearanceLocked
+          ? `${cd.spellName} [${cd.tag}]: ${forbearanceNote}`
+          : `${cd.spellName} [${cd.tag}]: NEVER USED — was available throughout the match`,
+      );
       continue;
     }
     const castsBeforeDeath = cd.casts.filter((c) => c.timeSeconds <= deathTimeSeconds);
     if (castsBeforeDeath.length === 0) {
-      // Never used before this death — was available
-      traces.push(`${cd.spellName} [${cd.tag}]: not yet used — was available at death time`);
+      // Never used before this death — was available (unless Forbearance-locked)
+      traces.push(
+        forbearanceLocked
+          ? `${cd.spellName} [${cd.tag}]: ${forbearanceNote}`
+          : `${cd.spellName} [${cd.tag}]: not yet used — was available at death time`,
+      );
       continue;
     }
     const lastCast = castsBeforeDeath[castsBeforeDeath.length - 1];
@@ -164,8 +184,12 @@ export function buildDeathRootCauseTrace(
         `${cd.spellName} [${cd.tag}]: ON COOLDOWN at death — last used ${fmtTime(lastCast.timeSeconds)} (${timeAgo}s before death)${timing}`,
       );
     } else {
-      // Ready at death but not pressed
-      traces.push(`${cd.spellName} [${cd.tag}]: available at death time — not pressed`);
+      // Ready at death but not pressed (unless Forbearance-locked)
+      traces.push(
+        forbearanceLocked
+          ? `${cd.spellName} [${cd.tag}]: ${forbearanceNote}`
+          : `${cd.spellName} [${cd.tag}]: available at death time — not pressed`,
+      );
     }
   }
 
