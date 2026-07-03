@@ -123,7 +123,7 @@ export class CollectorService {
         try {
           rmdirSync(this.lockPath());
         } catch {
-          /* already gone or parent unwritable — stale-lock takeover recovers within 2h */
+          /* already gone or parent unwritable — the dashboard surfaces a lingering lock for a human clear */
         }
       }
     }
