@@ -1,3 +1,8 @@
+---
+name: update-wow-data
+description: Use when a new WoW retail build is out, or when spell, talent, or trinket static data needs refreshing (e.g. at a season start).
+---
+
 Update `packages/shared/src/data/` with the latest WoW patch data from wago.tools.
 
 ## Steps
@@ -66,7 +71,7 @@ If a script fails:
 
 ### 5. Summarize changes
 
-After both scripts succeed, run:
+After all six scripts succeed, run:
 
 ```bash
 git diff --stat packages/shared/src/data/

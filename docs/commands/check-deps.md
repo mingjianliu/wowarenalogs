@@ -1,3 +1,8 @@
+---
+name: check-deps
+description: Use when verifying cross-package dependency rules, or after moving code between the web, shared, and app packages.
+---
+
 Validate cross-package dependency rules to prevent accidental coupling.
 
 ## Rules to enforce

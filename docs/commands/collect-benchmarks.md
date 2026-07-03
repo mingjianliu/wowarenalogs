@@ -1,4 +1,11 @@
+---
+name: collect-benchmarks
+description: Use when analysis thresholds need recalibration — after a major WoW patch, after changing analysis utility thresholds, or when adding new specs to the analysis pipeline.
+---
+
 Collect reference benchmark data from high-rated arena matches and persist it to `packages/tools/benchmarks/benchmark_data.json`.
+
+> Related: `build-match-archetypes.md` uses a similar download-and-parse pipeline but builds a **separate** corpus (`packages/tools/archetypes/`) for healer archetype clustering. The two corpora and caches are independent — do not mix them.
 
 ## What this does
 

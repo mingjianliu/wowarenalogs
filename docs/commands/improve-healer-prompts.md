@@ -1,4 +1,11 @@
+---
+name: improve-healer-prompts
+description: Use when validating whether a specific prompt-builder code change improved healer eval scores.
+---
+
 Validate whether a prompt-builder code change improved healer eval scores, via a controlled A/B test. This command is stateful — it reads `packages/tools/local-batch/healer-eval/ab-test/state.json` to determine which phase to run.
+
+> **Scope note:** This command tests _prompt-builder code_ changes (e.g. `buildMatchPromptNew`). To find what to fix next, use `/eval-healer-prompts`. For _system prompt text_ changes (`SYSTEM_PROMPT` / `NEW_SYSTEM_PROMPT`), use `docs/prompt-ab-testing-workflow.md` (`evalPromptCompare`) instead.
 
 ## Argument Handling
 
@@ -19,6 +26,19 @@ Read `packages/tools/local-batch/healer-eval/ab-test/state.json`.
 
 ---
 
+## Shared: Eval Pipeline Run (used by both phases)
+
+Both phases run the eval pipeline (Steps 2–4 of `eval-healer-prompts.md`) against a base directory `BASE` under `packages/tools/local-batch/healer-eval/` — `ab-test/control/` in Phase 1, `ab-test/treatment/` in Phase 2:
+
+- Read prompts from `BASE/prompts/` and the index from `BASE/index.json`.
+- When spawning sub-agents with the eval-healer-prompts Step 2 template, substitute these paths for the defaults: responses go to `BASE/responses/NNN.txt`.
+- Score each match with the same rubric and scoring process as `eval-healer-prompts.md`, writing to `BASE/scores/NNN.json`.
+- Write the eval report to `BASE/eval-report.md`.
+
+These runs never read or write the regular eval skill's `healer-eval/prompts/`, `responses/`, or `scores/` directories.
+
+---
+
 ## Phase 1 — Control
 
 **Triggered when:** no state file, or phase = `"idle"`.
@@ -26,6 +46,7 @@ Read `packages/tools/local-batch/healer-eval/ab-test/state.json`.
 ### Step 1.1: Gather context
 
 Ask the user two questions (can be in a single message):
+
 1. "What change are you testing?" (e.g., "added KILL SEQUENCE block for matches < 90s — F113")
 2. "Which eval dimension is this intended to improve?" (e.g., `inferenceScaffolding`)
 
@@ -53,15 +74,7 @@ cp packages/tools/local-batch/healer-eval/index.json packages/tools/local-batch/
 
 ### Step 1.3: Run eval pipeline on control
 
-Run the full eval pipeline (Steps 2–4 from `eval-healer-prompts`) on the control prompts. Use `packages/tools/local-batch/healer-eval/ab-test/control/` as the base for responses and scores:
-
-- Sub-agents write responses to `ab-test/control/responses/NNN.txt`
-- Score each match, write to `ab-test/control/scores/NNN.json`
-- Write eval report to `ab-test/control/eval-report.md`
-
-Use the same rubric and scoring process as the regular eval skill (Steps 2–4 of `eval-healer-prompts`), reading prompts from `ab-test/control/prompts/` and the index from `ab-test/control/index.json`.
-
-**Path override:** When spawning sub-agents following the eval-healer-prompts Step 2 template, substitute the output paths: replace `packages/tools/local-batch/healer-eval/responses/` with `packages/tools/local-batch/healer-eval/ab-test/control/responses/`, replace `packages/tools/local-batch/healer-eval/scores/` with `packages/tools/local-batch/healer-eval/ab-test/control/scores/`, and read prompts from `ab-test/control/prompts/` (not `healer-eval/prompts/`). The index to read is `ab-test/control/index.json`.
+Run the shared eval pipeline (see **Shared: Eval Pipeline Run** above) with `BASE = ab-test/control/`.
 
 ### Step 1.4: Write state file
 
@@ -100,6 +113,7 @@ Next steps:
 ### Step 2.1: Load state
 
 Read `ab-test/state.json`. Print:
+
 ```
 Running treatment (run N+1) for: <changeDescription>
 Target dimension: <targetDimension>
@@ -121,9 +135,7 @@ Wait for completion. Verify that `ab-test/treatment/prompts/` contains the same 
 
 ### Step 2.3: Run eval pipeline on treatment
 
-Run the full eval pipeline (Steps 2–4 of `eval-healer-prompts`) on the treatment prompts, writing to `ab-test/treatment/`. Read prompts from `ab-test/treatment/prompts/` and index from `ab-test/treatment/index.json`. Write responses to `ab-test/treatment/responses/`, scores to `ab-test/treatment/scores/`, report to `ab-test/treatment/eval-report.md`.
-
-**Path override:** When spawning sub-agents following the eval-healer-prompts Step 2 template, substitute: `healer-eval/responses/` → `ab-test/treatment/responses/`, `healer-eval/scores/` → `ab-test/treatment/scores/`, prompts read from `ab-test/treatment/prompts/`, index from `ab-test/treatment/index.json`.
+Run the shared eval pipeline (see **Shared: Eval Pipeline Run** above) with `BASE = ab-test/treatment/`.
 
 ### Step 2.4: Produce comparison report
 
@@ -136,7 +148,7 @@ Write `packages/tools/local-batch/healer-eval/ab-test/comparison-report.md` usin
 
 **Change tested:** <changeDescription>
 **Target dimension:** <targetDimension>
-**Treatment run:** N  |  **Control matches:** M  |  **Skipped (missing raw logs):** K
+**Treatment run:** N | **Control matches:** M | **Skipped (missing raw logs):** K
 
 ---
 
@@ -145,6 +157,7 @@ Write `packages/tools/local-batch/healer-eval/ab-test/comparison-report.md` usin
 | Ordinal | Spec | Result | Control | Treatment | Delta |
 | ------- | ---- | ------ | ------- | --------- | ----- |
 | 001     | ...  | Win    | 3       | 4         | +1    |
+
 ...
 
 **Average <targetDimension>:** X.XX → Y.YY (ΔZ.ZZ)
@@ -153,15 +166,15 @@ Write `packages/tools/local-batch/healer-eval/ab-test/comparison-report.md` usin
 
 ## All Dimensions — Aggregate Delta
 
-| Dimension            | Control avg | Treatment avg | Delta  |
-| -------------------- | ----------- | ------------- | ------ |
-| sufficiency          |             |               |        |
-| noise                |             |               |        |
-| labelBias            |             |               |        |
-| inferenceScaffolding |             |               |        |
-| accuracy             |             |               |        |
-| outcomeAlignment     |             |               |        |
-| focusCalibration     |             |               |        |
+| Dimension            | Control avg | Treatment avg | Delta |
+| -------------------- | ----------- | ------------- | ----- |
+| sufficiency          |             |               |       |
+| noise                |             |               |       |
+| labelBias            |             |               |       |
+| inferenceScaffolding |             |               |       |
+| accuracy             |             |               |       |
+| outcomeAlignment     |             |               |       |
+| focusCalibration     |             |               |       |
 
 ---
 
@@ -184,6 +197,7 @@ If none, write "None."
 ## Triage
 
 For each new issue or regression, assign one of:
+
 - **Fix now** — small, isolated change (≤ 5 lines), low risk of introducing new issues, directly related to the current change
 - **Next cycle** — medium complexity or uncertain impact; conclude this cycle first
 - **Backlog** — unrelated to current change or speculative; add to TRACKER.md
@@ -296,7 +310,6 @@ If abandoning: revert your code change, then run /eval-healer-prompts to confirm
 
 ## Notes
 
-- The skill reads prompts from `ab-test/control/prompts/` (not `healer-eval/prompts/`) in all phases. The regular eval skill's `prompts/` directory is untouched.
 - If `ab-test/treatment/` already has responses or scores from a previous treatment run, overwrite them.
 - Do NOT call any external AI API during scoring (Steps 2.3–2.4). You (this Claude Code session) are the judge, same as in `eval-healer-prompts`.
 - The `ab-test/` directory is gitignored and local-only.

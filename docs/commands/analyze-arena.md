@@ -1,3 +1,8 @@
+---
+name: analyze-arena
+description: Use when the user wants AI analysis of a WoW arena combat log on their local machine.
+---
+
 Analyze a WoW arena combat log using AI cooldown analysis.
 
 ## How to run the analysis
@@ -13,9 +18,11 @@ Analyze a WoW arena combat log using AI cooldown analysis.
    - Pick the most recently modified file
 
 2. **Print the timeline prompt** (no API call):
+
    ```
    npm run -w @wowarenalogs/tools start:printMatchPrompts -- --count 1 --new-prompt --test-prompt --log "<log-path>"
    ```
+
    The script auto-selects the best match (prefers 3v3, longest duration). To target a specific match index, add `--index <N>`.
 
 3. **Analyze the prompt inline** — take the printed timeline and analyze it yourself as Claude Code. Provide:
@@ -27,6 +34,7 @@ Analyze a WoW arena combat log using AI cooldown analysis.
 4. **Display the analysis** clearly, including which match was selected and why.
 
 ## Notes
+
 - The `printMatchPrompts` script is the correct tool — it uses `buildMatchTimeline` (the timeline format with `[HP]`, `[OWNER CD]`, `[ENEMY CD]`, etc.)
 - The old `scripts/testAnalyze.mjs` uses a different prompt format and the Anthropic API — do not use it
 - Each timeline prompt is ~3–6k tokens; Claude Code handles it fine inline

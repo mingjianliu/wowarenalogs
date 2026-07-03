@@ -1,11 +1,14 @@
 # Prompt A/B Testing & Evaluation Workflow
 
-This document outlines the standard workflow for evaluating system prompt changes using the stateful A/B Prompt Comparison System. 
+This document outlines the standard workflow for evaluating system prompt changes using the stateful A/B Prompt Comparison System.
 
 Any AI agent (Gemini, Antigravity, Claude Code) or human developer proposing changes to WoW Arena Logs' system prompts MUST run this comparison workflow to verify analytical improvements and token efficiency before submitting changes.
 
+> **Scope note:** This harness tests _system prompt text_ changes (`SYSTEM_PROMPT` / `NEW_SYSTEM_PROMPT`). For _prompt-builder code_ changes in the healer pipeline, use `docs/commands/improve-healer-prompts.md` instead; to find what to fix next, use `docs/commands/eval-healer-prompts.md`.
+
 ## System Overview
-The evaluation system lives in [evalPromptCompare.ts](file:///Users/mingjianliu/code/wowarenalogs/packages/tools/src/evalPromptCompare.ts) and is registered as the npm script `start:evalPromptCompare` in the `@wowarenalogs/tools` package. 
+
+The evaluation system lives in [evalPromptCompare.ts](file:///Users/mingjianliu/code/wowarenalogs/packages/tools/src/evalPromptCompare.ts) and is registered as the npm script `start:evalPromptCompare` in the `@wowarenalogs/tools` package.
 
 Instead of ad-hoc manual inspections, the system uses a **two-phase stateful batch runner** with an automated LLM Judge to produce objective comparison reports.
 
@@ -14,6 +17,7 @@ Instead of ad-hoc manual inspections, the system uses a **two-phase stateful bat
 ## Anthropic API Key Bypass Option (For All AIs)
 
 For all AI agents (including Gemini, Claude Code, Antigravity, etc.) or human developers, you do not need an Anthropic API key to run evaluations. Instead, you can simply create a new sub-agent and role-play the response AI:
+
 1. Generate the prompt text using the CLI or print tools (e.g., `npm run -w @wowarenalogs/tools start:printMatchPrompts -- --count 1 --new-prompt --test-prompt`).
 2. Create a new sub-agent (e.g., via `define_subagent`) and load the system prompts/instructions.
 3. Submit the generated match prompts to that sub-agent.
@@ -32,6 +36,7 @@ graph TD
 ```
 
 ### Phase 1: Control Run
+
 Before making prompt modifications (or using a baseline), compile the "Control" dataset. This builds the match corpus and establishes the reference responses.
 
 ```bash
@@ -39,6 +44,7 @@ npm run -w @wowarenalogs/tools start:evalPromptCompare -- --phase control --coun
 ```
 
 **What it does:**
+
 1. **Corpus Assembly**: Scans cached raw logs in `local-batch/healer-eval/raw-logs/` and `packages/parser/test/testlogs/`. If needed, downloads further matching retail 3v3 match logs from the WoW Arena Logs production API to fill the quota.
 2. **State Locking**: Saves the selected match IDs, spec distributions, and metadata to a state file: `local-batch/compare/state.json`.
 3. **Control Output Generation**: Builds prompts using the current codebase, calls the baseline system prompt (`SYSTEM_PROMPT` or `NEW_SYSTEM_PROMPT`), and saves:
@@ -47,6 +53,7 @@ npm run -w @wowarenalogs/tools start:evalPromptCompare -- --phase control --coun
    - Token usage: `local-batch/compare/control/tokens.json`
 
 ### Phase 2: Treatment Run
+
 After applying your prompt changes (e.g. editing `NEW_SYSTEM_PROMPT` or wrapping context instructions), run the "Treatment" phase.
 
 ```bash
@@ -54,6 +61,7 @@ npm run -w @wowarenalogs/tools start:evalPromptCompare -- --phase treatment
 ```
 
 **What it does:**
+
 1. **Corpus Lockout**: Reads `state.json` to ensure the exact same corpus of match IDs and perspectives is evaluated.
 2. **Prompt Wrapping & Reflection**: Wraps generated match prompts in XML blocks:
    - `<core_prompt>`: contains the match context.
@@ -71,6 +79,7 @@ npm run -w @wowarenalogs/tools start:evalPromptCompare -- --phase treatment
 ---
 
 ## Script Options
+
 - `--phase <control|treatment>` (Required): Phase selection.
 - `--count <N>` (Optional, default `10`): Number of matches to run during control corpus generation.
 - `--healer` (Optional): Forces healer perspective logs for the evaluation pool.
@@ -78,7 +87,9 @@ npm run -w @wowarenalogs/tools start:evalPromptCompare -- --phase treatment
 ---
 
 ## Verifying Results
+
 Always check the output markdown report. The proposed system prompt change is considered successful if:
+
 1. **Verdict Win-Rate**: Version B (Treatment) wins or ties the majority of matches.
 2. **Token Efficiency**: The net token count (excluding overhead) does not increase dramatically unless offset by significant analytical quality gains.
 3. **No regressions**: No typescript compile errors or eslint errors are introduced. Ensure this by running `npm run -w @wowarenalogs/tools lint` after completion.

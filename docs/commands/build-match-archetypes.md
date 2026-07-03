@@ -1,4 +1,11 @@
+---
+name: build-match-archetypes
+description: Use when building or refreshing healer archetype prompts from high-rated match data, or when the archetype corpus needs more matches.
+---
+
 Build and iterate on healer archetype prompts — download matches from top-200 3v3 players per spec, cluster by match dynamic, auto-label clusters, and write narratives via subagent.
+
+> Related: `collect-benchmarks.md` uses a similar download-and-parse pipeline but builds a **separate** corpus (`packages/tools/benchmarks/`) for threshold calibration. The two corpora and caches are independent — do not mix them.
 
 ## What to do when invoked
 
@@ -95,6 +102,7 @@ git commit -m "feat: update healer archetype prompts (auto-labeled)"
 As of 2026-05-18, all healer spec cutoffs are below 2000 (1851–1957), so floor = 2000.
 
 To refresh each season:
+
 ```bash
 sqlite3 /Users/mingjianliu/code/wow-talent-gear-collector/data/wow_advisor.db \
   "SELECT spec, COUNT(*) as n, MIN(rating) as top200_cutoff FROM players WHERE bracket='3v3' GROUP BY spec ORDER BY top200_cutoff DESC;"
@@ -106,20 +114,20 @@ Update `MIN_RATING` in `extractArchetypeFeatures.ts` to `max(min cutoff across h
 
 ## Phase 1 env vars
 
-| Var | Default | Notes |
-| --- | --- | --- |
-| `MATCH_COUNT` | 200 | New matches per run. Corpus grows; skips cached. |
-| `BRACKET` | `3v3` | `Rated Solo Shuffle` for shuffle (separate corpus). |
-| `MIN_RATING` | 2000 | See rating policy above. |
-| `CONCURRENCY` | 5 | Parallel GCS downloads. |
-| `REQUIRE_ADVANCED_LOGGING` | false | Set `true` for positioning data (check ratio first). |
+| Var                        | Default | Notes                                                |
+| -------------------------- | ------- | ---------------------------------------------------- |
+| `MATCH_COUNT`              | 200     | New matches per run. Corpus grows; skips cached.     |
+| `BRACKET`                  | `3v3`   | `Rated Solo Shuffle` for shuffle (separate corpus).  |
+| `MIN_RATING`               | 2000    | See rating policy above.                             |
+| `CONCURRENCY`              | 5       | Parallel GCS downloads.                              |
+| `REQUIRE_ADVANCED_LOGGING` | false   | Set `true` for positioning data (check ratio first). |
 
 ## Phase 2 env vars
 
-| Var | Default | Notes |
-| --- | --- | --- |
-| `K` | 4 | k-means clusters per spec. |
-| `MIN_MATCHES` | 5 | Minimum matches per cluster. |
+| Var           | Default | Notes                        |
+| ------------- | ------- | ---------------------------- |
+| `K`           | 4       | k-means clusters per spec.   |
+| `MIN_MATCHES` | 5       | Minimum matches per cluster. |
 
 ## File layout
 

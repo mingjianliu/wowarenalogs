@@ -1,6 +1,17 @@
+---
+name: eval-healer-prompts
+description: Use when assessing healer prompt and response quality across many matches to find what to fix next.
+---
+
 Evaluate healer arena prompts and Claude responses across 10–50 matches, then produce a cross-match quality report. This command orchestrates a four-step pipeline.
 
-> **Scope note:** This command assesses prompt and response quality and identifies what to fix. To validate whether a specific code change improved scores, use `/improve-healer-prompts` instead. The `--snapshot` / `--save-snapshot` modes in this command test *rubric drift* (did Claude's scoring of the same old prompts change?) — they do not test prompt builder changes.
+> **Scope note — three eval harnesses exist; pick the right one:**
+>
+> - **This command** assesses prompt and response quality and identifies what to fix.
+> - **`/improve-healer-prompts`** validates whether a specific _prompt-builder code_ change improved scores (controlled A/B on the same matches).
+> - **`docs/prompt-ab-testing-workflow.md`** (`evalPromptCompare`) validates _system prompt text_ changes (`SYSTEM_PROMPT` / `NEW_SYSTEM_PROMPT`).
+>
+> The `--snapshot` / `--save-snapshot` modes in this command test _rubric drift_ (did Claude's scoring of the same old prompts change?) — they do not test prompt builder changes.
 
 ## Argument Handling
 
@@ -57,6 +68,7 @@ For each entry, spawn a **background sub-agent** using the Agent tool with `run_
 > `packages/tools/local-batch/healer-eval/prompts/FILENAME`
 >
 > Produce coaching advice for the healer. Focus on:
+>
 > - What went wrong or right in this match
 > - Specific decisions that affected the outcome
 > - Concrete adjustments for next time
@@ -168,6 +180,7 @@ Read all `packages/tools/local-batch/healer-eval/scores/*.json` files. Compute s
 For each match with at least one score ≤ 2:
 
 ### NNN — Spec Win|Loss (matchId)
+
 - **[dimension]**: score — (one-line explanation from notes)
 
 ---

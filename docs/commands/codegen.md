@@ -1,3 +1,8 @@
+---
+name: codegen
+description: Use when packages/shared/src/graphql/queries.graphql or the GraphQL server schema has changed.
+---
+
 Run GraphQL codegen to regenerate TypeScript types in `packages/shared/src/graphql/__generated__/`.
 
 ## Steps
