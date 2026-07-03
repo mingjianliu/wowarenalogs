@@ -120,6 +120,10 @@ function currentConfig(): PilotConfig | null {
 
 function teardownServices(): void {
   serviceGeneration += 1; // invalidate any in-flight onState/onPhase from the outgoing services
+  if (retryTimer) {
+    clearTimeout(retryTimer); // an armed error-retry belongs to the outgoing services too
+    retryTimer = null;
+  }
   streamer?.stop();
   streamer = null;
   collector?.stop();
@@ -246,7 +250,9 @@ function openWizard(): void {
         savePilotConfig(configPathFor(app.getPath('userData')), cfg);
         app.setLoginItemSettings({ openAtLogin: input.openAtLogin });
         // Inside the try so a start failure (still-thrown after startServices' own tray/backoff
-        // handling) surfaces to the wizard instead of silently closing it.
+        // handling) surfaces to the wizard instead of silently closing it. The button says
+        // "Save & start": explicitly un-pause so a paused app doesn't silently no-op here.
+        paused = false;
         startServices();
         win.close();
         return { error: null };
