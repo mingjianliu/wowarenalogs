@@ -1616,6 +1616,8 @@ describe('buildMatchTimeline — CC, dispel, pressure, healing gap events', () =
     ): IAlignedBurstWindow => ({
       fromSeconds,
       toSeconds,
+      threatScore: 10,
+      threatLabel: dangerLabel,
       activeCDs: [
         { playerName: 'EnemyRogue', spellName: 'Shadow Blades', spellId: '121471' },
         { playerName: 'EnemyWarrior', spellName: 'Bladestorm', spellId: '227847' },

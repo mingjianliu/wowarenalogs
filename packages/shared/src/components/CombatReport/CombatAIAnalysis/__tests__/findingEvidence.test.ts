@@ -8,6 +8,8 @@ function burst(fromSeconds: number, dangerScore: number): IAlignedBurstWindow {
   return {
     fromSeconds,
     toSeconds: fromSeconds + 8,
+    threatScore: dangerScore,
+    threatLabel: 'Critical',
     activeCDs: [{ playerName: 'Astrobiology', spellName: 'Combustion', spellId: '190319' }],
     dangerScore,
     dangerLabel: 'Critical',

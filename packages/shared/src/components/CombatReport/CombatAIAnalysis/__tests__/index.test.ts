@@ -39,6 +39,8 @@ function makeBurstWindow(
   return {
     fromSeconds,
     toSeconds,
+    threatScore: dangerScore,
+    threatLabel: dangerLabel,
     dangerScore,
     dangerLabel,
     activeCDs,

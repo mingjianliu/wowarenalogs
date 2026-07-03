@@ -14,6 +14,8 @@ const MIN_CD_SECONDS = 30;
 const BURST_CLUSTER_SECONDS = 10;
 /** Assumed buff duration when spellEffectData has none (prevents zero-width buffs truncating windows) */
 const DEFAULT_BUFF_SECONDS = 8;
+/** A single CD with at least this danger weight forms a burst window on its own (≈ a 2-minute major) */
+const SOLO_WINDOW_MIN_WEIGHT = 2.3;
 
 export interface IEnemyCDCast {
   spellId: string;
@@ -39,6 +41,10 @@ export interface IAlignedBurstWindow {
   fromSeconds: number;
   toSeconds: number;
   activeCDs: Array<{ playerName: string; spellName: string; spellId: string }>;
+  /** Ex-ante threat from the stacked CDs alone (weights × alignment × dampening) — outcome-independent */
+  threatScore: number;
+  threatLabel: 'Low' | 'Moderate' | 'High' | 'Critical';
+  /** Combined score including outcome factors (damage dealt, healer CC) — kept for existing consumers */
   dangerScore: number;
   dangerLabel: 'Low' | 'Moderate' | 'High' | 'Critical';
   dampeningPct: number; // 0–1
@@ -149,12 +155,35 @@ export function reconstructEnemyCDTimeline(
   const totalFriendlyDamage = allFriendlyDamage.reduce((sum, e) => sum + Math.abs(e.effectiveAmount), 0);
   const avgDamageRate = matchDurationSeconds > 0 ? totalFriendlyDamage / matchDurationSeconds : 0;
 
+  // Group casts by ACTIVE-PRESSURE OVERLAP: a cast joins the current group if it lands while any of
+  // the group's buffs is still running OR within BURST_CLUSTER_SECONDS of a group cast (superset of the
+  // old cast-proximity clustering). Catches rolling bursts and staggered stacks the old 10s cast-cluster
+  // missed (audit: 376 overlapping pairs across 249 games). A group becomes a window when it has 2+ CDs,
+  // or a single CD heavy enough to be a solo kill-window (fixes the 122 zero-window games with deaths —
+  // 2v2/Shuffle single-threat comps).
+  const groups: (typeof allCasts)[] = [];
+  {
+    let current: typeof allCasts = [];
+    let reach = -Infinity;
+    for (const c of allCasts) {
+      if (current.length === 0 || c.time <= reach) {
+        current.push(c);
+      } else {
+        groups.push(current);
+        current = [c];
+      }
+      reach = Math.max(reach, c.buffEndSeconds, c.time + BURST_CLUSTER_SECONDS);
+    }
+    if (current.length > 0) groups.push(current);
+  }
+
   const alignedBurstWindows: IAlignedBurstWindow[] = [];
-  let i = 0;
-  while (i < allCasts.length) {
-    const windowStart = allCasts[i].time;
-    const inWindow = allCasts.filter((c) => c.time >= windowStart && c.time <= windowStart + BURST_CLUSTER_SECONDS);
-    if (inWindow.length >= 2) {
+  for (const inWindow of groups) {
+    const qualifies =
+      inWindow.length >= 2 ||
+      inWindow.some((c) => spellDangerWeight(c.spellId, c.cooldownSeconds) >= SOLO_WINDOW_MIN_WEIGHT);
+    if (qualifies) {
+      const windowStart = inWindow[0].time;
       // toSeconds = when the last buff in this window actually expires, not just when it was cast.
       // Uses buffEndSeconds (cast + durationSeconds) when available; falls back to cast time.
       const windowEnd = Math.max(...inWindow.map((c) => c.buffEndSeconds));
@@ -227,7 +256,11 @@ export function reconstructEnemyCDTimeline(
       }
       const healerMult = 1.0 + (healerCCed ? 0.8 : 0.0);
 
-      const score = cdScore * alignmentMultiplier * damageRatio * dampeningMult * healerMult;
+      // Threat (ex-ante: what the stacked CDs could do) is kept separate from outcome factors
+      // (damageRatio, healer CC) so a perfectly-defended Critical burst still reads as Critical
+      // threat — otherwise the coach never sees (or reinforces) the player's best defensive play.
+      const threatScore = cdScore * alignmentMultiplier * dampeningMult;
+      const score = threatScore * damageRatio * healerMult;
 
       // Find the most-pressured friendly unit (highest damageIn during the burst window).
       // HP is sampled with a bounded window (half the burst duration, min 3s) so readings
@@ -265,6 +298,8 @@ export function reconstructEnemyCDTimeline(
           spellName: c.spellName,
           spellId: c.spellId,
         })),
+        threatScore,
+        threatLabel: dangerLabel(threatScore),
         dangerScore: score,
         dangerLabel: dangerLabel(score),
         dampeningPct: dampening,
@@ -273,9 +308,6 @@ export function reconstructEnemyCDTimeline(
         healerCCed,
         mostPressuredTarget,
       });
-      i += inWindow.length;
-    } else {
-      i++;
     }
   }
 
@@ -301,18 +333,20 @@ export function formatEnemyCDTimelineForContext(timeline: IEnemyCDTimeline, matc
     return lines;
   }
 
+  lines.push(
+    '  (Threat = strength of the stacked CDs before outcome; Outcome = what actually happened. High threat with below-average damage usually means the burst was well defended — worth crediting.)',
+  );
   timeline.alignedBurstWindows.forEach((w, idx) => {
-    const scoreStr = w.dangerScore.toFixed(1);
     const dampStr = fmtDampening(w.dampeningPct);
     const cdNames = w.activeCDs.map((c) => `${c.spellName} (${c.playerName})`).join(' + ');
     const dmgM = (w.damageInWindow / 1_000_000).toFixed(2);
-    const ratioStr = `${w.damageRatio.toFixed(1)}× match avg`;
+    const ratioStr = `${w.damageRatio.toFixed(1)}× match avg rate`;
     const healerStr = w.healerCCed ? 'healer CCed' : 'healer free';
     lines.push(
-      `  #${idx + 1} — ${fmtTime(w.fromSeconds)}–${fmtTime(w.toSeconds)} | Score: ${scoreStr} | Dampening: ${dampStr}`,
+      `  #${idx + 1} — ${fmtTime(w.fromSeconds)}–${fmtTime(w.toSeconds)} | Threat: ${w.threatLabel} (${w.threatScore.toFixed(1)}) | Dampening: ${dampStr}`,
     );
     lines.push(`    CDs: ${cdNames}`);
-    lines.push(`    Damage: ${dmgM}M (${ratioStr}) | ${healerStr}`);
+    lines.push(`    Outcome: ${dmgM}M damage (${ratioStr}) | ${healerStr}`);
     if (w.mostPressuredTarget) {
       const t = w.mostPressuredTarget;
       const hpStr = [

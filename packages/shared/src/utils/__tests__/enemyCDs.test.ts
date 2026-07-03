@@ -122,6 +122,8 @@ describe('enemyCDs — formatting', () => {
           fromSeconds: 10,
           toSeconds: 20,
           activeCDs: [],
+          threatScore: 10,
+          threatLabel: 'Critical',
           dangerScore: 10,
           dangerLabel: 'Low',
           dampeningPct: 0,
@@ -133,7 +135,7 @@ describe('enemyCDs — formatting', () => {
     };
     // Match duration 120s < 220s recovery
     const res = formatEnemyCDTimelineForContext(timeline, 120);
-    expect(res.join('\n')).toContain('CDs not recovered before match ended');
+    expect(res.join('\n')).toContain('Not cast again before the match ended');
     expect(res.join('\n')).toContain('Fire Mage: Combust — not used again after 1:40');
   });
 
