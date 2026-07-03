@@ -98,6 +98,30 @@ const GROUND_CC_SPELL_IDS = new Set<string>([
   '113724', // Ring of Frost (Mage)
 ]);
 
+// Magic-only immunities block magic-school effects but NOT physical CC. Don't credit them for a
+// physical CC (Kidney/Cheap Shot/Blind/etc.) they could not have prevented. (Phase Shift and
+// Psychic Shroud are general untargetable / next-CC immunities, so they CAN dodge physical — excluded.)
+const MAGIC_ONLY_IMMUNITY_IDS = new Set<string>([
+  '378464', // Nullifying Shroud
+  '353319', // Peaceweaver
+  '204018', // Blessing of Spellwarding
+  '48707', // Anti-Magic Shell
+  '23920', // Spell Reflection
+]);
+const PHYSICAL_CC_IDS = new Set<string>([
+  '408', // Kidney Shot
+  '1833', // Cheap Shot
+  '2094', // Blind
+  '22570', // Maim
+  '19577', // Intimidation
+  '107570', // Storm Bolt
+  '46968', // Shockwave
+  '119381', // Leg Sweep
+  '20549', // War Stomp
+]);
+/** Grounding Totem redirects only the FIRST targeted spell per placement; don't credit two within this window. */
+const GROUNDING_DEDUPE_SECONDS = 6;
+
 const REPOSITIONING_SPELL_IDS = new Map<string, string>([
   ['119996', 'Transcendence: Transfer'],
   ['109132', 'Roll'],
@@ -651,7 +675,11 @@ export function analyzePlayerCCAndTrinket(
         if (!gotCCd) {
           // A. Buff-Based Avoidance
           const activeBuff = activeBuffs.find((b) => castTimeMs >= b.applyMs && castTimeMs <= b.removeMs);
-          if (activeBuff) {
+          // School gate: a magic-only immunity cannot explain a physical CC — don't credit it (fall
+          // through to the mobility check, which may).
+          const buffExplainsCC =
+            activeBuff && !(MAGIC_ONLY_IMMUNITY_IDS.has(activeBuff.spellId) && PHYSICAL_CC_IDS.has(cast.spellId));
+          if (activeBuff && buffExplainsCC) {
             const ccSpellName = getEnglishSpellName(cast.spellId, cast.spellName);
             const isDruidForm = DRUID_FORM_BUFFS.has(activeBuff.spellId);
             const isPolymorphOrHex =
@@ -705,6 +733,7 @@ export function analyzePlayerCCAndTrinket(
 
   // 2. Grounding Totem Redirects (only tracked on Shaman players to avoid multi-teammate duplication)
   if (player.class === CombatUnitClass.Shaman) {
+    const groundingRedirects: ICCAvoidedInstance[] = [];
     for (const enemy of enemies) {
       for (const cast of enemy.spellCastEvents) {
         if (cast.logLine.event !== LogEvent.SPELL_CAST_SUCCESS) continue;
@@ -715,7 +744,7 @@ export function analyzePlayerCCAndTrinket(
           (cast.destUnitId?.startsWith('Creature-') && cast.destUnitId.split('-')[5] === '5925');
         if (isGroundingTotem) {
           const castTimeMs = cast.logLine.timestamp;
-          ccAvoidedInstances.push({
+          groundingRedirects.push({
             atSeconds: (castTimeMs - matchStartMs) / 1000,
             spellId: cast.spellId,
             spellName: getEnglishSpellName(cast.spellId, cast.spellName),
@@ -725,6 +754,16 @@ export function analyzePlayerCCAndTrinket(
             sourceSpec: enemySpecMap.get(enemy.id) ?? 'Unknown',
           });
         }
+      }
+    }
+    // Grounding redirects only the FIRST targeted spell per placement — collapse credits that fall
+    // within one placement window so a single totem is not credited for multiple CCs.
+    groundingRedirects.sort((a, b) => a.atSeconds - b.atSeconds);
+    let lastKeptSeconds = -Infinity;
+    for (const g of groundingRedirects) {
+      if (g.atSeconds - lastKeptSeconds > GROUNDING_DEDUPE_SECONDS) {
+        ccAvoidedInstances.push(g);
+        lastKeptSeconds = g.atSeconds;
       }
     }
   }
