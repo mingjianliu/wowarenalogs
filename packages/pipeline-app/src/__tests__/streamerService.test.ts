@@ -108,12 +108,13 @@ describe('StreamerService', () => {
       statePath: join(mkdtempSync(join(tmpdir(), 'pilot-state-idle-')), 's.json'),
       onState: (s) => idleStates.push(s),
       watchFn: noopWatch,
-      idleAfterMs: 120,
+      idleAfterMs: 300,
+      idleCheckIntervalMs: 50,
     });
     svc.start();
-    await new Promise((r) => setTimeout(r, 60)); // half the idle window: nothing yet
-    expect(idleStates.filter((s) => s.status === 'idle')).toHaveLength(0);
-    await new Promise((r) => setTimeout(r, 150)); // past the window: idle fires
+    await new Promise((r) => setTimeout(r, 150)); // ≥2 ticks fired, still inside the idle window
+    expect(idleStates.filter((s) => s.status === 'idle')).toHaveLength(0); // epoch-0 baseline would have fired here
+    await new Promise((r) => setTimeout(r, 300)); // past the window
     svc.stop();
     expect(idleStates.some((s) => s.status === 'idle')).toBe(true);
     void states;

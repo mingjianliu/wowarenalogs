@@ -29,6 +29,7 @@ export class StreamerService {
       onState: (s: StreamerState) => void;
       watchFn?: typeof watch;
       idleAfterMs?: number;
+      idleCheckIntervalMs?: number;
     },
   ) {}
 
@@ -86,15 +87,13 @@ export class StreamerService {
     }
 
     const idleAfterMs = this.opts.idleAfterMs ?? IDLE_AFTER_MS;
-    this.idleTimer = setInterval(
-      () => {
-        const last = this.lastFlushAt ? new Date(this.lastFlushAt).getTime() : this.startedAt;
-        if (Date.now() - last > idleAfterMs) {
-          onState({ status: 'idle', lastFlushAt: this.lastFlushAt, lastError: null });
-        }
-      },
-      Math.min(idleAfterMs, 60_000),
-    );
+    const checkEvery = this.opts.idleCheckIntervalMs ?? Math.min(idleAfterMs, 60_000);
+    this.idleTimer = setInterval(() => {
+      const last = this.lastFlushAt ? new Date(this.lastFlushAt).getTime() : this.startedAt;
+      if (Date.now() - last > idleAfterMs) {
+        onState({ status: 'idle', lastFlushAt: this.lastFlushAt, lastError: null });
+      }
+    }, checkEvery);
   }
 
   simulateEvent(fileName: string): void {
