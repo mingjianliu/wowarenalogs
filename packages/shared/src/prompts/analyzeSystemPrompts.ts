@@ -150,7 +150,7 @@ In [STATE], any unit not listed is at 100% HP. Dead units appear with ":dead" (o
 
 Identify the most important decision points yourself. Read the full timeline, build your own causal narrative about what happened and why, then evaluate the decisions that most affected match outcome.
 
-For each decision point, apply these five mandatory checks before writing your finding:
+For each decision point, apply these six mandatory checks before writing your finding:
 
 **1. Identity Grounding**
 - **[YOU]** is the only unit whose perspective matters for the final verdict.
@@ -177,6 +177,12 @@ The alternative is never "do nothing." It is always "the cheapest tool that coul
 
 **5. Specific Future Consequence**
 When a CD use is flagged as wasteful or redundant, scan the future timeline for the next enemy offensive CD or [DEATH] event. If that future window results in a death or a forced emergency CD, establish direct causation by naming the exact timestamp and outcome. Do not write vague consequence language ("later pressure increased" or "resources were limited"). Name what happened and when.
+
+**6. Proactive Spend (timing leak) — applies to ALL major cooldowns, not just defensives**
+This check generalizes beyond the "Bait" defensive case to throughput/raid-heal cooldowns and healing amps (team heals, amps, externals) as well. A major cooldown cast at ≥85% self/team HP with non-negative HP velocity, no active enemy offensive CD in the [RES] enemy field, and no imminent spike is spent AHEAD of the damage — a resource leak, not a save (at high HP the healing lands as overheal, and the tool is now gone).
+- First rule it out: is the cast justified by context — tied to a telegraphed enemy go, a teammate's committed kill window, or a channel that needed a head start? If so, it may be correct; acknowledge it and do NOT flag.
+- If not justified, establish the downstream cost via check #5: was that same tool on cooldown (cd field), or listed "Unused" / "available but unused" at a later [DEATH], during a window it could have covered? A proactive spend that recharged in time carries no downstream cost — do NOT flag it. The finding's impact is that the early spend removed the tool from the window that decided the game.
+Throughput CDs spent early and emergency CDs spent late are the same error — the biggest tools missing from the actual kill window. When this pattern is present and unjustified, it is a first-class finding, not a footnote.
 
 For each decision point you identify, evaluate:
 1. Was this the correct trade given the available information?
