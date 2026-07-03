@@ -8,7 +8,12 @@ const OUT = path.join(DIR, 'profiles.html');
 async function main() {
   const files = (await fs.readdir(DIR)).filter((f) => f.endsWith('.json'));
   const profiles = [];
-  for (const f of files) profiles.push(await fs.readJson(path.join(DIR, f)));
+  for (const f of files) {
+    const p = await fs.readJson(path.join(DIR, f));
+    // Drop the dead defensiveOverlapRatio metric (rare same-target panic-overlap, ~0 for everyone).
+    if (p.metrics) delete p.metrics.defensiveOverlapRatio;
+    profiles.push(p);
+  }
   profiles.sort((a, b) => b.games - a.games);
 
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"/>
@@ -75,7 +80,7 @@ function fm(label, val, sev){ return '<div class="fm"><span>'+label+'</span><spa
 function sevPct(x){ return x>=0.5?'var(--bad)':x>=0.25?'var(--mid)':'var(--good)'; }
 const grid = document.getElementById('grid');
 for(const P of PROFILES){
-  const keys = Object.keys(P.metrics);
+  const keys = Object.keys(P.metrics).filter(k=>k!=='defensiveOverlapRatio');
   const presc = keys.filter(k=>P.metrics[k].crisisActionable).map(k=>metricRow(P.metrics[k],k)).join('');
   const desc = keys.filter(k=>!P.metrics[k].crisisActionable).map(k=>metricRow(P.metrics[k],k)).join('');
   const F = P.failureModes||{};

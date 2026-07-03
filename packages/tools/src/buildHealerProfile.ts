@@ -188,6 +188,10 @@ async function main() {
     const desc: string[] = [];
     const jsonMetrics: Record<string, unknown> = {};
     for (const key of METRIC_KEYS) {
+      // defensiveOverlapRatio measures same-target defensive panic-overlap — a genuinely rare event
+      // (~1/150 games) that is ~0 for the user AND the cohort, so it can't discriminate. Drop it from
+      // the profile rather than show a dead 0-for-everyone row.
+      if (key === 'defensiveOverlapRatio') continue;
       const def = METRIC_REGISTRY[key];
       const you = aggregate(games.map((g) => g.metrics[key]));
       const coh = aggregate(cohort.map((g) => g[key]));
