@@ -13,6 +13,25 @@ Evaluate healer arena prompts and Claude responses across 10–50 matches, then 
 >
 > The `--snapshot` / `--save-snapshot` modes in this command test _rubric drift_ (did Claude's scoring of the same old prompts change?) — they do not test prompt builder changes.
 
+## Quick spot-QA mode (lightweight alternative)
+
+When you only changed a prompt rule or one context annotation, a full 50-game eval is overkill. Run a
+2–4 game spot-QA instead (~5 min): pick games that exercise the changed surface (grep the fresh
+prompts for the new/changed line), launch one role-play sub-agent per game (the coach persona, per
+CLAUDE.md's no-API-key role-play), and have each agent END with this self-audit checklist:
+
+1. **Fabrication** — every spell/number/timestamp cited appears verbatim in the prompt.
+2. **Anchor discipline** — verified-standing numbers quoted exactly, direction ("higher/lower is
+   better") not inverted, no invented percentiles.
+3. **Denominator discipline** — pro counts as "N of M shown", no absolute quantifiers.
+4. **Causality guards** — no self-only tool offered for a teammate's death; no "heal less mid-crisis"
+   advice; pre-CC insurance and utility casts not called waste; dead players not offered casts.
+5. **Did the changed rule actually bind?** — ask the agent whether the new guard altered its answer
+   (the 2026-07-03 survival-first QA: "without it I might have anchored on the percentile").
+
+Then run the deterministic gate (`regression-gate.md`). Spot-QA + gate ≈ enough for one-rule changes;
+use the full pipeline below for prompt rewrites or multi-surface changes.
+
 ## Argument Handling
 
 Read the arguments passed to this command (the text after `/eval-healer-prompts`):
