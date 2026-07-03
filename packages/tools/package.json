@@ -11,6 +11,7 @@
     "start:buildArchetypePrompts": "dotenv -- ts-node --files ./src/buildArchetypePrompts.ts",
     "start:buildHealerPromptCorpus": "ts-node --files ./src/buildHealerPromptCorpus.ts",
     "start:buildHealerPromptCorpusFromRawLogs": "ts-node --files ./src/buildHealerPromptCorpus.ts",
+    "annotation-regression-check": "ts-node --files ./src/annotationRegressionCheck.ts",
     "start:buildUserPromptCorpus": "ts-node --files ./src/buildUserPromptCorpus.ts",
     "start:buildUserCompareCorpus": "ts-node --files ./src/buildUserCompareCorpus.ts",
     "start:collectBenchmarks": "ts-node --files ./src/collectBenchmarks.ts",
