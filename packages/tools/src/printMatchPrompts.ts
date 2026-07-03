@@ -27,6 +27,7 @@ import path from 'path';
 import { buildMatchContext } from '../../shared/src/components/CombatReport/CombatAIAnalysis/buildMatchContext';
 import { NEW_SYSTEM_PROMPT, SYSTEM_PROMPT } from '../../shared/src/prompts/analyzeSystemPrompts';
 import { isHealerSpec, specToString } from '../../shared/src/utils/cooldowns';
+import { callClaudeCli, resolveAnalysisBackend } from './utils/claudeCli';
 import { logCache } from './utils/logCache';
 
 const API_BASE = 'https://wowarenalogs.com';
@@ -135,12 +136,15 @@ export async function parseLogText(text: string): Promise<ParsedCombat[]> {
 // ---------------------------------------------------------------------------
 
 export async function callClaude(prompt: string, mode: 'standard' | 'test' | 'new' = 'standard'): Promise<string> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    return '[AI SKIPPED — set ANTHROPIC_API_KEY env var to enable]';
-  }
-  const client = new Anthropic({ apiKey });
   const systemPrompt = mode === 'new' ? NEW_SYSTEM_PROMPT : mode === 'test' ? TEST_SYSTEM_PROMPT : SYSTEM_PROMPT;
+  const backend = resolveAnalysisBackend();
+  if (backend === 'none') {
+    return '[AI SKIPPED — set ANTHROPIC_API_KEY or install the claude CLI to enable]';
+  }
+  if (backend === 'cli') {
+    return callClaudeCli({ prompt, systemPrompt });
+  }
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const message = await client.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 6144,
@@ -528,9 +532,10 @@ async function main() {
   };
 
   if (aiMode) {
-    if (!process.env.ANTHROPIC_API_KEY) {
+    const backend = resolveAnalysisBackend();
+    if (backend === 'none') {
       process.stderr.write(
-        'Warning: --ai flag set but ANTHROPIC_API_KEY not found in environment. Responses will be skipped.\n',
+        'Warning: --ai flag set but no backend available (no ANTHROPIC_API_KEY, no claude CLI). Responses will be skipped.\n',
       );
     } else {
       const modeLabel = useNewPrompt
@@ -538,7 +543,9 @@ async function main() {
         : testPromptMode
           ? ' (test-prompt mode — responses include ## Prompt Feedback section)'
           : '';
-      process.stderr.write(`AI mode enabled — will call Claude after each match prompt${modeLabel}.\n`);
+      process.stderr.write(
+        `AI mode enabled (${backend} backend) — will call Claude after each match prompt${modeLabel}.\n`,
+      );
     }
   }
 
