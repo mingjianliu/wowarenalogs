@@ -6260,7 +6260,7 @@ describe('buildMatchTimeline — B17: Channeled healer CD annotation', () => {
         matchStartMs: MATCH_START_MS,
       }),
     );
-    expect(result).toContain('0:10  [YOU] [CD]   Tranquility (completed, 6.0s)');
+    expect(result).toContain('0:10  [YOU] [CD]   Tranquility (channeled 6.0s to completion');
   });
 
   it('annotates an early-ended Tranquility channel neutrally (review C1)', () => {
@@ -6283,7 +6283,7 @@ describe('buildMatchTimeline — B17: Channeled healer CD annotation', () => {
       }),
     );
     // A short channel may be a kick, a self-cancel, or movement — state the fact, not a cause.
-    expect(result).toContain('0:10  [YOU] [CD]   Tranquility (channeled 2.4s of 6.0s)');
+    expect(result).toContain('0:10  [YOU] [CD]   Tranquility (channeled 2.4s of 6.0s, ended');
     expect(result).not.toContain('interrupted');
   });
 
@@ -6322,7 +6322,7 @@ describe('buildMatchTimeline — B17: Channeled healer CD annotation', () => {
         matchStartMs: MATCH_START_MS,
       }),
     );
-    expect(result).toContain('0:10  [YOU] [CD]   Tranquility (interrupted at 2.4s / 6.0s)');
+    expect(result).toContain('0:10  [YOU] [CD]   Tranquility (interrupted at 2.4s / 6.0s, ended');
   });
 
   it('annotates completed Ultimate Penitence with mapped aura spell ID', () => {
@@ -6344,7 +6344,7 @@ describe('buildMatchTimeline — B17: Channeled healer CD annotation', () => {
         matchStartMs: MATCH_START_MS,
       }),
     );
-    expect(result).toContain('0:10  [YOU] [CD]   Ultimate Penitence (completed, 6.5s)');
+    expect(result).toContain('0:10  [YOU] [CD]   Ultimate Penitence (channeled 6.5s to completion');
   });
 });
 

@@ -128,7 +128,7 @@ export const USABLE_WHILE_CC_SPELL_IDS = new Set<string>([
 export const FORBEARANCE_SECONDS = 30;
 export const FORBEARANCE_GATED_IDS = new Set<string>(['642', '633', '1022', '204018']); // DivineShield, LayOnHands, BoP, Spellwarding
 export function selfForbearanceActiveAt(unit: ICombatUnit, atSeconds: number, matchStartMs: number): boolean {
-  for (const cast of unit.spellCastEvents) {
+  for (const cast of unit.spellCastEvents ?? []) {
     if (cast.logLine.event !== LogEvent.SPELL_CAST_SUCCESS) continue;
     if (!cast.spellId || !FORBEARANCE_GATED_IDS.has(cast.spellId)) continue;
     const castSec = (cast.timestamp - matchStartMs) / 1000;
