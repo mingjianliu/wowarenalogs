@@ -1265,15 +1265,30 @@ const TANK_SPECS = new Set([
 //   Threshold = ~P75–P85 of the 7s damage-taken distribution at 2400+ MMR.
 //   A window below threshold with no enemy offensive CD → flagged as panic.
 //
-// Last calibrated: 2026-04-08 (patch 11.x, n=47 matches, Bracket: 3v3, MinRating: 2400)
-// Benchmark source: packages/tools/benchmarks/benchmark_data.json
+// Last calibrated: 2026-07-03 (past-week corpus 2026-06-28→07-03, 5160 matches, 3v3 + Rated Solo
+// Shuffle, per-spec floors 2700/2400 — see benchmark_data.json meta). Positioning rule (same as the
+// 2026-04-08 calibration): healer threshold ≈ 0.86 × the LOWEST-pressure healer spec's 7s-scaled P90
+// (10s-window P90 × 0.7), so the most chip-resistant spec's genuinely pressured presses are never
+// flagged panic. Benchmark source: packages/tools/benchmarks/benchmark_data.json
 //
-//   Tank:   P90 data unavailable (insufficient sample); kept from HP-pool estimate (~900k × 15%)
-//   DPS:    Fire Mage p75=210k, Frost Mage p75=214k, WW Monk p75=179k → 60k is below all P50s ✓
-//   Healer: Mistweaver p75=41k, Holy Priest p75=18k → old 68k exceeded P90 for Holy → lowered to 35k
-const PANIC_PRESS_DAMAGE_THRESHOLD_TANK = 135_000;
+//   Healer: lowest 7s-P90 is Discipline 84k (10s P90 120k, n=204@2700) → 0.86 × 84k ≈ 70k.
+//           Damage inflation vs April roughly doubled healer pressure (HPriest P90 58k→129k/10s).
+//   DPS:    distributions moved only ~+9% (p75 210k→228k); 60k stays below every real DPS spec's
+//           7s-P50 (min: Havoc 73k; Augmentation 41k excluded — support spec, 2400-floor sample).
+//   Tank:   first real sample (Prot Paladin n=54@2400): 7s-scaled P50 116k / P75 281k → 200k
+//           (between P50 and P75; replaces the old HP-pool guess of 135k).
+//
+// Two empirical facts from the 2026-07-03 recalibration audit (packages/tools/src/auditPanic.ts,
+// 1151 games / 5210 healer defensive casts):
+//   1. The threshold is applied to the 3s-pre and 4s-post windows SEPARATELY (see detectPanicDefensives),
+//      not to the 7s sum — so it means "significant pressure within either sub-window".
+//   2. Within [35k, 70k] the healer threshold is empirically INERT on the corpus: flag sets are
+//      identical (29 flags, 0.6% of casts) because the enemy-offensive-CD gates (#1/#2) already
+//      exclude nearly every mid-pressure press. The threshold only guards the tails; precision of
+//      panic detection comes from the CD gates, not this constant.
+const PANIC_PRESS_DAMAGE_THRESHOLD_TANK = 200_000;
 const PANIC_PRESS_DAMAGE_THRESHOLD_DPS = 60_000;
-const PANIC_PRESS_DAMAGE_THRESHOLD_HEALER = 35_000; // was 68k; lowered after benchmark showed Holy Priest P90 ≈ 45k
+const PANIC_PRESS_DAMAGE_THRESHOLD_HEALER = 70_000; // was 35k (Apr-2026); re-anchored to Disc 7s-P90 84k
 const PANIC_PRESS_PRE_CAST_WINDOW_MS = 3_000;
 const PANIC_PRESS_POST_CAST_WINDOW_MS = 4_000;
 /** If an enemy offensive CD starts within this window after the cast, it was a valid pre-wall */
