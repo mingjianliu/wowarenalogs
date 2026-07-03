@@ -1,3 +1,8 @@
+---
+name: refine-arena-geometry
+description: Use when validating or calibrating arena obstacle geometry against player position data from a combat log with advanced logging enabled.
+---
+
 Validate and refine arena obstacle geometry using position data from a WoW combat log.
 
 Reads player positions from advanced combat logging, checks them against the current geometry in `arenaGeometry.ts`, identifies violations and calibration opportunities, and proposes concrete fixes.
@@ -41,12 +46,12 @@ To find all zone IDs present in the log:
 grep "ARENA_MATCH_START" "<log-path>" | cut -d',' -f2 | sort | uniq -c
 ```
 
-Cross-reference against:
+Cross-reference against `packages/shared/src/data/arenaGeometry.ts`:
 
-1. **`arenaGeometry.ts`** — zones with an empty `[]` entry (geometry stub, needs measurement)
-2. **`validateGeometry.mjs`'s `arenaObstacles` object** — zones with geometry that the script can actually validate (it only validates zones present in both `arenaObstacles` AND `zoneMetadata` in the script)
+1. Zones with an empty `[]` entry — geometry stub, needs measurement
+2. Zones missing entirely — need both geometry and a `zoneMetadata.ts` entry
 
-As of writing, the script can validate: **1505, 1504, 572, 980, 1134, 1911, 2509, 2547, 2563, 2759** (10 zones). The following zones have geometry in `arenaGeometry.ts` but no `zoneMetadata` in the script and cannot currently be validated: **1672, 617, 1552, 1825, 2167, 2373**.
+The validator loads both TS files at runtime (see **Validator coverage** under Notes), so any zone present in both is validated automatically.
 
 Report zones from the log that fall into each category.
 
@@ -89,8 +94,7 @@ No data yet — cannot validate. Note the zone name and suggest the user plays m
 For each fixable issue (radius/polygon too large by edge-touching analysis):
 
 1. State the proposed change clearly: e.g. "Black Rook Hold obstacle #0: reduce r from 4 to 3.5"
-2. Edit **`packages/shared/src/data/arenaGeometry.ts`** to apply the fix.
-3. Edit **`scripts/validateGeometry.mjs`** — it contains a hardcoded copy of the obstacles for the zones it validates. **Both files must be updated together.** If they diverge, the validator silently tests stale geometry. After editing, verify the two copies match by re-reading both the `arenaGeometry.ts` entry and the corresponding entry in `validateGeometry.mjs`.
+2. Edit **`packages/shared/src/data/arenaGeometry.ts`** (and `zoneMetadata.ts` if bounds are wrong) to apply the fix. The validator loads both TS files directly at runtime, so no other file needs to change.
 
 Do NOT auto-fix 2D elevation violations — document them only.
 Do NOT auto-fix zones with no geometry — those require visual minimap measurement.
@@ -117,14 +121,13 @@ Nagrand (1505)           |   740   |     0      | ✓ clean
 Black Rook Hold (1504)   | 29,882  |     0      | ✓ fixed (r 4→3.5)
 Ruins of Lordaeron (572) |   271   |    11      | ⚠ 2D elevation (tomb walkable, expected)
 Tiger's Peak (1134)      |     —   |     —      | ⚪ no data in this log
-Blade's Edge (1672)      |     —   |     —      | ⚪ not yet validatable (no zoneMetadata in script)
 Cage of Carnage (2759)   |     —   |     —      | ⚠ needs geometry — minimap not confirmed
 ...
 ```
 
 Then list:
+
 - Zones from the log with no geometry at all, with their observed position bounds
-- Zones with geometry but no validator coverage (the 6 unvalidatable zones)
 - Any zones where position data looked anomalous (wrong-location warning)
 
 Finally: "Run `/refine-arena-geometry` again after your next session to add more data points."
@@ -133,35 +136,7 @@ Finally: "Run `/refine-arena-geometry` again after your next session to add more
 
 ### Validator coverage
 
-The validator (`validateGeometry.mjs`) only processes zones present in **both** its `arenaObstacles` object **and** its `zoneMetadata` object. As of the last sync, these 10 zones are validatable:
-
-| zoneId | Name |
-|--------|------|
-| 1505 | Nagrand Arena |
-| 1504 | Black Rook Hold Arena |
-| 572  | Ruins of Lordaeron |
-| 980  | Tol'Viron Arena |
-| 1134 | Tiger's Peak |
-| 1911 | Mugambala |
-| 2509 | Maldraxxus Coliseum |
-| 2547 | Enigma Crucible |
-| 2563 | Nokhudon Proving Grounds |
-| 2759 | Cage of Carnage |
-
-These 6 zones have geometry in `arenaGeometry.ts` but **no** validator entry — they can only be calibrated if you add `zoneMetadata` to the script for them:
-
-| zoneId | Name |
-|--------|------|
-| 1672 | Blade's Edge Arena |
-| 617  | Dalaran Sewers |
-| 1552 | Ashamane's Fall |
-| 1825 | Hook Point |
-| 2167 | The Robodrome |
-| 2373 | Empyrean Domain |
-
-### Mirror-copy sync rule
-
-`arenaGeometry.ts` and `validateGeometry.mjs` contain duplicate obstacle data. **Always edit both in the same step.** The script has no import from the TS source — if they drift, validation silently tests the wrong geometry.
+The validator (`validateGeometry.mjs`) loads `arenaObstacles` from `packages/shared/src/data/arenaGeometry.ts` and `zoneMetadata` from `packages/shared/src/data/zoneMetadata.ts` at runtime — there is no copy to keep in sync. Any zone present in both files (currently all of them) is validated automatically; adding a new arena to those two files makes it validatable with no script change.
 
 ### Coordinate system
 
@@ -170,7 +145,7 @@ gameX = zone.maxX - imagePixelX / 5
 gameY = zone.minY + imagePixelY / 5
 ```
 
-Use `zoneMetadata` bounds in the script (or `zoneMetadata.ts`) as the reference bounding box when converting minimap pixels.
+Use the bounds in `zoneMetadata.ts` as the reference bounding box when converting minimap pixels.
 
 ### Log format
 

@@ -10,7 +10,7 @@
  *   Defaults to all test logs in packages/parser/test/testlogs/
  */
 
-import { createReadStream } from 'fs';
+import { createReadStream, readFileSync } from 'fs';
 import { createInterface } from 'readline';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -19,191 +19,42 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(__dirname, '..');
 
 // ---------------------------------------------------------------------------
-// Arena geometry (mirrored from arenaGeometry.ts)
+// Arena geometry — loaded from the TS sources of truth so this script can
+// never drift from production data:
+//   packages/shared/src/data/arenaGeometry.ts  → arenaObstacles
+//   packages/shared/src/data/zoneMetadata.ts   → zoneMetadata
+// Both files are data-only TS: the exported object literal is plain JS once
+// comments are stripped, so we extract it by balanced-brace matching and
+// evaluate it. Type annotations live outside the literal.
 // ---------------------------------------------------------------------------
 
-const arenaObstacles = {
-  1505: [
-    { type: 'circle', cx: -2043, cy: 6621, r: 2.5 },
-    { type: 'circle', cx: -2013, cy: 6638, r: 2.5 },
-    { type: 'circle', cx: -2039, cy: 6683, r: 2.5 },
-    { type: 'circle', cx: -2071, cy: 6670, r: 2.5 },
-  ],
-  1504: [{ type: 'circle', cx: 1420, cy: 1248, r: 3.5 }],
-  572: [
-    {
-      type: 'polygon',
-      vertices: [
-        [1295, 1659],
-        [1276, 1659],
-        [1276, 1672],
-        [1295, 1672],
-      ],
-    },
-    {
-      type: 'polygon',
-      vertices: [
-        [1258, 1653],
-        [1257, 1653],
-        [1257, 1655],
-        [1258, 1655],
-      ],
-    },
-    {
-      type: 'polygon',
-      vertices: [
-        [1317, 1675],
-        [1316, 1675],
-        [1316, 1676],
-        [1317, 1676],
-      ],
-    },
-  ],
-  980: [
-    {
-      type: 'polygon',
-      vertices: [
-        [-10709, 396],
-        [-10719, 396],
-        [-10719, 403],
-        [-10709, 403],
-      ],
-    },
-    {
-      type: 'polygon',
-      vertices: [
-        [-10687, 445],
-        [-10683, 449],
-        [-10687, 453],
-        [-10691, 449],
-      ],
-    },
-    {
-      type: 'polygon',
-      vertices: [
-        [-10740, 445],
-        [-10736, 449],
-        [-10740, 453],
-        [-10744, 449],
-      ],
-    },
-  ],
-  1134: [
-    { type: 'circle', cx: 566, cy: 601, r: 10 },
-    { type: 'circle', cx: 567, cy: 660, r: 10 },
-    {
-      type: 'polygon',
-      vertices: [
-        [596, 630],
-        [586, 630],
-        [586, 634],
-        [596, 634],
-      ],
-    },
-    {
-      type: 'polygon',
-      vertices: [
-        [546, 630],
-        [536, 630],
-        [536, 634],
-        [546, 634],
-      ],
-    },
-  ],
-  1911: [
-    {
-      type: 'polygon',
-      vertices: [
-        [-1918, 1281],
-        [-1924, 1281],
-        [-1924, 1287],
-        [-1918, 1287],
-      ],
-    },
-    {
-      type: 'polygon',
-      vertices: [
-        [-1918, 1312],
-        [-1924, 1312],
-        [-1924, 1318],
-        [-1918, 1318],
-      ],
-    },
-    {
-      type: 'polygon',
-      vertices: [
-        [-1962, 1292],
-        [-1970, 1292],
-        [-1970, 1308],
-        [-1962, 1308],
-      ],
-    },
-  ],
-  2509: [
-    {
-      type: 'polygon',
-      vertices: [
-        [2814, 2226],
-        [2806, 2226],
-        [2806, 2232],
-        [2814, 2232],
-      ],
-    },
-    {
-      type: 'polygon',
-      vertices: [
-        [2867, 2251],
-        [2859, 2251],
-        [2859, 2258],
-        [2867, 2258],
-      ],
-    },
-    {
-      type: 'polygon',
-      vertices: [
-        [2809, 2273],
-        [2803, 2273],
-        [2803, 2279],
-        [2809, 2279],
-      ],
-    },
-  ],
-  2547: [
-    { type: 'circle', cx: 291, cy: 250, r: 5 },
-    { type: 'circle', cx: 255, cy: 240, r: 3 },
-    { type: 'circle', cx: 278, cy: 293, r: 3 },
-    { type: 'circle', cx: 241, cy: 280, r: 5 },
-  ],
-  2563: [
-    { type: 'circle', cx: -505, cy: 4149, r: 4 },
-    { type: 'circle', cx: -551, cy: 4150, r: 3 },
-    {
-      type: 'polygon',
-      vertices: [
-        [-519, 4170],
-        [-521, 4168],
-        [-546, 4184],
-        [-544, 4186],
-      ],
-    },
-    { type: 'circle', cx: -511, cy: 4195, r: 3 },
-    { type: 'circle', cx: -556, cy: 4199, r: 4 },
-  ],
-  2759: [], // wrong coords inherited from zone 2373 — cleared, needs remeasurement
-};
+function loadExportedObject(filePath, exportName) {
+  const src = readFileSync(filePath, 'utf8');
+  const stripped = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+  const marker = stripped.match(new RegExp(`export const ${exportName}[^=]*=\\s*\\{`));
+  if (!marker) throw new Error(`Could not find "export const ${exportName}" in ${filePath}`);
+  const start = stripped.indexOf('{', marker.index + marker[0].length - 1);
+  let depth = 0;
+  for (let i = start; i < stripped.length; i++) {
+    if (stripped[i] === '{') depth++;
+    else if (stripped[i] === '}') {
+      depth--;
+      if (depth === 0) return new Function(`return (${stripped.slice(start, i + 1)});`)();
+    }
+  }
+  throw new Error(`Unbalanced braces extracting "${exportName}" from ${filePath}`);
+}
 
-const zoneMetadata = {
-  1505: { name: 'Nagrand Arena', minX: -2091, maxX: -1998, minY: 6605, maxY: 6704 },
-  1504: { name: 'Black Rook Hold Arena', minX: 1366, maxX: 1467, minY: 1190, maxY: 1286 },
-  572: { name: 'Ruins of Lordaeron', minX: 1239, maxX: 1334, minY: 1580, maxY: 1742 },
-  980: { name: "Tol'Viron Arena", minX: -10781, maxX: -10654, minY: 379, maxY: 483 },
-  1134: { name: "Tiger's Peak", minX: 495, maxX: 635, minY: 573, maxY: 685 },
-  1911: { name: 'Mugambala', minX: -1994, maxX: -1888, minY: 1237, maxY: 1354 },
-  2509: { name: 'Maldraxxus Coliseum', minX: 2772, maxX: 2893, minY: 2180, maxY: 2331 },
-  2547: { name: 'Enigma Crucible', minX: 156, maxX: 367, minY: 196, maxY: 338 },
-  2563: { name: 'Nokhudon Proving Grounds', minX: -595, maxX: -473, minY: 4120, maxY: 4230 },
-  2759: { name: 'Cage of Carnage', minX: 390, maxX: 500, minY: 305, maxY: 465 }, // bounds from TWW 11.0+ data
-};
+const arenaObstacles = loadExportedObject(
+  join(repoRoot, 'packages/shared/src/data/arenaGeometry.ts'),
+  'arenaObstacles',
+);
+
+const zoneMetadata = loadExportedObject(
+  join(repoRoot, 'packages/shared/src/data/zoneMetadata.ts'),
+  'zoneMetadata',
+);
+
 
 // ---------------------------------------------------------------------------
 // Geometry helpers

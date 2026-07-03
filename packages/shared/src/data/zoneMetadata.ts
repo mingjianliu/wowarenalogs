@@ -163,11 +163,14 @@ export const zoneMetadata: Record<string, IZoneMetadata> = {
   '2759': {
     id: '2759',
     name: 'Cage of Carnage',
+    // Bounds from TWW 11.0+ position data (9 matches, X 401–490 / Y 314–456).
+    // Previous values were copied from Empyrean Domain (2373) and were ~1700 units off.
+    // Image dims are placeholders — minimap asset not yet confirmed for this zone.
     imageWidth: 600,
     imageHeight: 585,
-    minX: -1307,
-    minY: 669,
-    maxX: -1187,
-    maxY: 786,
+    minX: 390,
+    minY: 305,
+    maxX: 500,
+    maxY: 465,
   },
 };
