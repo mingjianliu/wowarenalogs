@@ -191,6 +191,7 @@ export function buildMatchContext(
     durationSeconds,
     friends as ICombatUnit[],
     combat.startTime,
+    owner as ICombatUnit,
   );
 
   // Purge responsibility attribution

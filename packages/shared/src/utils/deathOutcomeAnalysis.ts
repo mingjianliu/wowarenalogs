@@ -266,6 +266,9 @@ export function buildDeathOutcomeSummary(
       const missedExternals: IMissedExternal[] = [];
       for (const teammate of friends) {
         if (teammate.id === unit.id) continue;
+        // A teammate who is already dead at this death cannot cast an external — don't list their
+        // tools as "available" (would blame a dead player for not saving a later death).
+        if (teammate.deathRecords.some((d) => d.timestamp < deathRecord.timestamp)) continue;
         const teammateCCSummary = ccSummaries.find((s) => s.playerName === teammate.name);
 
         // B27: skip if teammate was out of spell range or LoS-blocked at death time

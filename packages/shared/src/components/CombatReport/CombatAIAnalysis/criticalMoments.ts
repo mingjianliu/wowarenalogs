@@ -372,6 +372,7 @@ export function identifyCriticalMoments(
   durationSeconds: number,
   friends: ICombatUnit[],
   matchStartMs: number,
+  owner?: ICombatUnit,
 ): { moments: CriticalMoment[]; constrainedTrade: boolean } {
   const moments: CriticalMoment[] = [];
   const unitsByName = new Map(friends.map((u) => [u.name, u]));
@@ -465,6 +466,17 @@ export function identifyCriticalMoments(
       : `${death.spec} died at ${fmtTime(death.atSeconds)}.${hpContext}`;
     const dyingPlayerCC = ccTrinketSummaries.find((s) => s.playerName === death.name);
     const rootCauseTrace = buildDeathRootCauseTrace(death.atSeconds, cooldowns, dyingPlayerCC, dyingUnit, matchStartMs);
+    // The trace lists the LOG OWNER's cooldowns. If the owner already died before this (teammate)
+    // death, those cooldowns were not castable — flag it so a later death isn't blamed on a dead healer.
+    const ownerDeadBefore =
+      !!owner &&
+      owner.name !== death.name &&
+      owner.deathRecords.some((d) => (d.timestamp - matchStartMs) / 1000 < death.atSeconds - 0.5);
+    if (ownerDeadBefore) {
+      rootCauseTrace.unshift(
+        'NOTE: the log owner (healer) was already dead at this time — no healer cooldown play was possible; the owner-CD lines below are not actionable for this death.',
+      );
+    }
     const { mechanicalAvailability, interpretation, tieredOptions, finalAssessment } = buildKillMomentFields(
       death.atSeconds,
       cooldowns,
