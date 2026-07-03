@@ -1,4 +1,4 @@
-import { mkdirSync, rmdirSync } from 'fs';
+import { mkdirSync, rmdirSync, statSync } from 'fs';
 import path from 'path';
 
 import { CollectorConfig } from '../../tools/src/collect/collectorConfig';
@@ -31,8 +31,9 @@ export class CollectorService {
   }
 
   start(): void {
+    if (this.timer) return;
     this.timer = setInterval(() => {
-      void this.runNow();
+      void this.runNow().catch(() => undefined);
     }, this.opts.scheduleHours * 3_600_000);
   }
 
@@ -49,10 +50,32 @@ export class CollectorService {
     const { syncDir, storage } = collectorConfig;
     const logDir = path.join(syncDir, 'logs');
 
+    const STALE_LOCK_MS = 2 * 3_600_000; // spec §8: locks older than 2h are stale
     try {
       mkdirSync(this.lockPath());
-    } catch {
-      return 'busy'; // CLI run or another trigger holds the lock — same convention as collect-and-analyze.sh
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code === 'EEXIST') {
+        // A crash can orphan the lock; treat >2h-old locks as stale and take over.
+        try {
+          if (Date.now() - statSync(this.lockPath()).mtimeMs > STALE_LOCK_MS) {
+            rmdirSync(this.lockPath());
+            mkdirSync(this.lockPath());
+          } else {
+            return 'busy';
+          }
+        } catch {
+          return 'busy';
+        }
+      } else {
+        // syncDir may not exist yet (first run before provisioning): create + retry once.
+        try {
+          mkdirSync(syncDir, { recursive: true });
+          mkdirSync(this.lockPath());
+        } catch (e2) {
+          console.error(`[collector] cannot acquire lock: ${e2 instanceof Error ? e2.message : String(e2)}`);
+          return 'failed';
+        }
+      }
     }
 
     const startedAt = new Date().toISOString();
@@ -86,22 +109,29 @@ export class CollectorService {
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
     } finally {
-      writeStatus(syncDir, { phase: 'idle', updatedAt: new Date().toISOString(), detail: error ?? 'ok' });
-      onPhase('idle', error ?? 'ok');
-      appendRun(syncDir, {
-        startedAt,
-        finishedAt: new Date().toISOString(),
-        segmentsFetched: stats.segmentsFetched,
-        bytesAppended: stats.bytesAppended,
-        filesUpdated: stats.filesUpdated,
-        gaps: stats.gaps,
-        analysisExitCode,
-        error,
-      });
       try {
-        rmdirSync(this.lockPath());
-      } catch {
-        /* already gone */
+        writeStatus(syncDir, { phase: 'idle', updatedAt: new Date().toISOString(), detail: error ?? 'ok' });
+        onPhase('idle', error ?? 'ok');
+        appendRun(syncDir, {
+          startedAt,
+          finishedAt: new Date().toISOString(),
+          segmentsFetched: stats.segmentsFetched,
+          bytesAppended: stats.bytesAppended,
+          filesUpdated: stats.filesUpdated,
+          gaps: stats.gaps,
+          analysisExitCode,
+          error,
+        });
+      } catch (telemetryErr) {
+        // Telemetry is best-effort; it must never block lock release.
+        error = error ?? (telemetryErr instanceof Error ? telemetryErr.message : String(telemetryErr));
+        console.error(`[collector] failed to record run: ${error}`);
+      } finally {
+        try {
+          rmdirSync(this.lockPath());
+        } catch {
+          /* already gone or parent unwritable — stale-lock takeover recovers within 2h */
+        }
       }
     }
     return error ? 'failed' : 'completed';
