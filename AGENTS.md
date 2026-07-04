@@ -66,6 +66,7 @@ See [docs/repo-overview.md](docs/repo-overview.md) for monorepo structure, core 
 - AI-powered cooldown analysis (`CombatAIAnalysis` component + `/api/analyze` endpoint)
 - See `TRACKER.md` for feature/bug status, `AI_FEATURES.md` for design philosophy, `AI_UTILS.md` for per-utility detail
 - Detailed workflows: one file per command in [docs/commands/](docs/commands/) (each has a "Use when…" description in its frontmatter); system-prompt A/B testing in [docs/prompt-ab-testing-workflow.md](docs/prompt-ab-testing-workflow.md)
+- Eval run history (append-only, git-tracked): [docs/eval-ledger.md](docs/eval-ledger.md); harness trust order in [docs/healer-eval-improvement-workflow.md](docs/healer-eval-improvement-workflow.md)
 - **Anthropic API Key Bypass (For All AIs)**: You do not need an Anthropic API key. You can simply create a new sub-agent and role-play the response AI to verify prompts.
 
 <eval_integrity>

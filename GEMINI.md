@@ -130,6 +130,8 @@ Refer to these files for deep context on specific areas:
 - [packages/tools/docs/DB2_SPELL_DATA_ISSUES.md](packages/tools/docs/DB2_SPELL_DATA_ISSUES.md) — Known inconsistencies in Blizzard's spell database.
 </documentation_index>
 
+Eval run history (append-only, git-tracked): [docs/eval-ledger.md](docs/eval-ledger.md); harness trust order in [docs/healer-eval-improvement-workflow.md](docs/healer-eval-improvement-workflow.md).
+
 <eval_integrity>
 ## Eval Integrity (Non-negotiable, All AIs)
 

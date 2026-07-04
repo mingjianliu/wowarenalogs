@@ -49,6 +49,12 @@ npm run -w @wowarenalogs/shared codegen
 
 # Generate Electron preload API (run after editing nativeBridge modules)
 npm run gen:app:preload
+
+# AI-eval pipeline (deterministic checks; full workflow in docs/healer-eval-improvement-workflow.md)
+npm run -w @wowarenalogs/tools annotation-regression-check   # golden-game invariants (run after context-builder edits)
+npm run -w @wowarenalogs/tools start:promptQualityCheck      # coverage/noise/bias metrics vs raw-log manifests
+npm run -w @wowarenalogs/tools start:checkJudgeCalibration   # judge detection of planted defects (/calibrate-judge)
+# Run history: docs/eval-ledger.md (append-only, git-tracked)
 ```
 
 </core_commands>
