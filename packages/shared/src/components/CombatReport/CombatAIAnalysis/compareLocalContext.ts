@@ -21,6 +21,10 @@ export interface CompareLocalContext {
 
 export function deriveBracket(combat: AtomicArenaCombat): string {
   if (combat.startInfo?.bracket) return String(combat.startInfo.bracket);
+  const combatRecord = combat as unknown as Record<string, unknown>;
+  if (combatRecord.dataType === 'ShuffleRound' || typeof combatRecord.sequenceNumber === 'number') {
+    return 'solo_shuffle';
+  }
   const friendly = Object.values(combat.units).filter(
     (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
   ).length;

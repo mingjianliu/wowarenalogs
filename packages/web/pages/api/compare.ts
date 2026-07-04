@@ -112,9 +112,9 @@ async function resolveMatchContext(matchId: string, local?: CompareLocalContext)
     return null;
   }
   const combats = parseLog(await res.text());
-  const combat = combats.find((c) => c.id === matchId) ?? combats[0];
+  const combat = combats.find((c) => c.id === matchId);
   if (!combat) {
-    console.warn('[compare] re-parsed log produced no combats');
+    console.warn(`[compare] re-parsed log did not contain a combat matching id: ${matchId}`);
     return null;
   }
 

@@ -114,12 +114,16 @@ export function buildVerifiedComparison(
       nReal: vals.length,
     };
   }
+  const selections = Array.from(new Set(withMetrics.map((r) => r.leaderboardSelection).filter(Boolean)));
+  const selectionLabel = selections.length > 0 ? selections.join(' / ') : '2300+';
+  const leaderboardSelection = `${selectionLabel} leaderboard selection`;
+
   if (withMetrics.length < THIN) notes.push(`thin cohort (n=${withMetrics.length}) — percentiles are low-confidence`);
   return {
     player: ctx.player,
     spec: ctx.spec,
     bracket: ctx.bracket,
-    cohort: { n: withMetrics.length, uniquePlayers, leaderboardSelection: '2300+ leaderboard selection', perMetric },
+    cohort: { n: withMetrics.length, uniquePlayers, leaderboardSelection, perMetric },
     notes,
   };
 }
