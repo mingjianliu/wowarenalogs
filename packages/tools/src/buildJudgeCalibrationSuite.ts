@@ -29,7 +29,9 @@
 import fs from 'fs-extra';
 import path from 'path';
 
-const BASE_DIR = path.resolve(process.env.BASE_DIR ?? path.join(__dirname, '../local-batch/healer-eval'));
+import { resolveRepoPath } from './resolveRepoPath';
+
+const BASE_DIR = resolveRepoPath(process.env.BASE_DIR ?? 'packages/tools/local-batch/healer-eval');
 const CASE_SOURCE_COUNT = Number(process.env.CASE_SOURCE_COUNT ?? 5);
 const SEED = Number(process.env.SEED ?? 42);
 const OUT_DIR = path.join(BASE_DIR, 'judge-calibration');

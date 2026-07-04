@@ -1,4 +1,11 @@
-import { CombatUnitReaction, CombatUnitType, getUnitType, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
+import {
+  CombatExtraSpellAction,
+  CombatUnitReaction,
+  CombatUnitType,
+  getUnitType,
+  ICombatUnit,
+  LogEvent,
+} from '@wowarenalogs/parser';
 
 import { getEnglishSpellName, spellEffectData } from '../../../data/spellEffectData';
 import { ccSpellIds } from '../../../data/spellTags';
@@ -1229,6 +1236,41 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         addEntry(
           first.timeSeconds,
           `${fmtTime(first.timeSeconds)}  [CLEANSE]   ${pid(first.sourceName)} dispelled ${group.length} effects: ${effects}${petTag}${fatalTag}`,
+        );
+      }
+    }
+  }
+
+  // ── [KICK] events ───────────────────────────────────────────────────────────
+  // F20 pilot: landed SPELL_INTERRUPT events from either team. Availability notes
+  // ("enemy interrupts UP") tell the model what *could* be kicked, but without
+  // these lines every successful kick — including ones that decided a death — is
+  // invisible in the timeline.
+  {
+    const friendlyNames = new Set(friends.map((f) => f.name));
+    const seenKicks = new Set<string>();
+    for (const unit of [...friends, ...(enemies ?? [])]) {
+      for (const action of [...unit.actionOut, ...unit.actionIn]) {
+        if (action.logLine.event !== LogEvent.SPELL_INTERRUPT) continue;
+        const key = `${action.timestamp}|${action.srcUnitName}|${action.destUnitName}|${action.spellId}`;
+        if (seenKicks.has(key)) continue;
+        seenKicks.add(key);
+        const atSeconds = (action.timestamp - matchStartMs) / 1000;
+        if (atSeconds < 0) continue;
+        const kicker = friendlyNames.has(action.srcUnitName) ? pid(action.srcUnitName) : enemyPid(action.srcUnitName);
+        const victim = friendlyNames.has(action.destUnitName)
+          ? pid(action.destUnitName)
+          : enemyPid(action.destUnitName);
+        const kickSpell = getEnglishSpellName(action.spellId ?? '', action.spellName ?? 'interrupt');
+        const stoppedSpell =
+          action instanceof CombatExtraSpellAction
+            ? getEnglishSpellName(action.extraSpellId, action.extraSpellName)
+            : '';
+        addEntry(
+          atSeconds,
+          `${fmtTime(atSeconds)}  [KICK]   ${kicker} interrupted ${victim}${
+            stoppedSpell ? `'s ${stoppedSpell}` : ''
+          } (${kickSpell})`,
         );
       }
     }

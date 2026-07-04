@@ -27,6 +27,7 @@ import path from 'path';
 import { isHealerSpec, specToString } from '../../shared/src/utils/cooldowns';
 import { buildCoverageManifest } from './coverageManifest';
 import { buildMatchPromptNew, fetchStubs, MatchStub, ParsedCombat, parseLogText } from './printMatchPrompts';
+import { resolveRepoPath } from './resolveRepoPath';
 
 const TARGET_COUNT = Number(process.env.TARGET_COUNT ?? 100);
 const PAGE_SIZE = Number(process.env.PAGE_SIZE ?? 50);
@@ -46,8 +47,10 @@ const SAVE_RAW_LOGS = process.env.SAVE_RAW_LOGS === '1';
 const RAW_LOGS_DIR = path.join(OUTPUT_DIR, 'raw-logs');
 const FROM_RAW_LOGS = process.env.FROM_RAW_LOGS === '1';
 const STATE_FILE = path.join(OUTPUT_DIR, 'ab-test', 'state.json');
-const OUTPUT_PROMPTS_DIR = process.env.OUTPUT_PROMPTS_DIR ? path.resolve(process.env.OUTPUT_PROMPTS_DIR) : PROMPTS_DIR;
-const OUTPUT_INDEX_FILE = process.env.OUTPUT_INDEX_FILE ? path.resolve(process.env.OUTPUT_INDEX_FILE) : INDEX_FILE;
+const OUTPUT_PROMPTS_DIR = process.env.OUTPUT_PROMPTS_DIR
+  ? resolveRepoPath(process.env.OUTPUT_PROMPTS_DIR)
+  : PROMPTS_DIR;
+const OUTPUT_INDEX_FILE = process.env.OUTPUT_INDEX_FILE ? resolveRepoPath(process.env.OUTPUT_INDEX_FILE) : INDEX_FILE;
 // Ground-truth coverage manifests (see coverageManifest.ts), always written as a
 // sibling `manifests/` of the prompts dir so promptQualityCheck can find them.
 const MANIFESTS_DIR = path.join(path.dirname(OUTPUT_PROMPTS_DIR), 'manifests');

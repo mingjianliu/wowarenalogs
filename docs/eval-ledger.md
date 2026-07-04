@@ -19,8 +19,9 @@ Rules:
 
 ## A/B cycles (`/improve-healer-prompts`)
 
-| Date | Commit | Change tested | Target dim | Pairs | Target Δ (95% CI) | Verdict | Decision | Notes |
-| ---- | ------ | ------------- | ---------- | ----- | ----------------- | ------- | -------- | ----- |
+| Date       | Commit      | Change tested                                        | Target dim                       | Pairs | Target Δ (95% CI)                            | Verdict  | Decision | Notes                                                                                                                                                                                                                          |
+| ---------- | ----------- | ---------------------------------------------------- | -------------------------------- | ----- | -------------------------------------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-07-04 | 73f6b4e5+wt | F20 pilot: [KICK] timeline lines for SPELL_INTERRUPT | sufficiency (det. kick coverage) | 10    | 12%→100%, +88pp, 10/10 pairs (deterministic) | IMPROVED | adopt    | Blind judge: all 7 dims inconclusive, no CI regression; judge sufficiency 4.9 both arms = circularity confirmed again. +1.4% tokens. Regression gate ALL GREEN. Next-cycle: pet-kick owner attribution, dispel coverage (38%). |
 
 ## System-prompt A/B (`evalPromptCompare`)
 

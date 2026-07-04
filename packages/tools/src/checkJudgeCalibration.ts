@@ -22,7 +22,9 @@
 import fs from 'fs-extra';
 import path from 'path';
 
-const BASE_DIR = path.resolve(process.env.BASE_DIR ?? path.join(__dirname, '../local-batch/healer-eval'));
+import { resolveRepoPath } from './resolveRepoPath';
+
+const BASE_DIR = resolveRepoPath(process.env.BASE_DIR ?? 'packages/tools/local-batch/healer-eval');
 const SUITE_DIR = path.join(BASE_DIR, 'judge-calibration');
 const PASS_THRESHOLD = Number(process.env.PASS_THRESHOLD ?? 0.8);
 

@@ -22,7 +22,9 @@
 import fs from 'fs-extra';
 import path from 'path';
 
-const AB_DIR = path.resolve(process.env.AB_DIR ?? path.join(__dirname, '../local-batch/healer-eval/ab-test'));
+import { resolveRepoPath } from './resolveRepoPath';
+
+const AB_DIR = resolveRepoPath(process.env.AB_DIR ?? 'packages/tools/local-batch/healer-eval/ab-test');
 const BLIND_DIR = path.join(AB_DIR, 'blind');
 
 interface IndexEntry {

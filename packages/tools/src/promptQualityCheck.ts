@@ -32,8 +32,9 @@ import fs from 'fs-extra';
 import path from 'path';
 
 import { CoverageManifest } from './coverageManifest';
+import { resolveRepoPath } from './resolveRepoPath';
 
-const BASE_DIR = path.resolve(process.env.BASE_DIR ?? path.join(__dirname, '../local-batch/healer-eval'));
+const BASE_DIR = resolveRepoPath(process.env.BASE_DIR ?? 'packages/tools/local-batch/healer-eval');
 const STRICT = process.env.STRICT === '1';
 
 const DEATH_KEYWORDS = /death|died|dies|killed|\[DEATH\]/i;
