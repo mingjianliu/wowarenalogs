@@ -236,7 +236,18 @@ async function main() {
     const responsePath = path.join(responsesDir, `${ordinalStr}.txt`);
     if (!(await fs.pathExists(promptPath)) || !(await fs.pathExists(responsePath))) continue;
     const prompt = await fs.readFile(promptPath, 'utf8');
-    const response = (await fs.readFile(responsePath, 'utf8')).trim();
+    let response = (await fs.readFile(responsePath, 'utf8')).trim();
+    // Ordinal-integrity guard (same as blindAbPool): a stale responses/ dir
+    // left over from an older corpus would silently pair the wrong response
+    // with this prompt. Verify the MATCHID header, then strip it.
+    const headerMatch = response.match(/^MATCHID:\s*(\S+)\s*\n/);
+    if (headerMatch) {
+      if (headerMatch[1] !== entry.matchId) {
+        console.warn(`  ${ordinalStr}: MATCHID header (${headerMatch[1]}) != index (${entry.matchId}) — skipped`);
+        continue;
+      }
+      response = response.slice(headerMatch[0].length).trim();
+    }
     if (response.length < 200) continue;
     sources.push({ entry, prompt, response });
   }

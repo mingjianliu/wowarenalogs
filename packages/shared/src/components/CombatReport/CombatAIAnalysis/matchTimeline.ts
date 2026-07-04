@@ -1248,6 +1248,22 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
   // invisible in the timeline.
   {
     const friendlyNames = new Set(friends.map((f) => f.name));
+    const enemyNames = new Set((enemies ?? []).map((e) => e.name));
+    const playerById = new Map([...friends, ...(enemies ?? [])].map((u) => [u.id, u]));
+    // Pet kicks (ghoul Shambling Rush, felhunter Spell Lock, …) log the pet as
+    // the source; attribute them to the owning player so the model doesn't
+    // have to guess whose pet an unknown name belongs to (F134-adjacent).
+    const resolveKicker = (name: string): string => {
+      if (friendlyNames.has(name)) return pid(name);
+      if (enemyNames.has(name)) return enemyPid(name);
+      const petUnit = allUnits?.find((u) => u.name === name && u.ownerId.length > 0);
+      const petOwner = petUnit ? playerById.get(petUnit.ownerId) : undefined;
+      if (petOwner) {
+        const ownerLabel = friendlyNames.has(petOwner.name) ? pid(petOwner.name) : enemyPid(petOwner.name);
+        return `${ownerLabel}'s pet`;
+      }
+      return name.split('-')[0];
+    };
     const seenKicks = new Set<string>();
     for (const unit of [...friends, ...(enemies ?? [])]) {
       for (const action of [...unit.actionOut, ...unit.actionIn]) {
@@ -1257,7 +1273,7 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         seenKicks.add(key);
         const atSeconds = (action.timestamp - matchStartMs) / 1000;
         if (atSeconds < 0) continue;
-        const kicker = friendlyNames.has(action.srcUnitName) ? pid(action.srcUnitName) : enemyPid(action.srcUnitName);
+        const kicker = resolveKicker(action.srcUnitName);
         const victim = friendlyNames.has(action.destUnitName)
           ? pid(action.destUnitName)
           : enemyPid(action.destUnitName);

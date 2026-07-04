@@ -27,6 +27,8 @@ import { resolveRepoPath } from './resolveRepoPath';
 const BASE_DIR = resolveRepoPath(process.env.BASE_DIR ?? 'packages/tools/local-batch/healer-eval');
 const SUITE_DIR = path.join(BASE_DIR, 'judge-calibration');
 const PASS_THRESHOLD = Number(process.env.PASS_THRESHOLD ?? 0.8);
+/** Alternate scores subdir under the suite (e.g. SCORES_DIR=scores-gemini for a second-model pass). */
+const SCORES_SUBDIR = process.env.SCORES_DIR ?? 'scores';
 
 interface CalibrationCase {
   caseId: string;
@@ -58,7 +60,7 @@ async function main() {
   const scores = new Map<string, ScoreFile>();
   let missingScores = 0;
   for (const c of manifest.cases) {
-    const scorePath = path.join(SUITE_DIR, 'scores', `${c.caseId}.json`);
+    const scorePath = path.join(SUITE_DIR, SCORES_SUBDIR, `${c.caseId}.json`);
     if (await fs.pathExists(scorePath)) {
       scores.set(c.caseId, (await fs.readJson(scorePath)) as ScoreFile);
     } else {
@@ -154,7 +156,10 @@ async function main() {
   );
   lines.push('');
 
-  const reportPath = path.join(SUITE_DIR, 'calibration-report.md');
+  const reportPath = path.join(
+    SUITE_DIR,
+    SCORES_SUBDIR === 'scores' ? 'calibration-report.md' : `calibration-report-${SCORES_SUBDIR}.md`,
+  );
   await fs.writeFile(reportPath, lines.join('\n'), 'utf8');
   console.log(lines.join('\n'));
   console.log(`\nReport written to ${reportPath}`);
