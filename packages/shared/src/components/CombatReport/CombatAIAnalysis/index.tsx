@@ -4,6 +4,7 @@ import { CSSProperties, useCallback, useEffect, useMemo, useState } from 'react'
 import { useCombatReportContext } from '../CombatReportContext';
 import { AIFinding } from './aiFindings';
 import { buildMatchContext } from './buildMatchContext';
+import { buildCompareLocalContext, CompareLocalContext } from './compareLocalContext';
 import { FindingsList } from './components/FindingsList';
 import { RefreshIcon, SparkleIcon } from './components/icons';
 import { MatchHero } from './components/MatchHero';
@@ -181,10 +182,25 @@ export function CombatAIAnalysis() {
       try {
         const apiKey = (await window.wowarenalogs?.settings?.getAnthropicApiKey?.()) ?? undefined;
         const model = (await window.wowarenalogs?.settings?.getAnthropicModel?.()) ?? undefined;
+        // Computed from the locally parsed combat so the endpoint never needs Firestore/GCS —
+        // required in the desktop app, where the API route runs on the user's machine without
+        // GCP credentials. Null for non-healers; the server then tries its Firestore fallback.
+        let localContext: CompareLocalContext | null = null;
+        try {
+          localContext = buildCompareLocalContext(combat);
+        } catch {
+          // owner lookup can throw on malformed units; fall back to the server-side path
+        }
         const r = await fetch('/api/compare', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ matchId: combatId, apiKey, model, variant: 'exemplar' }),
+          body: JSON.stringify({
+            matchId: combatId,
+            apiKey,
+            model,
+            variant: 'exemplar',
+            localContext: localContext ?? undefined,
+          }),
         });
         const body = (await r.json()) as {
           verifiedComparison?: VerifiedComparison;

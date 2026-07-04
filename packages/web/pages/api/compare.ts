@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { Firestore } from '@google-cloud/firestore';
-import { AtomicArenaCombat, CombatUnitReaction, CombatUnitType, WoWCombatLogParser } from '@wowarenalogs/parser';
+import { AtomicArenaCombat, CombatUnitType, WoWCombatLogParser } from '@wowarenalogs/parser';
 import fs from 'fs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import path from 'path';
@@ -16,6 +16,10 @@ import {
   toUserMetrics,
 } from '../../../shared/src/components/CombatReport/CombatAIAnalysis/compareCrises';
 import {
+  CompareLocalContext,
+  deriveBracket,
+} from '../../../shared/src/components/CombatReport/CombatAIAnalysis/compareLocalContext';
+import {
   buildVerifiedComparison,
   VerifiedComparison,
 } from '../../../shared/src/components/CombatReport/CombatAIAnalysis/verifiedComparison';
@@ -26,8 +30,7 @@ import {
   BuiltEmbeddingRecord,
   isHealerSpec,
 } from '../../../shared/src/utils/matchEmbeddingRecord';
-import { vectorizeMatch } from '../../../shared/src/utils/vectorEmbedding';
-import { loadCellRecords, loadReferenceModel } from '../../../shared/src/utils/vectorSearch';
+import { loadCellRecords } from '../../../shared/src/utils/vectorSearch';
 
 const isDev = process.env.NODE_ENV === 'development';
 const COMPARE_TIMEOUT_MS = 20_000;
@@ -61,26 +64,36 @@ function parseLog(text: string): AtomicArenaCombat[] {
   return combats;
 }
 
-function deriveBracket(combat: AtomicArenaCombat): string {
-  if (combat.startInfo?.bracket) return String(combat.startInfo.bracket);
-  const friendly = Object.values(combat.units).filter(
-    (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
-  ).length;
-  return friendly >= 3 ? '3v3' : '2v2';
-}
-
-/** Shared preamble: resolve the log, parse it, find the owner, and vectorize the match. Used by
- * both the legacy nearest-neighbor path and the new stats-led path. */
+/** Shared preamble: resolve the user's side of the comparison. Two sources:
+ *  1. `local` — the desktop client computed everything from its locally parsed combat
+ *     (buildCompareLocalContext). No Firestore/GCS needed; this is the only path that works in
+ *     the packaged app, where this route runs on the user's machine without GCP credentials.
+ *  2. Firestore fallback — resolve the uploaded log by matchId, download and re-parse it.
+ *     Kept for hosted-web deployments where the server has credentials. */
 interface MatchContext {
   owner: { name: string };
   raw: BuiltEmbeddingRecord;
-  embedding: number[];
   specDisplay: string;
   bracket: string;
   /** Team damage taken per second — B151 pressure-matching for the offensiveIndex percentile. */
   teamDtps: number;
 }
-async function resolveMatchContext(matchId: string): Promise<MatchContext | null> {
+
+function contextFromLocal(local: CompareLocalContext): MatchContext | null {
+  if (!local.playerName || !local.raw || typeof local.teamDtps !== 'number') return null;
+  if (!isHealerSpec(local.specId)) return null; // healer gate, re-checked server-side
+  return {
+    owner: { name: local.playerName },
+    raw: local.raw,
+    specDisplay: specToString(local.specId),
+    bracket: local.bracket,
+    teamDtps: local.teamDtps,
+  };
+}
+
+async function resolveMatchContext(matchId: string, local?: CompareLocalContext): Promise<MatchContext | null> {
+  if (local) return contextFromLocal(local);
+
   const logObjectUrl = await resolveLogObjectUrl(matchId);
   if (!logObjectUrl) return null;
   const res = await fetch(logObjectUrl);
@@ -92,11 +105,7 @@ async function resolveMatchContext(matchId: string): Promise<MatchContext | null
   const owner = combat.units[combat.playerId];
   if (!owner || !isHealerSpec(owner.spec)) return null; // healer gate
 
-  const model = await loadReferenceModel();
-  if (!model) return null;
-
   const raw = buildMatchEmbeddingRecord(combat, owner.name);
-  const embedding = vectorizeMatch(raw, model);
   const specDisplay = specToString(owner.spec);
   const bracket = deriveBracket(combat);
   const durationSeconds = Math.max((combat.endTime - combat.startTime) / 1000, 1);
@@ -105,7 +114,7 @@ async function resolveMatchContext(matchId: string): Promise<MatchContext | null
       .filter((u) => u.type === CombatUnitType.Player && u.reaction === owner.reaction)
       .reduce((s, u) => s + u.damageIn.reduce((x, d) => x + Math.abs(d.effectiveAmount), 0), 0) / durationSeconds;
 
-  return { owner, raw, embedding, specDisplay, bracket, teamDtps };
+  return { owner, raw, specDisplay, bracket, teamDtps };
 }
 
 const NUM_RE = /\d+(?:\.\d+)?%?/g;
@@ -138,8 +147,8 @@ function spellsFromCrises(crises: string[]): string[] {
 /** Stats-led path (flag-gated behind `variant === 'stats'`): loads the FULL spec+bracket cohort
  * cell (not the nearest 5) and builds a VerifiedComparison — full-cohort mean/median/p25/p75 and
  * a disclosed nReal per metric, never a fabricated average. */
-async function buildStatsComparison(matchId: string): Promise<VerifiedComparison | null> {
-  const ctx = await resolveMatchContext(matchId);
+async function buildStatsComparison(matchId: string, local?: CompareLocalContext): Promise<VerifiedComparison | null> {
+  const ctx = await resolveMatchContext(matchId, local);
   if (!ctx) return null;
   const { owner, raw, specDisplay, bracket } = ctx;
 
@@ -168,8 +177,11 @@ interface ExemplarComparison {
 
 /** Exemplar-led path (`variant === 'exemplar'`): full-cohort VerifiedComparison for the standing +
  * diversified real pro crisis sequences for concrete contrast. This is the winning A/B approach. */
-async function buildExemplarComparison(matchId: string): Promise<ExemplarComparison | null> {
-  const ctx = await resolveMatchContext(matchId);
+async function buildExemplarComparison(
+  matchId: string,
+  local?: CompareLocalContext,
+): Promise<ExemplarComparison | null> {
+  const ctx = await resolveMatchContext(matchId, local);
   if (!ctx) return null;
   const { owner, raw, specDisplay, bracket } = ctx;
 
@@ -230,11 +242,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     apiKey: bodyApiKey,
     variant,
     model,
+    localContext,
   } = (req.body ?? {}) as {
     matchId?: string;
     apiKey?: string;
     variant?: string;
     model?: string;
+    localContext?: CompareLocalContext;
   };
   if (!matchId) return res.status(200).json({});
   const apiKey = bodyApiKey || process.env.ANTHROPIC_API_KEY;
@@ -244,7 +258,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // no <40%-HP event (where exemplar has no personal sequence to show).
   if (variant === 'stats') {
     try {
-      const verifiedComparison = await withTimeout(buildStatsComparison(matchId), COMPARE_TIMEOUT_MS);
+      const verifiedComparison = await withTimeout(buildStatsComparison(matchId, localContext), COMPARE_TIMEOUT_MS);
       if (!verifiedComparison) return res.status(200).json({});
 
       let statsReport: string | undefined;
@@ -277,7 +291,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // No `variant` check needed — hits here when variant is 'exemplar' OR unset.
   if (!variant || variant === 'exemplar') {
     try {
-      const built = await withTimeout(buildExemplarComparison(matchId), COMPARE_TIMEOUT_MS);
+      const built = await withTimeout(buildExemplarComparison(matchId, localContext), COMPARE_TIMEOUT_MS);
       if (!built) return res.status(200).json({});
       const { verifiedComparison, userCrises, proCrises } = built;
 
