@@ -188,8 +188,14 @@ export function CombatAIAnalysis() {
         let localContext: CompareLocalContext | null = null;
         try {
           localContext = buildCompareLocalContext(combat);
-        } catch {
+          if (!localContext) {
+            // eslint-disable-next-line no-console
+            console.warn('[compare] no localContext: log owner missing or not a healer');
+          }
+        } catch (err) {
           // owner lookup can throw on malformed units; fall back to the server-side path
+          // eslint-disable-next-line no-console
+          console.warn('[compare] buildCompareLocalContext threw:', err);
         }
         const r = await fetch('/api/compare', {
           method: 'POST',

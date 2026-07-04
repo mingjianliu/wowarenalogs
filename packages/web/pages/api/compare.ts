@@ -80,8 +80,14 @@ interface MatchContext {
 }
 
 function contextFromLocal(local: CompareLocalContext): MatchContext | null {
-  if (!local.playerName || !local.raw || typeof local.teamDtps !== 'number') return null;
-  if (!isHealerSpec(local.specId)) return null; // healer gate, re-checked server-side
+  if (!local.playerName || !local.raw || typeof local.teamDtps !== 'number') {
+    console.warn('[compare] localContext rejected: malformed (playerName/raw/teamDtps)');
+    return null;
+  }
+  if (!isHealerSpec(local.specId)) {
+    console.warn(`[compare] localContext rejected: specId ${local.specId} is not a healer`);
+    return null; // healer gate, re-checked server-side
+  }
   return {
     owner: { name: local.playerName },
     raw: local.raw,
@@ -94,16 +100,29 @@ function contextFromLocal(local: CompareLocalContext): MatchContext | null {
 async function resolveMatchContext(matchId: string, local?: CompareLocalContext): Promise<MatchContext | null> {
   if (local) return contextFromLocal(local);
 
+  console.warn('[compare] no localContext in request; falling back to Firestore/GCS resolution');
   const logObjectUrl = await resolveLogObjectUrl(matchId);
-  if (!logObjectUrl) return null;
+  if (!logObjectUrl) {
+    console.warn(`[compare] no match stub found in Firestore for ${matchId}`);
+    return null;
+  }
   const res = await fetch(logObjectUrl);
-  if (!res.ok) return null;
+  if (!res.ok) {
+    console.warn(`[compare] log download failed: HTTP ${res.status}`);
+    return null;
+  }
   const combats = parseLog(await res.text());
   const combat = combats.find((c) => c.id === matchId) ?? combats[0];
-  if (!combat) return null;
+  if (!combat) {
+    console.warn('[compare] re-parsed log produced no combats');
+    return null;
+  }
 
   const owner = combat.units[combat.playerId];
-  if (!owner || !isHealerSpec(owner.spec)) return null; // healer gate
+  if (!owner || !isHealerSpec(owner.spec)) {
+    console.warn(`[compare] log owner missing or not a healer (spec=${owner?.spec})`);
+    return null; // healer gate
+  }
 
   const raw = buildMatchEmbeddingRecord(combat, owner.name);
   const specDisplay = specToString(owner.spec);
@@ -153,7 +172,10 @@ async function buildStatsComparison(matchId: string, local?: CompareLocalContext
   const { owner, raw, specDisplay, bracket } = ctx;
 
   const cellRecords = (await loadCellRecords(specDisplay, bracket)).filter((r) => r.matchId !== matchId);
-  if (cellRecords.length < 1) return null;
+  if (cellRecords.length < 1) {
+    console.warn(`[compare] empty cohort cell for spec="${specDisplay}" bracket="${bracket}"`);
+    return null;
+  }
 
   const verifiedComparison = buildVerifiedComparison(
     cellRecords,
@@ -186,7 +208,10 @@ async function buildExemplarComparison(
   const { owner, raw, specDisplay, bracket } = ctx;
 
   const cellRecords = (await loadCellRecords(specDisplay, bracket)).filter((r) => r.matchId !== matchId);
-  if (cellRecords.length < 1) return null;
+  if (cellRecords.length < 1) {
+    console.warn(`[compare] empty cohort cell for spec="${specDisplay}" bracket="${bracket}"`);
+    return null;
+  }
 
   const verifiedComparison = buildVerifiedComparison(
     cellRecords,
@@ -194,7 +219,10 @@ async function buildExemplarComparison(
     { player: owner.name, spec: specDisplay, bracket },
     ctx.teamDtps,
   );
-  if (verifiedComparison.cohort.n < 1) return null;
+  if (verifiedComparison.cohort.n < 1) {
+    console.warn('[compare] degenerate cohort (all records dropped as null-metrics)');
+    return null;
+  }
 
   return {
     verifiedComparison,
@@ -252,6 +280,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   };
   if (!matchId) return res.status(200).json({});
   const apiKey = bodyApiKey || process.env.ANTHROPIC_API_KEY;
+  console.warn(
+    `[compare] request matchId=${matchId} variant=${variant ?? 'exemplar'} localContext=${
+      localContext ? 'yes' : 'no'
+    } apiKey=${apiKey ? 'yes' : 'no'}`,
+  );
 
   // Stats-led path: opt-in fallback (more accurate percentiles, 0% hallucination, but less
   // actionable than exemplar for games with a clear crisis). Useful for the ~10% of games with
@@ -276,12 +309,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const numberViolations = violations.filter((v) => v.kind === 'number');
             if (numberViolations.length === 0) statsReport = draft;
           }
-        } catch {
+        } catch (err) {
           // report is optional; verifiedComparison still renders without it
+          console.warn(`[compare] stats report generation failed: ${err instanceof Error ? err.message : 'unknown'}`);
         }
       }
       return res.status(200).json({ verifiedComparison, statsReport });
-    } catch {
+    } catch (err) {
+      console.warn(`[compare] stats path failed: ${err instanceof Error ? err.message : 'unknown'}`);
       return res.status(200).json({});
     }
   }
@@ -317,12 +352,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const { violations } = checkClaims(draft, { spells, numbers });
             if (violations.length === 0) report = draft;
           }
-        } catch {
+        } catch (err) {
           // report is optional; the comparison still renders without it
+          console.warn(
+            `[compare] exemplar report generation failed: ${err instanceof Error ? err.message : 'unknown'}`,
+          );
         }
       }
       return res.status(200).json({ verifiedComparison, userCrises, proCrises, report });
-    } catch {
+    } catch (err) {
+      console.warn(`[compare] exemplar path failed: ${err instanceof Error ? err.message : 'unknown'}`);
       return res.status(200).json({});
     }
   }
