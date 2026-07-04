@@ -88,8 +88,10 @@ npm run -w @wowarenalogs/tools start:evalPromptCompare -- --phase treatment
 
 ## Verifying Results
 
-Always check the output markdown report. The proposed system prompt change is considered successful if:
+Always check the output markdown report. Judge verdicts are blinded: each judge call shuffles which arm appears as Version A/B (position-bias mitigation) and the stored judgment ends with a canonical `Normalized Verdict` line (`Control Winner` / `Treatment Winner` / `Tie`), which is what the report counts. The proposed system prompt change is considered successful if:
 
-1. **Verdict Win-Rate**: Version B (Treatment) wins or ties the majority of matches.
+1. **Verdict Win-Rate**: Treatment wins or ties the majority of matches (Normalized Verdict counts).
 2. **Token Efficiency**: The net token count (excluding overhead) does not increase dramatically unless offset by significant analytical quality gains.
 3. **No regressions**: No typescript compile errors or eslint errors are introduced. Ensure this by running `npm run -w @wowarenalogs/tools lint` after completion.
+
+Also log the run in `docs/eval-ledger.md` (date, commit, change tested, match count, win/tie/loss counts, token delta) — the `local-batch/compare/` outputs are gitignored, so the ledger row is the only durable record.

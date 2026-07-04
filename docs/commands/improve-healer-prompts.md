@@ -26,14 +26,20 @@ Read `packages/tools/local-batch/healer-eval/ab-test/state.json`.
 
 ---
 
-## Shared: Eval Pipeline Run (used by both phases)
+## Shared: Response Generation Run (used by both phases)
 
-Both phases run the eval pipeline (Steps 2–4 of `eval-healer-prompts.md`) against a base directory `BASE` under `packages/tools/local-batch/healer-eval/` — `ab-test/control/` in Phase 1, `ab-test/treatment/` in Phase 2:
+Both phases generate responses (Step 2 of `eval-healer-prompts.md`, including the `MATCHID:` header
+and ordinal-integrity check) against a base directory `BASE` under
+`packages/tools/local-batch/healer-eval/` — `ab-test/control/` in Phase 1, `ab-test/treatment/` in
+Phase 2:
 
 - Read prompts from `BASE/prompts/` and the index from `BASE/index.json`.
 - When spawning sub-agents with the eval-healer-prompts Step 2 template, substitute these paths for the defaults: responses go to `BASE/responses/NNN.txt`.
-- Score each match with the same rubric and scoring process as `eval-healer-prompts.md`, writing to `BASE/scores/NNN.json`.
-- Write the eval report to `BASE/eval-report.md`.
+- Then run the deterministic quality check: `BASE_DIR=<BASE> npm run -w @wowarenalogs/tools start:promptQualityCheck`.
+
+**No scoring happens per-arm.** All rubric scoring in this command is done once, blinded, in Phase
+2 Step 2.4 — scoring an arm while knowing which arm it is (or after implementing the change being
+tested) produces biased deltas and is prohibited.
 
 These runs never read or write the regular eval skill's `healer-eval/prompts/`, `responses/`, or `scores/` directories.
 
@@ -64,17 +70,19 @@ Wait for it to complete. If it exits non-zero, abort: "Corpus build failed — s
 
 After completion, verify `packages/tools/local-batch/healer-eval/index.json` exists and read it to get the entry list. Verify that `packages/tools/local-batch/healer-eval/raw-logs/` contains one `.log` file per matchId in the index.
 
-Copy prompts and index to control dir:
+Copy prompts, index, and coverage manifests to control dir:
 
 ```bash
 mkdir -p packages/tools/local-batch/healer-eval/ab-test/control/prompts
 cp packages/tools/local-batch/healer-eval/prompts/* packages/tools/local-batch/healer-eval/ab-test/control/prompts/
 cp packages/tools/local-batch/healer-eval/index.json packages/tools/local-batch/healer-eval/ab-test/control/index.json
+mkdir -p packages/tools/local-batch/healer-eval/ab-test/control/manifests
+cp packages/tools/local-batch/healer-eval/manifests/* packages/tools/local-batch/healer-eval/ab-test/control/manifests/
 ```
 
-### Step 1.3: Run eval pipeline on control
+### Step 1.3: Generate control responses
 
-Run the shared eval pipeline (see **Shared: Eval Pipeline Run** above) with `BASE = ab-test/control/`.
+Run the shared response-generation run (see **Shared: Response Generation Run** above) with `BASE = ab-test/control/`. Do NOT score.
 
 ### Step 1.4: Write state file
 
@@ -96,8 +104,8 @@ Collect all matchIds from the index. Write `packages/tools/local-batch/healer-ev
 Print:
 
 ```
-Control established — 20 matches scored.
-Control eval report: packages/tools/local-batch/healer-eval/ab-test/control/eval-report.md
+Control established — N matches with responses (no scores yet; scoring happens blinded in Phase 2).
+Control quality metrics: packages/tools/local-batch/healer-eval/ab-test/control/quality-report.json
 
 Next steps:
 1. Implement your change to the prompt builder code
@@ -133,13 +141,55 @@ FROM_RAW_LOGS=1 \
 
 Wait for completion. Verify that `ab-test/treatment/prompts/` contains the same number of files as `ab-test/control/prompts/`. If any matchIds are missing (raw log absent), note them and continue.
 
-### Step 2.3: Run eval pipeline on treatment
+### Step 2.3: Generate treatment responses
 
-Run the shared eval pipeline (see **Shared: Eval Pipeline Run** above) with `BASE = ab-test/treatment/`.
+Run the shared response-generation run (see **Shared: Response Generation Run** above) with `BASE = ab-test/treatment/`.
 
-### Step 2.4: Produce comparison report
+### Step 2.4: Blind scoring
 
-Read all score files from both `ab-test/control/scores/` and `ab-test/treatment/scores/`. For each ordinal present in both, compute the delta per dimension. Track how many control ordinals are absent from treatment scores — this is the Skipped count K.
+Build the blinded pool (pairs every ordinal present in both arms, shuffles, strips arm identity):
+
+```
+npm run -w @wowarenalogs/tools start:blindAbPool
+```
+
+> **BLINDING RULE (non-negotiable):** do not read `ab-test/blind/mapping.json` — not now, not to
+> "verify", not on error — until every blind score is written. You implemented the change being
+> tested; knowing which items are treatment corrupts the comparison. Only `start:abCompareStats`
+> reads the mapping.
+
+For each directory under `ab-test/blind/items/`, spawn one background scoring sub-agent
+(self-contained; substitute ITEMID):
+
+> You are scoring a WoW arena coaching prompt/response pair. Read
+> `packages/tools/local-batch/healer-eval/ab-test/blind/items/ITEMID/prompt.txt` and
+> `.../ITEMID/response.txt`. Apply the scoring rubric from `docs/commands/eval-healer-prompts.md`
+> Step 3 exactly (three-pass process, 1/3/5 anchors; there is no quality-report.json for this item —
+> skip the consistency rules that reference it). Do not read any other file or directory. Write
+> ONLY the score JSON (standard 7-dimension format) to
+> `packages/tools/local-batch/healer-eval/ab-test/blind/scores/ITEMID.json`.
+
+One item per sub-agent — never batch two items into one agent (it could notice paired prompts).
+When all score files exist, unblind and compute paired statistics:
+
+```
+npm run -w @wowarenalogs/tools start:abCompareStats
+```
+
+This prints per-dimension mean delta, SD, 95% bootstrap CI, and sign-test p, with a verdict of
+improved / regressed / inconclusive (CI excluding 0), and writes `ab-test/comparison-stats.json`.
+
+### Step 2.5: Produce comparison report
+
+Combine two evidence sources:
+
+1. **Deterministic metrics** (primary for sufficiency/noise/labelBias): diff
+   `ab-test/control/quality-report.json` vs `ab-test/treatment/quality-report.json` — coverage
+   percentages, duplicate ratios, spam-line counts, severity-lexicon hits, hard failures.
+2. **Blind judge statistics** (primary for accuracy/outcomeAlignment/focusCalibration/
+   inferenceScaffolding): the `start:abCompareStats` table.
+
+Track how many control ordinals are absent from the blind pool — this is the Skipped count K.
 
 Write `packages/tools/local-batch/healer-eval/ab-test/comparison-report.md` using this structure:
 
@@ -152,7 +202,22 @@ Write `packages/tools/local-batch/healer-eval/ab-test/comparison-report.md` usin
 
 ---
 
+## Deterministic Metrics (quality-report diff — authoritative for sufficiency/noise/labelBias)
+
+| Metric                          | Control | Treatment | Delta |
+| ------------------------------- | ------- | --------- | ----- |
+| friendly-death coverage (avg %) |         |           |       |
+| CC coverage (avg %)             |         |           |       |
+| interrupt coverage (avg %)      |         |           |       |
+| exact duplicate ratio (avg)     |         |           |       |
+| `[RES] rdy:` spam lines (avg)   |         |           |       |
+| severity-lexicon hits (total)   |         |           |       |
+| hard failures (matches)         |         |           |       |
+| approx tokens (avg)             |         |           |       |
+
 ## Target Dimension: <targetDimension>
+
+(Per-ordinal table — computed AFTER unblinding, i.e. after `start:abCompareStats` has run.)
 
 | Ordinal | Spec | Result | Control | Treatment | Delta |
 | ------- | ---- | ------ | ------- | --------- | ----- |
@@ -160,35 +225,30 @@ Write `packages/tools/local-batch/healer-eval/ab-test/comparison-report.md` usin
 
 ...
 
-**Average <targetDimension>:** X.XX → Y.YY (ΔZ.ZZ)
+---
+
+## All Dimensions — Blind Paired Statistics
+
+Paste the `start:abCompareStats` table (n, means, Δ mean, Δ SD, 95% CI, sign-test p, verdict).
 
 ---
 
-## All Dimensions — Aggregate Delta
+## Regressions
 
-| Dimension            | Control avg | Treatment avg | Delta |
-| -------------------- | ----------- | ------------- | ----- |
-| sufficiency          |             |               |       |
-| noise                |             |               |       |
-| labelBias            |             |               |       |
-| inferenceScaffolding |             |               |       |
-| accuracy             |             |               |       |
-| outcomeAlignment     |             |               |       |
-| focusCalibration     |             |               |       |
-
----
-
-## Regressions (dimensions that worsened by >0.3 avg)
-
-List any dimension where treatment avg < control avg by more than 0.3. If none, write "None."
+Dimensions with verdict **regressed** (95% CI of the paired delta entirely below 0), plus any
+deterministic metric that clearly worsened (e.g., a coverage drop or new hard failures). If none,
+write "None." Do NOT flag `inconclusive` dimensions as regressions — but list them if the point
+estimate is negative, marked "(inconclusive — monitor)".
 
 ---
 
 ## New Issues Found in Treatment
 
-Issues flagged in the treatment eval report that were not flagged in the control report (any score ≤ 2 in treatment that was > 2 in control):
+Issues visible in the blind treatment scores that the blind control scores don't show (any score ≤ 2
+on a treatment item whose paired control item was > 2), and any new hard failures in the treatment
+quality report:
 
-1. **[dimension]** — match NNN: <notes from treatment score file>
+1. **[dimension]** — match NNN: <notes from the blind score file>
 
 If none, write "None."
 
@@ -224,19 +284,23 @@ If no rubric changes are warranted, write "No rubric changes suggested."
 
 ## Decision
 
-- Target dimension improved: YES / NO (ΔX.XX)
-- Regressions: YES / NO
+- Target dimension verdict: IMPROVED / INCONCLUSIVE / REGRESSED (Δ mean, 95% CI, sign-test p — or
+  the deterministic metric delta when the target dimension is sufficiency/noise/labelBias)
+- Regressions (CI-confirmed or deterministic): YES / NO
 - Recommendation: ADOPT / ABANDON / ITERATE (if fix-now items exist)
+- If INCONCLUSIVE: say so plainly. Adopting an inconclusive change is the user's judgment call
+  (e.g., deterministic metrics improved while judge deltas are neutral) — never dress an
+  inconclusive delta up as a win.
 
 Run `/improve-healer-prompts adopt` or `/improve-healer-prompts abandon` when ready.
 (To iterate: implement fix-now changes, then run `/improve-healer-prompts` again.)
 ```
 
-### Step 2.5: Update state and report
+### Step 2.6: Update state and report
 
 Increment `treatmentRuns` in `state.json`, keep phase as `"treatment-ready"`.
 
-Print the comparison report summary (target dimension delta, any regressions, triage table) and the path to the full report.
+Print the comparison report summary (target dimension verdict with CI, any regressions, triage table) and the path to the full report.
 
 ---
 
@@ -267,9 +331,14 @@ If `abandon`, print:
 ⚠ Remember to revert your code change to the prompt builder before continuing.
 ```
 
-### Step 3.3a: Capture rubric feedback before deletion
+### Step 3.3a: Capture rubric feedback and write the ledger row before deletion
 
 Read `packages/tools/local-batch/healer-eval/ab-test/comparison-report.md` and extract the "Rubric Feedback" section content into memory. If the file does not exist, note "No comparison report found."
+
+Append one A/B run-summary row to `docs/eval-ledger.md` (git-tracked; see the format header there):
+date, git commit, change description, target dimension, pairs n, target Δ mean with 95% CI,
+verdict, decision (adopt/abandon). Everything under `ab-test/` is about to be deleted — the ledger
+row is the only durable record of this cycle.
 
 ### Step 3.3b: Clean up disk
 
@@ -310,6 +379,7 @@ If abandoning: revert your code change, then run /eval-healer-prompts to confirm
 
 ## Notes
 
-- If `ab-test/treatment/` already has responses or scores from a previous treatment run, overwrite them.
-- Do NOT call any external AI API during scoring (Steps 2.3–2.4). You (this Claude Code session) are the judge, same as in `eval-healer-prompts`.
-- The `ab-test/` directory is gitignored and local-only.
+- If `ab-test/treatment/` or `ab-test/blind/` already has responses or scores from a previous treatment run, `start:blindAbPool` clears the blind dir; overwrite treatment responses freely.
+- Do NOT call any external AI API during scoring. Blind scoring is done by spawned sub-agents (one item each); the orchestrating session must never score items itself — it knows what changed.
+- Judge trust: if the current judge/rubric has never passed `docs/commands/calibrate-judge.md`, run that first — blind statistics from an uncalibrated judge are still noise. Optionally have a second model (Gemini, per the tool mapping in `docs/healer-eval-improvement-workflow.md`) blind-score the same pool into a separate scores dir and compare verdicts; agreement strengthens the conclusion.
+- The `ab-test/` directory is gitignored and local-only; the durable record is the row in `docs/eval-ledger.md`.

@@ -45,9 +45,7 @@ function getHealerSpec(combat: ParsedCombat): string | null {
   const hasHolyPriest = units.some((u) => u.type === CombatUnitType.Player && u.spec === CombatUnitSpec.Priest_Holy);
   if (!hasHolyPriest) return null;
 
-  const friends = units.filter(
-    (u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly,
-  );
+  const friends = units.filter((u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly);
   const owner = friends.find((p) => p.id === combat.playerId) || friends.find((p) => isHealerSpec(p.spec));
   if (!owner || !isHealerSpec(owner.spec)) return null;
   return specToString(owner.spec);
@@ -73,10 +71,7 @@ async function callIpcExchange(reqId: string, requestData: unknown, timeoutMs = 
     const resp = await fs.readJson(respFile);
     return resp;
   } finally {
-    await Promise.all([
-      fs.remove(reqFile).catch(() => undefined),
-      fs.remove(respFile).catch(() => undefined),
-    ]);
+    await Promise.all([fs.remove(reqFile).catch(() => undefined), fs.remove(respFile).catch(() => undefined)]);
   }
 }
 
@@ -88,13 +83,15 @@ async function callClaudeAPI(
   if (apiKey && apiKey !== 'undefined' && apiKey !== 'roleplayer') {
     const anthropic = new Anthropic({ apiKey });
     const response = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20240620',
-      max_tokens: 4096,
+      model: 'claude-sonnet-5',
+      max_tokens: 16000,
       system: systemPrompt,
       messages: [{ role: 'user', content: userPrompt }],
     });
-    const content = response.content[0];
-    if (content.type === 'text') {
+    // Sonnet 5 runs adaptive thinking by default, so content may start with a
+    // thinking block — find the text block instead of assuming content[0].
+    const content = response.content.find((b) => b.type === 'text');
+    if (content && content.type === 'text') {
       return {
         text: content.text,
         inputTokens: response.usage.input_tokens,
@@ -155,7 +152,6 @@ export function extractCoreResponse(fullResponse: string): string {
   return clean.replace(/<[^>]*>/g, '').trim();
 }
 
-
 export function extractReflection(fullResponse: string): string {
   const match = fullResponse.match(/<meta_eval_reflection>([\s\S]*?)<\/meta_eval_reflection>/);
   return match ? match[1].trim() : '';
@@ -166,6 +162,12 @@ export function calculateEstimatedCoreTokens(text: string): number {
 }
 
 export function extractVerdict(judgment: string): string {
+  // Prefer the unblinded canonical line appended by callMetaEvalJudge — the raw
+  // Version A/B verdict is meaningless without knowing the shuffle.
+  const normalizedMatch = judgment.match(/Normalized Verdict:\s*(Control Winner|Treatment Winner|Tie)/i);
+  if (normalizedMatch) {
+    return normalizedMatch[1];
+  }
   const match = judgment.match(/(?:[*-]?\s*(?:\*\*)?Verdict(?:\*\*)?:\s*|Verdict:\s*)([^\r\n]+)/i);
   if (match) {
     let verdict = match[1].trim();
@@ -174,7 +176,7 @@ export function extractVerdict(judgment: string): string {
     }
     // Remove trailing period or asterisks
     verdict = verdict.replace(/[.*]+$/, '').trim();
-    
+
     // Normalize to standard options if they are contained in the text
     const lower = verdict.toLowerCase();
     if (lower.includes('version a winner') || lower.includes('winner: version a') || lower.includes('winner: a')) {
@@ -191,42 +193,58 @@ export function extractVerdict(judgment: string): string {
   return 'Unknown';
 }
 
-async function callMetaEvalJudge(
-  apiKey: string,
-  controlResponse: string,
-  treatmentResponse: string,
-): Promise<string> {
-  const judgeSystem = `You are a prompt engineer evaluating two AI-generated WoW arena match analyses. Your job is to give a blunt, objective verdict on which prompt design produced better coaching feedback.`;
+async function callMetaEvalJudge(apiKey: string, controlResponse: string, treatmentResponse: string): Promise<string> {
+  const judgeSystem = `You are a prompt engineer evaluating two AI-generated WoW arena match analyses. Your job is to give a blunt, objective verdict on which analysis is better coaching feedback.`;
 
-  const userMessage = `Evaluate the following two coaching analyses for the same WoW arena match:
+  // Blind + randomize: the judge must not know which arm is which, and the
+  // treatment must not always sit in the same position (position bias).
+  const treatmentIsA = Math.random() < 0.5;
+  const versionA = treatmentIsA ? treatmentResponse : controlResponse;
+  const versionB = treatmentIsA ? controlResponse : treatmentResponse;
 
-CONTROL RESPONSE (Version A):
----
-${controlResponse}
----
+  const userMessage = `Evaluate the following two coaching analyses for the same WoW arena match. They were produced from two different prompt designs; you are not told which is which.
 
-TREATMENT RESPONSE (Version B):
+VERSION A:
 ---
-${treatmentResponse}
+${versionA}
 ---
 
-Rate Version B compared to Version A on:
-1. **Feature Usefulness** (Scale 1-5): Did the new/modified prompt information in Version B lead to more concrete, actionable, and correct coaching advice?
-2. **Response Bias** (Scale 1-5): Did the new information steer the AI into introducing incorrect assumptions, unearned praise, or unfair blame for mistakes?
-3. **Noise & Confusion** (Scale 1-5): Did the new data cause the model to write redundant comments or contradict itself?
+VERSION B:
+---
+${versionB}
+---
+
+Compare the two versions on:
+1. **Feature Usefulness** (Scale 1-5 each): Which analysis gives more concrete, actionable, and correct coaching advice?
+2. **Factual Grounding** (Scale 1-5 each): Does either analysis introduce incorrect assumptions, unearned praise, or unfair blame?
+3. **Noise & Confusion** (Scale 1-5 each): Does either analysis contain redundant comments or contradict itself?
 
 Finally, state:
 - **Verdict**: [Version A Winner / Version B Winner / Tie]
 - **Reasoning**: One sentence explanation.`;
 
   const reqId = 'judge_' + Math.random().toString(36).substring(7);
-  const resp = (await callIpcExchange(reqId, { systemPrompt: judgeSystem, userPrompt: userMessage })) as { text?: string } | null | undefined;
+  const resp = (await callIpcExchange(reqId, { systemPrompt: judgeSystem, userPrompt: userMessage })) as
+    | { text?: string }
+    | null
+    | undefined;
 
   if (!resp || typeof resp.text !== 'string') {
     throw new Error(`Invalid response received via IPC for request ${reqId}`);
   }
 
-  return resp.text;
+  // Unblind: append a canonical verdict line so downstream parsing does not
+  // depend on which position the treatment happened to occupy.
+  const rawVerdict = extractVerdict(resp.text);
+  let normalized = 'Unknown';
+  if (rawVerdict === 'Tie') {
+    normalized = 'Tie';
+  } else if (rawVerdict === 'Version A Winner') {
+    normalized = treatmentIsA ? 'Treatment Winner' : 'Control Winner';
+  } else if (rawVerdict === 'Version B Winner') {
+    normalized = treatmentIsA ? 'Control Winner' : 'Treatment Winner';
+  }
+  return `${resp.text}\n\n- Normalized Verdict: ${normalized} (treatment was shown as Version ${treatmentIsA ? 'A' : 'B'})`;
 }
 
 async function main() {
@@ -236,7 +254,7 @@ async function main() {
   if (phaseIndex !== -1 && args[phaseIndex + 1]) {
     phase = args[phaseIndex + 1];
   } else {
-    const phaseArg = args.find(a => a.startsWith('--phase='));
+    const phaseArg = args.find((a) => a.startsWith('--phase='));
     if (phaseArg) {
       phase = phaseArg.split('=')[1];
     }
@@ -258,7 +276,7 @@ async function main() {
     if (countIndex !== -1 && args[countIndex + 1]) {
       count = parseInt(args[countIndex + 1], 10);
     } else {
-      const countArg = args.find(a => a.startsWith('--count='));
+      const countArg = args.find((a) => a.startsWith('--count='));
       if (countArg) {
         count = parseInt(countArg.split('=')[1], 10);
       }
@@ -270,9 +288,9 @@ async function main() {
     let specDistribution: Record<string, string> = {};
     let stateLoaded = false;
 
-    if (args.includes('--reuse-state') && await fs.pathExists(STATE_FILE)) {
+    if (args.includes('--reuse-state') && (await fs.pathExists(STATE_FILE))) {
       try {
-        const state = await fs.readJson(STATE_FILE) as State;
+        const state = (await fs.readJson(STATE_FILE)) as State;
         matchIds = state.matchIds;
         specDistribution = state.specDistribution;
         stateLoaded = true;
@@ -387,7 +405,7 @@ async function main() {
       const logPath = path.join(RAW_LOGS_DIR, `${matchId}.log`);
       const text = await fs.readFile(logPath, 'utf8');
       const combats = await parseLogText(text);
-      const combat = combats.find(c => getHealerSpec(c) !== null) ?? combats[0];
+      const combat = combats.find((c) => getHealerSpec(c) !== null) ?? combats[0];
 
       if (!combat) {
         console.warn(`No valid combat found in log for match ${matchId}`);
@@ -452,7 +470,7 @@ async function main() {
       const logPath = path.join(RAW_LOGS_DIR, `${matchId}.log`);
       const text = await fs.readFile(logPath, 'utf8');
       const combats = await parseLogText(text);
-      const combat = combats.find(c => getHealerSpec(c) !== null) ?? combats[0];
+      const combat = combats.find((c) => getHealerSpec(c) !== null) ?? combats[0];
 
       if (!combat) {
         console.warn(`No valid combat found in log for match ${matchId}`);
@@ -512,7 +530,7 @@ async function main() {
         judgment = await fs.readFile(judgmentPath, 'utf8');
       } else if (dryRun) {
         console.log(`[DRY RUN] Skipping Judge API call for ${matchId}`);
-        judgment = `Mock judgment for ${matchId}\n- Verdict: Version B Winner\n- Reasoning: Mock judgment reasoning.`;
+        judgment = `Mock judgment for ${matchId}\n- Reasoning: Mock judgment reasoning.\n- Normalized Verdict: Treatment Winner (mock)`;
       } else {
         try {
           console.log(`Running Judge evaluation for ${matchId}...`);

@@ -6,11 +6,18 @@ How to orchestrate the two-skill eval pipeline: find prompt quality issues, vali
 
 ## Choosing the Right Harness
 
-| Harness                                                         | Question it answers                | Tests                                                                |
-| --------------------------------------------------------------- | ---------------------------------- | -------------------------------------------------------------------- |
-| [`/eval-healer-prompts`](commands/eval-healer-prompts.md)       | "What should we fix?"              | Prompt + response quality across fresh matches                       |
-| [`/improve-healer-prompts`](commands/improve-healer-prompts.md) | "Did we fix it?"                   | A specific _prompt-builder code_ change (controlled A/B)             |
-| [`evalPromptCompare`](prompt-ab-testing-workflow.md)            | "Is the new system prompt better?" | _System prompt text_ changes (`SYSTEM_PROMPT` / `NEW_SYSTEM_PROMPT`) |
+| Harness                                                         | Question it answers                           | Tests                                                                                        |
+| --------------------------------------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| [`/eval-healer-prompts`](commands/eval-healer-prompts.md)       | "What should we fix?"                         | Prompt + response quality across fresh matches                                               |
+| [`/improve-healer-prompts`](commands/improve-healer-prompts.md) | "Did we fix it?"                              | A specific _prompt-builder code_ change (blinded, paired A/B)                                |
+| [`evalPromptCompare`](prompt-ab-testing-workflow.md)            | "Is the new system prompt better?"            | _System prompt text_ changes (`SYSTEM_PROMPT` / `NEW_SYSTEM_PROMPT`)                         |
+| `start:promptQualityCheck`                                      | "What does the builder measurably drop/spam?" | Deterministic coverage vs raw-log manifest, duplicate ratios, severity-lexicon hits — no LLM |
+| [`/calibrate-judge`](commands/calibrate-judge.md)               | "Can the judge be trusted at all?"            | Judge detection of planted synthetic defects (the meta-eval; no human labels)                |
+| [`regression-gate`](commands/regression-gate.md)                | "Did a past accuracy fix regress?"            | Golden-game invariants on the production context builder                                     |
+
+Trust order: deterministic checks (`promptQualityCheck`, `regression-gate`) are always valid;
+LLM-judge scores are valid only while the current rubric/judge passes `/calibrate-judge`. When a
+judge delta and a deterministic metric disagree, the deterministic metric wins.
 
 ---
 

@@ -129,3 +129,12 @@ Refer to these files for deep context on specific areas:
 - [packages/tools/docs/PET_ABILITY_RESOLUTION.md](packages/tools/docs/PET_ABILITY_RESOLUTION.md) — How pet casts are attributed to owners.
 - [packages/tools/docs/DB2_SPELL_DATA_ISSUES.md](packages/tools/docs/DB2_SPELL_DATA_ISSUES.md) — Known inconsistencies in Blizzard's spell database.
 </documentation_index>
+
+<eval_integrity>
+## Eval Integrity (Non-negotiable, All AIs)
+
+- **Never generate eval scores with a script, heuristic, regex, or random values.** Every score file under any `healer-eval/**/scores/` (or A/B `control|treatment/scores/`) must come from an actual judge pass that read the full prompt and response. No "scoring for scale", no backfilling missing ordinals with defaults.
+- If a scoring run is too large to finish, **stop and report the ordinals completed** — partial honest data beats complete fabricated data. Do not fake the remainder.
+- History: `scripts/finish_scoring.js` + `scripts/heuristic_eval.js` (deleted 2026-07-04) fabricated scores 51–100 of a 100-game run with hardcoded 4–5s and `Math.random()`. Every report derived from that run is invalid. Do not recreate them (see TRACKER.md F141).
+- Deterministic checks belong in dedicated tools (`annotation-regression-check`, `promptQualityCheck`) that report **measured metrics** (line counts, regex hits, coverage ratios) — never dressed up as rubric scores.
+</eval_integrity>

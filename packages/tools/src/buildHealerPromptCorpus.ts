@@ -25,6 +25,7 @@ import fetch from 'node-fetch';
 import path from 'path';
 
 import { isHealerSpec, specToString } from '../../shared/src/utils/cooldowns';
+import { buildCoverageManifest } from './coverageManifest';
 import { buildMatchPromptNew, fetchStubs, MatchStub, ParsedCombat, parseLogText } from './printMatchPrompts';
 
 const TARGET_COUNT = Number(process.env.TARGET_COUNT ?? 100);
@@ -47,6 +48,9 @@ const FROM_RAW_LOGS = process.env.FROM_RAW_LOGS === '1';
 const STATE_FILE = path.join(OUTPUT_DIR, 'ab-test', 'state.json');
 const OUTPUT_PROMPTS_DIR = process.env.OUTPUT_PROMPTS_DIR ? path.resolve(process.env.OUTPUT_PROMPTS_DIR) : PROMPTS_DIR;
 const OUTPUT_INDEX_FILE = process.env.OUTPUT_INDEX_FILE ? path.resolve(process.env.OUTPUT_INDEX_FILE) : INDEX_FILE;
+// Ground-truth coverage manifests (see coverageManifest.ts), always written as a
+// sibling `manifests/` of the prompts dir so promptQualityCheck can find them.
+const MANIFESTS_DIR = path.join(path.dirname(OUTPUT_PROMPTS_DIR), 'manifests');
 
 interface IndexEntry {
   ordinal: number;
@@ -64,6 +68,7 @@ function sanitizeForFilename(s: string): string {
 
 async function main() {
   await fs.ensureDir(PROMPTS_DIR);
+  await fs.ensureDir(MANIFESTS_DIR);
   if (SAVE_RAW_LOGS) {
     await fs.ensureDir(RAW_LOGS_DIR);
   }
@@ -204,6 +209,9 @@ async function tryProcessStub(
     const filename = `${ordinalStr}-${sanitizeForFilename(spec)}-${resultLetter}-${sanitizeForFilename(stub.id)}.txt`;
     const filePath = path.join(PROMPTS_DIR, filename);
     await fs.writeFile(filePath, prompt, 'utf8');
+    await fs.writeJson(path.join(MANIFESTS_DIR, `${ordinalStr}.json`), buildCoverageManifest(combat, stub.id), {
+      spaces: 2,
+    });
 
     process.stderr.write(`wrote ${filename}\n`);
     return {
@@ -233,6 +241,7 @@ async function runFromRawLogs(): Promise<void> {
     process.exit(1);
   }
   await fs.ensureDir(OUTPUT_PROMPTS_DIR);
+  await fs.ensureDir(MANIFESTS_DIR);
 
   const entries: IndexEntry[] = [];
   let ordinal = 0;
@@ -281,6 +290,9 @@ async function runFromRawLogs(): Promise<void> {
       const ordinalStr = String(ordinal).padStart(3, '0');
       const filename = `${ordinalStr}-${sanitizeForFilename(spec)}-${resultLetter}-${sanitizeForFilename(matchId)}.txt`;
       await fs.writeFile(path.join(OUTPUT_PROMPTS_DIR, filename), prompt, 'utf8');
+      await fs.writeJson(path.join(MANIFESTS_DIR, `${ordinalStr}.json`), buildCoverageManifest(combat, matchId), {
+        spaces: 2,
+      });
       entries.push({
         ordinal,
         file: path.join('prompts', filename),
