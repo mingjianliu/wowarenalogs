@@ -59,7 +59,9 @@ type Perturbation =
   | 'duplicated-noise'
   | 'severity-labels'
   | 'shuffled-events'
-  | 'removed-deaths';
+  | 'removed-deaths'
+  | 'wrong-outcome'
+  | 'trivia-focus';
 
 interface CalibrationCase {
   caseId: string;
@@ -155,6 +157,56 @@ function shuffleEvents(promptText: string, rng: () => number): { text: string; d
   return { text: lines.join('\n'), detail: `shuffled ${slice.length} timeline lines out of chronological order` };
 }
 
+/** wrong-outcome → outcomeAlignment: frame the coaching around the OPPOSITE
+ * result. The body stays untouched (no new factual claims), but the opener and
+ * closer now assert a result that contradicts the prompt's match outcome. */
+function wrongOutcome(responseText: string, result: string): { text: string; detail: string } | null {
+  if (result !== 'Win' && result !== 'Loss') return null;
+  const framing =
+    result === 'Win'
+      ? {
+          opener:
+            'Tough loss. This one slipped away, and the defeat traces directly back to your healing decisions — the patterns below are what cost your team the match, and fixing them is how you stop losing games exactly like this one.',
+          closer:
+            'Bottom line: this loss was preventable. Until these leaks are fixed, expect this matchup to keep ending in defeat.',
+        }
+      : {
+          opener:
+            'Great win! This victory was carried by your healing — the notes below are polish on what was already a winning performance, and the takeaway is to keep doing exactly what you did here.',
+          closer:
+            'Bottom line: a well-earned victory. Keep replicating this game plan and this comp will stay a favorable matchup.',
+        };
+  return {
+    text: `${framing.opener}\n\n${responseText.trim()}\n\n${framing.closer}`,
+    detail: `reframed a ${result} as a ${result === 'Win' ? 'loss' : 'win'} in the opener and closer`,
+  };
+}
+
+/** trivia-focus → focusCalibration: make generic low-stakes coaching dominate
+ * the response. No fabricated match facts — the injected section is
+ * deliberately vacuous boilerplate, and the original analysis is demoted to a
+ * "secondary notes" appendix. */
+function triviaFocus(responseText: string): { text: string; detail: string } {
+  const trivia = [
+    '**The single most important area to work on: pre-match preparation and early positioning.**',
+    '',
+    'Before the gates even opened, there was room to optimize. Think carefully about where you stand in the opening seconds: a healer who begins the match two or three yards closer to a pillar has meaningfully better options later. Review your keybinds before queueing — every re-bound ability saves fractions of a second across a match, and those fractions add up. Consider your camera zoom as well; a wider field of view in the opener helps you see swaps earlier.',
+    '',
+    'Equally important is your early filler-cast rhythm. In the first ten seconds, prioritize establishing a comfortable cast cadence over reacting to enemy movement. Many healers rush their first few globals; a calm opener sets the tone for the entire match. Practice your opening sequence in skirmishes until it is automatic.',
+    '',
+    'Finally, spend time on macro hygiene: mouseover macros, focus macros, and a consistent trinket keybind. None of these decided this particular match, but they are the foundation everything else is built on, and they deserve the bulk of your practice time this week.',
+    '',
+    '---',
+    '',
+    'Secondary notes from this specific match (lower priority than the fundamentals above):',
+    '',
+  ].join('\n');
+  return {
+    text: trivia + responseText.trim(),
+    detail: 'prepended a dominant generic-trivia section and demoted the real analysis to secondary notes',
+  };
+}
+
 function removeDeaths(promptText: string): { text: string; detail: string } | null {
   const lines = promptText.split('\n');
   const kept = lines.filter((l) => !/death|died|dies|killed|\[DEATH\]/i.test(l));
@@ -234,6 +286,12 @@ async function main() {
 
     const noDeaths = removeDeaths(prompt);
     if (noDeaths) push('removed-deaths', 'sufficiency', noDeaths.text, response, noDeaths.detail);
+
+    const outcome = wrongOutcome(response, entry.result);
+    if (outcome) push('wrong-outcome', 'outcomeAlignment', prompt, outcome.text, outcome.detail);
+
+    const trivia = triviaFocus(response);
+    push('trivia-focus', 'focusCalibration', prompt, trivia.text, trivia.detail);
   }
 
   // Shuffle case order and assign opaque ids so the scoring agent cannot infer

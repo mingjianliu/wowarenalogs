@@ -4,10 +4,12 @@ description: Use before trusting LLM-judge scores (new judge prompt, new rubric,
 ---
 
 Calibrate the LLM judge against synthetic defects with known ground truth. This is the meta-eval
-for the healer eval pipeline: instead of a human gold standard, we inject defects we control
-(fabricated claims, duplicated noise, loaded labels, shuffled order, deleted death lines) and
+for the healer eval pipeline: instead of a human gold standard, we inject defects we control and
 verify the judge scores each perturbed variant lower than its unmodified sibling on the targeted
-dimension.
+dimension. Seven defect classes cover all seven rubric dimensions: fabricated claims (accuracy),
+duplicated noise lines (noise), loaded severity labels (labelBias), shuffled event order
+(inferenceScaffolding), deleted death lines (sufficiency), opposite-result framing
+(outcomeAlignment — Win/Loss sources only), and trivia-dominant restructuring (focusCalibration).
 
 **When to run:** after any change to the scoring rubric in `eval-healer-prompts.md`, when switching
 the judge to a different model/session type, or before trusting an A/B comparison whose deltas are
@@ -22,7 +24,14 @@ npm run -w @wowarenalogs/tools start:buildJudgeCalibrationSuite
 ```
 
 Output: `packages/tools/local-batch/healer-eval/judge-calibration/cases/case-NN/{prompt.txt,response.txt}`
-(~25–30 cases from 5 source matches), plus `calibration-manifest.json`.
+(up to 8 cases per source match: 1 original + 7 perturbed; `CASE_SOURCE_COUNT` controls sources),
+plus `calibration-manifest.json`.
+
+> Known result to expect (2026-07-04 run): judges reliably detect accuracy/scaffolding/labelBias
+> defects (100%) but NOT noise (67%) or removed-deaths sufficiency (33%) — those two dimensions
+> are graded by `promptQualityCheck` metrics in the real pipeline, so their FAIL here does not
+> block A/B runs whose target dimension is deterministic. The wrong-outcome and trivia-focus
+> classes are new and unvalidated — their first scored run establishes the baseline.
 
 > **BLINDING RULE (non-negotiable):** neither you (the orchestrator) nor any scoring sub-agent may
 > read `calibration-manifest.json` before all scores are written. It maps case ids to the injected

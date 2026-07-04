@@ -189,6 +189,13 @@ Combine two evidence sources:
 2. **Blind judge statistics** (primary for accuracy/outcomeAlignment/focusCalibration/
    inferenceScaffolding): the `start:abCompareStats` table.
 
+The sufficiency and noise rows of the blind judge table are reported for completeness only —
+they carry **no decision weight**. Blind scorers see one prompt at a time with no
+quality-report grounding, so they cannot detect what a builder change added or dropped
+(empirically confirmed: the 2026-07-04 calibration run and the F20 pilot, where judges scored
+sufficiency 4.9 on both arms while measured interrupt coverage differed by 88 points). For those
+dimensions the quality-report diff is the verdict.
+
 Track how many control ordinals are absent from the blind pool — this is the Skipped count K.
 
 Write `packages/tools/local-batch/healer-eval/ab-test/comparison-report.md` using this structure:
