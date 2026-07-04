@@ -340,6 +340,50 @@ export function buildMatchContext(
       `  Your PvP toolkit: ${pvpToolkit.map((t) => (t.used === false ? `${t.label} [UNUSED]` : t.label)).join(', ')}`,
     );
   }
+  // F173: utility-cast value annotations — HP-only cost/benefit can't see these, so state them.
+  // (a) Rescue (370665) that removed a root/snare on the ally <=1.5s after landing = offensive/peel
+  //     utility, not a wasted heal-CD (21% of corpus Rescues; verified 4b3025aa audit).
+  // (b) Chain Heal (1064) repeatedly landing on SELF for a Resto Shaman is usually the no-target UI
+  //     fallback, not a decision — surface it once so the coach recommends a mouseover/focus macro.
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const spellsJson = require('../../../data/spells.json') as Record<string, { type: string }>;
+  const rescueNotes: string[] = [];
+  let selfChainHeals = 0;
+  let chainHeals = 0;
+  for (const e of owner.spellCastEvents ?? []) {
+    if (e.logLine.event !== LogEvent.SPELL_CAST_SUCCESS) continue;
+    if (e.spellId === '370665') {
+      const ally = friends.find((u) => u.id === e.destUnitId);
+      const rootGone = ally?.auraEvents.some(
+        (a) =>
+          a.spellId &&
+          /root|snare|cc/.test(spellsJson[a.spellId]?.type ?? '') &&
+          (a.logLine.event === LogEvent.SPELL_AURA_REMOVED || a.logLine.event === LogEvent.SPELL_AURA_BROKEN) &&
+          a.logLine.timestamp - e.logLine.timestamp >= 0 &&
+          a.logLine.timestamp - e.logLine.timestamp <= 1500,
+      );
+      if (rootGone && ally) {
+        rescueNotes.push(
+          `${fmtTime((e.logLine.timestamp - combat.startTime) / 1000)} Rescue freed ${ally.name} from a root/snare`,
+        );
+      }
+    }
+    if (e.spellId === '1064') {
+      chainHeals++;
+      if (e.destUnitId === owner.id) selfChainHeals++;
+    }
+  }
+  if (rescueNotes.length > 0) {
+    lines.push(
+      `  Utility value: ${rescueNotes.join('; ')} (repositioning/root-break utility — do not judge these casts on HP alone).`,
+    );
+  }
+  if (chainHeals >= 5 && selfChainHeals / chainHeals >= 0.5) {
+    lines.push(
+      `  NOTE: ${selfChainHeals}/${chainHeals} Chain Heals landed on the caster — likely the no-target self-fallback, not deliberate self-priority; a mouseover/focus macro fixes the default target.`,
+    );
+  }
+
   // B141 port: flag the owner's major channels kicked/CC'd mid-cast (largely wasted) — the timeline
   // path shows this per-cast, but the production critical-moments path otherwise only sees the cast.
   const ownerCCForChannels = ccTrinketSummaries.find((s) => s.playerName === owner.name);
