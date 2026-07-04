@@ -59,6 +59,18 @@ const COMMON_WORD_STOPWORDS = new Set(
     'Might',
     'Grace',
     'Hope',
+    'Do',
+    'Go',
+    'Run',
+    'Help',
+    'Stop',
+    'Hold',
+    'Take',
+    'Play',
+    'Use',
+    'Will',
+    'Show',
+    'Keep',
     // NOTE: distinctive single-word abilities (Hex, Judgment, Wrath, Doom, Growl, Rend) were
     // intentionally REMOVED — they are real fabrication targets in exemplar-led coaching, so the
     // spell gate must catch them; they are Capitalized proper nouns unlikely in ordinary prose.
@@ -108,11 +120,20 @@ export function checkClaims(
   // 2. Spells: a KNOWN spell named in the draft that the server did not provide is a fabrication.
   const allowed = new Set(allow.spells);
 
-  // 2a. Single-word spells: O(1) Set lookup against tokens split out of the draft once.
-  // Dedup via Set, but iterate as an Array — `for...of` over a bare Set needs
-  // --downlevelIteration under the workspace's es5 target, which packages/web's tsconfig
-  // doesn't set (surfaces as a new tsc error the first time this file is reachable from web).
-  const tokens = Array.from(new Set(draft.split(/\s+/).map((t) => t.replace(/^[^\w]+|[^\w]+$/g, ''))));
+  // Strip allowed spells (both multi-word and single-word) from a copy of the draft
+  // before single-word tokenization to prevent sub-tokens of allowed multi-word spells
+  // (e.g. "Power" or "Shield" from "Power Word: Shield") from triggering violations.
+  let spellCheckText = draft;
+  const sortedAllowed = [...allow.spells].sort((a, b) => b.length - a.length);
+  for (const allowedSpell of sortedAllowed) {
+    if (!allowedSpell) continue;
+    const escaped = allowedSpell.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp(`\\b${escaped}\\b`, 'gi');
+    spellCheckText = spellCheckText.replace(re, ' ');
+  }
+
+  // 2a. Single-word spells: O(1) Set lookup against tokens split out of the stripped text.
+  const tokens = Array.from(new Set(spellCheckText.split(/\s+/).map((t) => t.replace(/^[^\w]+|[^\w]+$/g, ''))));
   for (const tok of tokens) {
     if (tok && SINGLE_WORD_SPELLS.has(tok) && !allowed.has(tok)) {
       violations.push({ kind: 'spell', text: tok });

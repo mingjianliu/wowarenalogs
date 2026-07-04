@@ -443,7 +443,12 @@ export function emitFriendlyDeathEntries<S>(params: {
       ];
 
       const isLockedOut = summary ? wasLockedOutThroughWindow(summary, death.atSeconds) : false;
-      const forbearance = selfForbearanceActiveAt(dyingUnit, death.atSeconds, matchStartMs);
+      const forbearance = selfForbearanceActiveAt(
+        dyingUnit,
+        Array.from(unitsByName.values()),
+        death.atSeconds,
+        matchStartMs,
+      );
 
       const readyAtDeath = allPlayerCDs
         .filter((cd) => cd.tag === 'Defensive' || cd.tag === 'External')

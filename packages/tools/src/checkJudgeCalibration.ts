@@ -46,7 +46,9 @@ interface ScoreFile {
 
 function dimensionScore(score: ScoreFile, dimension: string): number | null {
   const value = score.prompt?.[dimension] ?? score.response?.[dimension];
-  return typeof value === 'number' ? value : null;
+  if (value === undefined || value === null) return null;
+  const num = Number(value);
+  return !isNaN(num) ? num : null;
 }
 
 async function main() {
@@ -62,13 +64,27 @@ async function main() {
   for (const c of manifest.cases) {
     const scorePath = path.join(SUITE_DIR, SCORES_SUBDIR, `${c.caseId}.json`);
     if (await fs.pathExists(scorePath)) {
-      scores.set(c.caseId, (await fs.readJson(scorePath)) as ScoreFile);
+      try {
+        scores.set(c.caseId, (await fs.readJson(scorePath)) as ScoreFile);
+      } catch (err) {
+        console.error(`Error parsing JSON in score file ${scorePath}: ${err instanceof Error ? err.message : err}`);
+        missingScores++;
+      }
     } else {
       missingScores++;
     }
   }
   if (missingScores > 0) {
     console.warn(`WARNING: ${missingScores}/${manifest.cases.length} cases have no score file yet.`);
+  }
+
+  const coverageRatio = manifest.cases.length > 0 ? (manifest.cases.length - missingScores) / manifest.cases.length : 0;
+  const MIN_COVERAGE = 0.8;
+  if (coverageRatio < MIN_COVERAGE && !process.env.BYPASS_COVERAGE) {
+    console.error(
+      `FAIL: Insufficient score coverage. Scored ${manifest.cases.length - missingScores}/${manifest.cases.length} cases (${(coverageRatio * 100).toFixed(1)}%). Minimum required is ${(MIN_COVERAGE * 100).toFixed(0)}%. Set BYPASS_COVERAGE=true to ignore.`,
+    );
+    process.exit(1);
   }
 
   const originals = new Map<number, CalibrationCase>();

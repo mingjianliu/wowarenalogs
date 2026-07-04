@@ -107,10 +107,11 @@ function isEventLine(line: string): boolean {
   return /^\s*(\[?\d+[:.]?\d*s?\]?|\d+:\d{2})/.test(line) && line.trim().length > 10;
 }
 
-function duplicateNoise(promptText: string, rng: () => number): { text: string; detail: string } {
+function duplicateNoise(promptText: string, rng: () => number): { text: string; detail: string } | null {
   const lines = promptText.split('\n');
   const eventIdx = lines.map((l, i) => (isEventLine(l) ? i : -1)).filter((i) => i >= 0);
   const pool = eventIdx.length > 0 ? eventIdx : lines.map((_, i) => i).filter((i) => lines[i].trim().length > 10);
+  if (pool.length < 5) return null;
   const dupCount = Math.max(5, Math.floor(pool.length * 0.3));
   const chosen = new Set<number>();
   for (let k = 0; k < dupCount * 3 && chosen.size < dupCount; k++) {
@@ -122,10 +123,11 @@ function duplicateNoise(promptText: string, rng: () => number): { text: string; 
   return { text: lines.join('\n'), detail: `duplicated ${sorted.length} event lines in place` };
 }
 
-function addSeverityLabels(promptText: string, rng: () => number): { text: string; detail: string } {
+function addSeverityLabels(promptText: string, rng: () => number): { text: string; detail: string } | null {
   const lines = promptText.split('\n');
   const eventIdx = lines.map((l, i) => (isEventLine(l) ? i : -1)).filter((i) => i >= 0);
   const pool = eventIdx.length > 0 ? eventIdx : lines.map((_, i) => i).filter((i) => lines[i].trim().length > 10);
+  if (pool.length < 5) return null;
   const labelCount = Math.min(10, Math.max(5, Math.floor(pool.length * 0.1)));
   const labels = ['[CRITICAL] ', '[DISASTROUS] ', '[CRITICAL FAILURE] '];
   const chosen = new Set<number>();
@@ -263,6 +265,9 @@ async function main() {
   const pending: { c: CalibrationCase; prompt: string; response: string }[] = [];
 
   for (const { entry, prompt, response } of sources) {
+    // Local RNG per case prevents inter-case RNG propagation and ensures single-case reproducibility
+    const localRng = makeRng(SEED + entry.ordinal);
+
     const push = (
       perturbation: Perturbation,
       targetDimension: string | null,
@@ -283,16 +288,16 @@ async function main() {
 
     push('none', null, prompt, response, 'unmodified original');
 
-    const fab = fabricateClaim(prompt, response, rng);
+    const fab = fabricateClaim(prompt, response, localRng);
     if (fab) push('fabricated-claim', 'accuracy', prompt, fab.text, fab.detail);
 
-    const noise = duplicateNoise(prompt, rng);
-    push('duplicated-noise', 'noise', noise.text, response, noise.detail);
+    const noise = duplicateNoise(prompt, localRng);
+    if (noise) push('duplicated-noise', 'noise', noise.text, response, noise.detail);
 
-    const bias = addSeverityLabels(prompt, rng);
-    push('severity-labels', 'labelBias', bias.text, response, bias.detail);
+    const bias = addSeverityLabels(prompt, localRng);
+    if (bias) push('severity-labels', 'labelBias', bias.text, response, bias.detail);
 
-    const shuffled = shuffleEvents(prompt, rng);
+    const shuffled = shuffleEvents(prompt, localRng);
     if (shuffled) push('shuffled-events', 'inferenceScaffolding', shuffled.text, response, shuffled.detail);
 
     const noDeaths = removeDeaths(prompt);

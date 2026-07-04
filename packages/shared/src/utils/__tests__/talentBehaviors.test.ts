@@ -26,6 +26,16 @@ describe('talentBehaviors — getInterruptImmunityConditions', () => {
     expect(withMettle[0].conditionAuraId).toBe('363916');
     expect(withMettle[0].name).toBe('Obsidian Mettle');
     expect(withMettle[0].conditionName).toBe('Obsidian Scales');
+
+    const withDivineFavor = getInterruptImmunityConditions(['210294']);
+    expect(withDivineFavor).toHaveLength(1);
+    expect(withDivineFavor[0].conditionAuraId).toBe('210294');
+    expect(withDivineFavor[0].name).toBe('Divine Favor');
+
+    const withAegis = getInterruptImmunityConditions(['131558']);
+    expect(withAegis).toHaveLength(1);
+    expect(withAegis[0].conditionAuraId).toBe('131558');
+    expect(withAegis[0].name).toBe("Spiritwalker's Aegis");
   });
 
   it('returns nothing when the owner lacks the talent', () => {

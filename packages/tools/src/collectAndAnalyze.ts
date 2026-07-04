@@ -7,6 +7,7 @@
  * Usage: npm run -w @wowarenalogs/tools start:collectAndAnalyze
  */
 import { spawnSync } from 'child_process';
+import fs from 'fs-extra';
 import path from 'path';
 
 import { loadCollectorConfig, syncDirPath } from './collect/collectorConfig';
@@ -35,6 +36,33 @@ async function main(): Promise<void> {
     });
     console.error(`[collectAndAnalyze] ${msg}`);
     process.exit(1);
+  }
+
+  // Acquire concurrency lock if not already set by wrapper shell script
+  if (process.env.RUN_LOCK_ACQUIRED !== 'true') {
+    const lockPath = path.join(config.syncDir, 'run.lock');
+    try {
+      fs.mkdirSync(lockPath);
+    } catch (err) {
+      console.error(`[collectAndAnalyze] Another process is running (lock exists at ${lockPath}). Exiting.`);
+      process.exit(0);
+    }
+    const releaseLock = () => {
+      try {
+        fs.rmdirSync(lockPath);
+      } catch {
+        // Ignore lock removal errors on shutdown
+      }
+    };
+    process.on('exit', releaseLock);
+    process.on('SIGINT', () => {
+      releaseLock();
+      process.exit(0);
+    });
+    process.on('SIGTERM', () => {
+      releaseLock();
+      process.exit(0);
+    });
   }
   const startedAt = new Date().toISOString();
   let stats: CollectStats = { segmentsFetched: 0, bytesAppended: 0, filesUpdated: [], gaps: [] };

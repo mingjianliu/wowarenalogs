@@ -202,14 +202,14 @@ describe('getPressureThreshold', () => {
     expect(getPressureThreshold(unit)).toBeCloseTo(620_000 * 0.15);
   });
 
-  it('falls back to healer constant (35 000) when no advancedActions and spec is a healer', () => {
+  it('falls back to healer constant (70 000) when no advancedActions and spec is a healer', () => {
     const unit = makeUnit('healer', { spec: CombatUnitSpec.Priest_Holy });
-    expect(getPressureThreshold(unit)).toBe(35_000);
+    expect(getPressureThreshold(unit)).toBe(70_000);
   });
 
-  it('falls back to tank constant (135 000) when no advancedActions and spec is a tank', () => {
+  it('falls back to tank constant (200 000) when no advancedActions and spec is a tank', () => {
     const unit = makeUnit('tank', { spec: CombatUnitSpec.DeathKnight_Blood });
-    expect(getPressureThreshold(unit)).toBe(135_000);
+    expect(getPressureThreshold(unit)).toBe(200_000);
   });
 
   it('falls back to DPS constant (60 000) for DPS specs with no advancedActions', () => {
@@ -831,15 +831,15 @@ describe('detectPanicDefensives', () => {
     const castTime = START + 60_000;
     const cast = makeSpellCastEvent(DIVINE_PROTECTION, castTime, targetId, 'HealerTarget', 'player-1');
 
-    // 50k pre-cast damage — above healer threshold (35k) but below DPS threshold (60k)
+    // 80k pre-cast damage — above healer threshold (70k)
     const target = makeUnit(targetId, {
-      spec: CombatUnitSpec.Priest_Holy, // healer → threshold = 35k
-      damageIn: [makeDamageEvent(castTime - 1_000, 50_000) as any],
+      spec: CombatUnitSpec.Priest_Holy, // healer → threshold = 70k
+      damageIn: [makeDamageEvent(castTime - 1_000, 80_000) as any],
     });
     const caster = makeUnit('player-1', { spellCastEvents: [cast as any] });
     const enemy = makeUnit('enemy-1', { reaction: CombatUnitReaction.Hostile, auraEvents: [] });
 
-    // 50k > 35k healer threshold → not a panic
+    // 80k > 70k healer threshold → not a panic
     expect(detectPanicDefensives([caster, target], [enemy], combat)).toHaveLength(0);
   });
 });
@@ -1272,6 +1272,7 @@ describe('findCheaperDefensiveAlternatives (review C2)', () => {
       expect(isTeamHealCD('64843')).toBe(true); // Divine Hymn — Holy Priest
       expect(isTeamHealCD('115310')).toBe(true); // Revival — Mistweaver
       expect(isTeamHealCD('363534')).toBe(true); // Rewind — Preservation Evoker
+      expect(isTeamHealCD('359816')).toBe(true); // Dream Flight — Preservation Evoker
       expect(isTeamHealCD('388615')).toBe(true); // Restoral — Mistweaver
       expect(isTeamHealCD('325197')).toBe(true); // Invoke Chi-Ji — Mistweaver
       expect(isTeamHealCD('740')).toBe(true); // Tranquility — Restoration Druid

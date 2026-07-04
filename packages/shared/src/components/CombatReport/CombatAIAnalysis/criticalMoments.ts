@@ -121,6 +121,7 @@ export function buildDeathRootCauseTrace(
   dyingUnit: ICombatUnit | undefined,
   matchStartMs: number,
   isOwnerDeath = true,
+  friends: ICombatUnit[] = [],
 ): string[] {
   const traces: string[] = [];
 
@@ -151,7 +152,9 @@ export function buildDeathRootCauseTrace(
   }
 
   // 1. Check each owner major CD: on CD (and why) vs available-but-not-pressed
-  const forbearanceActive = dyingUnit ? selfForbearanceActiveAt(dyingUnit, deathTimeSeconds, matchStartMs) : false;
+  const forbearanceActive = dyingUnit
+    ? selfForbearanceActiveAt(dyingUnit, friends, deathTimeSeconds, matchStartMs)
+    : false;
   const forbearanceNote = `unavailable at death — Forbearance-locked (a shared-Forbearance ability was self-applied within 30s)`;
   for (const cd of ownerCooldowns) {
     // A self-only owner defensive (Barkskin, Frenzied Regen, Divine Protection, …) cannot save a
@@ -480,6 +483,7 @@ export function identifyCriticalMoments(
       dyingUnit,
       matchStartMs,
       isOwnerDeath,
+      friends,
     );
     // The trace lists the LOG OWNER's cooldowns. If the owner already died before this (teammate)
     // death, those cooldowns were not castable — flag it so a later death isn't blamed on a dead healer.

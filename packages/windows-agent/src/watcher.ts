@@ -27,7 +27,14 @@ export function startLogWatcher(opts: {
   let closed = false;
 
   const drain = async (): Promise<void> => {
-    if (flushing || dirty.size === 0) return; // overlap guard: files stay dirty for the next tick
+    if (flushing) {
+      if (quietTimer) clearTimeout(quietTimer);
+      quietTimer = setTimeout(() => {
+        void drain();
+      }, 5000);
+      return;
+    }
+    if (dirty.size === 0) return;
     const files = [...dirty].sort();
     dirty.clear();
     flushing = true;

@@ -42,7 +42,7 @@ function pickAnchor(vc: VerifiedComparison): AnchorCand | null {
     const def = METRIC_REGISTRY[key];
     // Higher=better → low percentile is bad; lower=better → high percentile is bad; context → never an anchor.
     const badness = def.valence === 'higher' ? 1 - s.userPercentile : def.valence === 'lower' ? s.userPercentile : 0;
-    if (badness <= 0) continue;
+    if (badness <= 0.5) continue;
     const cand = { def, badness, pct: Math.round(s.userPercentile * 100), median: s.median, nReal: s.nReal };
     const slot = def.crisisActionable ? 'actionable' : 'fallback';
     if (slot === 'actionable') {

@@ -19,7 +19,7 @@ import { buildMatchContext } from '../../shared/src/components/CombatReport/Comb
 import { isHealerSpec } from '../../shared/src/utils/cooldowns';
 import { parseLogText } from './printMatchPrompts';
 
-const LOGS = '/Users/mingjianliu/code/wowarenalogs/scratch/user-logs/wow';
+const LOGS = path.resolve(__dirname, '../../../scratch/user-logs/wow');
 
 interface Assertion {
   desc: string;
@@ -118,6 +118,10 @@ async function runOneCase(idx: number): Promise<number> {
   const c = CASES[idx];
   const ctx = await buildCtx(c.log, c.combat);
   if (!ctx) {
+    if (process.env.CI === 'true' || process.env.STRICT === 'true') {
+      console.error(`FAIL  ${c.label} (Required golden log missing in strict/CI environment)`);
+      return 1;
+    }
     console.log(`SKIP  ${c.label} (game not found)`);
     return 0;
   }
@@ -150,8 +154,9 @@ async function main() {
       const out = execFileSync('npx', ['ts-node', '--files', __filename, `--case=${i}`], { encoding: 'utf8' });
       process.stdout.write(out);
     } catch (err: unknown) {
-      const e = err as { stdout?: string };
+      const e = err as { stdout?: string; stderr?: string };
       if (e.stdout) process.stdout.write(e.stdout);
+      if (e.stderr) process.stderr.write(e.stderr);
       failures++;
     }
   }

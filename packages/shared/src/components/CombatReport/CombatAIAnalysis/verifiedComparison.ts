@@ -82,15 +82,22 @@ export function buildVerifiedComparison(
       );
       if (withDtps.length >= 40) {
         const d = withDtps.map((r) => (r.metrics as unknown as { teamDtps: number }).teamDtps).sort((a, b) => a - b);
-        const dMed = d[Math.floor(d.length / 2)];
-        pool = withDtps.filter((r) =>
+        const dMed = median(d);
+        const splitPool = withDtps.filter((r) =>
           userTeamDtps <= dMed
             ? (r.metrics as unknown as { teamDtps: number }).teamDtps <= dMed
             : (r.metrics as unknown as { teamDtps: number }).teamDtps > dMed,
         );
-        notes.push(
-          `offensiveIndex percentile is pressure-matched: compared only against cohort games in the same team-damage-taken half (${userTeamDtps <= dMed ? 'lower' : 'higher'}-pressure, n=${pool.length})`,
-        );
+        if (splitPool.length >= THIN) {
+          pool = splitPool;
+          notes.push(
+            `offensiveIndex percentile is pressure-matched: compared only against cohort games in the same team-damage-taken half (${userTeamDtps <= dMed ? 'lower' : 'higher'}-pressure, n=${pool.length})`,
+          );
+        } else {
+          notes.push(
+            `offensiveIndex pressure-matching skipped: too few matches in matched pressure band (n=${splitPool.length})`,
+          );
+        }
       }
     }
     const vals = pool.map((r) => read(r.metrics)).filter((v): v is number => typeof v === 'number');

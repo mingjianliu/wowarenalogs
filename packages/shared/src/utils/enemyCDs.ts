@@ -15,7 +15,7 @@ const BURST_CLUSTER_SECONDS = 10;
 /** Assumed buff duration when spellEffectData has none (prevents zero-width buffs truncating windows) */
 const DEFAULT_BUFF_SECONDS = 8;
 /** A single CD with at least this danger weight forms a burst window on its own (≈ a 2-minute major) */
-const SOLO_WINDOW_MIN_WEIGHT = 2.3;
+const SOLO_WINDOW_MIN_WEIGHT = 1.3;
 
 export interface IEnemyCDCast {
   spellId: string;
@@ -201,7 +201,8 @@ export function reconstructEnemyCDTimeline(
         .reduce((sum, e) => sum + Math.abs(e.effectiveAmount), 0);
 
       const windowSpan = Math.max(windowEnd - windowStart, 1);
-      const damageRatio = avgDamageRate > 0 ? Math.max(windowDamage / windowSpan / avgDamageRate, 0.5) : 0.5;
+      const damageRatio =
+        avgDamageRate > 0 ? Math.min(6.0, Math.max(windowDamage / windowSpan / avgDamageRate, 0.5)) : 0.5;
 
       // Dampening at window start
       const bracket = combat.startInfo?.bracket ?? '3v3';

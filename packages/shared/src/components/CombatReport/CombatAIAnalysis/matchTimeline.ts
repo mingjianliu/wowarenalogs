@@ -1265,8 +1265,13 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       return name.split('-')[0];
     };
     const seenKicks = new Set<string>();
-    for (const unit of [...friends, ...(enemies ?? [])]) {
-      for (const action of [...unit.actionOut, ...unit.actionIn]) {
+    const allUnitsForKicks = friends ? [...friends] : [];
+    if (enemies) {
+      allUnitsForKicks.push(...enemies);
+    }
+    for (const unit of allUnitsForKicks) {
+      const actions = [...(unit.actionOut ?? []), ...(unit.actionIn ?? [])];
+      for (const action of actions) {
         if (action.logLine.event !== LogEvent.SPELL_INTERRUPT) continue;
         const key = `${action.timestamp}|${action.srcUnitName}|${action.destUnitName}|${action.spellId}`;
         if (seenKicks.has(key)) continue;

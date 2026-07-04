@@ -65,7 +65,8 @@ export function computeEnemyInterruptAvailability(enemies: ICombatUnit[], atMs: 
 
     // Most recent successful cast of this interrupt at or before atMs.
     let lastCastMs = -Infinity;
-    for (const e of enemy.spellCastEvents) {
+    const allCasts = [...enemy.spellCastEvents, ...(enemy.petSpellCastEvents ?? [])];
+    for (const e of allCasts) {
       if (e.logLine.event !== LogEvent.SPELL_CAST_SUCCESS) continue;
       if (e.spellId !== def.spellId) continue;
       const ts = e.logLine.timestamp;

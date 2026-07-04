@@ -77,6 +77,7 @@ export const TEAM_HEAL_CD_IDS = new Set<string>([
   '64843', // Divine Hymn — Holy Priest
   '115310', // Revival — Mistweaver Monk
   '363534', // Rewind — Preservation Evoker
+  '359816', // Dream Flight — Preservation Evoker
   '388615', // Restoral — Mistweaver Monk
   '325197', // Invoke Chi-Ji, the Red Crane — Mistweaver Monk
   '740', // Tranquility — Restoration Druid
@@ -127,13 +128,24 @@ export const USABLE_WHILE_CC_SPELL_IDS = new Set<string>([
  */
 export const FORBEARANCE_SECONDS = 30;
 export const FORBEARANCE_GATED_IDS = new Set<string>(['642', '633', '1022', '204018']); // DivineShield, LayOnHands, BoP, Spellwarding
-export function selfForbearanceActiveAt(unit: ICombatUnit, atSeconds: number, matchStartMs: number): boolean {
-  for (const cast of unit.spellCastEvents ?? []) {
-    if (cast.logLine.event !== LogEvent.SPELL_CAST_SUCCESS) continue;
-    if (!cast.spellId || !FORBEARANCE_GATED_IDS.has(cast.spellId)) continue;
-    const castSec = (cast.timestamp - matchStartMs) / 1000;
-    if (castSec > atSeconds || atSeconds - castSec > FORBEARANCE_SECONDS) continue;
-    if (cast.spellId === '642' || cast.destUnitId === unit.id) return true;
+export function selfForbearanceActiveAt(
+  unit: ICombatUnit,
+  allUnits: ICombatUnit[],
+  atSeconds: number,
+  matchStartMs: number,
+): boolean {
+  for (const u of allUnits) {
+    for (const cast of u.spellCastEvents ?? []) {
+      if (cast.logLine.event !== LogEvent.SPELL_CAST_SUCCESS) continue;
+      if (!cast.spellId || !FORBEARANCE_GATED_IDS.has(cast.spellId)) continue;
+      const castSec = (cast.timestamp - matchStartMs) / 1000;
+      if (castSec > atSeconds || atSeconds - castSec > FORBEARANCE_SECONDS) continue;
+      if (cast.spellId === '642') {
+        if (u.id === unit.id) return true;
+      } else {
+        if (cast.destUnitId === unit.id) return true;
+      }
+    }
   }
   return false;
 }
