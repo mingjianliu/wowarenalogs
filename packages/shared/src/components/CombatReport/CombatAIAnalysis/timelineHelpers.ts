@@ -369,11 +369,16 @@ export function channelWasInterrupted(
   endSeconds: number,
 ): boolean {
   if (!ownerSummary) return false;
-  const inWindow = (atSeconds: number) => atSeconds >= startSeconds - 0.5 && atSeconds <= endSeconds + 0.5;
-  return (
-    ownerSummary.ccInstances.some((cc) => inWindow(cc.atSeconds)) ||
-    ownerSummary.interruptInstances.some((i) => inWindow(i.atSeconds))
+  const kickInWindow = ownerSummary.interruptInstances.some(
+    (i) => i.atSeconds >= startSeconds - 0.5 && i.atSeconds <= endSeconds + 0.5,
   );
+  if (kickInWindow) return true;
+
+  return ownerSummary.ccInstances.some((cc) => {
+    const landedInWindow = cc.atSeconds >= startSeconds - 0.5 && cc.atSeconds <= endSeconds + 0.5;
+    const activeAtEnd = endSeconds >= cc.atSeconds - 0.5 && endSeconds <= cc.atSeconds + cc.durationSeconds + 0.5;
+    return landedInWindow || activeAtEnd;
+  });
 }
 
 // ── Module-level constants shared across builders ──────────────────────────
