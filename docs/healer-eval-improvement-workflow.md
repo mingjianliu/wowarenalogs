@@ -66,25 +66,6 @@ Raw combat logs persist from control until conclude — 1–10 MB each, up to ~2
 
 ---
 
-## Gemini CLI Instructions
-
-The workflow is identical; only invocation and tool names differ.
-
-| Claude Code                                | Gemini CLI                                               |
-| ------------------------------------------ | -------------------------------------------------------- |
-| `/eval-healer-prompts [flags]`             | `activate_skill eval-healer-prompts [flags]`             |
-| `/improve-healer-prompts [adopt\|abandon]` | `activate_skill improve-healer-prompts [adopt\|abandon]` |
-
-Flags (`--snapshot`, `--save-snapshot`) and arguments pass through unchanged.
-
-Tool name mapping when following the skills:
-
-| Skill references          | Gemini uses                          |
-| ------------------------- | ------------------------------------ |
-| `Read`                    | `read_file`                          |
-| `Write`                   | `write_file`                         |
-| `Edit`                    | `replace`                            |
-| `Bash`                    | `run_shell_command`                  |
-| `Agent` (spawn sub-agent) | `@generalist` with the inline prompt |
-
-Both skills spawn one sub-agent per match for response generation. In Gemini, dispatch all `@generalist` tasks at once in a single message — do not serialize them — passing the skill's sub-agent template as each message.
+(The former "Gemini CLI Instructions" section was removed 2026-07-04 — the Gemini CLI is no longer
+part of this workflow. The skills are Claude Code commands; any other agent following them should
+map tool names to its own equivalents.)

@@ -2,7 +2,7 @@
 
 This document outlines the standard workflow for evaluating system prompt changes using the stateful A/B Prompt Comparison System.
 
-Any AI agent (Gemini, Antigravity, Claude Code) or human developer proposing changes to WoW Arena Logs' system prompts MUST run this comparison workflow to verify analytical improvements and token efficiency before submitting changes.
+Any AI agent (Claude Code, Antigravity) or human developer proposing changes to WoW Arena Logs' system prompts MUST run this comparison workflow to verify analytical improvements and token efficiency before submitting changes.
 
 > **Scope note:** This harness tests _system prompt text_ changes (`SYSTEM_PROMPT` / `NEW_SYSTEM_PROMPT`). For _prompt-builder code_ changes in the healer pipeline, use `docs/commands/improve-healer-prompts.md` instead; to find what to fix next, use `docs/commands/eval-healer-prompts.md`.
 
@@ -16,7 +16,7 @@ Instead of ad-hoc manual inspections, the system uses a **two-phase stateful bat
 
 ## Anthropic API Key Bypass Option (For All AIs)
 
-For all AI agents (including Gemini, Claude Code, Antigravity, etc.) or human developers, you do not need an Anthropic API key to run evaluations. Instead, you can simply create a new sub-agent and role-play the response AI:
+For all AI agents (Claude Code, Antigravity, etc.) or human developers, you do not need an Anthropic API key to run evaluations. Instead, you can simply create a new sub-agent and role-play the response AI:
 
 1. Generate the prompt text using the CLI or print tools (e.g., `npm run -w @wowarenalogs/tools start:printMatchPrompts -- --count 1 --new-prompt --test-prompt`).
 2. Create a new sub-agent (e.g., via `define_subagent`) and load the system prompts/instructions.
