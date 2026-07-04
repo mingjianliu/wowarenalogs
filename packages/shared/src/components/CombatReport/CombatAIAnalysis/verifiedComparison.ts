@@ -65,13 +65,35 @@ export function buildVerifiedComparison(
   cellRecords: ReferenceVectorRecord[],
   userMetrics: Partial<Record<MetricKey, number | null>>,
   ctx: { player: string; spec: string; bracket: string },
+  /** B151: user's team damage-taken/sec this match — when provided and the cohort carries teamDtps,
+   *  the offensiveIndex percentile is computed against the pressure-matched cohort HALF (split at the
+   *  cohort teamDtps median), since OI's denominator scales with pressure. Other metrics unaffected. */
+  userTeamDtps?: number | null,
 ): VerifiedComparison {
   const withMetrics = cellRecords.filter((r) => r.metrics != null);
   const uniquePlayers = new Set(withMetrics.map((r) => r.playerName)).size;
   const perMetric: Partial<Record<MetricKey, CohortStat>> = {};
   const notes: string[] = [];
   for (const [key, read] of RECORD_KEYS) {
-    const vals = withMetrics.map((r) => read(r.metrics)).filter((v): v is number => typeof v === 'number');
+    let pool = withMetrics;
+    if (key === 'offensiveIndex' && typeof userTeamDtps === 'number') {
+      const withDtps = withMetrics.filter(
+        (r) => typeof (r.metrics as { teamDtps?: number | null } | null)?.teamDtps === 'number',
+      );
+      if (withDtps.length >= 40) {
+        const d = withDtps.map((r) => (r.metrics as unknown as { teamDtps: number }).teamDtps).sort((a, b) => a - b);
+        const dMed = d[Math.floor(d.length / 2)];
+        pool = withDtps.filter((r) =>
+          userTeamDtps <= dMed
+            ? (r.metrics as unknown as { teamDtps: number }).teamDtps <= dMed
+            : (r.metrics as unknown as { teamDtps: number }).teamDtps > dMed,
+        );
+        notes.push(
+          `offensiveIndex percentile is pressure-matched: compared only against cohort games in the same team-damage-taken half (${userTeamDtps <= dMed ? 'lower' : 'higher'}-pressure, n=${pool.length})`,
+        );
+      }
+    }
+    const vals = pool.map((r) => read(r.metrics)).filter((v): v is number => typeof v === 'number');
     if (vals.length === 0) continue; // all null -> omit (no fake)
     const sorted = [...vals].sort((a, b) => a - b);
     const uv = userMetrics[key];

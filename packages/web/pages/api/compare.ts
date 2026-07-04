@@ -77,6 +77,8 @@ interface MatchContext {
   embedding: number[];
   specDisplay: string;
   bracket: string;
+  /** Team damage taken per second — B151 pressure-matching for the offensiveIndex percentile. */
+  teamDtps: number;
 }
 async function resolveMatchContext(matchId: string): Promise<MatchContext | null> {
   const logObjectUrl = await resolveLogObjectUrl(matchId);
@@ -97,8 +99,13 @@ async function resolveMatchContext(matchId: string): Promise<MatchContext | null
   const embedding = vectorizeMatch(raw, model);
   const specDisplay = specToString(owner.spec);
   const bracket = deriveBracket(combat);
+  const durationSeconds = Math.max((combat.endTime - combat.startTime) / 1000, 1);
+  const teamDtps =
+    Object.values(combat.units)
+      .filter((u) => u.type === CombatUnitType.Player && u.reaction === owner.reaction)
+      .reduce((s, u) => s + u.damageIn.reduce((x, d) => x + Math.abs(d.effectiveAmount), 0), 0) / durationSeconds;
 
-  return { owner, raw, embedding, specDisplay, bracket };
+  return { owner, raw, embedding, specDisplay, bracket, teamDtps };
 }
 
 const NUM_RE = /\d+(?:\.\d+)?%?/g;
@@ -139,11 +146,12 @@ async function buildStatsComparison(matchId: string): Promise<VerifiedComparison
   const cellRecords = (await loadCellRecords(specDisplay, bracket)).filter((r) => r.matchId !== matchId);
   if (cellRecords.length < 1) return null;
 
-  const verifiedComparison = buildVerifiedComparison(cellRecords, toUserMetrics(raw), {
-    player: owner.name,
-    spec: specDisplay,
-    bracket,
-  });
+  const verifiedComparison = buildVerifiedComparison(
+    cellRecords,
+    toUserMetrics(raw),
+    { player: owner.name, spec: specDisplay, bracket },
+    ctx.teamDtps,
+  );
 
   // Guard: if buildVerifiedComparison drops all records (null metrics), cohort.n will be 0.
   // Don't call the LLM on a degenerate cohort.
@@ -168,11 +176,12 @@ async function buildExemplarComparison(matchId: string): Promise<ExemplarCompari
   const cellRecords = (await loadCellRecords(specDisplay, bracket)).filter((r) => r.matchId !== matchId);
   if (cellRecords.length < 1) return null;
 
-  const verifiedComparison = buildVerifiedComparison(cellRecords, toUserMetrics(raw), {
-    player: owner.name,
-    spec: specDisplay,
-    bracket,
-  });
+  const verifiedComparison = buildVerifiedComparison(
+    cellRecords,
+    toUserMetrics(raw),
+    { player: owner.name, spec: specDisplay, bracket },
+    ctx.teamDtps,
+  );
   if (verifiedComparison.cohort.n < 1) return null;
 
   return {
