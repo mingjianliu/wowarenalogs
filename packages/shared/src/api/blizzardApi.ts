@@ -60,6 +60,10 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
   const region = route[0];
+  if (!['us', 'eu', 'apac', 'cn'].includes(region)) {
+    res.status(400).json({ error: 'Invalid region' });
+    return;
+  }
   const key = JSON.stringify(route);
   if (apiCache.has(key)) {
     res.status(200).json(apiCache.get(key));
