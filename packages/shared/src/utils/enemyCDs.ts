@@ -12,8 +12,6 @@ import { dangerLabel, isOffensiveSpell, spellDangerWeight } from './spellDanger'
 const MIN_CD_SECONDS = 30;
 /** Two enemy offensive CD casts within this window are considered an aligned burst */
 const BURST_CLUSTER_SECONDS = 10;
-/** Assumed buff duration when spellEffectData has none (prevents zero-width buffs truncating windows) */
-const DEFAULT_BUFF_SECONDS = 8;
 /** A single CD with at least this danger weight forms a burst window on its own (≈ a 2-minute major) */
 const SOLO_WINDOW_MIN_WEIGHT = 1.3;
 
@@ -114,10 +112,7 @@ export function reconstructEnemyCDTimeline(
         castTimeSeconds,
         cooldownSeconds,
         availableAgainAtSeconds: castTimeSeconds + cooldownSeconds,
-        // Missing duration data → assume a conservative 8s buff instead of a zero-width one, so a
-        // duration-less cast doesn't truncate a window at its own cast instant (69/1867 windows were
-        // ended early this way; it also lets the single-CD timing tier match casts made during the buff).
-        buffEndSeconds: castTimeSeconds + (buffDuration > 0 ? buffDuration : DEFAULT_BUFF_SECONDS),
+        buffEndSeconds: castTimeSeconds + buffDuration,
       });
     }
 

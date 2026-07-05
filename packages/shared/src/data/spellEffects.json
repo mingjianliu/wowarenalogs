@@ -405,6 +405,13 @@
     "durationSeconds": 0,
     "dispelType": null
   },
+  "2812": {
+    "spellId": "2812",
+    "name": "Denounce",
+    "cooldownSeconds": 0,
+    "durationSeconds": 8,
+    "dispelType": "Magic"
+  },
   "2823": {
     "spellId": "2823",
     "name": "Deadly Poison",
@@ -747,6 +754,13 @@
     "cooldownSeconds": 120,
     "durationSeconds": 25,
     "dispelType": null
+  },
+  "12654": {
+    "spellId": "12654",
+    "name": "Ignite",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 9,
+    "dispelType": "Magic"
   },
   "12975": {
     "spellId": "12975",
@@ -1148,7 +1162,7 @@
     "spellId": "33891",
     "name": "Incarnation: Tree of Life",
     "cooldownSeconds": 180,
-    "durationSeconds": -0.001,
+    "durationSeconds": 30,
     "dispelType": null
   },
   "34026": {
@@ -1279,13 +1293,6 @@
     "durationSeconds": 5,
     "dispelType": null
   },
-  "47536": {
-    "spellId": "47536",
-    "name": "Rapture",
-    "cooldownSeconds": 90,
-    "durationSeconds": 30,
-    "dispelType": null
-  },
   "47568": {
     "spellId": "47568",
     "name": "Empower Rune Weapon",
@@ -1294,7 +1301,7 @@
       "charges": 2,
       "chargeCooldownSeconds": 30
     },
-    "durationSeconds": 0,
+    "durationSeconds": 20,
     "dispelType": null
   },
   "47585": {
@@ -1467,14 +1474,14 @@
     "spellId": "51533",
     "name": "Feral Spirit",
     "cooldownSeconds": 90,
-    "durationSeconds": 0,
+    "durationSeconds": 15,
     "dispelType": null
   },
   "51690": {
     "spellId": "51690",
     "name": "Killing Spree",
     "cooldownSeconds": 180,
-    "durationSeconds": 0,
+    "durationSeconds": 2,
     "dispelType": null
   },
   "51886": {
@@ -1665,7 +1672,7 @@
     "spellId": "63560",
     "name": "Dark Transformation",
     "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
+    "durationSeconds": 15,
     "dispelType": null
   },
   "64044": {
@@ -2074,13 +2081,6 @@
     "durationSeconds": 1,
     "dispelType": null
   },
-  "105809": {
-    "spellId": "105809",
-    "name": "Holy Avenger",
-    "cooldownSeconds": 180,
-    "durationSeconds": 20,
-    "dispelType": null
-  },
   "106839": {
     "spellId": "106839",
     "name": "Skull Bash",
@@ -2148,13 +2148,6 @@
     "spellId": "108280",
     "name": "Healing Tide Totem",
     "cooldownSeconds": 180,
-    "durationSeconds": 10,
-    "dispelType": null
-  },
-  "108281": {
-    "spellId": "108281",
-    "name": "Ancestral Guidance",
-    "cooldownSeconds": 120,
     "durationSeconds": 10,
     "dispelType": null
   },
@@ -2324,14 +2317,14 @@
     "spellId": "114049",
     "name": "Ascendance",
     "cooldownSeconds": 180,
-    "durationSeconds": 0,
+    "durationSeconds": 15,
     "dispelType": null
   },
   "114050": {
     "spellId": "114050",
     "name": "Ascendance",
     "cooldownSeconds": 180,
-    "durationSeconds": 0,
+    "durationSeconds": 15,
     "dispelType": null
   },
   "114051": {
@@ -2387,13 +2380,6 @@
     "durationSeconds": 8,
     "dispelType": null
   },
-  "115176": {
-    "spellId": "115176",
-    "name": "Zen Meditation",
-    "cooldownSeconds": 300,
-    "durationSeconds": 8,
-    "dispelType": null
-  },
   "115181": {
     "spellId": "115181",
     "name": "Breath of Fire",
@@ -2412,7 +2398,7 @@
     "spellId": "115192",
     "name": "Subterfuge",
     "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
+    "durationSeconds": 3,
     "dispelType": null
   },
   "115203": {
@@ -2758,6 +2744,13 @@
     "durationSeconds": 10,
     "dispelType": null
   },
+  "130616": {
+    "spellId": "130616",
+    "name": "Fear",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 20,
+    "dispelType": "Magic"
+  },
   "131894": {
     "spellId": "131894",
     "name": "A Murder of Crows",
@@ -2776,7 +2769,7 @@
     "spellId": "132158",
     "name": "Nature's Swiftness",
     "cooldownSeconds": 60,
-    "durationSeconds": -0.001,
+    "durationSeconds": 15,
     "dispelType": "Magic"
   },
   "132168": {
@@ -2944,25 +2937,11 @@
     "durationSeconds": 0,
     "dispelType": null
   },
-  "152173": {
-    "spellId": "152173",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
   "152175": {
     "spellId": "152175",
     "name": "Whirling Dragon Punch",
     "cooldownSeconds": 35,
     "durationSeconds": 1,
-    "dispelType": null
-  },
-  "152279": {
-    "spellId": "152279",
-    "name": "Breath of Sindragosa",
-    "cooldownSeconds": 120,
-    "durationSeconds": -0.001,
     "dispelType": null
   },
   "152953": {
@@ -3060,9 +3039,9 @@
     "durationSeconds": 60,
     "dispelType": "Magic"
   },
-  "162480": {
-    "spellId": "162480",
-    "name": "Steel Trap",
+  "162264": {
+    "spellId": "162264",
+    "name": "Metamorphosis",
     "cooldownSeconds": 999.999,
     "durationSeconds": 20,
     "dispelType": null
@@ -3287,7 +3266,7 @@
     "spellId": "191427",
     "name": "Metamorphosis",
     "cooldownSeconds": 120,
-    "durationSeconds": 0,
+    "durationSeconds": 30,
     "dispelType": null
   },
   "191634": {
@@ -3362,13 +3341,6 @@
     "name": "Cobra Shot",
     "cooldownSeconds": 0,
     "durationSeconds": 0,
-    "dispelType": null
-  },
-  "193530": {
-    "spellId": "193530",
-    "name": "Aspect of the Wild",
-    "cooldownSeconds": 120,
-    "durationSeconds": 20,
     "dispelType": null
   },
   "194153": {
@@ -3502,13 +3474,6 @@
     "durationSeconds": 0,
     "dispelType": null
   },
-  "197862": {
-    "spellId": "197862",
-    "name": "Archangel",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
   "197871": {
     "spellId": "197871",
     "name": "Dark Archangel",
@@ -3530,13 +3495,6 @@
     "durationSeconds": 2,
     "dispelType": null
   },
-  "198065": {
-    "spellId": "198065",
-    "name": "Prismatic Cloak",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 2,
-    "dispelType": null
-  },
   "198067": {
     "spellId": "198067",
     "name": "Fire Elemental",
@@ -3555,26 +3513,12 @@
     "durationSeconds": -0.001,
     "dispelType": null
   },
-  "198111": {
-    "spellId": "198111",
-    "name": "Temporal Shield",
-    "cooldownSeconds": 45,
-    "durationSeconds": 4,
-    "dispelType": "Magic"
-  },
   "198144": {
     "spellId": "198144",
     "name": "Ice Form",
     "cooldownSeconds": 60,
     "durationSeconds": 12,
     "dispelType": "Magic"
-  },
-  "198158": {
-    "spellId": "198158",
-    "name": "Mass Invisibility",
-    "cooldownSeconds": 60,
-    "durationSeconds": 10,
-    "dispelType": null
   },
   "198589": {
     "spellId": "198589",
@@ -3629,11 +3573,11 @@
     "durationSeconds": 4,
     "dispelType": null
   },
-  "199085": {
-    "spellId": "199085",
-    "name": "Warpath",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 3,
+  "199261": {
+    "spellId": "199261",
+    "name": "Death Wish",
+    "cooldownSeconds": 4,
+    "durationSeconds": 15,
     "dispelType": null
   },
   "199448": {
@@ -3784,13 +3728,6 @@
     "durationSeconds": 3,
     "dispelType": null
   },
-  "202248": {
-    "spellId": "202248",
-    "name": "Guided Meditation",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 8,
-    "dispelType": null
-  },
   "202274": {
     "spellId": "202274",
     "name": "Hot Trub",
@@ -3811,6 +3748,13 @@
     "cooldownSeconds": 999.999,
     "durationSeconds": 3,
     "dispelType": null
+  },
+  "202347": {
+    "spellId": "202347",
+    "name": "Stellar Flare",
+    "cooldownSeconds": 0,
+    "durationSeconds": 24,
+    "dispelType": "Magic"
   },
   "202425": {
     "spellId": "202425",
@@ -3944,7 +3888,7 @@
     "spellId": "205025",
     "name": "Presence of Mind",
     "cooldownSeconds": 45,
-    "durationSeconds": -0.001,
+    "durationSeconds": 15,
     "dispelType": null
   },
   "205180": {
@@ -3960,13 +3904,6 @@
     "cooldownSeconds": 30,
     "durationSeconds": 30,
     "dispelType": "Magic"
-  },
-  "205369": {
-    "spellId": "205369",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
   },
   "205629": {
     "spellId": "205629",
@@ -4072,13 +4009,6 @@
     "name": "Sigil of Misery",
     "cooldownSeconds": 999.999,
     "durationSeconds": 15,
-    "dispelType": null
-  },
-  "207736": {
-    "spellId": "207736",
-    "name": "Shadowy Duel",
-    "cooldownSeconds": 120,
-    "durationSeconds": 5,
     "dispelType": null
   },
   "207771": {
@@ -4420,6 +4350,13 @@
     "durationSeconds": 12,
     "dispelType": null
   },
+  "217694": {
+    "spellId": "217694",
+    "name": "Living Bomb",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 2,
+    "dispelType": "Magic"
+  },
   "217824": {
     "spellId": "217824",
     "name": "Shield of Virtue",
@@ -4492,13 +4429,6 @@
     "name": "Divine Steed",
     "cooldownSeconds": 0,
     "durationSeconds": 3,
-    "dispelType": null
-  },
-  "226943": {
-    "spellId": "226943",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
     "dispelType": null
   },
   "227847": {
@@ -4621,13 +4551,6 @@
     "durationSeconds": 12,
     "dispelType": null
   },
-  "236321": {
-    "spellId": "236321",
-    "name": "War Banner",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 15,
-    "dispelType": null
-  },
   "237945": {
     "spellId": "237945",
     "name": "Blood of the Father",
@@ -4669,6 +4592,13 @@
     "cooldownSeconds": 420,
     "durationSeconds": 15,
     "dispelType": null
+  },
+  "244813": {
+    "spellId": "244813",
+    "name": "Living Bomb",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 2,
+    "dispelType": "Magic"
   },
   "247454": {
     "spellId": "247454",
@@ -4815,6 +4745,13 @@
     "durationSeconds": 6,
     "dispelType": null
   },
+  "260402": {
+    "spellId": "260402",
+    "name": "Double Tap",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 15,
+    "dispelType": null
+  },
   "260881": {
     "spellId": "260881",
     "name": "Spirit Wolf",
@@ -4861,6 +4798,13 @@
     "durationSeconds": 15,
     "dispelType": null
   },
+  "266107": {
+    "spellId": "266107",
+    "name": "Thirst For Blood",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 15,
+    "dispelType": null
+  },
   "266779": {
     "spellId": "266779",
     "name": "Coordinated Assault",
@@ -4873,13 +4817,6 @@
     "name": "Demonic Strength",
     "cooldownSeconds": 60,
     "durationSeconds": 20,
-    "dispelType": null
-  },
-  "267218": {
-    "spellId": "267218",
-    "name": "Nether Portal",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 15,
     "dispelType": null
   },
   "268358": {
@@ -4895,6 +4832,13 @@
     "cooldownSeconds": 30,
     "durationSeconds": 60,
     "dispelType": "Curse"
+  },
+  "271466": {
+    "spellId": "271466",
+    "name": "Luminous Barrier",
+    "cooldownSeconds": 180,
+    "durationSeconds": 10,
+    "dispelType": "Magic"
   },
   "271877": {
     "spellId": "271877",
@@ -5005,20 +4949,6 @@
     "durationSeconds": 0,
     "dispelType": null
   },
-  "285515": {
-    "spellId": "285515",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
-  "287254": {
-    "spellId": "287254",
-    "name": "Dead of Winter",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 4,
-    "dispelType": "Magic"
-  },
   "287712": {
     "spellId": "287712",
     "name": "Haymaker",
@@ -5037,7 +4967,7 @@
     "spellId": "288849",
     "name": "Stitchmaster",
     "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
+    "durationSeconds": 30,
     "dispelType": null
   },
   "289655": {
@@ -5128,6 +5058,13 @@
     "durationSeconds": 15,
     "dispelType": null
   },
+  "317929": {
+    "spellId": "317929",
+    "name": "Aura Mastery",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 8,
+    "dispelType": null
+  },
   "318038": {
     "spellId": "318038",
     "name": "Flametongue Weapon",
@@ -5195,76 +5132,6 @@
     "durationSeconds": 25,
     "dispelType": null
   },
-  "322431": {
-    "spellId": "322431",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
-  "322442": {
-    "spellId": "322442",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
-  "322457": {
-    "spellId": "322457",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
-  "322458": {
-    "spellId": "322458",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
-  "322459": {
-    "spellId": "322459",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
-  "322460": {
-    "spellId": "322460",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
-  "322461": {
-    "spellId": "322461",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
-  "322462": {
-    "spellId": "322462",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
-  "322463": {
-    "spellId": "322463",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
-  "322464": {
-    "spellId": "322464",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
   "322507": {
     "spellId": "322507",
     "name": "Celestial Brew",
@@ -5295,13 +5162,6 @@
     "name": "Anima Bolt",
     "cooldownSeconds": 2,
     "durationSeconds": 0,
-    "dispelType": null
-  },
-  "324149": {
-    "spellId": "324149",
-    "name": "Flayed Shot",
-    "cooldownSeconds": 30,
-    "durationSeconds": 18,
     "dispelType": null
   },
   "324263": {
@@ -5409,6 +5269,13 @@
     "durationSeconds": 15,
     "dispelType": "Magic"
   },
+  "333957": {
+    "spellId": "333957",
+    "name": "Feral Spirit",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 15,
+    "dispelType": null
+  },
   "334275": {
     "spellId": "334275",
     "name": "Curse of Exhaustion",
@@ -5458,13 +5325,6 @@
     "durationSeconds": 16,
     "dispelType": "Magic"
   },
-  "343142": {
-    "spellId": "343142",
-    "name": "Dreadblades",
-    "cooldownSeconds": 120,
-    "durationSeconds": 10,
-    "dispelType": null
-  },
   "343223": {
     "spellId": "343223",
     "name": "Berserk",
@@ -5476,7 +5336,7 @@
     "spellId": "343294",
     "name": "Soul Reaper",
     "cooldownSeconds": 15,
-    "durationSeconds": 0,
+    "durationSeconds": 5,
     "dispelType": null
   },
   "343527": {
@@ -5491,13 +5351,6 @@
     "name": "Final Reckoning",
     "cooldownSeconds": 60,
     "durationSeconds": 12,
-    "dispelType": null
-  },
-  "344566": {
-    "spellId": "344566",
-    "name": "Rapid Contagion",
-    "cooldownSeconds": 30,
-    "durationSeconds": 10,
     "dispelType": null
   },
   "345231": {
@@ -5541,6 +5394,13 @@
     "cooldownSeconds": 20,
     "durationSeconds": 6,
     "dispelType": null
+  },
+  "353084": {
+    "spellId": "353084",
+    "name": "Ring of Fire",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 3,
+    "dispelType": "Magic"
   },
   "353319": {
     "spellId": "353319",
@@ -5650,20 +5510,6 @@
     "cooldownSeconds": 999.999,
     "durationSeconds": 3,
     "dispelType": "Poison"
-  },
-  "356738": {
-    "spellId": "356738",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
-  "356824": {
-    "spellId": "356824",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
   },
   "357021": {
     "spellId": "357021",
@@ -5821,7 +5667,7 @@
     "spellId": "360966",
     "name": "Spearhead",
     "cooldownSeconds": 90,
-    "durationSeconds": 0,
+    "durationSeconds": 12,
     "dispelType": null
   },
   "360995": {
@@ -5840,13 +5686,6 @@
     "name": "Midnight",
     "cooldownSeconds": 180,
     "durationSeconds": 0,
-    "dispelType": null
-  },
-  "362486": {
-    "spellId": "362486",
-    "name": "Preserve Nature",
-    "cooldownSeconds": 45,
-    "durationSeconds": 8,
     "dispelType": null
   },
   "362699": {
@@ -5929,6 +5768,13 @@
     "name": "Summon Blasphemy",
     "cooldownSeconds": 0,
     "durationSeconds": 0.25,
+    "dispelType": null
+  },
+  "368091": {
+    "spellId": "368091",
+    "name": "Infected Bite",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 12,
     "dispelType": null
   },
   "368970": {
@@ -6036,6 +5882,13 @@
     "durationSeconds": 0,
     "dispelType": null
   },
+  "374776": {
+    "spellId": "374776",
+    "name": "Tightening Grasp",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 3,
+    "dispelType": null
+  },
   "374968": {
     "spellId": "374968",
     "name": "Time Spiral",
@@ -6064,13 +5917,6 @@
     "durationSeconds": 7,
     "dispelType": "Magic"
   },
-  "375939": {
-    "spellId": "375939",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
-    "dispelType": null
-  },
   "375986": {
     "spellId": "375986",
     "name": "Primordial Wave",
@@ -6091,13 +5937,6 @@
     "cooldownSeconds": 999.999,
     "durationSeconds": 6,
     "dispelType": null
-  },
-  "376103": {
-    "spellId": "376103",
-    "name": "Radiant Spark",
-    "cooldownSeconds": 30,
-    "durationSeconds": 12,
-    "dispelType": "Magic"
   },
   "377048": {
     "spellId": "377048",
@@ -6138,7 +5977,7 @@
     "spellId": "378081",
     "name": "Nature's Swiftness",
     "cooldownSeconds": 60,
-    "durationSeconds": -0.001,
+    "durationSeconds": 15,
     "dispelType": "Magic"
   },
   "378441": {
@@ -6204,13 +6043,6 @@
     "durationSeconds": 5,
     "dispelType": "Magic"
   },
-  "383009": {
-    "spellId": "383009",
-    "name": "Stormkeeper",
-    "cooldownSeconds": 60,
-    "durationSeconds": 15,
-    "dispelType": null
-  },
   "383013": {
     "spellId": "383013",
     "name": "Poison Cleansing Totem",
@@ -6229,7 +6061,7 @@
     "spellId": "383269",
     "name": "Graveyard",
     "cooldownSeconds": 0,
-    "durationSeconds": 0,
+    "durationSeconds": 12,
     "dispelType": null
   },
   "383328": {
@@ -6275,7 +6107,7 @@
     "spellId": "384352",
     "name": "Doom Winds",
     "cooldownSeconds": 60,
-    "durationSeconds": 0,
+    "durationSeconds": 8,
     "dispelType": null
   },
   "385059": {
@@ -6291,13 +6123,6 @@
     "cooldownSeconds": 999.999,
     "durationSeconds": 5,
     "dispelType": "Magic"
-  },
-  "385408": {
-    "spellId": "385408",
-    "name": "Sepsis",
-    "cooldownSeconds": 90,
-    "durationSeconds": 10,
-    "dispelType": "Poison"
   },
   "385627": {
     "spellId": "385627",
@@ -6325,6 +6150,13 @@
     "name": "Shield Charge",
     "cooldownSeconds": 45,
     "durationSeconds": 0,
+    "dispelType": null
+  },
+  "385954": {
+    "spellId": "385954",
+    "name": "Shield Charge",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 4,
     "dispelType": null
   },
   "386071": {
@@ -6464,17 +6296,6 @@
     "durationSeconds": 4,
     "dispelType": null
   },
-  "389774": {
-    "spellId": "389774",
-    "name": "Bladestorm",
-    "cooldownSeconds": 90,
-    "charges": {
-      "charges": 1,
-      "chargeCooldownSeconds": 90
-    },
-    "durationSeconds": 6,
-    "dispelType": null
-  },
   "389831": {
     "spellId": "389831",
     "name": "Snowdrift",
@@ -6510,6 +6331,13 @@
     },
     "durationSeconds": 20,
     "dispelType": null
+  },
+  "390612": {
+    "spellId": "390612",
+    "name": "Frost Bomb",
+    "cooldownSeconds": 15,
+    "durationSeconds": 5,
+    "dispelType": "Magic"
   },
   "391109": {
     "spellId": "391109",
@@ -6553,13 +6381,6 @@
     "durationSeconds": 6,
     "dispelType": "Magic"
   },
-  "393047": {
-    "spellId": "393047",
-    "name": "Skytouch",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 6,
-    "dispelType": null
-  },
   "393456": {
     "spellId": "393456",
     "name": "Entrapment",
@@ -6593,13 +6414,6 @@
     "name": "Flagellation",
     "cooldownSeconds": 999.999,
     "durationSeconds": 12,
-    "dispelType": null
-  },
-  "394902": {
-    "spellId": "394902",
-    "name": "NAME_NOT_FOUND",
-    "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
     "dispelType": null
   },
   "395022": {
@@ -6637,6 +6451,13 @@
     "durationSeconds": 2.5,
     "dispelType": null
   },
+  "397364": {
+    "spellId": "397364",
+    "name": "Thunderous Roar",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 8,
+    "dispelType": null
+  },
   "399491": {
     "spellId": "399491",
     "name": "Sheilun's Gift",
@@ -6655,7 +6476,7 @@
     "spellId": "400456",
     "name": "Salvo",
     "cooldownSeconds": 999.999,
-    "durationSeconds": 0,
+    "durationSeconds": 30,
     "dispelType": null
   },
   "403208": {
@@ -6671,6 +6492,13 @@
     "cooldownSeconds": 120,
     "durationSeconds": 6,
     "dispelType": null
+  },
+  "403695": {
+    "spellId": "403695",
+    "name": "Truth's Wake",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 9,
+    "dispelType": "Magic"
   },
   "403876": {
     "spellId": "403876",
@@ -6714,6 +6542,13 @@
     "durationSeconds": 10,
     "dispelType": null
   },
+  "408544": {
+    "spellId": "408544",
+    "name": "Seismic Slam",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 2,
+    "dispelType": null
+  },
   "408558": {
     "spellId": "408558",
     "name": "Phase Shift",
@@ -6739,17 +6574,17 @@
     "durationSeconds": 0,
     "dispelType": null
   },
+  "410201": {
+    "spellId": "410201",
+    "name": "Searing Glare",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 4,
+    "dispelType": "Magic"
+  },
   "410358": {
     "spellId": "410358",
     "name": "Anti-Magic Shell",
     "cooldownSeconds": 60,
-    "durationSeconds": 5,
-    "dispelType": null
-  },
-  "410406": {
-    "spellId": "410406",
-    "name": "Wild Attunement",
-    "cooldownSeconds": 999.999,
     "durationSeconds": 5,
     "dispelType": null
   },
@@ -6766,6 +6601,13 @@
     "cooldownSeconds": 0,
     "durationSeconds": 3600,
     "dispelType": "Magic"
+  },
+  "414273": {
+    "spellId": "414273",
+    "name": "Hand of Divinity",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 20,
+    "dispelType": null
   },
   "414658": {
     "spellId": "414658",
@@ -6791,6 +6633,20 @@
     "cooldownSeconds": 999.999,
     "durationSeconds": 10,
     "dispelType": "Magic"
+  },
+  "415246": {
+    "spellId": "415246",
+    "name": "Divine Plea",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 30,
+    "dispelType": "Magic"
+  },
+  "417537": {
+    "spellId": "417537",
+    "name": "Oblivion",
+    "cooldownSeconds": 45,
+    "durationSeconds": 3,
+    "dispelType": null
   },
   "421453": {
     "spellId": "421453",
@@ -6855,6 +6711,13 @@
     "durationSeconds": 0,
     "dispelType": "Magic"
   },
+  "432180": {
+    "spellId": "432180",
+    "name": "Dance of the Wind",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 10,
+    "dispelType": null
+  },
   "432459": {
     "spellId": "432459",
     "name": "Holy Bulwark",
@@ -6894,6 +6757,17 @@
     "durationSeconds": 12,
     "dispelType": "Poison"
   },
+  "433874": {
+    "spellId": "433874",
+    "name": "Deep Breath",
+    "cooldownSeconds": 120,
+    "charges": {
+      "charges": 1,
+      "chargeCooldownSeconds": 120
+    },
+    "durationSeconds": 3.75,
+    "dispelType": null
+  },
   "434802": {
     "spellId": "434802",
     "name": "Horrifying Shrill",
@@ -6915,11 +6789,32 @@
     "durationSeconds": 0,
     "dispelType": null
   },
+  "442204": {
+    "spellId": "442204",
+    "name": "Breath of Eons",
+    "cooldownSeconds": 120,
+    "durationSeconds": 3.75,
+    "dispelType": null
+  },
   "442210": {
     "spellId": "442210",
     "name": "Silken Restraints",
     "cooldownSeconds": 999.999,
     "durationSeconds": 15,
+    "dispelType": null
+  },
+  "442726": {
+    "spellId": "442726",
+    "name": "Malevolence",
+    "cooldownSeconds": 60,
+    "durationSeconds": 20,
+    "dispelType": null
+  },
+  "443026": {
+    "spellId": "443026",
+    "name": "General's Phalanx",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 10,
     "dispelType": null
   },
   "443028": {
@@ -6936,6 +6831,31 @@
     "durationSeconds": 4,
     "dispelType": null
   },
+  "443454": {
+    "spellId": "443454",
+    "name": "Ancestral Swiftness",
+    "cooldownSeconds": 30,
+    "durationSeconds": -0.001,
+    "dispelType": "Magic"
+  },
+  "444347": {
+    "spellId": "444347",
+    "name": "Death Charge",
+    "cooldownSeconds": 45,
+    "charges": {
+      "charges": 1,
+      "chargeCooldownSeconds": 45
+    },
+    "durationSeconds": 10,
+    "dispelType": null
+  },
+  "444741": {
+    "spellId": "444741",
+    "name": "Anti-Magic Shell",
+    "cooldownSeconds": 60,
+    "durationSeconds": 5,
+    "dispelType": null
+  },
   "444743": {
     "spellId": "444743",
     "name": "Fireball Volley",
@@ -6943,11 +6863,29 @@
     "durationSeconds": 0,
     "dispelType": null
   },
+  "445134": {
+    "spellId": "445134",
+    "name": "Shape of Flame",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 4,
+    "dispelType": null
+  },
   "445465": {
     "spellId": "445465",
     "name": "Wither",
     "cooldownSeconds": 999.999,
     "durationSeconds": 0,
+    "dispelType": null
+  },
+  "446035": {
+    "spellId": "446035",
+    "name": "Bladestorm",
+    "cooldownSeconds": 90,
+    "charges": {
+      "charges": 1,
+      "chargeCooldownSeconds": 90
+    },
+    "durationSeconds": 6,
     "dispelType": null
   },
   "446657": {
@@ -6968,6 +6906,13 @@
     "spellId": "448861",
     "name": "Ancestral Swiftness",
     "cooldownSeconds": 999.999,
+    "durationSeconds": 0,
+    "dispelType": null
+  },
+  "449700": {
+    "spellId": "449700",
+    "name": "Gravity Lapse",
+    "cooldownSeconds": 60,
     "durationSeconds": 0,
     "dispelType": null
   },
@@ -6992,6 +6937,13 @@
     "durationSeconds": 0,
     "dispelType": null
   },
+  "451517": {
+    "spellId": "451517",
+    "name": "Catch Out",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 3,
+    "dispelType": "Magic"
+  },
   "452099": {
     "spellId": "452099",
     "name": "Congealed Darkness",
@@ -7013,12 +6965,47 @@
     "durationSeconds": 8,
     "dispelType": null
   },
+  "454787": {
+    "spellId": "454787",
+    "name": "Ice Prison",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 4,
+    "dispelType": null
+  },
+  "454863": {
+    "spellId": "454863",
+    "name": "Lesser Anti-Magic Shell",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 5,
+    "dispelType": null
+  },
   "455630": {
     "spellId": "455630",
     "name": "Surging Totem",
     "cooldownSeconds": 999.999,
     "durationSeconds": 0,
     "dispelType": null
+  },
+  "456499": {
+    "spellId": "456499",
+    "name": "Absolute Serenity",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 4,
+    "dispelType": null
+  },
+  "460392": {
+    "spellId": "460392",
+    "name": "Polymorph",
+    "cooldownSeconds": 0,
+    "durationSeconds": 60,
+    "dispelType": "Magic"
+  },
+  "461489": {
+    "spellId": "461489",
+    "name": "Polymorph",
+    "cooldownSeconds": 0,
+    "durationSeconds": 60,
+    "dispelType": "Magic"
   },
   "461796": {
     "spellId": "461796",
@@ -7053,6 +7040,13 @@
     "name": "Thunderstrike Ward",
     "cooldownSeconds": 0,
     "durationSeconds": 3600,
+    "dispelType": null
+  },
+  "462823": {
+    "spellId": "462823",
+    "name": "General's Bulwark",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 10,
     "dispelType": null
   },
   "466772": {
@@ -7143,6 +7137,13 @@
     "durationSeconds": 5,
     "dispelType": null
   },
+  "473909": {
+    "spellId": "473909",
+    "name": "Ancient of Lore",
+    "cooldownSeconds": 90,
+    "durationSeconds": 12,
+    "dispelType": null
+  },
   "474421": {
     "spellId": "474421",
     "name": "Intimidation",
@@ -7192,6 +7193,13 @@
     "durationSeconds": 0,
     "dispelType": null
   },
+  "1217789": {
+    "spellId": "1217789",
+    "name": "Grievous Injury",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 10,
+    "dispelType": null
+  },
   "1217989": {
     "spellId": "1217989",
     "name": "Felshield",
@@ -7199,11 +7207,32 @@
     "durationSeconds": -0.001,
     "dispelType": null
   },
+  "1218125": {
+    "spellId": "1218125",
+    "name": "Primordial Storm",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 15,
+    "dispelType": null
+  },
+  "1219209": {
+    "spellId": "1219209",
+    "name": "Berserker Roar",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 10,
+    "dispelType": null
+  },
   "1219480": {
     "spellId": "1219480",
     "name": "Ascendance",
     "cooldownSeconds": 180,
     "durationSeconds": 15,
+    "dispelType": null
+  },
+  "1221107": {
+    "spellId": "1221107",
+    "name": "Overpowered Barrier",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 3,
     "dispelType": null
   },
   "1221167": {
@@ -7287,11 +7316,25 @@
     "durationSeconds": 6,
     "dispelType": null
   },
+  "1233429": {
+    "spellId": "1233429",
+    "name": "Price of Progress",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": -0.001,
+    "dispelType": null
+  },
   "1233448": {
     "spellId": "1233448",
     "name": "Dark Transformation",
     "cooldownSeconds": 45,
     "durationSeconds": 15,
+    "dispelType": null
+  },
+  "1233452": {
+    "spellId": "1233452",
+    "name": "Nether Flux",
+    "cooldownSeconds": 999.999,
+    "durationSeconds": 12,
     "dispelType": null
   },
   "1234195": {
@@ -8301,12 +8344,5 @@
     "cooldownSeconds": 999.999,
     "durationSeconds": -0.001,
     "dispelType": null
-    },
-    "204336": {
-    "spellId": "204336",
-    "name": "Grounding Totem",
-    "cooldownSeconds": 30,
-    "durationSeconds": 3,
-    "dispelType": null
-    }
-    }
+  }
+}

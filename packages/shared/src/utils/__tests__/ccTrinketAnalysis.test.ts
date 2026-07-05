@@ -132,7 +132,7 @@ describe('analyzePlayerCCAndTrinket — root/disarm/interrupt tracking', () => {
     expect(result.interruptInstances[0].kickSpellId).toBe('1766');
     expect(result.interruptInstances[0].kickSpellName).toBe('Kick');
     expect(result.interruptInstances[0].interruptedSpellName).toBe('Frostbolt');
-    expect(result.interruptInstances[0].lockoutDurationSeconds).toBe(5);
+    expect(result.interruptInstances[0].lockoutDurationSeconds).toBe(3);
     expect(result.interruptInstances[0].atSeconds).toBeCloseTo(20);
   });
 

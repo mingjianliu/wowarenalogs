@@ -324,7 +324,46 @@ function findCooldown(id: number): number {
   return ((maybeMatch?.cooldown || maybeMatch?.categoryCooldown) ?? 999999) / 1000;
 }
 
+const MANUAL_DURATION_OVERRIDES: Record<string, number> = {
+  '33891': 30, // Incarnation: Tree of Life
+  '132158': 15, // Nature's Swiftness
+  '378081': 15, // Nature's Swiftness
+  '47568': 20, // Empower Rune Weapon
+  '51533': 15, // Feral Spirit
+  '51690': 2, // Killing Spree
+  '63560': 15, // Dark Transformation
+  '114049': 15, // Ascendance
+  '114050': 15, // Ascendance
+  '115192': 3, // Subterfuge
+  '152173': 15, // Seraphim
+  '191427': 30, // Metamorphosis
+  '288849': 30, // Stitchmaster
+  '343294': 5, // Soul Reaper
+  '360966': 12, // Spearhead
+  '383269': 12, // Graveyard
+  '384352': 8, // Doom Winds
+  '400456': 30, // Salvo
+  '205025': 15, // Presence of Mind
+  // Convoke the Spirits variants
+  '322431': 4,
+  '322442': 4,
+  '322457': 4,
+  '322458': 4,
+  '322459': 4,
+  '322460': 4,
+  '322461': 4,
+  '322462': 4,
+  '322463': 4,
+  '322464': 4,
+  '394902': 4,
+};
+
 function findDuration(id: number): number {
+  const strId = id.toString();
+  if (strId in MANUAL_DURATION_OVERRIDES) {
+    return MANUAL_DURATION_OVERRIDES[strId];
+  }
+
   const matchMiscInfo = spellMiscBySpellId.get(id);
   if (!matchMiscInfo) {
     console.log(`Missing duration ${id}`);
