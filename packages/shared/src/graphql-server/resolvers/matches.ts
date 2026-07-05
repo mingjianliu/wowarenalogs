@@ -98,7 +98,11 @@ export async function latestMatches(
   };
 }
 
-export async function matchesWithOwnerId(_parent: unknown, args: { ownerId: string }) {
+export async function matchesWithOwnerId(_parent: unknown, args: { ownerId: string }, context: ApolloContext) {
+  if (args.ownerId !== context?.user?.battlenetId && !args.ownerId.startsWith('anonymous:')) {
+    return [];
+  }
+
   const collectionReference = firestore.collection(matchStubsCollection);
   const matchDocs = await collectionReference
     .where('ownerId', '==', args.ownerId)
@@ -165,7 +169,15 @@ export async function myMatches(
 export async function userMatches(
   _parent: unknown,
   args: { userId: string; offset: number; count: number },
+  context: ApolloContext,
 ): Promise<CombatQueryResult> {
+  if (args.userId !== context?.user?.battlenetId && !args.userId.startsWith('anonymous:')) {
+    return {
+      combats: [],
+      queryLimitReached: false,
+    };
+  }
+
   const collectionReference = firestore.collection(matchStubsCollection);
   const matchDocs = await collectionReference
     .where('ownerId', '==', `${args.userId}`)
