@@ -66,7 +66,7 @@ export function extractRotations(player: ICombatUnit, match: AtomicArenaCombat):
         .map((c) => englishSpellName(c.spellId ?? '', c.name));
       if (responseCasts.length > 0) {
         crisisEvents.push(
-          `At ${record.time.toFixed(1)}s (Teammate ${record.targetName} HP: ${record.pct.toFixed(0)}%): ${responseCasts.join(' -> ')}`,
+          `At ${record.time.toFixed(1)}s (Teammate ${record.targetName} HP: ${Math.floor(record.pct)}%): ${responseCasts.join(' -> ')}`,
         );
       }
     }

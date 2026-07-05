@@ -59,4 +59,45 @@ describe('buildMatchEmbeddingRecord', () => {
     // No enemies in this single-unit fixture -> no burst windows -> honest null (never the old 1.5 sentinel).
     expect(rec.reactionLatency).toBeNull();
   });
+
+  it('formats crisis events with Math.floor to avoid rounding up to 40%', () => {
+    const owner = {
+      id: 'P1',
+      name: 'Healer-Realm',
+      spec: CombatUnitSpec.Priest_Discipline,
+      reaction: 0,
+      type: CombatUnitType.Player,
+      info: { talents: [] },
+      spellCastEvents: [
+        { spellId: '47540', spellName: 'Penance', logLine: { event: 'SPELL_CAST_SUCCESS', timestamp: 1000 } },
+      ],
+      advancedActions: [
+        {
+          advanced: true,
+          advancedActorId: 'P1',
+          advancedActorCurrentHp: 396,
+          advancedActorMaxHp: 1000,
+          logLine: { timestamp: 1000 },
+        },
+      ],
+      damageOut: [],
+      damageIn: [],
+      healOut: [],
+      absorbsOut: [],
+      deathRecords: [],
+      auraEvents: [],
+      actionIn: [],
+      actionOut: [],
+    } as unknown as ICombatUnit;
+    const combat = {
+      startTime: 0,
+      endTime: 60000,
+      playerId: 'P1',
+      units: { P1: owner },
+      startInfo: { zoneId: '1672' },
+    } as unknown as IArenaMatch;
+
+    const rec = buildMatchEmbeddingRecord(combat, 'Healer-Realm');
+    expect(rec.rotations.crisisEvents[0]).toContain('HP: 39%');
+  });
 });
