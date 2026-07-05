@@ -55,6 +55,12 @@ export async function uploadCombatAsync(
 
   const storageSignerResponse = await fetch(`/api/getCombatUploadSignature/${combat.id}`, { headers });
   const jsonResponse = (await storageSignerResponse.json()) as { id: string; url: string; matchExists: boolean };
+
+  if (jsonResponse.matchExists) {
+    console.log('Match already exists, skipping upload.');
+    return jsonResponse;
+  }
+
   const signedUploadUrl = jsonResponse.url;
 
   console.log('Starting streaming upload...');
