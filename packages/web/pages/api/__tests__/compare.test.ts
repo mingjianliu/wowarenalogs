@@ -202,7 +202,7 @@ describe('POST /api/compare', () => {
 
       expect(Firestore).not.toHaveBeenCalled();
       expect(status).toHaveBeenCalledWith(200);
-      expect(json).toHaveBeenCalledWith({});
+      expect(json).toHaveBeenCalledWith({ expired: false });
     });
 
     it('returns empty when the cohort cell has no records for the spec+bracket', async () => {
@@ -210,7 +210,27 @@ describe('POST /api/compare', () => {
       const { res, status, json } = makeRes();
       await handler(makeReq('POST', { matchId: 'match-1', localContext: healerLocalContext() }), res);
       expect(status).toHaveBeenCalledWith(200);
-      expect(json).toHaveBeenCalledWith({});
+      expect(json).toHaveBeenCalledWith({ expired: false });
+    });
+  });
+
+  describe('expired/missing stub handling', () => {
+    it('returns expired: true if matchId cannot be found in Firestore (stub expired)', async () => {
+      const { res, status, json } = makeRes();
+      const mockGet = jest.fn().mockResolvedValue({ empty: true });
+      const mockLimit = jest.fn().mockReturnThis();
+      const mockWhere = jest.fn().mockReturnThis();
+      const mockCollection = jest.fn().mockReturnValue({ where: mockWhere, limit: mockLimit, get: mockGet });
+
+      const { Firestore } = jest.requireMock('@google-cloud/firestore') as { Firestore: jest.Mock };
+      Firestore.mockImplementationOnce(() => ({
+        collection: mockCollection,
+      }));
+
+      await handler(makeReq('POST', { matchId: 'expired-match-id' }), res);
+
+      expect(status).toHaveBeenCalledWith(200);
+      expect(json).toHaveBeenCalledWith({ expired: true });
     });
   });
 });

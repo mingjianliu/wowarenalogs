@@ -292,7 +292,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (variant === 'stats') {
     try {
       const verifiedComparison = await withTimeout(buildStatsComparison(matchId, localContext), COMPARE_TIMEOUT_MS);
-      if (!verifiedComparison) return res.status(200).json({});
+      if (!verifiedComparison) {
+        const hasStub = localContext ? true : await resolveLogObjectUrl(matchId);
+        return res.status(200).json({ expired: !hasStub });
+      }
 
       let statsReport: string | undefined;
       if (apiKey) {
@@ -326,9 +329,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // No `variant` check needed — hits here when variant is 'exemplar' OR unset.
   if (!variant || variant === 'exemplar') {
     try {
-      const built = await withTimeout(buildExemplarComparison(matchId, localContext), COMPARE_TIMEOUT_MS);
-      if (!built) return res.status(200).json({});
-      const { verifiedComparison, userCrises, proCrises } = built;
+      const result = await withTimeout(buildExemplarComparison(matchId, localContext), COMPARE_TIMEOUT_MS);
+      if (!result) {
+        const hasStub = localContext ? true : await resolveLogObjectUrl(matchId);
+        return res.status(200).json({ expired: !hasStub });
+      }
+      const { verifiedComparison, userCrises, proCrises } = result;
 
       let report: string | undefined;
       if (apiKey) {
