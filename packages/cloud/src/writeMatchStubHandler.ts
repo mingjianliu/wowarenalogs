@@ -64,7 +64,12 @@ export async function handler(file: any, _context: any) {
     console.timeEnd('firestore.doc');
     console.log(`writing ${matchStubsFirestore}/${stub.id}`);
     console.time('firestore.set');
-    await document.set(instanceToPlain(stub));
+    const docSnap = await document.get();
+    if (!docSnap.exists) {
+      await document.set(instanceToPlain(stub));
+    } else {
+      console.log(`Document ${stub.id} already exists, skipping stub set.`);
+    }
     console.timeEnd('firestore.set');
     try {
       console.time('logCombatStatsAsync');
@@ -93,7 +98,12 @@ export async function handler(file: any, _context: any) {
       console.log(`processing stub ${stub.id}`);
       const document = firestore.doc(`${matchStubsFirestore}/${stub.id}`);
       console.time(`firestore.set-${round.id}`);
-      await document.set(instanceToPlain(stub));
+      const docSnap = await document.get();
+      if (!docSnap.exists) {
+        await document.set(instanceToPlain(stub));
+      } else {
+        console.log(`Document ${stub.id} already exists, skipping stub set.`);
+      }
       console.timeEnd(`firestore.set-${round.id}`);
     });
     const prismaPromises = stubs.map(async ([stub, round]) => {
