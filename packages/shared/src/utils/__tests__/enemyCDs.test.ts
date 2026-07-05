@@ -94,6 +94,36 @@ describe('enemyCDs — timeline reconstruction', () => {
     const res = reconstructEnemyCDTimeline([e1, e2] as any, makeCombat(), owner as any);
     expect(res.alignedBurstWindows[0].healerCCed).toBe(true);
   });
+
+  it('grades healerCCed danger multiplier by the fraction of the window covered (B149)', () => {
+    const e1 = makeUnit('e1', {
+      name: 'Mage',
+      spec: CombatUnitSpec.Mage_Fire,
+      spellCastEvents: [
+        makeSpellCastEvent('190319', MATCH_START + 10_000, 'e1', 'Self', 'e1', 'Mage', 0, 'Combustion'),
+      ],
+    });
+    const owner = makeUnit('h1', { name: 'Healer', spec: CombatUnitSpec.Priest_Holy });
+    (owner as any).id = 'h1';
+    (owner as any).auraEvents = [
+      // 4 seconds of CC (from 11s to 15s) in a 10s burst window (10s to 20s)
+      makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '118', MATCH_START + 11_000, 'e1', 'h1'),
+      makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '118', MATCH_START + 15_000, 'e1', 'h1'),
+    ];
+
+    const res = reconstructEnemyCDTimeline([e1] as any, makeCombat(), owner as any);
+
+    expect(res.alignedBurstWindows).toHaveLength(1);
+    const window = res.alignedBurstWindows[0];
+    expect(window.healerCCed).toBe(true);
+
+    // threatScore is ex-ante (unmodified by CC duration)
+    // dangerScore = threatScore * damageRatio * (1.0 + ccFraction * 0.8)
+    // Here: ccFraction = 4s / 10s = 0.4.
+    // healerMult = 1.0 + 0.4 * 0.8 = 1.32.
+    // So dangerScore should equal threatScore * damageRatio * 1.32.
+    expect(window.dangerScore).toBeCloseTo(window.threatScore * window.damageRatio * 1.32, 5);
+  });
 });
 
 describe('enemyCDs — formatting', () => {

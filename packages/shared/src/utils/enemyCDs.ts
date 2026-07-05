@@ -217,9 +217,11 @@ export function reconstructEnemyCDTimeline(
 
       // Healer CC explicit check: find if the healer had an active CC aura during this window
       let healerCCed = false;
+      let ccDurationMs = 0;
+
       if (owner && isHealerSpec(owner.spec)) {
-        // Track CC start time per spellId to handle multiple overlapping CC auras correctly
         const ccStartBySpell = new Map<string, number>();
+        const ccIntervals: { start: number; end: number }[] = [];
         for (const a of owner.auraEvents) {
           if (!a.spellId) continue;
           const entry = SPELLS[a.spellId];
@@ -233,18 +235,48 @@ export function reconstructEnemyCDTimeline(
             ) {
               const ccStart = ccStartBySpell.get(a.spellId) ?? 0;
               const ccEnd = a.logLine.timestamp;
-              // Check if CC overlaps with the burst window
               if (ccStart > 0 && ccStart < windowEndMs && ccEnd > windowStartMs) {
-                healerCCed = true;
-                break;
+                ccIntervals.push({
+                  start: Math.max(ccStart, windowStartMs),
+                  end: Math.min(ccEnd, windowEndMs),
+                });
               }
               ccStartBySpell.delete(a.spellId);
             }
           }
         }
 
-        // Fallback: if no explicit CC aura found but healer cast nothing in a long window,
-        // treat as pseudo-CCed (school lockout, kiting, etc.)
+        // Active CCs at match end
+        for (const ccStart of ccStartBySpell.values()) {
+          if (ccStart < windowEndMs && combat.endTime > windowStartMs) {
+            ccIntervals.push({
+              start: Math.max(ccStart, windowStartMs),
+              end: Math.min(combat.endTime, windowEndMs),
+            });
+          }
+        }
+
+        if (ccIntervals.length > 0) {
+          ccIntervals.sort((a, b) => a.start - b.start);
+          const merged: { start: number; end: number }[] = [];
+          let current = ccIntervals[0];
+          for (let i = 1; i < ccIntervals.length; i++) {
+            const next = ccIntervals[i];
+            if (next.start <= current.end) {
+              current.end = Math.max(current.end, next.end);
+            } else {
+              merged.push(current);
+              current = next;
+            }
+          }
+          merged.push(current);
+
+          ccDurationMs = merged.reduce((sum, interval) => sum + (interval.end - interval.start), 0);
+        }
+
+        healerCCed = ccDurationMs > 0;
+
+        // Fallback: pseudo-CCed (long window, cast nothing)
         if (!healerCCed && windowDuration >= 5) {
           const ownerCastsInWindow = owner.spellCastEvents.filter((e) => {
             const t = (e.logLine.timestamp - matchStartMs) / 1000;
@@ -252,10 +284,13 @@ export function reconstructEnemyCDTimeline(
           });
           if (ownerCastsInWindow.length === 0) {
             healerCCed = true;
+            ccDurationMs = windowDuration * 1000;
           }
         }
       }
-      const healerMult = 1.0 + (healerCCed ? 0.8 : 0.0);
+
+      const ccFraction = ccDurationMs / Math.max(windowDuration * 1000, 1);
+      const healerMult = 1.0 + ccFraction * 0.8;
 
       // Threat (ex-ante: what the stacked CDs could do) is kept separate from outcome factors
       // (damageRatio, healer CC) so a perfectly-defended Critical burst still reads as Critical
