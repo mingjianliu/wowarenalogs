@@ -45,33 +45,35 @@ export const combatUploadSignatureHandler = async (request: NextApiRequest, resp
     return;
   }
 
-  const extensionHeaders = {
-    'x-goog-meta-ownerid': '',
-    'x-goog-meta-wow-version': '',
-    'x-goog-meta-wow-patch-rev': '',
-    'x-goog-meta-starttime-utc': '',
-    'x-goog-meta-client-timezone': '',
-    'x-goog-meta-client-year': '',
-  };
-  const signedUrlConfig: GetSignedUrlConfig = {
-    action: 'write',
-    expires: '03-01-2500',
-    contentType: 'text/plain;charset=UTF-8',
-    extensionHeaders,
-  };
-  _.keys(extensionHeaders).forEach((k) => {
-    if (signedUrlConfig.extensionHeaders) {
-      signedUrlConfig.extensionHeaders[k] = request.headers[k];
-    }
-  });
-
   try {
-    const [matchExists, result] = await Promise.all([
-      matchExistsAsync(id as string),
-      file.getSignedUrl(signedUrlConfig),
-    ]);
-    const url = result[0];
-    response.status(200).json({ url, id, matchExists });
+    const matchExists = await matchExistsAsync(id as string);
+    if (matchExists) {
+      response.status(200).json({ url: null, id, matchExists: true });
+      return;
+    }
+
+    const extensionHeaders = {
+      'x-goog-meta-ownerid': '',
+      'x-goog-meta-wow-version': '',
+      'x-goog-meta-wow-patch-rev': '',
+      'x-goog-meta-starttime-utc': '',
+      'x-goog-meta-client-timezone': '',
+      'x-goog-meta-client-year': '',
+    };
+    const signedUrlConfig: GetSignedUrlConfig = {
+      action: 'write',
+      expires: new Date(Date.now() + 15 * 60 * 1000),
+      contentType: 'text/plain;charset=UTF-8',
+      extensionHeaders,
+    };
+    _.keys(extensionHeaders).forEach((k) => {
+      if (signedUrlConfig.extensionHeaders) {
+        signedUrlConfig.extensionHeaders[k] = request.headers[k];
+      }
+    });
+
+    const [url] = await file.getSignedUrl(signedUrlConfig);
+    response.status(200).json({ url, id, matchExists: false });
   } catch (err) {
     // eslint-disable-next-line no-console
     console.log(err);
