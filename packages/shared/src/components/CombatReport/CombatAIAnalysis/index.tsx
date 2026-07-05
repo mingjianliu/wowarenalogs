@@ -105,6 +105,7 @@ export function CombatAIAnalysis() {
     { vc: VerifiedComparison; userCrises: string[]; proCrises: string[]; report?: string } | undefined
   >(undefined);
   const [comparisonLoading, setComparisonLoading] = useState(false);
+  const [comparisonExpired, setComparisonExpired] = useState(false);
 
   const data = useMemo(
     () => (combat ? computeMatchAnalysisData(combat, friends, enemies) : null),
@@ -118,6 +119,7 @@ export function CombatAIAnalysis() {
     setFocused(0);
     setVerified(undefined);
     setComparisonLoading(false);
+    setComparisonExpired(false);
 
     const cached = analysisCache.get(combat.id);
     if (cached) {
@@ -176,10 +178,11 @@ export function CombatAIAnalysis() {
     setResult(null);
 
     // Part II · Pro comparison — independent, guarded, never blocks Part I.
-    setVerified(undefined);
-    setComparisonLoading(true);
     (async () => {
       try {
+        setComparisonLoading(true);
+        setComparisonExpired(false);
+        setVerified(undefined);
         const apiKey = (await window.wowarenalogs?.settings?.getAnthropicApiKey?.()) ?? undefined;
         const model = (await window.wowarenalogs?.settings?.getAnthropicModel?.()) ?? undefined;
         // Computed from the locally parsed combat so the endpoint never needs Firestore/GCS —
@@ -213,9 +216,13 @@ export function CombatAIAnalysis() {
           userCrises?: string[];
           proCrises?: string[];
           report?: string;
+          expired?: boolean;
         };
         if (combat.id !== combatId) return; // stale guard, mirrors the findings path
-        if (body.verifiedComparison) {
+        if (body.expired) {
+          setComparisonExpired(true);
+        } else if (body.verifiedComparison) {
+          setComparisonExpired(false);
           setVerified({
             vc: body.verifiedComparison,
             userCrises: body.userCrises ?? [],
@@ -442,7 +449,7 @@ export function CombatAIAnalysis() {
           </aside>
         </div>
 
-        {(comparisonLoading || verified) && (
+        {(comparisonLoading || verified || comparisonExpired) && (
           <div className="px-5 mt-8">
             <div className="flex items-center gap-3.5 mb-4">
               <div
@@ -468,7 +475,12 @@ export function CombatAIAnalysis() {
                 </p>
               </div>
             </div>
-            {verified ? (
+            {comparisonExpired ? (
+              <div className="text-[12.5px] text-zinc-400 py-6">
+                Pro comparison is not available because the match history record has expired (match stubs are retained
+                for 7 days).
+              </div>
+            ) : verified ? (
               <ProComparisonVerified
                 vc={verified.vc}
                 userCrises={verified.userCrises}
