@@ -98,6 +98,10 @@ export function buildVerifiedComparison(
             `offensiveIndex pressure-matching skipped: too few matches in matched pressure band (n=${splitPool.length})`,
           );
         }
+      } else {
+        notes.push(
+          `offensiveIndex pressure-matching skipped: too few cohort games with pressure telemetry (n=${withDtps.length})`,
+        );
       }
     }
     const vals = pool.map((r) => read(r.metrics)).filter((v): v is number => typeof v === 'number');

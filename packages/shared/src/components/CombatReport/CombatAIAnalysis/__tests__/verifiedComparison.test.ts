@@ -53,3 +53,31 @@ test('diversifyByPlayer caps rounds-per-player', () => {
   expect(r.filter((x) => x.playerName === 'A').length).toBe(1);
   expect(r.length).toBe(2);
 });
+
+test('emits warning note when cohort has too few teamDtps records', () => {
+  const cell = Array.from({ length: 10 }, (_, i) => ({
+    playerName: `Player${i}`,
+    metrics: {
+      offensiveIndex: 0.1 * i,
+      ccDensity: 1,
+      reactionLatency: 0.5,
+      defensiveOverlapRatio: 0,
+      effectiveCastRatio: 1,
+      ccAvoidanceRate: 0,
+      teamDtps: 1000 + i * 100,
+    },
+  })) as any;
+
+  const vc = buildVerifiedComparison(
+    cell,
+    { offensiveIndex: 0.5 },
+    { player: 'Me', spec: 'Discipline Priest', bracket: '3v3' },
+    1500, // userTeamDtps
+  );
+
+  expect(
+    vc.notes.some((n) =>
+      n.includes('offensiveIndex pressure-matching skipped: too few cohort games with pressure telemetry'),
+    ),
+  ).toBe(true);
+});
