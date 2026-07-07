@@ -721,7 +721,7 @@ const REACTIVE_RATIO = 1.75;
 // SpellTag.External was removed from the enum — use the string literal so this compiles
 // under any tsconfig target. No spells currently carry the 'External' tag, but the set
 // is kept for future-proofing (externals like Pain Suppression are tagged Defensive).
-const DEFENSIVE_TAGS = new Set<string>([SpellTag.Defensive, 'External']);
+export const DEFENSIVE_TAGS = new Set<string>([SpellTag.Defensive, 'External']);
 
 /**
  * Annotates each cast on Defensive/External cooldowns with a timing label:

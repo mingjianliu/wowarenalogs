@@ -26,6 +26,7 @@ import { CombatScoreboard } from './CombatScoreboard';
 import { CombatSummary } from './CombatSummary';
 import { CombatTimeline } from './CombatTimeline';
 import { CombatVideo } from './CombatVideo';
+import { MatchupIntel } from './MatchupIntel';
 
 const CombatReplay = dynamic(
   () => {
@@ -201,6 +202,14 @@ export const CombatReportInternal = ({ matchId, roundId }: { matchId: string; ro
           Dispels
         </a>
         <a
+          className={`tab ${activeTab === 'matchup' ? 'tab-active' : ''}`}
+          onClick={() => {
+            setActiveTab('matchup');
+          }}
+        >
+          Matchup
+        </a>
+        <a
           className={`tab ${activeTab === 'ai' ? 'tab-active' : ''}`}
           onClick={() => {
             setActiveTab('ai');
@@ -253,6 +262,7 @@ export const CombatReportInternal = ({ matchId, roundId }: { matchId: string; ro
           {activeTab === 'replay' && <CombatReplay />}
           {activeTab === 'timeline' && <CombatTimeline />}
           {activeTab === 'dispels' && <CombatDispels />}
+          {activeTab === 'matchup' && <MatchupIntel />}
           {activeTab === 'ai' && <CombatAIAnalysis />}
           {activeTab === 'scoreboard' && <CombatScoreboard />}
           {activeTab === 'video' && <CombatVideo />}

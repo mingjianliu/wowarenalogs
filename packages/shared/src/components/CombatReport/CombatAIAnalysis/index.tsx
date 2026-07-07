@@ -5,12 +5,14 @@ import { useCombatReportContext } from '../CombatReportContext';
 import { AIFinding } from './aiFindings';
 import { buildMatchContext } from './buildMatchContext';
 import { buildCompareLocalContext, CompareLocalContext } from './compareLocalContext';
+import { ExportButtons } from './components/ExportButtons';
 import { FindingsList } from './components/FindingsList';
 import { RefreshIcon, SparkleIcon } from './components/icons';
 import { MatchHero } from './components/MatchHero';
 import { ProComparisonVerified } from './components/ProComparisonVerified';
 import { SupportingRail } from './components/SupportingRail';
 import { TimelineStrip } from './components/TimelineStrip';
+import { buildAnalysisMarkdown, buildExportFilename } from './exportAnalysis';
 import { computeMatchAnalysisData } from './matchAnalysisData';
 import { VerifiedComparison } from './verifiedComparison';
 
@@ -111,6 +113,11 @@ export function CombatAIAnalysis() {
     () => (combat ? computeMatchAnalysisData(combat, friends, enemies) : null),
     [combat, friends, enemies],
   );
+
+  const exportMarkdown = useMemo(() => {
+    if (!combat || !result) return null;
+    return buildAnalysisMarkdown({ combat, findings: result.findings, raw: result.raw, verified });
+  }, [combat, result, verified]);
 
   // When the combat changes (or on mount): sync cached result or re-attach to an in-flight request.
   useEffect(() => {
@@ -320,14 +327,19 @@ export function CombatAIAnalysis() {
                 </p>
               </div>
             </div>
-            {findings.length > 0 && (
-              <button
-                onClick={handleAnalyze}
-                className="shrink-0 whitespace-nowrap flex items-center gap-1.5 text-[12px] text-zinc-100 px-3 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition"
-              >
-                <RefreshIcon /> Re-analyze
-              </button>
-            )}
+            <div className="flex items-center gap-2 shrink-0">
+              {exportMarkdown && !loading && (
+                <ExportButtons markdown={exportMarkdown} filename={buildExportFilename(combat)} />
+              )}
+              {findings.length > 0 && (
+                <button
+                  onClick={handleAnalyze}
+                  className="shrink-0 whitespace-nowrap flex items-center gap-1.5 text-[12px] text-zinc-100 px-3 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition"
+                >
+                  <RefreshIcon /> Re-analyze
+                </button>
+              )}
+            </div>
           </div>
 
           <TimelineStrip data={data} findings={findings} activeFinding={focused} onFindingClick={onTimelineClick} />
