@@ -40,6 +40,7 @@
     "start:refreshSpellMetadata": "ts-node --files ./src/refreshSpellMetadata.ts",
     "start:simlog": "dotenv -- ts-node --files ./src/simlog.ts",
     "start:analyzeSpecPlaystyle": "dotenv -- ts-node --files ./src/analyzeSpecPlaystyle.ts",
+    "start:auditFirstDeath": "ts-node --files ./src/auditFirstDeath.ts",
     "start:buildHealerPlaystyles": "dotenv -- ts-node --files ./src/buildHealerPlaystyleCorpus.ts",
     "start:buildSoloShuffleCorpus": "dotenv -- ts-node --files ./src/buildSoloShuffleCorpus.ts",
     "start:buildArenaCorpus": "dotenv -- ts-node --files ./src/buildArenaCorpus.ts",
