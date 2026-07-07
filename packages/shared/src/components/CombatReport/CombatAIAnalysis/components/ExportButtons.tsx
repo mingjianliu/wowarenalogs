@@ -16,6 +16,10 @@ export function ExportButtons({ markdown, filename }: { markdown: string; filena
   const [copied, setCopied] = useState(false);
 
   const onCopy = useCallback(() => {
+    if (!navigator.clipboard?.writeText) {
+      downloadMarkdown(markdown, filename);
+      return;
+    }
     navigator.clipboard
       .writeText(markdown)
       .then(() => {
