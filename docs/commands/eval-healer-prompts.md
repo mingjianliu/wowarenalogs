@@ -223,12 +223,25 @@ Write `packages/tools/local-batch/healer-eval/scores/NNN.json`:
     "outcomeAlignment": 2,
     "focusCalibration": 3,
     "notes": "One sentence explaining the key response quality issue."
+  },
+  "provenance": {
+    "judgeModel": "claude-fable-5",
+    "judgedAt": "2026-07-07T12:00:00Z",
+    "promptSha256": "…",
+    "responseSha256": "…"
   }
 }
 ```
 
 All 7 numeric scores must be integers 1–5. The `notes` fields must be non-empty strings. `factAudit`
 must contain exactly 3 entries with quoted evidence (or an explicit "no supporting line found").
+
+`provenance` is required on every score file (since 2026-07-07): fill `judgeModel` with the model
+actually doing the judging, `judgedAt` with the current ISO timestamp, and compute the hashes with
+`shasum -a 256 prompts/NNN-*.txt responses/NNN.txt` **after reading those exact files in full**.
+Never backfill provenance onto score files you did not judge in this pass. Validate with
+`node scripts/check-score-provenance.mjs` (hash mismatch or missing fields on a post-adoption file
+fails; legacy files warn only).
 
 ---
 

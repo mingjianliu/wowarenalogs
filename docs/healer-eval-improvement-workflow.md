@@ -19,6 +19,23 @@ Trust order: deterministic checks (`promptQualityCheck`, `regression-gate`) are 
 LLM-judge scores are valid only while the current rubric/judge passes `/calibrate-judge`. When a
 judge delta and a deterministic metric disagree, the deterministic metric wins.
 
+Cross-model checks (added 2026-07-07, see the verifiability audit):
+
+- **Judge spot-audit** — after each full eval run: `node scripts/judge-spot-audit.mjs --count 5`.
+  An independent cross-family model re-checks sampled factAudit claims against the full
+  prompt/response artifacts and reports an agreement rate (report lands in the eval dir as
+  `spot-audit-report.md`). Baseline from the first real run (2026-07-07): **12/15, 80%** —
+  investigate the judge (via `/calibrate-judge`) if a later run drops well below that.
+- **Prompt ambiguity audit** — each eval cycle, run 2 fresh prompts through
+  `agy-run ask --model pro` asking for concrete notational ambiguities. **Always provide the
+  system prompt alongside the user prompt** (first-run lesson: omitting it produced ~7 false
+  positives on notation the legend already defines). Findings feed the system-prompt legend via
+  the `evalPromptCompare` A/B workflow, never direct edits. First-run findings:
+  `docs/analysis/2026-07-07-c5-prompt-ambiguity-audit.md`.
+- **Score provenance** — every new score file must carry the `provenance` block (see the score
+  file format in `commands/eval-healer-prompts.md`); `node scripts/check-score-provenance.mjs`
+  runs in pre-commit and fails on tampered or incomplete post-2026-07-07 scores.
+
 ---
 
 ## The Cycle
