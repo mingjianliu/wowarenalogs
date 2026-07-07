@@ -1,7 +1,13 @@
 import { AtomicArenaCombat, ICombatUnit, ILogLine, LogEvent } from '@wowarenalogs/parser';
 
 import { ccSpellIds } from '../data/spellTags';
-import { extractMajorCooldowns, getUnitHpAtTimestamp, getUnitManaAtTimestamp, specToString } from './cooldowns';
+import {
+  DEFENSIVE_TAGS,
+  extractMajorCooldowns,
+  getUnitHpAtTimestamp,
+  getUnitManaAtTimestamp,
+  specToString,
+} from './cooldowns';
 import { reconstructEnemyCDTimeline } from './enemyCDs';
 
 // Audit constants (2026-07-07). Change ⇒ re-run the corpus audit; results are not comparable across values.
@@ -10,8 +16,6 @@ export const CC_LOCKED_MIN_SECONDS = 3;
 export const FOCUS_SHARE_THRESHOLD = 0.6;
 export const GCD_IDLE_GAP_SECONDS = 3;
 export const IDLE_HP_THRESHOLD_PCT = 60;
-
-const HOLD_TAGS = new Set<string>(['Defensive', 'External']);
 
 export interface IFirstDeathFeatures {
   victimName: string;
@@ -112,7 +116,9 @@ export function extractFirstDeathFeatures(
 
   // victim defensives: majors not cast in the window but available at its start (availableWindows IS
   // earlier-cast CD math — no other availability guessing, per spec)
-  const victimMajors = extractMajorCooldowns(victim, combat).filter((cd) => !cd.isThroughput && HOLD_TAGS.has(cd.tag));
+  const victimMajors = extractMajorCooldowns(victim, combat).filter(
+    (cd) => !cd.isThroughput && DEFENSIVE_TAGS.has(cd.tag),
+  );
   const unused = victimMajors.filter(
     (cd) =>
       !cd.casts.some((c) => c.timeSeconds >= fromSec && c.timeSeconds <= atSeconds) &&

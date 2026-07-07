@@ -44,20 +44,23 @@ async function main() {
       return;
     }
     const bucket = bucketFirstDeath(features);
-    out.write(JSON.stringify({ file: game.file, combatIndex: game.combatIndex, bucket, ...features }) + '\n');
-    bucketCounts.set(bucket, (bucketCounts.get(bucket) ?? 0) + 1);
     const isWin = game.combat.result === CombatResult.Win;
+    out.write(JSON.stringify({ file: game.file, combatIndex: game.combatIndex, bucket, isWin, ...features }) + '\n');
+    bucketCounts.set(bucket, (bucketCounts.get(bucket) ?? 0) + 1);
     if (features.victimIsFriendly) {
       bucketCountsFriendly.set(bucket, (bucketCountsFriendly.get(bucket) ?? 0) + 1);
       if (isWin) bucketWinsFriendly.set(bucket, (bucketWinsFriendly.get(bucket) ?? 0) + 1);
+      // Per-spec breakdown is restricted to friendly victims: all owner-POV features
+      // (healerCCLocked, victim defensives, healerGcdIdle, etc.) are only meaningful when
+      // the owner's own team lost the first player. Enemy-victim rows would dilute the signal.
+      const spec = features.victimSpec;
+      if (!specBuckets.has(spec)) specBuckets.set(spec, new Map());
+      const sb = specBuckets.get(spec) as Map<FirstDeathBucket, number>;
+      sb.set(bucket, (sb.get(bucket) ?? 0) + 1);
     } else {
       bucketCountsEnemy.set(bucket, (bucketCountsEnemy.get(bucket) ?? 0) + 1);
       if (isWin) bucketWinsEnemy.set(bucket, (bucketWinsEnemy.get(bucket) ?? 0) + 1);
     }
-    const spec = features.victimSpec;
-    if (!specBuckets.has(spec)) specBuckets.set(spec, new Map());
-    const sb = specBuckets.get(spec) as Map<FirstDeathBucket, number>;
-    sb.set(bucket, (sb.get(bucket) ?? 0) + 1);
   });
 
   await new Promise<void>((resolve) => out.end(resolve));
@@ -88,7 +91,12 @@ async function main() {
     "WR = owner-team round win rate within the subset. Friendly-victim = the owner's team lost the first player; enemy-victim = the enemy team did. healerCCLocked always refers to the owner's own healer.",
   );
   lines.push('');
-  lines.push('## Per victim spec');
+  lines.push(
+    'Note: first-death side tracks round outcome almost 1:1 within every bucket (losing the first player ≈ losing the round), so the WR columns above mostly restate the friendly/enemy split. The signal worth reading is *within-side* deviation across buckets, not the friendly-vs-enemy WR gap itself.',
+  );
+  lines.push('');
+  const friendlyTotal = [...bucketCountsFriendly.values()].reduce((a, b) => a + b, 0);
+  lines.push(`## Per victim spec (friendly victims only, n=${friendlyTotal})`);
   lines.push('');
   for (const [spec, sb] of [...specBuckets.entries()].sort()) {
     const specTotal = [...sb.values()].reduce((a, b) => a + b, 0);

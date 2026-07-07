@@ -2,12 +2,8 @@ import { AtomicArenaCombat, CombatResult, ICombatUnit, LogEvent } from '@wowaren
 
 import { spellEffectData } from '../data/spellEffectData';
 import { ccSpellIds } from '../data/spellTags';
-import { extractMajorCooldowns, isHealerSpec, specToString } from './cooldowns';
+import { DEFENSIVE_TAGS, extractMajorCooldowns, isHealerSpec, specToString } from './cooldowns';
 import { IAlignedBurstWindow, IEnemyPlayerTimeline, reconstructEnemyCDTimeline } from './enemyCDs';
-
-// Matches DEFENSIVE_TAGS in cooldowns.ts — SpellTag.External was removed from the enum,
-// so the external tag is compared as a string literal there too.
-const HOLD_TAGS = new Set<string>(['Defensive', 'External']);
 
 export interface IHoldStatus {
   spellId: string;
@@ -57,7 +53,7 @@ export function buildMatchupIntel(
   const timeline = reconstructEnemyCDTimeline(enemies, combat, healer, friends);
 
   const holdCandidates = viewer
-    ? extractMajorCooldowns(viewer, combat).filter((cd) => !cd.isThroughput && HOLD_TAGS.has(cd.tag))
+    ? extractMajorCooldowns(viewer, combat).filter((cd) => !cd.isThroughput && DEFENSIVE_TAGS.has(cd.tag))
     : [];
 
   const killWindows: IKillWindowIntel[] = timeline.alignedBurstWindows.map((w) => ({

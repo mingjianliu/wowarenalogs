@@ -328,7 +328,7 @@ export function CombatAIAnalysis() {
               </div>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              {exportMarkdown && combat && !loading && (
+              {exportMarkdown && !loading && (
                 <ExportButtons markdown={exportMarkdown} filename={buildExportFilename(combat)} />
               )}
               {findings.length > 0 && (
