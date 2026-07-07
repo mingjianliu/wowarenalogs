@@ -9,9 +9,9 @@ SYNC_DIR="${WAL_SYNC_DIR:-$HOME/wal-sync}"
 mkdir -p "$SYNC_DIR"
 
 LOCKDIR="$SYNC_DIR/run.lock"
-if [ "${RUN_LOCK_ACQUIRED:-false}" = "true" ]; then
-  trap 'rmdir "$LOCKDIR"' EXIT
-else
+# Only acquire (and therefore only release) the lock if a parent hasn't already —
+# releasing a lock this process didn't create would strip a concurrent holder's guard.
+if [ "${RUN_LOCK_ACQUIRED:-false}" != "true" ]; then
   if ! mkdir "$LOCKDIR" 2>/dev/null; then
     echo "[collect-and-analyze] previous run still active, skipping ($(date))"
     exit 0
