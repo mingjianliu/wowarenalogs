@@ -15,16 +15,26 @@ export interface IPosition {
  * Interpolate a unit's game position at a given absolute timestamp (ms).
  * Returns null when advanced logging is absent or the timestamp is outside
  * the unit's advancedActions range.
+ *
+ * Position snapshots are event-driven (damage taken, heals received, casts),
+ * so an idle unit (drinking, stealthed, out of combat) produces none — the
+ * straight line interpolated across such a gap is fabricated, not observed.
+ * Pass `maxGapMs` to return null when the query time is further than maxGapMs
+ * from the NEAREST recorded snapshot (interpolation error is bounded by
+ * movement speed × that distance, so proximity to either bracketing snapshot
+ * keeps the estimate honest; also applies past the last snapshot).
+ * Omitted = legacy behavior: interpolate any gap, hold the last position forever.
  */
-export function getUnitPositionAtTime(unit: ICombatUnit, timestampMs: number): IPosition | null {
+export function getUnitPositionAtTime(unit: ICombatUnit, timestampMs: number, maxGapMs?: number): IPosition | null {
   const actions = unit.advancedActions;
   if (actions.length === 0) return null;
 
   // Before first recorded action
   if (timestampMs < actions[0].timestamp) return null;
-  // After last recorded action — use last known position
+  // After last recorded action — use last known position (until maxGapMs elapses)
   if (timestampMs >= actions[actions.length - 1].timestamp) {
     const last = actions[actions.length - 1];
+    if (maxGapMs !== undefined && timestampMs - last.timestamp > maxGapMs) return null;
     return { x: last.advancedActorPositionX, y: last.advancedActorPositionY };
   }
 
@@ -32,6 +42,9 @@ export function getUnitPositionAtTime(unit: ICombatUnit, timestampMs: number): I
     const curr = actions[i];
     const next = actions[i + 1];
     if (curr.timestamp <= timestampMs && next.timestamp > timestampMs) {
+      if (maxGapMs !== undefined && Math.min(timestampMs - curr.timestamp, next.timestamp - timestampMs) > maxGapMs) {
+        return null;
+      }
       const t = (timestampMs - curr.timestamp) / (next.timestamp - curr.timestamp);
       return {
         x: curr.advancedActorPositionX + (next.advancedActorPositionX - curr.advancedActorPositionX) * t,

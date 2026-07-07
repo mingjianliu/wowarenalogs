@@ -10,17 +10,25 @@ function makeCombat(durationMs = 120_000) {
   return { startTime: T0, endTime: T0 + durationMs } as any;
 }
 
-/** Unit with a static position held across the whole match. */
+/** Unit with a static position held across the whole match, snapshotted densely
+ *  (every 5s) the way an in-combat unit would be. */
 function makeStaticUnit(id: string, x: number, y: number, overrides: any = {}) {
+  const actions = [];
+  for (let t = 0; t <= 120_000; t += 5_000) actions.push(makeAdvancedAction(T0 + t, x, y));
   const unit = makeUnit(id, {
-    advancedActions: [makeAdvancedAction(T0, x, y), makeAdvancedAction(T0 + 120_000, x, y)],
+    advancedActions: actions,
     ...overrides,
   });
   unit.advancedActions.forEach((a) => ((a as any).advancedActorId = id));
   return unit;
 }
 
-function makeBurstWindow(fromSeconds: number, toSeconds: number, dangerLabel = 'High'): any {
+function makeBurstWindow(
+  fromSeconds: number,
+  toSeconds: number,
+  dangerLabel = 'High',
+  mostPressuredTargetName?: string,
+): any {
   return {
     fromSeconds,
     toSeconds,
@@ -32,6 +40,9 @@ function makeBurstWindow(fromSeconds: number, toSeconds: number, dangerLabel = '
     dampeningPct: 0,
     damageInWindow: 500_000,
     damageRatio: 1,
+    mostPressuredTarget: mostPressuredTargetName
+      ? { unitName: mostPressuredTargetName, startHpPct: 100, midHpPct: 60, endHpPct: 40 }
+      : undefined,
   };
 }
 
@@ -352,6 +363,135 @@ describe('computeOwnerPositionEvents — review fixes (agy 2026-07-07)', () => {
   });
 });
 
+describe('computeOwnerPositionEvents — sparse position data (gap-aware)', () => {
+  it('skips burst-window evaluation when the owner has a long snapshot gap over the window', () => {
+    // Owner idle: only two snapshots 60s apart — interpolated positions are fabricated
+    const owner = makeUnit('o1', {
+      spec: CombatUnitSpec.Priest_Holy,
+      class: CombatUnitClass.Priest,
+      advancedActions: [makeAdvancedAction(T0, 0, 0), makeAdvancedAction(T0 + 60_000, 0, 0)],
+    });
+    owner.advancedActions.forEach((a) => ((a as any).advancedActorId = 'o1'));
+    const enemy = makeStaticUnit('e1', 5, 0, { spec: CombatUnitSpec.Warrior_Arms });
+
+    const events = computeOwnerPositionEvents({
+      owner: owner as any,
+      enemies: [enemy] as any,
+      combat: makeCombat(),
+      burstWindows: [makeBurstWindow(10, 20)],
+      ownerCooldowns: [],
+      isHealer: true,
+      ownerIsMelee: false,
+    });
+
+    expect(events).toHaveLength(0);
+  });
+
+  it('does not emit MISSED_PUSH from interpolated positions across a long enemy snapshot gap', () => {
+    const owner = makeStaticUnit('o1', 0, 0, { spec: CombatUnitSpec.Warrior_Arms, class: CombatUnitClass.Warrior });
+    // Enemy has only two snapshots 120s apart — everything between is fabricated
+    const enemy = makeUnit('e1', {
+      spec: CombatUnitSpec.Mage_Fire,
+      advancedActions: [makeAdvancedAction(T0, 30, 0), makeAdvancedAction(T0 + 120_000, 30, 0)],
+    });
+    enemy.advancedActions.forEach((a) => ((a as any).advancedActorId = 'e1'));
+
+    const events = computeOwnerPositionEvents({
+      owner: owner as any,
+      enemies: [enemy] as any,
+      combat: makeCombat(),
+      burstWindows: [],
+      ownerCooldowns: [
+        {
+          spellName: 'Avatar',
+          tag: 'Offensive',
+          availableWindows: [{ fromSeconds: 20, toSeconds: 80, durationSeconds: 60 }],
+          casts: [],
+          neverUsed: false,
+        } as any,
+      ],
+      isHealer: false,
+      ownerIsMelee: true,
+    });
+
+    expect(events.filter((e) => e.type === 'MISSED_PUSH')).toHaveLength(0);
+  });
+
+  it('does not emit MISSED_PUSH while any living enemy position is unknown (stealthed enemy could be anywhere)', () => {
+    const owner = makeStaticUnit('o1', 0, 0, { spec: CombatUnitSpec.Warrior_Arms, class: CombatUnitClass.Warrior });
+    const farEnemy = makeStaticUnit('e1', 30, 0, { spec: CombatUnitSpec.Mage_Fire });
+    // Stealthed rogue: alive but zero position snapshots
+    const stealthedEnemy = makeUnit('e2', { spec: CombatUnitSpec.Rogue_Subtlety, advancedActions: [] });
+
+    const events = computeOwnerPositionEvents({
+      owner: owner as any,
+      enemies: [farEnemy, stealthedEnemy] as any,
+      combat: makeCombat(),
+      burstWindows: [],
+      ownerCooldowns: [
+        {
+          spellName: 'Avatar',
+          tag: 'Offensive',
+          availableWindows: [{ fromSeconds: 20, toSeconds: 80, durationSeconds: 60 }],
+          casts: [],
+          neverUsed: false,
+        } as any,
+      ],
+      isHealer: false,
+      ownerIsMelee: true,
+    });
+
+    expect(events.filter((e) => e.type === 'MISSED_PUSH')).toHaveLength(0);
+  });
+});
+
+describe('computeOwnerPositionEvents — STAYED_IN burst-target semantics', () => {
+  const stayedInParams = (owner: any, enemy: any, targetName?: string, opts: any = {}) => ({
+    owner,
+    enemies: [enemy],
+    combat: makeCombat(),
+    burstWindows: [makeBurstWindow(10, 20, 'High', targetName)],
+    ownerCooldowns: [],
+    isHealer: false,
+    ownerIsMelee: true,
+    ...opts,
+  });
+
+  it('suppresses STAYED_IN for a melee DPS when the burst targets a teammate (staying in is normal offense)', () => {
+    const owner = makeStaticUnit('o1', 0, 0, { spec: CombatUnitSpec.Warrior_Arms, class: CombatUnitClass.Warrior });
+    const enemy = makeStaticUnit('e1', 5, 0, { spec: CombatUnitSpec.Mage_Fire });
+
+    const events = computeOwnerPositionEvents(stayedInParams(owner, enemy, 'Teammate') as any);
+
+    expect(events.filter((e) => e.type === 'STAYED_IN')).toHaveLength(0);
+  });
+
+  it('emits STAYED_IN with burstTargetsOwner=true when the melee owner is the burst target', () => {
+    const owner = makeStaticUnit('o1', 0, 0, { spec: CombatUnitSpec.Warrior_Arms, class: CombatUnitClass.Warrior });
+    const enemy = makeStaticUnit('e1', 5, 0, { spec: CombatUnitSpec.Mage_Fire });
+
+    const events = computeOwnerPositionEvents(stayedInParams(owner, enemy, 'o1') as any);
+
+    const stayedIn = events.filter((e) => e.type === 'STAYED_IN');
+    expect(stayedIn).toHaveLength(1);
+    expect(stayedIn[0].burstTargetsOwner).toBe(true);
+  });
+
+  it('keeps STAYED_IN for a healer even when the burst targets a teammate, annotated with the target', () => {
+    const owner = makeStaticUnit('o1', 0, 0, { spec: CombatUnitSpec.Priest_Holy, class: CombatUnitClass.Priest });
+    const enemy = makeStaticUnit('e1', 5, 0, { spec: CombatUnitSpec.Warrior_Arms });
+
+    const events = computeOwnerPositionEvents(
+      stayedInParams(owner, enemy, 'Teammate', { isHealer: true, ownerIsMelee: false }) as any,
+    );
+
+    const stayedIn = events.filter((e) => e.type === 'STAYED_IN');
+    expect(stayedIn).toHaveLength(1);
+    expect(stayedIn[0].burstTargetsOwner).toBe(false);
+    expect(stayedIn[0].burstTargetName).toBe('Teammate');
+  });
+});
+
 describe('computeOwnerPositionEvents — missing data', () => {
   it('returns no events when the owner has no advanced position data', () => {
     const owner = makeUnit('o1', { advancedActions: [], spec: CombatUnitSpec.Priest_Holy });
@@ -387,6 +527,18 @@ describe('formatPositionEventsForContext', () => {
         nearestEnemyName: 'EnemyWarrior',
         dangerLabel: 'Critical',
         ownerDefensiveAvailable: false,
+        burstTargetsOwner: true,
+      },
+      {
+        type: 'STAYED_IN',
+        atSeconds: 130,
+        toSeconds: 140,
+        startDistanceYards: 7,
+        endDistanceYards: 7,
+        nearestEnemyName: 'EnemyWarrior',
+        dangerLabel: 'High',
+        burstTargetsOwner: false,
+        burstTargetName: 'FriendlyMage',
       },
       {
         type: 'KITED',
@@ -416,6 +568,8 @@ describe('formatPositionEventsForContext', () => {
     expect(text).toContain('POSITIONING');
     expect(text).toContain('STAYED IN');
     expect(text).toContain('1:45');
+    expect(text).toContain('you were the burst target');
+    expect(text).toContain('burst targeted FriendlyMage');
     expect(text).toContain('KITED');
     expect(text).toContain('6→28yd');
     expect(text).toContain('MISSED PUSH');

@@ -25,6 +25,39 @@ describe('losAnalysis — position interpolation', () => {
     // at t=1500, should be (5, 10)
     expect(getUnitPositionAtTime(unit as any, 1500)).toEqual({ x: 5, y: 10 });
   });
+
+  // Position snapshots are event-driven: a unit that is idle (drinking, stealthed,
+  // out of combat) produces no snapshots, and interpolating across a long gap
+  // fabricates a straight-line position. maxGapMs lets callers reject those.
+  describe('maxGapMs (gap-aware interpolation)', () => {
+    it('returns null when the bracketing snapshots are further apart than maxGapMs', () => {
+      const unit = makeUnit('u1', {
+        advancedActions: [makeAdvancedAction(1000, 0, 0), makeAdvancedAction(31_000, 10, 20)],
+      });
+      expect(getUnitPositionAtTime(unit as any, 15_000, 10_000)).toBeNull();
+    });
+
+    it('still interpolates when the gap is within maxGapMs', () => {
+      const unit = makeUnit('u1', {
+        advancedActions: [makeAdvancedAction(1000, 0, 0), makeAdvancedAction(2000, 10, 20)],
+      });
+      expect(getUnitPositionAtTime(unit as any, 1500, 10_000)).toEqual({ x: 5, y: 10 });
+    });
+
+    it('returns null after the last snapshot once maxGapMs has elapsed', () => {
+      const unit = makeUnit('u1', { advancedActions: [makeAdvancedAction(1000, 10, 10)] });
+      expect(getUnitPositionAtTime(unit as any, 20_000, 10_000)).toBeNull();
+      // within the gap the last-known position is still usable
+      expect(getUnitPositionAtTime(unit as any, 5_000, 10_000)).toEqual({ x: 10, y: 10 });
+    });
+
+    it('preserves legacy behavior when maxGapMs is omitted', () => {
+      const unit = makeUnit('u1', {
+        advancedActions: [makeAdvancedAction(1000, 0, 0), makeAdvancedAction(61_000, 10, 20)],
+      });
+      expect(getUnitPositionAtTime(unit as any, 31_000)).toEqual({ x: 5, y: 10 });
+    });
+  });
 });
 
 describe('losAnalysis — geometry logic', () => {

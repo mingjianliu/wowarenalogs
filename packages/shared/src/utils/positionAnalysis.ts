@@ -28,6 +28,10 @@ const BURST_EVAL_SECONDS = 10; // evaluate kite/stay over at most this much of t
 const MISSED_PUSH_MIN_SECONDS = 10; // sustained disengagement required
 const KILL_PROXIMITY_SECONDS = 15; // ignore disengagement right before an enemy death
 const MAX_MISSED_PUSH_EVENTS = 3;
+// Position snapshots are event-driven; when the query time is further than this
+// from the nearest snapshot, the interpolated position is fabricated (unit was
+// idle/stealthed/drinking) — treat as unknown.
+const POSITION_MAX_GAP_MS = 8_000;
 
 export type PositionEventType = 'STAYED_IN' | 'KITED' | 'MISSED_PUSH' | 'CD_OUT_OF_RANGE';
 
@@ -46,6 +50,11 @@ export interface IPositionEvent {
   /** STAYED_IN only: whether a defensive CD was off cooldown at window start.
    *  undefined when no defensive CDs are tracked for this spec. */
   ownerDefensiveAvailable?: boolean;
+  /** STAYED_IN only: whether the burst's most-pressured target was the owner.
+   *  undefined when the window has no pressure-target attribution. */
+  burstTargetsOwner?: boolean;
+  /** STAYED_IN only: name of the burst's most-pressured target when it isn't the owner */
+  burstTargetName?: string;
   /** CD_OUT_OF_RANGE only */
   spellName?: string;
 }
@@ -68,12 +77,12 @@ function nearestEnemyAt(
   tMs: number,
   ownerUnit: ICombatUnit,
 ): INearestEnemy | null {
-  const pos = ownerPos ?? getUnitPositionAtTime(ownerUnit, tMs);
+  const pos = ownerPos ?? getUnitPositionAtTime(ownerUnit, tMs, POSITION_MAX_GAP_MS);
   if (!pos) return null;
   let best: INearestEnemy | null = null;
   for (const enemy of enemies) {
     if (isDeadAt(enemy, tMs)) continue;
-    const enemyPos = getUnitPositionAtTime(enemy, tMs);
+    const enemyPos = getUnitPositionAtTime(enemy, tMs, POSITION_MAX_GAP_MS);
     if (!enemyPos) continue;
     const d = distanceBetween(pos, enemyPos);
     if (best === null || d < best.distanceYards) {
@@ -176,6 +185,13 @@ export function computeOwnerPositionEvents(params: {
         dampeningPct: w.dampeningPct,
       });
     } else if (delta < STAY_DELTA_YARDS) {
+      // Who was the burst actually aimed at? A melee DPS staying on their target
+      // while the burst hits a teammate is normal offense, not a mistake — suppress.
+      // Healers/ranged near an enemy during any burst remain worth surfacing, annotated.
+      const targetName = w.mostPressuredTarget?.unitName;
+      const burstTargetsOwner = targetName !== undefined ? targetName === owner.name : undefined;
+      if (ownerIsMelee && !isHealer && burstTargetsOwner === false) continue;
+
       events.push({
         type: 'STAYED_IN',
         atSeconds: w.fromSeconds,
@@ -187,6 +203,8 @@ export function computeOwnerPositionEvents(params: {
         dampeningPct: w.dampeningPct,
         ownerDefensiveAvailable:
           defensiveCDs.length > 0 ? defensiveCDs.some((cd) => isAvailableAt(cd, w.fromSeconds)) : undefined,
+        burstTargetsOwner,
+        burstTargetName: burstTargetsOwner === false ? targetName : undefined,
       });
     }
     // deltas in [STAY_DELTA, KITE_DELTA) are ambiguous — no event
@@ -221,13 +239,20 @@ export function computeOwnerPositionEvents(params: {
       runMinDist = Infinity;
     };
 
+    // MISSED_PUSH asserts ">threshold from ALL enemies" — that claim needs every
+    // living enemy's position to be known. A stealthed/idle enemy (no recent
+    // snapshots) could be anywhere, including on top of the owner.
+    const allLivingEnemiesKnownAt = (tMs: number) =>
+      enemies.every((e) => isDeadAt(e, tMs) || getUnitPositionAtTime(e, tMs, POSITION_MAX_GAP_MS) !== null);
+
     for (let t = 0; t <= durationSeconds; t += 1) {
+      const tMs = matchStartMs + t * 1000;
       const allOffensivesReady = offensiveCDs.every((cd) => isAvailableAt(cd, t));
       const inBurst = burstWindows.some((w) => t >= w.fromSeconds && t <= w.toSeconds);
       const nearKill = enemyDeathTimes.some((d) => t >= d - KILL_PROXIMITY_SECONDS && t <= d);
       const nearest =
-        allOffensivesReady && !inBurst && !nearKill
-          ? nearestEnemyAt(enemies, null, matchStartMs + t * 1000, owner)
+        allOffensivesReady && !inBurst && !nearKill && allLivingEnemiesKnownAt(tMs)
+          ? nearestEnemyAt(enemies, null, tMs, owner)
           : null;
 
       if (nearest && nearest.distanceYards > threshold) {
@@ -293,8 +318,14 @@ export function formatPositionEventsForContext(events: IPositionEvent[]): string
             ? ' — a defensive CD was available'
             : ' — no defensive CD available';
       const dampStr = (e.dampeningPct ?? 0) >= 0.2 ? ' (high dampening — staying in may be correct)' : '';
+      const targetStr =
+        e.burstTargetsOwner === true
+          ? ' — you were the burst target'
+          : e.burstTargetName
+            ? ` — burst targeted ${e.burstTargetName}, staying in may be deliberate`
+            : '';
       lines.push(
-        `    ${fmtTime(e.atSeconds)} [${e.dangerLabel} burst] ${e.startDistanceYards}→${e.endDistanceYards}yd from ${e.nearestEnemyName}${defStr}${dampStr}`,
+        `    ${fmtTime(e.atSeconds)} [${e.dangerLabel} burst] ${e.startDistanceYards}→${e.endDistanceYards}yd from ${e.nearestEnemyName}${targetStr}${defStr}${dampStr}`,
       );
     }
   }

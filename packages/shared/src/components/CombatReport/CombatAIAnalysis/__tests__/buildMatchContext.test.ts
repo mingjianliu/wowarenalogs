@@ -108,13 +108,21 @@ describe('buildMatchContext — healer exposure in both prompt paths', () => {
   const T0 = 1_000_000;
   const T_END = 1_120_000; // 2 min
 
+  /** Dense (5s-interval) static position track — position analysis rejects
+   *  interpolation across long snapshot gaps as fabricated. */
+  function denseTrack(x: number, y: number) {
+    const actions = [];
+    for (let t = 5_000; t <= 115_000; t += 5_000) actions.push(makeAdvancedAction(T0 + t, x, y));
+    return actions;
+  }
+
   function makeExposureScenario() {
     // Healer owner at (0,0) with position data covering the burst window
     const healer = makeUnit('h1', {
       name: 'Healer',
       class: CombatUnitClass.Priest,
       spec: CombatUnitSpec.Priest_Holy,
-      advancedActions: [makeAdvancedAction(T0 + 5_000, 0, 0), makeAdvancedAction(T0 + 60_000, 0, 0)],
+      advancedActions: denseTrack(0, 0),
     });
     healer.advancedActions.forEach((a) => ((a as unknown as Record<string, unknown>).advancedActorId = 'h1'));
 
@@ -125,7 +133,7 @@ describe('buildMatchContext — healer exposure in both prompt paths', () => {
       class: CombatUnitClass.Paladin,
       spec: CombatUnitSpec.Paladin_Retribution,
       spellCastEvents: [makeSpellCastEvent('31884', T0 + 10_000, 'e1', 'Self', 'e1', 'EnemyPala', 0, 'Avenging Wrath')],
-      advancedActions: [makeAdvancedAction(T0 + 5_000, 10, 0), makeAdvancedAction(T0 + 60_000, 10, 0)],
+      advancedActions: denseTrack(10, 0),
     });
     e1.advancedActions.forEach((a) => ((a as unknown as Record<string, unknown>).advancedActorId = 'e1'));
     const e2 = makeUnit('e2', {
@@ -134,7 +142,7 @@ describe('buildMatchContext — healer exposure in both prompt paths', () => {
       class: CombatUnitClass.Mage,
       spec: CombatUnitSpec.Mage_Fire,
       spellCastEvents: [makeSpellCastEvent('190319', T0 + 12_000, 'e2', 'Self', 'e2', 'EnemyMage', 0, 'Combustion')],
-      advancedActions: [makeAdvancedAction(T0 + 5_000, 12, 0), makeAdvancedAction(T0 + 60_000, 12, 0)],
+      advancedActions: denseTrack(12, 0),
     });
     e2.advancedActions.forEach((a) => ((a as unknown as Record<string, unknown>).advancedActorId = 'e2'));
 
