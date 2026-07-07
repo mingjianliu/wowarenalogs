@@ -57,10 +57,12 @@ for (const f of sample) {
     continue;
   }
   const claims = (score.factAudit ?? [])
-    .map(
-      (c, i) =>
-        `CLAIM ${i + 1} (judge says verified=${c.verified}): "${c.claim}" — judge's cited evidence: "${c.evidence}"`,
-    )
+    .map((c, i) => {
+      // Score files carry either `verified: true|false` or `verdict: "VERIFIED"/"..."`.
+      const raw = c.verified ?? c.verdict;
+      const verified = String(raw).toLowerCase().startsWith('true') || String(raw).toLowerCase().startsWith('verified');
+      return `CLAIM ${i + 1} (judge says verified=${verified}): "${c.claim}" — judge's cited evidence: "${c.evidence}"`;
+    })
     .join('\n\n');
   const task = `An LLM judge audited an AI coaching response against a match-data prompt. Independently re-check the judge's fact audit.
 

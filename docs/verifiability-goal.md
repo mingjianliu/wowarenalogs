@@ -11,8 +11,8 @@
 | C1: test.yml push 触发     | ✅ 2026-07-07                                                                        | ✅ push 触发 run 28875212224 全绿（真实 CI run）                                                                    | ✅ 首跑即绿，无需修复                                                                                      | **DONE**                     |
 | C2: CLAUDE.md agy 工作流   | ✅ 2026-07-07                                                                        | ✅ 与 B 共用真实使用证据                                                                                            | ✅ 按 C5 教训补充了"歧义审计须附系统提示词"到 eval 工作流文档                                              | **DONE**                     |
 | C3: 测试套件健康守卫       | ✅ scripts/check-test-suites.mjs + 基线 + cloud 包 flag + CI step                    | ✅ 本地标定：种植禁用套件→exit 1→恢复→PASS；CI run（9c60e51a）含守卫步骤                                            | ✅ 标定通过；新增 cloud 套件后基线同步上调 2→3                                                             | **DONE**  |
-| C4: 分数溯源元数据         | ✅ 格式写入 judge 文档 + check-score-provenance.mjs + pre-commit                     | ✅ 校验器标定：有效 provenance 通过 / 篡改检出 exit 1 / 真实语料 20 legacy 仅警告                                   | ⬜ 首个携带 provenance 的真实分数文件产生于下一轮真实 eval run                                             | IN PROGRESS                  |
-| C5: prompt 歧义异族测试    | ✅ 流程写入 healer-eval-improvement-workflow.md                                      | ✅ 2 个真实语料 prompt × Gemini 3.1 Pro，17 条报告 → 5 类真实缺口（DR 记号、HEALING 归属、伤害方向、CLEANSED 时序） | ✅ 首轮即产生流程修正（审计必须附系统提示词——本轮 7 条假阳性的根因）；图例修复排队走 evalPromptCompare A/B | **DONE**（图例修复另行排期） |
+| C4: 分数溯源元数据         | ✅ 格式写入 judge 文档 + check-score-provenance.mjs + pre-commit                     | ✅ 校验器标定：有效 provenance 通过 / 篡改检出 exit 1 / 真实语料 20 legacy 仅警告                                   | ✅ 2026-07-07 真实 eval run（10 局，见 eval-ledger）全部携带 provenance，校验 10/10 verified；抽检工具自身的 verdict-键 bug 经 40% 假警报暴露并修复（修复后一致率 13/15=87%） | **DONE** |
+| C5: prompt 歧义异族测试    | ✅ 流程写入 healer-eval-improvement-workflow.md                                      | ✅ 2 个真实语料 prompt × Gemini 3.1 Pro，17 条报告 → 5 类真实缺口（DR 记号、HEALING 归属、伤害方向、CLEANSED 时序） | ✅ 首轮即产生流程修正（审计必须附系统提示词——本轮 7 条假阳性的根因）；图例修复排队走 evalPromptCompare A/B | **DONE**（图例修复已走完 A/B：5/5 平局无回归，以正确性依据 adopt，见 eval-ledger System-prompt A/B 表） |
 | C7: judge 跨模型抽检       | ✅ scripts/judge-spot-audit.mjs（审计 factAudit 事实断言，不碰 rubric 分）           | ✅ 真实抽检 5 局（001/005/009/013/017）：一致率 12/15 = 80%，报告在 eval 目录 spot-audit-report.md                  | ✅ 基线 80% 写入工作流文档；分歧聚焦于 HEALING 窗口歧义（与 C5 发现互证）与游戏机制争议                    | **DONE**                     |
 | C8: 云函数 fixture harness | ✅ writeMatchStubHandler.test.ts：真实 fixture→真实 parser→真实 stub 生成，边界 mock | ✅ 本地 3/3 通过；已随 9c60e51a 进 CI                                                                               | ✅ 幂等性断言把 handler 的隐含契约（已存在文档不覆写）固化为测试                                           | **DONE**  |
 | C9: 上传链路 staging 探针  | —                                                                                    | **BLOCKED**：本机无任何 GCP 凭据（无 gcloud/service account/env），云基础设施 upstream 所有，无 staging 环境        | 需要：staging bucket + service account，或上游提供测试端点                                                 | BLOCKED                      |
@@ -21,8 +21,8 @@
 
 ## 遗留事项
 
-1. **C4 收尾**：下一轮 `/eval-healer-prompts` 真实运行时按新格式写 provenance，跑 `check-score-provenance.mjs` 确认"verified"计数 > 0。
-2. **C5 图例修复**：把 5 类缺口的定义作为 treatment 走 `evalPromptCompare` A/B（harness 与 prod 双提示词分别检查）。
+1. ~~C4 收尾~~ ✅ 2026-07-07 完成：真实 10 局 eval run，10/10 provenance verified，台账已记。
+2. ~~C5 图例修复~~ ✅ 2026-07-07 完成：A/B 5/5 平局（+2% tokens，无回归），以正确性依据 adopt；顺带修复 evalPromptCompare 的 SYSTEM_PROMPT 配对 bug（agy 验证）。prod 侧（FINDINGS_JSON）经查不使用这些记号，无需修改。
 3. **C9 解锁条件**：获得 staging GCS 凭据或上游测试端点后，写 fixture 上传→轮询 stub 探针。
 4. ~~C3/C8 的 CI 验证~~ ✅ run 28875698999（commit 9c60e51a）全绿，guard step success。
 

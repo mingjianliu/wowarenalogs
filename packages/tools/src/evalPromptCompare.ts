@@ -9,7 +9,10 @@ import path from 'path';
 import fetch from 'node-fetch';
 import { isHealerSpec, specToString } from '../../shared/src/utils/cooldowns';
 import { buildMatchPromptNew, fetchStubs, ParsedCombat, parseLogText, MatchStub } from './printMatchPrompts';
-import { SYSTEM_PROMPT } from '../../shared/src/prompts/analyzeSystemPrompts';
+// buildMatchPromptNew emits the raw-timeline prompt format (useTimelinePrompt: true),
+// whose field legend lives in NEW_SYSTEM_PROMPT — pairing it with SYSTEM_PROMPT sends
+// the structured-XML instructions with a timeline body (agy-verified 2026-07-07).
+import { NEW_SYSTEM_PROMPT } from '../../shared/src/prompts/analyzeSystemPrompts';
 
 const OUTPUT_DIR = path.join(__dirname, '../local-batch/compare');
 const RAW_LOGS_DIR = path.join(OUTPUT_DIR, 'raw-logs');
@@ -51,7 +54,7 @@ function getHealerSpec(combat: ParsedCombat): string | null {
   return specToString(owner.spec);
 }
 
-async function callIpcExchange(reqId: string, requestData: unknown, timeoutMs = 300000): Promise<unknown> {
+async function callIpcExchange(reqId: string, requestData: unknown, timeoutMs = 600000): Promise<unknown> {
   const reqFile = path.join(OUTPUT_DIR, `req_${reqId}.json`);
   const respFile = path.join(OUTPUT_DIR, `resp_${reqId}.json`);
 
@@ -422,7 +425,7 @@ async function main() {
         const text = await fs.readFile(responsePath, 'utf8');
         res = {
           text,
-          inputTokens: calculateEstimatedCoreTokens(SYSTEM_PROMPT + prompt),
+          inputTokens: calculateEstimatedCoreTokens(NEW_SYSTEM_PROMPT + prompt),
           outputTokens: calculateEstimatedCoreTokens(text),
         };
       } else if (dryRun) {
@@ -435,7 +438,7 @@ async function main() {
       } else {
         try {
           console.log(`Running Claude evaluation on Control for ${matchId}...`);
-          res = await callClaudeAPI(apiKey, SYSTEM_PROMPT, prompt);
+          res = await callClaudeAPI(apiKey, NEW_SYSTEM_PROMPT, prompt);
         } catch (e) {
           console.error(`Error calling Claude API for match ${matchId} in Control:`, e);
           continue;
@@ -488,7 +491,7 @@ async function main() {
         const text = await fs.readFile(treatmentRespPath, 'utf8');
         res = {
           text,
-          inputTokens: calculateEstimatedCoreTokens(SYSTEM_PROMPT + wrappedPrompt),
+          inputTokens: calculateEstimatedCoreTokens(NEW_SYSTEM_PROMPT + wrappedPrompt),
           outputTokens: calculateEstimatedCoreTokens(text),
         };
       } else if (dryRun) {
@@ -501,7 +504,7 @@ async function main() {
       } else {
         try {
           console.log(`Running Claude evaluation on Treatment for ${matchId}...`);
-          res = await callClaudeAPI(apiKey, SYSTEM_PROMPT, wrappedPrompt);
+          res = await callClaudeAPI(apiKey, NEW_SYSTEM_PROMPT, wrappedPrompt);
         } catch (e) {
           console.error(`Error calling Claude API for match ${matchId} in Treatment:`, e);
           continue;
