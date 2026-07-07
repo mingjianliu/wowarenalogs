@@ -81,13 +81,28 @@ See [docs/repo-overview.md](docs/repo-overview.md) for monorepo structure, core 
 - See `TRACKER.md` for feature/bug status, `AI_FEATURES.md` for design philosophy, `AI_UTILS.md` for per-utility detail
 - Detailed workflows: one file per command in [docs/commands/](docs/commands/) (each has a "Use when…" description in its frontmatter); system-prompt A/B testing in [docs/prompt-ab-testing-workflow.md](docs/prompt-ab-testing-workflow.md)
 - Eval run history (append-only, git-tracked): [docs/eval-ledger.md](docs/eval-ledger.md); harness trust order in [docs/healer-eval-improvement-workflow.md](docs/healer-eval-improvement-workflow.md)
-- **Anthropic API Key Bypass (For All AIs)**: You do not need an Anthropic API key. You can simply create a new sub-agent and role-play the response AI to verify prompts.
+- **Anthropic API Key Bypass (For All AIs)**: You do not need an Anthropic API key. You can simply create a new sub-agent and role-play the response AI to verify prompts. For prompt-ambiguity testing, prefer a cross-family model via `agy-run ask` (see Cross-Agent Verification below) — same-family role-play tends to miss ambiguities.
+
+<cross_agent_verification>
+
+## Cross-Agent Verification (agy)
+
+A second, independent AI is available via the `agy` skill (`node ~/.claude/skills/agy/scripts/agy-run.mjs <role> "<task>"`). Use it proactively:
+
+- After a nontrivial code change → `review` (independent Gemini Pro reviewer; verify each cited file:line before adopting findings)
+- Before acting on a load-bearing claim (root cause, "can't affect X") → `verify` (VERDICT: CONFIRMED/REFUTED/INCONCLUSIVE + evidence)
+- At a design fork → `debate-open`/`debate-reply`
+- Mechanical batch steps → `exec` (cheap Flash; spot-check at least one changed file — never trust the report alone)
+
+Trust order still applies: deterministic checks beat any LLM opinion, including agy's. Verifiability audit + improvement roadmap: [docs/analysis/2026-07-07-verifiability-audit.md](docs/analysis/2026-07-07-verifiability-audit.md).
+</cross_agent_verification>
 
 <eval_integrity>
+
 ## Eval Integrity (Non-negotiable, All AIs)
 
 - **Never generate eval scores with a script, heuristic, regex, or random values.** Every score file under any `healer-eval/**/scores/` (or A/B `control|treatment/scores/`) must come from an actual judge pass that read the full prompt and response. No "scoring for scale", no backfilling missing ordinals with defaults.
 - If a scoring run is too large to finish, **stop and report the ordinals completed** — partial honest data beats complete fabricated data. Do not fake the remainder.
 - History: `scripts/finish_scoring.js` + `scripts/heuristic_eval.js` (deleted 2026-07-04) fabricated scores 51–100 of a 100-game run with hardcoded 4–5s and `Math.random()`. Every report derived from that run is invalid. Do not recreate them (see TRACKER.md F141).
 - Deterministic checks belong in dedicated tools (`annotation-regression-check`, `promptQualityCheck`) that report **measured metrics** (line counts, regex hits, coverage ratios) — never dressed up as rubric scores.
-</eval_integrity>
+  </eval_integrity>

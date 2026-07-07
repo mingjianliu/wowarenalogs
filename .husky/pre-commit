@@ -9,4 +9,6 @@ npm run typecheck
 # STRICT=1 fails the commit if any friendly death is missing from its prompt.
 if [ -f packages/tools/local-batch/healer-eval/index.json ] && [ -d packages/tools/local-batch/healer-eval/manifests ]; then
   STRICT=1 npm run -w @wowarenalogs/tools start:promptQualityCheck
+else
+  echo "[pre-commit] WARNING: local healer-eval corpus not found — promptQualityCheck gate SKIPPED"
 fi
