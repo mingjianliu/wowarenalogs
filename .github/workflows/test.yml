@@ -43,6 +43,8 @@ jobs:
         run: npm run build
       - name: tests
         run: npm run test
+      - name: test-suite health guard
+        run: npm run check:test-suites
       - name: preload sha check 2
         run: echo "PRELOAD_SHASUM_NEW=$(shasum packages/app/src/preloadApi.ts)" >> $GITHUB_ENV
       - name: check preload unchanged

@@ -1,0 +1,11 @@
+{
+  "comment": "Minimum test-suite counts per package (recorded from a real listTests run 2026-07-07). The check-test-suites guard fails if any package's collected suite count drops below its floor — catching suites silently falling out of the jest match set (config drift, renames, ignore patterns). If you intentionally remove test files, lower the floor in the same commit.",
+  "packages": {
+    "shared": { "runner": "tsdx", "minSuites": 47 },
+    "parser": { "runner": "tsdx", "minSuites": 19 },
+    "cloud": { "runner": "jest", "minSuites": 3 },
+    "pipeline-app": { "runner": "jest", "minSuites": 5 },
+    "windows-agent": { "runner": "jest", "minSuites": 10 },
+    "web": { "runner": "jest", "minSuites": 2 }
+  }
+}

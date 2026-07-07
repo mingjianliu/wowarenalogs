@@ -106,6 +106,7 @@
     "lint": "npm run lint --workspaces --if-present",
     "lint:fix": "npm run lint:fix --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
+    "check:test-suites": "node scripts/check-test-suites.mjs",
     "build": "npm run build:sql && npm run build:parser && npm run build:recorder && npm run build:web && npm run build:desktop && npm run build:app",
     "test": "npm run test --workspaces --if-present",
     "start:simlog": "npm run start:simlog --workspaces --if-present",

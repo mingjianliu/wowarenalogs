@@ -5,7 +5,7 @@
   "main": "index.js",
   "author": "prsauer",
   "scripts": {
-    "test": "jest",
+    "test": "jest --passWithNoTests=false",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
