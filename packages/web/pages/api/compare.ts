@@ -97,13 +97,24 @@ function contextFromLocal(local: CompareLocalContext): MatchContext | null {
   };
 }
 
-async function resolveMatchContext(matchId: string, local?: CompareLocalContext): Promise<MatchContext | null> {
+/** Out-param diagnostics: distinguishes the stub-miss (7-day TTL expiry) null from other nulls so
+ * the handler can report `expired` without a second Firestore lookup. */
+interface CompareDiag {
+  stubMissing?: boolean;
+}
+
+async function resolveMatchContext(
+  matchId: string,
+  local?: CompareLocalContext,
+  diag?: CompareDiag,
+): Promise<MatchContext | null> {
   if (local) return contextFromLocal(local);
 
   console.warn('[compare] no localContext in request; falling back to Firestore/GCS resolution');
   const logObjectUrl = await resolveLogObjectUrl(matchId);
   if (!logObjectUrl) {
     console.warn(`[compare] no match stub found in Firestore for ${matchId}`);
+    if (diag) diag.stubMissing = true;
     return null;
   }
   const res = await fetch(logObjectUrl);
@@ -166,8 +177,12 @@ function spellsFromCrises(crises: string[]): string[] {
 /** Stats-led path (flag-gated behind `variant === 'stats'`): loads the FULL spec+bracket cohort
  * cell (not the nearest 5) and builds a VerifiedComparison — full-cohort mean/median/p25/p75 and
  * a disclosed nReal per metric, never a fabricated average. */
-async function buildStatsComparison(matchId: string, local?: CompareLocalContext): Promise<VerifiedComparison | null> {
-  const ctx = await resolveMatchContext(matchId, local);
+async function buildStatsComparison(
+  matchId: string,
+  local?: CompareLocalContext,
+  diag?: CompareDiag,
+): Promise<VerifiedComparison | null> {
+  const ctx = await resolveMatchContext(matchId, local, diag);
   if (!ctx) return null;
   const { owner, raw, specDisplay, bracket } = ctx;
 
@@ -202,8 +217,9 @@ interface ExemplarComparison {
 async function buildExemplarComparison(
   matchId: string,
   local?: CompareLocalContext,
+  diag?: CompareDiag,
 ): Promise<ExemplarComparison | null> {
-  const ctx = await resolveMatchContext(matchId, local);
+  const ctx = await resolveMatchContext(matchId, local, diag);
   if (!ctx) return null;
   const { owner, raw, specDisplay, bracket } = ctx;
 
@@ -291,10 +307,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // no <40%-HP event (where exemplar has no personal sequence to show).
   if (variant === 'stats') {
     try {
-      const verifiedComparison = await withTimeout(buildStatsComparison(matchId, localContext), COMPARE_TIMEOUT_MS);
+      const diag: CompareDiag = {};
+      const verifiedComparison = await withTimeout(
+        buildStatsComparison(matchId, localContext, diag),
+        COMPARE_TIMEOUT_MS,
+      );
       if (!verifiedComparison) {
-        const hasStub = localContext ? true : await resolveLogObjectUrl(matchId);
-        return res.status(200).json({ expired: !hasStub });
+        return res.status(200).json({ expired: !!diag.stubMissing });
       }
 
       let statsReport: string | undefined;
@@ -329,10 +348,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // No `variant` check needed — hits here when variant is 'exemplar' OR unset.
   if (!variant || variant === 'exemplar') {
     try {
-      const result = await withTimeout(buildExemplarComparison(matchId, localContext), COMPARE_TIMEOUT_MS);
+      const diag: CompareDiag = {};
+      const result = await withTimeout(buildExemplarComparison(matchId, localContext, diag), COMPARE_TIMEOUT_MS);
       if (!result) {
-        const hasStub = localContext ? true : await resolveLogObjectUrl(matchId);
-        return res.status(200).json({ expired: !hasStub });
+        return res.status(200).json({ expired: !!diag.stubMissing });
       }
       const { verifiedComparison, userCrises, proCrises } = result;
 

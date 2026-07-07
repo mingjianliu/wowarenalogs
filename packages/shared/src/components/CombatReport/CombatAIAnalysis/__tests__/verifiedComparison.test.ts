@@ -81,3 +81,21 @@ test('emits warning note when cohort has too few teamDtps records', () => {
     ),
   ).toBe(true);
 });
+
+test('B156: cohort label aggregates real selections with counts and strips the redundant suffix', () => {
+  const cell = [rec('A', 0.1, 5), rec('B', 0.2, 6), rec('C', 0.3, 7)];
+  (cell[0] as any).leaderboardSelection = '2300+ leaderboard selection'; // legacy record format
+  (cell[1] as any).leaderboardSelection = '2700+ past-week (2026-06-28→07-03)';
+  (cell[2] as any).leaderboardSelection = '2700+ past-week (2026-06-28→07-03)';
+  const vc = buildVerifiedComparison(cell, {}, { player: 'Me', spec: 'Discipline Priest', bracket: '3v3' });
+  expect(vc.cohort.leaderboardSelection).toBe(
+    '2300+ (n=1) / 2700+ past-week (2026-06-28→07-03) (n=2) leaderboard selection',
+  );
+});
+
+test('B156: cohort label never fabricates a rating when records carry no selection', () => {
+  const cell = [rec('A', 0.1, 5), rec('B', 0.2, 6)];
+  const vc = buildVerifiedComparison(cell, {}, { player: 'Me', spec: 'Discipline Priest', bracket: '3v3' });
+  expect(vc.cohort.leaderboardSelection).toBe('leaderboard selection (rating mix unknown)');
+  expect(vc.cohort.leaderboardSelection).not.toContain('2300');
+});

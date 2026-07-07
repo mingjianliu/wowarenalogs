@@ -118,9 +118,20 @@ export function buildVerifiedComparison(
       nReal: vals.length,
     };
   }
-  const selections = Array.from(new Set(withMetrics.map((r) => r.leaderboardSelection).filter(Boolean)));
-  const selectionLabel = selections.length > 0 ? selections.join(' / ') : '2300+';
-  const leaderboardSelection = `${selectionLabel} leaderboard selection`;
+  // Real cohort files mix selections (e.g. legacy '2300+ leaderboard selection' records alongside
+  // '2700+ past-week' ones) — report each with its count. Never fabricate a rating claim when the
+  // records don't carry one (the old '2300+' fallback was exactly the false label B156 removed).
+  const selectionCounts = new Map<string, number>();
+  for (const r of withMetrics) {
+    const sel = (r.leaderboardSelection ?? '').replace(/ leaderboard selection$/, '').trim();
+    if (sel) selectionCounts.set(sel, (selectionCounts.get(sel) ?? 0) + 1);
+  }
+  const leaderboardSelection =
+    selectionCounts.size > 0
+      ? `${Array.from(selectionCounts.entries())
+          .map(([sel, n]) => `${sel} (n=${n})`)
+          .join(' / ')} leaderboard selection`
+      : 'leaderboard selection (rating mix unknown)';
 
   if (withMetrics.length < THIN) notes.push(`thin cohort (n=${withMetrics.length}) — percentiles are low-confidence`);
   return {
