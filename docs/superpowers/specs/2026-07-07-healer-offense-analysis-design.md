@@ -41,8 +41,9 @@ The gate for every offensive finding. A time segment is **slack** iff all of:
   entirely** for that match. No degraded guessing.
 - No enemy offensive CD active (from `enemyCDs.ts` timeline).
 - Log owner not in CC, and not within 3s after using a mobility/escape tool
-  (identified via existing `SpellTag` movement/escape tags in spell metadata — no new
-  hardcoded spell lists).
+  (identified via `spells.json` `type === 'buffs_speed_boost'` — 37 spells already
+  classified; no new hardcoded spell lists. Note: parser `SpellTag` has no movement
+  tag, so spells.json is the data source).
 - Segment length ≥ 4 seconds (≥ 2–3 GCDs).
 
 Output `ISlackSegment[]`: start/end seconds plus what the owner actually did in the
