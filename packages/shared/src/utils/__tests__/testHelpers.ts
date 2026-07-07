@@ -158,6 +158,7 @@ export function makeUnit(
     damageIn?: AnyObj[];
     healOut?: AnyObj[];
     advancedActions?: AnyObj[];
+    deathRecords?: AnyObj[];
     info?: AnyObj | undefined;
     ownerId?: string;
   } = {},
@@ -189,7 +190,7 @@ export function makeUnit(
     auraEvents: (overrides.auraEvents ?? []) as ICombatUnit['auraEvents'],
     spellCastEvents: (overrides.spellCastEvents ?? []) as ICombatUnit['spellCastEvents'],
     petSpellCastEvents: [] as ICombatUnit['petSpellCastEvents'],
-    deathRecords: [],
+    deathRecords: (overrides.deathRecords ?? []) as ICombatUnit['deathRecords'],
     consciousDeathRecords: [],
     advancedActions: (overrides.advancedActions ?? []) as ICombatUnit['advancedActions'],
   };
