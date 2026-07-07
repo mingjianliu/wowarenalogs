@@ -79,6 +79,16 @@ describe('losAnalysis — geometry logic', () => {
     expect(hasLineOfSight(NAGRAND_1505, p1, p2)).toBe(false);
   });
 
+  it('near-range exemption: two units within 8yd are never LoS-blocked (position-sweep fix)', () => {
+    // Straddling the Nagrand north pillar center but only 6yd apart — no arena
+    // pillar fully separates two units that close; approximate geometry that
+    // claims otherwise is wrong (100-game sweep: 142 landed CCs marked blocked,
+    // clustered on minimap-derived maps, many at <6yd).
+    const p1 = { x: -2046, y: 6621.5 };
+    const p2 = { x: -2040, y: 6621.5 };
+    expect(hasLineOfSight(NAGRAND_1505, p1, p2)).toBe(true);
+  });
+
   it('returns false when blocked by a polygon obstacle (B67)', () => {
     // Lordaeron (1672) central tomb: [1276-1295, 1659-1672]
     const p1 = { x: 1285, y: 1650 };

@@ -169,10 +169,18 @@ function obstacleBlocksSegment(obs: ArenaObstacle, ax: number, ay: number, bx: n
  * are not modelled. Accurate for standard arena play where players stay on
  * the ground level.
  */
+// No arena obstacle fully separates two units this close together — approximate
+// minimap-derived geometry that claims otherwise is wrong. 100-game sweep
+// (2026-07-07): 142 landed CCs carried "LoS blocked", clustered on Dalaran
+// Sewers / Tiger's Peak / Lordaeron / Nokhudon, many at <6yd.
+const NEAR_RANGE_LOS_EXEMPT_YARDS = 8;
+
 export function hasLineOfSight(zoneId: string, casterPos: IPosition, targetPos: IPosition): boolean | null {
   const obstacles = arenaObstacles[zoneId];
   // Unknown arena or no geometry mapped yet
   if (!obstacles || obstacles.length === 0) return null;
+
+  if (distanceBetween(casterPos, targetPos) < NEAR_RANGE_LOS_EXEMPT_YARDS) return true;
 
   for (const obs of obstacles) {
     if (obstacleBlocksSegment(obs, casterPos.x, casterPos.y, targetPos.x, targetPos.y)) {
