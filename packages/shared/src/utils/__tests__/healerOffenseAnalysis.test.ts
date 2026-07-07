@@ -297,3 +297,101 @@ describe('computeWindowContributions', () => {
     expect(result[0].ownerFreeSeconds).toBe(6);
   });
 });
+
+// Task 3: Window-creation opportunity facts
+import { computeWindowCreationFacts, ISlackSegment } from '../healerOffenseAnalysis';
+
+function slackSeg(fromSeconds: number, toSeconds: number): ISlackSegment {
+  return {
+    fromSeconds,
+    toSeconds,
+    durationSeconds: toSeconds - fromSeconds,
+    ownerDamage: 0,
+    ownerCCCasts: 0,
+    ownerPurgeCasts: 0,
+    ownerKickCasts: 0,
+    idle: true,
+  };
+}
+
+describe('computeWindowCreationFacts', () => {
+  const enemyHealerWithTrinketDown = makeUnit('enemy-h', {
+    reaction: CombatUnitReaction.Hostile,
+    spec: CombatUnitSpec.Shaman_Restoration,
+    name: 'Rsham',
+    // trinket (336126) used at t=10s; healer trinket CD 90s → on CD until 100s
+    spellCastEvents: [makeSpellCastEvent('336126', T0 + 10_000, 'enemy-h', 'Rsham', 'enemy-h', 'Rsham')],
+  });
+
+  it('emits a fact when CC ready + enemy healer DR Full + trinket on CD + no kill window overlapping', () => {
+    const owner = makeFriend('owner', {
+      spellCastEvents: [makeSpellCastEvent('8122', T0 + 100_000, 'enemy-h', 'Rsham', 'owner', 'Owner')],
+    });
+    const facts = computeWindowCreationFacts(combat, owner, [enemyHealerWithTrinketDown], [slackSeg(40, 50)], [], []);
+    expect(facts.length).toBe(1);
+    expect(facts[0].atSeconds).toBe(40);
+    expect(facts[0].ccSpellName).toBe('8122');
+    expect(facts[0].enemyHealerDRLevel).toBe('Full');
+    expect(facts[0].enemyHealerTrinketOnCD).toBe(true);
+  });
+
+  it('suppresses facts during an active kill window, at decayed DR, and caps at 2 by slack length', () => {
+    const owner = makeFriend('owner', {
+      spellCastEvents: [makeSpellCastEvent('8122', T0 + 115_000, 'enemy-h', 'Rsham', 'owner', 'Owner')],
+    });
+    // overlapping kill window suppresses the 40–50 segment
+    const suppressed = computeWindowCreationFacts(
+      combat,
+      owner,
+      [enemyHealerWithTrinketDown],
+      [slackSeg(40, 50)],
+      [makeWindow(45, 55)],
+      [],
+    );
+    expect(suppressed).toEqual([]);
+
+    // decayed DR suppresses (verify getDRCategory('8122') and reuse the real category string)
+    const decayed = computeWindowCreationFacts(
+      combat,
+      owner,
+      [enemyHealerWithTrinketDown],
+      [slackSeg(40, 50)],
+      [],
+      [{ atSeconds: 38, durationSeconds: 6, drInfo: { category: 'Disorient', level: 'Full', sequenceIndex: 0 } }],
+    );
+    expect(decayed).toEqual([]);
+
+    // 3 candidate segments → capped at 2, longest first
+    const capped = computeWindowCreationFacts(
+      combat,
+      owner,
+      [enemyHealerWithTrinketDown],
+      [slackSeg(20, 25), slackSeg(40, 52), slackSeg(60, 68)],
+      [],
+      [],
+    );
+    expect(capped.length).toBe(2);
+    expect(capped[0].atSeconds).toBe(40); // 12s slack
+    expect(capped[1].atSeconds).toBe(60); // 8s slack
+  });
+
+  it('returns [] when there is no enemy healer or the owner has no observed CC', () => {
+    const owner = makeFriend('owner');
+    expect(computeWindowCreationFacts(combat, owner, [enemyHealerWithTrinketDown], [slackSeg(40, 50)], [], [])).toEqual(
+      [],
+    );
+    const ownerWithCC = makeFriend('owner', {
+      spellCastEvents: [makeSpellCastEvent('8122', T0 + 100_000, 'x', 'X', 'owner', 'Owner')],
+    });
+    expect(
+      computeWindowCreationFacts(
+        combat,
+        ownerWithCC,
+        [makeUnit('enemy-1', { reaction: CombatUnitReaction.Hostile })],
+        [slackSeg(40, 50)],
+        [],
+        [],
+      ),
+    ).toEqual([]);
+  });
+});

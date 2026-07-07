@@ -6,7 +6,7 @@ import { ccSpellIds } from '../data/spellTags';
 import { isHealerSpec, specToString } from './cooldowns';
 import { DRLevel, getDRCategory, getDRLevelAtTime, IDRInfo } from './drAnalysis';
 import { IEnemyCDTimeline } from './enemyCDs';
-import { getHpPercentAtTime } from './killWindowTargetSelection';
+import { getHpPercentAtTime, getTrinketStateAtTime } from './killWindowTargetSelection';
 import { IOffensiveWindow } from './offensiveWindows';
 
 type SpellEntry = { type: string };
@@ -252,4 +252,64 @@ export function computeWindowContributions(
       teamMinHpPct,
     };
   });
+}
+
+// ── Task 3: Window-creation opportunity facts ──────────────────────────────
+
+export interface IWindowCreationFact {
+  atSeconds: number;
+  slackDurationSeconds: number;
+  ccSpellName: string;
+  enemyHealerName: string;
+  enemyHealerSpec: string;
+  /** Always 'Full' by construction — facts are only emitted at full DR. */
+  enemyHealerDRLevel: DRLevel;
+  /** true = trinket known on CD; null = trinket never observed (state unknown). */
+  enemyHealerTrinketOnCD: boolean | null;
+}
+
+export function computeWindowCreationFacts(
+  combat: { startTime: number; endTime: number },
+  owner: ICombatUnit,
+  enemies: ICombatUnit[],
+  slackSegments: ISlackSegment[],
+  offensiveWindows: IOffensiveWindow[],
+  enemyHealerCCInstances: CCWithDR,
+): IWindowCreationFact[] {
+  const matchStartMs = combat.startTime;
+  const enemyHealer = enemies.find((e) => isHealerSpec(e.spec));
+  if (!enemyHealer) return [];
+  const ccSpells = collectOwnerCCSpells(owner, matchStartMs);
+  if (ccSpells.length === 0) return [];
+
+  const overlapsKillWindow = (seg: ISlackSegment) =>
+    offensiveWindows.some((w) => w.fromSeconds < seg.toSeconds && seg.fromSeconds < w.toSeconds);
+
+  const facts: IWindowCreationFact[] = [];
+  for (const seg of slackSegments) {
+    if (overlapsKillWindow(seg)) continue;
+
+    const readyAtFullDR = ccSpells.find(
+      (s) =>
+        isCCReadyAt(s, seg.fromSeconds) &&
+        getDRLevelAtTime(enemyHealerCCInstances, getDRCategory(s.spellId), seg.fromSeconds) === 'Full',
+    );
+    if (!readyAtFullDR) continue;
+
+    const trinketAvailable = getTrinketStateAtTime(enemyHealer, seg.fromSeconds, matchStartMs, true);
+    // trinketAvailable === true → healer can break the opener; not a clean opportunity
+    if (trinketAvailable === true) continue;
+
+    facts.push({
+      atSeconds: seg.fromSeconds,
+      slackDurationSeconds: seg.durationSeconds,
+      ccSpellName: readyAtFullDR.spellName,
+      enemyHealerName: enemyHealer.name,
+      enemyHealerSpec: String(enemyHealer.spec),
+      enemyHealerDRLevel: 'Full',
+      enemyHealerTrinketOnCD: trinketAvailable === null ? null : true,
+    });
+  }
+
+  return facts.sort((a, b) => b.slackDurationSeconds - a.slackDurationSeconds).slice(0, MAX_WINDOW_CREATION_FACTS);
 }
