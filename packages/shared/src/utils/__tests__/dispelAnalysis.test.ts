@@ -387,7 +387,57 @@ describe('annotateMissedPurgesWithKillWindows', () => {
       missedPurgeWindows: misses,
     };
     const text = formatDispelContextForAI(summary as never).join('\n');
-    expect(text).toContain('DURING FRIENDLY KILL WINDOW');
+    expect(text).toContain('MISSED PURGE DURING FRIENDLY KILL WINDOW');
     expect(text).toContain('Earth Shield');
+  });
+
+  it('surfaces an in-window Medium miss via a dedicated line without displacing a longer Critical worst pick', () => {
+    const criticalMiss: IMissedPurgeWindow = {
+      ...makeMissedPurge(10, 'Critical'),
+      durationSeconds: 20,
+      spellName: 'Ice Block',
+      enemySpec: 'Frost Mage',
+      enemyName: 'Fmage',
+      duringKillWindow: false,
+    };
+    const mediumInWindowMiss: IMissedPurgeWindow = {
+      ...makeMissedPurge(45, 'Medium'),
+      durationSeconds: 5,
+      spellName: 'Earth Shield',
+    };
+    annotateMissedPurgesWithKillWindows([mediumInWindowMiss], [{ fromSeconds: 40, toSeconds: 50 }]);
+    expect(mediumInWindowMiss.duringKillWindow).toBe(true);
+
+    const summary = {
+      allyCleanse: [],
+      ourPurges: [],
+      hostilePurges: [],
+      missedCleanseWindows: [],
+      ccEfficiency: [],
+      missedPurgeWindows: [criticalMiss, mediumInWindowMiss],
+    };
+    const text = formatDispelContextForAI(summary as never).join('\n');
+
+    // Worst line stays on the Critical (longer, non-window) miss — unchanged from pre-existing behavior.
+    expect(text).toContain('Missed purge windows: 1 — worst: Ice Block on Frost Mage');
+    expect(text).not.toContain('worst: Earth Shield');
+
+    // The in-window Medium miss is still always surfaced via its own dedicated line.
+    expect(text).toContain('MISSED PURGE DURING FRIENDLY KILL WINDOW: Earth Shield on Restoration Shaman (Rsham)');
+  });
+
+  it('renders no kill-window line when no missed purge carries the duringKillWindow annotation', () => {
+    const misses = [makeMissedPurge(10, 'Critical'), makeMissedPurge(20, 'High')];
+    // duringKillWindow deliberately left undefined (annotateMissedPurgesWithKillWindows never ran).
+    const summary = {
+      allyCleanse: [],
+      ourPurges: [],
+      hostilePurges: [],
+      missedCleanseWindows: [],
+      ccEfficiency: [],
+      missedPurgeWindows: misses,
+    };
+    const text = formatDispelContextForAI(summary as never).join('\n');
+    expect(text).not.toContain('MISSED PURGE DURING FRIENDLY KILL WINDOW');
   });
 });

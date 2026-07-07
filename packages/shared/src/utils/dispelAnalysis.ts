@@ -1108,17 +1108,28 @@ export function formatDispelContextForAI(summary: IDispelSummary): string[] {
   }
 
   // Purge summary
-  const significantMissedPurges = missedPurgeWindows.filter(
-    (w) => w.priority === 'Critical' || w.priority === 'High' || w.duringKillWindow === true,
-  );
+  // NOTE: kept as the original Critical/High-only filter (pre-duringKillWindow escalation) so the
+  // "worst" pick and its rendered line stay byte-identical to the pre-existing behavior for all
+  // inputs — including in-window duration ties/wins that would otherwise silently swap which item
+  // is reported as worst (e.g. a High 5s not-in-window miss vs. a Medium 20s in-window miss).
+  const significantMissedPurges = missedPurgeWindows.filter((w) => w.priority === 'Critical' || w.priority === 'High');
   if (significantMissedPurges.length === 0) {
     lines.push('  Missed purge windows: None (Critical/High)');
   } else {
     const worst = [...significantMissedPurges].sort((a, b) => b.durationSeconds - a.durationSeconds)[0];
     const pressureStr = worst.teamUnderPressure ? ' during pressure' : '';
-    const killWindowSuffix = worst.duringKillWindow === true ? ' — DURING FRIENDLY KILL WINDOW' : '';
     lines.push(
-      `  Missed purge windows: ${significantMissedPurges.length} — worst: ${worst.spellName} on ${worst.enemySpec} (${Math.round(worst.durationSeconds)}s unpurged${pressureStr})${killWindowSuffix}`,
+      `  Missed purge windows: ${significantMissedPurges.length} — worst: ${worst.spellName} on ${worst.enemySpec} (${Math.round(worst.durationSeconds)}s unpurged${pressureStr})`,
+    );
+  }
+
+  // Kill-window misses are always surfaced, regardless of priority (a friendly kill can be blown by
+  // a Medium-priority buff just as easily as a Critical one) — rendered as dedicated lines rather
+  // than folded into the "worst" pick above so they can never be hidden by a longer non-window miss.
+  const killWindowMisses = missedPurgeWindows.filter((w) => w.duringKillWindow === true);
+  for (const miss of killWindowMisses) {
+    lines.push(
+      `  MISSED PURGE DURING FRIENDLY KILL WINDOW: ${miss.spellName} on ${miss.enemySpec} (${miss.enemyName}) at ${Math.round(miss.timeSeconds)}s (${Math.round(miss.durationSeconds)}s unpurged, priority ${miss.priority})`,
     );
   }
 
