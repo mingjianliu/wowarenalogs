@@ -92,6 +92,7 @@ A second, independent AI is available via the `agy` skill (`node ~/.claude/skill
 - After a nontrivial code change → `review` (independent Gemini Pro reviewer; verify each cited file:line before adopting findings)
 - Before acting on a load-bearing claim (root cause, "can't affect X") → `verify` (VERDICT: CONFIRMED/REFUTED/INCONCLUSIVE + evidence)
 - At a design fork → `debate-open`/`debate-reply`
+- **Before finalizing any spec/design doc** (ritual): run `debate-open` on the chosen approach ("POSITION: we chose X because …"), answer its strongest rebuttal once, and record the outcome (points conceded or defended) in the spec's design-decisions section. A tie/defense is fine — the goal is surfacing the weakest assumption before code exists, not winning.
 - Mechanical batch steps → `exec` (cheap Flash; spot-check at least one changed file — never trust the report alone)
 
 Trust order still applies: deterministic checks beat any LLM opinion, including agy's. Verifiability audit + improvement roadmap: [docs/analysis/2026-07-07-verifiability-audit.md](docs/analysis/2026-07-07-verifiability-audit.md).
