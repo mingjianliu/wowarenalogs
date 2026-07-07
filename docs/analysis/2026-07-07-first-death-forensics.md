@@ -2,13 +2,15 @@
 
 Window: 15s before the first death. Games scanned: 1151; no-death games: 0; deaths bucketed: 1151.
 
-| Bucket | n | share | round WR |
-|---|---|---|---|
-| A_HEALER_CC_LOCKED | 600 | 52.1% | 42.5% |
-| UNCLASSIFIED | 268 | 23.3% | 70.1% |
-| C_COORDINATED_FOCUS | 142 | 12.3% | 69.7% |
-| D_HEALER_IDLE | 83 | 7.2% | 72.3% |
-| B_DEFENSIVES_HELD | 58 | 5.0% | 53.4% |
+| Bucket | n | share | friendly-victim n | WR (friendly victim) | enemy-victim n | WR (enemy victim) |
+|---|---|---|---|---|---|---|
+| A_HEALER_CC_LOCKED | 600 | 52.1% | 348 | 0.9% | 252 | 100.0% |
+| UNCLASSIFIED | 268 | 23.3% | 80 | 0.0% | 188 | 100.0% |
+| C_COORDINATED_FOCUS | 142 | 12.3% | 43 | 0.0% | 99 | 100.0% |
+| D_HEALER_IDLE | 83 | 7.2% | 23 | 0.0% | 60 | 100.0% |
+| B_DEFENSIVES_HELD | 58 | 5.0% | 27 | 3.7% | 31 | 96.8% |
+
+WR = owner-team round win rate within the subset. Friendly-victim = the owner's team lost the first player; enemy-victim = the enemy team did. healerCCLocked always refers to the owner's own healer.
 
 ## Per victim spec
 

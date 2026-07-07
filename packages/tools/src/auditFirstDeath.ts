@@ -27,7 +27,11 @@ async function main() {
   let games = 0;
   let noDeaths = 0;
   const bucketCounts = new Map<FirstDeathBucket, number>();
-  const bucketWins = new Map<FirstDeathBucket, number>();
+  // owner-team round-win counts split by which side lost the first player
+  const bucketWinsFriendly = new Map<FirstDeathBucket, number>();
+  const bucketCountsFriendly = new Map<FirstDeathBucket, number>();
+  const bucketWinsEnemy = new Map<FirstDeathBucket, number>();
+  const bucketCountsEnemy = new Map<FirstDeathBucket, number>();
   // per victim spec × bucket
   const specBuckets = new Map<string, Map<FirstDeathBucket, number>>();
 
@@ -43,14 +47,20 @@ async function main() {
     out.write(JSON.stringify({ file: game.file, combatIndex: game.combatIndex, bucket, ...features }) + '\n');
     bucketCounts.set(bucket, (bucketCounts.get(bucket) ?? 0) + 1);
     const isWin = game.combat.result === CombatResult.Win;
-    if (isWin) bucketWins.set(bucket, (bucketWins.get(bucket) ?? 0) + 1);
+    if (features.victimIsFriendly) {
+      bucketCountsFriendly.set(bucket, (bucketCountsFriendly.get(bucket) ?? 0) + 1);
+      if (isWin) bucketWinsFriendly.set(bucket, (bucketWinsFriendly.get(bucket) ?? 0) + 1);
+    } else {
+      bucketCountsEnemy.set(bucket, (bucketCountsEnemy.get(bucket) ?? 0) + 1);
+      if (isWin) bucketWinsEnemy.set(bucket, (bucketWinsEnemy.get(bucket) ?? 0) + 1);
+    }
     const spec = features.victimSpec;
     if (!specBuckets.has(spec)) specBuckets.set(spec, new Map());
     const sb = specBuckets.get(spec) as Map<FirstDeathBucket, number>;
     sb.set(bucket, (sb.get(bucket) ?? 0) + 1);
   });
 
-  out.end();
+  await new Promise<void>((resolve) => out.end(resolve));
 
   const total = [...bucketCounts.values()].reduce((a, b) => a + b, 0);
   const lines: string[] = [];
@@ -60,12 +70,23 @@ async function main() {
     `Window: ${FIRST_DEATH_WINDOW_SECONDS}s before the first death. Games scanned: ${games}; no-death games: ${noDeaths}; deaths bucketed: ${total}.`,
   );
   lines.push('');
-  lines.push('| Bucket | n | share | round WR |');
-  lines.push('|---|---|---|---|');
+  lines.push('| Bucket | n | share | friendly-victim n | WR (friendly victim) | enemy-victim n | WR (enemy victim) |');
+  lines.push('|---|---|---|---|---|---|---|');
   for (const [bucket, n] of [...bucketCounts.entries()].sort((a, b) => b[1] - a[1])) {
-    const wins = bucketWins.get(bucket) ?? 0;
-    lines.push(`| ${bucket} | ${n} | ${((100 * n) / total).toFixed(1)}% | ${((100 * wins) / n).toFixed(1)}% |`);
+    const nFriendly = bucketCountsFriendly.get(bucket) ?? 0;
+    const nEnemy = bucketCountsEnemy.get(bucket) ?? 0;
+    const winsFriendly = bucketWinsFriendly.get(bucket) ?? 0;
+    const winsEnemy = bucketWinsEnemy.get(bucket) ?? 0;
+    const wrFriendly = nFriendly > 0 ? `${((100 * winsFriendly) / nFriendly).toFixed(1)}%` : '—';
+    const wrEnemy = nEnemy > 0 ? `${((100 * winsEnemy) / nEnemy).toFixed(1)}%` : '—';
+    lines.push(
+      `| ${bucket} | ${n} | ${((100 * n) / total).toFixed(1)}% | ${nFriendly} | ${wrFriendly} | ${nEnemy} | ${wrEnemy} |`,
+    );
   }
+  lines.push('');
+  lines.push(
+    "WR = owner-team round win rate within the subset. Friendly-victim = the owner's team lost the first player; enemy-victim = the enemy team did. healerCCLocked always refers to the owner's own healer.",
+  );
   lines.push('');
   lines.push('## Per victim spec');
   lines.push('');
