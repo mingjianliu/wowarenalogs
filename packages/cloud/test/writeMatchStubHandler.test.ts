@@ -22,6 +22,15 @@ jest.mock('@google-cloud/firestore', () => ({
       set: async (data: unknown) => {
         firestoreDocs[docPath] = data;
       },
+      // Mirrors real Firestore create(): atomic, rejects with gRPC code 6 when the doc exists.
+      create: async (data: unknown) => {
+        if (docPath in firestoreDocs) {
+          const err = new Error('ALREADY_EXISTS') as Error & { code?: number };
+          err.code = 6;
+          throw err;
+        }
+        firestoreDocs[docPath] = data;
+      },
     }),
   })),
 }));

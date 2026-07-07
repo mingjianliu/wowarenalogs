@@ -64,11 +64,17 @@ export async function handler(file: any, _context: any) {
     console.timeEnd('firestore.doc');
     console.log(`writing ${matchStubsFirestore}/${stub.id}`);
     console.time('firestore.set');
-    const docSnap = await document.get();
-    if (!docSnap.exists) {
-      await document.set(instanceToPlain(stub));
-    } else {
-      console.log(`Document ${stub.id} already exists, skipping stub set.`);
+    // create() is atomic (fails if the doc exists) — a get-then-set check races when two
+    // instances process the same match concurrently, and an attacker-controlled re-upload
+    // must never overwrite an existing stub.
+    try {
+      await document.create(instanceToPlain(stub));
+    } catch (e) {
+      if ((e as { code?: number }).code === 6 /* ALREADY_EXISTS */) {
+        console.log(`Document ${stub.id} already exists, skipping stub set.`);
+      } else {
+        throw e;
+      }
     }
     console.timeEnd('firestore.set');
     try {
@@ -98,11 +104,14 @@ export async function handler(file: any, _context: any) {
       console.log(`processing stub ${stub.id}`);
       const document = firestore.doc(`${matchStubsFirestore}/${stub.id}`);
       console.time(`firestore.set-${round.id}`);
-      const docSnap = await document.get();
-      if (!docSnap.exists) {
-        await document.set(instanceToPlain(stub));
-      } else {
-        console.log(`Document ${stub.id} already exists, skipping stub set.`);
+      try {
+        await document.create(instanceToPlain(stub));
+      } catch (e) {
+        if ((e as { code?: number }).code === 6 /* ALREADY_EXISTS */) {
+          console.log(`Document ${stub.id} already exists, skipping stub set.`);
+        } else {
+          throw e;
+        }
       }
       console.timeEnd(`firestore.set-${round.id}`);
     });
