@@ -2,9 +2,11 @@
 import { CombatExtraSpellAction, CombatUnitReaction, CombatUnitSpec, LogEvent } from '@wowarenalogs/parser';
 
 import {
+  annotateMissedPurgesWithKillWindows,
   canDefensiveCleanse,
   canOffensivePurge,
   formatDispelContextForAI,
+  IMissedPurgeWindow,
   reconstructDispelSummary,
   wasRemovedByAllyDispel,
 } from '../dispelAnalysis';
@@ -348,5 +350,44 @@ describe('wasRemovedByAllyDispel', () => {
     expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.27)).toBe(false); // 70ms — distinct event
     expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.7)).toBe(false); // 500ms — distinct event
     expect(wasRemovedByAllyDispel(allyCleanse, '999', 'Player1', 10.2)).toBe(false); // wrong spell
+  });
+});
+
+function makeMissedPurge(timeSeconds: number, priority: 'Critical' | 'High' | 'Medium' | 'Low'): IMissedPurgeWindow {
+  return {
+    timeSeconds,
+    durationSeconds: 8,
+    enemyName: 'Rsham',
+    enemySpec: 'Restoration Shaman',
+    spellName: 'Earth Shield',
+    spellId: '974',
+    priority,
+    purgeWasOnCD: false,
+    teamUnderPressure: false,
+  };
+}
+
+describe('annotateMissedPurgesWithKillWindows', () => {
+  it('flags misses inside a kill window and leaves others untouched', () => {
+    const misses = [makeMissedPurge(45, 'Medium'), makeMissedPurge(80, 'Medium')];
+    annotateMissedPurgesWithKillWindows(misses, [{ fromSeconds: 40, toSeconds: 50 }]);
+    expect(misses[0].duringKillWindow).toBe(true);
+    expect(misses[1].duringKillWindow).toBe(false);
+  });
+
+  it('escalates in-window misses in the formatter even at Medium priority', () => {
+    const misses = [makeMissedPurge(45, 'Medium')];
+    annotateMissedPurgesWithKillWindows(misses, [{ fromSeconds: 40, toSeconds: 50 }]);
+    const summary = {
+      allyCleanse: [],
+      ourPurges: [],
+      hostilePurges: [],
+      missedCleanseWindows: [],
+      ccEfficiency: [],
+      missedPurgeWindows: misses,
+    };
+    const text = formatDispelContextForAI(summary as never).join('\n');
+    expect(text).toContain('DURING FRIENDLY KILL WINDOW');
+    expect(text).toContain('Earth Shield');
   });
 });

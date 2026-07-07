@@ -438,6 +438,22 @@ export interface IMissedPurgeWindow {
    * Uses role-aware getPressureThreshold (post B8 fix).
    */
   teamUnderPressure: boolean;
+  /** True when the missed purge fell inside a friendly kill window (offensiveWindows intersection).
+   *  Optional: only set when annotateMissedPurgesWithKillWindows has run. */
+  duringKillWindow?: boolean;
+}
+
+/** Marks missed purges that fell inside a friendly kill window. Mutates in place;
+ *  kept separate from reconstructDispelSummary so its signature (and all call sites) stay unchanged. */
+export function annotateMissedPurgesWithKillWindows(
+  missedPurgeWindows: IMissedPurgeWindow[],
+  offensiveWindows: Array<{ fromSeconds: number; toSeconds: number }>,
+): void {
+  for (const miss of missedPurgeWindows) {
+    miss.duringKillWindow = offensiveWindows.some(
+      (w) => miss.timeSeconds >= w.fromSeconds && miss.timeSeconds < w.toSeconds,
+    );
+  }
 }
 
 export interface IDispelSummary {
@@ -1092,14 +1108,17 @@ export function formatDispelContextForAI(summary: IDispelSummary): string[] {
   }
 
   // Purge summary
-  const significantMissedPurges = missedPurgeWindows.filter((w) => w.priority === 'Critical' || w.priority === 'High');
+  const significantMissedPurges = missedPurgeWindows.filter(
+    (w) => w.priority === 'Critical' || w.priority === 'High' || w.duringKillWindow === true,
+  );
   if (significantMissedPurges.length === 0) {
     lines.push('  Missed purge windows: None (Critical/High)');
   } else {
     const worst = [...significantMissedPurges].sort((a, b) => b.durationSeconds - a.durationSeconds)[0];
     const pressureStr = worst.teamUnderPressure ? ' during pressure' : '';
+    const killWindowSuffix = worst.duringKillWindow === true ? ' — DURING FRIENDLY KILL WINDOW' : '';
     lines.push(
-      `  Missed purge windows: ${significantMissedPurges.length} — worst: ${worst.spellName} on ${worst.enemySpec} (${Math.round(worst.durationSeconds)}s unpurged${pressureStr})`,
+      `  Missed purge windows: ${significantMissedPurges.length} — worst: ${worst.spellName} on ${worst.enemySpec} (${Math.round(worst.durationSeconds)}s unpurged${pressureStr})${killWindowSuffix}`,
     );
   }
 
