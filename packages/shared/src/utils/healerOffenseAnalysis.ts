@@ -3,7 +3,7 @@ import { ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 import { spellEffectData } from '../data/spellEffectData';
 import spellsData from '../data/spells.json';
 import { ccSpellIds } from '../data/spellTags';
-import { isHealerSpec } from './cooldowns';
+import { isHealerSpec, specToString } from './cooldowns';
 import { DRLevel, getDRCategory, getDRLevelAtTime, IDRInfo } from './drAnalysis';
 import { IEnemyCDTimeline } from './enemyCDs';
 import { getHpPercentAtTime } from './killWindowTargetSelection';
@@ -225,10 +225,8 @@ export function computeWindowContributions(
       .reduce((sum, d) => sum + Math.max(0, d.effectiveAmount), 0);
 
     let ccdSeconds = 0;
-    for (const cc of ownerCCInstances) {
-      const from = Math.max(w.fromSeconds, cc.atSeconds);
-      const to = Math.min(w.toSeconds, cc.atSeconds + cc.durationSeconds);
-      if (to > from) ccdSeconds += to - from;
+    for (let t = Math.floor(w.fromSeconds); t < w.toSeconds; t++) {
+      if (isOwnerCCdAt(ownerCCInstances, t)) ccdSeconds++;
     }
     const ownerFreeSeconds = Math.max(0, w.durationSeconds - ccdSeconds);
 
@@ -246,7 +244,7 @@ export function computeWindowContributions(
       targetName: w.targetName,
       targetSpec: w.targetSpec,
       enemyHealerName: enemyHealer?.name ?? null,
-      enemyHealerSpec: enemyHealer ? String(enemyHealer.spec) : null,
+      enemyHealerSpec: enemyHealer ? specToString(enemyHealer.spec) : null,
       ownerCCReady,
       ownerCastCCInWindow,
       ownerDamageInWindow,

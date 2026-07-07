@@ -1,5 +1,6 @@
 import { CombatUnitReaction, CombatUnitSpec, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
+import { specToString } from '../cooldowns';
 import { IEnemyCDTimeline } from '../enemyCDs';
 import { computeSlackSegments } from '../healerOffenseAnalysis';
 import { makeAdvancedAction, makeSpellCastEvent, makeUnit } from './testHelpers';
@@ -222,6 +223,8 @@ describe('computeWindowContributions', () => {
     );
     expect(result.length).toBe(1);
     expect(result[0].enemyHealerName).toBe('Rsham');
+    expect(result[0].enemyHealerSpec).toBe(specToString(CombatUnitSpec.Shaman_Restoration));
+    expect(result[0].enemyHealerSpec).not.toBe(String(CombatUnitSpec.Shaman_Restoration));
     expect(result[0].ownerCCReady).toEqual([{ spellName: '8122', enemyHealerDR: 'Full' }]);
     expect(result[0].ownerCastCCInWindow).toBe(false);
     expect(result[0].ownerFreeSeconds).toBe(10);
@@ -274,5 +277,23 @@ describe('computeWindowContributions', () => {
     );
     expect(result[0].ownerFreeSeconds).toBe(6);
     expect(result[0].ownerCCReady[0].enemyHealerDR).toBe('50%');
+  });
+
+  it('does not double-count ownerFreeSeconds when owner CC instances overlap', () => {
+    const owner = makeFriend('owner');
+    const result = computeWindowContributions(
+      combat,
+      owner,
+      [owner],
+      [enemyDk, enemyHealer],
+      [makeWindow(40, 50)],
+      [
+        { atSeconds: 42, durationSeconds: 4 }, // 42–46
+        { atSeconds: 43, durationSeconds: 3 }, // 43–46, overlaps the above
+      ],
+      [],
+    );
+    // Union of CC'd seconds is still {42,43,44,45} = 4s, so ownerFreeSeconds is 6, not 10-(4+3)=3.
+    expect(result[0].ownerFreeSeconds).toBe(6);
   });
 });
