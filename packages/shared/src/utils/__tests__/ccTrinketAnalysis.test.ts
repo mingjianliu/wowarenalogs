@@ -403,6 +403,39 @@ describe('formatCCTrinketForContext', () => {
     expect(res[1]).toContain('| Relentless');
     expect(res[2]).toContain('| Unknown');
   });
+
+  it('lists each missed trinket window with time, damage, and position when available', () => {
+    const missedWithPos: any = {
+      atSeconds: 30,
+      spellName: 'Kidney Shot',
+      durationSeconds: 5,
+      damageTakenDuring: 180_000,
+      drInfo: { level: 'Full' },
+      distanceYards: 6.2,
+      losBlocked: false,
+    };
+    const missedNoPos: any = {
+      atSeconds: 75,
+      spellName: 'Polymorph',
+      durationSeconds: 6,
+      damageTakenDuring: 50_000,
+      drInfo: { level: 'Full' },
+      distanceYards: null,
+      losBlocked: null,
+    };
+    const summary: any = {
+      ...summaryBase,
+      ccInstances: [missedWithPos, missedNoPos],
+      missedTrinketWindows: [missedWithPos, missedNoPos],
+    };
+
+    const res = formatCCTrinketForContext([summary]).join('\n');
+
+    expect(res).toContain('0:30 Kidney Shot (5s, 180k dmg) — 6.2yd from caster');
+    expect(res).toContain('1:15 Polymorph (6s, 50k dmg)');
+    // No position annotation when advanced logging did not supply coordinates
+    expect(res).not.toContain('1:15 Polymorph (6s, 50k dmg) —');
+  });
 });
 
 describe('analyzePlayerCCAndTrinket — further branches', () => {

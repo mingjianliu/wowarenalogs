@@ -1,6 +1,7 @@
 import { AtomicArenaCombat, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
 import { getEnglishSpellName } from '../../../data/spellEffectData';
+import { zoneMetadata } from '../../../data/zoneMetadata';
 import { buildArchetypeInjectionHeader } from '../../../utils/archetypeInjection';
 import { analyzePlayerCCAndTrinket, formatCCTrinketForContext } from '../../../utils/ccTrinketAnalysis';
 import { extractStasisEvents } from '../../../utils/combatStates';
@@ -17,6 +18,7 @@ import {
   isHealerSpec,
   specToString,
 } from '../../../utils/cooldowns';
+import { isMeleeSpec } from '../../../utils/cooldowns';
 import { formatDampeningForContext } from '../../../utils/dampening';
 import { buildDeathOutcomeSummary, formatDeathOutcomeForContext } from '../../../utils/deathOutcomeAnalysis';
 import { canOffensivePurge, formatDispelContextForAI, reconstructDispelSummary } from '../../../utils/dispelAnalysis';
@@ -37,6 +39,7 @@ import {
 import { computeMatchArchetype, formatMatchArchetypeForContext } from '../../../utils/matchArchetype';
 import { buildOffensiveWasteSummary, formatOffensiveWasteForContext } from '../../../utils/offensiveWasteAnalysis';
 import { computeOffensiveWindows, formatOffensiveWindowsForContext } from '../../../utils/offensiveWindows';
+import { computeOwnerPositionEvents, formatPositionEventsForContext } from '../../../utils/positionAnalysis';
 import { benchmarks, formatDTPSBaselines, formatSpecBaselines } from '../../../utils/specBaselines';
 import { getPvpToolkit } from '../../../utils/talentBehaviors';
 import { channelWasInterrupted } from './timelineHelpers';
@@ -78,6 +81,10 @@ export function buildMatchContext(
 
   const myTeam = friends.map((p) => specToString(p.spec)).join(', ');
   const enemyTeam = enemies.map((p) => specToString(p.spec)).join(', ');
+
+  // Arena map name — lets the model apply its own knowledge of the map's pillar/LoS layout
+  const zoneName = zoneMetadata[String(combat.startInfo?.zoneId)]?.name;
+  const mapSuffix = zoneName ? `  |  Map: ${zoneName}` : '';
 
   // Match result
   const combatAny = combat as unknown as Record<string, unknown>;
@@ -206,6 +213,21 @@ export function buildMatchContext(
     owner as ICombatUnit,
   );
 
+  // F15 iteration 1+2: owner engagement-state events from real X/Y coordinates
+  // (STAYED_IN / KITED during enemy bursts, MISSED_PUSH, offensive CD out of range).
+  const ownerCCSummaryForPosition = ccTrinketSummaries.find((s) => s.playerName === owner.name);
+  const positionEvents = computeOwnerPositionEvents({
+    owner: owner as ICombatUnit,
+    enemies: enemies as ICombatUnit[],
+    combat,
+    burstWindows: enemyCDTimeline.alignedBurstWindows,
+    ownerCooldowns: cooldowns,
+    ownerCCSummary: ownerCCSummaryForPosition,
+    isHealer: healer,
+    ownerIsMelee: isMeleeSpec(owner.spec),
+  });
+  const positionLines = formatPositionEventsForContext(positionEvents);
+
   // Purge responsibility attribution
   const ownerCanPurge = canOffensivePurge(owner as ICombatUnit);
   const teamPurgers = friends
@@ -228,7 +250,7 @@ export function buildMatchContext(
     tLines.push('');
     tLines.push('MATCH FACTS');
     tLines.push(
-      `  Spec: ${ownerSpec}${healer ? ' (Healer)' : ''}  |  Bracket: ${combat.startInfo.bracket}  |  Result: ${resultStr}  |  Duration: ${fmtTime(durationSeconds)}`,
+      `  Spec: ${ownerSpec}${healer ? ' (Healer)' : ''}  |  Bracket: ${combat.startInfo.bracket}  |  Result: ${resultStr}  |  Duration: ${fmtTime(durationSeconds)}${mapSuffix}`,
     );
     tLines.push(`  My team: ${myTeam}`);
     tLines.push(`  Enemy team: ${enemyTeam}`);
@@ -304,6 +326,20 @@ export function buildMatchContext(
       } as BuildMatchTimelineParams),
     );
 
+    // Healer exposure at burst windows (LoS/pillar + DR + trinket state) — previously
+    // only the critical-moments path carried this; the timeline path has the same
+    // burst-window data so the section applies identically.
+    const tHealerExposureLines = formatHealerExposureForContext(healerExposures);
+    if (tHealerExposureLines.length > 0) {
+      tLines.push('');
+      tHealerExposureLines.forEach((l) => tLines.push(l));
+    }
+
+    if (positionLines.length > 0) {
+      tLines.push('');
+      positionLines.forEach((l) => tLines.push(l));
+    }
+
     return tLines.join('\n');
   }
 
@@ -319,7 +355,7 @@ export function buildMatchContext(
   lines.push('');
   lines.push('MATCH SUMMARY');
   lines.push(
-    `  Spec: ${ownerSpec}${healer ? ' (Healer)' : ''}  |  Bracket: ${combat.startInfo.bracket}  |  Result: ${resultStr}  |  Duration: ${fmtTime(durationSeconds)}`,
+    `  Spec: ${ownerSpec}${healer ? ' (Healer)' : ''}  |  Bracket: ${combat.startInfo.bracket}  |  Result: ${resultStr}  |  Duration: ${fmtTime(durationSeconds)}${mapSuffix}`,
   );
   lines.push(`  My team: ${myTeam}`);
   lines.push(`  Enemy team: ${enemyTeam}`);
@@ -662,6 +698,11 @@ export function buildMatchContext(
   if (healerExposureLines.length > 0) {
     lines.push('');
     healerExposureLines.forEach((l) => lines.push(l));
+  }
+
+  if (positionLines.length > 0) {
+    lines.push('');
+    positionLines.forEach((l) => lines.push(l));
   }
 
   const outgoingCCLines = formatOutgoingCCChainsForContext(outgoingCCChains);

@@ -922,6 +922,18 @@ export function formatCCTrinketForContext(summaries: IPlayerCCTrinketSummary[]):
     lines.push(
       `  ${s.playerSpec} (${s.playerName}): ${s.ccInstances.length} CC — ${ccBreakdown} | ${trinketStr}${noteStr}`,
     );
+
+    // Per-window detail for missed trinket windows — the highest-value CC instances.
+    // Position annotation (distance / LoS at application) only when advanced logging supplied it.
+    for (const w of s.missedTrinketWindows) {
+      const posStr =
+        w.distanceYards !== null
+          ? ` — ${w.distanceYards}yd from caster${w.losBlocked === true ? ', LoS blocked' : ''}`
+          : '';
+      lines.push(
+        `    ⚠ Missed trinket: ${fmtTime(w.atSeconds)} ${w.spellName} (${Math.round(w.durationSeconds)}s, ${Math.round(w.damageTakenDuring / 1000)}k dmg)${posStr}`,
+      );
+    }
   }
 
   return lines;
