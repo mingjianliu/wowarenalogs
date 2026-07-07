@@ -3,7 +3,7 @@ import { ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 import { spellEffectData } from '../data/spellEffectData';
 import spellsData from '../data/spells.json';
 import { ccSpellIds } from '../data/spellTags';
-import { isHealerSpec, specToString } from './cooldowns';
+import { fmtTime, isHealerSpec, specToString } from './cooldowns';
 import { DRLevel, getDRCategory, getDRLevelAtTime, IDRInfo } from './drAnalysis';
 import { IEnemyCDTimeline } from './enemyCDs';
 import { getHpPercentAtTime, getTrinketStateAtTime } from './killWindowTargetSelection';
@@ -312,4 +312,110 @@ export function computeWindowCreationFacts(
   }
 
   return facts.sort((a, b) => b.slackDurationSeconds - a.slackDurationSeconds).slice(0, MAX_WINDOW_CREATION_FACTS);
+}
+
+// ── Task 4: Summary entry point + context formatter ───────────────────────
+
+export interface IHealerOffenseSummary {
+  advancedLoggingAvailable: boolean;
+  slackSegments: ISlackSegment[];
+  windowContributions: IWindowContribution[];
+  windowCreationFacts: IWindowCreationFact[];
+}
+
+export function buildHealerOffenseSummary(
+  combat: { startTime: number; endTime: number },
+  owner: ICombatUnit,
+  friends: ICombatUnit[],
+  enemies: ICombatUnit[],
+  offensiveWindows: IOffensiveWindow[],
+  enemyCDTimeline: IEnemyCDTimeline,
+  ownerCCInstances: CCInterval,
+  enemyHealerCCInstances: CCWithDR,
+  ownerPurgeTimesSeconds: ReadonlyArray<number>,
+): IHealerOffenseSummary {
+  const { advancedLoggingAvailable, segments } = computeSlackSegments(
+    combat,
+    owner,
+    friends,
+    enemies,
+    enemyCDTimeline,
+    ownerCCInstances,
+    ownerPurgeTimesSeconds,
+  );
+  if (!advancedLoggingAvailable) {
+    return { advancedLoggingAvailable: false, slackSegments: [], windowContributions: [], windowCreationFacts: [] };
+  }
+  return {
+    advancedLoggingAvailable: true,
+    slackSegments: segments,
+    windowContributions: computeWindowContributions(
+      combat,
+      owner,
+      friends,
+      enemies,
+      offensiveWindows,
+      ownerCCInstances,
+      enemyHealerCCInstances,
+    ),
+    windowCreationFacts: computeWindowCreationFacts(
+      combat,
+      owner,
+      enemies,
+      segments,
+      offensiveWindows,
+      enemyHealerCCInstances,
+    ),
+  };
+}
+
+export function formatHealerOffenseForContext(summary: IHealerOffenseSummary): string[] {
+  if (!summary.advancedLoggingAvailable) return [];
+  const { slackSegments, windowContributions, windowCreationFacts } = summary;
+  if (slackSegments.length === 0 && windowContributions.length === 0 && windowCreationFacts.length === 0) return [];
+
+  const lines: string[] = [];
+  lines.push('HEALER OFFENSE (slack-gated facts — team ≥85% HP, no enemy offensive CDs active, you un-CC-d):');
+
+  const totalSlack = slackSegments.reduce((s, seg) => s + seg.durationSeconds, 0);
+  const idleSegs = slackSegments.filter((s) => s.idle && s.durationSeconds >= IDLE_PRIORITY_SECONDS);
+  const idleSlack = slackSegments.filter((s) => s.idle).reduce((s, seg) => s + seg.durationSeconds, 0);
+  if (slackSegments.length > 0) {
+    lines.push(
+      `  Slack time: ${totalSlack}s across ${slackSegments.length} segment(s); ${idleSlack}s with zero offensive output.`,
+    );
+    for (const seg of idleSegs) {
+      lines.push(
+        `  [SLACK] ${fmtTime(seg.fromSeconds)}–${fmtTime(seg.toSeconds)} (${seg.durationSeconds}s): no damage, no CC, no purge, no kick.`,
+      );
+    }
+  }
+
+  for (const w of windowContributions) {
+    const ready =
+      w.ownerCCReady.length > 0
+        ? `your CC ready: ${w.ownerCCReady
+            .map((c) => `${c.spellName}${c.enemyHealerDR ? ` (enemy healer DR: ${c.enemyHealerDR})` : ''}`)
+            .join(', ')}`
+        : 'no owner CC observed this match';
+    const cast = w.ownerCastCCInWindow ? 'you cast CC in this window' : 'you cast no CC';
+    const dmg = `your damage ${(w.ownerDamageInWindow / 1000).toFixed(0)}k`;
+    const free = `free ${Math.round(w.ownerFreeSeconds)}s of ${Math.round(w.toSeconds - w.fromSeconds)}s`;
+    const teamHp = w.teamMinHpPct !== null ? `, team min HP ${Math.round(w.teamMinHpPct)}%` : '';
+    lines.push(
+      `  [KILL WINDOW] ${fmtTime(w.fromSeconds)}–${fmtTime(w.toSeconds)} on ${w.targetSpec} (${w.targetName}): ${ready}; ${cast}; ${dmg}; ${free}${teamHp}.`,
+    );
+  }
+
+  for (const f of windowCreationFacts) {
+    const trinket = f.enemyHealerTrinketOnCD === true ? 'trinket on CD' : 'trinket state unknown (never observed)';
+    lines.push(
+      `  [OPPORTUNITY] ${fmtTime(f.atSeconds)} (slack ${f.slackDurationSeconds}s): ${f.ccSpellName} ready; enemy healer ${f.enemyHealerName} DR Full, ${trinket} (opportunity, not a verdict).`,
+    );
+  }
+
+  lines.push(
+    '  Note: these lines are facts, not conclusions — cross-check the timeline (drinking, kiting, repositioning are valid uses of slack); healing under pressure always outranks offense.',
+  );
+  return lines;
 }

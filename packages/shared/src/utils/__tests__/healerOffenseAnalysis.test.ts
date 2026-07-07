@@ -413,3 +413,68 @@ describe('computeWindowCreationFacts', () => {
     expect(facts[0].enemyHealerSpec).toBe(specToString(CombatUnitSpec.Shaman_Restoration));
   });
 });
+
+// Task 4: Summary entry point + context formatter
+import { buildHealerOffenseSummary, formatHealerOffenseForContext } from '../healerOffenseAnalysis';
+
+describe('buildHealerOffenseSummary + formatHealerOffenseForContext', () => {
+  it('returns an empty format block when advanced logging is missing', () => {
+    const owner = makeUnit('owner', { reaction: CombatUnitReaction.Friendly }); // no advancedActions
+    const summary = buildHealerOffenseSummary(combat, owner, [owner], [], [], emptyEnemyTimeline(), [], [], []);
+    expect(summary.advancedLoggingAvailable).toBe(false);
+    expect(formatHealerOffenseForContext(summary)).toEqual([]);
+  });
+
+  it('renders header, aggregate slack line, idle segments, window and opportunity lines', () => {
+    const enemyHealer = makeUnit('enemy-h', {
+      reaction: CombatUnitReaction.Hostile,
+      spec: CombatUnitSpec.Shaman_Restoration,
+      name: 'Rsham',
+      spellCastEvents: [makeSpellCastEvent('336126', T0 + 10_000, 'enemy-h', 'Rsham', 'enemy-h', 'Rsham')],
+    });
+    const owner = makeFriend('owner', {
+      spellCastEvents: [makeSpellCastEvent('8122', T0 + 115_000, 'enemy-h', 'Rsham', 'owner', 'Owner')],
+    });
+    // Enemy offensive CD from 40-50s (matching kill window) creates a gap in slack segments
+    // This allows segment [50, 120) to exist without overlapping the kill window
+    const enemyTimeline: IEnemyCDTimeline = {
+      players: [
+        {
+          playerName: 'Enemy DPS',
+          specName: 'Arms',
+          offensiveCDs: [
+            {
+              spellId: '107574',
+              spellName: 'Avatar',
+              castTimeSeconds: 40,
+              cooldownSeconds: 90,
+              availableAgainAtSeconds: 130,
+              buffEndSeconds: 50,
+            },
+          ],
+        },
+      ],
+      alignedBurstWindows: [],
+    };
+    const summary = buildHealerOffenseSummary(
+      combat,
+      owner,
+      [owner],
+      [enemyHealer],
+      [makeWindow(40, 50)],
+      enemyTimeline,
+      [],
+      [],
+      [],
+    );
+    const lines = formatHealerOffenseForContext(summary);
+    const text = lines.join('\n');
+    expect(text).toContain('HEALER OFFENSE');
+    expect(text).toContain('slack');
+    expect(text).toContain('[KILL WINDOW]');
+    expect(text).toContain('you cast no CC');
+    expect(text).toContain('[OPPORTUNITY]');
+    expect(text).toContain('opportunity, not a verdict');
+    expect(text).toContain('facts, not conclusions');
+  });
+});
