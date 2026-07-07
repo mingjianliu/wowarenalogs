@@ -1,9 +1,13 @@
 import { ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
+import { spellEffectData } from '../data/spellEffectData';
 import spellsData from '../data/spells.json';
 import { ccSpellIds } from '../data/spellTags';
+import { isHealerSpec } from './cooldowns';
+import { DRLevel, getDRCategory, getDRLevelAtTime, IDRInfo } from './drAnalysis';
 import { IEnemyCDTimeline } from './enemyCDs';
 import { getHpPercentAtTime } from './killWindowTargetSelection';
+import { IOffensiveWindow } from './offensiveWindows';
 
 type SpellEntry = { type: string };
 const SPELLS = spellsData as Record<string, SpellEntry>;
@@ -125,4 +129,129 @@ export function computeSlackSegments(
     });
 
   return { advancedLoggingAvailable: true, segments };
+}
+
+// ── Task 2: Kill-window contribution analysis ──────────────────────────────
+
+export interface IWindowContribution {
+  fromSeconds: number;
+  toSeconds: number;
+  targetName: string;
+  targetSpec: string;
+  enemyHealerName: string | null;
+  enemyHealerSpec: string | null;
+  /** Owner CC spells off cooldown at window start (cast-history replay). Empty when the owner cast no CC all match. */
+  ownerCCReady: Array<{ spellName: string; enemyHealerDR: DRLevel | null }>;
+  ownerCastCCInWindow: boolean;
+  ownerDamageInWindow: number;
+  /** Seconds of the window the owner was NOT in CC. */
+  ownerFreeSeconds: number;
+  /** Lowest friendly HP% during the window; null without advanced logging. */
+  teamMinHpPct: number | null;
+}
+
+interface IOwnerCCSpell {
+  spellId: string;
+  spellName: string;
+  cooldownSeconds: number;
+  castTimesSeconds: number[];
+}
+
+/** Owner CC spells observed at least once in cast history (honest availability: never-cast spells are unknowable). */
+function collectOwnerCCSpells(owner: ICombatUnit, matchStartMs: number): IOwnerCCSpell[] {
+  const bySpell = new Map<string, IOwnerCCSpell>();
+  for (const e of owner.spellCastEvents) {
+    if (e.logLine.event !== LogEvent.SPELL_CAST_SUCCESS || !e.spellId) continue;
+    if (!ccSpellIds.has(e.spellId)) continue;
+    const entry = bySpell.get(e.spellId) ?? {
+      spellId: e.spellId,
+      spellName: e.spellName ?? e.spellId,
+      cooldownSeconds: spellEffectData[e.spellId]?.cooldownSeconds ?? 0,
+      castTimesSeconds: [],
+    };
+    entry.castTimesSeconds.push((e.logLine.timestamp - matchStartMs) / 1000);
+    bySpell.set(e.spellId, entry);
+  }
+  return [...bySpell.values()].map((s) => ({ ...s, castTimesSeconds: s.castTimesSeconds.sort((a, b) => a - b) }));
+}
+
+function isCCReadyAt(spell: IOwnerCCSpell, atSeconds: number): boolean {
+  if (spell.cooldownSeconds <= 0) return true; // spammable CC (no CD data) is always ready
+  let lastBefore: number | undefined;
+  for (const t of spell.castTimesSeconds) {
+    if (t < atSeconds) lastBefore = t;
+    else break;
+  }
+  return lastBefore === undefined || lastBefore + spell.cooldownSeconds <= atSeconds;
+}
+
+type CCWithDR = ReadonlyArray<{ atSeconds: number; durationSeconds: number; drInfo: IDRInfo | null }>;
+
+export function computeWindowContributions(
+  combat: { startTime: number; endTime: number },
+  owner: ICombatUnit,
+  friends: ICombatUnit[],
+  enemies: ICombatUnit[],
+  offensiveWindows: IOffensiveWindow[],
+  ownerCCInstances: CCInterval,
+  enemyHealerCCInstances: CCWithDR,
+): IWindowContribution[] {
+  const matchStartMs = combat.startTime;
+  const enemyHealer = enemies.find((e) => isHealerSpec(e.spec)) ?? null;
+  const ccSpells = collectOwnerCCSpells(owner, matchStartMs);
+  const enemyIds = new Set(enemies.map((e) => e.id));
+
+  return offensiveWindows.map((w) => {
+    const ownerCCReady = ccSpells
+      .filter((s) => isCCReadyAt(s, w.fromSeconds))
+      .map((s) => ({
+        spellName: s.spellName,
+        enemyHealerDR: enemyHealer
+          ? getDRLevelAtTime(enemyHealerCCInstances, getDRCategory(s.spellId), w.fromSeconds)
+          : null,
+      }));
+
+    const ownerCastCCInWindow = owner.spellCastEvents.some((e) => {
+      if (e.logLine.event !== LogEvent.SPELL_CAST_SUCCESS || !e.spellId || !ccSpellIds.has(e.spellId)) return false;
+      const t = (e.logLine.timestamp - matchStartMs) / 1000;
+      return t >= w.fromSeconds && t < w.toSeconds;
+    });
+
+    const ownerDamageInWindow = owner.damageOut
+      .filter((d) => {
+        const t = (d.logLine.timestamp - matchStartMs) / 1000;
+        return t >= w.fromSeconds && t < w.toSeconds && enemyIds.has(d.destUnitId);
+      })
+      .reduce((sum, d) => sum + Math.max(0, d.effectiveAmount), 0);
+
+    let ccdSeconds = 0;
+    for (const cc of ownerCCInstances) {
+      const from = Math.max(w.fromSeconds, cc.atSeconds);
+      const to = Math.min(w.toSeconds, cc.atSeconds + cc.durationSeconds);
+      if (to > from) ccdSeconds += to - from;
+    }
+    const ownerFreeSeconds = Math.max(0, w.durationSeconds - ccdSeconds);
+
+    let teamMinHpPct: number | null = null;
+    for (const f of friends) {
+      for (let t = Math.ceil(w.fromSeconds); t <= Math.floor(w.toSeconds); t++) {
+        const hp = getHpPercentAtTime(f, t, matchStartMs);
+        if (hp !== null && (teamMinHpPct === null || hp < teamMinHpPct)) teamMinHpPct = hp;
+      }
+    }
+
+    return {
+      fromSeconds: w.fromSeconds,
+      toSeconds: w.toSeconds,
+      targetName: w.targetName,
+      targetSpec: w.targetSpec,
+      enemyHealerName: enemyHealer?.name ?? null,
+      enemyHealerSpec: enemyHealer ? String(enemyHealer.spec) : null,
+      ownerCCReady,
+      ownerCastCCInWindow,
+      ownerDamageInWindow,
+      ownerFreeSeconds,
+      teamMinHpPct,
+    };
+  });
 }

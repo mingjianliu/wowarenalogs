@@ -1,4 +1,4 @@
-import { CombatUnitReaction, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
+import { CombatUnitReaction, CombatUnitSpec, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
 import { IEnemyCDTimeline } from '../enemyCDs';
 import { computeSlackSegments } from '../healerOffenseAnalysis';
@@ -176,5 +176,103 @@ describe('computeSlackSegments', () => {
     expect(segments[0].ownerKickCasts).toBe(1);
     expect(segments[0].ownerPurgeCasts).toBe(1);
     expect(segments[0].idle).toBe(false);
+  });
+});
+
+// Task 2: Kill-window contribution analysis
+import { computeWindowContributions } from '../healerOffenseAnalysis';
+import { IOffensiveWindow } from '../offensiveWindows';
+
+function makeWindow(fromSeconds: number, toSeconds: number): IOffensiveWindow {
+  return {
+    targetUnitId: 'enemy-1',
+    targetName: 'Edk',
+    targetSpec: 'Frost Death Knight',
+    fromSeconds,
+    toSeconds,
+    durationSeconds: toSeconds - fromSeconds,
+    friendlyDamageInWindow: 0,
+    damageRatio: 1,
+    capitalized: false,
+    friendlyOffensives: [],
+  };
+}
+
+describe('computeWindowContributions', () => {
+  const enemyHealer = makeUnit('enemy-h', {
+    reaction: CombatUnitReaction.Hostile,
+    spec: CombatUnitSpec.Shaman_Restoration,
+    name: 'Rsham',
+  });
+  const enemyDk = makeUnit('enemy-1', { reaction: CombatUnitReaction.Hostile, name: 'Edk' });
+
+  it('reports ready CC with enemy healer DR, no cast, free time and team HP', () => {
+    // owner cast Psychic Scream (8122, type cc, 40s CD per spellEffectData) at t=100s → it was ready at t=40s
+    const owner = makeFriend('owner', {
+      spellCastEvents: [makeSpellCastEvent('8122', T0 + 100_000, 'enemy-h', 'Rsham', 'owner', 'Owner')],
+    });
+    const result = computeWindowContributions(
+      combat,
+      owner,
+      [owner],
+      [enemyDk, enemyHealer],
+      [makeWindow(40, 50)],
+      [], // owner never CC'd
+      [], // enemy healer has no incoming CC history → DR Full
+    );
+    expect(result.length).toBe(1);
+    expect(result[0].enemyHealerName).toBe('Rsham');
+    expect(result[0].ownerCCReady).toEqual([{ spellName: '8122', enemyHealerDR: 'Full' }]);
+    expect(result[0].ownerCastCCInWindow).toBe(false);
+    expect(result[0].ownerFreeSeconds).toBe(10);
+    expect(result[0].teamMinHpPct).toBe(100);
+  });
+
+  it('flags CC as NOT ready when inside its cooldown, and detects an in-window cast', () => {
+    const owner = makeFriend('owner', {
+      spellCastEvents: [
+        makeSpellCastEvent('8122', T0 + 35_000, 'enemy-h', 'Rsham', 'owner', 'Owner'), // cast at 35s → on CD at 40s
+      ],
+    });
+    const result = computeWindowContributions(
+      combat,
+      owner,
+      [owner],
+      [enemyDk, enemyHealer],
+      [makeWindow(40, 50)],
+      [],
+      [],
+    );
+    expect(result[0].ownerCCReady).toEqual([]); // 8122 on CD (35+40 > 40)
+    expect(result[0].ownerCastCCInWindow).toBe(false);
+
+    const result2 = computeWindowContributions(
+      combat,
+      owner,
+      [owner],
+      [enemyDk, enemyHealer],
+      [makeWindow(30, 40)],
+      [],
+      [],
+    );
+    expect(result2[0].ownerCastCCInWindow).toBe(true); // cast at 35s ∈ [30, 40)
+  });
+
+  it('subtracts owner CC time from ownerFreeSeconds and reports decayed DR', () => {
+    const owner = makeFriend('owner', {
+      spellCastEvents: [makeSpellCastEvent('8122', T0 + 100_000, 'enemy-h', 'Rsham', 'owner', 'Owner')],
+    });
+    const result = computeWindowContributions(
+      combat,
+      owner,
+      [owner],
+      [enemyDk, enemyHealer],
+      [makeWindow(40, 50)],
+      [{ atSeconds: 42, durationSeconds: 4 }], // owner feared 42–46
+      // enemy healer feared at t=38 for 6s → same 'Disorient'-category DR window is still hot at 40
+      [{ atSeconds: 38, durationSeconds: 6, drInfo: { category: 'Disorient', level: 'Full', sequenceIndex: 0 } }],
+    );
+    expect(result[0].ownerFreeSeconds).toBe(6);
+    expect(result[0].ownerCCReady[0].enemyHealerDR).toBe('50%');
   });
 });
