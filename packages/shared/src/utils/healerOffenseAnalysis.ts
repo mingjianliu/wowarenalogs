@@ -305,7 +305,7 @@ export function computeWindowCreationFacts(
       slackDurationSeconds: seg.durationSeconds,
       ccSpellName: readyAtFullDR.spellName,
       enemyHealerName: enemyHealer.name,
-      enemyHealerSpec: String(enemyHealer.spec),
+      enemyHealerSpec: specToString(enemyHealer.spec),
       enemyHealerDRLevel: 'Full',
       enemyHealerTrinketOnCD: trinketAvailable === null ? null : true,
     });

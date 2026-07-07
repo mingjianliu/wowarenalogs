@@ -394,4 +394,22 @@ describe('computeWindowCreationFacts', () => {
       ),
     ).toEqual([]);
   });
+
+  it('emits fact with null trinketOnCD when enemy healer has never cast trinket', () => {
+    // Enemy healer with no trinket cast history (trinket state unknown)
+    const enemyHealerNoTrinket = makeUnit('enemy-h', {
+      reaction: CombatUnitReaction.Hostile,
+      spec: CombatUnitSpec.Shaman_Restoration,
+      name: 'Rsham',
+      spellCastEvents: [], // no trinket cast
+    });
+    const owner = makeFriend('owner', {
+      spellCastEvents: [makeSpellCastEvent('8122', T0 + 115_000, 'enemy-h', 'Rsham', 'owner', 'Owner')],
+    });
+    const facts = computeWindowCreationFacts(combat, owner, [enemyHealerNoTrinket], [slackSeg(40, 50)], [], []);
+    expect(facts.length).toBe(1);
+    expect(facts[0].atSeconds).toBe(40);
+    expect(facts[0].enemyHealerTrinketOnCD).toBe(null);
+    expect(facts[0].enemyHealerSpec).toBe(specToString(CombatUnitSpec.Shaman_Restoration));
+  });
 });
