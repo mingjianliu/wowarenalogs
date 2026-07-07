@@ -46,13 +46,6 @@ async function main() {
       if (validSpellIds.has(normalizedSpellId)) {
         const spellEntry = rawSpellsData[spellId] as { type?: string; parent?: number };
 
-        // B147 Healer CD tags override (Tree of Life + Nature's Swiftness)
-        if (normalizedSpellId === '33891') {
-          spellEntry.type = 'buffs_defensive';
-        } else if (normalizedSpellId === '132158' || normalizedSpellId === '378081') {
-          spellEntry.type = 'buffs_other';
-        }
-
         const existing = spells[normalizedSpellId];
         if (existing) {
           spells[normalizedSpellId] = {
@@ -66,6 +59,24 @@ async function main() {
       }
     }
   });
+
+  // B147: healer throughput/utility CDs mis-tagged `buffs_offensive` upstream (BigDebuffs) — they are
+  // not burst enablers and were creating false enemy "burst windows". Applied AFTER the merge so the
+  // correction wins regardless of what the previous dump or BigDebuffs carries (the pre-merge variant
+  // of this override was silently defeated by `type: existing.type || spellEntry.type`).
+  const TAG_OVERRIDES: Record<string, string> = {
+    '33891': 'buffs_defensive', // Incarnation: Tree of Life (Resto Druid healing CD)
+    '132158': 'buffs_other', // Nature's Swiftness (instant utility/heal enabler)
+    '378081': 'buffs_other', // Nature's Swiftness (variant id)
+    // 2026-07-07 corpus audit: top false solo "burst windows" — utility CDs, zero damage output
+    '414664': 'buffs_other', // Mass Invisibility (stealth utility; 300s CD alone qualified it as a solo window in 235/1151 corpus games)
+    '29166': 'buffs_other', // Innervate (ally mana regen)
+  };
+  for (const [id, type] of Object.entries(TAG_OVERRIDES)) {
+    if (spells[id]) {
+      spells[id] = { ...spells[id], type };
+    }
+  }
 
   const outputPath = path.resolve(__dirname, '../../shared/src/data/spells.json');
   await fs.writeFile(outputPath, JSON.stringify(spells, null, 2));

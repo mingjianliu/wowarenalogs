@@ -251,7 +251,7 @@
     "parent": 118
   },
   "29166": {
-    "type": "buffs_offensive"
+    "type": "buffs_other"
   },
   "30213": {
     "type": "debuffs_offensive",
@@ -294,7 +294,7 @@
     "type": "cc"
   },
   "33891": {
-    "type": "buffs_offensive"
+    "type": "buffs_defensive"
   },
   "34709": {
     "type": "buffs_other"
@@ -712,7 +712,7 @@
     "nonameplates": true
   },
   "132158": {
-    "type": "buffs_offensive"
+    "type": "buffs_other"
   },
   "132168": {
     "type": "cc"
@@ -1953,7 +1953,7 @@
     "parent": 45438
   },
   "414664": {
-    "type": "buffs_offensive"
+    "type": "buffs_other"
   },
   "415246": {
     "type": "buffs_defensive"

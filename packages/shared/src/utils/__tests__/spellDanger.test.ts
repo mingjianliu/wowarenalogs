@@ -111,6 +111,27 @@ describe('isOffensiveSpell', () => {
     expect(isOffensiveSpell('9999999')).toBe(false);
     expect(isOffensiveSpell('')).toBe(false);
   });
+
+  // B147 regression guard: these healer throughput/utility CDs are mis-tagged offensive upstream
+  // (BigDebuffs) and created false enemy burst windows. The tags are force-corrected by
+  // refreshSpellMetadata's post-merge TAG_OVERRIDES — if any of these flips back to offensive,
+  // the regen override has been defeated again (2026-07-05: a pre-merge override lost to
+  // `existing.type || spellEntry.type` and shipped the wrong tags with the workaround deleted).
+  it('returns false for Incarnation: Tree of Life (33891) — healing CD, not a burst enabler', () => {
+    expect(isOffensiveSpell('33891')).toBe(false);
+  });
+
+  it("returns false for Nature's Swiftness (132158 / 378081) — utility/heal enabler", () => {
+    expect(isOffensiveSpell('132158')).toBe(false);
+    expect(isOffensiveSpell('378081')).toBe(false);
+  });
+
+  it('returns false for Mass Invisibility (414664) and Innervate (29166) — utility CDs, not burst', () => {
+    // 2026-07-07 corpus audit: these were the top false solo "burst windows" (235 and 37 windows
+    // respectively across 1151 games) — stealth utility and ally mana regen deal zero damage.
+    expect(isOffensiveSpell('414664')).toBe(false);
+    expect(isOffensiveSpell('29166')).toBe(false);
+  });
 });
 
 // ─── spellDangerWeight ────────────────────────────────────────────────────────

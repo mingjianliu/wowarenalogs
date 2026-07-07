@@ -470,6 +470,25 @@ async function main() {
   });
   console.log(`Coverage for tracked spell ids: castTimeMetadata=${withCastTimeMetadata} effectRows=${withEffectRows}`);
 
+  // B148 safety: an offensive-tagged spell with a real cooldown but no buff duration produces a
+  // zero-width buff that truncates enemy burst windows at its own cast instant (the runtime
+  // DEFAULT_BUFF_SECONDS workaround was removed in favor of correct data — keep the data correct).
+  const offensiveNoDuration = taggedSpellIds.filter((id) => {
+    const tag = (taggedSpellsDump as Record<string, { type?: string }>)[id]?.type;
+    if (tag !== 'buffs_offensive' && tag !== 'debuffs_offensive') return false;
+    const e = newEffectsLibrary[id];
+    const cd = e?.charges?.chargeCooldownSeconds ?? e?.cooldownSeconds ?? 0;
+    return cd >= 30 && cd <= 360 && !e?.durationSeconds;
+  });
+  if (offensiveNoDuration.length > 0) {
+    console.warn(
+      `⚠️  B148: ${offensiveNoDuration.length} offensive-tagged CDs have no buff duration and will truncate ` +
+        `burst windows at their own cast instant: ${offensiveNoDuration
+          .map((id) => `${id} (${newEffectsLibrary[id]?.name})`)
+          .join(', ')} — add MANUAL_DURATION_OVERRIDES entries before shipping this regen.`,
+    );
+  }
+
   console.log('Writing updated spell effects data');
   const outputPath = path.resolve(__dirname, '../../shared/src/data/spellEffects.json');
   await fs.writeFile(outputPath, JSON.stringify(newEffectsLibrary, null, 2));
