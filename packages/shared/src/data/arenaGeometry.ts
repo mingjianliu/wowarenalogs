@@ -102,11 +102,13 @@ export const arenaObstacles: Record<string, ArenaObstacle[]> = {
   //   Shrunk by 1 unit on each side (was 3×5, now 1×3).
   // Calibrated from 12 combat logs, ~120k samples (Apr 2026).
   // ---------------------------------------------------------------------------
-  // Jul 2026 recalibration (52 logs / 491k samples, zero-density void analysis):
-  // former "small pillar (east)" removed — its footprint is walked through at
-  // near-ambient density (no void = no solid object). Small pillar (west)
-  // expanded to its observed void; four additional solid structures added from
-  // strongly-attested interior voids (>=13 contiguous zero-sample cells each).
+  // Jul 2026 recalibration + Jul 2026-b phantom removal (ring-density audit +
+  // Gemini/minimap visual cross-check). Void% alone can't tell a solid pillar
+  // (players hug all 4 sides) from an out-of-bounds void (a near-empty side):
+  // four "data-derived structures" added here were phantoms — the NE/SE/E/NW
+  // voids sit OUTSIDE the arena floor (min-side 17–45 samples vs 2000+ for real
+  // structures; all four read "black/empty" on the minimap). Removed. The 3
+  // survivors have all 4 sides densely surrounded by players.
   '572': [
     {
       type: 'polygon',
@@ -125,16 +127,7 @@ export const arenaObstacles: Record<string, ArenaObstacle[]> = {
         [1314, 1679],
         [1317, 1679],
       ],
-    }, // small pillar (west) — expanded to observed void Jul 2026
-    {
-      type: 'polygon',
-      vertices: [
-        [1317, 1622],
-        [1305, 1622],
-        [1305, 1633],
-        [1317, 1633],
-      ],
-    }, // NE structure (data-derived void, 44 cells)
+    }, // small pillar (west) — ring-confirmed real (all sides hugged)
     {
       type: 'polygon',
       vertices: [
@@ -143,44 +136,18 @@ export const arenaObstacles: Record<string, ArenaObstacle[]> = {
         [1252, 1660],
         [1258, 1660],
       ],
-    }, // W structure (data-derived void, 18 cells)
-    {
-      type: 'polygon',
-      vertices: [
-        [1315, 1698],
-        [1310, 1698],
-        [1310, 1704],
-        [1315, 1704],
-      ],
-    }, // SE structure (data-derived void, 13 cells)
-    {
-      type: 'polygon',
-      vertices: [
-        [1327, 1641],
-        [1321, 1641],
-        [1321, 1645],
-        [1327, 1645],
-      ],
-    }, // E structure (data-derived void, 13 cells)
-    {
-      type: 'polygon',
-      vertices: [
-        [1250, 1644],
-        [1241, 1644],
-        [1241, 1656],
-        [1250, 1656],
-      ],
-    }, // NW structure (data-derived void cluster trio, 32 cells)
+    }, // W structure — ring-confirmed real (min-side 2114)
   ],
 
   // ---------------------------------------------------------------------------
-  // Dalaran Sewers — REBUILT Jul 2026 (44 logs / 453k samples, void analysis).
+  // Dalaran Sewers — REBUILT Jul 2026, phantoms removed Jul 2026-b.
   // 620×460 px. zone bounds: minX=1227 maxX=1351 minY=744 maxY=836
-  // The former two 14×45 "stone blocks" were fictional: their footprints carried
-  // ABOVE-ambient sample density (players stand there constantly) and produced
-  // 180k geometry violations — the single worst source of false "LoS blocked"
-  // annotations in the 2026-07-07 100-game sweep. Replaced with the four
-  // strongly-attested solid structures (contiguous zero-sample voids >=13 cells).
+  // The former two 14×45 "stone blocks" were fictional (above-ambient density,
+  // 180k violations) — replaced with 4 void-derived structures. A later
+  // ring-density audit + Gemini/minimap visual check found 2 of those 4 (the
+  // "east structure" + "north box") were also phantoms: they sit on open floor
+  // outside the platform (min-side 28 / 104 samples vs 6000+ for the 2 real
+  // diamonds). Removed. The 2 survivors are surrounded on all sides.
   // ---------------------------------------------------------------------------
   '617': [
     {
@@ -191,7 +158,7 @@ export const arenaObstacles: Record<string, ArenaObstacle[]> = {
         [1305, 778],
         [1312, 778],
       ],
-    }, // center-east box (data-derived void, 31 cells)
+    }, // center-east diamond — ring-confirmed real (min-side 6932)
     {
       type: 'polygon',
       vertices: [
@@ -200,25 +167,7 @@ export const arenaObstacles: Record<string, ArenaObstacle[]> = {
         [1271, 812],
         [1278, 812],
       ],
-    }, // center-south box (data-derived void, 35 cells)
-    {
-      type: 'polygon',
-      vertices: [
-        [1333, 761],
-        [1324, 761],
-        [1324, 775],
-        [1333, 775],
-      ],
-    }, // east structure (data-derived void, 45 cells)
-    {
-      type: 'polygon',
-      vertices: [
-        [1277, 750],
-        [1272, 750],
-        [1272, 755],
-        [1277, 755],
-      ],
-    }, // north box (data-derived void, 13 cells)
+    }, // center-south diamond — ring-confirmed real (min-side 6339)
   ],
 
   // ---------------------------------------------------------------------------
@@ -611,14 +560,8 @@ export const arenaObstacles: Record<string, ArenaObstacle[]> = {
         [465, 406],
       ],
     }, // east structure (void 25 cells)
-    {
-      type: 'polygon',
-      vertices: [
-        [420, 347],
-        [417, 347],
-        [417, 351],
-        [420, 351],
-      ],
-    }, // north-west structure (void 17 cells)
+    // NW structure removed Jul 2026-b: the original 17-cell void was a
+    // small-sample artifact — on the full 2M-sample corpus its footprint is
+    // WALKED THROUGH (void 0%), so it is not a solid LoS blocker.
   ],
 };

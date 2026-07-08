@@ -20,11 +20,18 @@
  *   Optional: --zones 617,1134   (default: every zone seen in the logs)
  *
  * Reading the output:
- *   - Per-obstacle verdict hints:
- *       SOLID           void% >= 70 — obstacle is real; edges may need ±1 trim
- *       SUSPECT         void% 30–70 — partially wrong; check the void extent
- *       WALKABLE/FAKE   void% < 30 with meaningful samples inside — remove or
- *                       replace with the void cluster actually observed
+ *   - Per-obstacle verdict (void% AND a surround-check — void% alone is not
+ *     enough, because an out-of-bounds void is ~100% void too):
+ *       REAL           high void% AND players on a pair of OPPOSITE sides
+ *                      (W&E or S&N) — walked around, or a wall's two faces. Keep.
+ *       PHANTOM?       high void% but NO opposite-side traffic (players on one
+ *                      side / two adjacent sides only) — an out-of-bounds or
+ *                      dead-corner void, NOT a LoS blocker. Remove (this class
+ *                      caused false "LoS blocked" on Dalaran/Lordaeron, 2026-07;
+ *                      no minimap → trust this, with a minimap → cross-check).
+ *       WALKABLE/FAKE  void% < 30 — footprint is walked through; not solid.
+ *     `ring WESN=…` = per-side band samples, `min` = emptiest side, `opp-pair`
+ *     = the deciding boolean.
  *   - Candidate clusters: contiguous interior voids >= MIN_CLUSTER_CELLS. Check
  *     each against the map before adopting: starting-pen areas and out-of-play
  *     niches can also be void (pens usually get SOME samples from pre-gate buff
@@ -156,6 +163,29 @@ async function accumulatePositions(logPath, zoneFilter, grids) {
 // Analysis
 // ---------------------------------------------------------------------------
 
+// Samples in a 3-cell-deep band just OUTSIDE each edge of a bounding box.
+// A REAL obstacle is walked AROUND, so players press against it on a pair of
+// OPPOSITE sides (W&E or S&N) — or, for a wall, on its two broad faces (also
+// opposite). An out-of-bounds / low-traffic void has players on only one side
+// or two adjacent sides. This is the discriminator void% alone misses: a
+// phantom void is ~100% void too, so high void% is necessary but not sufficient.
+const RING_DEPTH = 3;
+const PRESENT_FLOOR = 300; // a side counts as "has players" above this (tuned to the corpus)
+
+function ringDensity(g, b) {
+  const x0 = Math.round(b.x0),
+    x1 = Math.round(b.x1),
+    y0 = Math.round(b.y0),
+    y1 = Math.round(b.y1);
+  const cnt = (cells) => cells.reduce((s, k) => s + (g.get(k) ?? 0), 0);
+  const depths = Array.from({ length: RING_DEPTH }, (_, i) => i + 1);
+  const W = cnt(depths.flatMap((d) => Array.from({ length: y1 - y0 + 1 }, (_, i) => `${x0 - d},${y0 + i}`)));
+  const E = cnt(depths.flatMap((d) => Array.from({ length: y1 - y0 + 1 }, (_, i) => `${x1 + d},${y0 + i}`)));
+  const S = cnt(depths.flatMap((d) => Array.from({ length: x1 - x0 + 1 }, (_, i) => `${x0 + i},${y0 - d}`)));
+  const N = cnt(depths.flatMap((d) => Array.from({ length: x1 - x0 + 1 }, (_, i) => `${x0 + i},${y1 + d}`)));
+  return { W, E, S, N };
+}
+
 function analyzeObstacles(zone, g, ambient) {
   const obstacles = arenaObstacles[zone] ?? [];
   const lines = [];
@@ -190,12 +220,26 @@ function analyzeObstacles(zone, g, ambient) {
       }
     }
     const voidPct = cells > 0 ? (100 * voidCells) / cells : 0;
-    const expected = Math.round(cells * ambient);
-    const verdict = voidPct >= 70 ? 'SOLID' : voidPct >= 30 ? 'SUSPECT' : 'WALKABLE/FAKE';
     const shape = o.type === 'circle' ? `circle r=${o.r} @${o.cx},${o.cy}` : 'polygon';
-    const voidStr = voidCells > 0 ? ` | void extent x[${vx0}..${vx1}] y[${vy0}..${vy1}]` : '';
+
+    // Surround check gates the void%-based verdict: high void% is necessary but
+    // NOT sufficient (an out-of-bounds void is ~100% void too). A real obstacle
+    // is walked AROUND → players present on a pair of OPPOSITE sides.
+    const r = ringDensity(g, bounds);
+    const oppositePair =
+      (r.W >= PRESENT_FLOOR && r.E >= PRESENT_FLOOR) || (r.S >= PRESENT_FLOOR && r.N >= PRESENT_FLOOR);
+    const minSide = Math.min(r.W, r.E, r.S, r.N);
+
+    let verdict;
+    if (voidPct < 30)
+      verdict = 'WALKABLE/FAKE'; // footprint is walked through → not solid
+    else if (oppositePair)
+      verdict = 'REAL'; // surrounded / walked around → solid LoS blocker
+    else verdict = 'PHANTOM?'; // high void but no opposite-side traffic → likely out-of-bounds void
+
+    const voidStr = voidCells > 0 ? ` | void x[${vx0}..${vx1}] y[${vy0}..${vy1}]` : '';
     lines.push(
-      `  obs#${idx} (${shape}): ${verdict}  void ${voidPct.toFixed(0)}% (${voidCells}/${cells} cells) | inside samples ${insideSamples} vs ~${expected} if open ground${voidStr}`,
+      `  obs#${idx} (${shape}): ${verdict}  void ${voidPct.toFixed(0)}% | ring WESN=${r.W}/${r.E}/${r.S}/${r.N} min=${minSide} opp-pair=${oppositePair}${voidStr}`,
     );
   });
   return lines;
