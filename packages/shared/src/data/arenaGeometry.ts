@@ -42,16 +42,18 @@ export const arenaObstacles: Record<string, ArenaObstacle[]> = {
   // Measured from minimap image (465×495 px, 5 px/unit).
   // zone bounds: minX=-2091 maxX=-1998 minY=6605 maxY=6704
   // Calibration history:
-  //   r=5.5 → r=3.5: TWW 11.0+ data, 12 matches, 26k samples (violations 2.7–4.9 from center).
-  //   r=3.5 → r=3.0: 12 combat logs, ~120k samples (Apr 2026). Still violations 0.5–3.3.
-  //   r=3.0 → r=2.5: 2nd pass same dataset. Still violations at min_dist 0.5–2.7; r=2.5
-  //   matches real observed closest approaches of ~2.5 units from center.
+  //   r=5.5 → r=3.5 → r=3.0 → r=2.5 (2026 H1): shrank radii to eliminate violations.
+  //   Jul 2026 void analysis (617k samples, 790-log corpus) showed that was the wrong
+  //   fix: the pillars were mis-POSITIONED, not oversized. Each real pillar leaves a
+  //   ~9×9 zero-sample void (r≈4); the drawn centers sat on the void EDGES, so
+  //   shrinking "fixed" violations while under-blocking. Recentered on the observed
+  //   voids, r=4 (0.5-unit inset from the void bbox).
   // ---------------------------------------------------------------------------
   '1505': [
-    { type: 'circle', cx: -2043, cy: 6621, r: 2.5 }, // north pillar
-    { type: 'circle', cx: -2013, cy: 6638, r: 2.5 }, // east pillar
-    { type: 'circle', cx: -2039, cy: 6683, r: 2.5 }, // south pillar
-    { type: 'circle', cx: -2071, cy: 6670, r: 2.5 }, // west pillar
+    { type: 'circle', cx: -2044.5, cy: 6623.5, r: 4 }, // north pillar (void x[-2049..-2040] y[6619..6627])
+    { type: 'circle', cx: -2018, cy: 6638.5, r: 4 }, // east pillar (void x[-2022..-2014] y[6634..6642])
+    { type: 'circle', cx: -2042, cy: 6685.5, r: 4 }, // south pillar (void x[-2046..-2038] y[6681..6689])
+    { type: 'circle', cx: -2071.5, cy: 6670, r: 4 }, // west pillar (void x[-2075..-2068] y[6666..6673])
   ],
 
   // ---------------------------------------------------------------------------
@@ -289,13 +291,17 @@ export const arenaObstacles: Record<string, ArenaObstacle[]> = {
   // 505×480 px. zone bounds: minX=1366 maxX=1467 minY=1190 maxY=1286
   // ---------------------------------------------------------------------------
   '1504': [
-    { type: 'circle', cx: 1420, cy: 1248, r: 3.5 }, // central pillar (r calibrated from position data)
+    // Jul 2026 void analysis (485k samples): real pillar void is 8×8 at
+    // x[1417..1424] y[1244..1251] — recentered and grown from r=3.5.
+    { type: 'circle', cx: 1421, cy: 1248, r: 4 }, // central pillar
   ],
 
   // ---------------------------------------------------------------------------
   // Ashamane's Fall — 1 rectangular stone + 2 diamond tree-root pillars.
   // 515×540 px. zone bounds: minX=3500 maxX=3603 minY=5478 maxY=5586
   // ---------------------------------------------------------------------------
+  // Jul 2026 void analysis (724k samples): diamonds enlarged to their observed
+  // voids (46/44 cells).
   '1552': [
     {
       type: 'polygon',
@@ -305,25 +311,28 @@ export const arenaObstacles: Record<string, ArenaObstacle[]> = {
         [3566, 5538],
         [3574, 5538],
       ],
-    }, // central stone structure
+    }, // central stone structure (void 88%)
     {
       type: 'polygon',
       vertices: [
-        [3524, 5515],
-        [3527, 5518],
-        [3524, 5521],
-        [3521, 5518],
+        [3526.5, 5519.5],
+        [3522, 5524],
+        [3517.5, 5519.5],
+        [3522, 5515],
       ],
-    }, // north-east diamond pillar
+    }, // north-east diamond pillar (void x[3517..3526] y[5516..5522])
     {
       type: 'polygon',
       vertices: [
-        [3524, 5550],
-        [3527, 5553],
-        [3524, 5556],
-        [3521, 5553],
+        [3528, 5554],
+        [3523.5, 5558.5],
+        [3519, 5554],
+        [3523.5, 5549.5],
       ],
-    }, // south-east diamond pillar
+    }, // south-east diamond pillar (void x[3519..3527] y[5550..5557])
+    // NOTE: further void clusters exist near the west/north zone boundary
+    // (x<=3503, y<=5497) but sit on the nominal play-bounds edge — likely
+    // decor/alcoves, deliberately not modeled.
   ],
 
   // ---------------------------------------------------------------------------
@@ -364,25 +373,28 @@ export const arenaObstacles: Record<string, ArenaObstacle[]> = {
   // Hook Point — 2 small square pillars.
   // 435×385 px. zone bounds: minX=965 maxX=1052 minY=-369 maxY=-292
   // ---------------------------------------------------------------------------
+  // Jul 2026 void analysis (633k samples): both pillars were drawn on the EDGE
+  // of their real voids (verdict SUSPECT, 40–50% void). Replaced with the
+  // observed 8–9-unit-square voids (53/56 cells, density ~0.7 = round-ish).
   '1825': [
     {
       type: 'polygon',
       vertices: [
-        [1033, -332],
-        [1028, -332],
-        [1028, -328],
-        [1033, -328],
+        [1036, -330],
+        [1030, -330],
+        [1030, -323],
+        [1036, -323],
       ],
-    }, // west pillar
+    }, // west pillar (void x[1029..1036] y[-331..-323])
     {
       type: 'polygon',
       vertices: [
-        [1006, -323],
-        [1001, -323],
-        [1001, -319],
-        [1006, -319],
+        [1007, -320],
+        [1000, -320],
+        [1000, -313],
+        [1007, -313],
       ],
-    }, // east pillar
+    }, // east pillar (void x[999..1007] y[-321..-313])
   ],
 
   // ---------------------------------------------------------------------------
@@ -414,43 +426,46 @@ export const arenaObstacles: Record<string, ArenaObstacle[]> = {
   // Empyrean Domain — 4 small diamond crystal pillars arranged in a diamond pattern.
   // 600×585 px. zone bounds: minX=-1307 maxX=-1187 minY=669 maxY=786
   // ---------------------------------------------------------------------------
+  // Jul 2026 void analysis (522k samples): three of four crystals were drawn on
+  // the edges of their real voids (SUSPECT, 41–69% void). Recentered on the
+  // observed ~8-unit voids (33–37 cells each) and enlarged to half-diagonal 4.5.
   '2373': [
     {
       type: 'polygon',
       vertices: [
-        [-1250, 694],
-        [-1246, 698],
-        [-1250, 702],
-        [-1254, 698],
+        [-1246.5, 700.5],
+        [-1251, 705],
+        [-1255.5, 700.5],
+        [-1251, 696],
       ],
-    }, // north crystal
+    }, // north crystal (void x[-1255..-1248] y[697..703])
     {
       type: 'polygon',
       vertices: [
-        [-1220, 726],
-        [-1216, 730],
-        [-1220, 734],
-        [-1224, 730],
+        [-1216.5, 729.5],
+        [-1221, 734],
+        [-1225.5, 729.5],
+        [-1221, 725],
       ],
-    }, // east crystal
+    }, // east crystal (void x[-1225..-1218] y[726..732])
     {
       type: 'polygon',
       vertices: [
-        [-1278, 726],
-        [-1274, 730],
-        [-1278, 734],
-        [-1282, 730],
+        [-1275.5, 730],
+        [-1280, 734.5],
+        [-1284.5, 730],
+        [-1280, 725.5],
       ],
-    }, // west crystal
+    }, // west crystal (void x[-1284..-1277] y[726..733])
     {
       type: 'polygon',
       vertices: [
-        [-1250, 753],
-        [-1246, 757],
-        [-1250, 761],
-        [-1254, 757],
+        [-1246.5, 760],
+        [-1251, 764.5],
+        [-1255.5, 760],
+        [-1251, 755.5],
       ],
-    }, // south crystal
+    }, // south crystal (void x[-1255..-1248] y[756..763])
   ],
 
   // ---------------------------------------------------------------------------
@@ -554,10 +569,56 @@ export const arenaObstacles: Record<string, ArenaObstacle[]> = {
   ],
 
   // ---------------------------------------------------------------------------
-  // Cage of Carnage — real positions (TWW 11.0+ data, 9 matches) are at
-  // X [401–490], Y [314–456], NOT at Empyrean Domain coords. The old geometry
-  // (inherited from zone 2373) was ~1700 units wrong. Obstacles need visual
-  // measurement from minimap at https://images.wowarenalogs.com/minimaps/2759.png
+  // Cage of Carnage — geometry built entirely from Jul 2026 void analysis
+  // (503k samples, 790-log corpus; the old zone-2373-inherited coords were
+  // ~1700 units wrong and had been cleared). Five compact zero-sample voids
+  // (density >=0.5 in bbox) adopted as solid obstacles.
   // ---------------------------------------------------------------------------
-  '2759': [],
+  '2759': [
+    {
+      type: 'polygon',
+      vertices: [
+        [418, 410],
+        [411, 410],
+        [411, 416],
+        [418, 416],
+      ],
+    }, // south-west structure (void 46 cells)
+    {
+      type: 'polygon',
+      vertices: [
+        [475, 352],
+        [469, 352],
+        [469, 358],
+        [475, 358],
+      ],
+    }, // north-east structure (void 44 cells)
+    {
+      type: 'polygon',
+      vertices: [
+        [427, 363],
+        [422, 363],
+        [422, 368],
+        [427, 368],
+      ],
+    }, // west structure (void 25 cells)
+    {
+      type: 'polygon',
+      vertices: [
+        [465, 401],
+        [460, 401],
+        [460, 406],
+        [465, 406],
+      ],
+    }, // east structure (void 25 cells)
+    {
+      type: 'polygon',
+      vertices: [
+        [420, 347],
+        [417, 347],
+        [417, 351],
+        [420, 351],
+      ],
+    }, // north-west structure (void 17 cells)
+  ],
 };
