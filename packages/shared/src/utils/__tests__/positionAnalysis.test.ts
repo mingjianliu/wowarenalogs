@@ -673,6 +673,130 @@ describe('computeOwnerPositionEvents — iter 3: HEALER_TRAINED', () => {
   });
 });
 
+describe('computeOwnerPositionEvents — STAYED_IN HP outcome (F15 iter)', () => {
+  function ownerWithHp(hpAt: (seconds: number) => number) {
+    const actions = [];
+    for (let t = 0; t <= 120_000; t += 2_000) {
+      actions.push(makeAdvancedAction(T0 + t, 0, 0, 500_000, Math.round((500_000 * hpAt(t / 1000)) / 100)));
+    }
+    const u = makeUnit('h1', {
+      name: 'Healer',
+      spec: CombatUnitSpec.Priest_Holy,
+      class: CombatUnitClass.Priest,
+      advancedActions: actions,
+    });
+    u.advancedActions.forEach((a) => ((a as any).advancedActorId = 'h1'));
+    return u;
+  }
+
+  it('records ownerHpMinPct/StartPct — cratered HP during a stay', () => {
+    const owner = ownerWithHp((s) => (s >= 12 && s <= 16 ? 22 : 96));
+    const enemy = makeStaticUnit('e1', 5, 0, { spec: CombatUnitSpec.Warrior_Arms });
+    const events = computeOwnerPositionEvents({
+      owner: owner as any,
+      enemies: [enemy] as any,
+      combat: makeCombat(),
+      burstWindows: [makeBurstWindow(10, 20)],
+      ownerCooldowns: [],
+      isHealer: true,
+      ownerIsMelee: false,
+    });
+    const s = events.filter((e) => e.type === 'STAYED_IN');
+    expect(s).toHaveLength(1);
+    expect(s[0].ownerHpMinPct).toBeLessThanOrEqual(30);
+    expect(s[0].ownerHpStartPct).toBeGreaterThanOrEqual(90);
+  });
+
+  it('records high ownerHpMinPct when the stay cost nothing', () => {
+    const owner = ownerWithHp(() => 97);
+    const enemy = makeStaticUnit('e1', 5, 0, { spec: CombatUnitSpec.Warrior_Arms });
+    const events = computeOwnerPositionEvents({
+      owner: owner as any,
+      enemies: [enemy] as any,
+      combat: makeCombat(),
+      burstWindows: [makeBurstWindow(10, 20)],
+      ownerCooldowns: [],
+      isHealer: true,
+      ownerIsMelee: false,
+    });
+    expect(events.filter((e) => e.type === 'STAYED_IN')[0].ownerHpMinPct).toBeGreaterThanOrEqual(90);
+  });
+
+  it('formatter leads with the HP fact and tags near-death vs no-cost', () => {
+    const events: IPositionEvent[] = [
+      {
+        type: 'STAYED_IN',
+        atSeconds: 60,
+        toSeconds: 70,
+        startDistanceYards: 4,
+        endDistanceYards: 5,
+        nearestEnemyName: 'W',
+        dangerLabel: 'High',
+        ownerHpStartPct: 95,
+        ownerHpMinPct: 22,
+      },
+      {
+        type: 'STAYED_IN',
+        atSeconds: 90,
+        toSeconds: 100,
+        startDistanceYards: 4,
+        endDistanceYards: 5,
+        nearestEnemyName: 'W',
+        dangerLabel: 'High',
+        ownerHpStartPct: 98,
+        ownerHpMinPct: 96,
+      },
+    ];
+    const text = formatPositionEventsForContext(events).join('\n');
+    expect(text).toContain('HP 95%→22%');
+    expect(text).toContain('near-death');
+    expect(text).toContain('HP 98%→96%');
+    expect(text).toContain('no real cost');
+  });
+});
+
+describe('computeOwnerPositionEvents — HEALER_TRAINED CC-agency (F15 iter)', () => {
+  it('flags ownerCcLocked when the healer was CC-locked through the camp (cannot self-reposition)', () => {
+    const healer = makeStaticUnit('h1', 0, 0, { name: 'Healer', spec: CombatUnitSpec.Priest_Holy });
+    const enemyMelee = makeStaticUnit('e1', 3, 0, { name: 'Rogue', spec: CombatUnitSpec.Rogue_Assassination });
+    const events = computeOwnerPositionEvents({
+      owner: healer as any,
+      enemies: [enemyMelee] as any,
+      combat: makeCombat(),
+      burstWindows: [],
+      ownerCooldowns: [],
+      isHealer: true,
+      ownerIsMelee: false,
+      friends: [healer] as any,
+      friendCCSummaries: [{ playerName: 'Healer', ccInstances: [{ atSeconds: 0, durationSeconds: 60 }] }] as any,
+    });
+    const trained = events.filter((e) => e.type === 'HEALER_TRAINED');
+    expect(trained.length).toBeGreaterThanOrEqual(1);
+    expect(trained[0].ownerCcLocked).toBe(true);
+    const text = formatPositionEventsForContext(trained).join('\n');
+    expect(text).toContain('CC-locked');
+    expect(text).not.toContain('reposition opportunity');
+  });
+
+  it('keeps the peel/reposition advice when the healer was free to move', () => {
+    const healer = makeStaticUnit('h1', 0, 0, { name: 'Healer', spec: CombatUnitSpec.Priest_Holy });
+    const enemyMelee = makeStaticUnit('e1', 3, 0, { name: 'Rogue', spec: CombatUnitSpec.Rogue_Assassination });
+    const events = computeOwnerPositionEvents({
+      owner: healer as any,
+      enemies: [enemyMelee] as any,
+      combat: makeCombat(),
+      burstWindows: [],
+      ownerCooldowns: [],
+      isHealer: true,
+      ownerIsMelee: false,
+      friends: [healer] as any,
+    });
+    const trained = events.filter((e) => e.type === 'HEALER_TRAINED')[0];
+    expect(trained.ownerCcLocked).toBeFalsy();
+    expect(formatPositionEventsForContext([trained]).join('\n')).toContain('reposition opportunity');
+  });
+});
+
 describe('formatPositionEventsForContext', () => {
   it('returns empty for no events', () => {
     expect(formatPositionEventsForContext([])).toEqual([]);

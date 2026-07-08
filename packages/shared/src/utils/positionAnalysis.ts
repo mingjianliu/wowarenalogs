@@ -12,7 +12,7 @@
 import { AtomicArenaCombat, ICombatUnit } from '@wowarenalogs/parser';
 
 import { ICCInstance } from './ccTrinketAnalysis';
-import { fmtTime, IMajorCooldownInfo, isHealerSpec, isMeleeSpec } from './cooldowns';
+import { fmtTime, getUnitHpAtTimestamp, IMajorCooldownInfo, isHealerSpec, isMeleeSpec } from './cooldowns';
 import { IAlignedBurstWindow } from './enemyCDs';
 import { distanceBetween, getUnitPositionAtTime } from './losAnalysis';
 
@@ -67,6 +67,13 @@ export interface IPositionEvent {
   burstTargetsOwner?: boolean;
   /** STAYED_IN only: name of the burst's most-pressured target when it isn't the owner */
   burstTargetName?: string;
+  /** STAYED_IN only: owner HP% at window start / minimum across the window — the
+   *  OUTCOME that turns "stayed in" from a hedge into a fact (near-death vs no cost). */
+  ownerHpStartPct?: number | null;
+  ownerHpMinPct?: number | null;
+  /** HEALER_TRAINED only: healer was hard-CC'd for most of the camp → could not
+   *  self-reposition (team must peel), so don't advise "reposition". */
+  ownerCcLocked?: boolean;
   /** CD_OUT_OF_RANGE only */
   spellName?: string;
   /** SPLIT_PUSH: melee DPS away from the push target; HEALER_TRAINED: the healer */
@@ -235,6 +242,16 @@ export function computeOwnerPositionEvents(params: {
       const burstTargetsOwner = targetName !== undefined ? targetName === owner.name : undefined;
       if (ownerIsMelee && !isHealer && burstTargetsOwner === false) continue;
 
+      // The OUTCOME: did staying in actually cost HP? This is what turns STAYED_IN
+      // from a hedge-pileup into a checkable finding — a coach should only fault a
+      // stay that dropped the owner low, not one that cost nothing.
+      const hpStart = getUnitHpAtTimestamp(owner, matchStartMs + w.fromSeconds * 1000, POSITION_MAX_GAP_MS);
+      let hpMin = hpStart;
+      for (let t = Math.ceil(w.fromSeconds); t <= evalEnd; t += 1) {
+        const hp = getUnitHpAtTimestamp(owner, matchStartMs + t * 1000, POSITION_MAX_GAP_MS);
+        if (hp !== null && (hpMin === null || hp < hpMin)) hpMin = hp;
+      }
+
       events.push({
         type: 'STAYED_IN',
         atSeconds: w.fromSeconds,
@@ -248,6 +265,8 @@ export function computeOwnerPositionEvents(params: {
           defensiveCDs.length > 0 ? defensiveCDs.some((cd) => isAvailableAt(cd, w.fromSeconds)) : undefined,
         burstTargetsOwner,
         burstTargetName: burstTargetsOwner === false ? targetName : undefined,
+        ownerHpStartPct: hpStart === null ? null : Math.round(hpStart),
+        ownerHpMinPct: hpMin === null ? null : Math.round(hpMin),
       });
     }
     // deltas in [STAY_DELTA, KITE_DELTA) are ambiguous — no event
@@ -391,6 +410,9 @@ export function computeOwnerPositionEvents(params: {
     const healerUnit = friends.find((f) => isHealerSpec(f.spec));
     const enemyMelee = enemies.filter((e) => isMeleeSpec(e.spec) && !isHealerSpec(e.spec));
     if (healerUnit && enemyMelee.length > 0 && (healerUnit.advancedActions ?? []).length > 0) {
+      // The healer's own CC — a healer CC-locked through the camp can't self-peel
+      // or reposition, so "reposition opportunity" would be a false criticism.
+      const healerCC = (friendCCSummaries ?? []).find((c) => c.playerName === healerUnit.name)?.ccInstances ?? [];
       let runStart: number | null = null;
       let runMinDist = Infinity;
       const trainerSeconds = new Map<string, number>();
@@ -418,6 +440,7 @@ export function computeOwnerPositionEvents(params: {
             startDistanceYards: Math.round(runMinDist * 10) / 10,
             playersInvolved: [healerUnit.name],
             ownerIsSubject: healerUnit.id === owner.id,
+            ownerCcLocked: ccOverlapSeconds(healerCC, runStart, endSeconds) >= (endSeconds - runStart) / 2,
           });
           trainedCount++;
         }
@@ -481,15 +504,29 @@ export function formatPositionEventsForContext(events: IPositionEvent[]): string
           : e.ownerDefensiveAvailable
             ? ' — a defensive CD was available'
             : ' — no defensive CD available';
-      const dampStr = (e.dampeningPct ?? 0) >= 0.2 ? ' (high dampening — staying in may be correct)' : '';
       const targetStr =
         e.burstTargetsOwner === true
           ? ' — you were the burst target'
           : e.burstTargetName
             ? ` — burst targeted ${e.burstTargetName}, staying in may be deliberate`
             : '';
+      // Lead with the HP OUTCOME when we have it — it's the fact that decides
+      // whether the stay was a mistake, replacing the old hedge-pileup.
+      let hpStr = '';
+      if (e.ownerHpMinPct !== null && e.ownerHpMinPct !== undefined) {
+        const tag =
+          e.ownerHpMinPct <= 35
+            ? ' (near-death — the stay was costly)'
+            : e.ownerHpMinPct >= 85 && (e.ownerHpStartPct ?? 100) - e.ownerHpMinPct < 15
+              ? ' (no real cost)'
+              : '';
+        hpStr = ` — HP ${e.ownerHpStartPct}%→${e.ownerHpMinPct}%${tag}`;
+      } else {
+        // No HP data — fall back to the dampening context hedge.
+        hpStr = (e.dampeningPct ?? 0) >= 0.2 ? ' (high dampening — staying in may be correct)' : '';
+      }
       lines.push(
-        `    ${fmtTime(e.atSeconds)} [${e.dangerLabel} burst] ${e.startDistanceYards}→${e.endDistanceYards}yd from ${e.nearestEnemyName}${targetStr}${defStr}${dampStr}`,
+        `    ${fmtTime(e.atSeconds)} [${e.dangerLabel} burst] ${e.startDistanceYards}→${e.endDistanceYards}yd from ${e.nearestEnemyName}${targetStr}${hpStr}${defStr}`,
       );
     }
   }
@@ -536,8 +573,12 @@ export function formatPositionEventsForContext(events: IPositionEvent[]): string
     lines.push(`  HEALER TRAINED (enemy melee camped the healer within ${HEALER_TRAINED_YARDS}yd):`);
     for (const e of trained) {
       const subject = e.ownerIsSubject ? 'you were' : `your healer (${(e.playersInvolved ?? [])[0] ?? 'healer'}) was`;
+      // A healer CC-locked through the camp can't self-reposition \u2014 team must peel.
+      const advice = e.ownerCcLocked
+        ? 'CC-locked through this \u2014 team must peel (could not self-reposition)'
+        : 'peel or reposition opportunity';
       lines.push(
-        `    ${fmtTime(e.atSeconds)}\u2013${fmtTime(e.toSeconds ?? e.atSeconds)} ${subject} camped by ${e.nearestEnemyName} (closest ${e.startDistanceYards}yd) \u2014 peel or reposition opportunity`,
+        `    ${fmtTime(e.atSeconds)}\u2013${fmtTime(e.toSeconds ?? e.atSeconds)} ${subject} camped by ${e.nearestEnemyName} (closest ${e.startDistanceYards}yd) \u2014 ${advice}`,
       );
     }
   }
