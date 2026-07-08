@@ -2,7 +2,7 @@
 import { CombatUnitClass, CombatUnitReaction, CombatUnitSpec, LogEvent } from '@wowarenalogs/parser';
 
 import { analyzePlayerCCAndTrinket, detectTrinketType } from '../ccTrinketAnalysis';
-import { makeAuraEvent, makeInterruptEvent, makeSpellCastEvent, makeUnit } from './testHelpers';
+import { makeAdvancedAction, makeAuraEvent, makeInterruptEvent, makeSpellCastEvent, makeUnit } from './testHelpers';
 
 // Mock the generated JSON so tests never depend on real item IDs.
 jest.mock('../../data/trinketItemIds.json', () => ({
@@ -327,6 +327,63 @@ describe('analyzePlayerCCAndTrinket — edge cases and corner branches', () => {
     expect(result.ccInstances[0].trinketState).toBe('used');
   });
 
+  it('suppresses the CC distance annotation when snapshots are sparse (stale positions)', () => {
+    // Opener scenario: victim/caster have only two snapshots 120s apart —
+    // interpolated positions are fabricated (100-game sweep found 0:06 Sap "64.7yd").
+    const ccApply = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '853', MATCH_START + 60_000, 'enemy-1', 'player-1');
+    const ccRemove = makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '853', MATCH_START + 64_000, 'enemy-1', 'player-1');
+    const player = makeUnit('player-1', {
+      auraEvents: [ccApply, ccRemove],
+      advancedActions: [makeAdvancedAction(MATCH_START, 0, 0), makeAdvancedAction(MATCH_START + 120_000, 0, 0)],
+    });
+    const enemy = makeEnemy('enemy-1');
+    (enemy as any).advancedActions = [
+      makeAdvancedAction(MATCH_START, 30, 0),
+      makeAdvancedAction(MATCH_START + 120_000, 30, 0),
+    ];
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+
+    expect(result.ccInstances).toHaveLength(1);
+    expect(result.ccInstances[0].distanceYards).toBeNull();
+    expect(result.ccInstances[0].losBlocked).toBeNull();
+  });
+
+  it('suppresses the CC distance annotation beyond plausible CC range (>45yd)', () => {
+    const denseAt = (x: number) => {
+      const actions = [];
+      for (let t = 0; t <= 300_000; t += 5_000) actions.push(makeAdvancedAction(MATCH_START + t, x, 0));
+      return actions;
+    };
+    const ccApply = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '853', MATCH_START + 60_000, 'enemy-1', 'player-1');
+    const ccRemove = makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '853', MATCH_START + 64_000, 'enemy-1', 'player-1');
+    const player = makeUnit('player-1', { auraEvents: [ccApply, ccRemove], advancedActions: denseAt(0) });
+    const enemy = makeEnemy('enemy-1');
+    (enemy as any).advancedActions = denseAt(60);
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+
+    expect(result.ccInstances[0].distanceYards).toBeNull();
+    expect(result.ccInstances[0].losBlocked).toBeNull();
+  });
+
+  it('keeps the CC distance annotation for dense, plausible positions', () => {
+    const denseAt = (x: number) => {
+      const actions = [];
+      for (let t = 0; t <= 300_000; t += 5_000) actions.push(makeAdvancedAction(MATCH_START + t, x, 0));
+      return actions;
+    };
+    const ccApply = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '853', MATCH_START + 60_000, 'enemy-1', 'player-1');
+    const ccRemove = makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '853', MATCH_START + 64_000, 'enemy-1', 'player-1');
+    const player = makeUnit('player-1', { auraEvents: [ccApply, ccRemove], advancedActions: denseAt(0) });
+    const enemy = makeEnemy('enemy-1');
+    (enemy as any).advancedActions = denseAt(5);
+
+    const result = analyzePlayerCCAndTrinket(player, [enemy], makeCombat());
+
+    expect(result.ccInstances[0].distanceYards).toBe(5);
+  });
+
   it('correctly calculates missedTrinketWindows based on damage threshold', () => {
     const cc1 = makeAuraEvent(LogEvent.SPELL_AURA_APPLIED, '853', MATCH_START + 10_000, 'enemy-1', 'player-1');
     const cc1Rem = makeAuraEvent(LogEvent.SPELL_AURA_REMOVED, '853', MATCH_START + 15_000, 'enemy-1', 'player-1');
@@ -402,6 +459,39 @@ describe('formatCCTrinketForContext', () => {
     const res = formatCCTrinketForContext([s1, s2]);
     expect(res[1]).toContain('| Relentless');
     expect(res[2]).toContain('| Unknown');
+  });
+
+  it('lists each missed trinket window with time, damage, and position when available', () => {
+    const missedWithPos: any = {
+      atSeconds: 30,
+      spellName: 'Kidney Shot',
+      durationSeconds: 5,
+      damageTakenDuring: 180_000,
+      drInfo: { level: 'Full' },
+      distanceYards: 6.2,
+      losBlocked: false,
+    };
+    const missedNoPos: any = {
+      atSeconds: 75,
+      spellName: 'Polymorph',
+      durationSeconds: 6,
+      damageTakenDuring: 50_000,
+      drInfo: { level: 'Full' },
+      distanceYards: null,
+      losBlocked: null,
+    };
+    const summary: any = {
+      ...summaryBase,
+      ccInstances: [missedWithPos, missedNoPos],
+      missedTrinketWindows: [missedWithPos, missedNoPos],
+    };
+
+    const res = formatCCTrinketForContext([summary]).join('\n');
+
+    expect(res).toContain('0:30 Kidney Shot (5s, 180k dmg) — 6.2yd from caster');
+    expect(res).toContain('1:15 Polymorph (6s, 50k dmg)');
+    // No position annotation when advanced logging did not supply coordinates
+    expect(res).not.toContain('1:15 Polymorph (6s, 50k dmg) —');
   });
 });
 

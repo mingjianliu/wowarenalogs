@@ -132,6 +132,38 @@ Then list:
 
 Finally: "Run `/refine-arena-geometry` again after your next session to add more data points."
 
+### 8. Mass violations? Run void analysis (data-driven rebuild)
+
+When a zone shows violations on the order of >1% of its samples (not edge-hugging, not a
+documented elevated surface), the drawn geometry is likely wrong at the structural level.
+Use the void analyzer to rebuild it from position data:
+
+```bash
+node scripts/analyzeGeometryVoids.mjs --list <file-with-log-paths> --zones <zoneId>
+```
+
+Principle (established in the Jul 2026 recalibration of 617/1134/572/2563 over 2.36M samples):
+a real solid obstacle leaves a **contiguous zero-sample void**; a drawn obstacle whose
+footprint carries at/above-ambient density is fictional or a walkable dais and must not
+block 2D LoS.
+
+Decision rules:
+
+- **SOLID (void ≥70%)** — obstacle is real; align its bounds to the reported void extent
+  (±1-unit trim; for a round pillar inside a square void bbox, inset 1 unit).
+- **WALKABLE/FAKE (void <30%)** — remove it, or replace with the smaller void cluster
+  actually observed inside its footprint (if any).
+- **Candidate clusters** not matching any drawn obstacle are missing structures. Adopt only
+  strongly-attested ones (≥13 cells with ≥50k zone samples), and exclude starting-pen bands
+  (check against zoneMetadata bounds and gate positions) before adding.
+- Aggregate MANY logs (hundreds of thousands of samples per zone); below ~50k samples the
+  voids are unreliable. `packages/tools/local-batch/healer-eval/raw-logs/` is a good source
+  when populated.
+
+After edits, re-run `validateGeometry.mjs` (step 6) and — if the zone was implicated in
+prompt-level LoS false positives — rebuild a few affected prompts and confirm the
+`LoS blocked` / `Pillar-blocked` annotations behave.
+
 ## Notes
 
 ### Validator coverage

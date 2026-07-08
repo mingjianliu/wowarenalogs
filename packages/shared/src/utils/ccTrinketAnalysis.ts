@@ -37,6 +37,13 @@ const TRINKET_RESPONSE_WINDOW_MS = 5000;
  */
 const SIGNIFICANT_CC_DAMAGE = 30_000;
 
+// Position snapshots are event-driven; beyond this gap to the nearest snapshot
+// the interpolated position is fabricated (unit idle/stealthed — worst in openers).
+const CC_POSITION_MAX_GAP_MS = 8_000;
+// No CC in the game casts beyond ~45yd; a larger computed distance is bad data
+// (100-game sweep: 0:06 Sap "64.7yd", 0:11 Sleep Walk "54.7yd").
+const CC_MAX_PLAUSIBLE_RANGE_YARDS = 45;
+
 /**
  * Buffs/abilities that can cause a targeted CC cast to whiff (dodge, reflect, immunity,
  * untargetable). Maps the buff's spell ID → display name shown as the avoidance reason.
@@ -501,15 +508,18 @@ export function analyzePlayerCCAndTrinket(
       }
     }
 
-    // LoS + distance at CC application time
+    // LoS + distance at CC application time. Gap-aware: null when either unit
+    // lacks a recent snapshot; suppressed entirely beyond plausible CC range.
     const casterUnit = enemyUnitMap.get(w.srcUnitId);
-    const casterPos = casterUnit ? getUnitPositionAtTime(casterUnit, w.applyMs) : null;
-    const targetPos = getUnitPositionAtTime(player, w.applyMs);
+    const casterPos = casterUnit ? getUnitPositionAtTime(casterUnit, w.applyMs, CC_POSITION_MAX_GAP_MS) : null;
+    const targetPos = getUnitPositionAtTime(player, w.applyMs, CC_POSITION_MAX_GAP_MS);
 
-    const distanceYards = casterPos && targetPos ? Math.round(distanceBetween(casterPos, targetPos) * 10) / 10 : null;
+    const rawDistance = casterPos && targetPos ? distanceBetween(casterPos, targetPos) : null;
+    const distanceYards =
+      rawDistance !== null && rawDistance <= CC_MAX_PLAUSIBLE_RANGE_YARDS ? Math.round(rawDistance * 10) / 10 : null;
 
     const losBlocked =
-      casterPos && targetPos
+      distanceYards !== null && casterPos && targetPos
         ? (() => {
             const los = hasLineOfSight(zoneId, casterPos, targetPos);
             return los === null ? null : !los;
@@ -922,6 +932,18 @@ export function formatCCTrinketForContext(summaries: IPlayerCCTrinketSummary[]):
     lines.push(
       `  ${s.playerSpec} (${s.playerName}): ${s.ccInstances.length} CC — ${ccBreakdown} | ${trinketStr}${noteStr}`,
     );
+
+    // Per-window detail for missed trinket windows — the highest-value CC instances.
+    // Position annotation (distance / LoS at application) only when advanced logging supplied it.
+    for (const w of s.missedTrinketWindows) {
+      const posStr =
+        w.distanceYards !== null
+          ? ` — ${w.distanceYards}yd from caster${w.losBlocked === true ? ', LoS blocked' : ''}`
+          : '';
+      lines.push(
+        `    ⚠ Missed trinket: ${fmtTime(w.atSeconds)} ${w.spellName} (${Math.round(w.durationSeconds)}s, ${Math.round(w.damageTakenDuring / 1000)}k dmg)${posStr}`,
+      );
+    }
   }
 
   return lines;
