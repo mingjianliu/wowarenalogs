@@ -511,6 +511,168 @@ describe('computeOwnerPositionEvents — missing data', () => {
   });
 });
 
+describe('computeOwnerPositionEvents — iter 3: SPLIT_PUSH', () => {
+  const pushWindow = (targetUnitId: string, targetName: string): any => ({
+    fromSeconds: 30,
+    toSeconds: 45,
+    targetUnitId,
+    targetName,
+    friendlyOffensives: [
+      { playerName: 'MeleeA', spellName: 'Avatar' },
+      { playerName: 'MeleeB', spellName: 'Shadow Blades' },
+    ],
+  });
+
+  function makeScenario(farX: number) {
+    const owner = makeStaticUnit('h1', -20, 0, { name: 'Healer', spec: CombatUnitSpec.Priest_Holy });
+    const target = makeStaticUnit('e1', 0, 0, { name: 'KillTarget', spec: CombatUnitSpec.Mage_Fire });
+    const meleeA = makeStaticUnit('f2', 2, 0, { name: 'MeleeA', spec: CombatUnitSpec.Warrior_Arms });
+    const meleeB = makeStaticUnit('f3', farX, 0, { name: 'MeleeB', spec: CombatUnitSpec.Rogue_Subtlety });
+    return { owner, target, meleeA, meleeB };
+  }
+
+  it('emits SPLIT_PUSH when one melee DPS is on the push target and another is far away', () => {
+    const { owner, target, meleeA, meleeB } = makeScenario(30);
+
+    const events = computeOwnerPositionEvents({
+      owner: owner as any,
+      enemies: [target] as any,
+      combat: makeCombat(),
+      burstWindows: [],
+      ownerCooldowns: [],
+      isHealer: true,
+      ownerIsMelee: false,
+      friends: [owner, meleeA, meleeB] as any,
+      offensiveWindows: [pushWindow('e1', 'KillTarget')],
+    });
+
+    const split = events.filter((e) => e.type === 'SPLIT_PUSH');
+    expect(split).toHaveLength(1);
+    expect(split[0].playersInvolved).toEqual(['MeleeB']);
+    expect(split[0].nearestEnemyName).toBe('KillTarget');
+  });
+
+  it('does not emit SPLIT_PUSH when both melee DPS converge on the target', () => {
+    const { owner, target, meleeA, meleeB } = makeScenario(5);
+
+    const events = computeOwnerPositionEvents({
+      owner: owner as any,
+      enemies: [target] as any,
+      combat: makeCombat(),
+      burstWindows: [],
+      ownerCooldowns: [],
+      isHealer: true,
+      ownerIsMelee: false,
+      friends: [owner, meleeA, meleeB] as any,
+      offensiveWindows: [pushWindow('e1', 'KillTarget')],
+    });
+
+    expect(events.filter((e) => e.type === 'SPLIT_PUSH')).toHaveLength(0);
+  });
+
+  it('does not emit SPLIT_PUSH when the push target dies mid-window (successful kill, not a split)', () => {
+    const { owner, target, meleeA, meleeB } = makeScenario(30);
+    (target as any).deathRecords = [{ timestamp: T0 + 31_000 }]; // dies 1s into the 30–45s window
+
+    const events = computeOwnerPositionEvents({
+      owner: owner as any,
+      enemies: [target] as any,
+      combat: makeCombat(),
+      burstWindows: [],
+      ownerCooldowns: [],
+      isHealer: true,
+      ownerIsMelee: false,
+      friends: [owner, meleeA, meleeB] as any,
+      offensiveWindows: [pushWindow('e1', 'KillTarget')],
+    });
+
+    expect(events.filter((e) => e.type === 'SPLIT_PUSH')).toHaveLength(0);
+  });
+
+  it('does not blame a melee DPS who was CC-locked during the window', () => {
+    const { owner, target, meleeA, meleeB } = makeScenario(30);
+
+    const events = computeOwnerPositionEvents({
+      owner: owner as any,
+      enemies: [target] as any,
+      combat: makeCombat(),
+      burstWindows: [],
+      ownerCooldowns: [],
+      isHealer: true,
+      ownerIsMelee: false,
+      friends: [owner, meleeA, meleeB] as any,
+      offensiveWindows: [pushWindow('e1', 'KillTarget')],
+      friendCCSummaries: [{ playerName: 'MeleeB', ccInstances: [{ atSeconds: 28, durationSeconds: 12 }] }] as any,
+    });
+
+    expect(events.filter((e) => e.type === 'SPLIT_PUSH')).toHaveLength(0);
+  });
+});
+
+describe('computeOwnerPositionEvents — iter 3: HEALER_TRAINED', () => {
+  it('emits HEALER_TRAINED when an enemy melee camps the friendly healer for a sustained period', () => {
+    const healer = makeStaticUnit('h1', 0, 0, { name: 'Healer', spec: CombatUnitSpec.Priest_Holy });
+    const enemyMelee = makeStaticUnit('e1', 3, 0, { name: 'TrainRogue', spec: CombatUnitSpec.Rogue_Assassination });
+
+    const events = computeOwnerPositionEvents({
+      owner: healer as any,
+      enemies: [enemyMelee] as any,
+      combat: makeCombat(),
+      burstWindows: [],
+      ownerCooldowns: [],
+      isHealer: true,
+      ownerIsMelee: false,
+      friends: [healer] as any,
+    });
+
+    const trained = events.filter((e) => e.type === 'HEALER_TRAINED');
+    expect(trained.length).toBeGreaterThanOrEqual(1);
+    expect(trained[0].nearestEnemyName).toBe('TrainRogue');
+    expect(trained[0].ownerIsSubject).toBe(true);
+    expect((trained[0].toSeconds ?? 0) - trained[0].atSeconds).toBeGreaterThanOrEqual(8);
+  });
+
+  it('does not emit HEALER_TRAINED for a nearby enemy CASTER (training is a melee concept)', () => {
+    const healer = makeStaticUnit('h1', 0, 0, { name: 'Healer', spec: CombatUnitSpec.Priest_Holy });
+    const enemyCaster = makeStaticUnit('e1', 3, 0, { name: 'CloseMage', spec: CombatUnitSpec.Mage_Fire });
+
+    const events = computeOwnerPositionEvents({
+      owner: healer as any,
+      enemies: [enemyCaster] as any,
+      combat: makeCombat(),
+      burstWindows: [],
+      ownerCooldowns: [],
+      isHealer: true,
+      ownerIsMelee: false,
+      friends: [healer] as any,
+    });
+
+    expect(events.filter((e) => e.type === 'HEALER_TRAINED')).toHaveLength(0);
+  });
+
+  it('marks ownerIsSubject=false when a DPS owner observes their healer being trained', () => {
+    const owner = makeStaticUnit('f1', -30, 0, { name: 'DpsOwner', spec: CombatUnitSpec.Warrior_Arms });
+    const healer = makeStaticUnit('h1', 0, 0, { name: 'Healer', spec: CombatUnitSpec.Priest_Holy });
+    const enemyMelee = makeStaticUnit('e1', 3, 0, { name: 'TrainRogue', spec: CombatUnitSpec.Rogue_Assassination });
+
+    const events = computeOwnerPositionEvents({
+      owner: owner as any,
+      enemies: [enemyMelee] as any,
+      combat: makeCombat(),
+      burstWindows: [],
+      ownerCooldowns: [],
+      isHealer: false,
+      ownerIsMelee: true,
+      friends: [owner, healer] as any,
+    });
+
+    const trained = events.filter((e) => e.type === 'HEALER_TRAINED');
+    expect(trained.length).toBeGreaterThanOrEqual(1);
+    expect(trained[0].ownerIsSubject).toBe(false);
+    expect(trained[0].playersInvolved).toEqual(['Healer']);
+  });
+});
+
 describe('formatPositionEventsForContext', () => {
   it('returns empty for no events', () => {
     expect(formatPositionEventsForContext([])).toEqual([]);
@@ -575,5 +737,35 @@ describe('formatPositionEventsForContext', () => {
     expect(text).toContain('MISSED PUSH');
     expect(text).toContain('OFFENSIVE CD OUT OF RANGE');
     expect(text).toContain('Avatar');
+  });
+
+  it('renders iter-3 sections (SPLIT_PUSH / HEALER_TRAINED) with owner-aware phrasing', () => {
+    const events: IPositionEvent[] = [
+      {
+        type: 'SPLIT_PUSH',
+        atSeconds: 30,
+        toSeconds: 45,
+        nearestEnemyName: 'KillTarget',
+        playersInvolved: ['MeleeB'],
+      },
+      {
+        type: 'HEALER_TRAINED',
+        atSeconds: 65,
+        toSeconds: 78,
+        nearestEnemyName: 'TrainRogue',
+        startDistanceYards: 3.1,
+        playersInvolved: ['Healer'],
+        ownerIsSubject: false,
+      },
+    ];
+
+    const text = formatPositionEventsForContext(events).join('\n');
+
+    expect(text).toContain('SPLIT PUSH');
+    expect(text).toContain('MeleeB');
+    expect(text).toContain('split pressure can be deliberate');
+    expect(text).toContain('HEALER TRAINED');
+    expect(text).toContain('your healer');
+    expect(text).toContain('TrainRogue');
   });
 });

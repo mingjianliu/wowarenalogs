@@ -213,8 +213,9 @@ export function buildMatchContext(
     owner as ICombatUnit,
   );
 
-  // F15 iteration 1+2: owner engagement-state events from real X/Y coordinates
-  // (STAYED_IN / KITED during enemy bursts, MISSED_PUSH, offensive CD out of range).
+  // F15 iterations 1–3: owner engagement-state events from real X/Y coordinates
+  // (STAYED_IN / KITED during enemy bursts, MISSED_PUSH, offensive CD out of range,
+  // SPLIT_PUSH during committed pushes, HEALER_TRAINED camping detection).
   const ownerCCSummaryForPosition = ccTrinketSummaries.find((s) => s.playerName === owner.name);
   const positionEvents = computeOwnerPositionEvents({
     owner: owner as ICombatUnit,
@@ -225,6 +226,9 @@ export function buildMatchContext(
     ownerCCSummary: ownerCCSummaryForPosition,
     isHealer: healer,
     ownerIsMelee: isMeleeSpec(owner.spec),
+    friends: friends as ICombatUnit[],
+    offensiveWindows,
+    friendCCSummaries: ccTrinketSummaries,
   });
   const positionLines = formatPositionEventsForContext(positionEvents);
 

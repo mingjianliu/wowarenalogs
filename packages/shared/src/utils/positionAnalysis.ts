@@ -12,7 +12,7 @@
 import { AtomicArenaCombat, ICombatUnit } from '@wowarenalogs/parser';
 
 import { ICCInstance } from './ccTrinketAnalysis';
-import { fmtTime, IMajorCooldownInfo } from './cooldowns';
+import { fmtTime, IMajorCooldownInfo, isHealerSpec, isMeleeSpec } from './cooldowns';
 import { IAlignedBurstWindow } from './enemyCDs';
 import { distanceBetween, getUnitPositionAtTime } from './losAnalysis';
 
@@ -28,12 +28,24 @@ const BURST_EVAL_SECONDS = 10; // evaluate kite/stay over at most this much of t
 const MISSED_PUSH_MIN_SECONDS = 10; // sustained disengagement required
 const KILL_PROXIMITY_SECONDS = 15; // ignore disengagement right before an enemy death
 const MAX_MISSED_PUSH_EVENTS = 3;
+// Iter 3 thresholds
+const PUSH_ON_TARGET_YARDS = 12; // melee DPS counted "on the push target" within this
+const PUSH_AWOL_YARDS = 20; // melee DPS beyond this during a committed push = split
+const HEALER_TRAINED_YARDS = 8; // enemy melee camping the healer within this
+const HEALER_TRAINED_MIN_SECONDS = 8; // sustained camping required
+const MAX_ITER3_EVENTS = 2; // per event type
 // Position snapshots are event-driven; when the query time is further than this
 // from the nearest snapshot, the interpolated position is fabricated (unit was
 // idle/stealthed/drinking) — treat as unknown.
 const POSITION_MAX_GAP_MS = 8_000;
 
-export type PositionEventType = 'STAYED_IN' | 'KITED' | 'MISSED_PUSH' | 'CD_OUT_OF_RANGE';
+export type PositionEventType =
+  | 'STAYED_IN'
+  | 'KITED'
+  | 'MISSED_PUSH'
+  | 'CD_OUT_OF_RANGE'
+  | 'SPLIT_PUSH'
+  | 'HEALER_TRAINED';
 
 export interface IPositionEvent {
   type: PositionEventType;
@@ -57,6 +69,10 @@ export interface IPositionEvent {
   burstTargetName?: string;
   /** CD_OUT_OF_RANGE only */
   spellName?: string;
+  /** SPLIT_PUSH: melee DPS away from the push target; HEALER_TRAINED: the healer */
+  playersInvolved?: string[];
+  /** HEALER_TRAINED: true when the trained healer IS the log owner */
+  ownerIsSubject?: boolean;
 }
 
 interface INearestEnemy {
@@ -137,8 +153,35 @@ export function computeOwnerPositionEvents(params: {
   ownerCCSummary?: { ccInstances: Array<Pick<ICCInstance, 'atSeconds' | 'durationSeconds'>> };
   isHealer: boolean;
   ownerIsMelee: boolean;
+  /** Iter 3 (optional): full friendly team, used for SPLIT_PUSH / HEALER_TRAINED */
+  friends?: ICombatUnit[];
+  /** Iter 3 (optional): own-team offensive windows with their kill target */
+  offensiveWindows?: Array<{
+    fromSeconds: number;
+    toSeconds: number;
+    targetUnitId: string;
+    targetName: string;
+    friendlyOffensives: Array<{ playerName: string }>;
+  }>;
+  /** Iter 3 (optional): per-friend CC data so CC-locked players are not blamed */
+  friendCCSummaries?: Array<{
+    playerName: string;
+    ccInstances: Array<Pick<ICCInstance, 'atSeconds' | 'durationSeconds'>>;
+  }>;
 }): IPositionEvent[] {
-  const { owner, enemies, combat, burstWindows, ownerCooldowns, ownerCCSummary, isHealer, ownerIsMelee } = params;
+  const {
+    owner,
+    enemies,
+    combat,
+    burstWindows,
+    ownerCooldowns,
+    ownerCCSummary,
+    isHealer,
+    ownerIsMelee,
+    friends,
+    offensiveWindows,
+    friendCCSummaries,
+  } = params;
   const matchStartMs = combat.startTime;
   const durationSeconds = (combat.endTime - combat.startTime) / 1000;
   const events: IPositionEvent[] = [];
@@ -292,6 +335,127 @@ export function computeOwnerPositionEvents(params: {
     }
   }
 
+  // ── 4. Iter 3: SPLIT_PUSH — a melee DPS away from the target during a committed push ──
+  if (friends && offensiveWindows) {
+    const ccByName = new Map((friendCCSummaries ?? []).map((c) => [c.playerName, c.ccInstances]));
+    let splitCount = 0;
+    for (const w of offensiveWindows) {
+      if (splitCount >= MAX_ITER3_EVENTS) break;
+      if ((w.friendlyOffensives ?? []).length < 2) continue; // not a committed push
+
+      const target = enemies.find((e) => e.id === w.targetUnitId) ?? enemies.find((e) => e.name === w.targetName);
+      if (!target || isDeadAt(target, matchStartMs + w.fromSeconds * 1000)) continue;
+
+      const meleeDps = friends.filter((f) => isMeleeSpec(f.spec) && !isHealerSpec(f.spec));
+      if (meleeDps.length < 2) continue; // convergence is only positionally checkable for melee
+
+      const evalEnd = Math.min(w.toSeconds, w.fromSeconds + BURST_EVAL_SECONDS);
+      const sampleTimes = [w.fromSeconds + 2, (w.fromSeconds + evalEnd) / 2];
+      const onTarget: string[] = [];
+      const awol: string[] = [];
+      for (const dps of meleeDps) {
+        if (isDeadAt(dps, matchStartMs + w.fromSeconds * 1000)) continue;
+        // CC-locked for most of the evaluated span → could not converge; not a decision
+        const cc = ccByName.get(dps.name) ?? [];
+        if (ccOverlapSeconds(cc, w.fromSeconds, evalEnd) >= (evalEnd - w.fromSeconds) / 2) continue;
+
+        const dists = sampleTimes.map((t) => {
+          const tMs = matchStartMs + t * 1000;
+          // A mid-window death (successful kill, or this DPS dying) leaves a corpse
+          // position — distances to/from it would falsely read as abandoning the push.
+          if (isDeadAt(target, tMs) || isDeadAt(dps, tMs)) return null;
+          const dpsPos = getUnitPositionAtTime(dps, tMs, POSITION_MAX_GAP_MS);
+          const tgtPos = getUnitPositionAtTime(target, tMs, POSITION_MAX_GAP_MS);
+          return dpsPos && tgtPos ? distanceBetween(dpsPos, tgtPos) : null;
+        });
+        if (dists.some((d) => d === null)) continue; // unreliable positions — no claim
+        if (dists.every((d) => (d as number) <= PUSH_ON_TARGET_YARDS)) onTarget.push(dps.name);
+        else if (dists.every((d) => (d as number) > PUSH_AWOL_YARDS)) awol.push(dps.name);
+      }
+
+      if (onTarget.length >= 1 && awol.length >= 1) {
+        events.push({
+          type: 'SPLIT_PUSH',
+          atSeconds: w.fromSeconds,
+          toSeconds: w.toSeconds,
+          nearestEnemyName: w.targetName,
+          playersInvolved: awol,
+        });
+        splitCount++;
+      }
+    }
+  }
+
+  // ── 5. Iter 3: HEALER_TRAINED — enemy melee camping the friendly healer ───
+  if (friends) {
+    const healerUnit = friends.find((f) => isHealerSpec(f.spec));
+    const enemyMelee = enemies.filter((e) => isMeleeSpec(e.spec) && !isHealerSpec(e.spec));
+    if (healerUnit && enemyMelee.length > 0 && (healerUnit.advancedActions ?? []).length > 0) {
+      let runStart: number | null = null;
+      let runMinDist = Infinity;
+      const trainerSeconds = new Map<string, number>();
+      let trainedCount = 0;
+
+      const closeTrainRun = (endSeconds: number) => {
+        if (
+          runStart !== null &&
+          endSeconds - runStart >= HEALER_TRAINED_MIN_SECONDS &&
+          trainedCount < MAX_ITER3_EVENTS
+        ) {
+          let topTrainer = '';
+          let topSeconds = -1;
+          for (const [name, secs] of trainerSeconds) {
+            if (secs > topSeconds) {
+              topTrainer = name;
+              topSeconds = secs;
+            }
+          }
+          events.push({
+            type: 'HEALER_TRAINED',
+            atSeconds: runStart,
+            toSeconds: endSeconds,
+            nearestEnemyName: topTrainer,
+            startDistanceYards: Math.round(runMinDist * 10) / 10,
+            playersInvolved: [healerUnit.name],
+            ownerIsSubject: healerUnit.id === owner.id,
+          });
+          trainedCount++;
+        }
+        runStart = null;
+        runMinDist = Infinity;
+        trainerSeconds.clear();
+      };
+
+      for (let t = 0; t <= durationSeconds; t += 1) {
+        const tMs = matchStartMs + t * 1000;
+        const healerPos = getUnitPositionAtTime(healerUnit, tMs, POSITION_MAX_GAP_MS);
+        let camped = false;
+        if (healerPos && !isDeadAt(healerUnit, tMs)) {
+          let bestDist = Infinity;
+          let bestName = '';
+          for (const e of enemyMelee) {
+            if (isDeadAt(e, tMs)) continue;
+            const ePos = getUnitPositionAtTime(e, tMs, POSITION_MAX_GAP_MS);
+            if (!ePos) continue;
+            const d = distanceBetween(healerPos, ePos);
+            if (d < bestDist) {
+              bestDist = d;
+              bestName = e.name;
+            }
+          }
+          if (bestDist <= HEALER_TRAINED_YARDS) {
+            camped = true;
+            if (runStart === null) runStart = t;
+            runMinDist = Math.min(runMinDist, bestDist);
+            trainerSeconds.set(bestName, (trainerSeconds.get(bestName) ?? 0) + 1);
+          }
+        }
+        if (!camped) closeTrainRun(t);
+      }
+      closeTrainRun(durationSeconds);
+    }
+  }
+
   return events.sort((a, b) => a.atSeconds - b.atSeconds);
 }
 
@@ -353,6 +517,27 @@ export function formatPositionEventsForContext(events: IPositionEvent[]): string
     for (const e of outOfRange) {
       lines.push(
         `    ${fmtTime(e.atSeconds)} ${e.spellName} cast ${e.startDistanceYards}yd from nearest enemy (still >${CD_RANGE_YARDS}yd ${CD_RANGE_RECHECK_SECONDS}s later)`,
+      );
+    }
+  }
+
+  const splitPush = events.filter((e) => e.type === 'SPLIT_PUSH');
+  if (splitPush.length > 0) {
+    lines.push('  SPLIT PUSH (a melee DPS was away from the push target while offensive CDs were committed):');
+    for (const e of splitPush) {
+      lines.push(
+        `    ${fmtTime(e.atSeconds)}\u2013${fmtTime(e.toSeconds ?? e.atSeconds)} push on ${e.nearestEnemyName}: ${(e.playersInvolved ?? []).join(', ')} stayed >${PUSH_AWOL_YARDS}yd away \u2014 split pressure can be deliberate; verify intent`,
+      );
+    }
+  }
+
+  const trained = events.filter((e) => e.type === 'HEALER_TRAINED');
+  if (trained.length > 0) {
+    lines.push(`  HEALER TRAINED (enemy melee camped the healer within ${HEALER_TRAINED_YARDS}yd):`);
+    for (const e of trained) {
+      const subject = e.ownerIsSubject ? 'you were' : `your healer (${(e.playersInvolved ?? [])[0] ?? 'healer'}) was`;
+      lines.push(
+        `    ${fmtTime(e.atSeconds)}\u2013${fmtTime(e.toSeconds ?? e.atSeconds)} ${subject} camped by ${e.nearestEnemyName} (closest ${e.startDistanceYards}yd) \u2014 peel or reposition opportunity`,
       );
     }
   }

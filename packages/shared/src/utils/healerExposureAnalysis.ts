@@ -20,7 +20,7 @@ import { IPlayerCCTrinketSummary } from './ccTrinketAnalysis';
 import { fmtTime, specToString } from './cooldowns';
 import { DR_CATEGORY_MAP, DRLevel, getDRLevelAtTime } from './drAnalysis';
 import { IAlignedBurstWindow } from './enemyCDs';
-import { distanceBetween, getUnitPositionAtTime, hasLineOfSight } from './losAnalysis';
+import { distanceBetween, distanceToNearestObstacleEdge, getUnitPositionAtTime, hasLineOfSight } from './losAnalysis';
 
 // Max cast range for player CC spells in yards. Enemies beyond this distance
 // cannot land CC on the healer regardless of LoS.
@@ -100,6 +100,9 @@ export interface IHealerBurstExposure {
   /** All non-Immune threats (both exposed and pillar-blocked) */
   threats: IHealerCCThreat[];
   exposureLabel: HealerExposureLabel;
+  /** Yards from the healer to the nearest arena obstacle edge at window start.
+   *  null when the zone has no geometry. Powers "a pillar was ~Xyd away" hints. */
+  nearestPillarYards?: number | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -226,6 +229,8 @@ export function analyzeHealerExposureAtBurst(
     const exposedThreats = threats.filter((t) => !t.losBlocked);
     const exposureLabel = computeExposureLabel(trinketState, exposedThreats);
 
+    const pillarDist = distanceToNearestObstacleEdge(zoneId, healerPos);
+
     results.push({
       atSeconds: window.fromSeconds,
       burstDangerLabel: window.dangerLabel,
@@ -233,6 +238,7 @@ export function analyzeHealerExposureAtBurst(
       trinketAvailableAtSeconds,
       threats,
       exposureLabel,
+      nearestPillarYards: pillarDist === null ? null : Math.round(pillarDist * 10) / 10,
     });
   }
 
@@ -260,8 +266,20 @@ export function formatHealerExposureForContext(exposures: IHealerBurstExposure[]
     const labelStr =
       e.exposureLabel === 'Critical' ? '⚠ CRITICAL' : e.exposureLabel === 'Exposed' ? '⚠ Exposed' : e.exposureLabel;
 
+    // Actionable pillar hint: only on dangerous windows, only when a validated
+    // obstacle is close enough to actually LoS behind (~30yd of repositioning).
+    const pillarStr =
+      (e.exposureLabel === 'Critical' || e.exposureLabel === 'Exposed') &&
+      e.nearestPillarYards !== null &&
+      e.nearestPillarYards !== undefined &&
+      e.nearestPillarYards <= 30
+        ? ` — nearest pillar ~${e.nearestPillarYards}yd`
+        : '';
+
     lines.push('');
-    lines.push(`  [${fmtTime(e.atSeconds)}] ${e.burstDangerLabel} burst — healer: ${trinketStr} — ${labelStr}`);
+    lines.push(
+      `  [${fmtTime(e.atSeconds)}] ${e.burstDangerLabel} burst — healer: ${trinketStr} — ${labelStr}${pillarStr}`,
+    );
 
     const exposed = e.threats.filter((t) => !t.losBlocked);
     const blocked = e.threats.filter((t) => t.losBlocked);

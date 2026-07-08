@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { distanceBetween, getUnitPositionAtTime, hasLineOfSight } from '../losAnalysis';
+import { distanceBetween, distanceToNearestObstacleEdge, getUnitPositionAtTime, hasLineOfSight } from '../losAnalysis';
 import { makeAdvancedAction, makeUnit } from './testHelpers';
 
 describe('losAnalysis — position interpolation', () => {
@@ -107,5 +107,25 @@ describe('losAnalysis — geometry logic', () => {
 describe('losAnalysis — distance helper', () => {
   it('computes Euclidean distance (B68)', () => {
     expect(distanceBetween({ x: 0, y: 0 }, { x: 3, y: 4 })).toBe(5);
+  });
+});
+
+describe('losAnalysis — distanceToNearestObstacleEdge', () => {
+  it('returns distance to a circle edge (Nagrand north pillar r=4 @-2044.5,6623.5)', () => {
+    const d = distanceToNearestObstacleEdge('1505', { x: -2044.5, y: 6613.5 });
+    expect(d).toBeCloseTo(6, 1); // 10 from center, minus r=4
+  });
+
+  it('returns 0 when inside an obstacle', () => {
+    expect(distanceToNearestObstacleEdge('1505', { x: -2044.5, y: 6623.5 })).toBe(0);
+  });
+
+  it('returns distance to the nearest polygon edge (Lordaeron tomb x[1276..1295] y[1659..1672])', () => {
+    const d = distanceToNearestObstacleEdge('572', { x: 1285, y: 1650 });
+    expect(d).toBeCloseTo(9, 1); // 9 units north of the tomb's y=1659 edge
+  });
+
+  it('returns null for unmapped zones', () => {
+    expect(distanceToNearestObstacleEdge('999999', { x: 0, y: 0 })).toBeNull();
   });
 });

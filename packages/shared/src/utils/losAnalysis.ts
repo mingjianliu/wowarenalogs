@@ -198,3 +198,41 @@ export function distanceBetween(a: IPosition, b: IPosition): number {
   const dy = a.y - b.y;
   return Math.sqrt(dx * dx + dy * dy);
 }
+
+function distancePointToSegment(px: number, py: number, ax: number, ay: number, bx: number, by: number): number {
+  const dx = bx - ax;
+  const dy = by - ay;
+  const lenSq = dx * dx + dy * dy;
+  const t = lenSq === 0 ? 0 : Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / lenSq));
+  return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+}
+
+/**
+ * Distance in yards from a position to the EDGE of the nearest arena obstacle
+ * (0 when inside one). Returns null when the zone has no geometry mapped.
+ * Powers "a pillar was ~Xyd away" coaching hints on exposure windows.
+ */
+export function distanceToNearestObstacleEdge(zoneId: string, pos: IPosition): number | null {
+  const obstacles = arenaObstacles[zoneId];
+  if (!obstacles || obstacles.length === 0) return null;
+
+  let best = Infinity;
+  for (const obs of obstacles) {
+    let d: number;
+    if (obs.type === 'circle') {
+      d = Math.max(0, Math.hypot(pos.x - obs.cx, pos.y - obs.cy) - obs.r);
+    } else if (pointInPolygon(pos.x, pos.y, obs.vertices)) {
+      d = 0;
+    } else {
+      d = Infinity;
+      const n = obs.vertices.length;
+      for (let i = 0; i < n; i++) {
+        const [ax, ay] = obs.vertices[i];
+        const [bx, by] = obs.vertices[(i + 1) % n];
+        d = Math.min(d, distancePointToSegment(pos.x, pos.y, ax, ay, bx, by));
+      }
+    }
+    best = Math.min(best, d);
+  }
+  return best;
+}

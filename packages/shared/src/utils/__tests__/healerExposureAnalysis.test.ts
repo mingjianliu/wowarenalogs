@@ -291,6 +291,59 @@ describe('healerExposureAnalysis — CC avoidance', () => {
   });
 });
 
+describe('healerExposureAnalysis — pillar proximity (F15 P2)', () => {
+  it('carries nearestPillarYards when the zone geometry is mapped', () => {
+    // Healer 1.5yd from the edge of Nagrand's north pillar (r=4 @-2044.5,6623.5)
+    const healer = makeUnit('h', { advancedActions: [makeAdvancedAction(MATCH_START, -2050, 6623.5)] });
+    (healer.advancedActions[0] as any).advancedActorId = 'h';
+    const enemy = makeUnit('e', {
+      name: 'Mage',
+      spec: CombatUnitSpec.Mage_Frost,
+      advancedActions: [makeAdvancedAction(MATCH_START, -2050, 6600)],
+    });
+    (enemy.advancedActions[0] as any).advancedActorId = 'e';
+    const windows = [{ fromSeconds: 0, dangerLabel: 'High' }] as any;
+    const healerCCSummary: any = {
+      trinketType: 'Gladiator',
+      trinketUseTimes: [],
+      trinketCooldownSeconds: 120,
+      ccInstances: [],
+    };
+
+    const res = analyzeHealerExposureAtBurst(windows, [enemy], healer, healerCCSummary, [], '1505', MATCH_START);
+    expect(res).toHaveLength(1);
+    expect(res[0].nearestPillarYards).toBeCloseTo(1.5, 1);
+  });
+
+  it('formatter renders the pillar hint on Critical/Exposed entries when a pillar is nearby', () => {
+    const base: any = {
+      atSeconds: 10,
+      burstDangerLabel: 'High',
+      trinketState: 'available',
+      trinketAvailableAtSeconds: null,
+      exposureLabel: 'Exposed',
+      threats: [
+        {
+          enemySpec: 'Frost Mage',
+          enemyName: 'M1',
+          ccSpellName: 'Polymorph',
+          ccCategory: 'Incapacitate',
+          healerDRLevel: 'Full',
+          losBlocked: false,
+        },
+      ],
+    };
+    const near = { ...base, nearestPillarYards: 6.4 };
+    const far = { ...base, atSeconds: 20, nearestPillarYards: 48 };
+    const unmapped = { ...base, atSeconds: 30, nearestPillarYards: null };
+
+    const text = formatHealerExposureForContext([near, far, unmapped]).join('\n');
+    expect(text).toContain('nearest pillar ~6.4yd');
+    expect(text).not.toContain('~48yd');
+    expect((text.match(/nearest pillar/g) ?? []).length).toBe(1);
+  });
+});
+
 describe('healerExposureAnalysis — formatting', () => {
   it('formatHealerExposureForContext produces detailed breakdown', () => {
     const exposure: any = {
