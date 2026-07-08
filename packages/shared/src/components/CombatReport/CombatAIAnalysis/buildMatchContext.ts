@@ -297,6 +297,18 @@ export function buildMatchContext(
       combat.endTime,
     ).forEach((l) => tLines.push(l));
 
+    // The timeline path returns early and never reaches the critical-moments render
+    // section below — the healer_offense block must be emitted in BOTH paths.
+    if (healerOffense) {
+      const healerOffenseTimelineLines = formatHealerOffenseForContext(healerOffense);
+      if (healerOffenseTimelineLines.length > 0) {
+        tLines.push('');
+        tLines.push('<healer_offense>');
+        healerOffenseTimelineLines.forEach((l) => tLines.push(l));
+        tLines.push('</healer_offense>');
+      }
+    }
+
     tLines.push('');
     const {
       text: loadoutText,
