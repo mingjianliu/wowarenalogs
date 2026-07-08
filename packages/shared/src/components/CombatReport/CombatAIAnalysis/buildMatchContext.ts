@@ -21,7 +21,12 @@ import {
 import { isMeleeSpec } from '../../../utils/cooldowns';
 import { formatDampeningForContext } from '../../../utils/dampening';
 import { buildDeathOutcomeSummary, formatDeathOutcomeForContext } from '../../../utils/deathOutcomeAnalysis';
-import { canOffensivePurge, formatDispelContextForAI, reconstructDispelSummary } from '../../../utils/dispelAnalysis';
+import {
+  annotateMissedPurgesWithKillWindows,
+  canOffensivePurge,
+  formatDispelContextForAI,
+  reconstructDispelSummary,
+} from '../../../utils/dispelAnalysis';
 import { analyzeOutgoingCCChains, formatOutgoingCCChainsForContext } from '../../../utils/drAnalysis';
 import { formatEnemyCDTimelineForContext, reconstructEnemyCDTimeline } from '../../../utils/enemyCDs';
 import {
@@ -31,6 +36,11 @@ import {
   formatHealerExposureForContext,
   IHealerCCReceived,
 } from '../../../utils/healerExposureAnalysis';
+import {
+  buildHealerOffenseSummary,
+  formatHealerOffenseForContext,
+  HEALER_OFFENSE_FLAGS,
+} from '../../../utils/healerOffenseAnalysis';
 import { detectHealingGaps, formatHealingGapsForContext } from '../../../utils/healingGaps';
 import {
   analyzeKillWindowTargetSelection,
@@ -160,6 +170,32 @@ export function buildMatchContext(
     ccTrinketSummaries,
   );
   const offensiveWaste = buildOffensiveWasteSummary(combat, friends as ICombatUnit[], enemies as ICombatUnit[]);
+
+  // Signal 3: escalate missed purges that fell inside a friendly kill window
+  annotateMissedPurgesWithKillWindows(dispelSummary.missedPurgeWindows, offensiveWindows);
+
+  // Healer offense V1 (slack-gated facts) — healer log owners only
+  const ownerCCSummary = ccTrinketSummaries.find((s) => s.playerName === owner.name);
+  const enemyHealerUnit = enemies.find((e) => isHealerSpec(e.spec));
+  const enemyHealerCCSummary = enemyHealerUnit
+    ? analyzePlayerCCAndTrinket(enemyHealerUnit as ICombatUnit, friends as ICombatUnit[], combat)
+    : undefined;
+  const ownerPurgeTimes = dispelSummary.ourPurges.filter((p) => p.sourceName === owner.name).map((p) => p.timeSeconds);
+  const healerOffense =
+    healer && HEALER_OFFENSE_FLAGS.V1_SLACK_GATED
+      ? buildHealerOffenseSummary(
+          combat,
+          owner,
+          friends as ICombatUnit[],
+          enemies as ICombatUnit[],
+          offensiveWindows,
+          enemyCDTimeline,
+          ownerCCSummary?.ccInstances ?? [],
+          enemyHealerCCSummary?.ccInstances ?? [],
+          ownerPurgeTimes,
+        )
+      : null;
+
   const healerCCReceived: IHealerCCReceived[] =
     healerUnit && healerCCSummary
       ? buildHealerCCReceivedEvents(combat, healerUnit, friends as ICombatUnit[], healerCCSummary)
@@ -286,6 +322,18 @@ export function buildMatchContext(
       combat.startTime,
       combat.endTime,
     ).forEach((l) => tLines.push(l));
+
+    // The timeline path returns early and never reaches the critical-moments render
+    // section below — the healer_offense block must be emitted in BOTH paths.
+    if (healerOffense) {
+      const healerOffenseTimelineLines = formatHealerOffenseForContext(healerOffense);
+      if (healerOffenseTimelineLines.length > 0) {
+        tLines.push('');
+        tLines.push('<healer_offense>');
+        healerOffenseTimelineLines.forEach((l) => tLines.push(l));
+        tLines.push('</healer_offense>');
+      }
+    }
 
     tLines.push('');
     const {
@@ -744,6 +792,16 @@ export function buildMatchContext(
   if (healerCCBlock) {
     lines.push('');
     lines.push(healerCCBlock);
+  }
+
+  if (healerOffense) {
+    const healerOffenseLines = formatHealerOffenseForContext(healerOffense);
+    if (healerOffenseLines.length > 0) {
+      lines.push('');
+      lines.push('<healer_offense>');
+      healerOffenseLines.forEach((l) => lines.push(l));
+      lines.push('</healer_offense>');
+    }
   }
 
   return lines.join('\n');

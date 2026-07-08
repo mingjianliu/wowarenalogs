@@ -438,6 +438,22 @@ export interface IMissedPurgeWindow {
    * Uses role-aware getPressureThreshold (post B8 fix).
    */
   teamUnderPressure: boolean;
+  /** True when the missed purge fell inside a friendly kill window (offensiveWindows intersection).
+   *  Optional: only set when annotateMissedPurgesWithKillWindows has run. */
+  duringKillWindow?: boolean;
+}
+
+/** Marks missed purges that fell inside a friendly kill window. Mutates in place;
+ *  kept separate from reconstructDispelSummary so its signature (and all call sites) stay unchanged. */
+export function annotateMissedPurgesWithKillWindows(
+  missedPurgeWindows: IMissedPurgeWindow[],
+  offensiveWindows: Array<{ fromSeconds: number; toSeconds: number }>,
+): void {
+  for (const miss of missedPurgeWindows) {
+    miss.duringKillWindow = offensiveWindows.some(
+      (w) => miss.timeSeconds >= w.fromSeconds && miss.timeSeconds < w.toSeconds,
+    );
+  }
 }
 
 export interface IDispelSummary {
@@ -1092,6 +1108,10 @@ export function formatDispelContextForAI(summary: IDispelSummary): string[] {
   }
 
   // Purge summary
+  // NOTE: kept as the original Critical/High-only filter (pre-duringKillWindow escalation) so the
+  // "worst" pick and its rendered line stay byte-identical to the pre-existing behavior for all
+  // inputs — including in-window duration ties/wins that would otherwise silently swap which item
+  // is reported as worst (e.g. a High 5s not-in-window miss vs. a Medium 20s in-window miss).
   const significantMissedPurges = missedPurgeWindows.filter((w) => w.priority === 'Critical' || w.priority === 'High');
   if (significantMissedPurges.length === 0) {
     lines.push('  Missed purge windows: None (Critical/High)');
@@ -1100,6 +1120,16 @@ export function formatDispelContextForAI(summary: IDispelSummary): string[] {
     const pressureStr = worst.teamUnderPressure ? ' during pressure' : '';
     lines.push(
       `  Missed purge windows: ${significantMissedPurges.length} — worst: ${worst.spellName} on ${worst.enemySpec} (${Math.round(worst.durationSeconds)}s unpurged${pressureStr})`,
+    );
+  }
+
+  // Kill-window misses are always surfaced, regardless of priority (a friendly kill can be blown by
+  // a Medium-priority buff just as easily as a Critical one) — rendered as dedicated lines rather
+  // than folded into the "worst" pick above so they can never be hidden by a longer non-window miss.
+  const killWindowMisses = missedPurgeWindows.filter((w) => w.duringKillWindow === true);
+  for (const miss of killWindowMisses) {
+    lines.push(
+      `  MISSED PURGE DURING FRIENDLY KILL WINDOW: ${miss.spellName} on ${miss.enemySpec} (${miss.enemyName}) at ${Math.round(miss.timeSeconds)}s (${Math.round(miss.durationSeconds)}s unpurged, priority ${miss.priority})`,
     );
   }
 

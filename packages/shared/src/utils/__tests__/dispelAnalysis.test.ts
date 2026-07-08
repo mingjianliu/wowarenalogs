@@ -2,9 +2,11 @@
 import { CombatExtraSpellAction, CombatUnitReaction, CombatUnitSpec, LogEvent } from '@wowarenalogs/parser';
 
 import {
+  annotateMissedPurgesWithKillWindows,
   canDefensiveCleanse,
   canOffensivePurge,
   formatDispelContextForAI,
+  IMissedPurgeWindow,
   reconstructDispelSummary,
   wasRemovedByAllyDispel,
 } from '../dispelAnalysis';
@@ -348,5 +350,94 @@ describe('wasRemovedByAllyDispel', () => {
     expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.27)).toBe(false); // 70ms — distinct event
     expect(wasRemovedByAllyDispel(allyCleanse, '118', 'Player1', 10.7)).toBe(false); // 500ms — distinct event
     expect(wasRemovedByAllyDispel(allyCleanse, '999', 'Player1', 10.2)).toBe(false); // wrong spell
+  });
+});
+
+function makeMissedPurge(timeSeconds: number, priority: 'Critical' | 'High' | 'Medium' | 'Low'): IMissedPurgeWindow {
+  return {
+    timeSeconds,
+    durationSeconds: 8,
+    enemyName: 'Rsham',
+    enemySpec: 'Restoration Shaman',
+    spellName: 'Earth Shield',
+    spellId: '974',
+    priority,
+    purgeWasOnCD: false,
+    teamUnderPressure: false,
+  };
+}
+
+describe('annotateMissedPurgesWithKillWindows', () => {
+  it('flags misses inside a kill window and leaves others untouched', () => {
+    const misses = [makeMissedPurge(45, 'Medium'), makeMissedPurge(80, 'Medium')];
+    annotateMissedPurgesWithKillWindows(misses, [{ fromSeconds: 40, toSeconds: 50 }]);
+    expect(misses[0].duringKillWindow).toBe(true);
+    expect(misses[1].duringKillWindow).toBe(false);
+  });
+
+  it('escalates in-window misses in the formatter even at Medium priority', () => {
+    const misses = [makeMissedPurge(45, 'Medium')];
+    annotateMissedPurgesWithKillWindows(misses, [{ fromSeconds: 40, toSeconds: 50 }]);
+    const summary = {
+      allyCleanse: [],
+      ourPurges: [],
+      hostilePurges: [],
+      missedCleanseWindows: [],
+      ccEfficiency: [],
+      missedPurgeWindows: misses,
+    };
+    const text = formatDispelContextForAI(summary as never).join('\n');
+    expect(text).toContain('MISSED PURGE DURING FRIENDLY KILL WINDOW');
+    expect(text).toContain('Earth Shield');
+  });
+
+  it('surfaces an in-window Medium miss via a dedicated line without displacing a longer Critical worst pick', () => {
+    const criticalMiss: IMissedPurgeWindow = {
+      ...makeMissedPurge(10, 'Critical'),
+      durationSeconds: 20,
+      spellName: 'Ice Block',
+      enemySpec: 'Frost Mage',
+      enemyName: 'Fmage',
+      duringKillWindow: false,
+    };
+    const mediumInWindowMiss: IMissedPurgeWindow = {
+      ...makeMissedPurge(45, 'Medium'),
+      durationSeconds: 5,
+      spellName: 'Earth Shield',
+    };
+    annotateMissedPurgesWithKillWindows([mediumInWindowMiss], [{ fromSeconds: 40, toSeconds: 50 }]);
+    expect(mediumInWindowMiss.duringKillWindow).toBe(true);
+
+    const summary = {
+      allyCleanse: [],
+      ourPurges: [],
+      hostilePurges: [],
+      missedCleanseWindows: [],
+      ccEfficiency: [],
+      missedPurgeWindows: [criticalMiss, mediumInWindowMiss],
+    };
+    const text = formatDispelContextForAI(summary as never).join('\n');
+
+    // Worst line stays on the Critical (longer, non-window) miss — unchanged from pre-existing behavior.
+    expect(text).toContain('Missed purge windows: 1 — worst: Ice Block on Frost Mage');
+    expect(text).not.toContain('worst: Earth Shield');
+
+    // The in-window Medium miss is still always surfaced via its own dedicated line.
+    expect(text).toContain('MISSED PURGE DURING FRIENDLY KILL WINDOW: Earth Shield on Restoration Shaman (Rsham)');
+  });
+
+  it('renders no kill-window line when no missed purge carries the duringKillWindow annotation', () => {
+    const misses = [makeMissedPurge(10, 'Critical'), makeMissedPurge(20, 'High')];
+    // duringKillWindow deliberately left undefined (annotateMissedPurgesWithKillWindows never ran).
+    const summary = {
+      allyCleanse: [],
+      ourPurges: [],
+      hostilePurges: [],
+      missedCleanseWindows: [],
+      ccEfficiency: [],
+      missedPurgeWindows: misses,
+    };
+    const text = formatDispelContextForAI(summary as never).join('\n');
+    expect(text).not.toContain('MISSED PURGE DURING FRIENDLY KILL WINDOW');
   });
 });

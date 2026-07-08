@@ -202,7 +202,7 @@ function getDefensiveStateAtTime(
  * Returns whether this enemy's PvP trinket is available at `windowStartSeconds`.
  * null when no trinket use was ever detected (can't determine type).
  */
-function getTrinketStateAtTime(
+export function getTrinketStateAtTime(
   enemy: ICombatUnit,
   windowStartSeconds: number,
   matchStartMs: number,
