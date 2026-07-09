@@ -2,6 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { captureAnalysisRun, PromptId, shouldCapture } from '../../../shared/src/api/analysisCapture';
+import { checkRateLimit, clientIpFrom } from '../../../shared/src/api/rateLimit';
 import {
   parseFindingsResponse,
   renderFindingsAsProse,
@@ -16,6 +17,14 @@ import { resolveAIModel } from '../../../shared/src/utils/aiModels';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // T14: minimum-bar abuse protection for the Anthropic-spending endpoint.
+  // In-memory = per-serverless-instance; good enough to stop naive loops.
+  const rl = checkRateLimit(`analyze:${clientIpFrom(req)}`, 10, 60_000);
+  if (!rl.allowed) {
+    res.setHeader('Retry-After', String(rl.retryAfterSeconds));
+    return res.status(429).json({ error: 'Too many requests. Try again shortly.' });
   }
 
   const {
@@ -52,14 +61,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const model = modelOption.id;
     const startMs = Date.now();
 
+    // B153: the override gate must live server-side — `debug` is a client body field,
+    // so on production deployments it must not turn this route into a steerable proxy.
+    const allowPromptOverride = process.env.NODE_ENV !== 'production' || process.env.WAL_ALLOW_PROMPT_OVERRIDE === '1';
+
+    if (debug && bodySystemPrompt && !allowPromptOverride) {
+      return res.status(403).json({ error: 'systemPrompt override is not enabled on this server' });
+    }
+
     // Prompt selection precedence (highest priority first):
-    //   1. debug && bodySystemPrompt: explicit override for local dev/testing only.
+    //   1. allowPromptOverride && debug && bodySystemPrompt: explicit override for local dev/testing only (env gate enabled).
     //      Gate prevents the route becoming a free LLM proxy for arbitrary prompts.
     //   2. findingsJson: structured JSON findings path used by the AI Analysis UI.
     //   3. useTimelinePrompt: use raw timeline path (NEW_SYSTEM_PROMPT).
     //   4. default: structured critical-moments path (SYSTEM_PROMPT, prose).
     const activeSystemPrompt =
-      debug && bodySystemPrompt && typeof bodySystemPrompt === 'string' && bodySystemPrompt.length <= 32_000
+      allowPromptOverride &&
+      debug &&
+      bodySystemPrompt &&
+      typeof bodySystemPrompt === 'string' &&
+      bodySystemPrompt.length <= 32_000
         ? bodySystemPrompt
         : findingsJson
           ? FINDINGS_JSON_SYSTEM_PROMPT
