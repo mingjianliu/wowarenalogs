@@ -5,6 +5,7 @@ import fs from 'fs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import path from 'path';
 
+import { checkRateLimit, clientIpFrom } from '../../../shared/src/api/rateLimit';
 import { checkClaims } from '../../../shared/src/components/CombatReport/CombatAIAnalysis/claimChecker';
 import {
   buildStatsLedPrompt,
@@ -281,6 +282,15 @@ async function generateReport(apiKey: string, prompt: string, requestedModel?: s
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).json({});
+
+  // T14: minimum-bar abuse protection for the Anthropic-spending endpoint.
+  // In-memory = per-serverless-instance; good enough to stop naive loops.
+  const rl = checkRateLimit(`compare:${clientIpFrom(req)}`, 20, 60_000);
+  if (!rl.allowed) {
+    res.setHeader('Retry-After', String(rl.retryAfterSeconds));
+    return res.status(429).json({ error: 'Too many requests. Try again shortly.' });
+  }
+
   const {
     matchId,
     apiKey: bodyApiKey,

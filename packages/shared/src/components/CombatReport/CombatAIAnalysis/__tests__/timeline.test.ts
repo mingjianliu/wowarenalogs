@@ -687,7 +687,9 @@ describe('buildMatchTimeline — CD events', () => {
         ],
       }),
     );
-    expect(result).toContain('→ Gardianmini (27% HP, 0k DPS)');
+    // F139: the target unit is not in friends/enemies, so no velocity/DPS may be attached —
+    // the ', 0k DPS' previously asserted here was fabricated from the OWNER via the ?? owner fallback.
+    expect(result).toContain('→ Gardianmini (27% HP)');
   });
 
   it('does NOT add defensive velocity/DPS when an owner CD targets an enemy (review H9)', () => {
@@ -6464,5 +6466,157 @@ describe('buildMatchTimeline — F162: HP-Velocity and Incoming DPS', () => {
     expect(result).toContain(
       '[DMG SPIKE]   Feramonk (Mistweaver Monk): 0.50M in 5s (100k DPS) (90% -> 40% HP, -10%/s)',
     );
+  });
+});
+
+describe('F139 — getCDTargetAndVelocityPart target resolution', () => {
+  it('enemy CC target resolves via enemyIdMap', () => {
+    const owner = makeUnit('u1', {
+      name: 'Feramonk',
+      advancedActions: [],
+      damageIn: [],
+      auraEvents: [],
+    }) as ICombatUnit;
+
+    const enemy = makeUnit('enemy-1', {
+      name: 'Badmage-Realm',
+      reaction: CombatUnitReaction.Hostile,
+      advancedActions: [],
+      damageIn: [],
+      auraEvents: [],
+    }) as ICombatUnit;
+
+    const cc: IMajorCooldownInfo = {
+      spellId: '118', // Polymorph (in ccSpellIds)
+      spellName: 'Polymorph',
+      tag: 'Offensive',
+      cooldownSeconds: 30,
+      maxChargesDetected: 1,
+      neverUsed: false,
+      availableWindows: [],
+      casts: [{ timeSeconds: 30, targetName: 'Badmage-Realm' }] as any,
+    };
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        enemies: [enemy],
+        playerIdMap: new Map([['Feramonk', 1]]),
+        enemyIdMap: new Map([
+          ['Badmage-Realm', 4],
+          ['Badmage', 4],
+        ]),
+        ownerCDs: [cc],
+        matchStartMs: 0,
+        matchEndMs: 60_000,
+      }),
+    );
+
+    expect(result).toContain('[YOU] [CC]');
+    expect(result).toContain('Polymorph → 4');
+    expect(result).not.toContain('→ Badmage');
+  });
+
+  it('shared display name resolves to the enemy id, not the friendly id', () => {
+    const owner = makeUnit('u1', {
+      name: 'Feramonk',
+      advancedActions: [],
+      damageIn: [],
+      auraEvents: [],
+    }) as ICombatUnit;
+
+    const friend = makeUnit('u2', {
+      name: 'Badmage-Otherrealm',
+      reaction: CombatUnitReaction.Friendly,
+      advancedActions: [],
+      damageIn: [],
+      auraEvents: [],
+    }) as ICombatUnit;
+
+    const enemy = makeUnit('enemy-1', {
+      name: 'Badmage-Realm',
+      reaction: CombatUnitReaction.Hostile,
+      advancedActions: [],
+      damageIn: [],
+      auraEvents: [],
+    }) as ICombatUnit;
+
+    const cc: IMajorCooldownInfo = {
+      spellId: '118',
+      spellName: 'Polymorph',
+      tag: 'Offensive',
+      cooldownSeconds: 30,
+      maxChargesDetected: 1,
+      neverUsed: false,
+      availableWindows: [],
+      casts: [{ timeSeconds: 30, targetName: 'Badmage-Realm' }] as any,
+    };
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner, friend],
+        enemies: [enemy],
+        playerIdMap: new Map([
+          ['Feramonk', 1],
+          ['Badmage-Otherrealm', 2],
+          ['Badmage', 2],
+        ]),
+        enemyIdMap: new Map([
+          ['Badmage-Realm', 4],
+          ['Badmage', 4],
+        ]),
+        ownerCDs: [cc],
+        matchStartMs: 0,
+        matchEndMs: 60_000,
+      }),
+    );
+
+    expect(result).toContain('[YOU] [CC]');
+    expect(result).toContain('Polymorph → 4');
+    expect(result).not.toContain('→ 2');
+  });
+
+  it('unknown target unit never prints the owner HP', () => {
+    const owner = makeUnit('u1', {
+      name: 'Feramonk',
+      advancedActions: [
+        {
+          logLine: { timestamp: 30000 },
+          advancedActorId: 'u1',
+          advancedActorCurrentHp: 80000,
+          advancedActorMaxHp: 100000,
+          advancedActorPowers: [],
+        } as any,
+      ],
+      damageIn: [],
+      auraEvents: [],
+    }) as ICombatUnit;
+
+    const cd: IMajorCooldownInfo = {
+      spellId: '633', // Lay on Hands
+      spellName: 'Lay on Hands',
+      tag: 'Defensive',
+      cooldownSeconds: 600,
+      maxChargesDetected: 1,
+      neverUsed: false,
+      availableWindows: [],
+      casts: [{ timeSeconds: 30, targetName: 'Ghostunit-Realm' }] as any,
+    };
+
+    const result = buildMatchTimeline(
+      makeBaseParams({
+        owner,
+        friends: [owner],
+        enemies: [],
+        ownerCDs: [cd],
+        matchStartMs: 0,
+        matchEndMs: 60_000,
+      }),
+    );
+
+    expect(result).toContain('Lay on Hands → Ghostunit');
+    expect(result).not.toContain('% HP');
   });
 });

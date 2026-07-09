@@ -308,12 +308,14 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
       targetName === 'nil' ||
       targetName === owner.name ||
       targetName.split('-')[0] === owner.name.split('-')[0];
-    const targetUnit = isSelf ? owner : (_allUnits.find((u) => u.name === targetName) ?? owner);
+    // F139: no owner fallback — it printed the CASTER's own HP as if it were the target's
+    // whenever the dest unit wasn't found by exact name.
+    const targetUnit = isSelf ? owner : _allUnits.find((u) => u.name === targetName);
 
     // H9: the HP-velocity / incoming-DPS trajectory is defensive context (was this ally
     // dying?). It is meaningless — and misleading — for an offensive CD cast on an enemy
     // (e.g. Maim, which is not in ccSpellIds), so skip it when the target is hostile.
-    const targetIsEnemy = !isSelf && targetUnit.reaction === CombatUnitReaction.Hostile;
+    const targetIsEnemy = !isSelf && targetUnit?.reaction === CombatUnitReaction.Hostile;
 
     let velocityStr = '';
     if (targetUnit && !targetIsEnemy && !ccSpellIds.has(spellId)) {
@@ -363,7 +365,15 @@ export function buildMatchTimeline(params: BuildMatchTimelineParams): string {
         if (hpNow !== null) targetPart = ` (self: ${hpNow.toFixed(0)}% HP${velocityStr})`;
       }
     } else if (!isSelf && targetName !== undefined) {
-      targetPart = ` → ${pid(targetName)}`;
+      // F139: resolve by the target's actual reaction — pid() only knows friendlies, so an
+      // offensive CD/CC target (an enemy) rendered as a raw name, or as the WRONG friendly id
+      // when both teams had a player with the same display name.
+      const targetLabel = targetUnit
+        ? targetUnit.reaction === CombatUnitReaction.Hostile
+          ? enemyPid(targetName)
+          : pid(targetName)
+        : targetName.split('-')[0];
+      targetPart = ` → ${targetLabel}`;
       const hpPct =
         overrideHpPct ??
         (targetUnit ? getHpPercentAtTime(targetUnit, timeSeconds, matchStartMs)?.toFixed(0) : undefined);

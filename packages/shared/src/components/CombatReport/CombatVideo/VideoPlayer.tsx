@@ -4,7 +4,7 @@ import { useCombatReportContext } from '../CombatReportContext';
 import { useVideoPlayerContext } from './VideoPlayerContext';
 
 export const VideoPlayer = () => {
-  const { combat } = useCombatReportContext();
+  const { combat, videoSeekRequest, requestVideoSeek } = useCombatReportContext();
   const {
     videoInformation,
     errorMessage,
@@ -24,6 +24,17 @@ export const VideoPlayer = () => {
 
     vidRef.current.currentTime = combatTimeToVideoTime(combat.startTime);
   }, [combat, combatTimeToVideoTime, videoInformation]);
+
+  // F177: a finding's "Watch" button parks a seek request in CombatReportContext before
+  // switching tabs; consume it once the video is ready. Declared after the initial-seek
+  // effect so on first load the requested time wins over the start-of-round seek.
+  useEffect(() => {
+    if (videoSeekRequest === null) return;
+    if (!videoInformation?.metadata || !vidRef.current) return;
+    vidRef.current.currentTime = combatTimeToVideoTime(videoSeekRequest);
+    vidRef.current.play();
+    requestVideoSeek(null);
+  }, [videoSeekRequest, videoInformation, combatTimeToVideoTime, requestVideoSeek]);
 
   // update the context provider about state changes
   useEffect(() => {

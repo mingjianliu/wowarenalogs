@@ -58,6 +58,8 @@ const REFERENCE_MODEL_CANDIDATES = [
   path.join(process.cwd(), '.next/server/reference_model.json'),
 ];
 let cachedModel: IReferenceModel | null = null;
+let cachedVectors: { path: string; records: ReferenceVectorRecord[] } | null = null;
+
 export async function loadReferenceModel(): Promise<IReferenceModel | null> {
   if (cachedModel) return cachedModel;
   for (const p of REFERENCE_MODEL_CANDIDATES) {
@@ -67,6 +69,18 @@ export async function loadReferenceModel(): Promise<IReferenceModel | null> {
     }
   }
   return null;
+}
+
+// T13: /api/compare calls loadCellRecords on every request; parsing the ~2k-record
+// reference_vectors.json each time is wasted latency. Cache per resolved path (the
+// path can differ between desktop/web bundles, and tests may point it elsewhere).
+async function loadAllReferenceVectors(): Promise<ReferenceVectorRecord[]> {
+  const refPath = resolveReferenceVectorsPath();
+  if (!refPath) return [];
+  if (cachedVectors && cachedVectors.path === refPath) return cachedVectors.records;
+  const records: ReferenceVectorRecord[] = await fs.readJson(refPath);
+  cachedVectors = { path: refPath, records };
+  return records;
 }
 
 /**
@@ -91,10 +105,8 @@ export function normalizeBracket(raw: string | undefined | null): string {
  * returns for the legacy nearest-neighbor-average prompt).
  */
 export async function loadCellRecords(spec: string, bracket: string): Promise<ReferenceVectorRecord[]> {
-  const refPath = resolveReferenceVectorsPath();
-  if (!refPath) return [];
-
-  const allMatches: ReferenceVectorRecord[] = await fs.readJson(refPath);
+  const allMatches = await loadAllReferenceVectors();
+  if (allMatches.length === 0) return [];
   const targetBracket = normalizeBracket(bracket);
   return allMatches.filter((m) => m.spec === spec && normalizeBracket(m.bracket) === targetBracket);
 }
@@ -105,10 +117,8 @@ export async function findNearestProMatchesLocal(
   bracket: string,
   limit = 5,
 ): Promise<NearestMatchResult[]> {
-  const refPath = resolveReferenceVectorsPath();
-  if (!refPath) return [];
-
-  const allMatches: ReferenceVectorRecord[] = await fs.readJson(refPath);
+  const allMatches = await loadAllReferenceVectors();
+  if (allMatches.length === 0) return [];
 
   const targetBracket = normalizeBracket(bracket);
   const results = allMatches

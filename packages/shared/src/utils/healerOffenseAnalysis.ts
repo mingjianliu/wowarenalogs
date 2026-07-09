@@ -6,6 +6,7 @@ import { ccSpellIds } from '../data/spellTags';
 import { fmtTime, isHealerSpec, specToString } from './cooldowns';
 import { DRLevel, getDRCategory, getDRLevelAtTime, IDRInfo } from './drAnalysis';
 import { IEnemyCDTimeline } from './enemyCDs';
+import { computeEnemyInterruptAvailability } from './enemyInterrupts';
 import { getHpPercentAtTime, getTrinketStateAtTime } from './killWindowTargetSelection';
 import { IOffensiveWindow } from './offensiveWindows';
 
@@ -15,9 +16,13 @@ const SPELLS = spellsData as Record<string, SpellEntry>;
 /** Local feature flags, mirroring DISPEL_FEATURE_FLAGS pattern. */
 export const HEALER_OFFENSE_FLAGS = {
   V1_SLACK_GATED: true,
+  /** F193 V2: contested-trade facts (team 70–85% band) — EV framing, not verdicts. */
+  V2_CONTESTED_TRADES: true,
 };
 
 export const SLACK_TEAM_HP_THRESHOLD = 85;
+export const CONTESTED_TEAM_HP_MIN = 70;
+export const MAX_CONTESTED_FACTS = 2;
 export const MIN_SLACK_SECONDS = 4;
 export const IDLE_PRIORITY_SECONDS = 6;
 export const MOBILITY_EXCLUSION_SECONDS = 3;
@@ -38,6 +43,11 @@ export interface ISlackSegment {
   ownerKickCasts: number;
   /** True when the owner produced zero offensive output of any kind. */
   idle: boolean;
+}
+
+export interface IContestedSegment extends ISlackSegment {
+  ownerHealing: number;
+  teamMinHpPct: number;
 }
 
 type CCInterval = ReadonlyArray<{ atSeconds: number; durationSeconds: number }>;
@@ -133,6 +143,178 @@ export function computeSlackSegments(
     });
 
   return { advancedLoggingAvailable: true, segments };
+}
+
+export function computeContestedSegments(
+  combat: { startTime: number; endTime: number },
+  owner: ICombatUnit,
+  friends: ICombatUnit[],
+  enemies: ICombatUnit[],
+  enemyCDTimeline: IEnemyCDTimeline,
+  ownerCCInstances: CCInterval,
+  ownerPurgeTimesSeconds: ReadonlyArray<number>,
+): { advancedLoggingAvailable: boolean; segments: IContestedSegment[] } {
+  const matchStartMs = combat.startTime;
+  const durationSeconds = Math.floor((combat.endTime - combat.startTime) / 1000);
+
+  const advancedLoggingAvailable = friends.every((f) => f.advancedActions.length > 0);
+  if (!advancedLoggingAvailable) return { advancedLoggingAvailable: false, segments: [] };
+
+  const mobilityTimes = ownerMobilityCastTimes(owner, matchStartMs);
+
+  const isContestedSecond = (t: number): boolean => {
+    let hasOneUnderSlackThreshold = false;
+    for (const f of friends) {
+      const hp = getHpPercentAtTime(f, t, matchStartMs);
+      if (hp === null || hp < CONTESTED_TEAM_HP_MIN) return false;
+      if (hp < SLACK_TEAM_HP_THRESHOLD) {
+        hasOneUnderSlackThreshold = true;
+      }
+    }
+    if (!hasOneUnderSlackThreshold) return false;
+    if (isEnemyCDActiveAt(enemyCDTimeline, t)) return false;
+    if (isOwnerCCdAt(ownerCCInstances, t)) return false;
+    if (mobilityTimes.some((m) => t >= m && t < m + MOBILITY_EXCLUSION_SECONDS)) return false;
+    return true;
+  };
+
+  const raw: Array<{ fromSeconds: number; toSeconds: number }> = [];
+  let segStart: number | null = null;
+  for (let t = 0; t <= durationSeconds; t++) {
+    if (isContestedSecond(t)) {
+      if (segStart === null) segStart = t;
+    } else if (segStart !== null) {
+      raw.push({ fromSeconds: segStart, toSeconds: t });
+      segStart = null;
+    }
+  }
+  if (segStart !== null) raw.push({ fromSeconds: segStart, toSeconds: durationSeconds });
+
+  const enemyIds = new Set(enemies.map((e) => e.id));
+
+  const segments: IContestedSegment[] = raw
+    .filter((s) => s.toSeconds - s.fromSeconds >= MIN_SLACK_SECONDS)
+    .map((s) => {
+      const inSeg = (ms: number) => {
+        const t = (ms - matchStartMs) / 1000;
+        return t >= s.fromSeconds && t < s.toSeconds;
+      };
+      const ownerDamage = owner.damageOut
+        .filter((d) => inSeg(d.logLine.timestamp) && enemyIds.has(d.destUnitId))
+        .reduce((sum, d) => sum + Math.max(0, d.effectiveAmount), 0);
+      const casts = owner.spellCastEvents.filter(
+        (e) => e.logLine.event === LogEvent.SPELL_CAST_SUCCESS && inSeg(e.logLine.timestamp) && e.spellId,
+      );
+      const ownerCCCasts = casts.filter((e) => ccSpellIds.has(e.spellId as string)).length;
+      const ownerKickCasts = casts.filter((e) => SPELLS[e.spellId as string]?.type === 'interrupts').length;
+      const ownerPurgeCasts = ownerPurgeTimesSeconds.filter((t) => t >= s.fromSeconds && t < s.toSeconds).length;
+
+      const idle = ownerDamage === 0 && ownerCCCasts === 0 && ownerKickCasts === 0 && ownerPurgeCasts === 0;
+
+      const ownerHealing = (owner.healOut ?? [])
+        .filter((h) => inSeg(h.logLine.timestamp))
+        .reduce((sum, h) => sum + Math.max(0, h.effectiveAmount), 0);
+
+      let teamMinHpPct = 100;
+      let foundHp = false;
+      for (const f of friends) {
+        // Segment is [from, to): toSeconds is the first second that FAILED the band
+        // predicate — sampling it would report a min below the 70% floor.
+        for (let t = s.fromSeconds; t < s.toSeconds; t++) {
+          const hp = getHpPercentAtTime(f, t, matchStartMs);
+          if (hp !== null) {
+            if (!foundHp || hp < teamMinHpPct) {
+              teamMinHpPct = hp;
+              foundHp = true;
+            }
+          }
+        }
+      }
+
+      return {
+        fromSeconds: s.fromSeconds,
+        toSeconds: s.toSeconds,
+        durationSeconds: s.toSeconds - s.fromSeconds,
+        ownerDamage,
+        ownerCCCasts,
+        ownerPurgeCasts,
+        ownerKickCasts,
+        idle,
+        ownerHealing,
+        teamMinHpPct: Math.round(foundHp ? teamMinHpPct : 100),
+      };
+    });
+
+  return { advancedLoggingAvailable: true, segments };
+}
+
+export interface IContestedTradeFact {
+  fromSeconds: number;
+  toSeconds: number;
+  durationSeconds: number;
+  teamMinHpPct: number;
+  ccSpellName: string;
+  enemyHealerName: string;
+  enemyHealerSpec: string;
+  /** 'on CD' | 'available' | 'unknown' at segment start */
+  enemyHealerTrinket: string;
+  ownerHealing: number;
+  ownerCCCasts: number;
+  /** Enemy interrupts ready (cdRemainingSeconds === 0) at segment start — cast-risk context. */
+  enemyInterruptsReady: number;
+}
+
+export function computeContestedTradeFacts(
+  combat: { startTime: number; endTime: number },
+  owner: ICombatUnit,
+  enemies: ICombatUnit[],
+  contestedSegments: IContestedSegment[],
+  offensiveWindows: IOffensiveWindow[],
+  enemyHealerCCInstances: CCWithDR,
+): IContestedTradeFact[] {
+  const matchStartMs = combat.startTime;
+  const enemyHealer = enemies.find((e) => isHealerSpec(e.spec));
+  if (!enemyHealer) return [];
+  const ccSpells = collectOwnerCCSpells(owner, matchStartMs);
+  if (ccSpells.length === 0) return [];
+
+  const overlapsKillWindow = (seg: IContestedSegment) =>
+    offensiveWindows.some((w) => w.fromSeconds < seg.toSeconds && seg.fromSeconds < w.toSeconds);
+
+  const facts: IContestedTradeFact[] = [];
+  for (const seg of contestedSegments) {
+    if (overlapsKillWindow(seg)) continue;
+
+    const readyAtFullDR = ccSpells.find(
+      (s) =>
+        isCCReadyAt(s, seg.fromSeconds) &&
+        getDRLevelAtTime(enemyHealerCCInstances, getDRCategory(s.spellId), seg.fromSeconds) === 'Full',
+    );
+    if (!readyAtFullDR) continue;
+
+    const trinketAvailable = getTrinketStateAtTime(enemyHealer, seg.fromSeconds, matchStartMs, true);
+    const enemyHealerTrinket =
+      trinketAvailable === true ? 'available' : trinketAvailable === false ? 'on CD' : 'unknown';
+
+    const interrupts = computeEnemyInterruptAvailability(enemies, matchStartMs + seg.fromSeconds * 1000);
+    const enemyInterruptsReady = interrupts.filter((i) => i.cdRemainingSeconds === 0).length;
+
+    facts.push({
+      fromSeconds: seg.fromSeconds,
+      toSeconds: seg.toSeconds,
+      durationSeconds: seg.durationSeconds,
+      teamMinHpPct: seg.teamMinHpPct,
+      ccSpellName: readyAtFullDR.spellName,
+      enemyHealerName: enemyHealer.name,
+      enemyHealerSpec: specToString(enemyHealer.spec),
+      enemyHealerTrinket,
+      ownerHealing: seg.ownerHealing,
+      ownerCCCasts: seg.ownerCCCasts,
+      enemyInterruptsReady,
+    });
+  }
+
+  return facts.sort((a, b) => b.durationSeconds - a.durationSeconds).slice(0, MAX_CONTESTED_FACTS);
 }
 
 // ── Task 2: Kill-window contribution analysis ──────────────────────────────
@@ -325,6 +507,7 @@ export interface IHealerOffenseSummary {
   slackSegments: ISlackSegment[];
   windowContributions: IWindowContribution[];
   windowCreationFacts: IWindowCreationFact[];
+  contestedTradeFacts: IContestedTradeFact[];
 }
 
 export function buildHealerOffenseSummary(
@@ -348,8 +531,34 @@ export function buildHealerOffenseSummary(
     ownerPurgeTimesSeconds,
   );
   if (!advancedLoggingAvailable) {
-    return { advancedLoggingAvailable: false, slackSegments: [], windowContributions: [], windowCreationFacts: [] };
+    return {
+      advancedLoggingAvailable: false,
+      slackSegments: [],
+      windowContributions: [],
+      windowCreationFacts: [],
+      contestedTradeFacts: [],
+    };
   }
+
+  const contestedTradeFacts = HEALER_OFFENSE_FLAGS.V2_CONTESTED_TRADES
+    ? computeContestedTradeFacts(
+        combat,
+        owner,
+        enemies,
+        computeContestedSegments(
+          combat,
+          owner,
+          friends,
+          enemies,
+          enemyCDTimeline,
+          ownerCCInstances,
+          ownerPurgeTimesSeconds,
+        ).segments,
+        offensiveWindows,
+        enemyHealerCCInstances,
+      )
+    : [];
+
   return {
     advancedLoggingAvailable: true,
     slackSegments: segments,
@@ -370,13 +579,20 @@ export function buildHealerOffenseSummary(
       offensiveWindows,
       enemyHealerCCInstances,
     ),
+    contestedTradeFacts,
   };
 }
 
 export function formatHealerOffenseForContext(summary: IHealerOffenseSummary): string[] {
   if (!summary.advancedLoggingAvailable) return [];
-  const { slackSegments, windowContributions, windowCreationFacts } = summary;
-  if (slackSegments.length === 0 && windowContributions.length === 0 && windowCreationFacts.length === 0) return [];
+  const { slackSegments, windowContributions, windowCreationFacts, contestedTradeFacts } = summary;
+  if (
+    slackSegments.length === 0 &&
+    windowContributions.length === 0 &&
+    windowCreationFacts.length === 0 &&
+    contestedTradeFacts.length === 0
+  )
+    return [];
 
   const lines: string[] = [];
   lines.push('HEALER OFFENSE (slack-gated facts — team ≥85% HP, no enemy offensive CDs active, you un-CC-d):');
@@ -450,6 +666,12 @@ export function formatHealerOffenseForContext(summary: IHealerOffenseSummary): s
     const trinket = f.enemyHealerTrinketOnCD === true ? 'trinket on CD' : 'trinket state unknown (never observed)';
     lines.push(
       `  [OPPORTUNITY] ${fmtTime(f.atSeconds)} (slack ${f.slackDurationSeconds}s): ${f.ccSpellName} ready; enemy healer ${f.enemyHealerName} DR Full, ${trinket} (opportunity, not a verdict).`,
+    );
+  }
+
+  for (const f of summary.contestedTradeFacts) {
+    lines.push(
+      `  [CONTESTED] ${fmtTime(f.fromSeconds)}–${fmtTime(f.toSeconds)} (${f.durationSeconds}s, team min HP ${f.teamMinHpPct}%): ${f.ccSpellName} ready on enemy healer ${f.enemyHealerName} (DR Full, trinket ${f.enemyHealerTrinket}); you healed ${(f.ownerHealing / 1000).toFixed(0)}k, cast ${f.ownerCCCasts} CC; enemy interrupts ready: ${f.enemyInterruptsReady} — contested trade: a CC here competed with continued healing AND carried cast risk (EV question, not a verdict).`,
     );
   }
 
