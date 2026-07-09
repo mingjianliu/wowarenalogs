@@ -22,6 +22,10 @@ export const MIN_SLACK_SECONDS = 4;
 export const IDLE_PRIORITY_SECONDS = 6;
 export const MOBILITY_EXCLUSION_SECONDS = 3;
 export const MAX_WINDOW_CREATION_FACTS = 2;
+// [KILL WINDOW] lines were uncapped (corpus avg 3.34/block, max 11 — up to ~300 tok on tail
+// matches; 2026-07-09 week-eval tokens.md #6). Above the cap, the windows with the most owner
+// free time are kept (highest coaching leverage) and the rest are rolled up into one line.
+export const MAX_KILL_WINDOW_LINES = 6;
 
 export interface ISlackSegment {
   fromSeconds: number;
@@ -400,7 +404,18 @@ export function formatHealerOffenseForContext(summary: IHealerOffenseSummary): s
     }
   }
 
-  for (const w of windowContributions) {
+  // Cap the per-window lines; keep the highest-free-time windows (printed chronologically) and
+  // roll the remainder up so aggregate sufficiency is preserved.
+  let shownWindows = windowContributions;
+  let omittedWindows: IWindowContribution[] = [];
+  if (windowContributions.length > MAX_KILL_WINDOW_LINES) {
+    const byFreeDesc = [...windowContributions].sort((a, b) => b.ownerFreeSeconds - a.ownerFreeSeconds);
+    const keep = new Set(byFreeDesc.slice(0, MAX_KILL_WINDOW_LINES));
+    shownWindows = windowContributions.filter((w) => keep.has(w));
+    omittedWindows = windowContributions.filter((w) => !keep.has(w));
+  }
+
+  for (const w of shownWindows) {
     const ready =
       w.ownerCCReady.length > 0
         ? singleOwnerCC
@@ -420,6 +435,14 @@ export function formatHealerOffenseForContext(summary: IHealerOffenseSummary): s
     const teamHp = w.teamMinHpPct !== null ? `, team min HP ${Math.round(w.teamMinHpPct)}%` : '';
     lines.push(
       `  [KILL WINDOW] ${fmtTime(w.fromSeconds)}–${fmtTime(w.toSeconds)} on ${w.targetSpec} (${w.targetName}): ${ready}; ${cast}; ${dmg}; ${free}${teamHp}.`,
+    );
+  }
+
+  if (omittedWindows.length > 0) {
+    const omDmg = omittedWindows.reduce((s, w) => s + w.ownerDamageInWindow, 0);
+    const omCC = omittedWindows.filter((w) => w.ownerCastCCInWindow).length;
+    lines.push(
+      `  [+${omittedWindows.length} more kill windows omitted (least free time): your damage ${(omDmg / 1000).toFixed(0)}k total, CC cast in ${omCC} of ${omittedWindows.length}]`,
     );
   }
 

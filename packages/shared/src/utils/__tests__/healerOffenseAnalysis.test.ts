@@ -480,3 +480,60 @@ describe('buildHealerOffenseSummary + formatHealerOffenseForContext', () => {
     expect(text).toContain('healing under pressure always outranks offense');
   });
 });
+
+import { MAX_KILL_WINDOW_LINES } from '../healerOffenseAnalysis';
+
+describe('formatHealerOffenseForContext KILL WINDOW cap', () => {
+  function synthWindow(i: number, freeSeconds: number) {
+    return {
+      fromSeconds: i * 20,
+      toSeconds: i * 20 + 10,
+      targetName: `Enemy${i}`,
+      targetSpec: 'Frost Death Knight',
+      enemyHealerName: 'Rsham',
+      enemyHealerSpec: 'Restoration Shaman',
+      ownerCCReady: [],
+      ownerCastCCInWindow: i % 2 === 0,
+      ownerDamageInWindow: 1000 * i,
+      ownerFreeSeconds: freeSeconds,
+      teamMinHpPct: 95,
+    };
+  }
+
+  it('caps [KILL WINDOW] lines at MAX_KILL_WINDOW_LINES, keeps most-free windows chronologically, rolls up the rest', () => {
+    const n = MAX_KILL_WINDOW_LINES + 3;
+    // Free time increases with index, so the FIRST 3 windows (least free) get omitted.
+    const summary = {
+      advancedLoggingAvailable: true,
+      slackSegments: [],
+      windowContributions: Array.from({ length: n }, (_, i) => synthWindow(i, i + 1)),
+      windowCreationFacts: [],
+    };
+    const text = formatHealerOffenseForContext(summary).join('\n');
+    const killLines = (text.match(/\[KILL WINDOW\]/g) ?? []).length;
+    expect(killLines).toBe(MAX_KILL_WINDOW_LINES);
+    // Omitted = windows 0..2 (least free); shown windows keep chronological order.
+    expect(text).toContain(`[+3 more kill windows omitted`);
+    expect(text).not.toContain('(Enemy0)');
+    expect(text).not.toContain('(Enemy1):');
+    expect(text).toContain('(Enemy3)');
+    const idxA = text.indexOf('(Enemy3)');
+    const idxB = text.indexOf(`(Enemy${n - 1})`);
+    expect(idxA).toBeGreaterThan(-1);
+    expect(idxB).toBeGreaterThan(idxA);
+    // Rollup aggregates: damage of omitted 0+1+2 = 3k, CC cast in windows 0 and 2 => 2 of 3
+    expect(text).toContain('your damage 3k total, CC cast in 2 of 3');
+  });
+
+  it('leaves blocks at or under the cap untouched', () => {
+    const summary = {
+      advancedLoggingAvailable: true,
+      slackSegments: [],
+      windowContributions: Array.from({ length: MAX_KILL_WINDOW_LINES }, (_, i) => synthWindow(i, i + 1)),
+      windowCreationFacts: [],
+    };
+    const text = formatHealerOffenseForContext(summary).join('\n');
+    expect((text.match(/\[KILL WINDOW\]/g) ?? []).length).toBe(MAX_KILL_WINDOW_LINES);
+    expect(text).not.toContain('more kill windows omitted');
+  });
+});
