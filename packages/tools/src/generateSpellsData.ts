@@ -489,6 +489,19 @@ async function main() {
     );
   }
 
+  // F143 Grounding Totem absorb feature (commit 21ee6dcd) hand-added spell 204336 to
+  // spellEffects.json because upstream data doesn't carry it under a tracked spell id.
+  // Commit de7f5765's regen silently dropped it (it isn't in `spellIds`/wago source),
+  // killing all `[CD] … Grounding Totem` lines and `[ABSORBED: …]` annotations
+  // (268 games → 0 in the 2026-07-09 week-eval corpus that caught this). Re-apply it
+  // here, after the main build, so future regens can't drop it again.
+  const HAND_CURATED_EFFECTS: Record<string, ISpellDbEntry> = {
+    '204336': { spellId: '204336', name: 'Grounding Totem', cooldownSeconds: 30, durationSeconds: 3, dispelType: null },
+  };
+  for (const [id, entry] of Object.entries(HAND_CURATED_EFFECTS)) {
+    newEffectsLibrary[id] = entry;
+  }
+
   console.log('Writing updated spell effects data');
   const outputPath = path.resolve(__dirname, '../../shared/src/data/spellEffects.json');
   await fs.writeFile(outputPath, JSON.stringify(newEffectsLibrary, null, 2));

@@ -3957,6 +3957,13 @@
     "durationSeconds": 4,
     "dispelType": "Magic"
   },
+  "204336": {
+    "spellId": "204336",
+    "name": "Grounding Totem",
+    "cooldownSeconds": 30,
+    "durationSeconds": 3,
+    "dispelType": null
+  },
   "204361": {
     "spellId": "204361",
     "name": "Bloodlust",

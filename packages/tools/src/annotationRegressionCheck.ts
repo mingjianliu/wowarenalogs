@@ -31,6 +31,9 @@ interface GoldenCase {
   combat: number; // 1-based
   label: string;
   asserts: Assertion[];
+  // Some invariants only hold in the timeline-prompt context (used by the eval corpus), not the
+  // production critical-moments context built by default. Set true to build with useTimelinePrompt.
+  timeline?: boolean;
 }
 
 // Curated golden games — each pins an invariant established by a specific fix/feature this session.
@@ -96,9 +99,28 @@ const CASES: GoldenCase[] = [
       },
     ],
   },
+  {
+    // Pins spellEffects.json 204336 (Grounding Totem). de7f5765's spellEffects.json regen silently
+    // dropped this hand-added F143 entry (21ee6dcd), killing all `[CD] … Grounding Totem` lines and
+    // `[ABSORBED: …]` annotations (268 games → 0 in the 2026-07-09 week-eval corpus). The production
+    // critical-moments context does not surface this game's Grounding Totem moment, but the
+    // timeline-prompt context (used by the eval corpus that caught the regression) does — hence
+    // `timeline: true` here.
+    log: 'WoWCombatLog-061626_002047',
+    combat: 17,
+    label: 'RSham 159 — Grounding Totem CD + absorb annotation pinned (spellEffects.json 204336)',
+    timeline: true,
+    asserts: [
+      {
+        desc: 'Grounding Totem cooldown use and its absorb are both annotated',
+        present: [/\[CD\][^\n]*Grounding Totem/, /ABSORBED/],
+        absent: [],
+      },
+    ],
+  },
 ];
 
-async function buildCtx(log: string, combat1: number): Promise<string | null> {
+async function buildCtx(log: string, combat1: number, useTimelinePrompt = false): Promise<string | null> {
   const lp = path.join(LOGS, `${log}.txt`);
   if (!(await fs.pathExists(lp))) return null;
   const combats = await parseLogText(await fs.readFile(lp, 'utf8'));
@@ -108,7 +130,7 @@ async function buildCtx(log: string, combat1: number): Promise<string | null> {
   const friends = units.filter((u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Friendly);
   const enemies = units.filter((u) => u.type === CombatUnitType.Player && u.reaction === CombatUnitReaction.Hostile);
   const owner = friends.find((u) => isHealerSpec(u.spec)) ?? friends[0];
-  return buildMatchContext(combat, friends, enemies, { owner });
+  return buildMatchContext(combat, friends, enemies, { owner, useTimelinePrompt });
 }
 
 // Run one case (build context + assert). The parser caches WoW-build state module-level across
@@ -116,7 +138,7 @@ async function buildCtx(log: string, combat1: number): Promise<string | null> {
 // log gets silently degraded. The orchestrator below spawns one child per case.
 async function runOneCase(idx: number): Promise<number> {
   const c = CASES[idx];
-  const ctx = await buildCtx(c.log, c.combat);
+  const ctx = await buildCtx(c.log, c.combat, c.timeline ?? false);
   if (!ctx) {
     if (process.env.CI === 'true' || process.env.STRICT === 'true') {
       console.error(`FAIL  ${c.label} (Required golden log missing in strict/CI environment)`);
@@ -149,18 +171,42 @@ async function main() {
   }
   // Orchestrator: one isolated child process per case (avoids cross-parse build-state contamination).
   let failures = 0;
+  let skipped = 0;
   for (let i = 0; i < CASES.length; i++) {
+    let out = '';
     try {
-      const out = execFileSync('npx', ['ts-node', '--files', __filename, `--case=${i}`], { encoding: 'utf8' });
+      out = execFileSync('npx', ['ts-node', '--files', __filename, `--case=${i}`], { encoding: 'utf8' });
       process.stdout.write(out);
     } catch (err: unknown) {
       const e = err as { stdout?: string; stderr?: string };
-      if (e.stdout) process.stdout.write(e.stdout);
+      if (e.stdout) {
+        out = e.stdout;
+        process.stdout.write(e.stdout);
+      }
       if (e.stderr) process.stderr.write(e.stderr);
       failures++;
     }
+    if (out.split('\n').some((line) => line.startsWith('SKIP'))) {
+      skipped++;
+    }
   }
-  console.log(`\n${failures === 0 ? '✓ ALL GREEN' : `✗ ${failures} CASE(S) WITH FAILURES`}`);
+
+  // A run where every case was skipped (golden logs missing) exits 0 above and looks identical to a
+  // real pass — this happened once in a worktree during the 2026-07-09 week-eval and was
+  // indistinguishable from a genuine green run. Fail loudly instead of silently vacuous-passing.
+  if (skipped === CASES.length) {
+    console.log(`\n✗ VACUOUS PASS — 0 of ${CASES.length} cases ran (golden logs missing)`);
+    process.exit(1);
+  }
+
+  const ran = CASES.length - skipped;
+  console.log(
+    `\n${
+      failures === 0
+        ? `✓ ALL GREEN (${ran} ran, ${skipped} skipped)`
+        : `✗ ${failures} CASE(S) WITH FAILURES (${ran} ran, ${skipped} skipped)`
+    }`,
+  );
   process.exit(failures === 0 ? 0 : 1);
 }
 
