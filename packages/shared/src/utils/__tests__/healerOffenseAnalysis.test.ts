@@ -475,6 +475,8 @@ describe('buildHealerOffenseSummary + formatHealerOffenseForContext', () => {
     expect(text).toContain('you cast no CC');
     expect(text).toContain('[OPPORTUNITY]');
     expect(text).toContain('opportunity, not a verdict');
-    expect(text).toContain('facts, not conclusions');
+    // Note trimmed 2026-07-09 (week-eval tokens.md #4): redundant guidance lives in the system
+    // prompt; only the load-bearing "outranks" rule remains in the block.
+    expect(text).toContain('healing under pressure always outranks offense');
   });
 });

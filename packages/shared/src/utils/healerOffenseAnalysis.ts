@@ -377,6 +377,15 @@ export function formatHealerOffenseForContext(summary: IHealerOffenseSummary): s
   const lines: string[] = [];
   lines.push('HEALER OFFENSE (slack-gated facts — team ≥85% HP, no enemy offensive CDs active, you un-CC-d):');
 
+  // Hoist the owner's static CC spell set once instead of repeating the name on every
+  // [KILL WINDOW] line (~25 tok/match, 2026-07-09 week-eval tokens.md #5). Readiness and
+  // enemy-healer DR stay per-window below — only the name is static.
+  const ownerCCSpellNames = [...new Set(windowContributions.flatMap((w) => w.ownerCCReady.map((c) => c.spellName)))];
+  const singleOwnerCC = ownerCCSpellNames.length === 1 ? ownerCCSpellNames[0] : null;
+  if (singleOwnerCC) {
+    lines.push(`  Your CC: ${singleOwnerCC}.`);
+  }
+
   const totalSlack = slackSegments.reduce((s, seg) => s + seg.durationSeconds, 0);
   const idleSegs = slackSegments.filter((s) => s.idle && s.durationSeconds >= IDLE_PRIORITY_SECONDS);
   const idleSlack = slackSegments.filter((s) => s.idle).reduce((s, seg) => s + seg.durationSeconds, 0);
@@ -394,10 +403,17 @@ export function formatHealerOffenseForContext(summary: IHealerOffenseSummary): s
   for (const w of windowContributions) {
     const ready =
       w.ownerCCReady.length > 0
-        ? `your CC ready: ${w.ownerCCReady
-            .map((c) => `${c.spellName}${c.enemyHealerDR ? ` (enemy healer DR: ${c.enemyHealerDR})` : ''}`)
-            .join(', ')}`
-        : 'no owner CC observed this match';
+        ? singleOwnerCC
+          ? // Name hoisted to the "Your CC:" header line above; keep only the per-window state.
+            `CC ready${w.ownerCCReady[0].enemyHealerDR ? ` (enemy healer DR: ${w.ownerCCReady[0].enemyHealerDR})` : ''}`
+          : `your CC ready: ${w.ownerCCReady
+              .map((c) => `${c.spellName}${c.enemyHealerDR ? ` (enemy healer DR: ${c.enemyHealerDR})` : ''}`)
+              .join(', ')}`
+        : // Pre-existing wording fix: an empty ready-list can also mean "observed CC is on cooldown
+          // at window start" — only claim "not observed" when no CC was seen anywhere in the match.
+          ownerCCSpellNames.length > 0
+          ? 'your CC on cooldown'
+          : 'no owner CC observed this match';
     const cast = w.ownerCastCCInWindow ? 'you cast CC in this window' : 'you cast no CC';
     const dmg = `your damage ${(w.ownerDamageInWindow / 1000).toFixed(0)}k`;
     const free = `free ${Math.round(w.ownerFreeSeconds)}s of ${Math.round(w.toSeconds - w.fromSeconds)}s`;
@@ -414,8 +430,9 @@ export function formatHealerOffenseForContext(summary: IHealerOffenseSummary): s
     );
   }
 
-  lines.push(
-    '  Note: these lines are facts, not conclusions — cross-check the timeline (drinking, kiting, repositioning are valid uses of slack); healing under pressure always outranks offense.',
-  );
+  // The "facts, not conclusions / cross-check the timeline / valid uses of slack" guidance is
+  // already in the system prompt's healer-offense rules — repeating it here cost ~35 tok/match
+  // (2026-07-09 week-eval tokens.md #4). "Outranks" is NOT in the system prompt, so it stays.
+  lines.push('  Note: healing under pressure always outranks offense.');
   return lines;
 }
