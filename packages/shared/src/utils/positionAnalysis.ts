@@ -62,10 +62,10 @@ export interface IPositionEvent {
   /** STAYED_IN only: whether a defensive CD was off cooldown at window start.
    *  undefined when no defensive CDs are tracked for this spec. */
   ownerDefensiveAvailable?: boolean;
-  /** STAYED_IN only: whether the burst's most-pressured target was the owner.
+  /** STAYED_IN / KITED: whether the burst's most-pressured target was the owner.
    *  undefined when the window has no pressure-target attribution. */
   burstTargetsOwner?: boolean;
-  /** STAYED_IN only: name of the burst's most-pressured target when it isn't the owner */
+  /** STAYED_IN / KITED: name of the burst's most-pressured target when it isn't the owner */
   burstTargetName?: string;
   /** STAYED_IN only: owner HP% at window start / minimum across the window — the
    *  OUTCOME that turns "stayed in" from a hedge into a fact (near-death vs no cost). */
@@ -222,6 +222,8 @@ export function computeOwnerPositionEvents(params: {
     }
 
     const delta = end.distanceYards - start.distanceYards;
+    const targetName = w.mostPressuredTarget?.unitName;
+    const burstTargetsOwner = targetName !== undefined ? targetName === owner.name : undefined;
     if (maxDistance - start.distanceYards >= KITE_DELTA_YARDS) {
       events.push({
         type: 'KITED',
@@ -233,13 +235,13 @@ export function computeOwnerPositionEvents(params: {
         nearestEnemyName: start.enemyName,
         dangerLabel: w.dangerLabel,
         dampeningPct: w.dampeningPct,
+        burstTargetsOwner,
+        burstTargetName: burstTargetsOwner === false ? targetName : undefined,
       });
     } else if (delta < STAY_DELTA_YARDS) {
       // Who was the burst actually aimed at? A melee DPS staying on their target
       // while the burst hits a teammate is normal offense, not a mistake — suppress.
       // Healers/ranged near an enemy during any burst remain worth surfacing, annotated.
-      const targetName = w.mostPressuredTarget?.unitName;
-      const burstTargetsOwner = targetName !== undefined ? targetName === owner.name : undefined;
       if (ownerIsMelee && !isHealer && burstTargetsOwner === false) continue;
 
       // The OUTCOME: did staying in actually cost HP? This is what turns STAYED_IN
@@ -534,8 +536,14 @@ export function formatPositionEventsForContext(events: IPositionEvent[]): string
   if (kited.length > 0) {
     lines.push('  KITED during enemy burst (opened distance):');
     for (const e of kited) {
+      const targetStr =
+        e.burstTargetsOwner === true
+          ? ' — you were the burst target'
+          : e.burstTargetName
+            ? ` — burst targeted ${e.burstTargetName}, who may have needed heals/peels`
+            : '';
       lines.push(
-        `    ${fmtTime(e.atSeconds)} [${e.dangerLabel} burst] opened ${e.startDistanceYards}→${e.endDistanceYards}yd from ${e.nearestEnemyName}`,
+        `    ${fmtTime(e.atSeconds)} [${e.dangerLabel} burst] opened ${e.startDistanceYards}→${e.endDistanceYards}yd from ${e.nearestEnemyName}${targetStr}`,
       );
     }
   }

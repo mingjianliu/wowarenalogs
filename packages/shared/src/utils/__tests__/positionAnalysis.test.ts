@@ -97,6 +97,109 @@ describe('computeOwnerPositionEvents — burst-window engagement', () => {
     expect(events.filter((e) => e.type === 'STAYED_IN')).toHaveLength(0);
   });
 
+  it('emits KITED with burstTargetsOwner === true and correct formatting when owner is the burst target', () => {
+    const owner = makeUnit('o1', {
+      name: 'o1',
+      spec: CombatUnitSpec.Priest_Holy,
+      class: CombatUnitClass.Priest,
+      advancedActions: [
+        makeAdvancedAction(T0, 0, 0),
+        makeAdvancedAction(T0 + 10_000, 0, 0),
+        makeAdvancedAction(T0 + 20_000, -25, 0),
+        makeAdvancedAction(T0 + 120_000, -25, 0),
+      ],
+    });
+    owner.advancedActions.forEach((a) => ((a as any).advancedActorId = 'o1'));
+    const enemy = makeStaticUnit('e1', 5, 0, { spec: CombatUnitSpec.Warrior_Arms });
+
+    const events = computeOwnerPositionEvents({
+      owner: owner as any,
+      enemies: [enemy] as any,
+      combat: makeCombat(),
+      burstWindows: [makeBurstWindow(10, 20, 'High', 'o1')],
+      ownerCooldowns: [],
+      isHealer: true,
+      ownerIsMelee: false,
+    });
+
+    const kited = events.filter((e) => e.type === 'KITED');
+    expect(kited).toHaveLength(1);
+    expect(kited[0].burstTargetsOwner).toBe(true);
+    expect(kited[0].burstTargetName).toBeUndefined();
+
+    const text = formatPositionEventsForContext(events).join('\n');
+    expect(text).toContain('you were the burst target');
+  });
+
+  it('emits KITED with burstTargetsOwner === false, burstTargetName, and correct formatting when teammate is the target', () => {
+    const owner = makeUnit('o1', {
+      name: 'o1',
+      spec: CombatUnitSpec.Priest_Holy,
+      class: CombatUnitClass.Priest,
+      advancedActions: [
+        makeAdvancedAction(T0, 0, 0),
+        makeAdvancedAction(T0 + 10_000, 0, 0),
+        makeAdvancedAction(T0 + 20_000, -25, 0),
+        makeAdvancedAction(T0 + 120_000, -25, 0),
+      ],
+    });
+    owner.advancedActions.forEach((a) => ((a as any).advancedActorId = 'o1'));
+    const enemy = makeStaticUnit('e1', 5, 0, { spec: CombatUnitSpec.Warrior_Arms });
+
+    const events = computeOwnerPositionEvents({
+      owner: owner as any,
+      enemies: [enemy] as any,
+      combat: makeCombat(),
+      burstWindows: [makeBurstWindow(10, 20, 'High', 'FriendlyMage')],
+      ownerCooldowns: [],
+      isHealer: true,
+      ownerIsMelee: false,
+    });
+
+    const kited = events.filter((e) => e.type === 'KITED');
+    expect(kited).toHaveLength(1);
+    expect(kited[0].burstTargetsOwner).toBe(false);
+    expect(kited[0].burstTargetName).toBe('FriendlyMage');
+
+    const text = formatPositionEventsForContext(events).join('\n');
+    expect(text).toContain('burst targeted FriendlyMage, who may have needed heals/peels');
+  });
+
+  it('emits KITED with both target fields undefined and unmodified formatting when no target is present', () => {
+    const owner = makeUnit('o1', {
+      name: 'o1',
+      spec: CombatUnitSpec.Priest_Holy,
+      class: CombatUnitClass.Priest,
+      advancedActions: [
+        makeAdvancedAction(T0, 0, 0),
+        makeAdvancedAction(T0 + 10_000, 0, 0),
+        makeAdvancedAction(T0 + 20_000, -25, 0),
+        makeAdvancedAction(T0 + 120_000, -25, 0),
+      ],
+    });
+    owner.advancedActions.forEach((a) => ((a as any).advancedActorId = 'o1'));
+    const enemy = makeStaticUnit('e1', 5, 0, { spec: CombatUnitSpec.Warrior_Arms });
+
+    const events = computeOwnerPositionEvents({
+      owner: owner as any,
+      enemies: [enemy] as any,
+      combat: makeCombat(),
+      burstWindows: [makeBurstWindow(10, 20, 'High')],
+      ownerCooldowns: [],
+      isHealer: true,
+      ownerIsMelee: false,
+    });
+
+    const kited = events.filter((e) => e.type === 'KITED');
+    expect(kited).toHaveLength(1);
+    expect(kited[0].burstTargetsOwner).toBeUndefined();
+    expect(kited[0].burstTargetName).toBeUndefined();
+
+    const text = formatPositionEventsForContext(events).join('\n');
+    expect(text).not.toContain('burst targeted');
+    expect(text).not.toContain('burst target');
+  });
+
   it('skips the window when the owner was CC-locked for most of it (cannot kite)', () => {
     const owner = makeStaticUnit('o1', 0, 0, { spec: CombatUnitSpec.Priest_Holy, class: CombatUnitClass.Priest });
     const enemy = makeStaticUnit('e1', 5, 0, { spec: CombatUnitSpec.Warrior_Arms });
