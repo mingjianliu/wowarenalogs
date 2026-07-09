@@ -1,8 +1,13 @@
-import { CombatUnitReaction, CombatUnitSpec, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
+import { CombatUnitClass, CombatUnitReaction, CombatUnitSpec, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
 import { specToString } from '../cooldowns';
 import { IEnemyCDTimeline } from '../enemyCDs';
-import { computeSlackSegments } from '../healerOffenseAnalysis';
+import {
+  buildHealerOffenseSummary,
+  computeSlackSegments,
+  formatHealerOffenseForContext,
+  HEALER_OFFENSE_FLAGS,
+} from '../healerOffenseAnalysis';
 import { makeAdvancedAction, makeSpellCastEvent, makeUnit } from './testHelpers';
 
 const T0 = 1_000_000; // match start ms
@@ -415,7 +420,6 @@ describe('computeWindowCreationFacts', () => {
 });
 
 // Task 4: Summary entry point + context formatter
-import { buildHealerOffenseSummary, formatHealerOffenseForContext } from '../healerOffenseAnalysis';
 
 describe('buildHealerOffenseSummary + formatHealerOffenseForContext', () => {
   it('returns an empty format block when advanced logging is missing', () => {
@@ -476,5 +480,172 @@ describe('buildHealerOffenseSummary + formatHealerOffenseForContext', () => {
     expect(text).toContain('[OPPORTUNITY]');
     expect(text).toContain('opportunity, not a verdict');
     expect(text).toContain('facts, not conclusions');
+  });
+});
+
+describe('F193 V2 — contested trade facts', () => {
+  const enemyHealer = makeUnit('enemy-h', {
+    reaction: CombatUnitReaction.Hostile,
+    spec: CombatUnitSpec.Shaman_Restoration,
+    name: 'Rsham',
+  });
+
+  it('1. emits fact and contains [CONTESTED] and EV framing when team is at 75% HP and CC is ready at Full DR', () => {
+    const partialHpActions = [];
+    for (let s = 0; s <= 120; s += 5) {
+      partialHpActions.push(makeAdvancedAction(T0 + s * 1000, 0, 0, 500_000, 375_000));
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mate = makeFriend('mate', { advancedActions: partialHpActions as any[] });
+    const owner = makeFriend('owner', {
+      spellCastEvents: [makeSpellCastEvent('8122', T0 + 100_000, 'enemy-h', 'Rsham', 'owner', 'Owner')],
+    });
+    // Add an enemy with an interrupt to test enemyInterruptsReady count
+    const enemyWarrior = makeUnit('enemy-w', {
+      reaction: CombatUnitReaction.Hostile,
+      class: CombatUnitClass.Warrior,
+      name: 'Ewar',
+    });
+
+    const summary = buildHealerOffenseSummary(
+      combat,
+      owner,
+      [owner, mate],
+      [enemyHealer, enemyWarrior],
+      [],
+      emptyEnemyTimeline(),
+      [],
+      [],
+      [],
+    );
+
+    expect(summary.advancedLoggingAvailable).toBe(true);
+    expect(summary.contestedTradeFacts.length).toBe(1);
+    const fact = summary.contestedTradeFacts[0];
+    expect(fact.teamMinHpPct).toBe(75);
+    expect(fact.ccSpellName).toBe('8122');
+    expect(fact.enemyHealerTrinket).toBe('unknown'); // trinket never used/observed
+    expect(fact.enemyInterruptsReady).toBe(1); // Warrior interrupt is ready
+
+    const lines = formatHealerOffenseForContext(summary);
+    const text = lines.join('\n');
+    expect(text).toContain('[CONTESTED]');
+    expect(text).toContain('EV question, not a verdict');
+  });
+
+  it('2. emits no facts when team is at 60% HP (below the band)', () => {
+    const partialHpActions = [];
+    for (let s = 0; s <= 120; s += 5) {
+      partialHpActions.push(makeAdvancedAction(T0 + s * 1000, 0, 0, 500_000, 300_000));
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mate = makeFriend('mate', { advancedActions: partialHpActions as any[] });
+    const owner = makeFriend('owner', {
+      spellCastEvents: [makeSpellCastEvent('8122', T0 + 100_000, 'enemy-h', 'Rsham', 'owner', 'Owner')],
+    });
+
+    const summary = buildHealerOffenseSummary(
+      combat,
+      owner,
+      [owner, mate],
+      [enemyHealer],
+      [],
+      emptyEnemyTimeline(),
+      [],
+      [],
+      [],
+    );
+
+    expect(summary.contestedTradeFacts.length).toBe(0);
+  });
+
+  it('3. emits no facts when enemy healer DR level is not Full at segment start', () => {
+    const partialHpActions = [];
+    for (let s = 0; s <= 120; s += 5) {
+      partialHpActions.push(makeAdvancedAction(T0 + s * 1000, 0, 0, 500_000, 375_000));
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mate = makeFriend('mate', { advancedActions: partialHpActions as any[] });
+    const owner = makeFriend('owner', {
+      spellCastEvents: [makeSpellCastEvent('8122', T0 + 100_000, 'enemy-h', 'Rsham', 'owner', 'Owner')],
+    });
+
+    // Enemy healer has been CC'd recently, so DR is not Full (e.g. 50%)
+    const enemyHealerCCInstances = [
+      { atSeconds: -2, durationSeconds: 6, drInfo: { category: 'Disorient', level: 'Full', sequenceIndex: 0 } },
+    ];
+
+    const summary = buildHealerOffenseSummary(
+      combat,
+      owner,
+      [owner, mate],
+      [enemyHealer],
+      [],
+      emptyEnemyTimeline(),
+      [],
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      enemyHealerCCInstances as any[],
+      [],
+    );
+
+    expect(summary.contestedTradeFacts.length).toBe(0);
+  });
+
+  it('4. emits no contested facts or [CONTESTED] formatted line when flag is disabled', () => {
+    const partialHpActions = [];
+    for (let s = 0; s <= 120; s += 5) {
+      partialHpActions.push(makeAdvancedAction(T0 + s * 1000, 0, 0, 500_000, 375_000));
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mate = makeFriend('mate', { advancedActions: partialHpActions as any[] });
+    const owner = makeFriend('owner', {
+      spellCastEvents: [makeSpellCastEvent('8122', T0 + 100_000, 'enemy-h', 'Rsham', 'owner', 'Owner')],
+    });
+
+    HEALER_OFFENSE_FLAGS.V2_CONTESTED_TRADES = false;
+    try {
+      const summary = buildHealerOffenseSummary(
+        combat,
+        owner,
+        [owner, mate],
+        [enemyHealer],
+        [],
+        emptyEnemyTimeline(),
+        [],
+        [],
+        [],
+      );
+
+      expect(summary.contestedTradeFacts.length).toBe(0);
+      const lines = formatHealerOffenseForContext(summary);
+      const text = lines.join('\n');
+      expect(text).not.toContain('[CONTESTED]');
+    } finally {
+      HEALER_OFFENSE_FLAGS.V2_CONTESTED_TRADES = true;
+    }
+  });
+
+  it('5. does not eat slack when all friends are at 100% HP (contested segments empty)', () => {
+    // Both owner and mate at 100% HP (covered by slack)
+    const mate = makeFriend('mate');
+    const owner = makeFriend('owner', {
+      spellCastEvents: [makeSpellCastEvent('8122', T0 + 100_000, 'enemy-h', 'Rsham', 'owner', 'Owner')],
+    });
+
+    const summary = buildHealerOffenseSummary(
+      combat,
+      owner,
+      [owner, mate],
+      [enemyHealer],
+      [],
+      emptyEnemyTimeline(),
+      [],
+      [],
+      [],
+    );
+
+    // slackSegments should have the full-match slack segment, contestedTradeFacts should be empty
+    expect(summary.slackSegments.length).toBe(1);
+    expect(summary.contestedTradeFacts.length).toBe(0);
   });
 });
