@@ -285,7 +285,9 @@ export function formatHealerExposureForContext(exposures: IHealerBurstExposure[]
     const blocked = e.threats.filter((t) => t.losBlocked);
 
     for (const t of exposed) {
-      const drStr = t.healerDRLevel === 'Full' ? 'Full DR — full duration CC' : '50% DR — half duration CC';
+      // Duration implication ("full/half duration") is defined once in the system-prompt DR legend —
+      // repeating it on all ~9k corpus lines cost ~40 tok/match (2026-07-09 week-eval, tokens.md #2).
+      const drStr = t.healerDRLevel === 'Full' ? 'Full DR' : '50% DR';
       lines.push(`    IN LoS: ${t.enemySpec} (${t.enemyName}) — ${t.ccSpellName} [${t.ccCategory}] — ${drStr}`);
     }
 
