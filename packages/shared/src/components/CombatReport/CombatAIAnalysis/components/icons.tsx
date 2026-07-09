@@ -243,3 +243,11 @@ export function TimePill({ secs }: { secs: number }) {
     </span>
   );
 }
+
+export function PlayIcon({ size = 14, className = '' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" className={className}>
+      <path d="M4 2.5v11l9-5.5z" fill="currentColor" />
+    </svg>
+  );
+}

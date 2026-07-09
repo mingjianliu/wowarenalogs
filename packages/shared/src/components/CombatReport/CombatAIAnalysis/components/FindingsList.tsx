@@ -3,7 +3,9 @@
 
 import { ReactNode, useMemo } from 'react';
 
+import { useClientContext } from '../../../../hooks/ClientContext';
 import { fmtTime } from '../../../../utils/cooldowns';
+import { useCombatReportContext } from '../../CombatReportContext';
 import { AIFinding } from '../aiFindings';
 import { deriveEvidence, EvidenceKind, EvidenceMoment, formatEvidenceWindow } from '../findingEvidence';
 import { MatchAnalysisData } from '../matchAnalysisData';
@@ -13,6 +15,7 @@ import {
   ChevronDown,
   ClassGlyph,
   ConfidencePill,
+  PlayIcon,
   PurgeIcon,
   SeverityDot,
   ShieldIcon,
@@ -67,6 +70,8 @@ interface FindingCardProps {
 }
 
 function FindingCard({ finding: f, data, expanded, isFocused, onToggle }: FindingCardProps) {
+  const { combat, viewerIsOwner, requestVideoSeek } = useCombatReportContext();
+  const clientContext = useClientContext();
   const evidence = useMemo(() => deriveEvidence(f.atSeconds, data), [f.atSeconds, data]);
 
   return (
@@ -145,6 +150,18 @@ function FindingCard({ finding: f, data, expanded, isFocused, onToggle }: Findin
           <p className="text-[12px] text-zinc-400 leading-relaxed">{f.impact}</p>
         </div>
       </div>
+
+      {clientContext.isDesktop && viewerIsOwner && combat && (
+        <div className="px-5 pb-4 pl-9">
+          <button
+            onClick={() => requestVideoSeek(Math.max(combat.startTime, combat.startTime + (f.atSeconds - 8) * 1000))}
+            className="inline-flex items-center gap-1.5 rounded border border-zinc-800 bg-[#131316] px-2.5 py-1 text-[10.5px] uppercase tracking-[0.12em] font-semibold text-zinc-400 transition hover:border-[#f28c18]/50 hover:text-[#f9b13a]"
+          >
+            <PlayIcon size={11} />
+            Watch the play
+          </button>
+        </div>
+      )}
 
       {expanded && (
         <div className="border-t border-zinc-900 bg-[#08080a]">

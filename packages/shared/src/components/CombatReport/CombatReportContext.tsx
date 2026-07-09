@@ -1,6 +1,6 @@
 import { AtomicArenaCombat, CombatUnitReaction, CombatUnitType, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 import _ from 'lodash';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { ccSpellIds } from '../../data/spellTags';
 
@@ -22,6 +22,9 @@ interface ICombatReportContextData {
   playerCCOutput: Map<string, number>;
   playerInterruptsDone: Map<string, number>;
   playerInterruptsTaken: Map<string, number>;
+  /** F177: pending "jump the video player to this combat wall-clock ms" request (null = none). */
+  videoSeekRequest: number | null;
+  requestVideoSeek: (combatTimeMs: number | null) => void;
 }
 
 export const CombatReportContext = React.createContext<ICombatReportContextData>({
@@ -46,6 +49,10 @@ export const CombatReportContext = React.createContext<ICombatReportContextData>
   playerCCOutput: new Map<string, number>(),
   playerInterruptsDone: new Map<string, number>(),
   playerInterruptsTaken: new Map<string, number>(),
+  videoSeekRequest: null,
+  requestVideoSeek: (_t: number | null) => {
+    return;
+  },
 });
 
 interface IProps {
@@ -57,6 +64,16 @@ interface IProps {
 export const CombatReportContextProvider = (props: IProps) => {
   const [activePlayerId, setActivePlayerId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>('summary');
+  const [videoSeekRequest, setVideoSeekRequest] = useState<number | null>(null);
+  const requestVideoSeek = useCallback(
+    (combatTimeMs: number | null) => {
+      setVideoSeekRequest(combatTimeMs);
+      if (combatTimeMs !== null) {
+        setActiveTab('video');
+      }
+    },
+    [setActiveTab],
+  );
 
   const [
     players,
@@ -227,6 +244,7 @@ export const CombatReportContextProvider = (props: IProps) => {
 
   useEffect(() => {
     setActiveTab('summary');
+    setVideoSeekRequest(null);
   }, [props.combat]);
 
   return (
@@ -252,6 +270,8 @@ export const CombatReportContextProvider = (props: IProps) => {
         playerTotalSupportIn,
         combat: props.combat,
         viewerIsOwner: props.viewerIsOwner,
+        videoSeekRequest,
+        requestVideoSeek,
       }}
     >
       {props.children}
