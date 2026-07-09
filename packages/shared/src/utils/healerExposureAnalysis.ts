@@ -20,7 +20,13 @@ import { IPlayerCCTrinketSummary } from './ccTrinketAnalysis';
 import { fmtTime, specToString } from './cooldowns';
 import { DR_CATEGORY_MAP, DRLevel, getDRLevelAtTime } from './drAnalysis';
 import { IAlignedBurstWindow } from './enemyCDs';
-import { distanceBetween, distanceToNearestObstacleEdge, getUnitPositionAtTime, hasLineOfSight } from './losAnalysis';
+import {
+  distanceBetween,
+  getUnitPositionAtTime,
+  hasLineOfSight,
+  IPosition,
+  nearestLosBreakOption,
+} from './losAnalysis';
 
 // Max cast range for player CC spells in yards. Enemies beyond this distance
 // cannot land CC on the healer regardless of LoS.
@@ -100,9 +106,9 @@ export interface IHealerBurstExposure {
   /** All non-Immune threats (both exposed and pillar-blocked) */
   threats: IHealerCCThreat[];
   exposureLabel: HealerExposureLabel;
-  /** Yards from the healer to the nearest arena obstacle edge at window start.
-   *  null when the zone has no geometry. Powers "a pillar was ~Xyd away" hints. */
-  nearestPillarYards?: number | null;
+  /** F194: nearest verified LoS-breaking reposition against an exposed threat.
+   *  null when the zone is unmapped or no obstacle blocks any exposed threat. */
+  losBreak?: { repositionYards: number; blocksEnemyName: string } | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -188,6 +194,7 @@ export function analyzeHealerExposureAtBurst(
     );
 
     const threats: IHealerCCThreat[] = [];
+    const enemyPosByName = new Map<string, IPosition>();
 
     for (const enemy of enemies) {
       const enemyPos = getUnitPositionAtTime(enemy, windowMs);
@@ -201,6 +208,8 @@ export function analyzeHealerExposureAtBurst(
       const distance = distanceBetween(healerPos, enemyPos);
       if (distance > MAX_CC_RANGE_YARDS) continue;
       if (isEnemyInCC(enemy, windowMs)) continue;
+
+      enemyPosByName.set(enemy.name, enemyPos);
 
       const enemySpec = specToString(enemy.spec);
 
@@ -229,7 +238,13 @@ export function analyzeHealerExposureAtBurst(
     const exposedThreats = threats.filter((t) => !t.losBlocked);
     const exposureLabel = computeExposureLabel(trinketState, exposedThreats);
 
-    const pillarDist = distanceToNearestObstacleEdge(zoneId, healerPos);
+    // F194: directional pillar hint — only offer a spot that verifiably breaks LoS to one
+    // of the exposed threats, instead of bare nearest-obstacle geometry (threat-blind).
+    const exposedEnemyPositions = Array.from(new Set(exposedThreats.map((t) => t.enemyName)))
+      .map((name) => ({ name, pos: enemyPosByName.get(name) }))
+      .filter((e): e is { name: string; pos: IPosition } => e.pos !== undefined);
+    const losBreak =
+      exposedEnemyPositions.length > 0 ? nearestLosBreakOption(zoneId, healerPos, exposedEnemyPositions) : null;
 
     results.push({
       atSeconds: window.fromSeconds,
@@ -238,7 +253,9 @@ export function analyzeHealerExposureAtBurst(
       trinketAvailableAtSeconds,
       threats,
       exposureLabel,
-      nearestPillarYards: pillarDist === null ? null : Math.round(pillarDist * 10) / 10,
+      losBreak: losBreak
+        ? { repositionYards: Math.round(losBreak.repositionYards * 10) / 10, blocksEnemyName: losBreak.blocksEnemyName }
+        : null,
     });
   }
 
@@ -266,14 +283,13 @@ export function formatHealerExposureForContext(exposures: IHealerBurstExposure[]
     const labelStr =
       e.exposureLabel === 'Critical' ? '⚠ CRITICAL' : e.exposureLabel === 'Exposed' ? '⚠ Exposed' : e.exposureLabel;
 
-    // Actionable pillar hint: only on dangerous windows, only when a validated
-    // obstacle is close enough to actually LoS behind (~30yd of repositioning).
+    // Actionable pillar hint: only on dangerous windows, only when a verified LoS-breaking
+    // spot is within realistic repositioning distance (~30yd).
     const pillarStr =
       (e.exposureLabel === 'Critical' || e.exposureLabel === 'Exposed') &&
-      e.nearestPillarYards !== null &&
-      e.nearestPillarYards !== undefined &&
-      e.nearestPillarYards <= 30
-        ? ` — nearest pillar ~${e.nearestPillarYards}yd`
+      e.losBreak &&
+      e.losBreak.repositionYards <= 30
+        ? ` — LoS break ~${e.losBreak.repositionYards}yd away (pillar-blocks ${e.losBreak.blocksEnemyName})`
         : '';
 
     lines.push('');

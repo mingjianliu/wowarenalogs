@@ -142,6 +142,18 @@ Bidirectional trade evaluation (sheep vs heal expected value) requires only rubr
 wording changes and a relaxed slack gate; the V1 fact-line schema already carries the
 data (HP state, DR, CD readiness) needed for it. No data-layer rework anticipated.
 
+### V2 design decision (2026-07-09, agy debate ritual)
+
+agy (Gemini Pro) OPPOSED the initial V2 framing — 'one more sheep vs one more second of
+healing' reduces defensive cost to throughput and structurally mandates false criticism when
+the real cost is CAST RISK (hard-cast CC eaten by a ready kick = 5s school lockout; Rogue/Mage
+counterexample) or positional exposure. CONCEDED, design amended: each [CONTESTED] fact now
+carries enemyInterruptsReady at segment start (computeEnemyInterruptAvailability reuse), and
+the rubric weighs healing forgone + cast risk + positional exposure, explicitly instructing
+that declining a hard-cast trade into ready interrupts is usually correct. DEFENDED: the
+three-condition gate (70–85% band, CC ready at Full DR, no enemy offensive CDs) and the
+Medium-confidence cap survive as the smallest admissible set of contested moments.
+
 ## Non-goals
 
 - Team-wide / DPS-perspective offense coaching.

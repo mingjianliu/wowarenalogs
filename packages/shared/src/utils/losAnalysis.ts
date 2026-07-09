@@ -236,3 +236,67 @@ export function distanceToNearestObstacleEdge(zoneId: string, pos: IPosition): n
   }
   return best;
 }
+
+export interface ILosBreakOption {
+  /** Distance from the healer to the verified LoS-breaking spot (yards). */
+  repositionYards: number;
+  /** The exposed enemy that spot pillar-blocks. */
+  blocksEnemyName: string;
+}
+
+/** F194: nearest spot that VERIFIABLY breaks LoS to at least one of the given enemies —
+ * directional, unlike distanceToNearestObstacleEdge (bare geometry that may block nobody).
+ * Candidates are sampled just behind each obstacle relative to each enemy and validated
+ * with hasLineOfSight, so an emitted option always blocks the named enemy. */
+export function nearestLosBreakOption(
+  zoneId: string,
+  healerPos: IPosition,
+  enemies: { name: string; pos: IPosition }[],
+): ILosBreakOption | null {
+  const obstacles = arenaObstacles[zoneId];
+  if (!obstacles || obstacles.length === 0 || enemies.length === 0) return null;
+
+  const MARGIN_YARDS = 2;
+  const MAX_EXIT_WALK_YARDS = 50;
+  let best: ILosBreakOption | null = null;
+
+  for (const obs of obstacles) {
+    // Obstacle center: circle center, or polygon vertex centroid.
+    const cx = obs.type === 'circle' ? obs.cx : obs.vertices.reduce((s, v) => s + v[0], 0) / obs.vertices.length;
+    const cy = obs.type === 'circle' ? obs.cy : obs.vertices.reduce((s, v) => s + v[1], 0) / obs.vertices.length;
+
+    for (const enemy of enemies) {
+      const dx = cx - enemy.pos.x;
+      const dy = cy - enemy.pos.y;
+      const len = Math.hypot(dx, dy);
+      if (len < 0.5) continue; // enemy standing on the obstacle center — degenerate
+      const ux = dx / len;
+      const uy = dy / len;
+
+      // Exit distance from the center along (ux, uy): analytic for circles, sampled for polygons.
+      let exit: number;
+      if (obs.type === 'circle') {
+        exit = obs.r;
+      } else {
+        exit = MAX_EXIT_WALK_YARDS;
+        for (let t = 0.5; t <= MAX_EXIT_WALK_YARDS; t += 0.5) {
+          if (!pointInPolygon(cx + ux * t, cy + uy * t, obs.vertices)) {
+            exit = t;
+            break;
+          }
+        }
+      }
+
+      const candidate: IPosition = { x: cx + ux * (exit + MARGIN_YARDS), y: cy + uy * (exit + MARGIN_YARDS) };
+      // Ground truth: the spot must actually break LoS to this enemy (the near-range
+      // exemption inside hasLineOfSight correctly rejects unblockable close threats).
+      if (hasLineOfSight(zoneId, candidate, enemy.pos) !== false) continue;
+
+      const yards = distanceBetween(healerPos, candidate);
+      if (best === null || yards < best.repositionYards) {
+        best = { repositionYards: yards, blocksEnemyName: enemy.name };
+      }
+    }
+  }
+  return best;
+}
