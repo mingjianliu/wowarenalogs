@@ -14,6 +14,7 @@ import { AtomicArenaCombat, ICombatUnit } from '@wowarenalogs/parser';
 import { ICCInstance } from './ccTrinketAnalysis';
 import { fmtTime, getUnitHpAtTimestamp, IMajorCooldownInfo, isHealerSpec, isMeleeSpec } from './cooldowns';
 import { IAlignedBurstWindow } from './enemyCDs';
+import { HealerExposureLabel, IHealerBurstExposure } from './healerExposureAnalysis';
 import { distanceBetween, getUnitPositionAtTime } from './losAnalysis';
 
 // Thresholds (yards / seconds) — starting values from the Feature 15 spec.
@@ -80,6 +81,7 @@ export interface IPositionEvent {
   playersInvolved?: string[];
   /** HEALER_TRAINED: true when the trained healer IS the log owner */
   ownerIsSubject?: boolean;
+  healerExposureLabel?: HealerExposureLabel;
 }
 
 interface INearestEnemy {
@@ -175,6 +177,7 @@ export function computeOwnerPositionEvents(params: {
     playerName: string;
     ccInstances: Array<Pick<ICCInstance, 'atSeconds' | 'durationSeconds'>>;
   }>;
+  healerExposures?: IHealerBurstExposure[];
 }): IPositionEvent[] {
   const {
     owner,
