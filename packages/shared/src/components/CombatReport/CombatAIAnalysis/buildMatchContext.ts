@@ -267,6 +267,7 @@ export function buildMatchContext(
     friends: friends as ICombatUnit[],
     offensiveWindows,
     friendCCSummaries: ccTrinketSummaries,
+    healerExposures,
   });
   const positionLines = formatPositionEventsForContext(positionEvents);
 
