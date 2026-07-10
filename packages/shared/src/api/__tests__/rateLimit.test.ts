@@ -153,5 +153,23 @@ describe('rateLimit', () => {
       // key0 (being the oldest) should definitely have been evicted.
       expect(checkRateLimit('key0', 1, 10_000, now).allowed).toBe(true);
     });
+
+    test('deletes expired keys when map size exceeds 10000', () => {
+      const now = Date.now();
+
+      // Seed key_expired that is already expired
+      checkRateLimit('key_expired', 1, 5_000, now - 6_000);
+
+      // Seed 10,001 keys to exceed the 10,000 threshold.
+      for (let i = 1; i <= 10001; i++) {
+        checkRateLimit(`key_${i}`, 1, 100_000, now);
+      }
+
+      // Trigger prune by adding one more key
+      checkRateLimit('key_trigger', 1, 100_000, now);
+
+      // key_expired should have been deleted by the natural expiration check
+      expect(checkRateLimit('key_expired', 1, 5_000, now).allowed).toBe(true);
+    });
   });
 });

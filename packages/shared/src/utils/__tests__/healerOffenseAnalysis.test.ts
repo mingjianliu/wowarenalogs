@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CombatUnitClass, CombatUnitReaction, CombatUnitSpec, ICombatUnit, LogEvent } from '@wowarenalogs/parser';
 
 import { specToString } from '../cooldowns';
@@ -708,5 +709,86 @@ describe('F193 V2 — contested trade facts', () => {
     // slackSegments should have the full-match slack segment, contestedTradeFacts should be empty
     expect(summary.slackSegments.length).toBe(1);
     expect(summary.contestedTradeFacts.length).toBe(0);
+  });
+
+  it('covers contested segment early endings, damage/healing in contested segments, damage in windows, and multi-CC formatting', () => {
+    const mate = makeFriend('mate', {
+      advancedActions: [
+        makeAdvancedAction(T0, 0, 0, 200_000, 200_000),
+        makeAdvancedAction(T0 + 10_000, 0, 0, 200_000, 160_000),
+        makeAdvancedAction(T0 + 25_000, 0, 0, 200_000, 200_000),
+      ],
+    });
+    const act1 = mate.advancedActions[0] as any;
+    act1.advancedActorId = 'mate';
+    const act2 = mate.advancedActions[1] as any;
+    act2.advancedActorId = 'mate';
+    const act3 = mate.advancedActions[2] as any;
+    act3.advancedActorId = 'mate';
+
+    const enemy = makeUnit('enemy-1', { reaction: CombatUnitReaction.Hostile, name: 'Edk' });
+
+    const enemyHealer = makeUnit('enemy-h', {
+      reaction: CombatUnitReaction.Hostile,
+      spec: CombatUnitSpec.Shaman_Restoration,
+      name: 'Rsham',
+      spellCastEvents: [makeSpellCastEvent('336126', T0 + 5000, 'enemy-h', 'Rsham', 'enemy-h', 'Rsham')],
+    });
+
+    const owner = makeFriend('owner', {
+      spellCastEvents: [
+        makeSpellCastEvent('8122', T0 + 50_000, 'enemy-h', 'Rsham', 'owner', 'Owner'),
+        makeSpellCastEvent('118', T0 + 60_000, 'enemy-h', 'Rsham', 'owner', 'Owner'),
+      ],
+    });
+
+    (owner as any).damageOut = [
+      {
+        logLine: { event: LogEvent.SPELL_DAMAGE, timestamp: T0 + 15_000, parameters: [] },
+        timestamp: T0 + 15_000,
+        effectiveAmount: 10_000,
+        amount: 10_000,
+        srcUnitId: 'owner',
+        destUnitId: 'enemy-1',
+      },
+      {
+        logLine: { event: LogEvent.SPELL_DAMAGE, timestamp: T0 + 32_000, parameters: [] },
+        timestamp: T0 + 32_000,
+        effectiveAmount: 30_000,
+        amount: 30_000,
+        srcUnitId: 'owner',
+        destUnitId: 'enemy-1',
+      },
+    ];
+    (owner as any).healOut = [
+      {
+        logLine: { event: LogEvent.SPELL_HEAL, timestamp: T0 + 20_000, parameters: [] },
+        timestamp: T0 + 20_000,
+        effectiveAmount: 20_000,
+        amount: 20_000,
+        srcUnitId: 'owner',
+        destUnitId: 'mate',
+      },
+    ];
+
+    const summary = buildHealerOffenseSummary(
+      combat,
+      owner,
+      [owner, mate],
+      [enemy, enemyHealer],
+      [makeWindow(30, 36)],
+      emptyEnemyTimeline(),
+      [],
+      [],
+      [],
+    );
+
+    expect(summary.contestedTradeFacts.length).toBe(1);
+    expect(summary.contestedTradeFacts[0].ownerHealing).toBe(20_000);
+    expect(summary.windowContributions[0].ownerDamageInWindow).toBe(30_000);
+
+    const lines = formatHealerOffenseForContext(summary);
+    const text = lines.join('\n');
+    expect(text).toContain('your CC ready:');
   });
 });

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CombatUnitSpec, LogEvent } from '@wowarenalogs/parser';
 
+import * as drAnalysis from '../drAnalysis';
 import {
   analyzeHealerExposureAtBurst,
   buildHealerCCReceivedEvents,
@@ -270,6 +271,26 @@ describe('healerExposureAnalysis — CC avoidance', () => {
     expect(res[0].avoidanceToolsAvailable).toHaveLength(1);
     expect(res[0].avoidanceToolsAvailable[0].spellName).toBe('Fade');
     expect(res[0].avoidanceToolsAvailable[0].idleForSeconds).toBe(10); // 50s - (10s + 30s CD) = 10s
+  });
+
+  it('detects avoidance tool as available from time 0 when it has never been cast', () => {
+    const healer = makeUnit('h', {
+      spec: CombatUnitSpec.Priest_Discipline,
+      spellCastEvents: [],
+    });
+    const friend = makeUnit('f', {
+      advancedActions: [makeAdvancedAction(MATCH_START + 50_000, 0, 0, 100, 50)],
+    });
+    (friend.advancedActions[0] as any).advancedActorId = 'f';
+    const ccSummary = {
+      ccInstances: [{ atSeconds: 50, durationSeconds: 6, spellName: 'Fear', drInfo: { category: 'Disorient' } }],
+    };
+
+    const res = buildHealerCCReceivedEvents({ startTime: MATCH_START } as any, healer, [friend], ccSummary as any);
+    expect(res).toHaveLength(1);
+    expect(res[0].avoidanceToolsAvailable).toHaveLength(1);
+    expect(res[0].avoidanceToolsAvailable[0].spellName).toBe('Fade');
+    expect(res[0].avoidanceToolsAvailable[0].idleForSeconds).toBe(50);
   });
 
   it('skips events where no teammate is at low HP', () => {
@@ -614,5 +635,90 @@ describe('healerExposureAnalysis — formatting', () => {
     const res = formatHealerCCReceivedForContext([ev]);
     expect(res).toContain('Fear (6s)');
     expect(res).toContain('Fade available 5s prior');
+  });
+
+  it('handles unknown enemy spec fallback in primary CC selection', () => {
+    const healer = makeUnit('h', {
+      advancedActions: [makeAdvancedAction(MATCH_START, 0, 0)],
+    });
+    (healer.advancedActions[0] as any).advancedActorId = 'h';
+    const enemy = makeUnit('e', {
+      spec: 9999 as any,
+      advancedActions: [makeAdvancedAction(MATCH_START, 10, 0)],
+    });
+    (enemy.advancedActions[0] as any).advancedActorId = 'e';
+    const windows = [{ fromSeconds: 0, dangerLabel: 'High' }] as any;
+
+    const res = analyzeHealerExposureAtBurst(
+      windows,
+      [enemy],
+      healer,
+      { trinketUseTimes: [], ccInstances: [] } as any,
+      [],
+      '1505',
+      MATCH_START,
+    );
+    expect(res).toHaveLength(0);
+  });
+
+  it('triggers Safe label in computeExposureLabel when threats are in LoS but at 25% DR', () => {
+    const healer = makeUnit('h', {
+      advancedActions: [makeAdvancedAction(MATCH_START, 0, 0)],
+    });
+    (healer.advancedActions[0] as any).advancedActorId = 'h';
+    const enemy = makeUnit('e', {
+      spec: CombatUnitSpec.Mage_Frost,
+      advancedActions: [makeAdvancedAction(MATCH_START, 10, 0)],
+    });
+    (enemy.advancedActions[0] as any).advancedActorId = 'e';
+    const windows = [{ fromSeconds: 0, dangerLabel: 'High' }] as any;
+
+    const spy = jest.spyOn(drAnalysis, 'getDRLevelAtTime').mockReturnValue('25%' as any);
+
+    const res = analyzeHealerExposureAtBurst(
+      windows,
+      [enemy],
+      healer,
+      { trinketUseTimes: [], ccInstances: [] } as any,
+      [],
+      '1505',
+      MATCH_START,
+    );
+
+    spy.mockRestore();
+
+    expect(res).toHaveLength(1);
+    expect(res[0].exposureLabel).toBe('Safe');
+  });
+
+  it('computes availableSince from previous cooldown cast time', () => {
+    const healer = makeUnit('h', {
+      spec: CombatUnitSpec.Priest_Discipline,
+      spellCastEvents: [makeSpellCastEvent('586', MATCH_START + 5000, 'h', 'h', 'h', 'h', 0, 'Fade')],
+      advancedActions: [makeAdvancedAction(MATCH_START + 40000, 0, 0)],
+    });
+    const act = healer.advancedActions[0] as any;
+    act.advancedActorCurrentHp = 100000;
+    act.advancedActorMaxHp = 200000;
+
+    const friends = [healer];
+    const ccSummary = {
+      ccInstances: [
+        {
+          atSeconds: 40,
+          durationSeconds: 6,
+          spellId: '118',
+          spellName: 'Polymorph',
+          drInfo: { category: 'Incapacitate', level: 'Full', sequenceIndex: 0 },
+        },
+      ],
+    } as any;
+
+    const events = buildHealerCCReceivedEvents({ startTime: MATCH_START } as any, healer, friends, ccSummary);
+
+    expect(events).toHaveLength(1);
+    expect(events[0].avoidanceToolsAvailable).toHaveLength(1);
+    expect(events[0].avoidanceToolsAvailable[0].spellName).toBe('Fade');
+    expect(events[0].avoidanceToolsAvailable[0].idleForSeconds).toBeCloseTo(5);
   });
 });

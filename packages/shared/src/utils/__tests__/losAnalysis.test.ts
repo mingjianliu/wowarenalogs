@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { distanceBetween, distanceToNearestObstacleEdge, getUnitPositionAtTime, hasLineOfSight } from '../losAnalysis';
+import {
+  distanceBetween,
+  distanceToNearestObstacleEdge,
+  getUnitPositionAtTime,
+  hasLineOfSight,
+  nearestLosBreakOption,
+} from '../losAnalysis';
 import { makeAdvancedAction, makeUnit } from './testHelpers';
 
 describe('losAnalysis — position interpolation', () => {
@@ -127,5 +133,45 @@ describe('losAnalysis — distanceToNearestObstacleEdge', () => {
 
   it('returns null for unmapped zones', () => {
     expect(distanceToNearestObstacleEdge('999999', { x: 0, y: 0 })).toBeNull();
+  });
+});
+
+describe('losAnalysis — segmentIntersectsPolygon corner cases', () => {
+  it('covers segment completely inside polygon (line 108)', () => {
+    // Lordaeron tomb: x[1276..1295] y[1659..1672]
+    // Width is 19yd. Place points at x=1278 and x=1292 (distance 14yd > 8yd near-range exemption)
+    const p1 = { x: 1278, y: 1665 };
+    const p2 = { x: 1292, y: 1665 };
+    expect(hasLineOfSight('572', p1, p2)).toBe(false);
+  });
+});
+
+describe('losAnalysis — distanceToNearestObstacleEdge inside polygon', () => {
+  it('returns 0 when a point is inside a polygon obstacle (line 225)', () => {
+    const d = distanceToNearestObstacleEdge('572', { x: 1285, y: 1665 });
+    expect(d).toBe(0);
+  });
+});
+
+describe('nearestLosBreakOption', () => {
+  const NAGRAND_1505 = '1505';
+  const LORDAERON_572 = '572';
+
+  it('returns nearest reposition spot against a circle obstacle', () => {
+    const healerPos = { x: -2050, y: 6621.5 };
+    const enemies = [{ name: 'M1', pos: { x: -2035, y: 6621.5 } }];
+    // Nagrand north pillar center is at (-2043.6, 6621.5), r=2.5
+    const opt = nearestLosBreakOption(NAGRAND_1505, healerPos, enemies as any);
+    expect(opt).not.toBeNull();
+    expect(opt?.blocksEnemyName).toBe('M1');
+    expect(opt?.repositionYards).toBeCloseTo(3.26, 1);
+  });
+
+  it('returns nearest reposition spot against a polygon obstacle (covers lines 281-285)', () => {
+    const healerPos = { x: 1285.5, y: 1650 };
+    const enemies = [{ name: 'M1', pos: { x: 1285.5, y: 1680 } }];
+    const opt = nearestLosBreakOption(LORDAERON_572, healerPos, enemies as any);
+    expect(opt).not.toBeNull();
+    expect(opt?.blocksEnemyName).toBe('M1');
   });
 });
