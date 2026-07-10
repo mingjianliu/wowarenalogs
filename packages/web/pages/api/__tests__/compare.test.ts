@@ -17,6 +17,7 @@ jest.mock('../../../../shared/src/utils/vectorSearch', () => ({
 
 import { CombatUnitSpec } from '@wowarenalogs/parser';
 
+import { _resetRateLimiterForTests } from '../../../../shared/src/api/rateLimit';
 import { loadCellRecords } from '../../../../shared/src/utils/vectorSearch';
 import handler from '../compare';
 
@@ -29,11 +30,13 @@ function makeReq(method = 'POST', body: Record<string, unknown> = {}): NextApiRe
 function makeRes() {
   const json = jest.fn();
   const status = jest.fn().mockReturnValue({ json });
-  return { res: { status } as unknown as NextApiResponse, status, json };
+  const setHeader = jest.fn();
+  return { res: { status, setHeader } as unknown as NextApiResponse, status, json, setHeader };
 }
 
 afterEach(() => {
   jest.clearAllMocks();
+  _resetRateLimiterForTests();
 });
 
 // ─── Tests ───────────────────────────────────────────────────────────────────

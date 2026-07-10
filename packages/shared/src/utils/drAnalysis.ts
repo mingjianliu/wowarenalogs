@@ -262,7 +262,7 @@ export function computeIncomingDR(
     cat.push({ applyMs, removeMs, spellId: cc.spellId });
     history.set(category, cat);
 
-    return { category: DR_CATEGORY_MAP[cc.spellId] ?? 'Unknown', level, sequenceIndex };
+    return { category: getDRCategory(cc.spellId), level, sequenceIndex };
   });
 }
 
@@ -409,7 +409,9 @@ export function formatOutgoingCCChainsForContext(chains: IOutgoingCCChain[]): st
     // noisy "× Unknown" that corrupted the DR-chain breakdown the model treats as
     // ground truth. Drop them from the breakdown and the counts so the line stays
     // internally consistent; skip a chain entirely if nothing identifiable remains.
-    const apps = chain.applications.filter((a) => a.drInfo.category !== 'Unknown');
+    const apps = chain.applications.filter(
+      (a) => a.drInfo.category !== 'Unknown' && !a.drInfo.category.startsWith('spell:'),
+    );
     if (apps.length === 0) continue;
 
     const total = apps.length;

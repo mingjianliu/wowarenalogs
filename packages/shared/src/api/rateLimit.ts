@@ -8,7 +8,7 @@ export interface RateLimitResult {
   retryAfterSeconds: number;
 }
 
-const map = new Map<string, { windowStart: number; count: number }>();
+const map = new Map<string, { windowStart: number; count: number; windowMs: number }>();
 
 export function checkRateLimit(key: string, limit: number, windowMs: number, nowMs = Date.now()): RateLimitResult {
   const entry = map.get(key);
@@ -16,12 +16,21 @@ export function checkRateLimit(key: string, limit: number, windowMs: number, now
   if (!entry || nowMs - entry.windowStart >= windowMs) {
     if (map.size > 10000) {
       for (const [k, val] of map.entries()) {
-        if (nowMs - val.windowStart >= windowMs) {
+        if (nowMs - val.windowStart >= val.windowMs) {
           map.delete(k);
         }
       }
+      // FIFO eviction fallback to bound memory strictly below 10,000 entries
+      if (map.size > 10000) {
+        for (const k of map.keys()) {
+          map.delete(k);
+          if (map.size <= 8000) {
+            break;
+          }
+        }
+      }
     }
-    const newEntry = { windowStart: nowMs, count: 1 };
+    const newEntry = { windowStart: nowMs, count: 1, windowMs };
     map.set(key, newEntry);
     return { allowed: true, retryAfterSeconds: 0 };
   }
@@ -37,11 +46,11 @@ export function checkRateLimit(key: string, limit: number, windowMs: number, now
 
 /** First hop of x-forwarded-for (trimmed), else req.socket.remoteAddress, else 'unknown'. */
 export function clientIpFrom(req: {
-  headers: Record<string, string | string[] | undefined>;
+  headers?: Record<string, string | string[] | undefined>;
   socket?: { remoteAddress?: string };
 }): string {
   let ip: string | undefined;
-  const xForwardedFor = req.headers['x-forwarded-for'];
+  const xForwardedFor = req.headers?.['x-forwarded-for'];
   if (xForwardedFor) {
     const rawHeader = Array.isArray(xForwardedFor) ? xForwardedFor[0] : xForwardedFor;
     if (rawHeader && typeof rawHeader === 'string') {

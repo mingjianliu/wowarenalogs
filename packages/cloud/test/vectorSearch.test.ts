@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 
-import { findNearestProMatchesLocal, normalizeBracket } from '../src/vectorSearch';
+import { _resetReferenceVectorsCacheForTests, findNearestProMatchesLocal, normalizeBracket } from '../src/vectorSearch';
 
 jest.mock('fs-extra', () => ({
   existsSync: jest.fn(),
@@ -10,6 +10,7 @@ jest.mock('fs-extra', () => ({
 describe('findNearestProMatchesLocal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    _resetReferenceVectorsCacheForTests();
   });
 
   it('should return empty array if the reference vectors file does not exist', async () => {

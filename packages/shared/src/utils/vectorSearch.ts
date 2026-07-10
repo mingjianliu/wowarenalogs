@@ -60,6 +60,11 @@ const REFERENCE_MODEL_CANDIDATES = [
 let cachedModel: IReferenceModel | null = null;
 let cachedVectors: { path: string; records: ReferenceVectorRecord[] } | null = null;
 
+export function _resetReferenceVectorsCacheForTests(): void {
+  cachedModel = null;
+  cachedVectors = null;
+}
+
 export async function loadReferenceModel(): Promise<IReferenceModel | null> {
   if (cachedModel) return cachedModel;
   for (const p of REFERENCE_MODEL_CANDIDATES) {

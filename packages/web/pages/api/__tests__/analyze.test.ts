@@ -9,6 +9,7 @@ jest.mock('@anthropic-ai/sdk', () => ({
   default: jest.fn(),
 }));
 
+import { _resetRateLimiterForTests } from '../../../../shared/src/api/rateLimit';
 import handler from '../analyze';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -25,6 +26,7 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.clearAllMocks();
+  _resetRateLimiterForTests();
 });
 
 function makeReq(method = 'POST', body: Record<string, unknown> = {}): NextApiRequest {
@@ -34,7 +36,8 @@ function makeReq(method = 'POST', body: Record<string, unknown> = {}): NextApiRe
 function makeRes() {
   const json = jest.fn();
   const status = jest.fn().mockReturnValue({ json });
-  return { res: { status } as unknown as NextApiResponse, status, json };
+  const setHeader = jest.fn();
+  return { res: { status, setHeader } as unknown as NextApiResponse, status, json, setHeader };
 }
 
 function makeAnthropicSuccess(text = 'analysis result') {

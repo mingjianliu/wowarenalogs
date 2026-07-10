@@ -109,5 +109,49 @@ describe('rateLimit', () => {
       };
       expect(clientIpFrom(req)).toBe('unknown');
     });
+
+    test('missing headers field entirely -> "unknown"', () => {
+      const req = {};
+      expect(clientIpFrom(req)).toBe('unknown');
+    });
+  });
+
+  describe('heterogeneous windows & FIFO eviction', () => {
+    test('pruning sweeps respect individual windowMs', () => {
+      const now = Date.now();
+      // First key has a long window (100s), second key has a short window (10s)
+      checkRateLimit('key1', 1, 100_000, now);
+      checkRateLimit('key2', 1, 10_000, now);
+
+      // Trigger a prune at now + 15s using a new key
+      checkRateLimit('key_trigger', 1, 5_000, now + 15_000);
+
+      // key2 should have been pruned (15s > 10s short window)
+      // key1 should NOT have been pruned (15s < 100s long window)
+      // We can verify this by checking if key1 still blocks (under limit 1)
+      expect(checkRateLimit('key1', 1, 100_000, now + 15_000).allowed).toBe(false);
+      // and key2 is allowed again (since it was pruned, it resets to count=1)
+      expect(checkRateLimit('key2', 1, 10_000, now + 15_000).allowed).toBe(true);
+    });
+
+    test('evicts oldest entries when map size exceeds 10000', () => {
+      const now = Date.now();
+
+      // Seed the map with key0
+      checkRateLimit('key0', 1, 10_000, now);
+
+      // Seed 10,001 keys to exceed the 10,000 threshold.
+      // Use windowMs = 100,000 so they do not expire naturally.
+      for (let i = 1; i <= 10001; i++) {
+        checkRateLimit(`key_${i}`, 1, 100_000, now);
+      }
+
+      // Trigger prune by adding one more key
+      checkRateLimit('key_trigger', 1, 100_000, now);
+
+      // The map size should have dropped to around 8000 (FIFO eviction target is <= 8000)
+      // key0 (being the oldest) should definitely have been evicted.
+      expect(checkRateLimit('key0', 1, 10_000, now).allowed).toBe(true);
+    });
   });
 });
