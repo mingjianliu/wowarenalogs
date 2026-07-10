@@ -243,6 +243,41 @@ describe('computeOwnerPositionEvents — burst-window engagement', () => {
     expect(events[0].type).toBe('STAYED_IN');
     expect(events[0].ownerDefensiveAvailable).toBe(true);
   });
+
+  it('attaches healerExposureLabel when healerExposures is provided and owner is healer', () => {
+    const owner = makeStaticUnit('o1', 0, 0, { spec: CombatUnitSpec.Priest_Holy, class: CombatUnitClass.Priest });
+    const enemy = makeStaticUnit('e1', 5, 0, { spec: CombatUnitSpec.Warrior_Arms });
+
+    const fakeExposures = [
+      {
+        atSeconds: 10,
+        burstDangerLabel: 'High',
+        trinketState: 'available' as const,
+        trinketAvailableAtSeconds: null,
+        threats: [],
+        exposureLabel: 'Critical' as const,
+      },
+    ];
+
+    const events = computeOwnerPositionEvents({
+      owner: owner as any,
+      enemies: [enemy] as any,
+      combat: makeCombat(),
+      burstWindows: [makeBurstWindow(10, 20)],
+      ownerCooldowns: [],
+      isHealer: true,
+      ownerIsMelee: false,
+      healerExposures: fakeExposures,
+    });
+
+    const stayedIn = events.filter((e) => e.type === 'STAYED_IN');
+    expect(stayedIn).toHaveLength(1);
+    expect(stayedIn[0].healerExposureLabel).toBe('Critical');
+
+    const formatted = formatPositionEventsForContext(events);
+    const line = formatted.find((l) => l.includes('10 [High burst]'));
+    expect(line).toContain('healer exposure: Critical');
+  });
 });
 
 describe('computeOwnerPositionEvents — missed push', () => {
