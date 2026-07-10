@@ -81,6 +81,7 @@ export interface IPositionEvent {
   playersInvolved?: string[];
   /** HEALER_TRAINED: true when the trained healer IS the log owner */
   ownerIsSubject?: boolean;
+  /** Optional: Healer exposure status during the burst window (owner is healer only) */
   healerExposureLabel?: HealerExposureLabel;
 }
 
@@ -191,6 +192,7 @@ export function computeOwnerPositionEvents(params: {
     friends,
     offensiveWindows,
     friendCCSummaries,
+    healerExposures,
   } = params;
   const matchStartMs = combat.startTime;
   const durationSeconds = (combat.endTime - combat.startTime) / 1000;
@@ -207,6 +209,12 @@ export function computeOwnerPositionEvents(params: {
     const evalEnd = Math.min(w.toSeconds, w.fromSeconds + BURST_EVAL_SECONDS);
     const evalSpan = evalEnd - w.fromSeconds;
     if (evalSpan <= 0) continue;
+
+    const exposure =
+      isHealer && healerExposures
+        ? healerExposures.find((e) => Math.abs(e.atSeconds - w.fromSeconds) < 0.1)
+        : undefined;
+    const healerExposureLabel = exposure?.exposureLabel;
 
     // CC'd for most of the window → could not choose to kite; not a decision
     if (ccOverlapSeconds(ccInstances, w.fromSeconds, evalEnd) >= evalSpan / 2) continue;
@@ -240,6 +248,7 @@ export function computeOwnerPositionEvents(params: {
         dampeningPct: w.dampeningPct,
         burstTargetsOwner,
         burstTargetName: burstTargetsOwner === false ? targetName : undefined,
+        healerExposureLabel,
       });
     } else if (delta < STAY_DELTA_YARDS) {
       // Who was the burst actually aimed at? A melee DPS staying on their target
@@ -272,6 +281,7 @@ export function computeOwnerPositionEvents(params: {
         burstTargetName: burstTargetsOwner === false ? targetName : undefined,
         ownerHpStartPct: hpStart === null ? null : Math.round(hpStart),
         ownerHpMinPct: hpMin === null ? null : Math.round(hpMin),
+        healerExposureLabel,
       });
     }
     // deltas in [STAY_DELTA, KITE_DELTA) are ambiguous — no event
@@ -530,8 +540,9 @@ export function formatPositionEventsForContext(events: IPositionEvent[]): string
         // No HP data — fall back to the dampening context hedge.
         hpStr = (e.dampeningPct ?? 0) >= 0.2 ? ' (high dampening — staying in may be correct)' : '';
       }
+      const exposureStr = e.healerExposureLabel ? ` — healer exposure: ${e.healerExposureLabel}` : '';
       lines.push(
-        `    ${fmtTime(e.atSeconds)} [${e.dangerLabel} burst] ${e.startDistanceYards}→${e.endDistanceYards}yd from ${e.nearestEnemyName}${targetStr}${hpStr}${defStr}`,
+        `    ${fmtTime(e.atSeconds)} [${e.dangerLabel} burst] ${e.startDistanceYards}→${e.endDistanceYards}yd from ${e.nearestEnemyName}${targetStr}${exposureStr}${hpStr}${defStr}`,
       );
     }
   }
@@ -545,8 +556,9 @@ export function formatPositionEventsForContext(events: IPositionEvent[]): string
           : e.burstTargetName
             ? ` — burst targeted ${e.burstTargetName}, who may have needed heals/peels`
             : '';
+      const exposureStr = e.healerExposureLabel ? ` — healer exposure: ${e.healerExposureLabel}` : '';
       lines.push(
-        `    ${fmtTime(e.atSeconds)} [${e.dangerLabel} burst] opened ${e.startDistanceYards}→${e.endDistanceYards}yd from ${e.nearestEnemyName}${targetStr}`,
+        `    ${fmtTime(e.atSeconds)} [${e.dangerLabel} burst] opened ${e.startDistanceYards}→${e.endDistanceYards}yd from ${e.nearestEnemyName}${targetStr}${exposureStr}`,
       );
     }
   }
