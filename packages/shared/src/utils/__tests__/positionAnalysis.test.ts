@@ -278,6 +278,92 @@ describe('computeOwnerPositionEvents — burst-window engagement', () => {
     const line = formatted.find((l) => l.includes('10 [High burst]'));
     expect(line).toContain('healer exposure: Critical');
   });
+
+  it('attaches healerExposureLabel to KITED events and verifies negative controls', () => {
+    // 1. KITED event test
+    const owner = makeUnit('o1', {
+      spec: CombatUnitSpec.Priest_Holy,
+      class: CombatUnitClass.Priest,
+      advancedActions: [
+        makeAdvancedAction(T0, 0, 0),
+        makeAdvancedAction(T0 + 10_000, 0, 0), // 5yd from enemy
+        makeAdvancedAction(T0 + 20_000, -25, 0), // 30yd away (kite)
+        makeAdvancedAction(T0 + 120_000, -25, 0),
+      ],
+    });
+    owner.advancedActions.forEach((a) => ((a as any).advancedActorId = 'o1'));
+    const enemy = makeStaticUnit('e1', 5, 0, { spec: CombatUnitSpec.Warrior_Arms });
+
+    const fakeExposures = [
+      {
+        atSeconds: 10,
+        burstDangerLabel: 'High',
+        trinketState: 'available' as const,
+        trinketAvailableAtSeconds: null,
+        threats: [],
+        exposureLabel: 'Exposed' as const,
+      },
+    ];
+
+    const events = computeOwnerPositionEvents({
+      owner: owner as any,
+      enemies: [enemy] as any,
+      combat: makeCombat(),
+      burstWindows: [makeBurstWindow(10, 20)],
+      ownerCooldowns: [],
+      isHealer: true,
+      ownerIsMelee: false,
+      healerExposures: fakeExposures,
+    });
+
+    const kited = events.filter((e) => e.type === 'KITED');
+    expect(kited).toHaveLength(1);
+    expect(kited[0].healerExposureLabel).toBe('Exposed');
+
+    const formatted = formatPositionEventsForContext(events);
+    const line = formatted.find((l) => l.includes('10 [High burst]'));
+    expect(line).toContain('healer exposure: Exposed');
+
+    // 2. Control case: isHealer: false (owner is DPS, should not attach healer exposure label to owner positioning)
+    const dpsEvents = computeOwnerPositionEvents({
+      owner: owner as any,
+      enemies: [enemy] as any,
+      combat: makeCombat(),
+      burstWindows: [makeBurstWindow(10, 20)],
+      ownerCooldowns: [],
+      isHealer: false,
+      ownerIsMelee: false,
+      healerExposures: fakeExposures,
+    });
+    const dpsKited = dpsEvents.filter((e) => e.type === 'KITED');
+    expect(dpsKited).toHaveLength(1);
+    expect(dpsKited[0].healerExposureLabel).toBeUndefined();
+
+    // 3. Control case: non-matching timestamp (e.g. exposure is at 15s instead of 10s)
+    const mismatchExposures = [
+      {
+        atSeconds: 15, // mismatch
+        burstDangerLabel: 'High',
+        trinketState: 'available' as const,
+        trinketAvailableAtSeconds: null,
+        threats: [],
+        exposureLabel: 'Exposed' as const,
+      },
+    ];
+    const mismatchEvents = computeOwnerPositionEvents({
+      owner: owner as any,
+      enemies: [enemy] as any,
+      combat: makeCombat(),
+      burstWindows: [makeBurstWindow(10, 20)],
+      ownerCooldowns: [],
+      isHealer: true,
+      ownerIsMelee: false,
+      healerExposures: mismatchExposures,
+    });
+    const mismatchKited = mismatchEvents.filter((e) => e.type === 'KITED');
+    expect(mismatchKited).toHaveLength(1);
+    expect(mismatchKited[0].healerExposureLabel).toBeUndefined();
+  });
 });
 
 describe('computeOwnerPositionEvents — missed push', () => {
