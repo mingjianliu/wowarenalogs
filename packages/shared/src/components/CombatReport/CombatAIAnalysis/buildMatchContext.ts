@@ -32,7 +32,9 @@ import { formatEnemyCDTimelineForContext, reconstructEnemyCDTimeline } from '../
 import {
   analyzeHealerExposureAtBurst,
   buildHealerCCReceivedEvents,
+  formatEnemyCCKitHeader,
   formatHealerCCReceivedForContext,
+  formatHealerExposureEntries,
   formatHealerExposureForContext,
   IHealerCCReceived,
 } from '../../../utils/healerExposureAnalysis';
@@ -52,7 +54,7 @@ import { computeOffensiveWindows, formatOffensiveWindowsForContext } from '../..
 import { computeOwnerPositionEvents, formatPositionEventsForContext } from '../../../utils/positionAnalysis';
 import { benchmarks, formatDTPSBaselines, formatSpecBaselines } from '../../../utils/specBaselines';
 import { getPvpToolkit } from '../../../utils/talentBehaviors';
-import { channelWasInterrupted } from './timelineHelpers';
+import { channelWasInterrupted, mergeTimestampedLines } from './timelineHelpers';
 import {
   buildMatchArc,
   buildMatchTimeline,
@@ -350,42 +352,51 @@ export function buildMatchContext(
     );
     tLines.push(loadoutText);
 
-    tLines.push('');
-    tLines.push(
-      buildMatchTimeline({
-        owner: owner as ICombatUnit,
-        ownerSpec,
-        ownerCDs: cooldowns,
-        teammateCDs: allTeamCDsWithSpec,
-        enemyCDTimeline,
-        ccTrinketSummaries,
-        dispelSummary,
-        friendlyDeaths,
-        enemyDeaths,
-        pressureWindows,
-        healingGaps,
-        friends: friends as ICombatUnit[],
-        enemies: enemies as ICombatUnit[],
-        allUnits: Object.values(combat.units),
-        matchStartMs: combat.startTime,
-        matchEndMs: combat.endTime,
-        isHealer: healer,
-        playerIdMap,
-        enemyIdMap,
-        outgoingCCChains,
-        bracket: combat.startInfo.bracket,
-        stasisEvents,
-      } as BuildMatchTimelineParams),
-    );
-
-    // Healer exposure at burst windows (LoS/pillar + DR + trinket state) — previously
-    // only the critical-moments path carried this; the timeline path has the same
-    // burst-window data so the section applies identically.
-    const tHealerExposureLines = formatHealerExposureForContext(healerExposures);
-    if (tHealerExposureLines.length > 0) {
+    // Healer exposure at burst windows (LoS/pillar + DR + trinket state). The enemy CC kit
+    // is static for the match, so it is stated once here as match-level context; the
+    // per-window entries are merged inline into the timeline below so each exposure sits
+    // chronologically next to the burst it belongs to (2026-07-09 week-eval:
+    // inferenceScaffolding regression from the after-timeline block position).
+    const enemyCCKitLines = formatEnemyCCKitHeader(healerExposures);
+    if (enemyCCKitLines.length > 0) {
       tLines.push('');
-      tHealerExposureLines.forEach((l) => tLines.push(l));
+      enemyCCKitLines.forEach((l) => tLines.push(l));
     }
+
+    const timelineText = buildMatchTimeline({
+      owner: owner as ICombatUnit,
+      ownerSpec,
+      ownerCDs: cooldowns,
+      teammateCDs: allTeamCDsWithSpec,
+      enemyCDTimeline,
+      ccTrinketSummaries,
+      dispelSummary,
+      friendlyDeaths,
+      enemyDeaths,
+      pressureWindows,
+      healingGaps,
+      friends: friends as ICombatUnit[],
+      enemies: enemies as ICombatUnit[],
+      allUnits: Object.values(combat.units),
+      matchStartMs: combat.startTime,
+      matchEndMs: combat.endTime,
+      isHealer: healer,
+      playerIdMap,
+      enemyIdMap,
+      outgoingCCChains,
+      bracket: combat.startInfo.bracket,
+      stasisEvents,
+    } as BuildMatchTimelineParams);
+
+    // Merge each per-window exposure entry into the timeline at its timestamp so the
+    // cause (burst + exposure state) sits next to its effects (CC landing, damage,
+    // defensive responses) instead of in a block after the timeline.
+    const exposureInserts = formatHealerExposureEntries(healerExposures).map((entry) => ({
+      atSeconds: entry.atSeconds,
+      line: `${fmtTime(entry.atSeconds)}  ${entry.line}`,
+    }));
+    tLines.push('');
+    tLines.push(mergeTimestampedLines(timelineText.split('\n'), exposureInserts).join('\n'));
 
     if (positionLines.length > 0) {
       tLines.push('');

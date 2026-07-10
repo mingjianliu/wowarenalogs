@@ -4,7 +4,9 @@ import { CombatUnitSpec, LogEvent } from '@wowarenalogs/parser';
 import {
   analyzeHealerExposureAtBurst,
   buildHealerCCReceivedEvents,
+  formatEnemyCCKitHeader,
   formatHealerCCReceivedForContext,
+  formatHealerExposureEntries,
   formatHealerExposureForContext,
 } from '../healerExposureAnalysis';
 import { makeAdvancedAction, makeAuraEvent, makeSpellCastEvent, makeUnit } from './testHelpers';
@@ -395,38 +397,211 @@ describe('healerExposureAnalysis — pillar proximity (F15 P2)', () => {
   });
 });
 
+const makeThreat = (over: Record<string, unknown> = {}): any => ({
+  enemySpec: 'Frost Mage',
+  enemyName: 'M1',
+  ccSpellName: 'Polymorph',
+  ccCategory: 'Incapacitate',
+  healerDRLevel: 'Full',
+  losBlocked: false,
+  ...over,
+});
+
+const makeExposure = (over: Record<string, unknown> = {}): any => ({
+  atSeconds: 10,
+  burstDangerLabel: 'High',
+  trinketState: 'available',
+  trinketAvailableAtSeconds: null,
+  exposureLabel: 'Exposed',
+  losBreak: null,
+  threats: [makeThreat()],
+  ...over,
+});
+
+describe('healerExposureAnalysis — enemy CC kit header', () => {
+  it('returns [] for empty input', () => {
+    expect(formatEnemyCCKitHeader([])).toEqual([]);
+  });
+
+  it('unions and dedupes per-enemy spells across all windows (incl. pillar-blocked), in first-appearance order', () => {
+    const exposures = [
+      makeExposure({
+        threats: [
+          makeThreat({
+            enemyName: 'E1',
+            enemySpec: 'Preservation Evoker',
+            ccSpellName: 'Sleep Walk',
+            ccCategory: 'Disorient',
+          }),
+          // Pillar-blocked threats still belong to the match-level kit union
+          makeThreat({
+            enemyName: 'E2',
+            enemySpec: 'Feral Druid',
+            ccSpellName: 'Rake',
+            ccCategory: 'Stun',
+            losBlocked: true,
+          }),
+        ],
+      }),
+      makeExposure({
+        atSeconds: 40,
+        threats: [
+          // duplicate of window 1 — must not repeat in the kit
+          makeThreat({
+            enemyName: 'E1',
+            enemySpec: 'Preservation Evoker',
+            ccSpellName: 'Sleep Walk',
+            ccCategory: 'Disorient',
+          }),
+          makeThreat({
+            enemyName: 'E1',
+            enemySpec: 'Preservation Evoker',
+            ccSpellName: 'Terror of the Skies',
+            ccCategory: 'Stun',
+          }),
+          makeThreat({
+            enemyName: 'E2',
+            enemySpec: 'Feral Druid',
+            ccSpellName: 'Incapacitating Roar',
+            ccCategory: 'Disorient',
+          }),
+        ],
+      }),
+    ];
+    const header = formatEnemyCCKitHeader(exposures);
+    expect(header).toEqual([
+      'ENEMY CC KIT (threats to you): Preservation Evoker (E1): Sleep Walk [Disorient], Terror of the Skies [Stun]; Feral Druid (E2): Rake [Stun], Incapacitating Roar [Disorient]',
+    ]);
+  });
+});
+
+describe('healerExposureAnalysis — compact per-window entries', () => {
+  it('emits exactly one single line per window, tagged and timestamp-free', () => {
+    const entries = formatHealerExposureEntries([makeExposure(), makeExposure({ atSeconds: 40 })]);
+    expect(entries).toHaveLength(2);
+    expect(entries[0].atSeconds).toBe(10);
+    expect(entries[1].atSeconds).toBe(40);
+    for (const e of entries) {
+      expect(e.line.startsWith('[HEALER EXPOSURE]   ')).toBe(true);
+      expect(e.line).not.toContain('\n');
+    }
+  });
+
+  it('uses spec-only refs when specs are unique among threatening enemies', () => {
+    const entries = formatHealerExposureEntries([
+      makeExposure({
+        threats: [
+          makeThreat({ enemyName: 'M1', enemySpec: 'Frost Mage' }),
+          makeThreat({
+            enemyName: 'W1',
+            enemySpec: 'Arms Warrior',
+            ccSpellName: 'Intimidating Shout',
+            ccCategory: 'Disorient',
+            losBlocked: true,
+          }),
+        ],
+      }),
+    ]);
+    expect(entries[0].line).toContain('IN LoS: Frost Mage: Polymorph Full DR');
+    expect(entries[0].line).toContain('| Pillar-blocked: Arms Warrior');
+    expect(entries[0].line).not.toContain('(M1)');
+    expect(entries[0].line).not.toContain('(W1)');
+  });
+
+  it('uses Spec (Name) refs for enemies sharing a spec (even across windows)', () => {
+    const entries = formatHealerExposureEntries([
+      makeExposure({ threats: [makeThreat({ enemyName: 'M1', enemySpec: 'Frost Mage' })] }),
+      makeExposure({
+        atSeconds: 40,
+        threats: [
+          makeThreat({
+            enemyName: 'M2',
+            enemySpec: 'Frost Mage',
+            ccSpellName: 'Ring of Frost',
+            ccCategory: 'Disorient',
+          }),
+        ],
+      }),
+    ]);
+    expect(entries[0].line).toContain('IN LoS: Frost Mage (M1): Polymorph Full DR');
+    expect(entries[1].line).toContain('IN LoS: Frost Mage (M2): Ring of Frost Full DR');
+  });
+
+  it('groups multiple spells of the same enemy under one ref with per-spell DR', () => {
+    const entries = formatHealerExposureEntries([
+      makeExposure({
+        threats: [
+          makeThreat({
+            enemyName: 'M1',
+            enemySpec: 'Frost Mage',
+            ccSpellName: 'Polymorph',
+            ccCategory: 'Incapacitate',
+            healerDRLevel: 'Full',
+          }),
+          makeThreat({
+            enemyName: 'M1',
+            enemySpec: 'Frost Mage',
+            ccSpellName: 'Ring of Frost',
+            ccCategory: 'Disorient',
+            healerDRLevel: '50%',
+          }),
+        ],
+      }),
+    ]);
+    expect(entries[0].line).toContain('IN LoS: Frost Mage: Polymorph Full DR, Ring of Frost 50% DR');
+  });
+
+  it('omits the Pillar-blocked and verdict segments when they do not apply', () => {
+    // Pressured (50% DR only, trinket ready) → no verdict; no blocked threats → no Pillar-blocked
+    const entries = formatHealerExposureEntries([
+      makeExposure({ exposureLabel: 'Pressured', threats: [makeThreat({ healerDRLevel: '50%' })] }),
+    ]);
+    expect(entries[0].line).not.toContain('Pillar-blocked');
+    expect(entries[0].line).not.toContain('→');
+  });
+
+  it('carries the Critical verdict and trinket CD state on a single line', () => {
+    const entries = formatHealerExposureEntries([
+      makeExposure({ exposureLabel: 'Critical', trinketState: 'on_cooldown', trinketAvailableAtSeconds: 40 }),
+    ]);
+    expect(entries[0].line).toContain('trinket on CD (back 0:40)');
+    expect(entries[0].line).toContain('⚠ CRITICAL');
+    expect(entries[0].line).toContain('| → No trinket + Full DR CC in LoS: healer cannot answer CC');
+  });
+});
+
 describe('healerExposureAnalysis — formatting', () => {
-  it('formatHealerExposureForContext produces detailed breakdown', () => {
-    const exposure: any = {
-      atSeconds: 10,
-      burstDangerLabel: 'High',
+  it('formatHealerExposureForContext produces compact block: kit header once + one line per window', () => {
+    const exposure = makeExposure({
       trinketState: 'on_cooldown',
       trinketAvailableAtSeconds: 40,
       exposureLabel: 'Critical',
       threats: [
-        {
-          enemySpec: 'Frost Mage',
-          enemyName: 'M1',
-          ccSpellName: 'Polymorph',
-          ccCategory: 'Incapacitate',
-          healerDRLevel: 'Full',
-          losBlocked: false,
-        },
-        {
+        makeThreat({ enemySpec: 'Frost Mage', enemyName: 'M1' }),
+        makeThreat({
           enemySpec: 'Arms Warrior',
           enemyName: 'W1',
           ccSpellName: 'Intimidating Shout',
           ccCategory: 'Disorient',
-          healerDRLevel: 'Full',
           losBlocked: true,
-        },
+        }),
       ],
-    };
+    });
     const lines = formatHealerExposureForContext([exposure]);
-    expect(lines.join('\n')).toContain('⚠ CRITICAL');
-    expect(lines.join('\n')).toContain('trinket on CD (back 0:40)');
-    expect(lines.join('\n')).toContain('IN LoS: Frost Mage (M1)');
-    expect(lines.join('\n')).toContain('Pillar-blocked: Arms Warrior (W1)');
+    const text = lines.join('\n');
+    expect(lines[0]).toBe('HEALER EXPOSURE DURING ENEMY BURST WINDOWS:');
+    // Kit is stated once, with full Spec (Name) references
+    expect(lines[1]).toBe(
+      '  ENEMY CC KIT (threats to you): Frost Mage (M1): Polymorph [Incapacitate]; Arms Warrior (W1): Intimidating Shout [Disorient]',
+    );
+    expect(text).toContain('⚠ CRITICAL');
+    expect(text).toContain('trinket on CD (back 0:40)');
+    // Per-window line is compact: spec-only refs, no per-window kit re-enumeration
+    const windowLines = lines.filter((l) => l.startsWith('  [0:10]'));
+    expect(windowLines).toHaveLength(1);
+    expect(windowLines[0]).toContain('IN LoS: Frost Mage: Polymorph Full DR');
+    expect(windowLines[0]).toContain('| Pillar-blocked: Arms Warrior');
+    expect(windowLines[0]).toContain('| → No trinket + Full DR CC in LoS: healer cannot answer CC');
   });
 
   it('formatHealerCCReceivedForContext produces brief summary', () => {

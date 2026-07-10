@@ -159,16 +159,41 @@ describe('buildMatchContext — healer exposure in both prompt paths', () => {
     return { combat, friends: [healer], enemies: [e1, e2] };
   }
 
-  it('critical-moments path includes the healer exposure section (existing behavior)', () => {
+  it('critical-moments path includes the healer exposure block with the once-per-match CC kit', () => {
     const { combat, friends, enemies } = makeExposureScenario();
     const output = buildMatchContext(combat, friends, enemies);
     expect(output).toContain('HEALER EXPOSURE DURING ENEMY BURST WINDOWS');
+    expect(output).toContain('ENEMY CC KIT (threats to you):');
   });
 
-  it('timeline path includes the same healer exposure section', () => {
+  it('timeline path states the enemy CC kit before the timeline and merges exposure entries inline', () => {
     const { combat, friends, enemies } = makeExposureScenario();
     const output = buildMatchContext(combat, friends, enemies, { useTimelinePrompt: true });
-    expect(output).toContain('HEALER EXPOSURE DURING ENEMY BURST WINDOWS');
+
+    // Kit header is match-level context ahead of the timeline
+    const kitIdx = output.indexOf('ENEMY CC KIT (threats to you):');
+    const timelineIdx = output.indexOf('MATCH TIMELINE');
+    expect(kitIdx).toBeGreaterThan(-1);
+    expect(timelineIdx).toBeGreaterThan(-1);
+    expect(kitIdx).toBeLessThan(timelineIdx);
+
+    // Per-window entries ride inline in the timeline with the timeline's timestamp column,
+    // not in a block after it
+    expect(output).toMatch(/^\d+:\d{2} {2}\[HEALER EXPOSURE\] {3}/m);
+    expect(output.indexOf('[HEALER EXPOSURE]')).toBeGreaterThan(timelineIdx);
+    expect(output).not.toContain('HEALER EXPOSURE DURING ENEMY BURST WINDOWS');
+
+    // Chronological placement: timestamped lines stay sorted after the merge
+    const timeOf = (l: string) => {
+      const m = /^(\d+):(\d{2})\s/.exec(l);
+      return m ? parseInt(m[1], 10) * 60 + parseInt(m[2], 10) : null;
+    };
+    const stamped = output
+      .slice(timelineIdx)
+      .split('\n')
+      .map(timeOf)
+      .filter((t): t is number => t !== null);
+    expect(stamped).toEqual([...stamped].sort((a, b) => a - b));
   });
 
   it('critical-moments path includes the POSITIONING section when position events exist', () => {

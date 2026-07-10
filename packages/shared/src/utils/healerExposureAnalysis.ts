@@ -263,16 +263,92 @@ export function analyzeHealerExposureAtBurst(
 }
 
 // ---------------------------------------------------------------------------
-// Formatter
+// Formatters
+//
+// The enemy CC kit (spell + DR category per enemy) is static for the match, so
+// it is stated ONCE in a kit header instead of being re-enumerated inside every
+// burst-window entry (2026-07-09 week-eval, reports/tokens.md proposal #1:
+// measured −173 tok/match recoverable). Per-window entries carry only the state
+// that actually varies window to window: trinket, DR level, LoS, verdict.
 // ---------------------------------------------------------------------------
 
-export function formatHealerExposureForContext(exposures: IHealerBurstExposure[]): string[] {
-  if (exposures.length === 0) return [];
+const EXPOSURE_ENTRY_TAG = '[HEALER EXPOSURE]   ';
 
-  const lines: string[] = [];
-  lines.push('HEALER EXPOSURE DURING ENEMY BURST WINDOWS:');
+export interface IHealerExposureEntry {
+  atSeconds: number;
+  /** Single line, prefixed with `[HEALER EXPOSURE]   ` — callers prepend their own
+   *  timestamp presentation (timeline column or bracketed block style). */
+  line: string;
+}
+
+/**
+ * Enemy reference used inside per-window entries: bare spec when that spec is unique
+ * among the enemies appearing in this match's exposures; `Spec (Name)` when two+
+ * enemies share a spec. The kit header always carries `Spec (Name)`, so a spec-only
+ * reference still resolves unambiguously against it.
+ */
+function buildEnemyRefMap(exposures: IHealerBurstExposure[]): Map<string, string> {
+  const specByEnemyName = new Map<string, string>();
+  for (const e of exposures) {
+    for (const t of e.threats) {
+      if (!specByEnemyName.has(t.enemyName)) specByEnemyName.set(t.enemyName, t.enemySpec);
+    }
+  }
+
+  const specCounts = new Map<string, number>();
+  for (const spec of specByEnemyName.values()) {
+    specCounts.set(spec, (specCounts.get(spec) ?? 0) + 1);
+  }
+
+  const refMap = new Map<string, string>();
+  for (const [name, spec] of specByEnemyName) {
+    refMap.set(name, (specCounts.get(spec) ?? 0) > 1 ? `${spec} (${name})` : spec);
+  }
+  return refMap;
+}
+
+/**
+ * Once-per-match enemy CC kit header: the per-enemy union of (spell, DR category)
+ * across ALL burst windows, both in-LoS and pillar-blocked. Stable order: enemies
+ * by first appearance, spells by first appearance within each enemy.
+ */
+export function formatEnemyCCKitHeader(exposures: IHealerBurstExposure[]): string[] {
+  const enemyOrder: string[] = [];
+  const kits = new Map<string, { spec: string; spells: Array<{ spellName: string; category: string }> }>();
 
   for (const e of exposures) {
+    for (const t of e.threats) {
+      let kit = kits.get(t.enemyName);
+      if (!kit) {
+        kit = { spec: t.enemySpec, spells: [] };
+        kits.set(t.enemyName, kit);
+        enemyOrder.push(t.enemyName);
+      }
+      if (!kit.spells.some((s) => s.spellName === t.ccSpellName && s.category === t.ccCategory)) {
+        kit.spells.push({ spellName: t.ccSpellName, category: t.ccCategory });
+      }
+    }
+  }
+
+  if (enemyOrder.length === 0) return [];
+
+  const parts = enemyOrder.map((name) => {
+    const kit = kits.get(name) as { spec: string; spells: Array<{ spellName: string; category: string }> };
+    const spellsStr = kit.spells.map((s) => `${s.spellName} [${s.category}]`).join(', ');
+    return `${kit.spec} (${name}): ${spellsStr}`;
+  });
+
+  return [`ENEMY CC KIT (threats to you): ${parts.join('; ')}`];
+}
+
+/** Compact single-line-per-window exposure entries (see module comment above). */
+export function formatHealerExposureEntries(exposures: IHealerBurstExposure[]): IHealerExposureEntry[] {
+  if (exposures.length === 0) return [];
+
+  const refMap = buildEnemyRefMap(exposures);
+  const refOf = (t: IHealerCCThreat) => refMap.get(t.enemyName) ?? `${t.enemySpec} (${t.enemyName})`;
+
+  return exposures.map((e) => {
     const trinketStr =
       e.trinketState === 'available'
         ? 'trinket ready'
@@ -292,31 +368,55 @@ export function formatHealerExposureForContext(exposures: IHealerBurstExposure[]
         ? ` — LoS break ~${e.losBreak.repositionYards}yd away (pillar-blocks ${e.losBreak.blocksEnemyName})`
         : '';
 
-    lines.push('');
-    lines.push(
-      `  [${fmtTime(e.atSeconds)}] ${e.burstDangerLabel} burst — healer: ${trinketStr} — ${labelStr}${pillarStr}`,
-    );
-
     const exposed = e.threats.filter((t) => !t.losBlocked);
     const blocked = e.threats.filter((t) => t.losBlocked);
 
+    // IN LoS threats grouped per enemy: "<ref>: <Spell> <DR>, <Spell> <DR>; <ref>: …".
+    // Duration implication ("full/half duration") is defined once in the system-prompt DR legend —
+    // repeating it on all ~9k corpus lines cost ~40 tok/match (2026-07-09 week-eval, tokens.md #2).
+    const losOrder: string[] = [];
+    const losSpells = new Map<string, string[]>();
     for (const t of exposed) {
-      // Duration implication ("full/half duration") is defined once in the system-prompt DR legend —
-      // repeating it on all ~9k corpus lines cost ~40 tok/match (2026-07-09 week-eval, tokens.md #2).
-      const drStr = t.healerDRLevel === 'Full' ? 'Full DR' : '50% DR';
-      lines.push(`    IN LoS: ${t.enemySpec} (${t.enemyName}) — ${t.ccSpellName} [${t.ccCategory}] — ${drStr}`);
+      const ref = refOf(t);
+      let spells = losSpells.get(ref);
+      if (!spells) {
+        spells = [];
+        losSpells.set(ref, spells);
+        losOrder.push(ref);
+      }
+      spells.push(`${t.ccSpellName} ${t.healerDRLevel === 'Full' ? 'Full DR' : '50% DR'}`);
     }
+    const losStr = losOrder.map((ref) => `${ref}: ${(losSpells.get(ref) ?? []).join(', ')}`).join('; ');
 
-    if (blocked.length > 0) {
-      const names = [...new Set(blocked.map((t) => `${t.enemySpec} (${t.enemyName})`))].join(', ');
-      lines.push(`    Pillar-blocked: ${names}`);
-    }
+    const blockedRefs = [...new Set(blocked.map(refOf))].join(', ');
 
+    let verdict = '';
     if (e.exposureLabel === 'Critical') {
-      lines.push(`    → No trinket + Full DR CC in LoS: healer cannot answer CC`);
+      verdict = 'No trinket + Full DR CC in LoS: healer cannot answer CC';
     } else if (e.exposureLabel === 'Exposed' && exposed.some((t) => t.healerDRLevel === 'Full')) {
-      lines.push(`    → Full DR threat in LoS: trinket is the only answer`);
+      verdict = 'Full DR threat in LoS: trinket is the only answer';
     }
+
+    let body = `${e.burstDangerLabel} burst — ${trinketStr} — ${labelStr}${pillarStr}`;
+    if (losStr) body += ` | IN LoS: ${losStr}`;
+    if (blockedRefs) body += ` | Pillar-blocked: ${blockedRefs}`;
+    if (verdict) body += ` | → ${verdict}`;
+
+    return { atSeconds: e.atSeconds, line: `${EXPOSURE_ENTRY_TAG}${body}` };
+  });
+}
+
+/** Block form used by the critical-moments path: kit stated once, one line per window. */
+export function formatHealerExposureForContext(exposures: IHealerBurstExposure[]): string[] {
+  if (exposures.length === 0) return [];
+
+  const lines: string[] = ['HEALER EXPOSURE DURING ENEMY BURST WINDOWS:'];
+  formatEnemyCCKitHeader(exposures).forEach((l) => lines.push(`  ${l}`));
+  lines.push('');
+
+  for (const entry of formatHealerExposureEntries(exposures)) {
+    const body = entry.line.startsWith(EXPOSURE_ENTRY_TAG) ? entry.line.slice(EXPOSURE_ENTRY_TAG.length) : entry.line;
+    lines.push(`  [${fmtTime(entry.atSeconds)}] ${body}`);
   }
 
   return lines;

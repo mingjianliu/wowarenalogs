@@ -381,6 +381,60 @@ export function channelWasInterrupted(
   });
 }
 
+/** Rendered timeline lines start with an `M:SS ` timestamp column (e.g. `0:13  [DMG SPIKE]   …`). */
+const TIMESTAMPED_LINE_REGEX = /^(\d+):(\d{2})\s/;
+
+/**
+ * Merges pre-rendered, timestamped insert lines into rendered timeline lines by chronology.
+ * Each insert goes before the first timestamped line whose time is strictly greater than
+ * `atSeconds` (so at equal timestamps, existing timeline lines keep precedence); inserts
+ * later than every timeline timestamp go right after the last timestamped line. Lines
+ * without a leading timestamp (headers, blanks) are position anchors only — an insert is
+ * never placed before the headers that precede the first timestamped line. Insert order is
+ * stable for equal `atSeconds`.
+ */
+export function mergeTimestampedLines(
+  timelineLines: string[],
+  inserts: Array<{ atSeconds: number; line: string }>,
+): string[] {
+  if (inserts.length === 0) return [...timelineLines];
+
+  const sortedInserts = inserts
+    .map((insert, index) => ({ ...insert, index }))
+    .sort((a, b) => a.atSeconds - b.atSeconds || a.index - b.index);
+
+  const lineTimes = timelineLines.map((line) => {
+    const m = TIMESTAMPED_LINE_REGEX.exec(line);
+    return m ? parseInt(m[1], 10) * 60 + parseInt(m[2], 10) : null;
+  });
+  const lastTimestampedIndex = lineTimes.reduce((last, t, i) => (t !== null ? i : last), -1);
+
+  const result: string[] = [];
+  let nextInsert = 0;
+  for (let i = 0; i < timelineLines.length; i++) {
+    const t = lineTimes[i];
+    if (t !== null) {
+      while (nextInsert < sortedInserts.length && sortedInserts[nextInsert].atSeconds < t) {
+        result.push(sortedInserts[nextInsert].line);
+        nextInsert++;
+      }
+    }
+    result.push(timelineLines[i]);
+    if (i === lastTimestampedIndex) {
+      while (nextInsert < sortedInserts.length) {
+        result.push(sortedInserts[nextInsert].line);
+        nextInsert++;
+      }
+    }
+  }
+  // No timestamped line at all — append the inserts at the end.
+  while (nextInsert < sortedInserts.length) {
+    result.push(sortedInserts[nextInsert].line);
+    nextInsert++;
+  }
+  return result;
+}
+
 // ── Module-level constants shared across builders ──────────────────────────
 
 /** Minimum total damage for a pressure window to be treated as a [DMG SPIKE] event. */
